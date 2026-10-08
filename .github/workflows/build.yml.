@@ -1,1 +1,64 @@
+name: Build VoetbalHub APK
 
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Find and extract VoetbalHub ZIP
+        shell: bash
+        run: |
+          ZIP=$(find . -maxdepth 1 -type f -iname 'VoetbalHub*.zip' | head -n 1)
+
+          if [ -z "$ZIP" ]; then
+            echo "FOUT: Geen VoetbalHub ZIP gevonden."
+            exit 1
+          fi
+
+          echo "Gevonden: $ZIP"
+
+          rm -rf project
+          mkdir project
+          unzip -q "$ZIP" -d project
+
+          if [ -f project/settings.gradle.kts ]; then
+            echo "Project gevonden in project/"
+          elif [ -f project/VoetbalHub/settings.gradle.kts ]; then
+            mv project/VoetbalHub/* project/
+            mv project/VoetbalHub/.[!.]* project/ 2>/dev/null || true
+          fi
+
+          test -f project/settings.gradle.kts
+          test -f project/build.gradle.kts
+          test -d project/app
+
+      - name: Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build APK
+        working-directory: project
+        run: gradle :app:assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: VoetbalHub-APK
+          path: project/app/build/outputs/apk/debug/app-debug.apk
