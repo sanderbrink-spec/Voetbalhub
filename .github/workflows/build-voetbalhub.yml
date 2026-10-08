@@ -21,16 +21,33 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Find Android project
+        id: project
+        shell: bash
+        run: |
+          PROJECT=$(find . -name "settings.gradle.kts" -type f | head -n 1)
+
+          if [ -z "$PROJECT" ]; then
+            echo "Geen settings.gradle.kts gevonden."
+            find . -maxdepth 4 -type f | sort
+            exit 1
+          fi
+
+          PROJECT_DIR=$(dirname "$PROJECT")
+          echo "project_dir=$PROJECT_DIR" >> "$GITHUB_OUTPUT"
+          echo "Android project gevonden in: $PROJECT_DIR"
+
       - name: Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
 
       - name: Build APK
+        working-directory: ${{ steps.project.outputs.project_dir }}
         run: gradle assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: VoetbalHub-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: ${{ steps.project.outputs.project_dir }}/app/build/outputs/apk/debug/app-debug.apk
