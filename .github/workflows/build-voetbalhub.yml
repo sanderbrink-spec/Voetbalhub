@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - main
+      - master
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -20,10 +24,8 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Gradle setup
-        uses: gradle/actions/setup-gradle@v4
-
       - name: Build APK
+        working-directory: voetbalhub
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
@@ -32,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: VoetbalHub-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: voetbalhub/app/build/outputs/apk/debug/app-debug.apk
