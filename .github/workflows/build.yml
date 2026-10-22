@@ -85,7 +85,41 @@ jobs:
           if old not in s:
               raise SystemExit("Home-screen insertion point not found; stopping safely.")
           s = s.replace(old, new, 1)
-          # Route Android Back from any secondary tab straight to the home tab.
+          # Track the actual bottom navigation tab separately from the news category chips.
+          class_pos = s.index("public class MainActivity")
+          class_open = s.index("{", class_pos) + 1
+          if "currentBottomTab" not in s:
+              s = s[:class_open] + '\n    private String currentBottomTab = "Nieuws";\n' + s[class_open:]
+          # Track bottom-tab selections directly in the existing switch cases.
+          for tab, action in [("Nieuws", None), ("Uitslagen", "showScores()"), ("Competities", "showCompetitions()"), ("Favorieten", "showFavorites()"), ("Meer", "showMore()")]:
+              marker_case = 'case "' + tab + '":'
+              pos = s.find(marker_case, s.find('String[][] items ='))
+              if pos >= 0:
+                  end = s.find("break;", pos)
+                  if end >= 0 and "currentBottomTab" not in s[pos:end]:
+                      s = s[:pos] + marker_case + ' currentBottomTab = "' + tab + '";' + s[pos+len(marker_case):]
+          # Add a safe helper to find and activate the bottom Nieuws item if a tab is active.
+          back_marker = "public void onBackPressed()"
+          if "private boolean returnToNewsBottomTab()" not in s:
+              helper = """
+          private boolean returnToNewsBottomTab() {
+              if ("Nieuws".equals(currentBottomTab)) return false;
+              currentBottomTab = "Nieuws";
+              active = "Voor jou";
+              articleDisplayLimit = 20;
+              buildChips();
+              showNews();
+              backPressedOnce = false;
+              main.removeCallbacks(resetBackPressed);
+              return true;
+          }
+
+          """
+              s = s[:s.index(back_marker)] + helper + s[s.index(back_marker):]
+          # Print precise source for the results screen so its broken feed can be diagnosed.
+          score_pos = s.find("private void showScores()")
+          print("DEBUG SHOW SCORES:", s[score_pos:score_pos+11000] if score_pos >= 0 else "showScores method signature not found")
+          # Route Back from bottom tabs first, then from a news subcategory.
           ix = s.find("private void addDailyFixtureSection")
           print("DEBUG DAILY FIXTURE:", s[ix:ix+6500] if ix >= 0 else "method not found")
           print("DEBUG NAV LINES:")
@@ -97,7 +131,7 @@ jobs:
           back_pos = s.index("if (backPressedOnce)", method_start)
           line_start = s.rfind(chr(10), 0, back_pos) + 1
           indent = s[line_start:back_pos]
-          insert = 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showNews();' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
+          insert = 'if (returnToNewsBottomTab()) return;' + chr(10) + indent + 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showNews();' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
           s = s[:line_start] + indent + insert + s[line_start + len(indent):]
           p.write_text(s)
           print("Patched ESPN feeds, home screen and back navigation.")
