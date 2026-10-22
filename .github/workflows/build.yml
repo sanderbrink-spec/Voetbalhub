@@ -1,4 +1,4 @@
-name: VoetbalHub build
+name: VoetbalHub API test and APK build
 
 on:
   workflow_dispatch:
@@ -6,33 +6,91 @@ on:
     branches: [main, master]
 
 jobs:
-  build:
+  api-test-and-build:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Java 17
         uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
+
       - name: Extract Android project if repository stores a ZIP
         shell: bash
         run: |
           set -euo pipefail
           if [ ! -f settings.gradle.kts ] && [ ! -f settings.gradle ]; then
             ZIP="$(find . -maxdepth 2 -type f -iname 'VoetbalHub*.zip' | head -n 1 || true)"
-            if [ -z "$ZIP" ]; then echo "::error::Geen Android-project of VoetbalHub ZIP gevonden."; exit 1; fi
+            if [ -z "$ZIP" ]; then
+              echo "::error::Geen Android-project of VoetbalHub ZIP gevonden."
+              exit 1
+            fi
             mkdir -p extracted
             unzip -q "$ZIP" -d extracted
             SETTINGS="$(find extracted -type f -name settings.gradle.kts | head -n 1 || true)"
-            if [ -z "$SETTINGS" ]; then SETTINGS="$(find extracted -type f -name settings.gradle | head -n 1 || true)"; fi
-            if [ -z "$SETTINGS" ]; then echo "::error::ZIP bevat geen settings.gradle(.kts)."; exit 1; fi
-            cp -a "$(dirname "$SETTINGS")"/. .
+            if [ -z "$SETTINGS" ]; then
+              SETTINGS="$(find extracted -type f -name settings.gradle | head -n 1 || true)"
+            fi
+            if [ -z "$SETTINGS" ]; then
+              echo "::error::ZIP bevat geen settings.gradle(.kts)."
+              exit 1
+            fi
+            ROOT="$(dirname "$SETTINGS")"
+            cp -a "$ROOT"/. .
           fi
           test -f app/build.gradle.kts -o -f app/build.gradle
           echo "Android project structure found."
-      - name: Fix back navigation
+
+      - name: Patch live match feeds and home screen
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
+          s = p.read_text()
+          start = s.index("    /** European fixtures from API-Football.")
+          end = s.index("\n    private void scheduleScoresMidnightReset()", start)
+          replacement = """    /** European fixtures use public ESPN scoreboards as a fallback to API-Football plan restrictions. */
+              private void addApiFootballEuropeanSection(LinearLayout parent) {
+                  addDailyFixtureSection(parent, "EUROPA CLUBS · LIVE & PROGRAMMA", new String[]{
+                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard"
+                  }, false);
+              }
+          """
+          s = s[:start] + replacement + s[end:]
+          old = '''        if (active.equals("Voor jou") || active.equals("Eredivisie")) {
+                      addEredivisieLiveBlock(list);
+                  }'''
+          new = '''        if (active.equals("Voor jou")) {
+                      addDailyFixtureSection(list, "LIVE WEDSTRIJDEN · EUROPA", new String[]{
+                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
+                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
+                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
+                          "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
+                          "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
+                          "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
+                          "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
+                          "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard"
+                      }, false);
+                      addEredivisieLiveBlock(list);
+                  } else if (active.equals("Eredivisie")) {
+                      addEredivisieLiveBlock(list);
+                  }'''
+          if old not in s:
+              raise SystemExit("Home-screen insertion point not found; stopping safely.")
+          s = s.replace(old, new, 1)
+          p.write_text(s)
+          print("Patched ESPN live feeds and home screen.")
+          PY
+
+
+      - name: Fix back navigation from subpages
         shell: bash
         run: |
           set -euo pipefail
@@ -44,7 +102,7 @@ jobs:
           marker = "        if (backPressedOnce) {"
           marker_pos = s.index(marker, start)
           prefix = s[start:marker_pos]
-          if "active != null && !active.equals(\"Voor jou\")" not in prefix:
+          if 'active != null && !active.equals("Voor jou")' not in prefix:
               replacement = '''    public void onBackPressed() {
                   // Artikelweergave eerst sluiten.
                   if (articleOpen) {
@@ -64,17 +122,20 @@ jobs:
               p.write_text(s)
           print("Back navigation rule verified/applied.")
           PY
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+
       - name: Build debug APK
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         run: gradle :app:assembleDebug --no-daemon
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: VoetbalHub-back-navigation-fix
+          name: VoetbalHub-live-fix
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
