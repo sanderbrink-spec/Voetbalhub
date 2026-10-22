@@ -90,10 +90,10 @@ jobs:
           nl = chr(10)
           line1 = "if (articleOpen) { closeArticleView(); return; }"
           line2 = "if (backPressedOnce) { main.removeCallbacks(resetBackPressed); finish(); return; }"
-          pattern = re.escape(line1) + nl + r"[ \\t]*" + re.escape(line2)
+          pattern = r"(?m)^([ ]*)" + re.escape(line1) + nl + r"[ ]*" + re.escape(line2)
           def route_back(m):
-              indent = "        "
-              return line1 + nl + indent + 'if (active != null && !active.equals("Voor jou")) {' + nl + indent + '    showTab("Voor jou");' + nl + indent + '    backPressedOnce = false;' + nl + indent + '    main.removeCallbacks(resetBackPressed);' + nl + indent + '    return;' + nl + indent + '}' + nl + indent + line2
+              indent = m.group(1)
+              return indent + line1 + nl + indent + 'if (active != null && !active.equals("Voor jou")) {' + nl + indent + '    showTab("Voor jou");' + nl + indent + '    backPressedOnce = false;' + nl + indent + '    main.removeCallbacks(resetBackPressed);' + nl + indent + '    return;' + nl + indent + '}' + nl + indent + line2
           s, count = re.subn(pattern, route_back, s, count=1)
           if count != 1:
               raise SystemExit("Back navigation method pattern not found; stopping safely.")
