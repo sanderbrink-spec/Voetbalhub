@@ -87,10 +87,13 @@ jobs:
           s = s.replace(old, new, 1)
           # Route Android Back from any secondary tab straight to the home tab.
           import re
-          pattern = r'(?m)^([ \\t]*)if \\(articleOpen\\) \\{ closeArticleView\\(\\); return; \\}\\n[ \\t]*if \\(backPressedOnce\\)'
+          nl = chr(10)
+          line1 = "if (articleOpen) { closeArticleView(); return; }"
+          line2 = "if (backPressedOnce) { main.removeCallbacks(resetBackPressed); finish(); return; }"
+          pattern = re.escape(line1) + nl + r"[ \\t]*" + re.escape(line2)
           def route_back(m):
-              indent = m.group(1)
-              return indent + 'if (articleOpen) { closeArticleView(); return; }\\n' + indent + 'if (active != null && !active.equals("Voor jou")) {\\n' + indent + '    showTab("Voor jou");\\n' + indent + '    backPressedOnce = false;\\n' + indent + '    main.removeCallbacks(resetBackPressed);\\n' + indent + '    return;\\n' + indent + '}\\n' + indent + 'if (backPressedOnce)'
+              indent = "        "
+              return line1 + nl + indent + 'if (active != null && !active.equals("Voor jou")) {' + nl + indent + '    showTab("Voor jou");' + nl + indent + '    backPressedOnce = false;' + nl + indent + '    main.removeCallbacks(resetBackPressed);' + nl + indent + '    return;' + nl + indent + '}' + nl + indent + line2
           s, count = re.subn(pattern, route_back, s, count=1)
           if count != 1:
               raise SystemExit("Back navigation method pattern not found; stopping safely.")
