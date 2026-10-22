@@ -86,13 +86,12 @@ jobs:
               raise SystemExit("Home-screen insertion point not found; stopping safely.")
           s = s.replace(old, new, 1)
           # Route Android Back from any secondary tab straight to the home tab.
-          print("DEBUG TAB METHODS:", [line.strip() for line in s.splitlines() if "active =" in line or "active=" in line or "showTab(" in line or "selectTab(" in line or "switchTab(" in line][:80])
           marker = "public void onBackPressed()"
           method_start = s.index(marker)
           back_pos = s.index("if (backPressedOnce)", method_start)
           line_start = s.rfind(chr(10), 0, back_pos) + 1
           indent = s[line_start:back_pos]
-          insert = 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    showTab("Voor jou");' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
+          insert = 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showNews();' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
           s = s[:line_start] + indent + insert + s[line_start + len(indent):]
           p.write_text(s)
           print("Patched ESPN feeds, home screen and back navigation.")
