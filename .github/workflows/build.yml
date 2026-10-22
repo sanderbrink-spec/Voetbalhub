@@ -44,83 +44,31 @@ jobs:
           test -f app/build.gradle.kts -o -f app/build.gradle
           echo "Android project structure found."
 
-      - name: Patch live match feeds and home screen
+      - name: Test API-Football key
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         shell: bash
         run: |
           set -euo pipefail
+          if [ -z "${API_FOOTBALL_KEY:-}" ]; then
+            echo "::error::Secret API_FOOTBALL_KEY ontbreekt of is leeg."
+            exit 1
+          fi
+          code="$(curl --silent --show-error --max-time 20 -o /tmp/status.json -w '%{http_code}' \
+            -H "x-apisports-key: ${API_FOOTBALL_KEY}" \
+            'https://v3.football.api-sports.io/status')"
+          echo "API status HTTP: $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::API statuscontrole mislukt met HTTP $code."
+            exit 1
+          fi
           python3 - <<'PY'
-          from pathlib import Path
-          p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
-          s = p.read_text()
-          start = s.index("    /** European fixtures from API-Football.")
-          end = s.index("\n    private void scheduleScoresMidnightReset()", start)
-          replacement = """    /** European fixtures use public ESPN scoreboards as a fallback to API-Football plan restrictions. */
-              private void addApiFootballEuropeanSection(LinearLayout parent) {
-                  addDailyFixtureSection(parent, "EUROPA CLUBS · LIVE & PROGRAMMA", new String[]{
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard"
-                  }, false);
-              }
-          """
-          s = s[:start] + replacement + s[end:]
-          old = '''        if (active.equals("Voor jou") || active.equals("Eredivisie")) {
-                      addEredivisieLiveBlock(list);
-                  }'''
-          new = '''        if (active.equals("Voor jou")) {
-                      addDailyFixtureSection(list, "LIVE WEDSTRIJDEN · EUROPA", new String[]{
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard"
-                      }, false);
-                      addEredivisieLiveBlock(list);
-                  } else if (active.equals("Eredivisie")) {
-                      addEredivisieLiveBlock(list);
-                  }'''
-          if old not in s:
-              raise SystemExit("Home-screen insertion point not found; stopping safely.")
-          s = s.replace(old, new, 1)
-          p.write_text(s)
-          print("Patched ESPN live feeds and home screen.")
-          PY
-
-
-      - name: Fix back navigation from subpages
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
-          s = p.read_text()
-          start = s.index("    public void onBackPressed() {")
-          marker = "        if (backPressedOnce) {"
-          marker_pos = s.index(marker, start)
-          prefix = s[start:marker_pos]
-          if 'active != null && !active.equals("Voor jou")' not in prefix:
-              replacement = '''    public void onBackPressed() {
-                  // Artikelweergave eerst sluiten.
-                  if (articleOpen) {
-                      closeArticleView();
-                      return;
-                  }
-                  // Vanaf iedere subpagina terug naar de hoofdpagina zonder afsluitmelding.
-                  if (active != null && !active.equals("Voor jou")) {
-                      showTab("Voor jou");
-                      backPressedOnce = false;
-                      main.removeCallbacks(resetBackPressed);
-                      return;
-                  }
-
-'''
-              s = s[:start] + replacement + s[marker_pos:]
-              p.write_text(s)
-          print("Back navigation rule verified/applied.")
+          import json, sys
+          d=json.load(open('/tmp/status.json'))
+          if d.get('errors'):
+              print("API returned errors; key/quota may be invalid.")
+              sys.exit(1)
+          print("API key accepted; response received. Sensitive response omitted.")
           PY
 
       - name: Gradle setup
@@ -136,6 +84,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: VoetbalHub-live-fix
+          name: VoetbalHub-4.22-API-Football
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
