@@ -85,8 +85,24 @@ jobs:
           if old not in s:
               raise SystemExit("Home-screen insertion point not found; stopping safely.")
           s = s.replace(old, new, 1)
+          # Route Android Back from any secondary tab straight to the home tab.
+          back_old = '''    public void onBackPressed() {
+        if (articleOpen) { closeArticleView(); return; }
+        if (backPressedOnce) { main.removeCallbacks(resetBackPressed); finish(); return; }'''
+          back_new = '''    public void onBackPressed() {
+        if (articleOpen) { closeArticleView(); return; }
+        if (active != null && !active.equals("Voor jou")) {
+            showTab("Voor jou");
+            backPressedOnce = false;
+            main.removeCallbacks(resetBackPressed);
+            return;
+        }
+        if (backPressedOnce) { main.removeCallbacks(resetBackPressed); finish(); return; }'''
+          if back_old not in s:
+              raise SystemExit("Back navigation method pattern not found; stopping safely.")
+          s = s.replace(back_old, back_new, 1)
           p.write_text(s)
-          print("Patched ESPN live feeds and home screen.")
+          print("Patched ESPN feeds, home screen and back navigation.")
           PY
 
       - name: Gradle setup
