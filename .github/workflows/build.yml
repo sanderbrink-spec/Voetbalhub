@@ -86,11 +86,14 @@ jobs:
               raise SystemExit("Home-screen insertion point not found; stopping safely.")
           s = s.replace(old, new, 1)
           # Route Android Back from any secondary tab straight to the home tab.
-          back_old = "    public void onBackPressed() {\n        if (articleOpen) { closeArticleView(); return; }\n        if (backPressedOnce) { main.removeCallbacks(resetBackPressed); finish(); return; }"
-          back_new = "    public void onBackPressed() {\n        if (articleOpen) { closeArticleView(); return; }\n        if (active != null && !active.equals(\"Voor jou\")) {\n            showTab(\"Voor jou\");\n            backPressedOnce = false;\n            main.removeCallbacks(resetBackPressed);\n            return;\n        }\n        if (backPressedOnce) { main.removeCallbacks(resetBackPressed); finish(); return; }"
-          if back_old not in s:
+          import re
+          pattern = r'(?m)^([ \\t]*)if \\(articleOpen\\) \\{ closeArticleView\\(\\); return; \\}\\n[ \\t]*if \\(backPressedOnce\\)'
+          def route_back(m):
+              indent = m.group(1)
+              return indent + 'if (articleOpen) { closeArticleView(); return; }\\n' + indent + 'if (active != null && !active.equals("Voor jou")) {\\n' + indent + '    showTab("Voor jou");\\n' + indent + '    backPressedOnce = false;\\n' + indent + '    main.removeCallbacks(resetBackPressed);\\n' + indent + '    return;\\n' + indent + '}\\n' + indent + 'if (backPressedOnce)'
+          s, count = re.subn(pattern, route_back, s, count=1)
+          if count != 1:
               raise SystemExit("Back navigation method pattern not found; stopping safely.")
-          s = s.replace(back_old, back_new, 1)
           p.write_text(s)
           print("Patched ESPN feeds, home screen and back navigation.")
           PY
