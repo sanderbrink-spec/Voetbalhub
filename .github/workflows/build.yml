@@ -115,7 +115,10 @@ jobs:
           }
 
           """
-              s = s[:s.index(back_marker)] + helper + s[s.index(back_marker):]
+              back_index = s.index(back_marker)
+              annotation_index = s.rfind("@Override", 0, back_index)
+              insert_index = annotation_index if annotation_index >= 0 and back_index - annotation_index < 100 else back_index
+              s = s[:insert_index] + helper + s[insert_index:]
           # Print precise source for the results screen so its broken feed can be diagnosed.
           score_pos = s.find("private void showScores()")
           print("DEBUG SHOW SCORES:", s[score_pos:score_pos+11000] if score_pos >= 0 else "showScores method signature not found")
