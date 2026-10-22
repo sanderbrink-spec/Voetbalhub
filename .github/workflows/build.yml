@@ -1,0 +1,89 @@
+name: VoetbalHub API test and APK build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  api-test-and-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Extract Android project if repository stores a ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f settings.gradle.kts ] && [ ! -f settings.gradle ]; then
+            ZIP="$(find . -maxdepth 2 -type f -iname 'VoetbalHub*.zip' | head -n 1 || true)"
+            if [ -z "$ZIP" ]; then
+              echo "::error::Geen Android-project of VoetbalHub ZIP gevonden."
+              exit 1
+            fi
+            mkdir -p extracted
+            unzip -q "$ZIP" -d extracted
+            SETTINGS="$(find extracted -type f -name settings.gradle.kts | head -n 1 || true)"
+            if [ -z "$SETTINGS" ]; then
+              SETTINGS="$(find extracted -type f -name settings.gradle | head -n 1 || true)"
+            fi
+            if [ -z "$SETTINGS" ]; then
+              echo "::error::ZIP bevat geen settings.gradle(.kts)."
+              exit 1
+            fi
+            ROOT="$(dirname "$SETTINGS")"
+            cp -a "$ROOT"/. .
+          fi
+          test -f app/build.gradle.kts -o -f app/build.gradle
+          echo "Android project structure found."
+
+      - name: Test API-Football key
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${API_FOOTBALL_KEY:-}" ]; then
+            echo "::error::Secret API_FOOTBALL_KEY ontbreekt of is leeg."
+            exit 1
+          fi
+          code="$(curl --silent --show-error --max-time 20 -o /tmp/status.json -w '%{http_code}' \
+            -H "x-apisports-key: ${API_FOOTBALL_KEY}" \
+            'https://v3.football.api-sports.io/status')"
+          echo "API status HTTP: $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::API statuscontrole mislukt met HTTP $code."
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json, sys
+          d=json.load(open('/tmp/status.json'))
+          if d.get('errors'):
+              print("API returned errors; key/quota may be invalid.")
+              sys.exit(1)
+          print("API key accepted; response received. Sensitive response omitted.")
+          PY
+
+      - name: Gradle setup
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build debug APK
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: gradle :app:assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: VoetbalHub-4.22-API-Football
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
