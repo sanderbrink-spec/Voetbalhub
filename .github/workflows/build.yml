@@ -85,8 +85,32 @@ jobs:
           if old not in s:
               raise SystemExit("Home-screen insertion point not found; stopping safely.")
           s = s.replace(old, new, 1)
+          # Return from any non-home tab to Voor jou on the first Android back press.
+          method = s.index("    public void onBackPressed()")
+          method_end = s.index("\\n    }", method)
+          section = s[method:method_end]
+          back_marker = "        if (backPressedOnce) {"
+          if back_marker not in section:
+              raise SystemExit("Back button insertion point not found.")
+          back_block = '''        if (active != null && !active.equals("Voor jou")) {
+                  showTab("Voor jou");
+                  backPressedOnce = false;
+                  main.removeCallbacks(resetBackPressed);
+                  return;
+              }
+
+'''
+          section = section.replace(back_marker, back_block + back_marker, 1)
+          s = s[:method] + section + s[method_end:]
+          print("Patched back navigation.")
+          # Print fixture parser for diagnostics in the Actions log.
+          lines = s.splitlines()
+          for i, line in enumerate(lines):
+              if "void addDailyFixtureSection" in line:
+                  print("---- addDailyFixtureSection source ----")
+                  print("\\n".join(f"{j+1}: {lines[j]}" for j in range(i, min(len(lines), i+95)))
           p.write_text(s)
-          print("Patched ESPN live feeds and home screen.")
+          print("Patched ESPN live feeds, home screen and back navigation.")
           PY
 
       - name: Gradle setup
