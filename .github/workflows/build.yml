@@ -85,7 +85,6 @@ jobs:
           if old not in s:
               raise SystemExit("Home-screen insertion point not found; stopping safely.")
           s = s.replace(old, new, 1)
-          # Return from any non-home tab to Voor jou on the first Android back press.
           method = s.index("    public void onBackPressed()")
           back_marker = "        if (backPressedOnce) {"
           pos = s.find(back_marker, method)
@@ -100,13 +99,6 @@ jobs:
 
 '''
           s = s[:pos] + back_block + s[pos:]
-          print("Patched back navigation.")
-          # Print fixture parser for diagnostics in the Actions log.
-          lines = s.splitlines()
-          for i, line in enumerate(lines):
-              if "void addDailyFixtureSection" in line:
-                  print("---- addDailyFixtureSection source ----")
-                  print("\\n".join(f"{j+1}: {lines[j]}" for j in range(i, min(len(lines), i+95))))
           p.write_text(s)
           print("Patched ESPN live feeds, home screen and back navigation.")
           PY
