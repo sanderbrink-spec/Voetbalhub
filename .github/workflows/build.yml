@@ -86,17 +86,13 @@ jobs:
               raise SystemExit("Home-screen insertion point not found; stopping safely.")
           s = s.replace(old, new, 1)
           # Route Android Back from any secondary tab straight to the home tab.
-          import re
-          nl = chr(10)
-          line1 = "if (articleOpen) { closeArticleView(); return; }"
-          line2 = "if (backPressedOnce) { main.removeCallbacks(resetBackPressed); finish(); return; }"
-          pattern = r"(?m)^([ ]*)" + re.escape(line1) + nl + r"[ ]*" + re.escape(line2)
-          def route_back(m):
-              indent = m.group(1)
-              return indent + line1 + nl + indent + 'if (active != null && !active.equals("Voor jou")) {' + nl + indent + '    showTab("Voor jou");' + nl + indent + '    backPressedOnce = false;' + nl + indent + '    main.removeCallbacks(resetBackPressed);' + nl + indent + '    return;' + nl + indent + '}' + nl + indent + line2
-          s, count = re.subn(pattern, route_back, s, count=1)
-          if count != 1:
-              raise SystemExit("Back navigation method pattern not found; stopping safely.")
+          marker = "public void onBackPressed()"
+          method_start = s.index(marker)
+          back_pos = s.index("if (backPressedOnce)", method_start)
+          line_start = s.rfind(chr(10), 0, back_pos) + 1
+          indent = s[line_start:back_pos]
+          insert = 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    showTab("Voor jou");' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
+          s = s[:line_start] + indent + insert + s[line_start + len(indent):]
           p.write_text(s)
           print("Patched ESPN feeds, home screen and back navigation.")
           PY
