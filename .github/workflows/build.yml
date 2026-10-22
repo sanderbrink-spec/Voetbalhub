@@ -86,6 +86,8 @@ jobs:
               raise SystemExit("Home-screen insertion point not found; stopping safely.")
           s = s.replace(old, new, 1)
           # Route Android Back from any secondary tab straight to the home tab.
+          ix = s.find("private void addDailyFixtureSection")
+          print("DEBUG DAILY FIXTURE:", s[ix:ix+6500] if ix >= 0 else "method not found")
           marker = "public void onBackPressed()"
           method_start = s.index(marker)
           back_pos = s.index("if (backPressedOnce)", method_start)
