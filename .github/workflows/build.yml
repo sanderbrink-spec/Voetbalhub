@@ -88,6 +88,10 @@ jobs:
           # Route Android Back from any secondary tab straight to the home tab.
           ix = s.find("private void addDailyFixtureSection")
           print("DEBUG DAILY FIXTURE:", s[ix:ix+6500] if ix >= 0 else "method not found")
+          print("DEBUG NAV LINES:")
+          for n,line in enumerate(s.splitlines(),1):
+              if any(k in line.lower() for k in ["favorieten", "competities", "uitslagen", "bottom", "navigation", "navitem", "setonclicklistener", "onbackpressed"]):
+                  print(f"{n}: {line[:260]}")
           marker = "public void onBackPressed()"
           method_start = s.index(marker)
           back_pos = s.index("if (backPressedOnce)", method_start)
