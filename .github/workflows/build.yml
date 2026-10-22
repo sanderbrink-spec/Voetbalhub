@@ -89,38 +89,6 @@ jobs:
           print("Patched ESPN live feeds and home screen.")
           PY
 
-
-      - name: Fix Android back navigation
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
-          s = p.read_text()
-          start = s.index("    public void onBackPressed() {")
-          marker = "        if (backPressedOnce) {"
-          pos = s.index(marker, start)
-          prefix = s[start:pos]
-          if 'active != null && !active.equals("Voor jou")' not in prefix:
-              block = '''    public void onBackPressed() {
-                  if (articleOpen) {
-                      closeArticleView();
-                      return;
-                  }
-                  if (active != null && !active.equals("Voor jou")) {
-                      showTab("Voor jou");
-                      backPressedOnce = false;
-                      main.removeCallbacks(resetBackPressed);
-                      return;
-                  }
-
-'''
-              s = s[:start] + block + s[pos:]
-              p.write_text(s)
-          print("Back navigation patch applied.")
-          PY
-
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
