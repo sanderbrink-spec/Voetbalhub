@@ -89,39 +89,6 @@ jobs:
           print("Patched ESPN live feeds and home screen.")
           PY
 
-      - name: Fix Android back navigation and inspect fixture parser
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
-          s = p.read_text()
-          marker = '        if (backPressedOnce) {'
-          method = s.index('    public void onBackPressed()')
-          end = s.index('\n    }', method)
-          section = s[method:end]
-          if marker not in section:
-              raise SystemExit("Back-button insertion point not found.")
-          block = '''        if (active != null && !active.equals("Voor jou")) {
-                    showTab("Voor jou");
-                    backPressedOnce = false;
-                    main.removeCallbacks(resetBackPressed);
-                    return;
-                }
-
-'''
-          section = section.replace(marker, block + marker, 1)
-          s = s[:method] + section + s[end:]
-          p.write_text(s)
-          print("Back navigation patched.")
-          print("---- Fixture parser methods ----")
-          lines = s.splitlines()
-          for i, line in enumerate(lines):
-              if "void addDailyFixtureSection" in line or "parse" in line.lower() and "event" in line.lower():
-                  print("\n".join(f"{j+1}: {lines[j]}" for j in range(max(0,i-3), min(len(lines),i+65))))
-          PY
-
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
