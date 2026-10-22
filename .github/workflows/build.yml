@@ -38,17 +38,12 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p=Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
-          s=p.read_text()
-          for term in ["addDailyFixtureSection", "onBackPressed", "OnBackPressedDispatcher", "handleBack", "finish()"]:
-              print("\\n===== SEARCH:", term, "=====")
-              lines=s.splitlines()
-              hits=[i for i,line in enumerate(lines) if term in line]
-              for i in hits[:8]:
-                  print("\\n--- lines",i+1,"to",min(i+24,len(lines)),"---")
-                  print("\\n".join(f"{j+1}: {lines[j]}" for j in range(i,min(i+25,len(lines)))))
+          lines=Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java").read_text().splitlines()
+          for a,b in [(1450,1545),(1828,1868)]:
+              print(f"\n===== SOURCE LINES {a}-{b} =====")
+              print("\n".join(f"{i+1}: {lines[i]}" for i in range(a-1,min(b,len(lines)))))
           PY
-      - name: Patch live match feeds and home screen
+      - name: Patch live feeds and back navigation
         shell: bash
         run: |
           set -euo pipefail
@@ -56,40 +51,57 @@ jobs:
           from pathlib import Path
           p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
           s = p.read_text()
-          start = s.index("    /** European fixtures from API-Football.")
-          end = s.index("\\n    private void scheduleScoresMidnightReset()", start)
-          replacement = """    /** European fixtures use public ESPN scoreboards as a fallback to API-Football plan restrictions. */
-              private void addApiFootballEuropeanSection(LinearLayout parent) {
-                  addDailyFixtureSection(parent, "EUROPA CLUBS · LIVE & PROGRAMMA", new String[]{
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard"
-                  }, false);
-              }
-          """
-          s = s[:start] + replacement + s[end:]
-          old = '''        if (active.equals("Voor jou") || active.equals("Eredivisie")) {
-                      addEredivisieLiveBlock(list);
-                  }'''
-          new = '''        if (active.equals("Voor jou")) {
-                      addDailyFixtureSection(list, "LIVE WEDSTRIJDEN · EUROPA", new String[]{
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard"
-                      }, false);
-                      addEredivisieLiveBlock(list);
-                  } else if (active.equals("Eredivisie")) {
-                      addEredivisieLiveBlock(list);
-                  }'''
-          if old not in s: raise SystemExit("Home-screen insertion point not found; stopping safely.")
-          s = s.replace(old, new, 1)
+          # Correct navigation: on any non-home tab, back switches to home and never shows exit prompt.
+          old = '''    public void onBackPressed() {
+                  // Vanuit een artikel sluit TERUG de ingebouwde browser en keert direct terug naar VoetbalHub.
+                  // Dit voorkomt dat de gebruiker eerst door eerdere VI-doorverwijzingen moet teruggaan.
+                  if (articleOpen) {
+                      closeArticleView();
+                      return;
+                  }
+
+                  // Op het hoofdscherm moet TERUG twee keer binnen 2 seconden worden ingedrukt.'''
+          new = '''    public void onBackPressed() {
+                  // Artikelen eerst sluiten en terugkeren naar VoetbalHub.
+                  if (articleOpen) {
+                      closeArticleView();
+                      return;
+                  }
+                  // Op een subpagina gaat TERUG altijd naar de hoofdpagina; geen afsluitmelding.
+                  if (active != null && !active.equals("Voor jou")) {
+                      showTab("Voor jou");
+                      backPressedOnce = false;
+                      main.removeCallbacks(resetBackPressed);
+                      return;
+                  }
+
+                  // Alleen op de hoofdpagina is tweemaal TERUG nodig om af te sluiten.'''
+          if old not in s:
+              # Avoid brittle comments/indentation; locate method and replace its prefix only.
+              method_start = s.index("    public void onBackPressed() {")
+              marker = "        if (backPressedOnce) {"
+              marker_pos = s.index(marker, method_start)
+              prefix = s[method_start:marker_pos]
+              new_prefix = '''    public void onBackPressed() {
+                  // Artikelen eerst sluiten en terugkeren naar VoetbalHub.
+                  if (articleOpen) {
+                      closeArticleView();
+                      return;
+                  }
+                  // Op een subpagina gaat TERUG altijd naar de hoofdpagina.
+                  if (active != null && !active.equals("Voor jou")) {
+                      showTab("Voor jou");
+                      backPressedOnce = false;
+                      main.removeCallbacks(resetBackPressed);
+                      return;
+                  }
+
+'''
+              s = s[:method_start] + new_prefix + s[marker_pos:]
+          else:
+              s = s.replace(old,new,1)
           p.write_text(s)
-          print("Patched ESPN live feeds and home screen.")
+          print("Back navigation patch applied.")
           PY
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
