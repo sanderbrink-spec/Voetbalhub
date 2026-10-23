@@ -45,6 +45,8 @@ jobs:
           echo "Android project structure found."
 
       - name: Patch live match feeds and home screen
+        env:
+          EDITORIAL_API_URL: ${{ vars.EDITORIAL_API_URL }}
         shell: bash
         run: |
           set -euo pipefail
@@ -119,6 +121,96 @@ jobs:
               annotation_index = s.rfind("@Override", 0, back_index)
               insert_index = annotation_index if annotation_index >= 0 and back_index - annotation_index < 100 else back_index
               s = s[:insert_index] + helper + s[insert_index:]
+          # Add the published-article API section to the home screen.
+          import os
+          api_url = os.environ.get("EDITORIAL_API_URL", "").strip()
+          if api_url and not api_url.startswith("https://"):
+              raise SystemExit("EDITORIAL_API_URL must be an HTTPS URL.")
+          endpoint = api_url or "NOT_CONFIGURED"
+          method_marker = "    private void scheduleScoresMidnightReset()"
+          if "private void addEditorialNewsSection(LinearLayout parent)" not in s:
+              method = '''
+              private static final String EDITORIAL_API_URL = "ENDPOINT_VALUE";
+
+              private void addEditorialNewsSection(LinearLayout parent) {
+                  LinearLayout section = new LinearLayout(this);
+                  section.setOrientation(LinearLayout.VERTICAL);
+                  section.setPadding(dp(12), dp(10), dp(12), dp(10));
+                  section.setBackground(cardBackground());
+                  LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+                  lp.setMargins(0, 0, 0, dp(8));
+                  parent.addView(section, 0, lp);
+                  section.addView(tv("VOETBALHUB ORIGINALS", 13, C.GREEN, true));
+                  TextView status = tv("Eigen voetbalartikelen laden…", 13, C.MUTED, false);
+                  status.setPadding(0, dp(5), 0, 0);
+                  section.addView(status);
+                  if (EDITORIAL_API_URL.equals("NOT_CONFIGURED")) {
+                      status.setText("Eigen artikelen volgen zodra de redactie-API is gekoppeld.");
+                      return;
+                  }
+                  executor.execute(() -> {
+                      HttpURLConnection conn = null;
+                      try {
+                          conn = (HttpURLConnection) new URL(EDITORIAL_API_URL).openConnection();
+                          conn.setConnectTimeout(7000);
+                          conn.setReadTimeout(7000);
+                          conn.setRequestMethod("GET");
+                          conn.setRequestProperty("Accept", "application/json");
+                          org.json.JSONObject data;
+                          try (InputStream in = conn.getInputStream();
+                               java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream()) {
+                              byte[] buf = new byte[4096]; int n;
+                              while ((n = in.read(buf)) != -1) out.write(buf, 0, n);
+                              data = new org.json.JSONObject(out.toString("UTF-8"));
+                          }
+                          org.json.JSONArray articles = data.optJSONArray("articles");
+                          final java.util.ArrayList<org.json.JSONObject> rows = new java.util.ArrayList<>();
+                          if (articles != null) for (int i = 0; i < articles.length() && i < 8; i++) {
+                              org.json.JSONObject article = articles.optJSONObject(i);
+                              if (article != null && "published".equals(article.optString("status"))) rows.add(article);
+                          }
+                          runOnUiThread(() -> {
+                              section.removeView(status);
+                              if (rows.isEmpty()) {
+                                  section.addView(tv("Nog geen goedgekeurde artikelen gepubliceerd.", 13, C.MUTED, false));
+                                  return;
+                              }
+                              for (org.json.JSONObject article : rows) {
+                                  TextView headline = tv(article.optString("headline", "Voetbalnieuws"), 16, C.TEXT, true);
+                                  headline.setPadding(0, dp(9), 0, dp(3));
+                                  section.addView(headline);
+                                  String intro = article.optString("standfirst", "");
+                                  if (!intro.isEmpty()) section.addView(tv(intro, 13, C.MUTED, false));
+                                  org.json.JSONArray body = article.optJSONArray("body");
+                                  if (body != null && body.length() > 0) {
+                                      TextView paragraph = tv(body.optString(0), 13, C.TEXT, false);
+                                      paragraph.setPadding(0, dp(4), 0, dp(8));
+                                      section.addView(paragraph);
+                                  }
+                                  View divider = new View(this);
+                                  divider.setBackgroundColor(0xFF20372A);
+                                  section.addView(divider, new LinearLayout.LayoutParams(-1, dp(1)));
+                              }
+                          });
+                      } catch (Exception e) {
+                          runOnUiThread(() -> status.setText("Eigen nieuws tijdelijk niet beschikbaar."));
+                      } finally {
+                          if (conn != null) conn.disconnect();
+                      }
+                  });
+              }
+
+              '''
+              method = method.replace("ENDPOINT_VALUE", endpoint)
+              if method_marker not in s:
+                  raise SystemExit("Could not find safe insertion point for editorial API method.")
+              s = s.replace(method_marker, method_marker + "\n" + method, 1)
+          if "addEditorialNewsSection(list);" not in s:
+              home_marker = '                  if (active.equals("Voor jou")) {'
+              if home_marker not in s:
+                  raise SystemExit("Could not find home screen insertion point for editorial section.")
+              s = s.replace(home_marker, home_marker + "\n                      addEditorialNewsSection(list);", 1)
+
           # Print precise source for the results screen so its broken feed can be diagnosed.
           score_pos = s.find("private void showScores()")
           print("DEBUG SHOW SCORES:", s[score_pos:score_pos+11000] if score_pos >= 0 else "showScores method signature not found")
