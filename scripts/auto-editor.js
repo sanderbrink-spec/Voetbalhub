@@ -45,8 +45,45 @@ async function main() {
   }
   candidates.sort((a,b) => (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0));
   if (!candidates.length) throw new Error("Geen nieuwsitems gevonden in de beschikbare RSS-feeds.");
+
+  // Haal bestaande concepten op zodat hetzelfde nieuws niet opnieuw verschijnt via een andere feed.
+  let existing = [];
+  try {
+    const inboxResponse = await fetch(API_URL + "/inbox", {
+      headers: { "Authorization": "Bearer " + HUB_API_SECRET },
+      signal: AbortSignal.timeout(15000)
+    });
+    if (inboxResponse.ok) {
+      const inboxData = await inboxResponse.json();
+      existing = Array.isArray(inboxData.items) ? inboxData.items : [];
+    } else {
+      console.log("Bestaande concepten niet vooraf geladen; alleen bron-URL-deduplicatie blijft beschikbaar.");
+    }
+  } catch (e) {
+    console.log("Bestaande concepten niet vooraf geladen:", e.message);
+  }
+  const normalize = value => String(value || "").toLowerCase()
+    .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[^a-z0-9 ]/g, " ").split(/\\s+/)
+    .filter(w => w.length > 2 && !["the","and","with","from","after","voor","naar","van","het","een","bij","dat","met","voor","zijn","was","werd","over"].includes(w));
+  const isNearDuplicate = item => {
+    const incoming = new Set(normalize(item.title));
+    if (!incoming.size) return false;
+    return existing.some(old => {
+      const oldUrl = old?.source?.url;
+      if (oldUrl && oldUrl === item.link) return true;
+      const oldTitle = new Set(normalize(old?.source?.title || old?.headline));
+      if (!oldTitle.size) return false;
+      const overlap = [...incoming].filter(word => oldTitle.has(word)).length / Math.min(incoming.size, oldTitle.size);
+      return overlap >= 0.6;
+    });
+  };
   let saved = 0;
   for (const item of candidates.slice(0, 10)) {
+    if (isNearDuplicate(item)) {
+      console.log("Waarschijnlijk dubbel nieuws overgeslagen:", item.title);
+      continue;
+    }
     const requestDraft = () => fetch(API_URL + "/draft", {
       method: "POST",
       headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
@@ -55,7 +92,7 @@ async function main() {
         category: "Voetbal",
         facts: [
           "Bronkop: " + item.title,
-          "Bronbeschrijving: " + (item.description || "De feed bevat geen beschrijving; schrijf voorzichtig en vermeld de beperkte broninformatie.")
+          "Bronbeschrijving (maximaal 800 tekens): " + (item.description || "De feed bevat geen beschrijving; schrijf voorzichtig en vermeld de beperkte broninformatie.").slice(0, 800)
         ],
         sourceUrls: [item.link, item.feed]
       }),
@@ -85,8 +122,8 @@ async function main() {
       headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
       body: JSON.stringify({ item: {
         headline: draft.headline || item.title,
-        standfirst: draft.standfirst || "",
-        body: Array.isArray(draft.body) ? draft.body.slice(0, 6) : [],
+        standfirst: String(draft.standfirst || "").slice(0, 320),
+        body: Array.isArray(draft.body) ? draft.body.slice(0, 2).map(p => String(p).slice(0, 700)) : [],
         why_it_matters: draft.why_it_matters || "",
         verification_notes: "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: alleen de aangeleverde RSS-kop en -beschrijving zijn verwerkt. Controleer uitslag, doelpuntenmakers, statistieken, reeksen, ranglijst en overige concrete claims rechtstreeks bij betrouwbare bronnen vóór publicatie. " + String(draft.verification_notes || "").slice(0, 1200),
         verification_status: "needs_review",
