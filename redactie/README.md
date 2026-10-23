@@ -10,7 +10,7 @@ Deze map bevat een redactiedashboard, een AI Worker, een RSS/Atom-inbox en een e
 - `POST /publish`: bewaart een artikel als gepubliceerd in KV, maar alleen met geldige `HUB_API_SECRET`, `approved: true`, minimaal twee als gecontroleerd aangeleverde feiten en minimaal één HTTPS-bron. Dit is een expliciete goedkeuringspoort, geen automatische feitenchecker.
 
 ## Cloudflare-configuratie
-Worker secrets: `HUB_API_SECRET`, `OPENAI_API_KEY`.
+Worker secrets: `HUB_API_SECRET`, `OPENAI_API_KEY`. De repo bevat nu ook `wrangler.toml` met een Cloudflare Cron Trigger elke 15 minuten. Dit schema gaat pas lopen nadat de Worker in jouw Cloudflare-account is uitgerold en de configuratie is ingevuld.
 Worker variables: `ALLOWED_FEED_URLS` met uitsluitend feeds waarvan de gebruiksvoorwaarden het beoogde gebruik toestaan; optioneel `OPENAI_MODEL` (standaard `gpt-4.1-mini`). Maak een KV namespace en koppel die aan de Worker-binding `EDITORIAL_KV`. Bewaar API-sleutels nooit in HTML of APK.
 
 Voorbeeld concept-aanvraag:
@@ -26,7 +26,7 @@ Voor publicatie moet de server een artikelconcept, expliciete goedkeuring, gecon
 ```
 
 ## Huidige beperkingen — belangrijk
-- De Worker is **niet uitgerold** en niet getest met echte API-sleutels of echte feedbronnen.
+- De Worker is **niet uitgerold** en niet getest met echte API-sleutels of echte feedbronnen. `wrangler.toml` is een startconfiguratie; voeg echte toegestane feeds en een KV-binding toe voordat je live gaat.
 - Het dashboard is nog niet gekoppeld aan de Worker.
 - RSS-items zijn nieuwsaanleidingen, geen geverifieerde feiten.
 - De Worker heeft nog geen automatische geplande taak die feeds periodiek verwerkt.
