@@ -5,8 +5,11 @@ const PORT = Number(process.env.PORT || 10000);
 const API_SECRET = process.env.HUB_API_SECRET || "";
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
-const client = createClient({ url: process.env.REDIS_URL });
-client.on("error", (err) => console.error("Redis connection error:", err.message));
+const client = process.env.REDIS_URL ? createClient({
+  url: process.env.REDIS_URL,
+  socket: { reconnectStrategy: false }
+}) : null;
+if (client) client.on("error", (err) => console.error("Redis connection error:", err.message));
 
 function send(res, status, body) {
   res.writeHead(status, {
@@ -36,7 +39,7 @@ function authorized(req) {
   return !!API_SECRET && req.headers.authorization === "Bearer " + API_SECRET;
 }
 async function getArticles() {
-  if (!client.isReady) throw new Error("REDIS_UNAVAILABLE");
+  if (!!!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
   const articles = [];
   for (const key of keys.slice(0, 200)) {
@@ -111,7 +114,12 @@ async function handle(req, res) {
   return send(res, 404, { error: "Onbekend endpoint." });
 }
 async function start() {
-  try { await client.connect(); console.log("Redis connected"); } catch (e) { console.error("Redis not connected; configure REDIS_URL:", e.message); }
+  if (client) {
+    try { await client.connect(); console.log("Redis connected"); }
+    catch (e) { console.error("Redis not connected; configure REDIS_URL in Render."); }
+  } else {
+    console.warn("REDIS_URL is not configured; storage endpoints will return 503 until configured.");
+  }
   const server = http.createServer((req,res) => { handle(req,res).catch(() => send(res,500,{error:"Interne serverfout."})); });
   server.listen(PORT, "0.0.0.0", () => console.log("VoetbalHub API listening on", PORT));
 }
