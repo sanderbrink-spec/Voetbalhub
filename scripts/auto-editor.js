@@ -63,8 +63,8 @@ async function main() {
     console.log("Bestaande concepten niet vooraf geladen:", e.message);
   }
   const normalize = value => String(value || "").toLowerCase()
-    .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
-    .replace(/[^a-z0-9 ]/g, " ").split(/\\s+/)
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9 ]/g, " ").split(/\s+/)
     .filter(w => w.length > 2 && !["the","and","with","from","after","voor","naar","van","het","een","bij","dat","met","voor","zijn","was","werd","over"].includes(w));
   const isNearDuplicate = item => {
     const incoming = new Set(normalize(item.title));
@@ -118,8 +118,8 @@ async function main() {
     if (!r.ok) continue;
     let draft = data.draft;
     // Reject obvious English headlines instead of allowing them into the editorial inbox.
-    const looksEnglish = headline => /\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|but|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(String(headline || ""));
-    const containsEnglishPhrasing = value => /\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\\b/i.test(String(value || ""));
+    const looksEnglish = headline => /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|but|January|February|March|April|May|June|July|August|September|October|November|December)\b/i.test(String(headline || ""));
+    const containsEnglishPhrasing = value => /\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\b/i.test(String(value || ""));
     const draftHasEnglish = candidate => looksEnglish(candidate?.headline) ||
       containsEnglishPhrasing(candidate?.standfirst) ||
       (Array.isArray(candidate?.body) && candidate.body.some(containsEnglishPhrasing));
