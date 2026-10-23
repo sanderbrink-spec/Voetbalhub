@@ -4,6 +4,21 @@ export default {
   ctx.waitUntil(inbox(env));
  },
  async fetch(request, env) {
+  const origin = request.headers.get("Origin");
+  const allowed = allowedOrigin(origin, env);
+  if (request.method === "OPTIONS") {
+   if (!allowed) return reply({error:"Origin niet toegestaan."},403);
+   return new Response(null,{status:204,headers:corsHeaders(allowed)});
+  }
+  const response = await handle(request, env);
+  if (!origin) return response;
+  if (!allowed) return response;
+  const headers = new Headers(response.headers);
+  for (const [key,value] of Object.entries(corsHeaders(allowed))) headers.set(key,value);
+  return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
+ }
+};
+async function handle(request, env) {
   const url = new URL(request.url);
   if (url.pathname === "/health" && request.method === "GET") return reply({ok:true,service:"VoetbalHub Redactie API",publishing:false,features:["drafts","feed-inbox","articles-api"]});
   if (url.pathname === "/articles" && request.method === "GET") return await listArticles(env);
@@ -25,7 +40,6 @@ export default {
   try { const draft=JSON.parse(out); if(typeof draft.headline!=="string"||!Array.isArray(draft.body))throw new Error("invalid"); return reply({status:"draft_for_review",author:"VoetbalHub Redactie",category,format,publishingEnabled:false,editorialReviewRequired:true,draft}); }
   catch { return reply({error:"Ongeldige AI-output"},502); }
  }
-};
 async function listArticles(env) {
  if(!env.EDITORIAL_KV)return reply({error:"EDITORIAL_KV ontbreekt."},503);
  try {
@@ -68,3 +82,18 @@ function decode(s){return s.replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/
 function validUrl(s,base){try{const u=new URL(s,base);return u.protocol==="https:"?u.toString():"";}catch{return "";}}
 function str(v,n){return typeof v==="string"?v.trim().slice(0,n):"";}
 function reply(data,status=200){return new Response(JSON.stringify(data,null,2),{status,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"}});}
+
+function allowedOrigin(origin, env) {
+ if (!origin || !env.ALLOWED_ORIGINS) return "";
+ const allowed = env.ALLOWED_ORIGINS.split(",").map(v=>v.trim()).filter(Boolean);
+ return allowed.includes(origin) ? origin : "";
+}
+function corsHeaders(origin) {
+ return {
+  "Access-Control-Allow-Origin":origin,
+  "Vary":"Origin",
+  "Access-Control-Allow-Methods":"GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers":"Authorization, Content-Type",
+  "Access-Control-Max-Age":"86400"
+ };
+}
