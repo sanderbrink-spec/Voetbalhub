@@ -30,7 +30,6 @@ jobs:
         run: |
           set -euo pipefail
           node --check redactie/worker/index.js
-          node --test redactie/worker/index.test.js
           python3 - <<'PY'
           from pathlib import Path
           import re
@@ -45,6 +44,8 @@ jobs:
           print('Dashboard structure and script extraction checks passed.')
           PY
           node --check /tmp/dashboard-inline.js
+      - name: Run editorial API tests
+        run: node --test redactie/worker/index.test.js
       - name: Package redactie dashboard and Worker source
         run: zip -qr VoetbalHub-Redactie-prototype.zip redactie
       - name: Upload prototype package
