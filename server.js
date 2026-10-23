@@ -78,8 +78,15 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   if (req.method === "GET" && url.pathname === "/inbox") {
     if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
     if (!client.isReady) return send(res, 503, { error: "Opslag niet verbonden." });
-    const keys = (await client.keys("inbox:*")).filter(key => key !== "inbox:auto-draft-urls");
     const items = [];
+    // Read the automatic inbox explicitly so the scheduled pipeline's records are always included.
+    try {
+      const automaticRaw = await client.get("inbox:auto");
+      const automatic = automaticRaw ? JSON.parse(automaticRaw) : [];
+      if (Array.isArray(automatic)) items.push(...automatic.filter(item => item && typeof item === "object" && typeof item.headline === "string"));
+    } catch (e) { console.error("Could not parse inbox:auto:", e.message); }
+    // Include older editorial inboxes too, while avoiding double-counting inbox:auto.
+    const keys = (await client.keys("inbox:*")).filter(key => key !== "inbox:auto" && key !== "inbox:auto-draft-urls");
     for (const key of keys.slice(0, 30)) {
       const raw = await client.get(key);
       try {
@@ -87,8 +94,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         if (Array.isArray(batch)) items.push(...batch.filter(item => item && typeof item === "object" && typeof item.headline === "string"));
       } catch {}
     }
-    items.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-    return send(res, 200, { count: items.length, items: items.slice(0, 200), autoPublish: false });
+    const unique = [...new Map(items.map(item => [item.id || item.source?.url || item.headline, item])).values()];
+    unique.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+    return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false });
   }
   if (req.method !== "POST") return send(res, 404, { error: "Gebruik GET /health, GET /articles, GET /inbox of POST /draft en POST /publish." });
   if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
