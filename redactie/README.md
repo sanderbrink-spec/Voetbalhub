@@ -11,7 +11,7 @@ Deze map bevat een redactiedashboard, een AI Worker, een RSS/Atom-inbox en een e
 
 ## Cloudflare-configuratie
 Worker secrets: `HUB_API_SECRET`, `OPENAI_API_KEY`. De repo bevat nu ook `wrangler.toml` met een Cloudflare Cron Trigger elke 15 minuten. Dit schema gaat pas lopen nadat de Worker in jouw Cloudflare-account is uitgerold en de configuratie is ingevuld.
-Worker variables: `ALLOWED_FEED_URLS` met uitsluitend feeds waarvan de gebruiksvoorwaarden het beoogde gebruik toestaan; optioneel `OPENAI_MODEL` (standaard `gpt-4.1-mini`). Maak een KV namespace en koppel die aan de Worker-binding `EDITORIAL_KV`. Bewaar API-sleutels nooit in HTML of APK.
+Worker variables: `ALLOWED_ORIGINS` (komma-gescheiden exacte origins die de API mogen aanroepen, bijvoorbeeld `https://sanderbrink-spec.github.io`; voeg geen wildcard toe), `ALLOWED_FEED_URLS` met uitsluitend feeds waarvan de gebruiksvoorwaarden het beoogde gebruik toestaan; optioneel `OPENAI_MODEL` (standaard `gpt-4.1-mini`). Maak een KV namespace en koppel die aan de Worker-binding `EDITORIAL_KV`. Bewaar API-sleutels nooit in HTML of APK.
 
 Voorbeeld concept-aanvraag:
 ```json
@@ -27,9 +27,9 @@ Voor publicatie moet de server een artikelconcept, expliciete goedkeuring, gecon
 
 ## Huidige beperkingen — belangrijk
 - De Worker is **niet uitgerold** en niet getest met echte API-sleutels of echte feedbronnen. `wrangler.toml` is een startconfiguratie; voeg echte toegestane feeds en een KV-binding toe voordat je live gaat.
-- Het dashboard is nog niet gekoppeld aan de Worker.
+- Het dashboard heeft nu CORS-ondersteuning nodig via `ALLOWED_ORIGINS`; vul daar de exacte origin in waarop je het dashboard host. Het dashboard is nog niet live gehost of getest tegen een gedeployde Worker.
 - RSS-items zijn nieuwsaanleidingen, geen geverifieerde feiten.
-- De Worker heeft nog geen automatische geplande taak die feeds periodiek verwerkt.
+- De Worker bevat een scheduled handler en `wrangler.toml` plant de inbox elke 15 minuten in; dit werkt pas na een succesvolle Cloudflare-deploy met juiste variabelen en KV-binding.
 - `/publish` controleert dat goedkeuring en bronvelden zijn aangeleverd; het verifieert niet zelfstandig of feiten waar zijn. Gebruik dit endpoint pas na redactionele controle.
 - De Android-app is nog niet aangepast of gekoppeld aan `GET /articles`.
 - Gebruik alleen bronnen met passende gebruiksrechten en controleer feiten, citaten en beeldrechten vóór publicatie.
