@@ -149,10 +149,10 @@ async function main() {
       }
     }
     // Redactionele kwaliteitscontrole: korte kop, compacte tekst en geen vrijwel identieke alinea's.
-    const wordCount = value => String(value || "").trim().split(/\\s+/).filter(Boolean).length;
+    const wordCount = value => String(value || "").trim().split(/\s+/).filter(Boolean).length;
     const normalizedText = value => String(value || "").toLowerCase()
-      .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
-      .replace(/[^a-z0-9 ]/g, " ").replace(/\\s+/g, " ").trim();
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
     const qualityIssues = candidate => {
       const issues = [];
       const headline = String(candidate?.headline || "").trim();
@@ -183,7 +183,7 @@ async function main() {
         }
       }
       const whole = [headline, standfirst, ...paragraphs].join(" ");
-      if (/\\b(volgens bronnen|naar verluidt|het is duidelijk dat|zoals eerder vermeld)\\b/i.test(whole)) issues.push("vermijd vage of opvullende formuleringen");
+      if (/\b(volgens bronnen|naar verluidt|het is duidelijk dat|zoals eerder vermeld)\b/i.test(whole)) issues.push("vermijd vage of opvullende formuleringen");
       return issues;
     };
     let issues = qualityIssues(draft);
