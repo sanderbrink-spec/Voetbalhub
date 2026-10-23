@@ -94,7 +94,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         body: JSON.stringify({
           model: MODEL,
           instructions: "Schrijf originele Nederlandstalige voetbaljournalistiek. Gebruik uitsluitend aangeleverde feiten; verzin geen citaten, namen, cijfers of gebeurtenissen. Dit is een concept voor menselijke controle, nooit automatisch publiceren. Retourneer JSON met headline, standfirst, body (array van 3-6 alinea's), why_it_matters en verification_notes.",
-          input: JSON.stringify({ topic, category: body.category || "Voetbal", facts, sourceUrls: body.sourceUrls || [] }),
+          input: "Gebruik de volgende JSON-invoer als brongegevens. JSON: " + JSON.stringify({ topic, category: body.category || "Voetbal", facts, sourceUrls: body.sourceUrls || [] }),
           text: { format: { type: "json_object" } }
         })
       });
