@@ -206,7 +206,7 @@ jobs:
                   raise SystemExit("Could not find safe insertion point for editorial API method.")
               s = s.replace(method_marker, method + method_marker, 1)
           if "addEditorialNewsSection(list);" not in s:
-              home_marker = '                  if (active.equals("Voor jou")) {'
+              home_marker = 'if (active.equals("Voor jou")) {'
               if home_marker not in s:
                   raise SystemExit("Could not find home screen insertion point for editorial section.")
               s = s.replace(home_marker, home_marker + "\n                      addEditorialNewsSection(list);", 1)
