@@ -54,3 +54,21 @@ test("CORS preflight permits configured origin and authorization header",async()
  assert.equal(res.status,204);
  assert.match(res.headers.get("Access-Control-Allow-Headers"),/Authorization/);
 });
+
+test("articles endpoint returns only published entries sorted newest first",async()=>{
+ const values={
+  "article:draft":JSON.stringify({id:"draft",status:"draft",publishedAt:"2026-10-23T12:00:00Z"}),
+  "article:old":JSON.stringify({id:"old",status:"published",publishedAt:"2026-10-20T12:00:00Z"}),
+  "article:new":JSON.stringify({id:"new",status:"published",publishedAt:"2026-10-23T12:00:00Z"})
+ };
+ const kv={list:async({prefix})=>({keys:Object.keys(values).filter(k=>k.startsWith(prefix)).map(name=>({name}))}),get:async k=>values[k]||null};
+ const res=await worker.fetch(req("/articles"),{...env,EDITORIAL_KV:kv});
+ assert.equal(res.status,200);
+ const data=await res.json();
+ assert.deepEqual(data.articles.map(a=>a.id),["new","old"]);
+});
+test("inbox fails safely when feed allowlist is not configured",async()=>{
+ const res=await worker.fetch(req("/inbox","POST",{},"test-secret"),env);
+ assert.equal(res.status,400);
+ assert.match((await res.json()).error,/ALLOWED_FEED_URLS/);
+});
