@@ -1,0 +1,20 @@
+name = "voetbalhub-redactie"
+main = "redactie/worker/index.js"
+compatibility_date = "2026-10-23"
+
+[vars]
+OPENAI_MODEL = "gpt-4.1-mini"
+# Vul alleen feeds in waarvan de gebruiksvoorwaarden het beoogde gebruik toestaan.
+# Voorbeeld: ALLOWED_FEED_URLS = "https://voorbeeld.nl/feed.xml"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+# Configureer na het aanmaken van een KV namespace in Cloudflare:
+# [[kv_namespaces]]
+# binding = "EDITORIAL_KV"
+# id = "VUL_HIER_DE_ECHTE_KV_NAMESPACE_ID_IN"
+#
+# Zet HUB_API_SECRET en OPENAI_API_KEY als Worker secrets:
+# npx wrangler secret put HUB_API_SECRET
+# npx wrangler secret put OPENAI_API_KEY
