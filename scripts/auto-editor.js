@@ -76,7 +76,7 @@ async function main() {
         standfirst: draft.standfirst || "",
         body: Array.isArray(draft.body) ? draft.body.slice(0, 6) : [],
         why_it_matters: draft.why_it_matters || "",
-        verification_notes: draft.verification_notes || "NIET GECONTROLEERD: controleer alle feitelijke claims rechtstreeks bij de bron vóór publicatie.",
+        verification_notes: "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: alleen de aangeleverde RSS-kop en -beschrijving zijn verwerkt. Controleer uitslag, doelpuntenmakers, statistieken, reeksen, ranglijst en overige concrete claims rechtstreeks bij betrouwbare bronnen vóór publicatie. " + String(draft.verification_notes || "").slice(0, 1200),
         verification_status: "needs_review",
         claims: Array.isArray(draft.claims) ? draft.claims.slice(0, 20).map(c => ({
           claim: String(c?.claim || "").slice(0, 500),
