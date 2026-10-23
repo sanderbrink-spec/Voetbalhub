@@ -76,7 +76,17 @@ async function main() {
         standfirst: draft.standfirst || "",
         body: Array.isArray(draft.body) ? draft.body.slice(0, 6) : [],
         why_it_matters: draft.why_it_matters || "",
-        verification_notes: draft.verification_notes || "Controleer alle feiten vóór publicatie.",
+        verification_notes: draft.verification_notes || "NIET GECONTROLEERD: controleer alle feitelijke claims rechtstreeks bij de bron vóór publicatie.",
+        verification_status: "needs_review",
+        editorialReviewRequired: true,
+        autoPublish: false,
+        sourceEvidence: {
+          title: item.title,
+          description: item.description || "",
+          feed: item.feed,
+          publishedAt: item.date || null,
+          evidenceLevel: item.description ? "rss_title_and_description_only" : "rss_title_only"
+        },
         category: "Voetbal",
         source: { title: item.title, url: item.link, feed: item.feed, publishedAt: item.date || null }
       }}),
