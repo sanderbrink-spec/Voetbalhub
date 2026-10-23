@@ -10,7 +10,7 @@ Deze map bevat een redactiedashboard, een AI Worker, een RSS/Atom-inbox en een e
 - `POST /publish`: bewaart een artikel als gepubliceerd in KV, maar alleen met geldige `HUB_API_SECRET`, `approved: true`, minimaal twee als gecontroleerd aangeleverde feiten en minimaal één HTTPS-bron. Dit is een expliciete goedkeuringspoort, geen automatische feitenchecker.
 
 ## Dashboard online zetten
-De workflow `.github/workflows/redactie-pages.yml` publiceert het dashboard via GitHub Pages bij wijzigingen aan de dashboardbestanden. Controleer in GitHub bij **Settings → Pages** dat de publicatiebron op **GitHub Actions** staat. Na een geslaagde workflow is de dashboard-URL doorgaans `https://sanderbrink-spec.github.io/Voetbalhub/`. De URL is pas bruikbaar nadat de Pages-deploy geslaagd is.
+De workflow `.github/workflows/redactie-pages.yml` maakt een downloadbaar dashboardpakket als GitHub Actions-artifact; deze workflow host de pagina niet live. Het pakket staat bij de workflow-run onder **Artifacts**. Voor live gebruik moet het dashboard nog worden gehost op een vaste HTTPS-origin.
 Zet vervolgens in Cloudflare de variabele `ALLOWED_ORIGINS` op de exacte origin `https://sanderbrink-spec.github.io` (zonder pad of afsluitende slash). De dashboard-URL en de Worker-URL zijn verschillend; zonder deze allowlist werkt de browserkoppeling niet. Voer de API-sleutel alleen in op het dashboard wanneer je de pagina vertrouwt; de sleutel wordt niet door de pagina opgeslagen.
 
 ## Cloudflare-configuratie
@@ -35,7 +35,7 @@ Voor publicatie moet de server een artikelconcept, expliciete goedkeuring, gecon
 - RSS-items zijn nieuwsaanleidingen, geen geverifieerde feiten.
 - De Worker bevat een scheduled handler en `wrangler.toml` plant de inbox elke 15 minuten in; opgeslagen leads zijn nu via `GET /inbox` met Bearer-token op te halen. Dit werkt pas na een succesvolle Cloudflare-deploy met juiste variabelen en KV-binding.
 - `/publish` controleert dat goedkeuring en bronvelden zijn aangeleverd; het verifieert niet zelfstandig of feiten waar zijn. Gebruik dit endpoint pas na redactionele controle.
-- De Android-app is nog niet aangepast of gekoppeld aan `GET /articles`.
+- De Android-app is nog niet aangepast of gekoppeld aan `GET /articles`; dit is nog een afzonderlijke bouwstap.
 - Gebruik alleen bronnen met passende gebruiksrechten en controleer feiten, citaten en beeldrechten vóór publicatie.
 
 ## Volgende stappen
