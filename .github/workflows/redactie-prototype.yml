@@ -38,9 +38,9 @@ jobs:
           assert 'id="make"' in html
           assert 'id="preview"' in html
           assert 'id="articles"' in html
-          scripts = re.findall(r'<script>([\\s\\S]*?)</script>', html)
+          scripts = re.findall(r'<script>(.*?)</script>', html, re.DOTALL)
           assert scripts, 'No inline dashboard script found'
-          Path('/tmp/dashboard-inline.js').write_text('\\n'.join(scripts), encoding='utf-8')
+          Path('/tmp/dashboard-inline.js').write_text(chr(10).join(scripts), encoding='utf-8')
           print('Dashboard structure and script extraction checks passed.')
           PY
           node --check /tmp/dashboard-inline.js
