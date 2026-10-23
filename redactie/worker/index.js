@@ -22,7 +22,11 @@ async function handle(request, env) {
   const url = new URL(request.url);
   if (url.pathname === "/health" && request.method === "GET") return reply({ok:true,service:"VoetbalHub Redactie API",publishing:false,features:["drafts","feed-inbox","articles-api"]});
   if (url.pathname === "/articles" && request.method === "GET") return await listArticles(env);
-  if (request.method !== "POST") return reply({error:"Gebruik GET /articles of POST /draft, /inbox, /publish."},404);
+  if (url.pathname === "/inbox" && request.method === "GET") {
+    if (!env.HUB_API_SECRET || request.headers.get("Authorization") !== `Bearer ${env.HUB_API_SECRET}`) return reply({error:"Niet geautoriseerd."},401);
+    return await listInbox(env);
+  }
+  if (request.method !== "POST") return reply({error:"Gebruik GET /articles, GET/POST /inbox, POST /draft of POST /publish."},404);
   if (!env.HUB_API_SECRET || request.headers.get("Authorization") !== `Bearer ${env.HUB_API_SECRET}`) return reply({error:"Niet geautoriseerd."},401);
   if (url.pathname === "/inbox") return await inbox(env);
   if (url.pathname === "/publish") return await publish(request,env);
@@ -40,6 +44,17 @@ async function handle(request, env) {
   try { const draft=JSON.parse(out); if(typeof draft.headline!=="string"||!Array.isArray(draft.body))throw new Error("invalid"); return reply({status:"draft_for_review",author:"VoetbalHub Redactie",category,format,publishingEnabled:false,editorialReviewRequired:true,draft}); }
   catch { return reply({error:"Ongeldige AI-output"},502); }
  }
+async function listInbox(env) {
+ if(!env.EDITORIAL_KV)return reply({error:"EDITORIAL_KV ontbreekt."},503);
+ try {
+  const listed=await env.EDITORIAL_KV.list({prefix:"inbox:",limit:30});
+  const keys=listed.keys.sort((a,b)=>b.name.localeCompare(a.name));
+  const items=[];
+  for(const key of keys){const raw=await env.EDITORIAL_KV.get(key.name);if(raw){try{const batch=JSON.parse(raw);if(Array.isArray(batch))items.push(...batch);}catch{}}}
+  const unique=[...new Map(items.map(i=>[(i.link||i.title||"").toLowerCase(),i])).values()];
+  return reply({count:unique.length,items:unique.slice(0,200),status:"stored_inbox",autoPublish:false,warning:"Opgeslagen nieuwsleads zijn aanwijzingen en moeten door een redacteur worden gecontroleerd."});
+ } catch {return reply({error:"Opgeslagen nieuwsleads konden niet worden opgehaald."},503);}
+}
 async function listArticles(env) {
  if(!env.EDITORIAL_KV)return reply({error:"EDITORIAL_KV ontbreekt."},503);
  try {
