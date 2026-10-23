@@ -1,0 +1,54 @@
+name: VoetbalHub Editorial Feed Scheduler
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: voetbalhub-editorial-feed-scheduler
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Check required configuration
+        env:
+          EDITORIAL_API_URL: ${{ secrets.EDITORIAL_API_URL }}
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -z "$EDITORIAL_API_URL" ] || [ -z "$HUB_API_SECRET" ]; then
+            echo "::error::Set repository secrets EDITORIAL_API_URL and HUB_API_SECRET after deploying the Cloudflare Worker."
+            exit 1
+          fi
+          case "$EDITORIAL_API_URL" in https://*) ;; *) echo "::error::EDITORIAL_API_URL must use HTTPS"; exit 1;; esac
+      - name: Fetch permitted feed inbox
+        env:
+          EDITORIAL_API_URL: ${{ secrets.EDITORIAL_API_URL }}
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+        run: |
+          set -euo pipefail
+          code="$(curl --silent --show-error --max-time 45 -o inbox.json -w '%{http_code}' \
+            -X POST "${EDITORIAL_API_URL%/}/inbox" \
+            -H "Authorization: Bearer $HUB_API_SECRET" \
+            -H "Content-Type: application/json" --data '{}')"
+          if [ "$code" != "200" ]; then
+            echo "::error::Editorial API returned HTTP $code. Check Worker deployment, allowed feed URLs and KV configuration."
+            cat inbox.json
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("inbox.json").read_text())
+          print("Inbox status:", data.get("status"))
+          print("Lead count:", data.get("count", 0))
+          print("Stored:", data.get("stored", False))
+          print("No articles are automatically published by this workflow.")
+          PY
