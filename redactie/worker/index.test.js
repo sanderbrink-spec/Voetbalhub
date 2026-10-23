@@ -72,3 +72,21 @@ test("inbox fails safely when feed allowlist is not configured",async()=>{
  assert.equal(res.status,400);
  assert.match((await res.json()).error,/ALLOWED_FEED_URLS/);
 });
+
+test("stored inbox requires authorization",async()=>{
+ const res=await worker.fetch(req("/inbox"),{...env,EDITORIAL_KV:{list:async()=>({keys:[]})}});
+ assert.equal(res.status,401);
+});
+test("stored inbox returns saved feed leads in reverse date order",async()=>{
+ const values={
+  "inbox:2026-10-20":JSON.stringify([{title:"Oud nieuws",link:"https://news.example/old",status:"needs_editor_review"}]),
+  "inbox:2026-10-23":JSON.stringify([{title:"Nieuw nieuws",link:"https://news.example/new",status:"needs_editor_review"}])
+ };
+ const kv={list:async({prefix})=>({keys:Object.keys(values).filter(k=>k.startsWith(prefix)).map(name=>({name}))}),get:async k=>values[k]||null};
+ const res=await worker.fetch(req("/inbox","GET",null,"test-secret"),{...env,EDITORIAL_KV:kv});
+ assert.equal(res.status,200);
+ const data=await res.json();
+ assert.equal(data.count,2);
+ assert.equal(data.items[0].title,"Nieuw nieuws");
+ assert.equal(data.autoPublish,false);
+});
