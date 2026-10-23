@@ -116,7 +116,34 @@ async function main() {
       await new Promise(resolve => setTimeout(resolve, waitMs));
     }
     if (!r.ok) continue;
-    const draft = data.draft;
+    let draft = data.draft;
+    // Reject obvious English headlines instead of allowing them into the editorial inbox.
+    const looksEnglish = headline => /\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|manager|says|said|but|over|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(String(headline || ""));
+    if (looksEnglish(draft.headline)) {
+      console.log("Engelse kop afgekeurd; één vertaalpoging:", draft.headline);
+      const retry = await fetch(API_URL + "/draft", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic: "SCHRIJF DEZE KOP IN NATUURLIJK NEDERLANDS: " + item.title,
+          category: "Voetbal",
+          facts: [
+            "Verplichte instructie: de uiteindelijke headline moet volledig Nederlands zijn; vertaal de bronkop en laat hem niet Engels staan.",
+            "Bronkop: " + item.title,
+            "Bronbeschrijving (maximaal 800 tekens): " + (item.description || "De feed bevat geen beschrijving; schrijf voorzichtig en vermeld de beperkte broninformatie.").slice(0, 800)
+          ],
+          sourceUrls: [item.link, item.feed]
+        }),
+        signal: AbortSignal.timeout(45000)
+      });
+      const retryData = await retry.json();
+      if (retry.ok && retryData.draft && !looksEnglish(retryData.draft.headline)) {
+        draft = retryData.draft;
+      } else {
+        console.log("Kop blijft Engels of vertaling mislukte; concept niet opgeslagen:", retryData.draft?.headline || retryData.error || "onbekende fout");
+        continue;
+      }
+    }
     const save = await fetch(API_URL + "/auto-inbox", {
       method: "POST",
       headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
