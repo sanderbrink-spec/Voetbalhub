@@ -33,12 +33,18 @@ jobs:
           node --test redactie/worker/index.test.js
           python3 - <<'PY'
           from pathlib import Path
+          import re
           html = Path('redactie/dashboard/index.html').read_text(encoding='utf-8')
           assert '<html lang="nl">' in html
           assert 'id="make"' in html
           assert 'id="preview"' in html
-          print('Dashboard basic structure checks passed.')
+          assert 'id="articles"' in html
+          scripts = re.findall(r'<script>([\\s\\S]*?)</script>', html)
+          assert scripts, 'No inline dashboard script found'
+          Path('/tmp/dashboard-inline.js').write_text('\\n'.join(scripts), encoding='utf-8')
+          print('Dashboard structure and script extraction checks passed.')
           PY
+          node --check /tmp/dashboard-inline.js
       - name: Package redactie dashboard and Worker source
         run: zip -qr VoetbalHub-Redactie-prototype.zip redactie
       - name: Upload prototype package
