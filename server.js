@@ -82,6 +82,18 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
   let body;
   try { body = await readBody(req); } catch (e) { return send(res, 400, { error: e.message === "body_too_large" ? "Verzoek te groot." : "Ongeldige JSON." }); }
+  if (url.pathname === "/auto-inbox") {
+    if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden." });
+    const item = body.item;
+    if (!item || typeof item.headline !== "string" || !Array.isArray(item.body)) return send(res, 400, { error: "Ongeldig concept." });
+    const key = "inbox:auto";
+    const raw = await client.get(key);
+    const inbox = raw ? JSON.parse(raw) : [];
+    if (inbox.some(x => x.source?.url && x.source.url === item.source?.url)) return send(res, 200, { status: "duplicate_skipped" });
+    inbox.unshift({ ...item, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false });
+    await client.set(key, JSON.stringify(inbox.slice(0, 200)));
+    return send(res, 200, { status: "saved_for_review", count: Math.min(inbox.length + 1, 200) });
+  }
   if (url.pathname === "/draft") {
     const topic = typeof body.topic === "string" ? body.topic.trim().slice(0,300) : "";
     const facts = Array.isArray(body.facts) ? body.facts.filter(x => typeof x === "string" && x.trim()).slice(0,20) : [];
