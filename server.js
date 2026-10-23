@@ -3,8 +3,8 @@ const { createClient } = require("redis");
 
 const PORT = Number(process.env.PORT || 10000);
 const API_SECRET = process.env.HUB_API_SECRET || "";
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
-const MODEL = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
+const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 const client = process.env.REDIS_URL ? createClient({
   url: process.env.REDIS_URL,
   socket: { reconnectStrategy: false }
@@ -61,7 +61,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
 </script></html>`);
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", storage: client.isReady ? "connected" : "not_connected", aiConfigured: !!OPENAI_API_KEY });
+    return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", storage: client.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const articles = await getArticles(); return send(res, 200, { count: articles.length, articles }); }
@@ -86,21 +86,24 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const topic = typeof body.topic === "string" ? body.topic.trim().slice(0,300) : "";
     const facts = Array.isArray(body.facts) ? body.facts.filter(x => typeof x === "string" && x.trim()).slice(0,20) : [];
     if (!topic || facts.length < 2) return send(res, 400, { error: "Onderwerp en minimaal twee gecontroleerde feiten zijn vereist." });
-    if (!OPENAI_API_KEY) return send(res, 503, { error: "OPENAI_API_KEY ontbreekt in Render environment variables." });
+    if (!GROQ_API_KEY) return send(res, 503, { error: "GROQ_API_KEY ontbreekt in Render environment variables." });
     try {
-      const r = await fetch("https://api.openai.com/v1/responses", {
+      const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
-        headers: { "Authorization": "Bearer " + OPENAI_API_KEY, "Content-Type": "application/json" },
+        headers: { "Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json" },
         body: JSON.stringify({
           model: MODEL,
-          instructions: "Schrijf originele Nederlandstalige voetbaljournalistiek. Gebruik uitsluitend aangeleverde feiten; verzin geen citaten, namen, cijfers of gebeurtenissen. Dit is een concept voor menselijke controle, nooit automatisch publiceren. Retourneer JSON met headline, standfirst, body (array van 3-6 alinea's), why_it_matters en verification_notes.",
-          input: "Gebruik de volgende JSON-invoer als brongegevens. JSON: " + JSON.stringify({ topic, category: body.category || "Voetbal", facts, sourceUrls: body.sourceUrls || [] }),
-          text: { format: { type: "json_object" } }
+          messages: [
+            { role: "system", content: "Schrijf originele Nederlandstalige voetbaljournalistiek. Gebruik uitsluitend aangeleverde feiten; verzin geen citaten, namen, cijfers of gebeurtenissen. Dit is een concept voor menselijke controle, nooit automatisch publiceren. Retourneer uitsluitend geldige JSON met headline, standfirst, body (array van 3-6 alinea's), why_it_matters en verification_notes." },
+            { role: "user", content: "Gebruik de volgende JSON-invoer als brongegevens. JSON: " + JSON.stringify({ topic, category: body.category || "Voetbal", facts, sourceUrls: body.sourceUrls || [] }) }
+          ],
+          response_format: { type: "json_object" },
+          temperature: 0.4
         })
       });
       const data = await r.json();
       if (!r.ok) return send(res, 502, { error: "AI-dienstfout", detail: data.error?.message || "Onbekende fout" });
-      const text = (data.output || []).flatMap(x => x.content || []).filter(x => x.type === "output_text").map(x => x.text).join("\n");
+      const text = data.choices?.[0]?.message?.content || "";
       const draft = JSON.parse(text);
       return send(res, 200, { status: "draft_for_review", editorialReviewRequired: true, publishingEnabled: false, draft });
     } catch { return send(res, 502, { error: "Concept kon niet worden gemaakt." }); }
