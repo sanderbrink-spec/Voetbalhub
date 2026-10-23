@@ -204,7 +204,7 @@ jobs:
               method = method.replace("ENDPOINT_VALUE", endpoint)
               if method_marker not in s:
                   raise SystemExit("Could not find safe insertion point for editorial API method.")
-              s = s.replace(method_marker, method_marker + "\n" + method, 1)
+              s = s.replace(method_marker, method + method_marker, 1)
           if "addEditorialNewsSection(list);" not in s:
               home_marker = '                  if (active.equals("Voor jou")) {'
               if home_marker not in s:
