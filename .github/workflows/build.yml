@@ -132,6 +132,48 @@ jobs:
               method = '''
               private static final String EDITORIAL_API_URL = "ENDPOINT_VALUE";
 
+              private void showEditorialArticle(org.json.JSONObject article) {
+                  if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
+                  content.removeAllViews();
+                  LinearLayout root = new LinearLayout(this);
+                  root.setOrientation(LinearLayout.VERTICAL);
+                  root.addView(sectionHeader("VoetbalHub Originals", "TERUG", this::showNews));
+                  ScrollView scroll = new ScrollView(this);
+                  LinearLayout page = new LinearLayout(this);
+                  page.setOrientation(LinearLayout.VERTICAL);
+                  page.setPadding(dp(18), dp(14), dp(18), dp(28));
+                  page.addView(tv(article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT), 12, C.GREEN, true));
+                  TextView title = tv(article.optString("headline", "Voetbalnieuws"), 25, C.TEXT, true);
+                  title.setPadding(0, dp(8), 0, dp(10));
+                  page.addView(title);
+                  page.addView(tv(article.optString("standfirst", ""), 16, C.MUTED, false));
+                  TextView byline = tv("VoetbalHub Redactie · " + article.optString("publishedAt", ""), 11, C.MUTED, false);
+                  byline.setPadding(0, dp(10), 0, dp(14));
+                  page.addView(byline);
+                  org.json.JSONArray paragraphs = article.optJSONArray("body");
+                  if (paragraphs != null) {
+                      for (int i = 0; i < paragraphs.length(); i++) {
+                          String paragraph = paragraphs.optString(i, "").trim();
+                          if (!paragraph.isEmpty()) {
+                              TextView bodyText = tv(paragraph, 16, C.TEXT, false);
+                              bodyText.setPadding(0, 0, 0, dp(14));
+                              page.addView(bodyText);
+                          }
+                      }
+                  }
+                  String why = article.optString("why_it_matters", "");
+                  if (!why.isEmpty()) {
+                      page.addView(tv("WAAROM DIT ERTOE DOET", 12, C.GREEN, true));
+                      TextView whyText = tv(why, 15, C.TEXT, false);
+                      whyText.setPadding(0, dp(6), 0, dp(14));
+                      page.addView(whyText);
+                  }
+                  page.addView(tv("Dit artikel is door de redactie gecontroleerd vóór publicatie.", 11, C.MUTED, false));
+                  scroll.addView(page);
+                  root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
+                  content.addView(root);
+              }
+
               private void addEditorialNewsSection(LinearLayout parent) {
                   LinearLayout section = new LinearLayout(this);
                   section.setOrientation(LinearLayout.VERTICAL);
@@ -178,6 +220,7 @@ jobs:
                               for (org.json.JSONObject article : rows) {
                                   TextView headline = tv(article.optString("headline", "Voetbalnieuws"), 16, C.TEXT, true);
                                   headline.setPadding(0, dp(9), 0, dp(3));
+                                  headline.setOnClickListener(v -> showEditorialArticle(article));
                                   section.addView(headline);
                                   String intro = article.optString("standfirst", "");
                                   if (!intro.isEmpty()) section.addView(tv(intro, 13, C.MUTED, false));
