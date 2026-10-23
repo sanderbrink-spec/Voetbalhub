@@ -118,9 +118,13 @@ async function main() {
     if (!r.ok) continue;
     let draft = data.draft;
     // Reject obvious English headlines instead of allowing them into the editorial inbox.
-    const looksEnglish = headline => /\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|manager|says|said|but|over|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(String(headline || ""));
-    if (looksEnglish(draft.headline)) {
-      console.log("Engelse kop afgekeurd; één vertaalpoging:", draft.headline);
+    const looksEnglish = headline => /\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|but|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(String(headline || ""));
+    const containsEnglishPhrasing = value => /\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\\b/i.test(String(value || ""));
+    const draftHasEnglish = candidate => looksEnglish(candidate?.headline) ||
+      containsEnglishPhrasing(candidate?.standfirst) ||
+      (Array.isArray(candidate?.body) && candidate.body.some(containsEnglishPhrasing));
+    if (draftHasEnglish(draft)) {
+      console.log("Engelse kop of Engelse formulering afgekeurd; één Nederlandstalige herstelpoging:", draft.headline);
       const retry = await fetch(API_URL + "/draft", {
         method: "POST",
         headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
@@ -137,10 +141,10 @@ async function main() {
         signal: AbortSignal.timeout(45000)
       });
       const retryData = await retry.json();
-      if (retry.ok && retryData.draft && !looksEnglish(retryData.draft.headline)) {
+      if (retry.ok && retryData.draft && !draftHasEnglish(retryData.draft)) {
         draft = retryData.draft;
       } else {
-        console.log("Kop blijft Engels of vertaling mislukte; concept niet opgeslagen:", retryData.draft?.headline || retryData.error || "onbekende fout");
+        console.log("Engelse kop/formulering bleef staan of vertaling mislukte; concept niet opgeslagen:", retryData.draft?.headline || retryData.error || "onbekende fout");
         continue;
       }
     }
