@@ -4,7 +4,7 @@ Deze map bevat een redactiedashboard, een AI Worker, een RSS/Atom-inbox en een e
 
 ## Worker endpoints
 - `GET /health`: status en beschikbare functies.
-- `POST /inbox`: leest RSS/Atom-feeds uit `ALLOWED_FEED_URLS` (komma-gescheiden HTTPS-URL's), haalt maximaal 30 items per feed op en geeft ze terug als `needs_editor_review`. Optioneel slaat het de inbox op in Cloudflare KV via binding `EDITORIAL_KV`. Dit is geen feitencontrole.
+- `GET /inbox`: haalt opgeslagen nieuwsleads op (vereist Bearer-token).\n- `POST /inbox`: leest RSS/Atom-feeds uit `ALLOWED_FEED_URLS` (komma-gescheiden HTTPS-URL's), haalt maximaal 30 items per feed op en geeft ze terug als `needs_editor_review`. Optioneel slaat het de inbox op in Cloudflare KV via binding `EDITORIAL_KV`. Dit is geen feitencontrole.
 - `POST /draft`: maakt een origineel artikelconcept op basis van aangeleverde feiten met de OpenAI Responses API. Minimaal twee feiten zijn verplicht.
 - `GET /articles`: geeft artikelen met status `published` terug uit KV. Dit endpoint is bedoeld als lees-API voor een app.
 - `POST /publish`: bewaart een artikel als gepubliceerd in KV, maar alleen met geldige `HUB_API_SECRET`, `approved: true`, minimaal twee als gecontroleerd aangeleverde feiten en minimaal één HTTPS-bron. Dit is een expliciete goedkeuringspoort, geen automatische feitenchecker.
@@ -33,7 +33,7 @@ Voor publicatie moet de server een artikelconcept, expliciete goedkeuring, gecon
 - De Worker is **niet uitgerold** en niet getest met echte API-sleutels of echte feedbronnen. `wrangler.toml` is een startconfiguratie; voeg echte toegestane feeds en een KV-binding toe voordat je live gaat.
 - Het dashboard heeft nu CORS-ondersteuning nodig via `ALLOWED_ORIGINS`; vul daar de exacte origin in waarop je het dashboard host. Het dashboard is nog niet live gehost of getest tegen een gedeployde Worker.
 - RSS-items zijn nieuwsaanleidingen, geen geverifieerde feiten.
-- De Worker bevat een scheduled handler en `wrangler.toml` plant de inbox elke 15 minuten in; dit werkt pas na een succesvolle Cloudflare-deploy met juiste variabelen en KV-binding.
+- De Worker bevat een scheduled handler en `wrangler.toml` plant de inbox elke 15 minuten in; opgeslagen leads zijn nu via `GET /inbox` met Bearer-token op te halen. Dit werkt pas na een succesvolle Cloudflare-deploy met juiste variabelen en KV-binding.
 - `/publish` controleert dat goedkeuring en bronvelden zijn aangeleverd; het verifieert niet zelfstandig of feiten waar zijn. Gebruik dit endpoint pas na redactionele controle.
 - De Android-app is nog niet aangepast of gekoppeld aan `GET /articles`.
 - Gebruik alleen bronnen met passende gebruiksrechten en controleer feiten, citaten en beeldrechten vóór publicatie.
