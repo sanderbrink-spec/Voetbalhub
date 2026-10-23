@@ -78,6 +78,12 @@ async function main() {
         why_it_matters: draft.why_it_matters || "",
         verification_notes: draft.verification_notes || "NIET GECONTROLEERD: controleer alle feitelijke claims rechtstreeks bij de bron vóór publicatie.",
         verification_status: "needs_review",
+        claims: Array.isArray(draft.claims) ? draft.claims.slice(0, 20).map(c => ({
+          claim: String(c?.claim || "").slice(0, 500),
+          evidence: String(c?.evidence || "Niet aangetoond in aangeleverde RSS-gegevens").slice(0, 800),
+          status: c?.status === "supported_by_feed" ? "supported_by_feed" : "unverified"
+        })).filter(c => c.claim) : [],
+        claimsReviewRequired: true,
         editorialReviewRequired: true,
         autoPublish: false,
         sourceEvidence: {
