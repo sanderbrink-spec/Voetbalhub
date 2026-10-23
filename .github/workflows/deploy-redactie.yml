@@ -1,0 +1,63 @@
+name: Deploy VoetbalHub redactie API
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Cloudflare configuration
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          KV_NAMESPACE_ID: ${{ secrets.EDITORIAL_KV_NAMESPACE_ID }}
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          for key in CF_API_TOKEN CF_ACCOUNT_ID KV_NAMESPACE_ID HUB_API_SECRET OPENAI_API_KEY; do
+            if [ -z "${!key}" ]; then
+              echo "::error::GitHub Actions secret $key ontbreekt. Zie redactie/README.md."
+              exit 1
+            fi
+          done
+      - name: Install Wrangler
+        run: npm install --global wrangler@4
+      - name: Configure and deploy Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          EDITORIAL_KV_NAMESPACE_ID: ${{ secrets.EDITORIAL_KV_NAMESPACE_ID }}
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ALLOWED_FEED_URLS: ${{ vars.ALLOWED_FEED_URLS }}
+          ALLOWED_ORIGINS: ${{ vars.ALLOWED_ORIGINS }}
+        run: |
+          set -euo pipefail
+          cat > wrangler.deploy.toml <<EOF
+          name = "voetbalhub-redactie"
+          main = "redactie/worker/index.js"
+          compatibility_date = "2026-10-23"
+          account_id = "$CLOUDFLARE_ACCOUNT_ID"
+          [vars]
+          OPENAI_MODEL = "gpt-4.1-mini"
+          ALLOWED_FEED_URLS = "$ALLOWED_FEED_URLS"
+          ALLOWED_ORIGINS = "$ALLOWED_ORIGINS"
+          [[kv_namespaces]]
+          binding = "EDITORIAL_KV"
+          id = "$EDITORIAL_KV_NAMESPACE_ID"
+          [triggers]
+          crons = ["*/15 * * * *"]
+          EOF
+          wrangler deploy --config wrangler.deploy.toml
+          printf '%s' "$HUB_API_SECRET" | wrangler secret put HUB_API_SECRET --config wrangler.deploy.toml
+          printf '%s' "$OPENAI_API_KEY" | wrangler secret put OPENAI_API_KEY --config wrangler.deploy.toml
+          echo "Worker deployed. Test GET /health and GET /articles."
