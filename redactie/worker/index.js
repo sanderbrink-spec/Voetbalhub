@@ -1,4 +1,8 @@
 export default {
+ async scheduled(controller, env, ctx) {
+  // Configure a Cloudflare Cron Trigger (for example every 15 minutes) after deployment.
+  ctx.waitUntil(inbox(env));
+ },
  async fetch(request, env) {
   const url = new URL(request.url);
   if (url.pathname === "/health" && request.method === "GET") return reply({ok:true,service:"VoetbalHub Redactie API",publishing:false,features:["drafts","feed-inbox","articles-api"]});
