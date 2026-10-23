@@ -1,0 +1,34 @@
+{
+  "id": "demo-zinchenko-001",
+  "status": "needs_fact_check",
+  "author": "VoetbalHub Redactie",
+  "category": "Transfers",
+  "format": "transfer",
+  "headline": "Ajax heeft andere plannen dan Zinchenko: toekomst blijft onzeker",
+  "standfirst": "De aangeleverde screenshot suggereert dat een nieuw contract geen prioriteit is. De claims moeten onafhankelijk worden gecontroleerd.",
+  "body": [
+    "De toekomst van Oleksandr Zinchenko bij Ajax is op basis van de aangeleverde informatie nog onduidelijk. Er is geen definitieve beslissing aangetoond.",
+    "De screenshot schrijft aan voetbaljournalisten de inschatting toe dat Ajax andere prioriteiten heeft richting de winterse transferperiode. Die uitspraken moeten bij de oorspronkelijke publicatie of andere betrouwbare bronnen worden gecontroleerd.",
+    "Zonder onafhankelijke bevestiging kan VoetbalHub niet concluderen dat een terugkeer uitgesloten is. De situatie blijft daarom een onderwerp om te volgen, geen afgeronde transferbeslissing."
+  ],
+  "facts": [
+    {
+      "claim": "De screenshot meldt dat de kans op een nieuw contract klein is.",
+      "verified": false,
+      "note": "Niet onafhankelijk bevestigd."
+    },
+    {
+      "claim": "De screenshot noemt de winterse transferperiode als context.",
+      "verified": false,
+      "note": "Bron, datum en exacte context controleren."
+    }
+  ],
+  "sources": [],
+  "verificationNotes": [
+    "Controleer publicatiedatum en context van de screenshot.",
+    "Controleer de aan Lentin Goodijk en Mike Verweij toegeschreven uitspraken.",
+    "Voeg toegestane, betrouwbare bronlinks toe voordat het artikel verder wordt bewerkt."
+  ],
+  "imageRights": "pending",
+  "createdAt": "2026-10-23T00:00:00Z"
+}
