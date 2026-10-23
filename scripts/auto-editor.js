@@ -47,7 +47,7 @@ async function main() {
   if (!candidates.length) throw new Error("Geen nieuwsitems gevonden in de beschikbare RSS-feeds.");
   let saved = 0;
   for (const item of candidates.slice(0, 10)) {
-    const r = await fetch(API_URL + "/draft", {
+    const requestDraft = () => fetch(API_URL + "/draft", {
       method: "POST",
       headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -61,12 +61,24 @@ async function main() {
       }),
       signal: AbortSignal.timeout(45000)
     });
-    const data = await r.json();
-    if (!r.ok) {
+    let r, data;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      r = await requestDraft();
+      data = await r.json();
+      if (r.ok) break;
+      const detail = String(data.detail || data.error || "");
+      const rateLimited = (r.status === 429 || r.status === 502 || r.status === 503) && /rate.?limit|tokens per minute|try again in/i.test(detail);
       console.log("Concept maken mislukt:", r.status, JSON.stringify(data));
-      if (r.status === 502 || r.status === 503) throw new Error(data.detail || data.error || "AI-service fout");
-      continue;
+      if (!rateLimited || attempt === 2) {
+        if (r.status === 502 || r.status === 503 || r.status === 429) throw new Error(detail || data.error || "AI-service fout");
+        break;
+      }
+      const waitMatch = detail.match(/try again in ([0-9.]+)s/i);
+      const waitMs = Math.max(5000, Math.ceil((waitMatch ? Number(waitMatch[1]) : 15) * 1000) + 1500);
+      console.log("AI-tokenlimiet bereikt; wacht " + Math.ceil(waitMs / 1000) + " seconden en probeer opnieuw.");
+      await new Promise(resolve => setTimeout(resolve, waitMs));
     }
+    if (!r.ok) continue;
     const draft = data.draft;
     const save = await fetch(API_URL + "/auto-inbox", {
       method: "POST",
