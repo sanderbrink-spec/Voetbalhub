@@ -9,6 +9,10 @@ Deze map bevat een redactiedashboard, een AI Worker, een RSS/Atom-inbox en een e
 - `GET /articles`: geeft artikelen met status `published` terug uit KV. Dit endpoint is bedoeld als lees-API voor een app.
 - `POST /publish`: bewaart een artikel als gepubliceerd in KV, maar alleen met geldige `HUB_API_SECRET`, `approved: true`, minimaal twee als gecontroleerd aangeleverde feiten en minimaal één HTTPS-bron. Dit is een expliciete goedkeuringspoort, geen automatische feitenchecker.
 
+## Dashboard online zetten
+De workflow `.github/workflows/redactie-pages.yml` publiceert het dashboard via GitHub Pages bij wijzigingen aan de dashboardbestanden. Controleer in GitHub bij **Settings → Pages** dat de publicatiebron op **GitHub Actions** staat. Na een geslaagde workflow is de dashboard-URL doorgaans `https://sanderbrink-spec.github.io/Voetbalhub/`. De URL is pas bruikbaar nadat de Pages-deploy geslaagd is.
+Zet vervolgens in Cloudflare de variabele `ALLOWED_ORIGINS` op de exacte origin `https://sanderbrink-spec.github.io` (zonder pad of afsluitende slash). De dashboard-URL en de Worker-URL zijn verschillend; zonder deze allowlist werkt de browserkoppeling niet. Voer de API-sleutel alleen in op het dashboard wanneer je de pagina vertrouwt; de sleutel wordt niet door de pagina opgeslagen.
+
 ## Cloudflare-configuratie
 Worker secrets: `HUB_API_SECRET`, `OPENAI_API_KEY`. De repo bevat nu ook `wrangler.toml` met een Cloudflare Cron Trigger elke 15 minuten. Dit schema gaat pas lopen nadat de Worker in jouw Cloudflare-account is uitgerold en de configuratie is ingevuld.
 Worker variables: `ALLOWED_ORIGINS` (komma-gescheiden exacte origins die de API mogen aanroepen, bijvoorbeeld `https://sanderbrink-spec.github.io`; voeg geen wildcard toe), `ALLOWED_FEED_URLS` met uitsluitend feeds waarvan de gebruiksvoorwaarden het beoogde gebruik toestaan; optioneel `OPENAI_MODEL` (standaard `gpt-4.1-mini`). Maak een KV namespace en koppel die aan de Worker-binding `EDITORIAL_KV`. Bewaar API-sleutels nooit in HTML of APK.
