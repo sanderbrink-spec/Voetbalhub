@@ -148,6 +148,75 @@ async function main() {
         continue;
       }
     }
+    // Redactionele kwaliteitscontrole: korte kop, compacte tekst en geen vrijwel identieke alinea's.
+    const wordCount = value => String(value || "").trim().split(/\\s+/).filter(Boolean).length;
+    const normalizedText = value => String(value || "").toLowerCase()
+      .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+      .replace(/[^a-z0-9 ]/g, " ").replace(/\\s+/g, " ").trim();
+    const qualityIssues = candidate => {
+      const issues = [];
+      const headline = String(candidate?.headline || "").trim();
+      const standfirst = String(candidate?.standfirst || "").trim();
+      const paragraphs = Array.isArray(candidate?.body) ? candidate.body.map(p => String(p || "").trim()).filter(Boolean) : [];
+      if (wordCount(headline) < 5 || wordCount(headline) > 14) issues.push("kop moet 5 tot 14 woorden bevatten");
+      if (!standfirst || wordCount(standfirst) > 25) issues.push("intro moet aanwezig zijn en maximaal 25 woorden bevatten");
+      if (!paragraphs.length || paragraphs.length > 2) issues.push("tekst moet uit één of twee alinea's bestaan");
+      if (paragraphs.some(p => wordCount(p) > 60)) issues.push("elke alinea mag maximaal 60 woorden bevatten");
+      const blocks = [headline, standfirst, ...paragraphs].map(normalizedText).filter(Boolean);
+      for (let i = 0; i < blocks.length; i++) {
+        for (let j = i + 1; j < blocks.length; j++) {
+          const a = blocks[i], b = blocks[j];
+          const shorter = a.length <= b.length ? a : b;
+          const longer = a.length <= b.length ? b : a;
+          if (shorter.length >= 45 && longer.includes(shorter)) {
+            issues.push("kop, intro en tekst herhalen vrijwel dezelfde zin");
+            return issues;
+          }
+          const aw = new Set(a.split(" ").filter(w => w.length > 3));
+          const bw = new Set(b.split(" ").filter(w => w.length > 3));
+          const smaller = Math.min(aw.size, bw.size);
+          const overlap = smaller ? [...aw].filter(w => bw.has(w)).length / smaller : 0;
+          if (smaller >= 7 && overlap >= 0.85) {
+            issues.push("kop, intro en tekst bevatten te veel dezelfde woorden");
+            return issues;
+          }
+        }
+      }
+      const whole = [headline, standfirst, ...paragraphs].join(" ");
+      if (/\\b(volgens bronnen|naar verluidt|het is duidelijk dat|zoals eerder vermeld)\\b/i.test(whole)) issues.push("vermijd vage of opvullende formuleringen");
+      return issues;
+    };
+    let issues = qualityIssues(draft);
+    if (issues.length) {
+      console.log("Concept haalt kwaliteitscontrole niet; één herstelpoging:", issues.join("; "));
+      const repair = await fetch(API_URL + "/draft", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic: "HERSCHRIJF ALS KORTE, STRAKKE NEDERLANDSE VOETBALNIEUWSBERICHTGEVING: " + item.title,
+          category: "Voetbal",
+          facts: [
+            "Strikte vormregels: kop 5-14 woorden; intro maximaal 25 woorden; één of twee tekstalinea's, maximaal 60 woorden per alinea.",
+            "Geen herhaling: de intro mag de kop niet herhalen en de alinea's mogen de intro niet opnieuw formuleren.",
+            "Gebruik uitsluitend feiten uit de bronkop en bronbeschrijving. Voeg geen namen, citaten, scores, blessures, data of details toe die niet expliciet in de bron staan.",
+            "Problemen die moeten worden opgelost: " + issues.join("; "),
+            "Bronkop: " + item.title,
+            "Bronbeschrijving (maximaal 800 tekens): " + (item.description || "De feed bevat geen beschrijving; schrijf voorzichtig en vermeld de beperkte broninformatie.").slice(0, 800)
+          ],
+          sourceUrls: [item.link, item.feed]
+        }),
+        signal: AbortSignal.timeout(45000)
+      });
+      let repairData = {};
+      try { repairData = await repair.json(); } catch {}
+      if (repair.ok && repairData.draft && !draftHasEnglish(repairData.draft) && qualityIssues(repairData.draft).length === 0) {
+        draft = repairData.draft;
+        console.log("Hersteld concept haalt kwaliteitscontrole:", draft.headline);
+      } else {
+        console.log("Concept afgekeurd na herstelpoging; niet opgeslagen:", JSON.stringify(qualityIssues(repairData.draft || draft)));
+        continue;
+      }
+    }
     const save = await fetch(API_URL + "/auto-inbox", {
       method: "POST",
       headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
