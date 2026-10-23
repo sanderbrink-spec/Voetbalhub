@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VoetbalHub Article Draft",
+  "type": "object",
+  "required": [
+    "id",
+    "status",
+    "author",
+    "category",
+    "format",
+    "headline",
+    "standfirst",
+    "body",
+    "facts",
+    "sources",
+    "verificationNotes",
+    "createdAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "needs_fact_check",
+        "approved",
+        "rejected",
+        "published"
+      ]
+    },
+    "author": {
+      "type": "string",
+      "const": "VoetbalHub Redactie"
+    },
+    "category": {
+      "type": "string"
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "nieuws",
+        "analyse",
+        "achtergrond",
+        "transfer",
+        "wedstrijdverslag"
+      ]
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 120
+    },
+    "standfirst": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "body": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim",
+          "verified"
+        ],
+        "properties": {
+          "claim": {
+            "type": "string"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "url",
+          "sourceType"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "official",
+              "licensed_feed",
+              "interview",
+              "data_provider",
+              "other"
+            ]
+          },
+          "checkedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "verificationNotes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "imageRights": {
+      "type": "string",
+      "enum": [
+        "not_needed",
+        "cleared",
+        "licensed",
+        "pending",
+        "rejected"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approvedBy": {
+      "type": "string"
+    },
+    "publishedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}
