@@ -1,106 +1,92 @@
-const { createClient } = require("redis");
-
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
+const HUB_API_SECRET = process.env.HUB_API_SECRET || "";
+const API_URL = process.env.VOETBALHUB_API_URL || "https://voetbalhub-redactie.onrender.com";
 const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
-const REDIS_URL = process.env.REDIS_URL || "";
 const FEEDS = [
   "https://feeds.nos.nl/nosvoetbal",
   "https://feeds.bbci.co.uk/sport/football/rss.xml"
 ];
-const MAX_ITEMS_PER_RUN = 1;
 
 function decode(s = "") {
   return s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&amp;/g, "&").replace(/&quot;/g, '"')
+    .replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/\s+/g, " ").trim();
 }
-function tags(xml, tag) {
-  const safe = tag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return [...xml.matchAll(new RegExp("<" + safe + "(?:\\s[^>]*)?>([\\s\\S]*?)<\\/" + safe + ">", "gi"))].map(m => m[1]);
+function tag(chunk, name) {
+  const m = chunk.match(new RegExp("<" + name + "(?:\\s[^>]*)?>([\\s\\S]*?)</" + name + ">", "i"));
+  if (m) return decode(m[1]);
+  if (name === "link") {
+    const a = chunk.match(/<link[^>]+href=["']([^"']+)["']/i);
+    if (a) return a[1];
+  }
+  return "";
 }
 function extractItems(xml) {
-  const chunks = [...xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)].map(m => m[2]);
-  return chunks.map(chunk => {
-    const title = decode(tags(chunk, "title")[0] || "");
-    const description = decode(tags(chunk, "description")[0] || tags(chunk, "summary")[0] || tags(chunk, "content:encoded")[0] || "");
-    let link = decode(tags(chunk, "link")[0] || "");
-    if (!link) {
-      const m = chunk.match(/<link[^>]+href=["']([^"']+)["']/i);
-      if (m) link = m[1];
-    }
-    const date = decode(tags(chunk, "pubDate")[0] || tags(chunk, "updated")[0] || tags(chunk, "published")[0] || "");
-    return { title, description: description.slice(0, 1200), link, date };
+  return [...xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)].map(m => {
+    const c = m[2];
+    return {
+      title: tag(c, "title"),
+      description: (tag(c, "description") || tag(c, "summary") || tag(c, "content:encoded")).slice(0, 1200),
+      link: tag(c, "link"),
+      date: tag(c, "pubDate") || tag(c, "updated") || tag(c, "published")
+    };
   }).filter(x => x.title && /^https?:\/\//i.test(x.link));
 }
 async function main() {
-  if (!GROQ_API_KEY || !REDIS_URL) throw new Error("GROQ_API_KEY en REDIS_URL zijn vereist.");
-  const redis = createClient({ url: REDIS_URL, socket: { reconnectStrategy: false } });
-  redis.on("error", e => console.error("Redis:", e.message));
-  await redis.connect();
-  try {
-    const candidates = [];
-    for (const url of FEEDS) {
-      try {
-        const r = await fetch(url, { headers: { "User-Agent": "VoetbalHubEditorialBot/1.0" }, signal: AbortSignal.timeout(12000) });
-        if (!r.ok) { console.error("Feed mislukt:", url, r.status); continue; }
-        const xml = await r.text();
-        for (const item of extractItems(xml).slice(0, 8)) candidates.push({ ...item, feed: url });
-      } catch (e) { console.error("Feedfout:", url, e.message); }
-    }
-    candidates.sort((a,b) => Date.parse(b.date || 0) - Date.parse(a.date || 0));
-    const existing = await redis.get("inbox:auto-draft-urls");
-    const seen = new Set(existing ? JSON.parse(existing) : []);
-    const item = candidates.find(x => !seen.has(x.link));
-    if (!item) { console.log("Geen nieuw RSS-item gevonden; geen concept aangemaakt."); return; }
-
-    const prompt = {
-      onderwerp: item.title,
-      samenvatting_bron: item.description,
-      bron_url: item.link,
-      bron_feed: item.feed,
-      publicatiedatum_bron: item.date || null
-    };
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [
-          { role: "system", content: "Je bent de Nederlandstalige voetbalredactie van VoetbalHub. Maak een origineel concept op basis van het aangeleverde bronitem. Kopieer de brontekst niet en verzin geen feiten, citaten, statistieken, blessures, uitslagen of verklaringen. Gebruik geen kennis die niet in het bronitem staat. Als de broninformatie beperkt is, maak dan een kort, zorgvuldig concept met expliciete verification_notes die aangeven welke feiten vóór publicatie nog moeten worden gecontroleerd. Schrijf headline, standfirst, 3-5 body-alinea's, why_it_matters en verification_notes. Retourneer alleen geldige JSON." },
-          { role: "user", content: "Maak een origineel concept. Brondata als JSON: " + JSON.stringify(prompt) }
-        ],
-        response_format: { type: "json_object" },
-        temperature: 0.4
-      })
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error?.message || "Groq API-fout");
-    const draft = JSON.parse(data.choices?.[0]?.message?.content || "{}");
-    const record = {
-      id: "auto-" + Date.now(),
-      status: "draft_for_review",
-      createdAt: new Date().toISOString(),
-      headline: draft.headline || item.title,
-      standfirst: draft.standfirst || "",
-      body: Array.isArray(draft.body) ? draft.body.slice(0, 6) : [],
-      why_it_matters: draft.why_it_matters || "",
-      verification_notes: draft.verification_notes || "Controleer feiten en bron vóór publicatie.",
-      category: "Voetbal",
-      source: { title: item.title, url: item.link, feed: item.feed, publishedAt: item.date || null },
-      editorialReviewRequired: true,
-      autoPublish: false
-    };
-    const inboxRaw = await redis.get("inbox:auto");
-    const inbox = inboxRaw ? JSON.parse(inboxRaw) : [];
-    inbox.unshift(record);
-    await redis.set("inbox:auto", JSON.stringify(inbox.slice(0, 200)));
-    seen.add(item.link);
-    await redis.set("inbox:auto-draft-urls", JSON.stringify([...seen].slice(-500)));
-    console.log("Concept aangemaakt voor controle:", record.headline);
-  } finally {
-    await redis.quit();
+  if (!GROQ_API_KEY || !HUB_API_SECRET) throw new Error("GROQ_API_KEY en HUB_API_SECRET moeten als GitHub Actions secrets zijn ingesteld.");
+  const candidates = [];
+  for (const url of FEEDS) {
+    try {
+      const r = await fetch(url, { headers: { "User-Agent": "VoetbalHubEditorialBot/1.0" }, signal: AbortSignal.timeout(12000) });
+      if (!r.ok) { console.log("Feed overgeslagen:", url, r.status); continue; }
+      for (const item of extractItems(await r.text()).slice(0, 10)) candidates.push({ ...item, feed: url });
+    } catch (e) { console.log("Feedfout:", url, e.message); }
   }
+  candidates.sort((a,b) => (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0));
+  if (!candidates.length) throw new Error("Geen nieuwsitems gevonden in de beschikbare RSS-feeds.");
+  let saved = 0;
+  for (const item of candidates.slice(0, 10)) {
+    const r = await fetch(API_URL + "/draft", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        topic: item.title,
+        category: "Voetbal",
+        facts: [
+          "Bronkop: " + item.title,
+          "Bronbeschrijving: " + (item.description || "De feed bevat geen beschrijving; schrijf voorzichtig en vermeld de beperkte broninformatie.")
+        ],
+        sourceUrls: [item.link, item.feed]
+      }),
+      signal: AbortSignal.timeout(45000)
+    });
+    const data = await r.json();
+    if (!r.ok) {
+      console.log("Concept maken mislukt:", r.status, JSON.stringify(data));
+      if (r.status === 502 || r.status === 503) throw new Error(data.detail || data.error || "AI-service fout");
+      continue;
+    }
+    const draft = data.draft;
+    const save = await fetch(API_URL + "/auto-inbox", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
+      body: JSON.stringify({ item: {
+        headline: draft.headline || item.title,
+        standfirst: draft.standfirst || "",
+        body: Array.isArray(draft.body) ? draft.body.slice(0, 6) : [],
+        why_it_matters: draft.why_it_matters || "",
+        verification_notes: draft.verification_notes || "Controleer alle feiten vóór publicatie.",
+        category: "Voetbal",
+        source: { title: item.title, url: item.link, feed: item.feed, publishedAt: item.date || null }
+      }}),
+      signal: AbortSignal.timeout(20000)
+    });
+    const savedData = await save.json();
+    if (!save.ok) throw new Error("Opslaan mislukt: " + JSON.stringify(savedData));
+    if (savedData.status === "saved_for_review") { saved++; console.log("Concept opgeslagen ter controle:", draft.headline); break; }
+    if (savedData.status === "duplicate_skipped") console.log("Dubbel bronitem overgeslagen:", item.link);
+  }
+  if (!saved) console.log("Geen nieuw concept opgeslagen; beschikbare items waren mogelijk al verwerkt.");
 }
 main().catch(e => { console.error(e.message); process.exit(1); });
