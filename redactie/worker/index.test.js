@@ -40,3 +40,17 @@ test("articles endpoint requires KV configuration",async()=>{
  const res=await worker.fetch(req("/articles"),env);
  assert.equal(res.status,503);
 });
+
+test("CORS allows only configured dashboard origin",async()=>{
+ const configured={...env,ALLOWED_ORIGINS:"https://sanderbrink-spec.github.io"};
+ const allowed=await worker.fetch(new Request("https://worker.test/health",{headers:{Origin:"https://sanderbrink-spec.github.io"}}),configured);
+ assert.equal(allowed.headers.get("Access-Control-Allow-Origin"),"https://sanderbrink-spec.github.io");
+ const denied=await worker.fetch(new Request("https://worker.test/health",{headers:{Origin:"https://evil.example"}}),configured);
+ assert.equal(denied.headers.get("Access-Control-Allow-Origin"),null);
+});
+test("CORS preflight permits configured origin and authorization header",async()=>{
+ const configured={...env,ALLOWED_ORIGINS:"https://sanderbrink-spec.github.io"};
+ const res=await worker.fetch(new Request("https://worker.test/draft",{method:"OPTIONS",headers:{Origin:"https://sanderbrink-spec.github.io","Access-Control-Request-Method":"POST"}}),configured);
+ assert.equal(res.status,204);
+ assert.match(res.headers.get("Access-Control-Allow-Headers"),/Authorization/);
+});
