@@ -1,0 +1,12 @@
+{
+  "name": "voetbalhub-redactie-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VoetbalHub editorial API hosted on Render",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "redis": "^4.7.0"
+  }
+}
