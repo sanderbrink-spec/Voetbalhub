@@ -1,0 +1,48 @@
+name: VoetbalHub Redactie prototype check
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'redactie/**'
+      - '.github/workflows/redactie-prototype.yml'
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check required files
+        run: |
+          set -euo pipefail
+          test -s redactie/dashboard/index.html
+          test -s redactie/worker/index.js
+          test -s redactie/README.md
+          grep -q 'VoetbalHub' redactie/dashboard/index.html
+          grep -q 'editorialReviewRequired' redactie/worker/index.js
+          echo 'Required editorial prototype files are present.'
+      - name: Check JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check redactie/worker/index.js
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path('redactie/dashboard/index.html').read_text(encoding='utf-8')
+          assert '<html lang="nl">' in html
+          assert 'id="make"' in html
+          assert 'id="preview"' in html
+          print('Dashboard basic structure checks passed.')
+          PY
+      - name: Package redactie dashboard and Worker source
+        run: zip -qr VoetbalHub-Redactie-prototype.zip redactie
+      - name: Upload prototype package
+        uses: actions/upload-artifact@v4
+        with:
+          name: VoetbalHub-Redactie-prototype
+          path: VoetbalHub-Redactie-prototype.zip
+          if-no-files-found: error
