@@ -46,6 +46,24 @@ async function main() {
   candidates.sort((a,b) => (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0));
   if (!candidates.length) throw new Error("Geen nieuwsitems gevonden in de beschikbare RSS-feeds.");
 
+  // Houd de automatische desk actueel: oude RSS-items zijn geen verse nieuwsconcepten.
+  const now = Date.now();
+  const freshCandidates = candidates.filter(item => {
+    const published = Date.parse(item.date || "");
+    if (!Number.isFinite(published)) return true; // Geen datum? Laat de bestaande bron- en duplicaatcontroles beslissen.
+    const ageHours = (now - published) / 3600000;
+    if (ageHours > 36) {
+      console.log("Verouderd RSS-item overgeslagen (" + Math.round(ageHours) + " uur oud):", item.title);
+      return false;
+    }
+    return true;
+  });
+  candidates.splice(0, candidates.length, ...freshCandidates);
+  if (!candidates.length) {
+    console.log("Geen verse RSS-items binnen 36 uur gevonden; er wordt geen oud nieuws als nieuw concept toegevoegd.");
+    return;
+  }
+
   // Haal bestaande concepten op zodat hetzelfde nieuws niet opnieuw verschijnt via een andere feed.
   let existing = [];
   try {
@@ -80,6 +98,18 @@ async function main() {
   };
   let saved = 0;
   for (const item of candidates.slice(0, 10)) {
+    // Roundups en koppen die expliciet twee losse onderwerpen mengen zijn ongeschikt als één nieuwsartikel.
+    const title = String(item.title || "");
+    const mixedTopicSignals = [
+      /\bplus\b.*\bquiz/i,
+      /\bTrump\b.*\bNFL\b|\bNFL\b.*\bTrump\b/i,
+      /\bSaturday'?s gossip\b/i,
+      /\btransfer gossip\b/i
+    ];
+    if (mixedTopicSignals.some(pattern => pattern.test(title))) {
+      console.log("Meerdere onderwerpen/roundup in bronkop; niet als één artikel verwerkt:", title);
+      continue;
+    }
     if (isNearDuplicate(item)) {
       console.log("Waarschijnlijk dubbel nieuws overgeslagen:", item.title);
       continue;
