@@ -213,8 +213,14 @@ async function main() {
       try { data = await r.json(); } catch {}
       if (r.ok) break;
       const detail = String(data.detail || data.error || "");
-      const rateLimited = (r.status === 429 || r.status === 502 || r.status === 503) && /rate.?limit|tokens per minute|try again in/i.test(detail);
+      const rateLimited = (r.status === 429 || r.status === 502 || r.status === 503) && /rate.?limit|tokens per minute|tokens per day|try again in/i.test(detail);
       console.log("Concept maken mislukt:", r.status, JSON.stringify(data));
+      // A daily token quota will not recover during this run; stop retrying immediately.
+      if (/tokens per day|\bTPD\b/i.test(detail)) {
+        console.log("Daglimiet van de AI-dienst bereikt; geen zinloze retries. Nieuwsitem veilig overgeslagen:", item.title);
+        r = { ok: false, status: r.status };
+        break;
+      }
       if (!rateLimited || attempt === 4) {
         if (rateLimited) {
           console.log("AI-tokenlimiet blijft actief na vijf pogingen; item veilig overgeslagen, geen concept verzonnen:", item.title);
