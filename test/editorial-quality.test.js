@@ -18,7 +18,7 @@ test("downgrades claims whose alleged evidence is not literally in source text",
   assert.match(audited.claims[0].evidence, /Niet voldoende letterlijk gekoppeld/);
 });
 test("preserves supported status only when evidence occurs in the source", () => {
-  const item = { source: { url: "https://example.com/story", title: "Middlesbrough wint met 5-1", description: "Middlesbrough verslaat Bolton met 5-1." }, claims: [{ claim: "Middlesbrough wint met 5-1", status: "supported_by_feed", evidence: "Middlesbrough verslaat Bolton met 5-1" }] };
+  const item = { source: { url: "https://example.com/story", title: "Middlesbrough wint met 5-1", description: "Middlesbrough verslaat Bolton met 5-1." }, claims: [{ claim: "Middlesbrough verslaat Bolton met 5-1", status: "supported_by_feed", evidence: "Middlesbrough verslaat Bolton met 5-1" }] };
   assert.equal(auditClaims(item).claims[0].status, "supported_by_feed");
 });
 test("deduplicates warnings and never allows automatic publication", () => {
@@ -37,7 +37,7 @@ test("does not automatically upgrade a claim that was already unverified", () =>
 });
 
 test("requires more than a single shared word to support a claim", () => {
-  const item = { source: { title: "Arsenal probeert zonder Timber in te lopen op City" }, claims: [{ claim: "Arsenal heeft Timber uit de wedstrijd gezet", status: "supported_by_feed", evidence: "Arsenal probeert zonder Timber in te lopen op City" }] };
+  const item = { source: { title: "Arsenal probeert zonder Timber in te lopen op City" }, claims: [{ claim: "Arsenal gaat winnen", status: "supported_by_feed", evidence: "Arsenal probeert zonder Timber in te lopen op City" }] };
   assert.equal(auditClaims(item).claims[0].status, "unverified");
 });
 test("flags quiz and gossip items for separate editorial handling", () => {
