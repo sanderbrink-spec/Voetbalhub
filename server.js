@@ -47,6 +47,16 @@ async function polishIncomingDraft(item) {
   if (!GROQ_API_KEY || !item || typeof item !== "object") return { ...item, languagePolish: "not_run" };
   const src = item.source || {};
   const ev = item.sourceEvidence || {};
+  // RSS-only input is not enough evidence to safely rewrite an article. Keep the
+  // incoming draft unchanged and force editorial review instead of asking AI to expand it.
+  const hasArticleText = [ev.content, ev.excerpt].some(v => typeof v === "string" && v.trim().length >= 250);
+  if (ev.evidenceLevel === "rss_title_and_description_only" || !hasArticleText) {
+    return {
+      ...item,
+      languagePolish: "skipped_rss_only_source",
+      languagePolishNote: "AI-uitbreiding overgeslagen: geen volledige artikeltekst beschikbaar. Controleer de oorspronkelijke bron en herschrijf pas daarna."
+    };
+  }
   const sourceText = [src.title, src.description, ev.title, ev.description, ev.excerpt, ev.content, item.feedTitle, item.feedDescription].filter(v => typeof v === "string").join("\n").slice(0, 7000);
   if (!sourceText.trim()) return { ...item, languagePolish: "skipped_no_source_text" };
   try {
