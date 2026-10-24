@@ -38,6 +38,30 @@ function readBody(req) {
 function authorized(req) {
   return !!API_SECRET && req.headers.authorization === "Bearer " + API_SECRET;
 }
+function normalizeHeadline(value) {
+  return String(value || "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+function editorialQuality(item) {
+  const headline = String(item?.headline || "");
+  const text = [headline, item?.standfirst, ...(Array.isArray(item?.body) ? item.body : [])].join(" ");
+  const warnings = [];
+  if (!item?.source?.url && !item?.sourceUrl) warnings.push("Geen oorspronkelijke bronlink opgeslagen.");
+  if (item?.sourceEvidence?.evidenceLevel === "rss_title_and_description_only" ||
+      /RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(item?.verification_notes || item?.verificationNotes || ""))) {
+    warnings.push("Alleen RSS-gegevens gebruikt; oorspronkelijke artikel en concrete claims moeten onafhankelijk worden gecontroleerd.");
+  }
+  if (/\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\\b/i.test(text)) {
+    warnings.push("Mogelijke Engelse zinsdelen gevonden; controleer de Nederlandse tekst.");
+  }
+  if (headline.length > 0 && /\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(headline)) {
+    warnings.push("Kop kan Engelse formuleringen bevatten.");
+  }
+  const claims = Array.isArray(item?.claims) ? item.claims : [];
+  const unverifiedClaims = claims.filter(c => !c || c.status !== "supported_by_feed");
+  if (unverifiedClaims.length) warnings.push(unverifiedClaims.length + " claim(s) zijn niet eens door de RSS-feed onderbouwd.");
+  return { warnings, warningCount: warnings.length, independentFactCheck: false, publishableAutomatically: false };
+}
 async function getArticles() {
   if (!!!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
@@ -94,9 +118,17 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         if (Array.isArray(batch)) items.push(...batch.filter(item => item && typeof item === "object" && typeof item.headline === "string"));
       } catch {}
     }
-    const unique = [...new Map(items.map(item => [item.id || item.source?.url || item.headline, item])).values()];
+    const uniqueByIdentity = new Map();
+    for (const item of items) {
+      const urlKey = String(item.source?.url || item.sourceUrl || "").trim().replace(/#.*$/, "");
+      const titleKey = normalizeHeadline(item.headline);
+      const key = urlKey ? "url:" + urlKey : (titleKey ? "title:" + titleKey : (item.id || crypto.randomUUID()));
+      const existing = uniqueByIdentity.get(key);
+      if (!existing || String(item.createdAt || "") > String(existing.createdAt || "")) uniqueByIdentity.set(key, item);
+    }
+    const unique = [...uniqueByIdentity.values()].map(item => ({ ...item, qualityReview: editorialQuality(item) }));
     unique.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
-    return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false });
+    return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false, note: "Kwaliteitssignalen zijn waarschuwingen, geen onafhankelijke factcheck." });
   }
   if (req.method !== "POST") return send(res, 404, { error: "Gebruik GET /health, GET /articles, GET /inbox of POST /draft en POST /publish." });
   if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
@@ -109,8 +141,17 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const key = "inbox:auto";
     const raw = await client.get(key);
     const inbox = raw ? JSON.parse(raw) : [];
-    if (inbox.some(x => x.source?.url && x.source.url === item.source?.url)) return send(res, 200, { status: "duplicate_skipped" });
-    inbox.unshift({ ...item, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false });
+    const incomingUrl = String(item.source?.url || item.sourceUrl || "").trim().replace(/#.*$/, "");
+    const incomingHeadline = normalizeHeadline(item.headline);
+    const isDuplicate = inbox.some(x => {
+      const existingUrl = String(x.source?.url || x.sourceUrl || "").trim().replace(/#.*$/, "");
+      const existingHeadline = normalizeHeadline(x.headline);
+      return (incomingUrl && existingUrl && incomingUrl === existingUrl) ||
+        (incomingHeadline && existingHeadline && incomingHeadline === existingHeadline);
+    });
+    if (isDuplicate) return send(res, 200, { status: "duplicate_skipped" });
+    const quality = editorialQuality(item);
+    inbox.unshift({ ...item, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false, qualityReview: quality });
     await client.set(key, JSON.stringify(inbox.slice(0, 200)));
     return send(res, 200, { status: "saved_for_review", count: Math.min(inbox.length + 1, 200) });
   }
@@ -146,10 +187,14 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const facts = Array.isArray(body.verifiedFacts) ? body.verifiedFacts.filter(x => typeof x === "string" && x.trim()) : [];
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => s && typeof s.url === "string" && s.url.startsWith("https://")) : [];
     if (body.approved !== true) return send(res, 400, { error: "Expliciete goedkeuring vereist: approved moet true zijn." });
-    if (typeof d.headline !== "string" || typeof d.standfirst !== "string" || !Array.isArray(d.body) || d.body.length < 1) return send(res, 400, { error: "Artikel mist kop, intro of minimaal drie alinea's." });
+    const review = body.editorialChecks || {};
+    const requiredChecks = ["originalSourceReviewed", "claimsIndependentlyChecked", "duplicateChecked", "languageChecked"];
+    const missingChecks = requiredChecks.filter(key => review[key] !== true);
+    if (missingChecks.length) return send(res, 400, { error: "Publicatie geblokkeerd: voltooi alle redactionele controles.", missingChecks });
+    if (typeof d.headline !== "string" || typeof d.standfirst !== "string" || !Array.isArray(d.body) || d.body.length < 1) return send(res, 400, { error: "Artikel mist kop, intro of minimaal één alinea." });
     if (facts.length < 2 || sources.length < 1) return send(res, 400, { error: "Minimaal twee gecontroleerde feiten en één HTTPS-bron zijn vereist." });
     const now = new Date().toISOString();
-    const article = { id: crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: d.body.filter(x => typeof x === "string").slice(0,2), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources };
+    const article = { id: crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: d.body.filter(x => typeof x === "string").slice(0,2), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), autoPublish: false };
     await client.set("article:" + article.id, JSON.stringify(article));
     return send(res, 200, { status: "published", article });
   }
