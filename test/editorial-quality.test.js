@@ -1,0 +1,28 @@
+"use strict";
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const { auditClaims, editorialQuality } = require("../editorial-quality");
+test("flags English headlines and phrases", () => {
+  const result = editorialQuality({ headline: "Kompany taken to hospital after collapsing at training", standfirst: "Bayern manager is taken to hospital after collapsing.", body: ["The club says he will be checked."], source: { url: "https://example.com/story", title: "Kompany taken to hospital", description: "Bayern manager taken to hospital." }, sourceEvidence: { evidenceLevel: "rss_title_and_description_only" }, claims: [] });
+  assert.ok(result.warnings.some(w => w.includes("Engelse zinsdelen")));
+  assert.ok(result.warnings.some(w => w.includes("Kop bevat mogelijk Engelse")));
+});
+test("flags mixed football and unrelated NFL topics", () => {
+  const result = editorialQuality({ headline: "PSG nieuws en Trump maakt zich zorgen over NFL-duel", standfirst: "", body: ["Paris Saint-Germain speelt maandag. Trump spreekt over Pittsburgh Steelers."], source: { url: "https://example.com/story", title: "PSG en NFL" }, claims: [] });
+  assert.ok(result.warnings.some(w => w.includes("losse onderwerpen")));
+});
+test("downgrades claims whose alleged evidence is not literally in source text", () => {
+  const item = { headline: "Doku is volledig hersteld", source: { url: "https://example.com/story", title: "Doku voelt zich weer sterk", description: "Doku hoopt opnieuw te beginnen." }, claims: [{ claim: "Doku is volledig hersteld", status: "supported_by_feed", evidence: "Doku is volledig hersteld" }] };
+  const audited = auditClaims(item);
+  assert.equal(audited.claims[0].status, "unverified");
+  assert.match(audited.claims[0].evidence, /Niet letterlijk teruggevonden/);
+});
+test("preserves supported status only when evidence occurs in the source", () => {
+  const item = { source: { url: "https://example.com/story", title: "Middlesbrough wint met 5-1", description: "Middlesbrough verslaat Bolton met 5-1." }, claims: [{ claim: "Middlesbrough wint met 5-1", status: "supported_by_feed", evidence: "Middlesbrough verslaat Bolton met 5-1" }] };
+  assert.equal(auditClaims(item).claims[0].status, "supported_by_feed");
+});
+test("deduplicates warnings and never allows automatic publication", () => {
+  const result = editorialQuality({ headline: "Testkop", standfirst: "", body: [], source: {}, sourceEvidence: { evidenceLevel: "rss_title_and_description_only" }, verification_notes: "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK", claims: [] });
+  assert.equal(result.warnings.filter(w => w.includes("geen onafhankelijke factcheck")).length, 1);
+  assert.equal(result.publishableAutomatically, false);
+});

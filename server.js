@@ -1,5 +1,6 @@
 const http = require("node:http");
 const { createClient } = require("redis");
+const { auditClaims, editorialQuality } = require("./editorial-quality");
 
 const PORT = Number(process.env.PORT || 10000);
 const API_SECRET = process.env.HUB_API_SECRET || "";
@@ -41,35 +42,6 @@ function authorized(req) {
 function normalizeHeadline(value) {
   return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-}
-function editorialQuality(item) {
-  const headline = String(item?.headline || "");
-  const standfirst = String(item?.standfirst || "");
-  const body = Array.isArray(item?.body) ? item.body.filter(v => typeof v === "string") : [];
-  const text = [headline, standfirst, ...body].join(" ");
-  const src = item?.source || {};
-  const evidence = item?.sourceEvidence || {};
-  const feedText = [src.title, src.description, evidence.title, evidence.description, evidence.excerpt, evidence.content, item?.feedTitle, item?.feedDescription].filter(v => typeof v === "string").join(" ");
-  const warnings = [];
-  const add = message => { if (!warnings.includes(message)) warnings.push(message); };
-  if (!src.url && !item?.sourceUrl) add("Geen oorspronkelijke bronlink opgeslagen.");
-  if (evidence.evidenceLevel === "rss_title_and_description_only" || /RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(item?.verification_notes || item?.verificationNotes || ""))) add("Alleen RSS-gegevens gebruikt; dit is geen onafhankelijke factcheck.");
-  if (/\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position|best team in|today.s other quizzes|saturday.s gossip)\\b/i.test(text)) add("Mogelijke Engelse zinsdelen gevonden; herschrijven naar natuurlijk Nederlands.");
-  if (/\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(headline)) add("Kop bevat mogelijk Engelse formuleringen.");
-  const englishStopWords = (headline.match(/\\b(the|and|but|after|before|could|would|says|said|with|from|over|for|to|in|at)\\b/gi) || []).length;
-  if (headline.trim().split(/\\s+/).length >= 5 && englishStopWords >= 2) add("Kop lijkt grotendeels Engelstalig; herschrijf de kop naar het Nederlands.");
-  const norm = v => String(v || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\\s+/).filter(w => w.length > 3);
-  const introWords = new Set(norm(standfirst));
-  const bodyWords = new Set(norm(body.join(" ")));
-  let shared = 0;
-  for (const word of introWords) if (bodyWords.has(word)) shared++;
-  if (introWords.size > 8 && shared / introWords.size > 0.8) add("Intro en artikeltekst herhalen grotendeels dezelfde informatie; maak de body aanvullend.");
-  if (/\\b(NFL|American football|Pittsburgh Steelers|New Orleans Saints)\\b/i.test(text) && /\\b(Trump|Paris Saint-Germain|PSG|Eredivisie|Champions League|voetbalclub|voetbaltrainer)\\b/i.test(text)) add("Mogelijk zijn twee losse onderwerpen samengevoegd; houd het concept bij één voetbalnieuwsgebeurtenis.");
-  if (/\\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker)\\b/i.test(text) && !/\\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker)\\b/i.test(feedText)) add("Mogelijk sterkere bewering dan de bron ondersteunt; controleer de nuance.");
-  const claims = Array.isArray(item?.claims) ? item.claims : [];
-  const unverifiedClaims = claims.filter(c => !c || c.status !== "supported_by_feed");
-  if (unverifiedClaims.length) add(unverifiedClaims.length + " claim(s) zijn niet onderbouwd door de opgeslagen RSS-gegevens.");
-  return { warnings, warningCount: warnings.length, independentFactCheck: false, publishableAutomatically: false };
 }
 async function polishIncomingDraft(item) {
   if (!GROQ_API_KEY || !item || typeof item !== "object") return { ...item, languagePolish: "not_run" };
@@ -171,7 +143,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const existing = uniqueByIdentity.get(key);
       if (!existing || String(item.createdAt || "") > String(existing.createdAt || "")) uniqueByIdentity.set(key, item);
     }
-    const unique = [...uniqueByIdentity.values()].map(item => ({ ...item, qualityReview: editorialQuality(item) }));
+    const unique = [...uniqueByIdentity.values()].map(item => { const auditedItem = auditClaims(item); return { ...auditedItem, qualityReview: editorialQuality(auditedItem) }; });
     unique.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false, note: "Kwaliteitssignalen zijn waarschuwingen, geen onafhankelijke factcheck." });
   }
@@ -196,8 +168,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
     if (isDuplicate) return send(res, 200, { status: "duplicate_skipped" });
     const polishedItem = await polishIncomingDraft(item);
-    const quality = editorialQuality(polishedItem);
-    inbox.unshift({ ...polishedItem, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false, qualityReview: quality });
+    const auditedItem = auditClaims(polishedItem);
+    const quality = editorialQuality(auditedItem);
+    inbox.unshift({ ...auditedItem, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false, qualityReview: quality });
     await client.set(key, JSON.stringify(inbox.slice(0, 200)));
     return send(res, 200, { status: "saved_for_review", count: Math.min(inbox.length + 1, 200) });
   }
