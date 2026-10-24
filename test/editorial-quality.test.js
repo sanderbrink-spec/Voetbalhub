@@ -15,7 +15,7 @@ test("downgrades claims whose alleged evidence is not literally in source text",
   const item = { headline: "Doku is volledig hersteld", source: { url: "https://example.com/story", title: "Doku voelt zich weer sterk", description: "Doku hoopt opnieuw te beginnen." }, claims: [{ claim: "Doku is volledig hersteld", status: "supported_by_feed", evidence: "Doku is volledig hersteld" }] };
   const audited = auditClaims(item);
   assert.equal(audited.claims[0].status, "unverified");
-  assert.match(audited.claims[0].evidence, /Niet letterlijk teruggevonden/);
+  assert.match(audited.claims[0].evidence, /Niet voldoende letterlijk gekoppeld/);
 });
 test("preserves supported status only when evidence occurs in the source", () => {
   const item = { source: { url: "https://example.com/story", title: "Middlesbrough wint met 5-1", description: "Middlesbrough verslaat Bolton met 5-1." }, claims: [{ claim: "Middlesbrough wint met 5-1", status: "supported_by_feed", evidence: "Middlesbrough verslaat Bolton met 5-1" }] };
@@ -34,4 +34,13 @@ test("downgrades evidence that belongs to a different claim", () => {
 test("does not automatically upgrade a claim that was already unverified", () => {
   const item = { source: { title: "Middlesbrough verslaat Bolton met 5-1." }, claims: [{ claim: "Middlesbrough verslaat Bolton met 5-1", status: "unverified", evidence: "Middlesbrough verslaat Bolton met 5-1" }] };
   assert.equal(auditClaims(item).claims[0].status, "unverified");
+});
+
+test("requires more than a single shared word to support a claim", () => {
+  const item = { source: { title: "Arsenal probeert zonder Timber in te lopen op City" }, claims: [{ claim: "Arsenal heeft Timber uit de wedstrijd gezet", status: "supported_by_feed", evidence: "Arsenal probeert zonder Timber in te lopen op City" }] };
+  assert.equal(auditClaims(item).claims[0].status, "unverified");
+});
+test("flags quiz and gossip items for separate editorial handling", () => {
+  const result = editorialQuality({ headline: "Wie ben ik? plus de andere quizzen van vandaag", standfirst: "Test je voetbalkennis", body: ["BBC Sport biedt voetbalquizzen."], source: { url: "https://example.com/story", title: "Who am I? Plus today's other quizzes" }, claims: [] });
+  assert.ok(result.warnings.some(w => w.includes("quiz- of roddelrubriek")));
 });
