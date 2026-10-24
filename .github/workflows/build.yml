@@ -126,7 +126,7 @@ jobs:
           api_url = os.environ.get("EDITORIAL_API_URL", "").strip()
           if api_url and not api_url.startswith("https://"):
               raise SystemExit("EDITORIAL_API_URL must be an HTTPS URL.")
-          endpoint = api_url or "NOT_CONFIGURED"
+          endpoint = api_url or "https://voetbalhub-redactie.onrender.com/articles"
           method_marker = "    private void scheduleScoresMidnightReset()"
           if "private void addEditorialNewsSection(LinearLayout parent)" not in s:
               method = '''
