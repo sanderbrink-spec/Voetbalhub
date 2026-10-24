@@ -153,20 +153,30 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const existing = uniqueByIdentity.get(key);
       if (!existing || String(item.createdAt || "") > String(existing.createdAt || "")) uniqueByIdentity.set(key, item);
     }
-    // Filter low-value feed entries before editorial review: English-only headlines,
-    // quizzes/gossip roundups, and live discussion prompts are not standalone Dutch football news.
+    // Exclude low-value items from the editorial queue. This is a display/queue filter:
+    // records stay in Redis for auditability, but old records are filtered on every /inbox read.
     const isLowQualityFeedItem = item => {
       const title = String(item.sourceEvidence?.title || item.source?.title || item.feedTitle || item.headline || "").trim().toLowerCase();
       if (!title) return true;
-      const excludedPhrases = ["quiz", "who am i", "today's other quizzes", "gossip", "transfer gossip", "praat mee", "live blog", "live discussion", "match thread", "predictions thread"];
-      if (excludedPhrases.some(phrase => title.includes(phrase))) return true;
-      // Filter clearly English-language headlines, without relying on a translation model.
-      const words = title.replace(/[.,:!?'"()]/g, " ").split(" ").filter(Boolean);
-      const englishSignals = new Set(["the","and","could","would","should","after","before","with","without","from","their","they","he","she","his","her","are","was","were","has","have","will","weeks","fear","happy","unsure","journey","taken","hospital","lay","down","marker","define","seasons","today","saturday","continues","start","new"]);
-      const dutchSignals = new Set(["de","het","een","van","voor","bij","met","door","na","naar","zijn","haar","wint","verliest","zegt","blikt","terug","speelt","krijgt","maakt","club","trainer","voetbal","doelman","spelers","gaat","moet","kan","heeft","wordt","op"]);
+      const normalized = title.replace(/[’‘]/g, "'").replace(/[^a-z0-9à-ÿ' -]/g, " ").replace(/\s+/g, " ").trim();
+      const excludedPhrases = [
+        "quiz", "who am i", "today's other quizzes", "gossip", "transfer gossip",
+        "praat mee", "live blog", "live discussion", "match thread", "predictions thread",
+        "spelersbattle", "southampton technical director", "technical director"
+      ];
+      if (excludedPhrases.some(phrase => normalized.includes(phrase))) return true;
+      // Clear English-language signals catch old feed records as well as new ones.
+      const words = normalized.split(" ").filter(Boolean);
+      const englishSignals = new Set([
+        "the","and","could","would","should","after","before","with","without","from","their","they","them","he","she","his","her","are","was","were","has","have","will","weeks","fear","happy","unsure","journey","taken","hospital","lay","down","marker","define","seasons","today","saturday","continues","start","new","put","me","in","difficult","position","technical","director","manager","says","reports","reveals","confirmed","statement","ahead","draw","win","loss","players","coach","boss","injury","return","signing","transfer","deal","talks","club","football","premier","league","could","not","for","to","of","on","at","is","are","was","were","have","has","been","amid","as","his","her","their","over","under","into","out","up","down","vs"
+      ]);
+      const dutchSignals = new Set([
+        "de","het","een","van","voor","bij","met","door","na","naar","zijn","haar","wint","verliest","zegt","blikt","terug","speelt","krijgt","maakt","club","trainer","voetbal","doelman","spelers","gaat","moet","kan","heeft","wordt","op","als","maar","niet","door","tegen","bij","weer","nu","dit","dat","uit","over","voor","nog","na","heeft","heeft","maakt","komt","wil","zou","blijft","eindelijk","twee","met","rond","bij","van"
+      ]);
       const englishCount = words.filter(word => englishSignals.has(word)).length;
       const dutchCount = words.filter(word => dutchSignals.has(word)).length;
-      return words.length >= 5 && englishCount >= 2 && englishCount > dutchCount;
+      // Require several English function/content words and no meaningful Dutch signal.
+      return words.length >= 5 && englishCount >= 3 && englishCount > dutchCount * 2;
     };
     const filteredUnique = [...uniqueByIdentity.values()].filter(item => !isLowQualityFeedItem(item));
     const unique = filteredUnique.map(item => {
