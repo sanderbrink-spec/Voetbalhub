@@ -45,13 +45,28 @@ async function fetchArticleText(articleUrl) {
       .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
       .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
       .replace(/\s+/g, " ").trim();
-    const articleMatches = [
+    const articleBlocks = [
       ...html.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/gi),
       ...html.matchAll(/<main\b[^>]*>([\s\S]*?)<\/main>/gi)
-    ].map(match => strip(match[1])).sort((a, b) => b.length - a.length);
-    const text = articleMatches[0] || strip(html);
-    // Reject boilerplate, consent pages and short/paywalled shells instead of inventing a story from RSS.
-    return text.length >= 250 ? text.slice(0, 12000) : "";
+    ].map(match => match[1]).sort((a, b) => b.length - a.length);
+    // Never treat a whole page as article text: cookie banners, menus, and consent
+    // screens can be long enough to pass a simple character-count check.
+    if (!articleBlocks.length) {
+      console.log("Artikeltekst overgeslagen: geen <article> of <main>-blok gevonden.");
+      return "";
+    }
+    const block = articleBlocks[0];
+    const text = strip(block);
+    const paragraphs = [...block.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
+      .map(match => strip(match[1]))
+      .filter(paragraph => paragraph.length >= 35);
+    const meaningfulText = paragraphs.join(" ");
+    const boilerplate = /accept all cookies|cookie preferences|privacy settings|subscribe to read|enable javascript|accepteer alle cookies|cookievoorkeuren|privacy-instellingen/i;
+    if (text.length < 250 || paragraphs.length < 2 || boilerplate.test(text.slice(0, 700))) {
+      console.log("Artikeltekst overgeslagen: te weinig inhoudelijke alinea's of consent-/betaalmuurtekst.");
+      return "";
+    }
+    return (meaningfulText.length >= 250 ? meaningfulText : text).slice(0, 12000);
   } catch (error) {
     console.log("Artikeltekst ophalen mislukt:", error.message);
     return "";
