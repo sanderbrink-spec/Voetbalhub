@@ -23,6 +23,41 @@ function tag(chunk, name) {
   }
   return "";
 }
+
+async function fetchArticleText(articleUrl) {
+  try {
+    const parsed = new URL(articleUrl);
+    const allowedArticleHosts = new Set(["nos.nl", "www.nos.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
+    if (parsed.protocol !== "https:" || !allowedArticleHosts.has(parsed.hostname.toLowerCase())) return "";
+    const response = await fetch(parsed.href, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; VoetbalHubEditorialBot/1.0)", "Accept": "text/html" },
+      signal: AbortSignal.timeout(12000)
+    });
+    if (!response.ok) { console.log("Artikeltekst niet beschikbaar:", response.status, parsed.hostname); return ""; }
+    const html = (await response.text()).slice(0, 2_000_000);
+    const strip = value => value
+      .replace(/<(script|style|nav|header|footer|aside|noscript|svg|form)[^>]*>[\\s\\S]*?<\\/\\1>/gi, " ")
+      .replace(/<br\\s*\\/?\\s*>|<\\/(p|div|article|section|h[1-6]|li)>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;|&#160;/gi, " ")
+      .replace(/&amp;/gi, "&").replace(/&quot;/gi, '"')
+      .replace(/&#39;|&apos;/gi, "'").replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
+      .replace(/&#(\\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+      .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+      .replace(/\\s+/g, " ").trim();
+    const articleMatches = [
+      ...html.matchAll(/<article\\b[^>]*>([\\s\\S]*?)<\\/article>/gi),
+      ...html.matchAll(/<main\\b[^>]*>([\\s\\S]*?)<\\/main>/gi)
+    ].map(match => strip(match[1])).sort((a, b) => b.length - a.length);
+    const text = articleMatches[0] || strip(html);
+    // Reject boilerplate, consent pages and short/paywalled shells instead of inventing a story from RSS.
+    return text.length >= 250 ? text.slice(0, 12000) : "";
+  } catch (error) {
+    console.log("Artikeltekst ophalen mislukt:", error.message);
+    return "";
+  }
+}
+
 function extractItems(xml) {
   return [...xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)].map(m => {
     const c = m[2];
@@ -131,6 +166,13 @@ async function main() {
       console.log("Waarschijnlijk dubbel nieuws overgeslagen:", item.title);
       continue;
     }
+    // Maak alleen een artikelconcept als de oorspronkelijke pagina voldoende artikeltekst oplevert.
+    // RSS-koppen/beschrijvingen blijven bronmeldingen, geen nep-artikelconcepten.
+    const articleText = await fetchArticleText(item.link);
+    if (!articleText || articleText.length < 250) {
+      console.log("Geen bruikbare volledige artikeltekst; alleen RSS is beschikbaar, dus niet als artikelconcept opgeslagen:", item.title);
+      continue;
+    }
     const requestDraft = () => fetch(API_URL + "/draft", {
       method: "POST",
       headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
@@ -139,6 +181,7 @@ async function main() {
         category: "Voetbal",
         facts: [
           "Bronkop: " + item.title,
+          "Opgehaalde tekst van de oorspronkelijke artikelpagina (gebruik uitsluitend controleerbare feiten hieruit): " + articleText,
           "Huisstijl VoetbalHub: nuchter, helder, direct en compact Nederlands; actieve zinnen, geen sensatie en geen herhaling.",
           "Auteursrechtelijke zorgvuldigheid: schrijf zelfstandig vanuit de noodzakelijke feiten; kopieer geen zinnen, herkenbare formuleringen, volgorde of structuur van de bron en vertaal niet zin voor zin. Gebruik geen onnodige citaten of creatieve bronpassages.",
           "Juridische zorgvuldigheid: voeg geen onbewezen claims toe, maak geen ongefundeerde beschuldigingen en wek niet de indruk dat feiten onafhankelijk zijn geverifieerd. Bronvermelding is geen juridische garantie.",
@@ -297,7 +340,8 @@ async function main() {
           description: item.description || "",
           feed: item.feed,
           publishedAt: item.date || null,
-          evidenceLevel: item.description ? "rss_title_and_description_only" : "rss_title_only"
+          content: articleText,
+          evidenceLevel: "article_text_extracted"
         },
         category: "Voetbal",
         source: { title: item.title, url: item.link, feed: item.feed, publishedAt: item.date || null }
