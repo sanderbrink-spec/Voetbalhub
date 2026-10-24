@@ -44,23 +44,68 @@ function normalizeHeadline(value) {
 }
 function editorialQuality(item) {
   const headline = String(item?.headline || "");
-  const text = [headline, item?.standfirst, ...(Array.isArray(item?.body) ? item.body : [])].join(" ");
+  const standfirst = String(item?.standfirst || "");
+  const body = Array.isArray(item?.body) ? item.body.filter(v => typeof v === "string") : [];
+  const text = [headline, standfirst, ...body].join(" ");
+  const src = item?.source || {};
+  const evidence = item?.sourceEvidence || {};
+  const feedText = [src.title, src.description, evidence.title, evidence.description, evidence.excerpt, evidence.content, item?.feedTitle, item?.feedDescription].filter(v => typeof v === "string").join(" ");
   const warnings = [];
-  if (!item?.source?.url && !item?.sourceUrl) warnings.push("Geen oorspronkelijke bronlink opgeslagen.");
-  if (item?.sourceEvidence?.evidenceLevel === "rss_title_and_description_only" ||
-      /RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(item?.verification_notes || item?.verificationNotes || ""))) {
-    warnings.push("Alleen RSS-gegevens gebruikt; oorspronkelijke artikel en concrete claims moeten onafhankelijk worden gecontroleerd.");
-  }
-  if (/\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\b/i.test(text)) {
-    warnings.push("Mogelijke Engelse zinsdelen gevonden; controleer de Nederlandse tekst.");
-  }
-  if (headline.length > 0 && /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December)\b/i.test(headline)) {
-    warnings.push("Kop kan Engelse formuleringen bevatten.");
-  }
+  const add = message => { if (!warnings.includes(message)) warnings.push(message); };
+  if (!src.url && !item?.sourceUrl) add("Geen oorspronkelijke bronlink opgeslagen.");
+  if (evidence.evidenceLevel === "rss_title_and_description_only" || /RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(item?.verification_notes || item?.verificationNotes || ""))) add("Alleen RSS-gegevens gebruikt; dit is geen onafhankelijke factcheck.");
+  if (/\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position|best team in|today.s other quizzes|saturday.s gossip)\\b/i.test(text)) add("Mogelijke Engelse zinsdelen gevonden; herschrijven naar natuurlijk Nederlands.");
+  if (/\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(headline)) add("Kop bevat mogelijk Engelse formuleringen.");
+  const englishStopWords = (headline.match(/\\b(the|and|but|after|before|could|would|says|said|with|from|over|for|to|in|at)\\b/gi) || []).length;
+  if (headline.trim().split(/\\s+/).length >= 5 && englishStopWords >= 2) add("Kop lijkt grotendeels Engelstalig; herschrijf de kop naar het Nederlands.");
+  const norm = v => String(v || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\\s+/).filter(w => w.length > 3);
+  const introWords = new Set(norm(standfirst));
+  const bodyWords = new Set(norm(body.join(" ")));
+  let shared = 0;
+  for (const word of introWords) if (bodyWords.has(word)) shared++;
+  if (introWords.size > 8 && shared / introWords.size > 0.8) add("Intro en artikeltekst herhalen grotendeels dezelfde informatie; maak de body aanvullend.");
+  if (/\\b(NFL|American football|Pittsburgh Steelers|New Orleans Saints)\\b/i.test(text) && /\\b(Trump|Paris Saint-Germain|PSG|Eredivisie|Champions League|voetbalclub|voetbaltrainer)\\b/i.test(text)) add("Mogelijk zijn twee losse onderwerpen samengevoegd; houd het concept bij één voetbalnieuwsgebeurtenis.");
+  if (/\\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker)\\b/i.test(text) && !/\\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker)\\b/i.test(feedText)) add("Mogelijk sterkere bewering dan de bron ondersteunt; controleer de nuance.");
   const claims = Array.isArray(item?.claims) ? item.claims : [];
   const unverifiedClaims = claims.filter(c => !c || c.status !== "supported_by_feed");
-  if (unverifiedClaims.length) warnings.push(unverifiedClaims.length + " claim(s) zijn niet eens door de RSS-feed onderbouwd.");
+  if (unverifiedClaims.length) add(unverifiedClaims.length + " claim(s) zijn niet onderbouwd door de opgeslagen RSS-gegevens.");
   return { warnings, warningCount: warnings.length, independentFactCheck: false, publishableAutomatically: false };
+}
+async function polishIncomingDraft(item) {
+  if (!GROQ_API_KEY || !item || typeof item !== "object") return { ...item, languagePolish: "not_run" };
+  const src = item.source || {};
+  const ev = item.sourceEvidence || {};
+  const sourceText = [src.title, src.description, ev.title, ev.description, ev.excerpt, ev.content, item.feedTitle, item.feedDescription].filter(v => typeof v === "string").join("\\n").slice(0, 7000);
+  if (!sourceText.trim()) return { ...item, languagePolish: "skipped_no_source_text" };
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [
+          { role: "system", content: "Je bent eindredacteur van VoetbalHub. Herschrijf het concept in helder, natuurlijk Nederlands. Gebruik uitsluitend feiten die expliciet uit de meegeleverde bronkop of bronbeschrijving blijken; voeg geen details toe. Maak één artikel over één voetbalnieuwsgebeurtenis. Laat een los tweede onderwerp volledig weg. Vertaal Engelse koppen en zinnen naar Nederlands, behalve eigennamen en officiële club- en competitiesnamen. Maak intro en body aanvullend in plaats van herhalend. Als de bron weinig informatie biedt, maak het artikel korter in plaats van te gokken. Retourneer uitsluitend geldige JSON met headline, standfirst en body (array met maximaal 2 korte alinea's). Dit is taalredactie, geen factcheck; menselijke controle blijft verplicht." },
+          { role: "user", content: JSON.stringify({ sourceTitle: src.title || item.sourceTitle || "", sourceText, headline: item.headline || "", standfirst: item.standfirst || "", body: Array.isArray(item.body) ? item.body : [] }) }
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.1
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) return { ...item, languagePolish: "failed" };
+    const edited = JSON.parse(data.choices?.[0]?.message?.content || "{}");
+    if (typeof edited.headline !== "string" || typeof edited.standfirst !== "string" || !Array.isArray(edited.body) || !edited.body.every(p => typeof p === "string")) return { ...item, languagePolish: "failed_invalid_response" };
+    return {
+      ...item,
+      headline: edited.headline.slice(0, 240),
+      standfirst: edited.standfirst.slice(0, 700),
+      body: edited.body.slice(0, 2).map(p => p.slice(0, 900)),
+      languagePolish: "ai_edited_source_limited",
+      languagePolishNote: "AI-taalredactie uitgevoerd op basis van opgeslagen broninformatie; geen onafhankelijke factcheck."
+    };
+  } catch {
+    return { ...item, languagePolish: "failed" };
+  }
 }
 async function getArticles() {
   if (!!!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
@@ -82,7 +127,7 @@ async function handle(req, res) {
     return res.end(`<!doctype html><html lang="nl"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VoetbalHub | Redactiedesk</title><style>
 :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b0d10;color:#f3f5f7;font:16px system-ui,-apple-system,sans-serif}.wrap{max-width:900px;margin:auto;padding:20px}header{border-bottom:1px solid #292e35;padding:20px 0;margin-bottom:20px}h1{margin:0;color:#a6ff00;font-size:27px}p{color:#b7bec7}.pill{display:inline-block;border:1px solid #3b424c;border-radius:99px;padding:5px 10px;font-size:12px;color:#c9d0d8}.card{background:#15191f;border:1px solid #303741;border-radius:14px;padding:16px;margin:14px 0;overflow-wrap:anywhere}h2{font-size:21px;margin:10px 0}h3{font-size:16px;margin-bottom:6px;color:#cbd3dd}a{color:#b5ff37}input,button{width:100%;padding:13px;border-radius:9px;margin:6px 0;border:1px solid #444d58;background:#20252c;color:white;font:inherit}button{background:#a6ff00;color:#101010;font-weight:750;border:0}button.secondary{background:#29313a;color:#fff;border:1px solid #46515e}.muted{color:#aab2bd;font-size:13px}.body p{line-height:1.55;color:#e1e5ea}.row{display:flex;gap:8px;flex-wrap:wrap}.row button{flex:1;min-width:130px}.error{color:#ff8b8b}.ok{color:#b5ff37}details{margin-top:12px}summary{cursor:pointer;color:#cbd3dd}</style><div class="wrap"><header><h1>VoetbalHub Redactiedesk</h1><p>Automatische concepten • broncontrole • publicatie blijft handmatig</p><span class="pill">PUBLICATIE AUTOMATISCH UITGESCHAKELD</span></header><section class="card"><label for="secret">HUB_API_SECRET</label><input id="secret" type="password" autocomplete="off" placeholder="Vul je redactiesleutel in"><button id="load">Laad concepten</button><div id="status" class="muted">Je sleutel wordt alleen gebruikt voor deze aanvraag en niet opgeslagen.</div></section><section id="items"></section></div><script>
 const $=id=>document.getElementById(id);function legacyWarning(x){const t=[x.headline,x.standfirst,...(Array.isArray(x.body)?x.body:[])].join(" ");if(/\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\b/i.test(t)||/\b(plus today.s other quizzes|Trump.*NFL|NFL.*Trump|Saturday.s gossip)\b/i.test([x.headline,...(Array.isArray(x.body)?x.body:[])].join(" ")))return "OUDE KWALITEITSCONTROLE: Engelse formuleringen of meerdere onderwerpen gedetecteerd. Niet gebruiken zonder handmatige herschrijving.";if(/\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|but|January|February|March|April|May|June|July|August|September|October|November|December)\b/i.test(String(x.headline||"")))return "OUDE KWALITEITSCONTROLE: mogelijk Engelse kop. Controleer en herschrijf handmatig.";return ""}function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-$("load").onclick=async()=>{const secret=$("secret").value.trim();if(!secret){$("status").textContent="Vul eerst HUB_API_SECRET in.";return}$("load").disabled=true;$("status").textContent="Concepten ophalen…";try{const r=await fetch("/inbox",{headers:{Authorization:"Bearer "+secret}});const d=await r.json();if(!r.ok)throw Error(d.error||"Ophalen mislukt");const list=(d.items||[]).filter(x=>x&&typeof x==="object"&&x.headline);$("status").innerHTML='<span class="ok">'+list.length+' concept(en) gevonden.</span>';if(!list.length){$("items").innerHTML='<div class="card">Nog geen automatische concepten gevonden. Start de workflow handmatig en probeer opnieuw.</div>';return}$("items").innerHTML=list.map(x=>'<article class="card"><span class="pill">'+esc(x.status||"draft_for_review")+'</span> <span class="pill">'+esc(x.category||"Voetbal")+'</span>'+(legacyWarning(x)?'<p class="error"><strong>'+esc(legacyWarning(x))+'</strong></p>':'')+'<h2>'+esc(x.headline)+'</h2><p>'+esc(x.standfirst||"")+'</p><div class="body">'+(Array.isArray(x.body)?x.body:[]).map(p=>'<p>'+esc(p)+'</p>').join("")+'</div><h3>Bron</h3>'+(x.source&&x.source.url?'<p><a href="'+esc(x.source.url)+'" target="_blank" rel="noopener">'+esc(x.source.title||x.source.url)+'</a></p>':'<p class="muted">Geen bronlink opgeslagen</p>')+(x.qualityReview&&Array.isArray(x.qualityReview.warnings)?'<p class="error"><strong>Kwaliteitssignalen</strong></p><ul>'+x.qualityReview.warnings.map(w=>'<li>'+esc(w)+'</li>').join("")+'</ul>':'')+'<details open><summary>Redactionele kwaliteitscontrole</summary><p><strong>Status:</strong> '+esc(x.verification_status||"needs_review")+'</p><p>'+esc(x.verification_notes||"NIET GECONTROLEERD: controleer alle feiten onafhankelijk vóór publicatie.")+'</p>'+(x.sourceEvidence?'<p><strong>Bronbewijs:</strong> '+esc(x.sourceEvidence.evidenceLevel||"onbekend")+'</p><p>'+esc(x.sourceEvidence.description||"Geen beschrijving in de RSS-feed; alleen de kop is beschikbaar.")+'</p>':'<p>Geen apart bronbewijs opgeslagen. Controleer de bron handmatig.</p>')+(Array.isArray(x.claims)&&x.claims.length?'<h3>Controleerbare claims</h3><ul>'+x.claims.map(cl=>'<li><strong>'+esc(cl.status||"unverified")+'</strong> — '+esc(cl.claim||"Claim ontbreekt")+'<br><span class="muted">Bewijs: '+esc(cl.evidence||"Niet aangetoond in aangeleverde RSS-gegevens")+'</span></li>').join("")+'</ul>':'<p class="muted">Geen claim-voor-claim-overzicht beschikbaar. Controleer alle feitelijke beweringen handmatig.</p>')+'<p class="muted">Dit is een bronvergelijking, geen onafhankelijke feitelijke verificatie. Publicatie blijft handmatig.</p></details><p class="muted">Aangemaakt: '+esc(x.createdAt||"tijd onbekend")+'</p></article>').join("")}catch(e){$("status").innerHTML='<span class="error">'+esc(e.message)+'</span>'}finally{$("load").disabled=false}};
+$("load").onclick=async()=>{const secret=$("secret").value.trim();if(!secret){$("status").textContent="Vul eerst HUB_API_SECRET in.";return}$("load").disabled=true;$("status").textContent="Concepten ophalen…";try{const r=await fetch("/inbox",{headers:{Authorization:"Bearer "+secret}});const d=await r.json();if(!r.ok)throw Error(d.error||"Ophalen mislukt");const list=(d.items||[]).filter(x=>x&&typeof x==="object"&&x.headline);$("status").innerHTML='<span class="ok">'+list.length+' concept(en) gevonden.</span>';if(!list.length){$("items").innerHTML='<div class="card">Nog geen automatische concepten gevonden. Start de workflow handmatig en probeer opnieuw.</div>';return}$("items").innerHTML=list.map(x=>'<article class="card"><span class="pill">'+esc(x.status||"draft_for_review")+'</span> <span class="pill">'+esc(x.category||"Voetbal")+'</span>'+(legacyWarning(x)?'<p class="error"><strong>'+esc(legacyWarning(x))+'</strong></p>':'')+'<h2>'+esc(x.headline)+'</h2><p>'+esc(x.standfirst||"")+'</p><div class="body">'+(Array.isArray(x.body)?x.body:[]).map(p=>'<p>'+esc(p)+'</p>').join("")+'</div><h3>Bron</h3>'+(x.source&&x.source.url?'<p><a href="'+esc(x.source.url)+'" target="_blank" rel="noopener">'+esc(x.source.title||x.source.url)+'</a></p>':'<p class="muted">Geen bronlink opgeslagen</p>')+(x.languagePolish==="ai_edited_source_limited"?'<p class="ok"><strong>Taalredactie:</strong> '+esc(x.languagePolishNote||"AI-taalredactie uitgevoerd; menselijke broncontrole blijft verplicht.")+'</p>':x.languagePolish&&x.languagePolish!=="not_run"&&x.languagePolish!=="skipped_no_source_text"?'<p class="error"><strong>Taalredactie niet uitgevoerd.</strong> Controleer de tekst handmatig.</p>':'')+(x.qualityReview&&Array.isArray(x.qualityReview.warnings)?'<p class="error"><strong>Kwaliteitssignalen</strong></p><ul>'+x.qualityReview.warnings.map(w=>'<li>'+esc(w)+'</li>').join("")+'</ul>':'')+'<details open><summary>Redactionele kwaliteitscontrole</summary><p><strong>Status:</strong> '+esc(x.verification_status||"needs_review")+'</p><p>'+esc(/RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(x.verification_notes||""))?"Alleen RSS-gegevens gebruikt. Dit is geen onafhankelijke factcheck; controleer concrete claims rechtstreeks bij de oorspronkelijke bron.":x.verification_notes||"NIET GECONTROLEERD: controleer alle feiten onafhankelijk vóór publicatie.")+'</p>'+(x.sourceEvidence?'<p><strong>Bronbewijs:</strong> '+esc(x.sourceEvidence.evidenceLevel||"onbekend")+'</p><p>'+esc(x.sourceEvidence.description||"Geen beschrijving in de RSS-feed; alleen de kop is beschikbaar.")+'</p>':'<p>Geen apart bronbewijs opgeslagen. Controleer de bron handmatig.</p>')+(Array.isArray(x.claims)&&x.claims.length?'<h3>Controleerbare claims</h3><ul>'+x.claims.map(cl=>'<li><strong>'+esc(cl.status||"unverified")+'</strong> — '+esc(cl.claim||"Claim ontbreekt")+'<br><span class="muted">Bewijs: '+esc(cl.evidence||"Niet aangetoond in aangeleverde RSS-gegevens")+'</span></li>').join("")+'</ul>':'<p class="muted">Geen claim-voor-claim-overzicht beschikbaar. Controleer alle feitelijke beweringen handmatig.</p>')+'<p class="muted">Dit is een bronvergelijking, geen onafhankelijke feitelijke verificatie. Publicatie blijft handmatig.</p></details><p class="muted">Aangemaakt: '+esc(x.createdAt||"tijd onbekend")+'</p></article>').join("")}catch(e){$("status").innerHTML='<span class="error">'+esc(e.message)+'</span>'}finally{$("load").disabled=false}};
 </script></html>`);
   }
   if (req.method === "GET" && url.pathname === "/editor") {
@@ -150,8 +195,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         (incomingHeadline && existingHeadline && incomingHeadline === existingHeadline);
     });
     if (isDuplicate) return send(res, 200, { status: "duplicate_skipped" });
-    const quality = editorialQuality(item);
-    inbox.unshift({ ...item, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false, qualityReview: quality });
+    const polishedItem = await polishIncomingDraft(item);
+    const quality = editorialQuality(polishedItem);
+    inbox.unshift({ ...polishedItem, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false, qualityReview: quality });
     await client.set(key, JSON.stringify(inbox.slice(0, 200)));
     return send(res, 200, { status: "saved_for_review", count: Math.min(inbox.length + 1, 200) });
   }
