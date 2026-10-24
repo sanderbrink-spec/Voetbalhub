@@ -16,16 +16,21 @@ function auditClaims(item) {
     if (!claim || typeof claim !== "object") return { claim: String(claim || ""), status: "unverified", evidence: "Geen controleerbaar bewijs opgeslagen.", auditReason: "missing_claim_record" };
     const evidence = String(claim.evidence || "").trim();
     const normalizedEvidence = normalizeEvidence(evidence);
-    const literallySupported = normalizedEvidence.length >= 12 && source.includes(normalizedEvidence);
-    if (claim.status === "supported_by_feed" && !literallySupported) return {
-      ...claim, status: "unverified", evidence: "Niet letterlijk teruggevonden in de opgeslagen brongegevens.",
-      auditReason: evidence ? "evidence_not_literal_source_match" : "missing_evidence"
+    const evidencePresentInSource = normalizedEvidence.length >= 12 && source.includes(normalizedEvidence);
+    const claimWords = normalizeEvidence(claim.claim || "").split(/\s+/).filter(w => w.length > 2 && !new Set(["the","and","but","for","with","from","that","this","zijn","heeft","heeft","wordt","werd","zijn","een","het","van","voor","bij","door","over","na","als","was","met","een","dat","die","der","des","und","ist","the"]).has(w));
+    const evidenceWords = new Set(normalizedEvidence.split(/\s+/).filter(w => w.length > 2));
+    const sharedClaimWords = claimWords.filter(w => evidenceWords.has(w));
+    const claimMatchesEvidence = claimWords.length > 0 && sharedClaimWords.length > 0;
+    const supported = evidencePresentInSource && claimMatchesEvidence;
+    if (claim.status === "supported_by_feed" && !supported) return {
+      ...claim, status: "unverified", evidence: "Niet voldoende letterlijk gekoppeld aan de claim in de opgeslagen brongegevens.",
+      auditReason: !evidence ? "missing_evidence" : (!evidencePresentInSource ? "evidence_not_literal_source_match" : "claim_evidence_mismatch")
     };
-    if (claim.status === "supported_by_feed" && literallySupported) return { ...claim, auditReason: "evidence_literal_source_match" };
+    if (claim.status === "supported_by_feed" && supported) return { ...claim, auditReason: "evidence_literal_source_match" };
     return {
-      ...claim, status: literallySupported ? "supported_by_feed" : "unverified",
-      evidence: literallySupported ? evidence : "Niet letterlijk teruggevonden in de opgeslagen brongegevens.",
-      auditReason: literallySupported ? "evidence_literal_source_match" : (evidence ? "evidence_not_literal_source_match" : "missing_evidence")
+      ...claim, status: "unverified",
+      evidence: supported ? evidence : "Niet voldoende letterlijk gekoppeld aan de claim in de opgeslagen brongegevens.",
+      auditReason: supported ? "evidence_literal_source_match_but_claim_not_preapproved" : (!evidence ? "missing_evidence" : (!evidencePresentInSource ? "evidence_not_literal_source_match" : "claim_evidence_mismatch"))
     };
   });
   return { ...item, claims: audited };

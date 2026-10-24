@@ -26,3 +26,12 @@ test("deduplicates warnings and never allows automatic publication", () => {
   assert.equal(result.warnings.filter(w => w.includes("geen onafhankelijke factcheck")).length, 1);
   assert.equal(result.publishableAutomatically, false);
 });
+
+test("downgrades evidence that belongs to a different claim", () => {
+  const item = { source: { title: "PSG wedstrijd uitgesteld. Trump spreekt over NFL-duel." }, claims: [{ claim: "Trump maakt zich zorgen over NFL-duel", status: "supported_by_feed", evidence: "PSG wedstrijd uitgesteld" }] };
+  assert.equal(auditClaims(item).claims[0].status, "unverified");
+});
+test("does not automatically upgrade a claim that was already unverified", () => {
+  const item = { source: { title: "Middlesbrough verslaat Bolton met 5-1." }, claims: [{ claim: "Middlesbrough verslaat Bolton met 5-1", status: "unverified", evidence: "Middlesbrough verslaat Bolton met 5-1" }] };
+  assert.equal(auditClaims(item).claims[0].status, "unverified");
+});
