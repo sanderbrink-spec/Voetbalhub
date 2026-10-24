@@ -51,7 +51,7 @@ async function main() {
   try {
     const inboxResponse = await fetch(API_URL + "/inbox", {
       headers: { "Authorization": "Bearer " + HUB_API_SECRET },
-      signal: AbortSignal.timeout(15000)
+      signal: AbortSignal.timeout(30000)
     });
     if (inboxResponse.ok) {
       const inboxData = await inboxResponse.json();
