@@ -152,6 +152,7 @@ async function main() {
     });
   };
   let saved = 0;
+  let dailyQuotaExhausted = false;
   for (const item of candidates.slice(0, 20)) {
     // Nederlandse feeds kunnen soms toch een Engelstalige kop bevatten; zulke items worden uitgesloten.
     const title = String(item.title || "");
@@ -217,7 +218,8 @@ async function main() {
       console.log("Concept maken mislukt:", r.status, JSON.stringify(data));
       // A daily token quota will not recover during this run; stop retrying immediately.
       if (/tokens per day|\bTPD\b/i.test(detail)) {
-        console.log("Daglimiet van de AI-dienst bereikt; geen zinloze retries. Nieuwsitem veilig overgeslagen:", item.title);
+        console.log("Daglimiet van de AI-dienst bereikt; stop de redactieronde om geen extra AI-verzoeken te verspillen:", item.title);
+        dailyQuotaExhausted = true;
         r = { ok: false, status: r.status };
         break;
       }
@@ -239,7 +241,10 @@ async function main() {
       console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 5 over " + Math.ceil(waitMs / 1000) + " seconden.");
       await new Promise(resolve => setTimeout(resolve, waitMs));
     }
-    if (!r.ok) continue;
+    if (!r.ok) {
+      if (dailyQuotaExhausted) break;
+      continue;
+    }
     let draft = data.draft;
     // Reject obvious English headlines instead of allowing them into the editorial inbox.
     const looksEnglish = headline => /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|but|January|February|March|April|May|June|July|August|September|October|November|December|best team|lay down marker|could define|may reconsider|unsure about)\b/i.test(String(headline || ""));
