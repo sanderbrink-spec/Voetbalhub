@@ -224,9 +224,12 @@ async function main() {
         if (r.status === 502 || r.status === 503 || r.status === 429) throw new Error(detail || data.error || "AI-service fout");
         break;
       }
-      const waitMatch = detail.match(/try again in ([0-9.]+)s/i);
-      const retryAfter = waitMatch ? Number(waitMatch[1]) : Math.min(45, 12 * (attempt + 1));
-      const waitMs = Math.min(60000, Math.max(7000, Math.ceil(retryAfter * 1000) + 2000));
+      const waitMatch = detail.match(/try again in\s+(?:(\d+)m\s*)?([0-9.]+)s/i);
+      const retryAfter = waitMatch
+        ? (Number(waitMatch[1] || 0) * 60 + Number(waitMatch[2]))
+        : Math.min(45, 12 * (attempt + 1));
+      // Respect long token-per-day windows instead of retrying early and wasting requests.
+      const waitMs = Math.min(8 * 60 * 1000, Math.max(7000, Math.ceil(retryAfter * 1000) + 2000));
       console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 5 over " + Math.ceil(waitMs / 1000) + " seconden.");
       await new Promise(resolve => setTimeout(resolve, waitMs));
     }
