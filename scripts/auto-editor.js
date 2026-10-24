@@ -206,8 +206,8 @@ async function main() {
           const bw = new Set(b.split(" ").filter(w => w.length > 3));
           const smaller = Math.min(aw.size, bw.size);
           const overlap = smaller ? [...aw].filter(w => bw.has(w)).length / smaller : 0;
-          if (smaller >= 7 && overlap >= 0.85) {
-            issues.push("kop, intro en tekst bevatten te veel dezelfde woorden");
+          if (smaller >= 5 && overlap >= 0.68) {
+            issues.push("kop, intro en tekst bevatten te veel dezelfde woorden (overlap " + Math.round(overlap * 100) + "%)");
             return issues;
           }
         }
