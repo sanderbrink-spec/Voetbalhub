@@ -58,6 +58,7 @@ function editorialQuality(item) {
   if (/\b(plus more|and more|other stories|also today)\b/i.test(text)) add("Mogelijk een verzamelbericht met meerdere onderwerpen; splits het op in afzonderlijke nieuwsitems.");
   const strongClaims = /\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker|definitief bewezen|zonder twijfel)\b/i;
   if (strongClaims.test(text) && !strongClaims.test(feedText)) add("Mogelijk sterkere bewering dan de bron ondersteunt; controleer de nuance.");
+  if (item?.languagePolish === "ai_edited_source_limited") add("AI heeft kop en artikeltekst herschreven; de opgeslagen claims zijn niet automatisch opnieuw uit de definitieve tekst gehaald. Controleer elke feitelijke bewering in kop, intro en body rechtstreeks bij de oorspronkelijke bron.");
   if (item?.languagePolish === "failed" || item?.languagePolish === "failed_invalid_response") add("Automatische taalredactie is mislukt; controleer en herschrijf de tekst handmatig.");
   else if (!item?.languagePolish || item?.languagePolish === "not_run" || item?.languagePolish === "skipped_no_source_text") add("Automatische taalredactie is niet uitgevoerd; controleer de Nederlandse tekst handmatig.");
   const claims = Array.isArray(item?.claims) ? item.claims : []; const unverified = claims.filter(c => !c || c.status !== "supported_by_feed");
