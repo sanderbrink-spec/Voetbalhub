@@ -50,3 +50,16 @@ test("warns that AI-rewritten article text has not had its claims extracted agai
   assert.ok(result.warnings.some(w => w.includes("niet automatisch opnieuw uit de definitieve tekst gehaald")));
   assert.equal(result.publishableAutomatically, false);
 });
+
+
+test("warns when saved claims do not match the final article text", () => {
+  const result = editorialQuality({
+    headline: "Messi krijgt lof van Perez",
+    standfirst: "Kenneth Perez prijst Lionel Messi.",
+    body: ["De analist noemt Messi een uitzonderlijke speler."],
+    source: { url: "https://example.com/story", title: "Perez over Messi" },
+    claims: [{ claim: "Arsenal verslaat Chelsea met 4-0 in de finale", status: "supported_by_feed", evidence: "Arsenal verslaat Chelsea met 4-0 in de finale" }]
+  });
+  assert.ok(result.warnings.some(w => w.includes("sluiten onvoldoende aan op de definitieve tekst")));
+  assert.equal(result.publishableAutomatically, false);
+});

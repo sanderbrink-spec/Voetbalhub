@@ -59,6 +59,15 @@ function editorialQuality(item) {
   const strongClaims = /\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker|definitief bewezen|zonder twijfel)\b/i;
   if (strongClaims.test(text) && !strongClaims.test(feedText)) add("Mogelijk sterkere bewering dan de bron ondersteunt; controleer de nuance.");
   if (item?.languagePolish === "ai_edited_source_limited") add("AI heeft kop en artikeltekst herschreven; de opgeslagen claims zijn niet automatisch opnieuw uit de definitieve tekst gehaald. Controleer elke feitelijke bewering in kop, intro en body rechtstreeks bij de oorspronkelijke bron.");
+  const finalText = normalizeEvidence(text);
+  const claimRecords = Array.isArray(item?.claims) ? item.claims : [];
+  const unrelatedClaims = claimRecords.filter(c => {
+    const words = normalizeEvidence(c?.claim || "").split(/\s+/).filter(w => w.length > 3);
+    if (words.length < 3) return false;
+    const finalWords = new Set(finalText.split(/\s+/));
+    return words.filter(w => finalWords.has(w)).length / words.length < 0.25;
+  });
+  if (unrelatedClaims.length) add(unrelatedClaims.length + " opgeslagen claim(s) sluiten onvoldoende aan op de definitieve tekst; controleer de claims opnieuw.");
   if (item?.languagePolish === "failed" || item?.languagePolish === "failed_invalid_response") add("Automatische taalredactie is mislukt; controleer en herschrijf de tekst handmatig.");
   else if (!item?.languagePolish || item?.languagePolish === "not_run" || item?.languagePolish === "skipped_no_source_text") add("Automatische taalredactie is niet uitgevoerd; controleer de Nederlandse tekst handmatig.");
   const claims = Array.isArray(item?.claims) ? item.claims : []; const unverified = claims.filter(c => !c || c.status !== "supported_by_feed");
