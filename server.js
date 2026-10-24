@@ -44,22 +44,31 @@ function normalizeHeadline(value) {
 }
 function editorialQuality(item) {
   const headline = String(item?.headline || "");
-  const text = [headline, item?.standfirst, ...(Array.isArray(item?.body) ? item.body : [])].join(" ");
+  const standfirst = String(item?.standfirst || "");
+  const body = Array.isArray(item?.body) ? item.body.filter(v => typeof v === "string") : [];
+  const text = [headline, standfirst, ...body].join(" ");
+  const src = item?.source || {};
+  const evidence = item?.sourceEvidence || {};
+  const feedText = [src.title, src.description, evidence.title, evidence.description, evidence.excerpt, evidence.content, item?.feedTitle, item?.feedDescription].filter(v => typeof v === "string").join(" ");
   const warnings = [];
-  if (!item?.source?.url && !item?.sourceUrl) warnings.push("Geen oorspronkelijke bronlink opgeslagen.");
-  if (item?.sourceEvidence?.evidenceLevel === "rss_title_and_description_only" ||
-      /RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(item?.verification_notes || item?.verificationNotes || ""))) {
-    warnings.push("Alleen RSS-gegevens gebruikt; oorspronkelijke artikel en concrete claims moeten onafhankelijk worden gecontroleerd.");
-  }
-  if (/\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\b/i.test(text)) {
-    warnings.push("Mogelijke Engelse zinsdelen gevonden; controleer de Nederlandse tekst.");
-  }
-  if (headline.length > 0 && /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December)\b/i.test(headline)) {
-    warnings.push("Kop kan Engelse formuleringen bevatten.");
-  }
+  const add = message => { if (!warnings.includes(message)) warnings.push(message); };
+  if (!src.url && !item?.sourceUrl) add("Geen oorspronkelijke bronlink opgeslagen.");
+  if (evidence.evidenceLevel === "rss_title_and_description_only" || /RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(item?.verification_notes || item?.verificationNotes || ""))) add("Alleen RSS-gegevens gebruikt; dit is geen onafhankelijke factcheck.");
+  if (/\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position|best team in|today.s other quizzes|saturday.s gossip)\\b/i.test(text)) add("Mogelijke Engelse zinsdelen gevonden; herschrijven naar natuurlijk Nederlands.");
+  if (/\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(headline)) add("Kop bevat mogelijk Engelse formuleringen.");
+  const englishStopWords = (headline.match(/\\b(the|and|but|after|before|could|would|says|said|with|from|over|for|to|in|at)\\b/gi) || []).length;
+  if (headline.trim().split(/\\s+/).length >= 5 && englishStopWords >= 2) add("Kop lijkt grotendeels Engelstalig; herschrijf de kop naar het Nederlands.");
+  const norm = v => String(v || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\\s+/).filter(w => w.length > 3);
+  const introWords = new Set(norm(standfirst));
+  const bodyWords = new Set(norm(body.join(" ")));
+  let shared = 0;
+  for (const word of introWords) if (bodyWords.has(word)) shared++;
+  if (introWords.size > 8 && shared / introWords.size > 0.8) add("Intro en artikeltekst herhalen grotendeels dezelfde informatie; maak de body aanvullend.");
+  if (/\\b(NFL|American football|Pittsburgh Steelers|New Orleans Saints)\\b/i.test(text) && /\\b(Trump|Paris Saint-Germain|PSG|Eredivisie|Champions League|voetbalclub|voetbaltrainer)\\b/i.test(text)) add("Mogelijk zijn twee losse onderwerpen samengevoegd; houd het concept bij één voetbalnieuwsgebeurtenis.");
+  if (/\\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker)\\b/i.test(text) && !/\\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker)\\b/i.test(feedText)) add("Mogelijk sterkere bewering dan de bron ondersteunt; controleer de nuance.");
   const claims = Array.isArray(item?.claims) ? item.claims : [];
   const unverifiedClaims = claims.filter(c => !c || c.status !== "supported_by_feed");
-  if (unverifiedClaims.length) warnings.push(unverifiedClaims.length + " claim(s) zijn niet eens door de RSS-feed onderbouwd.");
+  if (unverifiedClaims.length) add(unverifiedClaims.length + " claim(s) zijn niet onderbouwd door de opgeslagen RSS-gegevens.");
   return { warnings, warningCount: warnings.length, independentFactCheck: false, publishableAutomatically: false };
 }
 async function getArticles() {
