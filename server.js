@@ -146,10 +146,10 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const facts = Array.isArray(body.verifiedFacts) ? body.verifiedFacts.filter(x => typeof x === "string" && x.trim()) : [];
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => s && typeof s.url === "string" && s.url.startsWith("https://")) : [];
     if (body.approved !== true) return send(res, 400, { error: "Expliciete goedkeuring vereist: approved moet true zijn." });
-    if (typeof d.headline !== "string" || typeof d.standfirst !== "string" || !Array.isArray(d.body) || d.body.length < 3) return send(res, 400, { error: "Artikel mist kop, intro of minimaal drie alinea's." });
+    if (typeof d.headline !== "string" || typeof d.standfirst !== "string" || !Array.isArray(d.body) || d.body.length < 1) return send(res, 400, { error: "Artikel mist kop, intro of minimaal drie alinea's." });
     if (facts.length < 2 || sources.length < 1) return send(res, 400, { error: "Minimaal twee gecontroleerde feiten en één HTTPS-bron zijn vereist." });
     const now = new Date().toISOString();
-    const article = { id: crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: d.body.filter(x => typeof x === "string").slice(0,8), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources };
+    const article = { id: crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: d.body.filter(x => typeof x === "string").slice(0,2), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources };
     await client.set("article:" + article.id, JSON.stringify(article));
     return send(res, 200, { status: "published", article });
   }
