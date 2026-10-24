@@ -17,8 +17,8 @@ function auditClaims(item) {
     const evidence = String(claim.evidence || "").trim();
     const normalizedEvidence = normalizeEvidence(evidence);
     const evidencePresentInSource = normalizedEvidence.length >= 12 && source.includes(normalizedEvidence);
-    const claimWords = normalizeEvidence(claim.claim || "").split(/\\s+/).filter(w => w.length > 2 && !new Set(["the","and","but","for","with","from","that","this","zijn","heeft","heeft","wordt","werd","zijn","een","het","van","voor","bij","door","over","na","als","was","met","een","dat","die","der","des","und","ist","the"]).has(w));
-    const evidenceWords = new Set(normalizedEvidence.split(/\\s+/).filter(w => w.length > 2));
+    const claimWords = normalizeEvidence(claim.claim || "").split(/\s+/).filter(w => w.length > 2 && !new Set(["the","and","but","for","with","from","that","this","zijn","heeft","heeft","wordt","werd","zijn","een","het","van","voor","bij","door","over","na","als","was","met","een","dat","die","der","des","und","ist","the"]).has(w));
+    const evidenceWords = new Set(normalizedEvidence.split(/\s+/).filter(w => w.length > 2));
     const sharedClaimWords = claimWords.filter(w => evidenceWords.has(w));
     const claimMatchesEvidence = claimWords.length > 0 && sharedClaimWords.length > 0;
     const supported = evidencePresentInSource && claimMatchesEvidence;
