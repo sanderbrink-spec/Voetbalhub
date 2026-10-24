@@ -4,7 +4,8 @@
   "private": true,
   "description": "VoetbalHub editorial API hosted on Render",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --test"
   },
   "dependencies": {
     "redis": "^4.7.0"
