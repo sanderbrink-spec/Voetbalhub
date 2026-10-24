@@ -143,7 +143,22 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const existing = uniqueByIdentity.get(key);
       if (!existing || String(item.createdAt || "") > String(existing.createdAt || "")) uniqueByIdentity.set(key, item);
     }
-    const unique = [...uniqueByIdentity.values()].map(item => { const auditedItem = auditClaims(item); return { ...auditedItem, qualityReview: editorialQuality(auditedItem) }; });
+    const unique = [...uniqueByIdentity.values()].map(item => {
+      const auditedItem = auditClaims(item);
+      const qualityReview = editorialQuality(auditedItem);
+      const claims = Array.isArray(auditedItem.claims) ? auditedItem.claims : [];
+      const allClaimsSupported = claims.length > 0 && claims.every(claim => claim && claim.status === "supported_by_feed");
+      const existingNotes = String(auditedItem.verification_notes || auditedItem.verificationNotes || "").trim();
+      const disclaimer = "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: bronvergelijking is geen onafhankelijke factcheck; controleer claims rechtstreeks bij de oorspronkelijke bron.";
+      return {
+        ...auditedItem,
+        verification_status: allClaimsSupported ? "supported_by_feed" : "needs_review",
+        verification_notes: existingNotes.toUpperCase().startsWith("RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK")
+          ? existingNotes
+          : disclaimer + (existingNotes ? " " + existingNotes : ""),
+        qualityReview
+      };
+    });
     unique.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false, note: "Kwaliteitssignalen zijn waarschuwingen, geen onafhankelijke factcheck." });
   }
