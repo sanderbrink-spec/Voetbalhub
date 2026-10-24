@@ -2,14 +2,8 @@ name: VoetbalHub automatische redactie
 
 on:
   schedule:
-    - cron: "17 * * * *"
+    - cron: "17 */6 * * *"
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "server.js"
-      - "scripts/auto-editor.js"
-      - ".github/workflows/auto-editor.yml"
 
 permissions:
   contents: read
