@@ -110,7 +110,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
 </script></html>`);
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", storage: client.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY });
+    return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const articles = await getArticles(); return send(res, 200, { count: articles.length, articles }); }
