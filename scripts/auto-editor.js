@@ -153,7 +153,7 @@ async function main() {
   };
   let saved = 0;
   let dailyQuotaExhausted = false;
-  for (const item of candidates.slice(0, 20)) {
+  for (const item of candidates.slice(0, 5)) {
     // Nederlandse feeds kunnen soms toch een Engelstalige kop bevatten; zulke items worden uitgesloten.
     const title = String(item.title || "");
     const englishPhrases = /\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position|lay down marker|promotion favourites|transfer gossip)\\b/i;
