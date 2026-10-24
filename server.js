@@ -153,7 +153,23 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const existing = uniqueByIdentity.get(key);
       if (!existing || String(item.createdAt || "") > String(existing.createdAt || "")) uniqueByIdentity.set(key, item);
     }
-    const unique = [...uniqueByIdentity.values()].map(item => {
+    // Filter low-value feed entries before editorial review: English-only headlines,
+    // quizzes/gossip roundups, and live discussion prompts are not standalone Dutch football news.
+    const isLowQualityFeedItem = item => {
+      const title = String(item.sourceEvidence?.title || item.source?.title || item.feedTitle || item.headline || "").trim();
+      const normalized = title.toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9à-ÿ' -]/gi, " ").replace(/\\s+/g, " ");
+      if (!normalized) return true;
+      if (/\\b(quiz|who am i|today's other quizzes|gossip|transfer gossip|praat mee|live blog|live discussion|match thread|predictions thread)\\b/i.test(normalized)) return true;
+      // Filter clearly English-language headlines, while avoiding false positives on names and club names.
+      const words = normalized.split(/\\s+/).filter(Boolean);
+      const englishSignals = new Set(["the","and","could","would","should","after","before","with","without","from","their","they","he","she","his","her","are","was","were","has","have","will","weeks","fear","happy","unsure","journey","taken","hospital","lay","down","marker","define","seasons","today","saturday","continues","continues","start","new"]);
+      const dutchSignals = new Set(["de","het","een","van","voor","bij","met","door","na","naar","zijn","haar","wint","verliest","zegt","blikt","terug","speelt","krijgt","maakt","club","trainer","voetbal","doelman","spelers","gaat","moet","kan","heeft","wordt","op"]);
+      const englishCount = words.filter(word => englishSignals.has(word)).length;
+      const dutchCount = words.filter(word => dutchSignals.has(word)).length;
+      return words.length >= 5 && englishCount >= 2 && englishCount > dutchCount;
+    };
+    const filteredUnique = [...uniqueByIdentity.values()].filter(item => !isLowQualityFeedItem(item));
+    const unique = filteredUnique.map(item => {
       // Existing Redis drafts may predate the RSS-only AI rewrite guard. Do not
       // display their AI-expanded copy as an article when the saved evidence is only RSS.
       const ev = item.sourceEvidence || {};
