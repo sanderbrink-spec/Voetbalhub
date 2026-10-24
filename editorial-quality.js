@@ -20,7 +20,7 @@ function auditClaims(item) {
     const claimWords = normalizeEvidence(claim.claim || "").split(/\s+/).filter(w => w.length > 2 && !new Set(["the","and","but","for","with","from","that","this","zijn","heeft","heeft","wordt","werd","zijn","een","het","van","voor","bij","door","over","na","als","was","met","een","dat","die","der","des","und","ist","the"]).has(w));
     const evidenceWords = new Set(normalizedEvidence.split(/\s+/).filter(w => w.length > 2));
     const sharedClaimWords = claimWords.filter(w => evidenceWords.has(w));
-    const claimMatchesEvidence = claimWords.length > 0 && sharedClaimWords.length > 0;
+    const claimMatchesEvidence = claimWords.length >= 2 && sharedClaimWords.length >= 2 && sharedClaimWords.length / claimWords.length >= 0.25;
     const supported = evidencePresentInSource && claimMatchesEvidence;
     if (claim.status === "supported_by_feed" && !supported) return {
       ...claim, status: "unverified", evidence: "Niet voldoende letterlijk gekoppeld aan de claim in de opgeslagen brongegevens.",
@@ -54,6 +54,8 @@ function editorialQuality(item) {
   for (const word of introWords) if (bodyWords.has(word)) shared++;
   if (introWords.size > 8 && shared / introWords.size > 0.8) add("Intro en artikeltekst herhalen grotendeels dezelfde informatie; maak de body aanvullend.");
   if (/\b(NFL|American football|Pittsburgh Steelers|New Orleans Saints)\b/i.test(text) && /\b(Trump|Paris Saint-Germain|PSG|Eredivisie|Champions League|voetbalclub|voetbaltrainer)\b/i.test(text)) add("Mogelijk zijn losse onderwerpen samengevoegd; houd het concept bij één voetbalnieuwsgebeurtenis.");
+  if (/\b(quiz(?:zen|zes)?|brainteaser|who am i|five in five|gossip|transfer gossip|roddelrubriek)\b/i.test([headline, standfirst].join(" "))) add("Dit lijkt een quiz- of roddelrubriek in plaats van zelfstandig voetbalnieuws; zet apart of sla over.");
+  if (/\b(plus more|and more|other stories|also today)\b/i.test(text)) add("Mogelijk een verzamelbericht met meerdere onderwerpen; splits het op in afzonderlijke nieuwsitems.");
   const strongClaims = /\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker|definitief bewezen|zonder twijfel)\b/i;
   if (strongClaims.test(text) && !strongClaims.test(feedText)) add("Mogelijk sterkere bewering dan de bron ondersteunt; controleer de nuance.");
   if (item?.languagePolish === "failed" || item?.languagePolish === "failed_invalid_response") add("Automatische taalredactie is mislukt; controleer en herschrijf de tekst handmatig.");
