@@ -15,7 +15,7 @@ test("downgrades claims whose alleged evidence is not literally in source text",
   const item = { headline: "Doku is volledig hersteld", source: { url: "https://example.com/story", title: "Doku voelt zich weer sterk", description: "Doku hoopt opnieuw te beginnen." }, claims: [{ claim: "Doku is volledig hersteld", status: "supported_by_feed", evidence: "Doku is volledig hersteld" }] };
   const audited = auditClaims(item);
   assert.equal(audited.claims[0].status, "unverified");
-  assert.match(audited.claims[0].evidence, /Niet letterlijk teruggevonden/);
+  assert.match(audited.claims[0].evidence, /Niet voldoende letterlijk gekoppeld/);
 });
 test("preserves supported status only when evidence occurs in the source", () => {
   const item = { source: { url: "https://example.com/story", title: "Middlesbrough wint met 5-1", description: "Middlesbrough verslaat Bolton met 5-1." }, claims: [{ claim: "Middlesbrough wint met 5-1", status: "supported_by_feed", evidence: "Middlesbrough verslaat Bolton met 5-1" }] };
