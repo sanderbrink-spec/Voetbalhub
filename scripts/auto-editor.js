@@ -104,7 +104,10 @@ async function main() {
       /\bplus\b.*\bquiz/i,
       /\bTrump\b.*\bNFL\b|\bNFL\b.*\bTrump\b/i,
       /\bSaturday'?s gossip\b/i,
-      /\btransfer gossip\b/i
+      /\btransfer gossip\b/i,
+      /\bplus more\b/i,
+      /,\s*plus\s+(more|other|today)/i,
+      /\b(?:and|;|–|—)\s*(?:Trump|NFL|quiz(?:zes)?|gossip)\b/i
     ];
     if (mixedTopicSignals.some(pattern => pattern.test(title))) {
       console.log("Meerdere onderwerpen/roundup in bronkop; niet als één artikel verwerkt:", title);
@@ -149,10 +152,17 @@ async function main() {
     let draft = data.draft;
     // Reject obvious English headlines instead of allowing them into the editorial inbox.
     const looksEnglish = headline => /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|but|January|February|March|April|May|June|July|August|September|October|November|December|best team|lay down marker|could define|may reconsider|unsure about)\b/i.test(String(headline || ""));
-    const containsEnglishPhrasing = value => /\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\b/i.test(String(value || ""));
+    const containsEnglishPhrasing = value => /\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position|a new chapter|his journey took|to go top of|lay down marker|promotion favourites|both need a victory|test your .* knowledge|plus more|have doubts on making|making another new start)\b/i.test(String(value || ""));
+    const englishFunctionWords = new Set(["the","and","but","for","with","from","after","before","when","while","they","their","them","his","her","she","he","has","have","had","will","would","could","should","might","may","says","said","into","over","under","about","this","that","these","those","who","what","where","which","because","than","then","also","both","not","new","old","first","second","team","club","manager","football","hospital","training","january","february","march","april","june","july","august","september","october","december"]);
+    const hasEnglishDensity = value => {
+      const words = String(value || "").match(/[A-Za-zÀ-ÿ]+/g) || [];
+      if (words.length < 10) return false;
+      const hits = words.filter(word => englishFunctionWords.has(word.toLowerCase())).length;
+      return hits >= 4 && hits / words.length >= 0.22;
+    };
     const draftHasEnglish = candidate => looksEnglish(candidate?.headline) ||
-      containsEnglishPhrasing(candidate?.standfirst) ||
-      (Array.isArray(candidate?.body) && candidate.body.some(containsEnglishPhrasing));
+      containsEnglishPhrasing(candidate?.standfirst) || hasEnglishDensity(candidate?.standfirst) ||
+      (Array.isArray(candidate?.body) && candidate.body.some(p => containsEnglishPhrasing(p) || hasEnglishDensity(p)));
     if (draftHasEnglish(draft)) {
       console.log("Engelse kop of Engelse formulering afgekeurd; één Nederlandstalige herstelpoging:", draft.headline);
       const retry = await fetch(API_URL + "/draft", {
