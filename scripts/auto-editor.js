@@ -3,8 +3,9 @@ const HUB_API_SECRET = process.env.HUB_API_SECRET || "";
 const API_URL = process.env.VOETBALHUB_API_URL || "https://voetbalhub-redactie.onrender.com";
 const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 const FEEDS = [
+  // Nederlandse voetbalbronnen: geen automatische ingestroom van Engelstalige buitenlandse media.
   "https://feeds.nos.nl/nosvoetbal",
-  "https://feeds.bbci.co.uk/sport/football/rss.xml"
+  "https://www.voetbalprimeur.nl/feed/news.xml"
 ];
 
 function decode(s = "") {
