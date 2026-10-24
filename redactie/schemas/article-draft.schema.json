@@ -145,6 +145,19 @@
     "publishedAt": {
       "type": "string",
       "format": "date-time"
+    },
+    "imageUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "imageSource": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "imageCredit": {
+      "type": "string",
+      "maxLength": 200
     }
   },
   "additionalProperties": false
