@@ -148,7 +148,7 @@ async function main() {
     if (!r.ok) continue;
     let draft = data.draft;
     // Reject obvious English headlines instead of allowing them into the editorial inbox.
-    const looksEnglish = headline => /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|but|January|February|March|April|May|June|July|August|September|October|November|December)\b/i.test(String(headline || ""));
+    const looksEnglish = headline => /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|but|January|February|March|April|May|June|July|August|September|October|November|December|best team|lay down marker|could define|may reconsider|unsure about)\b/i.test(String(headline || ""));
     const containsEnglishPhrasing = value => /\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\b/i.test(String(value || ""));
     const draftHasEnglish = candidate => looksEnglish(candidate?.headline) ||
       containsEnglishPhrasing(candidate?.standfirst) ||
