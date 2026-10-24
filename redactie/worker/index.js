@@ -72,8 +72,11 @@ async function publish(request,env) {
  if(x.approved!==true)return reply({error:"Publicatie vereist expliciete goedkeuring: approved moet true zijn."},400);
  if(!str(d.headline,200)||!str(d.standfirst,500)||!Array.isArray(d.body)||d.body.length<3)return reply({error:"Artikel mist kop, intro of minimaal drie alinea's."},400);
  if(facts.length<2||sources.length<1)return reply({error:"Minimaal twee gecontroleerde feiten en één https-bron zijn vereist."},400);
+ const imageUrl=str(d.imageUrl,1000),imageSource=str(d.imageSource,300),imageCredit=str(d.imageCredit,200),imageRights=str(d.imageRights,20);
+ if(imageUrl && (!/^https:\/\//i.test(imageUrl) || !["cleared","licensed"].includes(imageRights) || !imageSource || !imageCredit)) return reply({error:"Een foto vereist een HTTPS-URL, bron, naamsvermelding en bevestigde rechten (cleared/licensed)."},400);
+ if(!imageUrl && imageRights && !["not_needed","pending","rejected"].includes(imageRights)) return reply({error:"Beeldrechtenstatus zonder foto is ongeldig."},400);
  const id=crypto.randomUUID(),now=new Date().toISOString();
- const article={id,status:"published",author:"VoetbalHub Redactie",headline:str(d.headline,200),standfirst:str(d.standfirst,500),body:d.body.map(v=>str(v,2500)).filter(Boolean).slice(0,8),why_it_matters:str(d.why_it_matters,1000),category:str(x.category||"Voetbal",80),publishedAt:now,updatedAt:now,verifiedFacts:facts,sources:sources.map(s=>({name:str(s.name,120),url:str(s.url,500)}))};
+ const article={id,status:"published",author:"VoetbalHub Redactie",headline:str(d.headline,200),standfirst:str(d.standfirst,500),body:d.body.map(v=>str(v,2500)).filter(Boolean).slice(0,8),why_it_matters:str(d.why_it_matters,1000),category:str(x.category||"Voetbal",80),publishedAt:now,updatedAt:now,verifiedFacts:facts,sources:sources.map(s=>({name:str(s.name,120),url:str(s.url,500)})),...(imageUrl?{imageUrl,imageSource,imageCredit,imageRights}:{imageRights:imageRights||"not_needed"})};
  try{await env.EDITORIAL_KV.put("article:"+id,JSON.stringify(article));return reply({status:"published",article});}
  catch{return reply({error:"Artikel kon niet worden opgeslagen."},503);}
 }
