@@ -38,7 +38,7 @@ async function main() {
   if (!GROQ_API_KEY || !HUB_API_SECRET) throw new Error("GROQ_API_KEY en HUB_API_SECRET moeten als GitHub Actions secrets zijn ingesteld.");
   const candidates = [];
   // Alleen toegestane Nederlandstalige redacties.
-  const allowedHosts = new Set(["nos.nl", "www.nos.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
+  const allowedHosts = new Set(["feeds.nos.nl", "nos.nl", "www.nos.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
   for (const url of FEEDS) {
     const feedHost = new URL(url).hostname.toLowerCase();
     if (!allowedHosts.has(feedHost)) { console.log("Niet-toegestane bron overgeslagen:", url); continue; }
