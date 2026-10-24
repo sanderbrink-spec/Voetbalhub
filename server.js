@@ -163,10 +163,15 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const safeItem = rssOnly ? {
         ...item,
         headline: sourceHeadline || item.headline,
-        standfirst: sourceDescription || "Alleen RSS-informatie beschikbaar; open de oorspronkelijke bron voor verdere redactie.",
-        body: sourceDescription ? [sourceDescription] : [],
+        // Do not promote a long RSS description or legacy AI copy into an article.
+        // Show a clear review placeholder; the source description remains visible in evidence below.
+        standfirst: "Alleen RSS-informatie beschikbaar. Open de oorspronkelijke bron en schrijf het artikel na controle zelf uit.",
+        body: [],
+        intro: "",
+        articleText: "",
+        claims: [],
         languagePolish: "skipped_rss_only_source",
-        languagePolishNote: "AI-uitbreiding verborgen in de redactiedesk omdat geen volledige artikeltekst beschikbaar is."
+        languagePolishNote: "AI-uitbreiding en oude claims verborgen omdat geen volledige artikeltekst beschikbaar is."
       } : item;
       const auditedItem = auditClaims(safeItem);
       const qualityReview = editorialQuality(auditedItem);
