@@ -71,6 +71,42 @@ function editorialQuality(item) {
   if (unverifiedClaims.length) add(unverifiedClaims.length + " claim(s) zijn niet onderbouwd door de opgeslagen RSS-gegevens.");
   return { warnings, warningCount: warnings.length, independentFactCheck: false, publishableAutomatically: false };
 }
+async function polishIncomingDraft(item) {
+  if (!GROQ_API_KEY || !item || typeof item !== "object") return { ...item, languagePolish: "not_run" };
+  const src = item.source || {};
+  const ev = item.sourceEvidence || {};
+  const sourceText = [src.title, src.description, ev.title, ev.description, ev.excerpt, ev.content, item.feedTitle, item.feedDescription].filter(v => typeof v === "string").join("\\n").slice(0, 7000);
+  if (!sourceText.trim()) return { ...item, languagePolish: "skipped_no_source_text" };
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [
+          { role: "system", content: "Je bent eindredacteur van VoetbalHub. Herschrijf het concept in helder, natuurlijk Nederlands. Gebruik uitsluitend feiten die expliciet uit de meegeleverde bronkop of bronbeschrijving blijken; voeg geen details toe. Maak één artikel over één voetbalnieuwsgebeurtenis. Laat een los tweede onderwerp volledig weg. Vertaal Engelse koppen en zinnen naar Nederlands, behalve eigennamen en officiële club- en competitiesnamen. Maak intro en body aanvullend in plaats van herhalend. Als de bron weinig informatie biedt, maak het artikel korter in plaats van te gokken. Retourneer uitsluitend geldige JSON met headline, standfirst en body (array met maximaal 2 korte alinea's). Dit is taalredactie, geen factcheck; menselijke controle blijft verplicht." },
+          { role: "user", content: JSON.stringify({ sourceTitle: src.title || item.sourceTitle || "", sourceText, headline: item.headline || "", standfirst: item.standfirst || "", body: Array.isArray(item.body) ? item.body : [] }) }
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.1
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) return { ...item, languagePolish: "failed" };
+    const edited = JSON.parse(data.choices?.[0]?.message?.content || "{}");
+    if (typeof edited.headline !== "string" || typeof edited.standfirst !== "string" || !Array.isArray(edited.body) || !edited.body.every(p => typeof p === "string")) return { ...item, languagePolish: "failed_invalid_response" };
+    return {
+      ...item,
+      headline: edited.headline.slice(0, 240),
+      standfirst: edited.standfirst.slice(0, 700),
+      body: edited.body.slice(0, 2).map(p => p.slice(0, 900)),
+      languagePolish: "ai_edited_source_limited",
+      languagePolishNote: "AI-taalredactie uitgevoerd op basis van opgeslagen broninformatie; geen onafhankelijke factcheck."
+    };
+  } catch {
+    return { ...item, languagePolish: "failed" };
+  }
+}
 async function getArticles() {
   if (!!!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
@@ -159,8 +195,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         (incomingHeadline && existingHeadline && incomingHeadline === existingHeadline);
     });
     if (isDuplicate) return send(res, 200, { status: "duplicate_skipped" });
-    const quality = editorialQuality(item);
-    inbox.unshift({ ...item, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false, qualityReview: quality });
+    const polishedItem = await polishIncomingDraft(item);
+    const quality = editorialQuality(polishedItem);
+    inbox.unshift({ ...polishedItem, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false, qualityReview: quality });
     await client.set(key, JSON.stringify(inbox.slice(0, 200)));
     return send(res, 200, { status: "saved_for_review", count: Math.min(inbox.length + 1, 200) });
   }
