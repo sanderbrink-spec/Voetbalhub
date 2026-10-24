@@ -39,7 +39,7 @@ function authorized(req) {
   return !!API_SECRET && req.headers.authorization === "Bearer " + API_SECRET;
 }
 function normalizeHeadline(value) {
-  return String(value || "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
 function editorialQuality(item) {
@@ -51,10 +51,10 @@ function editorialQuality(item) {
       /RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(item?.verification_notes || item?.verificationNotes || ""))) {
     warnings.push("Alleen RSS-gegevens gebruikt; oorspronkelijke artikel en concrete claims moeten onafhankelijk worden gecontroleerd.");
   }
-  if (/\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\\b/i.test(text)) {
+  if (/\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position)\b/i.test(text)) {
     warnings.push("Mogelijke Engelse zinsdelen gevonden; controleer de Nederlandse tekst.");
   }
-  if (headline.length > 0 && /\\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December)\\b/i.test(headline)) {
+  if (headline.length > 0 && /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December)\b/i.test(headline)) {
     warnings.push("Kop kan Engelse formuleringen bevatten.");
   }
   const claims = Array.isArray(item?.claims) ? item.claims : [];
