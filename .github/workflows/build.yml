@@ -303,17 +303,17 @@ jobs:
               s = s.replace(method_marker, image_method + method_marker, 1)
           image_call = "                  addEditorialImage(page, article);"
           if image_call not in s:
-              title_marker = '                  page.addView(title);'
+              title_marker = "page.addView(title);"
               if title_marker not in s:
                   raise SystemExit("Could not find article title insertion point for image renderer.")
-              s = s.replace(title_marker, title_marker + "\\n" + image_call, 1)
-          # ImageView is an Android framework class; imports are explicit to avoid relying on wildcards.
-          if "import android.widget.ImageView;" not in s:
+              s = s.replace(title_marker, title_marker + chr(10) + image_call, 1)
+          # ImageView is an Android framework class; import it only if the source does not already use a wildcard.
+          if "import android.widget.ImageView;" not in s and "import android.widget.*;" not in s:
               import_marker = "import android.widget.LinearLayout;"
               if import_marker in s:
-                  s = s.replace(import_marker, import_marker + "\\nimport android.widget.ImageView;", 1)
+                  s = s.replace(import_marker, import_marker + chr(10) + "import android.widget.ImageView;", 1)
               else:
-                  raise SystemExit("Could not find Android LinearLayout import for image renderer.")
+                  raise SystemExit("Could not find Android widget import for image renderer.")
 
           # Print precise source for the results screen so its broken feed can be diagnosed.
           score_pos = s.find("private void showScores()")
