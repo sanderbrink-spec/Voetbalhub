@@ -47,7 +47,7 @@ async function polishIncomingDraft(item) {
   if (!GROQ_API_KEY || !item || typeof item !== "object") return { ...item, languagePolish: "not_run" };
   const src = item.source || {};
   const ev = item.sourceEvidence || {};
-  const sourceText = [src.title, src.description, ev.title, ev.description, ev.excerpt, ev.content, item.feedTitle, item.feedDescription].filter(v => typeof v === "string").join("\\n").slice(0, 7000);
+  const sourceText = [src.title, src.description, ev.title, ev.description, ev.excerpt, ev.content, item.feedTitle, item.feedDescription].filter(v => typeof v === "string").join("\n").slice(0, 7000);
   if (!sourceText.trim()) return { ...item, languagePolish: "skipped_no_source_text" };
   try {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -56,7 +56,7 @@ async function polishIncomingDraft(item) {
       body: JSON.stringify({
         model: MODEL,
         messages: [
-          { role: "system", content: "Je bent eindredacteur van VoetbalHub. Herschrijf het concept in helder, natuurlijk Nederlands. Gebruik uitsluitend feiten die expliciet uit de meegeleverde bronkop of bronbeschrijving blijken; voeg geen details toe. Maak één artikel over één voetbalnieuwsgebeurtenis. Laat een los tweede onderwerp volledig weg. Vertaal Engelse koppen en zinnen naar Nederlands, behalve eigennamen en officiële club- en competitiesnamen. Maak intro en body aanvullend in plaats van herhalend. Als de bron weinig informatie biedt, maak het artikel korter in plaats van te gokken. Retourneer uitsluitend geldige JSON met headline, standfirst en body (array met maximaal 2 korte alinea's). Dit is taalredactie, geen factcheck; menselijke controle blijft verplicht." },
+          { role: "system", content: "Je bent eindredacteur van VoetbalHub. Herschrijf uitsluitend voor taal en helderheid; je bent geen verslaggever en mag geen feiten aanvullen. Gebruik alleen feiten die letterlijk blijken uit de meegeleverde bronkop en bronbeschrijving. Als de bron alleen RSS-kop en -beschrijving bevat, schrijf maximaal één korte body-alinea en houd headline en standfirst strikt bij die informatie. Verzin nooit leeftijden, datums, aftraptijden, uitslagen, blessures, diagnoses, transfers, quotes, verklaringen, ranglijsten, wedstrijdcontext of details over hoe iets gebeurde. Zet onzekerheid uit de bron (zoals mogelijk, zou kunnen, volgens geruchten) niet om in zekerheid. Voeg geen impliciete aannames toe. Maak één artikel over één voetbalnieuwsgebeurtenis; laat elk tweede onderwerp weg. Vertaal Engelse zinnen volledig naar natuurlijk Nederlands, behalve eigennamen en officiële club- en competitiesnamen. Laat intro en body niet hetzelfde zeggen. Als er te weinig informatie is, schrijf kort en sober. Retourneer uitsluitend geldige JSON met headline, standfirst en body (array met maximaal 1 korte alinea bij RSS-only bewijs, anders maximaal 2). Dit is taalredactie, geen factcheck; menselijke controle blijft verplicht." },
           { role: "user", content: JSON.stringify({ sourceTitle: src.title || item.sourceTitle || "", sourceText, headline: item.headline || "", standfirst: item.standfirst || "", body: Array.isArray(item.body) ? item.body : [] }) }
         ],
         response_format: { type: "json_object" },
