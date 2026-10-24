@@ -147,7 +147,8 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const auditedItem = auditClaims(item);
       const qualityReview = editorialQuality(auditedItem);
       const claims = Array.isArray(auditedItem.claims) ? auditedItem.claims : [];
-      const hasFullSourceEvidence = auditedItem.sourceEvidence?.evidenceLevel !== "rss_title_and_description_only" && Boolean(auditedItem.sourceEvidence?.content || auditedItem.sourceEvidence?.excerpt);\n      const allClaimsSupported = hasFullSourceEvidence && claims.length > 0 && claims.every(claim => claim && claim.status === "supported_by_feed");
+      const hasFullSourceEvidence = auditedItem.sourceEvidence?.evidenceLevel !== "rss_title_and_description_only" && Boolean(auditedItem.sourceEvidence?.content || auditedItem.sourceEvidence?.excerpt);
+      const allClaimsSupported = hasFullSourceEvidence && claims.length > 0 && claims.every(claim => claim && claim.status === "supported_by_feed");
       const existingNotes = String(auditedItem.verification_notes || auditedItem.verificationNotes || "").trim();
       const disclaimer = "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: bronvergelijking is geen onafhankelijke factcheck; controleer claims rechtstreeks bij de oorspronkelijke bron.";
       return {
