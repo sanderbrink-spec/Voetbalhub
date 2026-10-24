@@ -51,42 +51,41 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
-          gradle_files = [p for p in (Path("app/build.gradle.kts"), Path("app/build.gradle")) if p.exists()]
-          if not gradle_files:
+          gradle = Path("app/build.gradle.kts")
+          if not gradle.exists():
+              gradle = Path("app/build.gradle")
+          if not gradle.exists():
               raise SystemExit("App Gradle file not found.")
-          changed = False
-          for p in gradle_files:
-              content = p.read_text()
-              updated, n = re.subn(r'applicationId\\s*(?:=\\s*)?["\\']([^"\\']+)["\\']', 'applicationId "nl.voetbalhub.app1"', content, count=1)
-              if n:
-                  if p.name.endswith(".kts"):
-                      updated = re.sub(r'applicationId "nl\\.voetbalhub\\.app1"', 'applicationId = "nl.voetbalhub.app1"', updated, count=1)
-                  p.write_text(updated)
-                  changed = True
-                  print(f"Set separate applicationId in {p}")
-                  break
-          if not changed:
+          content = gradle.read_text()
+          if gradle.name.endswith(".kts"):
+              pattern = r'applicationId\s*=\s*"[^"]+"'
+              replacement = 'applicationId = "nl.voetbalhub.app1"'
+          else:
+              pattern = r'applicationId\s+"[^"]+"'
+              replacement = 'applicationId "nl.voetbalhub.app1"'
+          updated, n = re.subn(pattern, replacement, content, count=1)
+          if n != 1:
               raise SystemExit("Could not safely locate applicationId in app Gradle file.")
-          string_files = list(Path("app/src/main/res").glob("values*/strings.xml"))
+          gradle.write_text(updated)
+          print(f"Set separate applicationId in {gradle}")
           label_changed = False
-          for p in string_files:
+          for p in Path("app/src/main/res").glob("values*/strings.xml"):
               content = p.read_text()
-              updated, n = re.subn(r'(<string\\s+name=["\\']app_name["\\'][^>]*>).*?(</string>)', r'\\1VoetbalHub 1\\2', content, count=1, flags=re.S)
+              updated, n = re.subn(r'(<string\s+name="app_name"[^>]*>).*?(</string>)', r'\1VoetbalHub 1\2', content, count=1, flags=re.S)
               if n:
                   p.write_text(updated)
                   label_changed = True
           if not label_changed:
-              manifests = [Path("app/src/main/AndroidManifest.xml")]
-              for p in manifests:
-                  if not p.exists(): continue
-                  content = p.read_text()
-                  updated, n = re.subn(r'android:label=["\\']([^"\\']+)["\\']', 'android:label="VoetbalHub 1"', content, count=1)
+              manifest = Path("app/src/main/AndroidManifest.xml")
+              if manifest.exists():
+                  content = manifest.read_text()
+                  updated, n = re.subn(r'android:label="[^"]+"', 'android:label="VoetbalHub 1"', content, count=1)
                   if n:
-                      p.write_text(updated)
+                      manifest.write_text(updated)
                       label_changed = True
           if not label_changed:
               raise SystemExit("Could not safely update Android app label.")
-          print("App label set to VoetbalHub 1; private app ID remains separate.")
+          print("App label set to VoetbalHub 1.")
           PY
 
       - name: Patch live match feeds and home screen
