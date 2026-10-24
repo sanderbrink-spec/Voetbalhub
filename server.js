@@ -156,27 +156,50 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     // Exclude low-value items from the editorial queue. This is a display/queue filter:
     // records stay in Redis for auditability, but old records are filtered on every /inbox read.
     const isLowQualityFeedItem = item => {
-      const title = String(item.sourceEvidence?.title || item.source?.title || item.feedTitle || item.headline || "").trim().toLowerCase();
-      if (!title) return true;
-      const normalized = title.replace(/[’‘]/g, "'").replace(/[^a-z0-9à-ÿ' -]/g, " ").replace(/\s+/g, " ").trim();
+      // Test every plausible headline field. Some legacy records have a feed/source
+      // title before the actual headline, which previously let bad titles slip through.
+      const candidates = [
+        item.headline, item.title, item.sourceEvidence?.title,
+        item.source?.title, item.feedTitle
+      ].map(value => String(value || "").trim().toLowerCase()).filter(Boolean);
+      if (!candidates.length) return true;
+      const normalize = value => value
+        .replace(/[’‘]/g, "'")
+        .replace(/[^a-z0-9à-ÿ' -]/g, " ")
+        .replace(/\s+/g, " ").trim();
       const excludedPhrases = [
         "quiz", "who am i", "today's other quizzes", "gossip", "transfer gossip",
         "praat mee", "live blog", "live discussion", "match thread", "predictions thread",
-        "spelersbattle", "southampton technical director", "technical director"
+        "spelersbattle", "southampton technical director", "technical director",
+        "trump bezorgd om nfl", "nfl-duel", "nfl duel"
       ];
-      if (excludedPhrases.some(phrase => normalized.includes(phrase))) return true;
-      // Clear English-language signals catch old feed records as well as new ones.
-      const words = normalized.split(" ").filter(Boolean);
       const englishSignals = new Set([
-        "the","and","could","would","should","after","before","with","without","from","their","they","them","he","she","his","her","are","was","were","has","have","will","weeks","fear","happy","unsure","journey","taken","hospital","lay","down","marker","define","seasons","today","saturday","continues","start","new","put","me","in","difficult","position","technical","director","manager","says","reports","reveals","confirmed","statement","ahead","draw","win","loss","players","coach","boss","injury","return","signing","transfer","deal","talks","club","football","premier","league","could","not","for","to","of","on","at","is","are","was","were","have","has","been","amid","as","his","her","their","over","under","into","out","up","down","vs"
+        "the","and","could","would","should","after","before","with","without","from",
+        "their","they","them","he","she","his","her","are","was","were","has","have",
+        "will","weeks","fear","happy","unsure","journey","taken","hospital","lay","down",
+        "marker","define","seasons","today","saturday","continues","start","new","put",
+        "me","in","difficult","position","technical","director","manager","says","reports",
+        "reveals","confirmed","statement","ahead","draw","win","loss","players","coach",
+        "boss","injury","return","signing","transfer","deal","talks","club","football",
+        "premier","league","not","for","to","of","on","at","is","been","amid","as",
+        "over","under","into","out","up","vs"
       ]);
       const dutchSignals = new Set([
-        "de","het","een","van","voor","bij","met","door","na","naar","zijn","haar","wint","verliest","zegt","blikt","terug","speelt","krijgt","maakt","club","trainer","voetbal","doelman","spelers","gaat","moet","kan","heeft","wordt","op","als","maar","niet","door","tegen","bij","weer","nu","dit","dat","uit","over","voor","nog","na","heeft","heeft","maakt","komt","wil","zou","blijft","eindelijk","twee","met","rond","bij","van"
+        "de","het","een","van","voor","bij","met","door","na","naar","zijn","haar","wint",
+        "verliest","zegt","blikt","terug","speelt","krijgt","maakt","club","trainer",
+        "voetbal","doelman","spelers","gaat","moet","kan","heeft","wordt","op","als",
+        "maar","niet","tegen","weer","nu","dit","dat","uit","over","nog","komt","wil",
+        "zou","blijft","eindelijk","twee","rond","en","bij"
       ]);
-      const englishCount = words.filter(word => englishSignals.has(word)).length;
-      const dutchCount = words.filter(word => dutchSignals.has(word)).length;
-      // Require several English function/content words and no meaningful Dutch signal.
-      return words.length >= 5 && englishCount >= 3 && englishCount > dutchCount * 2;
+      return candidates.some(candidate => {
+        const normalized = normalize(candidate);
+        if (excludedPhrases.some(phrase => normalized.includes(phrase))) return true;
+        const words = normalized.split(" ").filter(Boolean);
+        const englishCount = words.filter(word => englishSignals.has(word)).length;
+        const dutchCount = words.filter(word => dutchSignals.has(word)).length;
+        // Conservative language check: only hide clear English headlines, not mixed Dutch titles.
+        return words.length >= 5 && englishCount >= 3 && englishCount > dutchCount * 2;
+      });
     };
     const filteredUnique = [...uniqueByIdentity.values()].filter(item => !isLowQualityFeedItem(item));
     const unique = filteredUnique.map(item => {
