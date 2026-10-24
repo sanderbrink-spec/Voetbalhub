@@ -37,7 +37,11 @@ function extractItems(xml) {
 async function main() {
   if (!GROQ_API_KEY || !HUB_API_SECRET) throw new Error("GROQ_API_KEY en HUB_API_SECRET moeten als GitHub Actions secrets zijn ingesteld.");
   const candidates = [];
+  // Alleen toegestane Nederlandstalige redacties.
+  const allowedHosts = new Set(["nos.nl", "www.nos.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
   for (const url of FEEDS) {
+    const feedHost = new URL(url).hostname.toLowerCase();
+    if (!allowedHosts.has(feedHost)) { console.log("Niet-toegestane bron overgeslagen:", url); continue; }
     try {
       const r = await fetch(url, { headers: { "User-Agent": "VoetbalHubEditorialBot/1.0" }, signal: AbortSignal.timeout(12000) });
       if (!r.ok) { console.log("Feed overgeslagen:", url, r.status); continue; }
@@ -98,9 +102,18 @@ async function main() {
     });
   };
   let saved = 0;
-  for (const item of candidates.slice(0, 10)) {
-    // Roundups en koppen die expliciet twee losse onderwerpen mengen zijn ongeschikt als één nieuwsartikel.
+  for (const item of candidates.slice(0, 20)) {
+    // Nederlandse feeds kunnen soms toch een Engelstalige kop bevatten; zulke items worden uitgesloten.
     const title = String(item.title || "");
+    const englishPhrases = /\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position|lay down marker|promotion favourites|transfer gossip)\\b/i;
+    const englishWords = new Set(["the","and","but","for","with","from","after","before","when","while","they","their","them","his","her","she","he","has","have","had","will","would","could","should","might","says","said","into","over","under","about","this","that","these","those","who","what","where","which","because","than","then","also","both","team","club","manager","football","hospital","training","january","february","march","april","june","july","august","september","october","december"]);
+    const titleWords = title.match(/[A-Za-zÀ-ÿ]+/g) || [];
+    const englishHits = titleWords.filter(word => englishWords.has(word.toLowerCase())).length;
+    if (englishPhrases.test(title) || (titleWords.length >= 7 && englishHits >= 3 && englishHits / titleWords.length >= 0.3)) {
+      console.log("Engelstalige kop geweerd:", title);
+      continue;
+    }
+    // Roundups en koppen die expliciet twee losse onderwerpen mengen zijn ongeschikt als één nieuwsartikel.
     const mixedTopicSignals = [
       /\bplus\b.*\bquiz/i,
       /\bTrump\b.*\bNFL\b|\bNFL\b.*\bTrump\b/i,
@@ -126,6 +139,9 @@ async function main() {
         category: "Voetbal",
         facts: [
           "Bronkop: " + item.title,
+          "Huisstijl VoetbalHub: nuchter, helder, direct en compact Nederlands; actieve zinnen, geen sensatie en geen herhaling.",
+          "Auteursrechtelijke zorgvuldigheid: schrijf zelfstandig vanuit de noodzakelijke feiten; kopieer geen zinnen, herkenbare formuleringen, volgorde of structuur van de bron en vertaal niet zin voor zin. Gebruik geen onnodige citaten of creatieve bronpassages.",
+          "Juridische zorgvuldigheid: voeg geen onbewezen claims toe, maak geen ongefundeerde beschuldigingen en wek niet de indruk dat feiten onafhankelijk zijn geverifieerd. Bronvermelding is geen juridische garantie.",
           "Bronbeschrijving (maximaal 800 tekens): " + (item.description || "De feed bevat geen beschrijving; schrijf voorzichtig en vermeld de beperkte broninformatie.").slice(0, 800)
         ],
         sourceUrls: [item.link, item.feed]
