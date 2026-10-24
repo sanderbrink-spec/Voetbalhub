@@ -20,7 +20,7 @@ function auditClaims(item) {
     const claimWords = normalizeEvidence(claim.claim || "").split(/\s+/).filter(w => w.length > 2 && !new Set(["the","and","but","for","with","from","that","this","zijn","heeft","heeft","wordt","werd","zijn","een","het","van","voor","bij","door","over","na","als","was","met","een","dat","die","der","des","und","ist","the"]).has(w));
     const evidenceWords = new Set(normalizedEvidence.split(/\s+/).filter(w => w.length > 2));
     const sharedClaimWords = claimWords.filter(w => evidenceWords.has(w));
-    const claimMatchesEvidence = claimWords.length > 0 && sharedClaimWords.length > 0;
+    const claimMatchesEvidence = claimWords.length >= 2 && sharedClaimWords.length >= 2 && sharedClaimWords.length / claimWords.length >= 0.25;
     const supported = evidencePresentInSource && claimMatchesEvidence;
     if (claim.status === "supported_by_feed" && !supported) return {
       ...claim, status: "unverified", evidence: "Niet voldoende letterlijk gekoppeld aan de claim in de opgeslagen brongegevens.",
