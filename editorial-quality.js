@@ -68,6 +68,7 @@ function editorialQuality(item) {
     return words.filter(w => finalWords.has(w)).length / words.length < 0.25;
   });
   if (unrelatedClaims.length) add(unrelatedClaims.length + " opgeslagen claim(s) sluiten onvoldoende aan op de definitieve tekst; controleer de claims opnieuw.");
+  if (item?.languagePolish === "skipped_rss_only_source") add("AI-herschrijving bewust overgeslagen: alleen RSS-kop/beschrijving beschikbaar. Dit concept niet als uitgewerkt artikel behandelen; open de oorspronkelijke bron en controleer alle feiten.");
   if (item?.languagePolish === "failed" || item?.languagePolish === "failed_invalid_response") add("Automatische taalredactie is mislukt; controleer en herschrijf de tekst handmatig.");
   else if (!item?.languagePolish || item?.languagePolish === "not_run" || item?.languagePolish === "skipped_no_source_text") add("Automatische taalredactie is niet uitgevoerd; controleer de Nederlandse tekst handmatig.");
   const claims = Array.isArray(item?.claims) ? item.claims : []; const unverified = claims.filter(c => !c || c.status !== "supported_by_feed");
