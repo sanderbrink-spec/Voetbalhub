@@ -154,10 +154,24 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       if (!existing || String(item.createdAt || "") > String(existing.createdAt || "")) uniqueByIdentity.set(key, item);
     }
     const unique = [...uniqueByIdentity.values()].map(item => {
-      const auditedItem = auditClaims(item);
+      // Existing Redis drafts may predate the RSS-only AI rewrite guard. Do not
+      // display their AI-expanded copy as an article when the saved evidence is only RSS.
+      const ev = item.sourceEvidence || {};
+      const rssOnly = ev.evidenceLevel === "rss_title_and_description_only" || (!ev.content && !ev.excerpt);
+      const sourceHeadline = String(ev.title || item.source?.title || item.feedTitle || "").trim();
+      const sourceDescription = String(ev.description || item.source?.description || item.feedDescription || "").trim();
+      const safeItem = rssOnly ? {
+        ...item,
+        headline: sourceHeadline || item.headline,
+        standfirst: sourceDescription || "Alleen RSS-informatie beschikbaar; open de oorspronkelijke bron voor verdere redactie.",
+        body: sourceDescription ? [sourceDescription] : [],
+        languagePolish: "skipped_rss_only_source",
+        languagePolishNote: "AI-uitbreiding verborgen in de redactiedesk omdat geen volledige artikeltekst beschikbaar is."
+      } : item;
+      const auditedItem = auditClaims(safeItem);
       const qualityReview = editorialQuality(auditedItem);
       const claims = Array.isArray(auditedItem.claims) ? auditedItem.claims : [];
-      const hasFullSourceEvidence = auditedItem.sourceEvidence?.evidenceLevel !== "rss_title_and_description_only" && Boolean(auditedItem.sourceEvidence?.content || auditedItem.sourceEvidence?.excerpt);
+      const hasFullSourceEvidence = !rssOnly;
       const allClaimsSupported = hasFullSourceEvidence && claims.length > 0 && claims.every(claim => claim && claim.status === "supported_by_feed");
       const existingNotes = String(auditedItem.verification_notes || auditedItem.verificationNotes || "").trim();
       const disclaimer = "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: bronvergelijking is geen onafhankelijke factcheck; controleer claims rechtstreeks bij de oorspronkelijke bron.";
