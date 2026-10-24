@@ -207,20 +207,27 @@ async function main() {
       signal: AbortSignal.timeout(45000)
     });
     let r, data;
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < 5; attempt++) {
       r = await requestDraft();
-      data = await r.json();
+      data = {};
+      try { data = await r.json(); } catch {}
       if (r.ok) break;
       const detail = String(data.detail || data.error || "");
       const rateLimited = (r.status === 429 || r.status === 502 || r.status === 503) && /rate.?limit|tokens per minute|try again in/i.test(detail);
       console.log("Concept maken mislukt:", r.status, JSON.stringify(data));
-      if (!rateLimited || attempt === 2) {
+      if (!rateLimited || attempt === 4) {
+        if (rateLimited) {
+          console.log("AI-tokenlimiet blijft actief na vijf pogingen; item veilig overgeslagen, geen concept verzonnen:", item.title);
+          r = { ok: false, status: r.status };
+          break;
+        }
         if (r.status === 502 || r.status === 503 || r.status === 429) throw new Error(detail || data.error || "AI-service fout");
         break;
       }
       const waitMatch = detail.match(/try again in ([0-9.]+)s/i);
-      const waitMs = Math.max(5000, Math.ceil((waitMatch ? Number(waitMatch[1]) : 15) * 1000) + 1500);
-      console.log("AI-tokenlimiet bereikt; wacht " + Math.ceil(waitMs / 1000) + " seconden en probeer opnieuw.");
+      const retryAfter = waitMatch ? Number(waitMatch[1]) : Math.min(45, 12 * (attempt + 1));
+      const waitMs = Math.min(60000, Math.max(7000, Math.ceil(retryAfter * 1000) + 2000));
+      console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 5 over " + Math.ceil(waitMs / 1000) + " seconden.");
       await new Promise(resolve => setTimeout(resolve, waitMs));
     }
     if (!r.ok) continue;
