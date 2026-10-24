@@ -143,7 +143,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const existing = uniqueByIdentity.get(key);
       if (!existing || String(item.createdAt || "") > String(existing.createdAt || "")) uniqueByIdentity.set(key, item);
     }
-    const unique = [...uniqueByIdentity.values()].map(item => ({ ...item, qualityReview: editorialQuality(item) }));
+    const unique = [...uniqueByIdentity.values()].map(item => { const auditedItem = auditClaims(item); return { ...auditedItem, qualityReview: editorialQuality(auditedItem) }; });
     unique.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false, note: "Kwaliteitssignalen zijn waarschuwingen, geen onafhankelijke factcheck." });
   }
