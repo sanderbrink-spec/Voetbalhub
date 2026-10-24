@@ -44,3 +44,9 @@ test("flags quiz and gossip items for separate editorial handling", () => {
   const result = editorialQuality({ headline: "Wie ben ik? plus de andere quizzen van vandaag", standfirst: "Test je voetbalkennis", body: ["BBC Sport biedt voetbalquizzen."], source: { url: "https://example.com/story", title: "Who am I? Plus today's other quizzes" }, claims: [] });
   assert.ok(result.warnings.some(w => w.includes("quiz- of roddelrubriek")));
 });
+
+test("warns that AI-rewritten article text has not had its claims extracted again", () => {
+  const result = editorialQuality({ headline: "Nieuwe kop", standfirst: "Nieuwe intro", body: ["Nieuwe alinea"], languagePolish: "ai_edited_source_limited", source: { url: "https://example.com/story", title: "Bronkop" }, claims: [{ claim: "Oorspronkelijke claim", status: "supported_by_feed", evidence: "Bronkop" }] });
+  assert.ok(result.warnings.some(w => w.includes("niet automatisch opnieuw uit de definitieve tekst gehaald")));
+  assert.equal(result.publishableAutomatically, false);
+});
