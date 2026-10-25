@@ -97,6 +97,7 @@ async function polishIncomingDraft(item) {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(20000),
       body: JSON.stringify({
         model: MODEL,
         messages: [
@@ -141,7 +142,7 @@ async function polishIncomingDraft(item) {
   }
 }
 async function getArticles() {
-  if (!!!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
+  if (!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
   const articles = [];
   for (const key of keys.slice(0, 200)) {
@@ -191,7 +192,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   }
   if (req.method === "GET" && url.pathname === "/inbox") {
     if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
-    if (!client.isReady) return send(res, 503, { error: "Opslag niet verbonden." });
+    if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden. Controleer REDIS_URL en de Redis-verbinding in Render." });
     const items = [];
     // Read the automatic inbox explicitly so the scheduled pipeline's records are always included.
     try {
@@ -364,7 +365,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     } catch { return send(res, 502, { error: "Concept kon niet worden gemaakt." }); }
   }
   if (url.pathname === "/publish") {
-    if (!client.isReady) return send(res, 503, { error: "Opslag niet verbonden." });
+    if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden. Controleer REDIS_URL en de Redis-verbinding in Render." });
     const d = body.draft || {};
     const facts = Array.isArray(body.verifiedFacts) ? body.verifiedFacts.filter(x => typeof x === "string" && x.trim()) : [];
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => s && typeof s.url === "string" && s.url.startsWith("https://")) : [];
