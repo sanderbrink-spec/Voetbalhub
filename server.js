@@ -384,7 +384,23 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         (incomingHeadline && existingHeadline && incomingHeadline === existingHeadline);
     });
     if (isDuplicate) return send(res, 200, { status: "duplicate_skipped" });
-    const polishedItem = await polishIncomingDraft(item);
+    const sourcePolicy = sourcePolicyForItem(item);
+    // Publisher feeds and unreviewed domains are discovery/link-only: do not ask AI to
+    // rewrite their article text into a competing VoetbalHub article.
+    const linkOnly = sourcePolicy.status === "link_only" || sourcePolicy.status === "unapproved" || sourcePolicy.status === "unknown";
+    const preparedItem = linkOnly ? {
+      ...item,
+      headline: String(item.source?.title || item.sourceEvidence?.title || item.headline || "").slice(0, 240),
+      standfirst: "Bron gevonden — controleer onafhankelijke feiten en schrijf alleen na eigen verificatie een origineel artikel.",
+      body: [],
+      intro: "",
+      articleText: "",
+      claims: [],
+      sourcePolicy,
+      languagePolish: "skipped_link_only_source",
+      languagePolishNote: "AI-herschrijven uitgeschakeld voor nieuwsuitgevers en niet-goedgekeurde bronnen."
+    } : { ...item, sourcePolicy };
+    const polishedItem = linkOnly ? preparedItem : await polishIncomingDraft(preparedItem);
     const auditedItem = auditClaims(polishedItem);
     const quality = editorialQuality(auditedItem);
     inbox.unshift({ ...auditedItem, id: "auto-" + crypto.randomUUID(), status: "draft_for_review", createdAt: new Date().toISOString(), editorialReviewRequired: true, autoPublish: false, qualityReview: quality });
