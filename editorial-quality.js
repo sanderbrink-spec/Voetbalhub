@@ -81,6 +81,26 @@ function editorialQuality(item) {
   const claims = Array.isArray(item?.claims) ? item.claims : []; const unverified = claims.filter(c => !c || c.status !== "supported_by_feed");
   if (unverified.length) add(String(unverified.length) + " claim(s) zijn niet letterlijk onderbouwd door de opgeslagen brongegevens.");
   if (claims.length === 0) add("Geen claim-voor-claim-bewijs opgeslagen; controleer alle feitelijke beweringen handmatig.");
-  return { warnings, warningCount: warnings.length, claimsChecked: claims.length, claimsUnverified: unverified.length, independentFactCheck: false, publishableAutomatically: false };
+  if (!headline.trim()) add("Geen definitieve kop; concept is niet klaar voor redactionele beoordeling.");
+  if (!standfirst.trim()) add("Intro ontbreekt; controleer of het belangrijkste nieuwsfeit helder wordt uitgelegd.");
+  if (body.length === 0) add("Geen artikelalinea's beschikbaar; dit is nog geen uitgewerkt verslag.");
+  if (body.some(p => String(p).trim().length < 35)) add("Minstens één artikelalinea is erg kort; controleer of die inhoudelijk iets toevoegt.");
+  const sourceUrl = String(src.url || item?.sourceUrl || "").trim();
+  if (sourceUrl && !/^https:\/\//i.test(sourceUrl)) add("Bronlink gebruikt geen HTTPS; controleer de link voordat je deze opent of publiceert.");
+  const hasArticleText = typeof ev.content === "string" && ev.content.trim().length >= 250 ||
+    typeof ev.excerpt === "string" && ev.excerpt.trim().length >= 250;
+  if (!hasArticleText) add("Geen volledige artikeltekst opgeslagen; RSS-kop en -beschrijving zijn onvoldoende voor inhoudelijke factcontrole.");
+  const riskLevel = warnings.length >= 5 || unverified.length >= 3 ? "high" :
+    warnings.length >= 2 || unverified.length >= 1 ? "medium" : "low";
+  return {
+    warnings,
+    warningCount: warnings.length,
+    claimsChecked: claims.length,
+    claimsUnverified: unverified.length,
+    riskLevel,
+    readiness: warnings.length || unverified.length || !headline.trim() || !standfirst.trim() || !body.length ? "review_required" : "ready_for_human_review",
+    independentFactCheck: false,
+    publishableAutomatically: false
+  };
 }
 module.exports = { auditClaims, editorialQuality, normalizeEvidence, sourceTextFor };
