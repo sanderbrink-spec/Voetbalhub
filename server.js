@@ -58,6 +58,21 @@ function cleanExtractedSourceText(value) {
   }
   return text.slice(0, cut).trim();
 }
+function hasLongVerbatimOverlap(source, draft) {
+  const normalize = value => String(value || "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\\s+/).filter(Boolean);
+  const sourceWords = normalize(source);
+  const draftWords = normalize(draft);
+  if (sourceWords.length < 8 || draftWords.length < 8) return false;
+  const sourcePhrases = new Set();
+  for (let i = 0; i <= sourceWords.length - 8; i++) sourcePhrases.add(sourceWords.slice(i, i + 8).join(" "));
+  let overlaps = 0;
+  for (let i = 0; i <= draftWords.length - 8; i++) {
+    if (sourcePhrases.has(draftWords.slice(i, i + 8).join(" "))) overlaps++;
+    if (overlaps >= 2) return true;
+  }
+  return false;
+}
 function normalizeHeadline(value) {
   return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -85,7 +100,7 @@ async function polishIncomingDraft(item) {
       body: JSON.stringify({
         model: MODEL,
         messages: [
-          { role: "system", content: "Je bent de onafhankelijke eindredacteur en verslaggever van VoetbalHub. Maak een zelfstandige, originele nieuwsbijdrage op basis van controleerbare feiten, niet een parafrase van het aangeleverde artikel. Kopieer nooit de opbouw, formuleringen, opvallende woordkeuzes, citaten of alinea-indeling van de bron; probeer ook niet tekst te vermommen om herkomst te verbergen. Gebruik eigen journalistieke structuur en eigen formuleringen, vermeld de bron transparant en behoud de bronlink. Neem alleen feiten op die aantoonbaar in de meegeleverde broninformatie staan; verzin niets en kopieer geen lange passages of quotes. Verander onzekerheid niet in zekerheid. Geen niet-onderbouwde claims over uitslagen, blessures, transfers, ranglijsten, wedstrijdverloop of uitspraken. PRIORITERING: laat een bericht weg als het vooral een losse, kleine update over één speler is (rating, compliment, droom, gerucht of individuele prestatie) en er geen aanwijzing is dat het breed en onafhankelijk door meerdere betrouwbare media als groot nieuws wordt behandeld. Zo’n item krijgt editorialDecision is skip en een korte skipReason; verzin geen breedte van media-aandacht. Geef voorrang aan groot clubnieuws, belangrijke wedstrijden/toernooien, officiële beslissingen, transfers met sterke bevestiging, blessures met grote impact en ontwikkelingen die meerdere clubs of competities raken. Als de broninformatie te mager is om een degelijk origineel stuk te maken, kies skip in plaats van opvullen. Schrijf natuurlijk Nederlands, één onderwerp per stuk, zonder onnodige dramatisering. Retourneer uitsluitend geldige JSON met editorialDecision (keep of skip), skipReason, headline, standfirst en body (array met maximaal 2 korte alinea’s). Dit is geen onafhankelijke factcheck; menselijke broncontrole blijft verplicht." },
+          { role: "system", content: "Je bent de onafhankelijke eindredacteur en verslaggever van VoetbalHub. Schrijf een zelfstandig journalistiek stuk van VoetbalHub op basis van controleerbare feiten, niet een navertelling of zin-voor-zin-parafrase van het aangeleverde artikel. Gebruik de bron uitsluitend om feiten te controleren. Bepaal zelf de invalshoek, volgorde en opbouw; schrijf alle zinnen opnieuw vanuit nul in natuurlijk Nederlands. Neem geen zinnen, opvallende formuleringen, creatieve metaforen, tussenkoppen of citaten uit de bron over. Gebruik alleen korte letterlijke citaten wanneer die journalistiek noodzakelijk zijn en zet ze tussen aanhalingstekens met duidelijke bronvermelding; standaard: geen citaten. Verander niet alleen synoniemen: de formulering en structuur moeten zelfstandig zijn. Als het nieuws niet genoeg feiten biedt voor een zelfstandig artikel, kies skip. Gebruik eigen journalistieke structuur en eigen formuleringen, vermeld de bron transparant en behoud de bronlink. Neem alleen feiten op die aantoonbaar in de meegeleverde broninformatie staan; verzin niets en kopieer geen lange passages of quotes. Verander onzekerheid niet in zekerheid. Geen niet-onderbouwde claims over uitslagen, blessures, transfers, ranglijsten, wedstrijdverloop of uitspraken. PRIORITERING: laat een bericht weg als het vooral een losse, kleine update over één speler is (rating, compliment, droom, gerucht of individuele prestatie) en er geen aanwijzing is dat het breed en onafhankelijk door meerdere betrouwbare media als groot nieuws wordt behandeld. Zo’n item krijgt editorialDecision is skip en een korte skipReason; verzin geen breedte van media-aandacht. Geef voorrang aan groot clubnieuws, belangrijke wedstrijden/toernooien, officiële beslissingen, transfers met sterke bevestiging, blessures met grote impact en ontwikkelingen die meerdere clubs of competities raken. Als de broninformatie te mager is om een degelijk origineel stuk te maken, kies skip in plaats van opvullen. Schrijf natuurlijk Nederlands, één onderwerp per stuk, zonder onnodige dramatisering. Retourneer uitsluitend geldige JSON met editorialDecision (keep of skip), skipReason, headline, standfirst en body (array met maximaal 2 korte alinea’s). Dit is geen onafhankelijke factcheck; menselijke broncontrole blijft verplicht. Originaliteitsregel: als twee reeksen van acht opeenvolgende woorden letterlijk overeenkomen met de bron, mag het stuk niet worden opgeslagen als uitgewerkte bijdrage." },
           { role: "user", content: JSON.stringify({ sourceTitle: src.title || item.sourceTitle || "", sourceText, headline: item.headline || "", standfirst: item.standfirst || "", body: Array.isArray(item.body) ? item.body : [] }) }
         ],
         response_format: { type: "json_object" },
@@ -96,6 +111,15 @@ async function polishIncomingDraft(item) {
     if (!response.ok) return { ...item, languagePolish: "failed" };
     const edited = JSON.parse(data.choices?.[0]?.message?.content || "{}");
     if (typeof edited.headline !== "string" || typeof edited.standfirst !== "string" || !Array.isArray(edited.body) || !edited.body.every(p => typeof p === "string")) return { ...item, languagePolish: "failed_invalid_response" };
+    const finalDraftText = [edited.headline, edited.standfirst, ...edited.body].join("\\n");
+    if (hasLongVerbatimOverlap(sourceText, finalDraftText)) return {
+      ...item,
+      headline: "",
+      editorialStatus: "rejected_verbatim_overlap",
+      editorialSkipReason: "De automatische originaliteitscontrole vond meerdere lange, letterlijke woordreeksen die overeenkomen met de bron. Niet tonen als uitgewerkt artikel; herschrijf zelfstandig en controleer handmatig.",
+      languagePolish: "skipped_verbatim_overlap",
+      languagePolishNote: "Niet getoond: te veel letterlijke overlap met bronmateriaal. Er is geen artikel automatisch gepubliceerd."
+    };
     if (edited.editorialDecision === "skip") return {
       ...item,
       headline: "",
