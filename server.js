@@ -76,7 +76,7 @@ async function polishIncomingDraft(item) {
       languagePolishNote: "AI-uitbreiding overgeslagen: geen volledige artikeltekst beschikbaar. Controleer de oorspronkelijke bron en herschrijf pas daarna."
     };
   }
-  const sourceText = [src.title, src.description, ev.title, ev.description, ev.excerpt, ev.content, item.feedTitle, item.feedDescription].filter(v => typeof v === "string").join("\n").slice(0, 7000);
+  const sourceText = [src.title, src.description, ev.title, ev.description, cleanExtractedSourceText(ev.excerpt), cleanExtractedSourceText(ev.content), item.feedTitle, item.feedDescription].filter(v => typeof v === "string").join("\n").slice(0, 7000);
   if (!sourceText.trim()) return { ...item, languagePolish: "skipped_no_source_text" };
   try {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
