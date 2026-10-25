@@ -59,8 +59,8 @@ function cleanExtractedSourceText(value) {
   return text.slice(0, cut).trim();
 }
 function hasLongVerbatimOverlap(source, draft) {
-  const normalize = value => String(value || "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
-    .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\\s+/).filter(Boolean);
+  const normalize = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/).filter(Boolean);
   const sourceWords = normalize(source);
   const draftWords = normalize(draft);
   if (sourceWords.length < 8 || draftWords.length < 8) return false;
