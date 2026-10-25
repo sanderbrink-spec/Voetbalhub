@@ -143,41 +143,6 @@ jobs:
               if end < 0:
                   raise SystemExit("Could not safely locate end of European scoreboard helper.")
               s = s[:start] + '    private void addApiFootballEuropeanSection(LinearLayout parent) { /* disabled pending rights confirmation */ }\n\n' + s[end:]
-          # Remove scoreboard refresh check from the build so no feed endpoint is polled.
-          # Existing generic parsing helpers may remain unused.
-          start = s.index("    /** European fixtures from API-Football.")
-          end = s.index("\n    private void scheduleScoresMidnightReset()", start)
-          replacement = """    /** European fixtures use public ESPN scoreboards as a fallback to API-Football plan restrictions. */
-              private void addApiFootballEuropeanSection(LinearLayout parent) {
-                  addDailyFixtureSection(parent, "EUROPA CLUBS · LIVE & PROGRAMMA", new String[]{
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
-                      "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard"
-                  }, false);
-              }
-          """
-          s = s[:start] + replacement + s[end:]
-          old = '''        if (active.equals("Voor jou") || active.equals("Eredivisie")) {
-                      addEredivisieLiveBlock(list);
-                  }'''
-          new = '''        if (active.equals("Voor jou")) {
-                      addDailyFixtureSection(list, "LIVE WEDSTRIJDEN · EUROPA", new String[]{
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.champions/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/uefa.europa.conf/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/ger.1/scoreboard",
-                          "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.1/scoreboard"
-                      }, false);
-                      addEredivisieLiveBlock(list);
-                  } else if (active.equals("Eredivisie")) {
-                      addEredivisieLiveBlock(list);
-                  }'''
-          if old not in s:
-              raise SystemExit("Home-screen insertion point not found; stopping safely.")
-          s = s.replace(old, new, 1)
           # Track the actual bottom navigation tab separately from the news category chips.
           class_pos = s.index("public class MainActivity")
           class_open = s.index("{", class_pos) + 1
