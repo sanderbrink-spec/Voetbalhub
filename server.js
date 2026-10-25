@@ -92,7 +92,7 @@ const SOURCE_POLICY = {
   }
 };
 function hostnameFromUrl(value) {
-  try { return new URL(String(value || "")).hostname.toLowerCase().replace(/^www\\./, ""); }
+  try { return new URL(String(value || "")).hostname.toLowerCase().replace(/^www\./, ""); }
   catch { return ""; }
 }
 function sourcePolicyForUrl(value) {
