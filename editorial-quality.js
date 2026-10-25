@@ -89,6 +89,11 @@ function editorialQuality(item) {
   if (sourceUrl && !/^https:\/\//i.test(sourceUrl)) add("Bronlink gebruikt geen HTTPS; controleer de link voordat je deze opent of publiceert.");
   const hasArticleText = typeof ev.content === "string" && ev.content.trim().length >= 250 ||
     typeof ev.excerpt === "string" && ev.excerpt.trim().length >= 250;
+  // Mandatory Flashscore check for match/player statistics. A source article or RSS text alone is not verification.
+  const statsClaimPattern = /\b(statistiek(?:en)?|balbezit|schoten|schoten op doel|corners|hoekschoppen|doelpuntenmaker|assist(?:s)?|xg|expected goals|reddingen|passes|passnauwkeurigheid|gele kaarten|rode kaarten|wedstrijdcijfers|score van|eindstand|won met \d|versloeg .* met \d|\d+\s*[-–:]\s*\d+)\b/i;
+  const hasMatchStatsClaims = statsClaimPattern.test([headline, standfirst, ...body].join(" "));
+  const flashscoreVerified = item?.flashscoreVerified === true || item?.verification?.flashscoreVerified === true || item?.statsVerification?.provider === "Flashscore" && item?.statsVerification?.verified === true;
+  if (hasMatchStatsClaims && !flashscoreVerified) add("VERPLICHT: wedstrijd- en spelersstatistieken zijn niet als gecontroleerd via Flashscore vastgelegd. Controleer uitslag, doelpuntenmakers, assists en genoemde cijfers op Flashscore voordat je publiceert.");
   if (!hasArticleText) add("Geen volledige artikeltekst opgeslagen; RSS-kop en -beschrijving zijn onvoldoende voor inhoudelijke factcontrole.");
   const riskLevel = warnings.length >= 5 || unverified.length >= 3 ? "high" :
     warnings.length >= 2 || unverified.length >= 1 ? "medium" : "low";
