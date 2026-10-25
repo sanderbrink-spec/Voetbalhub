@@ -97,7 +97,7 @@ function hostnameFromUrl(value) {
 }
 function sourcePolicyForUrl(value) {
   const host = hostnameFromUrl(value);
-  if (!host || !/^https:\\/\\//i.test(String(value || ""))) {
+  if (!host || !/^https:\/\//i.test(String(value || ""))) {
     return { status: "unknown", label: "Geen geldige HTTPS-bron", allowedUse: "Niet gebruiken totdat bron en rechten zijn gecontroleerd.", host };
   }
   for (const [status, policy] of Object.entries(SOURCE_POLICY)) {
