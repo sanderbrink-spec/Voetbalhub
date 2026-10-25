@@ -73,6 +73,44 @@ function hasLongVerbatimOverlap(source, draft) {
   }
   return false;
 }
+const SOURCE_POLICY_VERSION = "2026-10-25";
+const SOURCE_POLICY = {
+  primary_fact_check_only: {
+    label: "Primaire feitenbron — alleen feiten controleren",
+    allowedUse: "Gebruik uitsluitend controleerbare feiten als aanleiding voor een zelfstandig geschreven VoetbalHub-artikel. Neem geen artikeltekst, kop, foto, video, logo of vormgeving over zonder afzonderlijke toestemming.",
+    domains: ["knvb.nl", "eredivisie.nl", "uefa.com", "fifa.com", "fcgroningen.nl", "ajax.nl", "psv.nl", "feyenoord.nl", "az.nl", "fcutrecht.nl", "sc-heerenveen.nl", "peczwolle.nl", "heracles.nl", "sparta-rotterdam.nl", "fortunasittard.nl", "willem-ii.nl", "nac.nl", "telstar.nl", "excelsiorrotterdam.nl", "goahead-eagles.nl", "fcemmen.nl"]
+  },
+  link_only: {
+    label: "Nieuwsuitgever — alleen doorlinken, tenzij schriftelijke licentie bestaat",
+    allowedUse: "Bewaar de link en controleer feiten waar mogelijk onafhankelijk. Kopieer of parafraseer het artikel niet als vervanging voor eigen verslaggeving; publiceer geen tekst of beeld zonder toestemming.",
+    domains: ["vi.nl", "voetbalprimeur.nl", "voetbalzone.nl", "voetbalnieuws.nl", "nos.nl", "espn.nl", "espn.com", "ad.nl", "telegraaf.nl", "nu.nl", "rtl.nl", "bbc.com", "bbc.co.uk", "theguardian.com", "goal.com", "skysports.com"]
+  },
+  data_provider: {
+    label: "Dataleverancier — voorwaarden en attributie controleren",
+    allowedUse: "Gebruik alleen volgens de actuele API-/abonnementsvoorwaarden. Vereiste attributie, commercieel gebruik, competitie-dekking en logo-/beeldrechten moeten apart zijn gecontroleerd.",
+    domains: ["football-data.org"]
+  }
+};
+function hostnameFromUrl(value) {
+  try { return new URL(String(value || "")).hostname.toLowerCase().replace(/^www\\./, ""); }
+  catch { return ""; }
+}
+function sourcePolicyForUrl(value) {
+  const host = hostnameFromUrl(value);
+  if (!host || !/^https:\\/\\//i.test(String(value || ""))) {
+    return { status: "unknown", label: "Geen geldige HTTPS-bron", allowedUse: "Niet gebruiken totdat bron en rechten zijn gecontroleerd.", host };
+  }
+  for (const [status, policy] of Object.entries(SOURCE_POLICY)) {
+    if (policy.domains.some(domain => host === domain || host.endsWith("." + domain))) {
+      return { status, label: policy.label, allowedUse: policy.allowedUse, host };
+    }
+  }
+  return { status: "unapproved", label: "Bron niet beoordeeld", allowedUse: "Niet automatisch gebruiken. Controleer eigenaar, licentie, commerciële rechten en toegestane hergebruiksvorm handmatig.", host };
+}
+function sourcePolicyForItem(item) {
+  const url = item?.source?.url || item?.sourceUrl || item?.url || "";
+  return { ...sourcePolicyForUrl(url), version: SOURCE_POLICY_VERSION };
+}
 function normalizeHeadline(value) {
   return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -183,6 +221,19 @@ let current=null;const $=id=>document.getElementById(id);function show(v){$('res
 $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('/draft',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+$('secret').value},body:JSON.stringify({topic:$('topic').value,category:$('category').value,facts:[$('f1').value,$('f2').value],sourceUrls:[$('u1').value,$('u2').value]})});const d=await r.json();current=d.draft;show(d);if(r.ok&&current){const b=document.createElement('button');b.textContent='GOEDKEUREN EN PUBLICEREN';b.onclick=async()=>{if(!confirm('Weet je zeker dat je dit artikel wilt publiceren?'))return;const p=await fetch('/publish',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+$('secret').value},body:JSON.stringify({approved:true,draft:current,category:$('category').value,verifiedFacts:[$('f1').value,$('f2').value],sources:[{url:$('u1').value},{url:$('u2').value}],editorialChecks:{originalSourceReviewed:$('checkSource').checked,claimsIndependentlyChecked:$('checkClaims').checked,duplicateChecked:$('checkDuplicates').checked,languageChecked:$('checkLanguage').checked}})});show(await p.json())};$('result').appendChild(b)}}catch(e){show({error:String(e)})}finally{$('draft').disabled=false}};
 </script></html>`);
   }
+  if (req.method === "GET" && url.pathname === "/source-policy") {
+    return send(res, 200, {
+      version: SOURCE_POLICY_VERSION,
+      policy: "No source is treated as a blanket content licence. This registry is an editorial triage aid, not legal advice or a guarantee of permission.",
+      rules: [
+        { status: "primary_fact_check_only", label: SOURCE_POLICY.primary_fact_check_only.label, allowedUse: SOURCE_POLICY.primary_fact_check_only.allowedUse, domains: SOURCE_POLICY.primary_fact_check_only.domains },
+        { status: "link_only", label: SOURCE_POLICY.link_only.label, allowedUse: SOURCE_POLICY.link_only.allowedUse, domains: SOURCE_POLICY.link_only.domains },
+        { status: "data_provider", label: SOURCE_POLICY.data_provider.label, allowedUse: SOURCE_POLICY.data_provider.allowedUse, domains: SOURCE_POLICY.data_provider.domains }
+      ],
+      default: { status: "unapproved", label: "Bron niet beoordeeld", allowedUse: "Niet automatisch gebruiken totdat rechten handmatig zijn gecontroleerd." },
+      autoPublish: false
+    });
+  }
   if (req.method === "GET" && url.pathname === "/health") {
     return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY });
   }
@@ -267,6 +318,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     };
     const filteredUnique = [...uniqueByIdentity.values()].filter(item => !isLowQualityFeedItem(item));
     const unique = filteredUnique.map(item => {
+      const sourcePolicy = sourcePolicyForItem(item);
       // Existing Redis drafts may predate the RSS-only AI rewrite guard. Do not
       // display their AI-expanded copy as an article when the saved evidence is only RSS.
       const ev = item.sourceEvidence || {};
@@ -301,6 +353,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const disclaimer = "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: bronvergelijking is geen onafhankelijke factcheck; controleer claims rechtstreeks bij de oorspronkelijke bron.";
       return {
         ...auditedItem,
+        sourcePolicy,
         verification_status: allClaimsSupported ? "supported_by_feed" : "needs_review",
         verification_notes: existingNotes.toUpperCase().startsWith("RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK")
           ? existingNotes
