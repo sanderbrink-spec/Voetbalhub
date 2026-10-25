@@ -44,12 +44,12 @@ function cleanExtractedSourceText(value) {
   const text = value.replace(/\r/g, "").trim();
   // Stop at recognizable reader comments that a scraper may append after the article.
   const contaminationMarkers = [
-    /(?:^|\n)\s*Een gezond mens heeft duizend wensen/i,
-    /(?:^|\n)\s*Poh, wat is deze een partijtje lekker/i,
-    /(?:^|\n)\s*Net zoals bij jou\b/i,
-    /(?:^|\n)\s*Vooral niet speculeren\b/i,
-    /(?:^|\n)\s*Jij mag op zn plekje zitten/i,
-    /(?:^|\n)\s*Zijn jullie bij VP nou helemaal gek geworden/i
+    /\s+Een gezond mens heeft duizend wensen/i,
+    /\s+Poh, wat is deze een partijtje lekker/i,
+    /\s+Net zoals bij jou\b/i,
+    /\s+Vooral niet speculeren\b/i,
+    /\s+Jij mag op zn plekje zitten/i,
+    /\s+Zijn jullie bij VP nou helemaal gek geworden/i
   ];
   let cut = text.length;
   for (const pattern of contaminationMarkers) {
