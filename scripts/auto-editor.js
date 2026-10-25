@@ -5,6 +5,7 @@ const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 const FEEDS = [
   // Nederlandse voetbalbronnen: geen automatische ingestroom van Engelstalige buitenlandse media.
   "https://feeds.nos.nl/nosvoetbal",
+  "https://www.vi.nl/feed/news.xml",
   "https://www.voetbalprimeur.nl/feed/news.xml"
 ];
 
@@ -27,7 +28,7 @@ function tag(chunk, name) {
 async function fetchArticleText(articleUrl) {
   try {
     const parsed = new URL(articleUrl);
-    const allowedArticleHosts = new Set(["nos.nl", "www.nos.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
+    const allowedArticleHosts = new Set(["nos.nl", "www.nos.nl", "vi.nl", "www.vi.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
     if (parsed.protocol !== "https:" || !allowedArticleHosts.has(parsed.hostname.toLowerCase())) return "";
     const response = await fetch(parsed.href, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; VoetbalHubEditorialBot/1.0)", "Accept": "text/html" },
@@ -88,7 +89,7 @@ async function main() {
   if (!GROQ_API_KEY || !HUB_API_SECRET) throw new Error("GROQ_API_KEY en HUB_API_SECRET moeten als GitHub Actions secrets zijn ingesteld.");
   const candidates = [];
   // Alleen toegestane Nederlandstalige redacties.
-  const allowedHosts = new Set(["feeds.nos.nl", "nos.nl", "www.nos.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
+  const allowedHosts = new Set(["feeds.nos.nl", "nos.nl", "www.nos.nl", "vi.nl", "www.vi.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
   for (const url of FEEDS) {
     const feedHost = new URL(url).hostname.toLowerCase();
     if (!allowedHosts.has(feedHost)) { console.log("Niet-toegestane bron overgeslagen:", url); continue; }
