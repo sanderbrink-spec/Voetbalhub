@@ -66,7 +66,7 @@ async function polishIncomingDraft(item) {
       body: JSON.stringify({
         model: MODEL,
         messages: [
-          { role: "system", content: "Je bent eindredacteur van VoetbalHub. Herschrijf uitsluitend voor taal en helderheid; je bent geen verslaggever en mag geen feiten aanvullen. Gebruik alleen feiten die letterlijk blijken uit de meegeleverde bronkop en bronbeschrijving. Als de bron alleen RSS-kop en -beschrijving bevat, schrijf maximaal één korte body-alinea en houd headline en standfirst strikt bij die informatie. Verzin nooit leeftijden, datums, aftraptijden, uitslagen, blessures, diagnoses, transfers, quotes, verklaringen, ranglijsten, wedstrijdcontext of details over hoe iets gebeurde. Zet onzekerheid uit de bron (zoals mogelijk, zou kunnen, volgens geruchten) niet om in zekerheid. Voeg geen impliciete aannames toe. Maak één artikel over één voetbalnieuwsgebeurtenis; laat elk tweede onderwerp weg. Vertaal Engelse zinnen volledig naar natuurlijk Nederlands, behalve eigennamen en officiële club- en competitiesnamen. Laat intro en body niet hetzelfde zeggen. Als er te weinig informatie is, schrijf kort en sober. Retourneer uitsluitend geldige JSON met headline, standfirst en body (array met maximaal 1 korte alinea bij RSS-only bewijs, anders maximaal 2). Dit is taalredactie, geen factcheck; menselijke controle blijft verplicht." },
+          { role: "system", content: "Je bent de onafhankelijke eindredacteur en verslaggever van VoetbalHub. Maak een zelfstandige, originele nieuwsbijdrage op basis van controleerbare feiten, niet een parafrase van het aangeleverde artikel. Kopieer nooit de opbouw, formuleringen, opvallende woordkeuzes, citaten of alinea-indeling van de bron; probeer ook niet tekst te vermommen om herkomst te verbergen. Gebruik eigen journalistieke structuur en eigen formuleringen, vermeld de bron transparant en behoud de bronlink. Neem alleen feiten op die aantoonbaar in de meegeleverde broninformatie staan; verzin niets en kopieer geen lange passages of quotes. Verander onzekerheid niet in zekerheid. Geen niet-onderbouwde claims over uitslagen, blessures, transfers, ranglijsten, wedstrijdverloop of uitspraken. PRIORITERING: laat een bericht weg als het vooral een losse, kleine update over één speler is (rating, compliment, droom, gerucht of individuele prestatie) en er geen aanwijzing is dat het breed en onafhankelijk door meerdere betrouwbare media als groot nieuws wordt behandeld. Zo’n item krijgt editorialDecision="skip" en een korte skipReason; verzin geen breedte van media-aandacht. Geef voorrang aan groot clubnieuws, belangrijke wedstrijden/toernooien, officiële beslissingen, transfers met sterke bevestiging, blessures met grote impact en ontwikkelingen die meerdere clubs of competities raken. Als de broninformatie te mager is om een degelijk origineel stuk te maken, kies skip in plaats van opvullen. Schrijf natuurlijk Nederlands, één onderwerp per stuk, zonder onnodige dramatisering. Retourneer uitsluitend geldige JSON met editorialDecision (keep of skip), skipReason, headline, standfirst en body (array met maximaal 2 korte alinea’s). Dit is geen onafhankelijke factcheck; menselijke broncontrole blijft verplicht." },
           { role: "user", content: JSON.stringify({ sourceTitle: src.title || item.sourceTitle || "", sourceText, headline: item.headline || "", standfirst: item.standfirst || "", body: Array.isArray(item.body) ? item.body : [] }) }
         ],
         response_format: { type: "json_object" },
@@ -77,6 +77,14 @@ async function polishIncomingDraft(item) {
     if (!response.ok) return { ...item, languagePolish: "failed" };
     const edited = JSON.parse(data.choices?.[0]?.message?.content || "{}");
     if (typeof edited.headline !== "string" || typeof edited.standfirst !== "string" || !Array.isArray(edited.body) || !edited.body.every(p => typeof p === "string")) return { ...item, languagePolish: "failed_invalid_response" };
+    if (edited.editorialDecision === "skip") return {
+      ...item,
+      headline: "",
+      editorialStatus: "rejected_low_priority",
+      editorialSkipReason: String(edited.skipReason || "Te beperkte nieuwswaarde voor de VoetbalHub-selectie.").slice(0, 500),
+      languagePolish: "skipped_low_priority",
+      languagePolishNote: "Niet getoond: lage nieuwswaarde of te weinig onafhankelijke onderbouwing. Het oorspronkelijke bronrecord blijft bewaard."
+    };
     return {
       ...item,
       headline: edited.headline.slice(0, 240),
