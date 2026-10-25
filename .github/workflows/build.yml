@@ -321,7 +321,7 @@ jobs:
                               }
                           });
                       } catch (Exception e) {
-                          runOnUiThread(() -> status.setText("Eigen nieuws tijdelijk niet beschikbaar."));
+                          runOnUiThread(() -> status.setText("Eigen nieuws tijdelijk niet beschikbaar (" + e.getClass().getSimpleName() + "). Tik op VERVERS om opnieuw te proberen."));
                       } finally {
                           if (conn != null) conn.disconnect();
                       }
