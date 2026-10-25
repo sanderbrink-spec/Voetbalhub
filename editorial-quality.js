@@ -58,6 +58,13 @@ function editorialQuality(item) {
   if (/\b(plus more|and more|other stories|also today)\b/i.test(text)) add("Mogelijk een verzamelbericht met meerdere onderwerpen; splits het op in afzonderlijke nieuwsitems.");
   const strongClaims = /\b(topfit|volledig hersteld|onschuldig verklaard|garandeert|bevestigt|zeker dat|zal zeker|definitief bewezen|zonder twijfel)\b/i;
   if (strongClaims.test(text) && !strongClaims.test(feedText)) add("Mogelijk sterkere bewering dan de bron ondersteunt; controleer de nuance.");
+  // A numerical claim is a high-risk factual detail: warn if any number in the final
+  // headline/intro/body cannot be found in the stored source text. This is a signal,
+  // not proof of an error, because the source extraction may be incomplete.
+  const sourceNumbers = new Set((normalizeEvidence(feedText).match(/\b\d+(?:[.,]\d+)?\b/g) || []).map(n => n.replace(",", ".")));
+  const articleNumbers = [...new Set((normalizeEvidence(text).match(/\b\d+(?:[.,]\d+)?\b/g) || []).map(n => n.replace(",", ".")))];
+  const unsupportedNumbers = articleNumbers.filter(n => !sourceNumbers.has(n));
+  if (unsupportedNumbers.length && feedText.trim()) add("Controleer cijfers in kop/intro/tekst die niet letterlijk in de opgeslagen bron staan: " + unsupportedNumbers.slice(0, 8).join(", ") + (unsupportedNumbers.length > 8 ? "…" : "") + ". Mogelijk ontbreekt broncontext of is een uitslag/statistiek onjuist.");
   if (item?.languagePolish === "ai_edited_source_limited") add("AI heeft kop en artikeltekst herschreven; de opgeslagen claims zijn niet automatisch opnieuw uit de definitieve tekst gehaald. Controleer elke feitelijke bewering in kop, intro en body rechtstreeks bij de oorspronkelijke bron.");
   const finalText = normalizeEvidence(text);
   const claimRecords = Array.isArray(item?.claims) ? item.claims : [];
