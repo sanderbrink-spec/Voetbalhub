@@ -98,6 +98,52 @@ jobs:
           from pathlib import Path
           p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
           s = p.read_text()
+          # Remove third-party RSS ingestion from the native app. Keep the news UI so
+          # VoetbalHub Originals can occupy the home screen without republishing others' feeds.
+          feed_names = re.search(r'private final String\[\] feedNames\s*=\s*\{[^}]*\};', s, re.S)
+          if feed_names:
+              s = s[:feed_names.start()] + 'private final String[] feedNames = {}; ' + s[feed_names.end():]
+          feed_urls = re.search(r'private final String\[\] feedUrls\s*=\s*\{[^}]*\};', s, re.S)
+          if feed_urls:
+              s = s[:feed_urls.start()] + 'private final String[] feedUrls = {}; ' + s[feed_urls.end():]
+          # Replace the scores screen with a clear rights-safe placeholder, and remove
+          # all live score cards from the home/news categories.
+          score_start = s.find("private void showScores()")
+          if score_start < 0:
+              raise SystemExit("Could not find showScores() to disable unlicensed live scores.")
+          score_end = s.find("\n    private ", score_start + 1)
+          if score_end < 0:
+              raise SystemExit("Could not safely find end of showScores().")
+          score_method = """private void showScores() {
+              if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
+              scoresPageVisible = false;
+              content.removeAllViews();
+              LinearLayout root = new LinearLayout(this);
+              root.setOrientation(LinearLayout.VERTICAL);
+              root.addView(sectionHeader("Uitslagen", "NIEUWS", this::showNews));
+              LinearLayout list = new LinearLayout(this);
+              list.setOrientation(LinearLayout.VERTICAL);
+              list.setPadding(dp(18), dp(18), dp(18), dp(24));
+              list.addView(tv("Live uitslagen zijn tijdelijk verwijderd totdat de gebruiksrechten zijn bevestigd.", 15, C.MUTED, false));
+              root.addView(list, new LinearLayout.LayoutParams(-1, -1));
+              content.addView(root);
+          }
+
+          """
+          s = s[:score_start] + score_method + s[score_end:]
+          # Remove scoreboards embedded in the home screen and category screens.
+          s = re.sub(r'\s*addDailyFixtureSection\(list,\s*"LIVE WEDSTRIJDEN · EUROPA".*?\},\s*false\);', '', s, flags=re.S)
+          s = s.replace('                      addEredivisieLiveBlock(list);', '')
+          s = s.replace('                  addEredivisieLiveBlock(list);', '')
+          # Make the European scoreboard helper inert; no third-party live data is fetched.
+          start = s.find("    /** European fixtures use public ESPN scoreboards")
+          if start >= 0:
+              end = s.find("\n    private ", start + 1)
+              if end < 0:
+                  raise SystemExit("Could not safely locate end of European scoreboard helper.")
+              s = s[:start] + '    private void addApiFootballEuropeanSection(LinearLayout parent) { /* disabled pending rights confirmation */ }\n\n' + s[end:]
+          # Remove scoreboard refresh check from the build so no feed endpoint is polled.
+          # Existing generic parsing helpers may remain unused.
           start = s.index("    /** European fixtures from API-Football.")
           end = s.index("\n    private void scheduleScoresMidnightReset()", start)
           replacement = """    /** European fixtures use public ESPN scoreboards as a fallback to API-Football plan restrictions. */
