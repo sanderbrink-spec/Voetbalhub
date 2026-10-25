@@ -67,8 +67,8 @@ function editorialQuality(item) {
   // Also compare number words: editorial copy often spells out scores/counts
   // (for example "acht doelpunten") instead of using digits ("8 doelpunten").
   const numberWords = ["twee","drie","vier","vijf","zes","zeven","acht","negen","tien","elf","twaalf","dertien","veertien","vijftien","zestien","zeventien","achttien","negentien","twintig","dertig","veertig","vijftig","zestig","zeventig","tachtig","negentig","honderd","duizend"];
-  const sourceNumberWords = new Set(normalizeEvidence(feedText).split(/\\s+/).filter(w => numberWords.includes(w)));
-  const articleNumberWords = [...new Set(normalizeEvidence(text).split(/\\s+/).filter(w => numberWords.includes(w)))];
+  const sourceNumberWords = new Set(normalizeEvidence(feedText).split(/\s+/).filter(w => numberWords.includes(w)));
+  const articleNumberWords = [...new Set(normalizeEvidence(text).split(/\s+/).filter(w => numberWords.includes(w)))];
   const unsupportedNumberWords = articleNumberWords.filter(w => !sourceNumberWords.has(w));
   if ((unsupportedNumbers.length || unsupportedNumberWords.length) && feedText.trim()) {
     const missing = [...unsupportedNumbers, ...unsupportedNumberWords];
