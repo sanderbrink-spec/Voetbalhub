@@ -132,17 +132,29 @@ jobs:
 
           """
           s = s[:score_start] + score_method + s[score_end:]
-          # Remove scoreboards embedded in the home screen and category screens.
-          s = re.sub(r'\s*addDailyFixtureSection\(list,\s*"LIVE WEDSTRIJDEN · EUROPA".*?\},\s*false\);', '', s, flags=re.S)
-          s = s.replace('                      addEredivisieLiveBlock(list);', '')
-          s = s.replace('                  addEredivisieLiveBlock(list);', '')
-          # Make the European scoreboard helper inert; no third-party live data is fetched.
-          start = s.find("    /** European fixtures use public ESPN scoreboards")
-          if start >= 0:
-              end = s.find("\n    private ", start + 1)
-              if end < 0:
-                  raise SystemExit("Could not safely locate end of European scoreboard helper.")
-              s = s[:start] + '    private void addApiFootballEuropeanSection(LinearLayout parent) { /* disabled pending rights confirmation */ }\n\n' + s[end:]
+          # Remove every call that paints live scorecards on any news/home category.
+          s = re.sub(r'\s*addDailyFixtureSection\s*\(\s*list\s*,\s*"LIVE WEDSTRIJDEN[^"]*"\s*,.*?\);', '', s, flags=re.S)
+          s = re.sub(r'\s*addEredivisieLiveBlock\s*\([^;]*\)\s*;', '', s)
+          # Disable the API-Football European match block too, irrespective of comment changes.
+          helper_start = s.find("private void addApiFootballEuropeanSection(")
+          if helper_start >= 0:
+              brace = s.find("{", helper_start)
+              depth = 0
+              helper_end = -1
+              for j in range(brace, len(s)):
+                  if s[j] == "{": depth += 1
+                  elif s[j] == "}":
+                      depth -= 1
+                      if depth == 0:
+                          helper_end = j + 1
+                          break
+              if helper_end < 0:
+                  raise SystemExit("Could not safely close European scoreboard helper.")
+              s = s[:helper_start] + 'private void addApiFootballEuropeanSection(LinearLayout parent) { /* disabled pending rights confirmation */ }' + s[helper_end:]
+          # Remove third-party source links from the More and Scores screens.
+          s = re.sub(r'\s*addSiteCard\(list,\s*"(?:Flashscore|VI[^"]*|VoetbalPrimeur|VoetbalNieuws)"[^;]*;', '', s)
+          # Hide stale RSS label when feeds have been disabled.
+          s = s.replace('"Live RSS  •  VI  •  VoetbalPrimeur  •  VoetbalNieuws"', '"Alleen eigen VoetbalHub-artikelen"')
           # Track the actual bottom navigation tab separately from the news category chips.
           class_pos = s.index("public class MainActivity")
           class_open = s.index("{", class_pos) + 1
