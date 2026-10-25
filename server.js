@@ -318,7 +318,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (missingChecks.length) return send(res, 400, { error: "Publicatie geblokkeerd: voltooi alle redactionele controles.", missingChecks });
     if (typeof d.headline !== "string" || typeof d.standfirst !== "string" || !Array.isArray(d.body) || d.body.length < 1) return send(res, 400, { error: "Artikel mist kop, intro of minimaal één alinea." });
     const sourceDomains = [...new Set(sources.map(s => {
-      try { return new URL(s.url).hostname.toLowerCase().replace(/^www\\./, ""); } catch { return ""; }
+      try { return new URL(s.url).hostname.toLowerCase().replace(/^(www|feeds|m|mobile|amp)\\./, ""); } catch { return ""; }
     }).filter(Boolean))];
     if (facts.length < 2 || sources.length < 2 || sourceDomains.length < 2) return send(res, 400, { error: "Publicatie geblokkeerd: minimaal twee gecontroleerde feiten én twee HTTPS-bronnen van verschillende domeinen zijn vereist. Gebruik niet alleen VoetbalPrimeur of twee links naar dezelfde uitgever." });
     const imageUrl = typeof d.imageUrl === "string" ? d.imageUrl.trim().slice(0,1000) : "";
