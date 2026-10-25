@@ -39,6 +39,25 @@ function readBody(req) {
 function authorized(req) {
   return !!API_SECRET && req.headers.authorization === "Bearer " + API_SECRET;
 }
+function cleanExtractedSourceText(value) {
+  if (typeof value !== "string") return "";
+  const text = value.replace(/\r/g, "").trim();
+  // Stop at recognizable reader comments that a scraper may append after the article.
+  const contaminationMarkers = [
+    /(?:^|\n)\s*Een gezond mens heeft duizend wensen/i,
+    /(?:^|\n)\s*Poh, wat is deze een partijtje lekker/i,
+    /(?:^|\n)\s*Net zoals bij jou\b/i,
+    /(?:^|\n)\s*Vooral niet speculeren\b/i,
+    /(?:^|\n)\s*Jij mag op zn plekje zitten/i,
+    /(?:^|\n)\s*Zijn jullie bij VP nou helemaal gek geworden/i
+  ];
+  let cut = text.length;
+  for (const pattern of contaminationMarkers) {
+    const match = pattern.exec(text);
+    if (match && match.index < cut) cut = match.index;
+  }
+  return text.slice(0, cut).trim();
+}
 function normalizeHeadline(value) {
   return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -233,7 +252,6 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         ...item,
         headline: sourceHeadline || item.headline,
         // Do not promote a long RSS description or legacy AI copy into an article.
-        // Show a clear review placeholder; the source description remains visible in evidence below.
         standfirst: "Alleen RSS-informatie beschikbaar. Open de oorspronkelijke bron en schrijf het artikel na controle zelf uit.",
         body: [],
         intro: "",
@@ -241,7 +259,14 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         claims: [],
         languagePolish: "skipped_rss_only_source",
         languagePolishNote: "AI-uitbreiding en oude claims verborgen omdat geen volledige artikeltekst beschikbaar is."
-      } : item;
+      } : {
+        ...item,
+        sourceEvidence: item.sourceEvidence ? {
+          ...item.sourceEvidence,
+          content: cleanExtractedSourceText(item.sourceEvidence.content),
+          excerpt: cleanExtractedSourceText(item.sourceEvidence.excerpt)
+        } : item.sourceEvidence
+      };
       const auditedItem = auditClaims(safeItem);
       const qualityReview = editorialQuality(auditedItem);
       const claims = Array.isArray(auditedItem.claims) ? auditedItem.claims : [];
