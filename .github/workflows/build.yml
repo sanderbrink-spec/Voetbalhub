@@ -96,6 +96,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
           s = p.read_text()
           # Remove third-party RSS ingestion from the native app. Keep the news UI so
