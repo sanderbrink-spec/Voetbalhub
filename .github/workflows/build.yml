@@ -359,6 +359,12 @@ jobs:
               else:
                   raise SystemExit("Could not find Android widget import for image renderer.")
 
+          # Audit native app news sources before stripping unlicensed third-party feeds.
+          print("AUDIT THIRD-PARTY FEED REFERENCES:")
+          for n, line in enumerate(s.splitlines(), 1):
+              low = line.lower()
+              if any(k in low for k in ["rss", "feedburner", "voetbalprimeur", "espn.com", "vi.nl", "voetbalzone", "voetbalnieuws", "flashscore", "newsapi", "api-football", "scoreboard"]):
+                  print(f"FEED_AUDIT {n}: {line.strip()[:350]}")
           # Print precise source for the results screen so its broken feed can be diagnosed.
           score_pos = s.find("private void showScores()")
           print("DEBUG SHOW SCORES:", s[score_pos:score_pos+11000] if score_pos >= 0 else "showScores method signature not found")
