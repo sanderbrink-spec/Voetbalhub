@@ -132,36 +132,26 @@ jobs:
 
           """
           s = s[:score_start] + score_method + s[score_end:]
-          # Remove every call that paints live scorecards on any news/home category.
-          # Remove scorecard calls using balanced parentheses, not broad regexes that can corrupt Java methods.
-          def remove_calls(source, method_name):
-              search_at = 0
-              while True:
-                  pos = source.find(method_name + "(", search_at)
-                  if pos < 0: return source
-                  line_start = source.rfind("\\n", 0, pos) + 1
-                  prefix = source[line_start:pos]
-                  if re.search(r"\\b(private|public|protected)\\s+(?:static\\s+)?[\\w<>.?\\[\\]]+\\s*$", prefix):
-                      search_at = pos + len(method_name) + 1
-                      continue
-                  paren = pos + len(method_name)
-                  depth = 0
-                  end_paren = -1
-                  for j in range(paren, len(source)):
-                      if source[j] == "(": depth += 1
-                      elif source[j] == ")":
-                          depth -= 1
-                          if depth == 0:
-                              end_paren = j
-                              break
-                  if end_paren < 0: raise SystemExit("Unbalanced call to " + method_name)
-                  end = end_paren + 1
-                  while end < len(source) and source[end].isspace(): end += 1
-                  if end < len(source) and source[end] == ";": end += 1
-                  source = source[:pos] + source[end:]
-                  search_at = pos
-          s = remove_calls(s, "addDailyFixtureSection")
-          s = remove_calls(s, "addEredivisieLiveBlock")
+          # Disable the scorecard-rendering helpers themselves. Keeping their signatures avoids
+          # touching call sites or accidentally deleting Java declarations.
+          def disable_method(source, signature, replacement_body):
+              start = source.find(signature)
+              if start < 0: return source
+              brace = source.find("{", start)
+              if brace < 0: raise SystemExit("Missing body for " + signature)
+              depth = 0
+              end = -1
+              for j in range(brace, len(source)):
+                  if source[j] == "{": depth += 1
+                  elif source[j] == "}":
+                      depth -= 1
+                      if depth == 0:
+                          end = j + 1
+                          break
+              if end < 0: raise SystemExit("Unclosed body for " + signature)
+              return source[:brace] + "{ " + replacement_body + " }" + source[end:]
+          s = disable_method(s, "private void addDailyFixtureSection(", "/* disabled pending rights confirmation */")
+          s = disable_method(s, "private void addEredivisieLiveBlock(", "/* disabled pending rights confirmation */")
           # Disable the API-Football European match block too, irrespective of comment changes.
           helper_start = s.find("private void addApiFootballEuropeanSection(")
           if helper_start >= 0:
