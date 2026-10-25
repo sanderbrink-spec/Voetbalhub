@@ -63,3 +63,16 @@ test("warns when saved claims do not match the final article text", () => {
   assert.ok(result.warnings.some(w => w.includes("sluiten onvoldoende aan op de definitieve tekst")));
   assert.equal(result.publishableAutomatically, false);
 });
+
+test("warns when article numbers are not present in stored source text", () => {
+  const result = editorialQuality({
+    headline: "Ajax scoort zeven keer uit corners",
+    standfirst: "De ploeg maakte acht doelpunten uit hoekschoppen.",
+    body: ["De cijfers moeten worden gecontroleerd."],
+    source: { url: "https://example.com/story", title: "Ajax scoorde zeven keer uit een hoekschop." },
+    sourceEvidence: { content: "Ajax scoorde zeven keer uit een hoekschop." },
+    claims: []
+  });
+  assert.ok(result.warnings.some(w => w.includes("Cijfers in kop/intro/tekst") || w.includes("Controleer cijfers")));
+  assert.equal(result.publishableAutomatically, false);
+});
