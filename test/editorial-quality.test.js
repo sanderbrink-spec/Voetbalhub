@@ -122,3 +122,41 @@ test("flags duplicate article paragraphs", () => {
   assert.ok(result.warnings.some(w => w.includes("Dubbele artikelalinea's")));
   assert.equal(result.publishableAutomatically, false);
 });
+
+
+test("awards 100 only when automated editorial checks are complete", () => {
+  const sourceText = "De redactie bewaart aanvullende broninformatie voor controle en archivering. ".repeat(5);
+  const result = editorialQuality({
+    headline: "FC Groningen bereidt zich voor op trainingsweek",
+    standfirst: "De technische staf gebruikt de komende dagen om de selectie verder voor te bereiden.",
+    body: [
+      "Na de rustdag staat de voorbereiding van de selectie centraal. De training richt zich op de komende wedstrijd en de afspraken binnen het team.",
+      "De technische staf werkt de komende dagen aan de organisatie en de uitvoering van het wedstrijdplan. Daarbij blijft de beschikbare informatie over de selectie leidend.",
+      "De komende trainingsmomenten moeten duidelijk maken hoe de ploeg de voorbereiding afrondt. Nieuwe details worden pas opgenomen wanneer ze door controleerbare informatie worden ondersteund."
+    ],
+    source: { url: "https://www.fcgroningen.nl/nieuws/voorbeeld", title: "FC Groningen hervat de training na een rustdag", description: "De club meldt dat de groep de training na een rustdag hervat." },
+    sourceEvidence: { evidenceLevel: "article_text_extracted", content: sourceText },
+    sourcePolicy: { status: "primary_fact_check_only" },
+    languagePolish: "ai_edited_source_limited",
+    claimsRecheckedAgainstFinalText: true,
+    claims: [{ claim: "FC Groningen hervat de training na een rustdag", status: "supported_by_feed", evidence: "FC Groningen hervat de training na een rustdag" }]
+  });
+  assert.equal(result.warningCount, 0, result.warnings.join(" | "));
+  assert.equal(result.qualityScore, 100);
+  assert.equal(result.independentFactCheck, false);
+  assert.match(result.qualityScoreNote, /geen garantie op feitelijke juistheid/);
+});
+
+test("caps quality score for link-only publishers and missing independent article evidence", () => {
+  const result = editorialQuality({
+    headline: "Nieuws van een uitgever",
+    standfirst: "Bron gevonden, controleer de feiten voordat je zelf een verslag maakt.",
+    body: [],
+    source: { url: "https://www.voetbalprimeur.nl/nieuws/voorbeeld", title: "Nieuws van een uitgever" },
+    sourcePolicy: { status: "link_only" },
+    sourceEvidence: { evidenceLevel: "rss_title_and_description_only" },
+    claims: []
+  });
+  assert.ok(result.qualityScore <= 25);
+  assert.ok(result.scoreLimitations.some(reason => reason.includes("alleen als link")));
+});
