@@ -128,6 +128,9 @@ function editorialHardStops(item) {
   const text = [headline, standfirst, ...body].join(" ");
   const source = [item?.sourceEvidence?.title, item?.sourceEvidence?.description, item?.sourceEvidence?.content,
     item?.sourceEvidence?.excerpt, item?.source?.title, item?.source?.description].filter(Boolean).join(" ");
+  const policy = sourcePolicyForItem(item);
+  if (policy.status === "link_only") reasons.push("Bronbeleid: deze nieuwsuitgever staat uitsluitend doorlinken toe; publiceer geen vervangend artikel op basis van deze bron.");
+  if (policy.status === "unapproved" || policy.status === "unknown") reasons.push("Bronrechten zijn niet goedgekeurd; publicatie geblokkeerd.");
   if (!headline) reasons.push("Lege kop: concept kan niet door naar publicatie.");
   if (!standfirst) reasons.push("Intro ontbreekt.");
   if (!body.length) reasons.push("Geen artikeltekst: bronlink/concept mag niet als uitgewerkt artikel worden getoond.");
