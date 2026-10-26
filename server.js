@@ -152,9 +152,22 @@ function duplicateSimilarity(a, b) {
   return shared / Math.min(left.size, right.size) >= 0.72;
 }
 async function polishIncomingDraft(item) {
-  if (!GROQ_API_KEY || !item || typeof item !== "object") return { ...item, languagePolish: "not_run" };
+  if (!item || typeof item !== "object") return item;
   const src = item.source || {};
   const ev = item.sourceEvidence || {};
+  // News publishers marked link_only may be linked and fact-checked, but their
+  // article text must not be used as the basis for an AI-written replacement.
+  // Apply this gate before checking API credentials or making any model call.
+  const policy = sourcePolicyForItem(item);
+  if (policy.status === "link_only") {
+    return {
+      ...item,
+      sourcePolicy: { ...policy, version: SOURCE_POLICY_VERSION },
+      languagePolish: "skipped_link_only_source",
+      languagePolishNote: "AI-herschrijven geblokkeerd voor deze nieuwsuitgever. Bewaar de link; schrijf alleen op basis van onafhankelijk gecontroleerde feiten en geldige gebruiksrechten."
+    };
+  }
+  if (!GROQ_API_KEY) return { ...item, languagePolish: "not_run" };
   // RSS-only input is not enough evidence to safely rewrite an article. Keep the
   // incoming draft unchanged and force editorial review instead of asking AI to expand it.
   const hasArticleText = [ev.content, ev.excerpt].some(v => typeof v === "string" && v.trim().length >= 250);
