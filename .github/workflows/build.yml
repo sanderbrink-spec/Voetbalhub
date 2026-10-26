@@ -99,14 +99,9 @@ jobs:
           import re
           p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
           s = p.read_text()
-          # Remove third-party RSS ingestion from the native app. Keep the news UI so
-          # VoetbalHub Originals can occupy the home screen without republishing others' feeds.
-          feed_names = re.search(r'private final String\[\] feedNames\s*=\s*\{[^}]*\};', s, re.S)
-          if feed_names:
-              s = s[:feed_names.start()] + 'private final String[] feedNames = {}; ' + s[feed_names.end():]
-          feed_urls = re.search(r'private final String\[\] feedUrls\s*=\s*\{[^}]*\};', s, re.S)
-          if feed_urls:
-              s = s[:feed_urls.start()] + 'private final String[] feedUrls = {}; ' + s[feed_urls.end():]
+          # Keep the existing RSS source list enabled so the app can show current
+          # headlines and open the publisher's original article. Do not copy full article bodies.
+          # The editorial API remains a separate, manually approved VoetbalHub Originals section.
           # Replace the scores screen with a clear rights-safe placeholder, and remove
           # all live score cards from the home/news categories.
           score_start = s.find("private void showScores()")
