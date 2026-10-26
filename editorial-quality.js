@@ -63,7 +63,7 @@ function trustedSourceFor(item) {
   try {
     const u = new URL(raw);
     if (u.protocol !== "https:") return null;
-    const host = u.hostname.toLowerCase().replace(/^www\\./, "");
+    const host = u.hostname.toLowerCase().replace(/^www\./, "");
     if (host === "flashscore.nl" || host === "flashscore.com") return "Flashscore";
     if (host === "vi.nl") return "VI";
     if (host === "voetbalprimeur.nl") return "VoetbalPrimeur";
@@ -156,8 +156,8 @@ function editorialQuality(item) {
   // final Flashscore score and compare every numerical score in the copy.
   const record = item?.statsVerification || {};
   const score = String(record.finalScore || "").trim();
-  const scoreMatch = /^(\\d{1,2})\\s*[-–:]\\s*(\\d{1,2})$/.exec(score);
-  const scoreInText = [...text.matchAll(/\\b(\\d{1,2})\\s*[-–:]\\s*(\\d{1,2})\\b/g)]
+  const scoreMatch = /^(\d{1,2})\s*[-–:]\s*(\d{1,2})$/.exec(score);
+  const scoreInText = [...text.matchAll(/\b(\d{1,2})\s*[-–:]\s*(\d{1,2})\b/g)]
     .map(m => [Number(m[1]), Number(m[2])]);
   const verifiedFinalScore = record.provider === "Flashscore" && record.verified === true &&
     record.matchStatus === "finished" && trustedSourceFor({source:{url:record.url}}) === "Flashscore" && !!scoreMatch;
