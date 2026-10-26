@@ -115,6 +115,38 @@ function normalizeHeadline(value) {
   return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
+
+function editorialHardStops(item) {
+  const reasons = [];
+  const headline = String(item?.headline || "").trim();
+  const standfirst = String(item?.standfirst || "").trim();
+  const body = Array.isArray(item?.body) ? item.body.filter(x => typeof x === "string" && x.trim()) : [];
+  const text = [headline, standfirst, ...body].join(" ");
+  const source = [item?.sourceEvidence?.title, item?.sourceEvidence?.description, item?.sourceEvidence?.content,
+    item?.sourceEvidence?.excerpt, item?.source?.title, item?.source?.description].filter(Boolean).join(" ");
+  if (!headline) reasons.push("Lege kop: concept kan niet door naar publicatie.");
+  if (!standfirst) reasons.push("Intro ontbreekt.");
+  if (!body.length) reasons.push("Geen artikeltekst: bronlink/concept mag niet als uitgewerkt artikel worden getoond.");
+  if (!/^https:\/\//i.test(String(item?.source?.url || item?.sourceUrl || ""))) reasons.push("Geen geldige HTTPS-bronlink.");
+  if (!source.trim()) reasons.push("Geen opgeslagen bronbewijs; feitelijke controle is onmogelijk.");
+  if (/\b(?:haalt|eindigt op|speelt gelijk|een gelijkspel)\b/i.test(headline) && /\b(?:verslaat|wint met|zege met)\s+(?:\d+\s*[-–:]\s*\d+|\d+\s*tegen\s*\d+)\b/i.test(headline)) {
+    reasons.push("Tegenstrijdige uitslag in de kop: overwinning en gelijkspel worden tegelijk genoemd.");
+  }
+  if (/\b(?:failed_invalid_response|failed)\b/.test(String(item?.languagePolish || ""))) reasons.push("Automatische taalredactie is mislukt; tekst moet opnieuw handmatig worden geredigeerd.");
+  if (item?.editorialStatus === "rejected_low_priority" || item?.editorialStatus === "rejected_verbatim_overlap") reasons.push("Concept is eerder redactioneel afgewezen en hoort niet in de publicatieklare selectie.");
+  const claims = Array.isArray(item?.claims) ? item.claims : [];
+  if (claims.some(c => !c || c.status !== "supported_by_feed")) reasons.push("Een of meer claims zijn niet letterlijk onderbouwd in de opgeslagen brongegevens.");
+  if (item?.languagePolish === "ai_edited_source_limited" && !item?.claimsRecheckedAgainstFinalText) reasons.push("Claims zijn niet opnieuw gecontroleerd tegen de definitieve herschreven kop, intro en tekst.");
+  return [...new Set(reasons)];
+}
+function duplicateSimilarity(a, b) {
+  const words = value => new Set(normalizeHeadline(value).split(/\s+/).filter(w => w.length > 2));
+  const left = words(a), right = words(b);
+  if (left.size < 3 || right.size < 3) return false;
+  let shared = 0;
+  for (const word of left) if (right.has(word)) shared++;
+  return shared / Math.min(left.size, right.size) >= 0.72;
+}
 async function polishIncomingDraft(item) {
   if (!GROQ_API_KEY || !item || typeof item !== "object") return { ...item, languagePolish: "not_run" };
   const src = item.source || {};
@@ -358,9 +390,26 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         verification_notes: existingNotes.toUpperCase().startsWith("RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK")
           ? existingNotes
           : disclaimer + (existingNotes ? " " + existingNotes : ""),
-        qualityReview
+        qualityReview,
+        publicationGate: {
+          blocked: true,
+          reasons: [...new Set([...editorialHardStops({ ...auditedItem, sourcePolicy }), ...qualityReview.warnings])],
+          note: "Dit concept blijft geblokkeerd totdat de bron onafhankelijk is gecontroleerd en de definitieve tekst opnieuw is beoordeeld."
+        }
       };
     });
+    // Collapse near-duplicate reports about the same event; keep the newest record and
+    // preserve all underlying Redis records for auditability.
+    const dedupedUnique = [];
+    for (const item of unique) {
+      const duplicate = dedupedUnique.some(existing => {
+        const urlA = String(item.source?.url || item.sourceUrl || "").split("#")[0];
+        const urlB = String(existing.source?.url || existing.sourceUrl || "").split("#")[0];
+        return (urlA && urlB && urlA === urlB) || duplicateSimilarity(item.headline, existing.headline);
+      });
+      if (!duplicate) dedupedUnique.push(item);
+    }
+    unique.length = 0; unique.push(...dedupedUnique);
     unique.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false, note: "Kwaliteitssignalen zijn waarschuwingen, geen onafhankelijke factcheck." });
   }
