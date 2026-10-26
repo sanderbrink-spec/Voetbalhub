@@ -302,7 +302,7 @@ jobs:
                           runOnUiThread(() -> {
                               section.removeView(status);
                               if (rows.isEmpty()) {
-                                  section.addView(tv("Nog geen goedgekeurde artikelen gepubliceerd.", 13, C.MUTED, false));
+                                  section.addView(tv("Er zijn nog geen door de redactie goedgekeurde VoetbalHub-artikelen. Externe nieuwsfeeds zijn uitgeschakeld zolang hergebruikrechten niet zijn bevestigd. Open hieronder een nieuwsbron of laad opnieuw zodra een artikel is goedgekeurd.", 13, C.MUTED, false));
                                   return;
                               }
                               for (org.json.JSONObject article : rows) {
@@ -476,6 +476,31 @@ jobs:
             curl -L --max-time 15 -sS -o /tmp/scoreboard.json -w 'HTTP %{http_code} | %{content_type}\n' "$url" || true
             if python3 -c 'import json; d=json.load(open("/tmp/scoreboard.json")); print("events:",len(d.get("events",[])),"keys:",list(d.keys())[:8])' 2>/dev/null; then :; else echo "Response is not valid ESPN scoreboard JSON"; fi
           done
+
+      - name: Verify live editorial API
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="${{ vars.EDITORIAL_API_URL }}"
+          if [ -z "$URL" ]; then URL="https://voetbalhub-redactie.onrender.com/articles"; fi
+          echo "Checking editorial API response (no credentials or article data are printed)."
+          CODE="$(curl -L --max-time 30 -sS -o /tmp/editorial-api.json -w '%{http_code}' "$URL")"
+          echo "Editorial API HTTP status: $CODE"
+          if [ "$CODE" != "200" ]; then
+            echo "::error::Editorial API did not return HTTP 200; APK build stopped so a broken API is not shipped as healthy."
+            head -c 300 /tmp/editorial-api.json || true
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/editorial-api.json').read_text())
+          if not isinstance(d, dict) or not isinstance(d.get('articles'), list):
+              raise SystemExit('Editorial API response must be JSON with an articles array.')
+          print('Editorial API schema OK; published article count:', len(d['articles']))
+          if not d['articles']:
+              print('::warning::API is reachable but has no published original articles. The app will correctly show an empty editorial section until a human approves an article.')
+          PY
 
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
