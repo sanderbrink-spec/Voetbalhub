@@ -140,6 +140,12 @@ function editorialHardStops(item) {
   if (headlineContradictions(item)) {
     reasons.push("Tegenstrijdige uitslag in de kop: overwinning en gelijkspel worden tegelijk genoemd. Controleer de officiële eindstand; publicatie geblokkeerd.");
   }
+  const matchStatsPattern = /\b(statistiek(?:en)?|balbezit|schoten|schoten op doel|corners|hoekschoppen|doelpuntenmaker|assist(?:s)?|xg|expected goals|reddingen|passes|passnauwkeurigheid|gele kaarten|rode kaarten|wedstrijdcijfers|eindstand|\d+\s*[-–:]\s*\d+)\b/i;
+  const flashscoreVerified = item?.flashscoreVerified === true || item?.verification?.flashscoreVerified === true ||
+    (item?.statsVerification?.provider === "Flashscore" && item?.statsVerification?.verified === true);
+  if (matchStatsPattern.test(text) && !flashscoreVerified) {
+    reasons.push("Wedstrijdfeit of score ontbreekt een vastgelegde Flashscore-controle; controleer eindstand en doelpuntenmakers voordat publicatie wordt toegestaan.");
+  }
   if (/\b(?:failed_invalid_response|failed)\b/.test(String(item?.languagePolish || ""))) reasons.push("Automatische taalredactie is mislukt; tekst moet opnieuw handmatig worden geredigeerd.");
   if (item?.editorialStatus === "rejected_low_priority" || item?.editorialStatus === "rejected_verbatim_overlap") reasons.push("Concept is eerder redactioneel afgewezen en hoort niet in de publicatieklare selectie.");
   const claims = Array.isArray(item?.claims) ? item.claims : [];
