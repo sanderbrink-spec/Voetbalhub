@@ -143,6 +143,8 @@ test("awards 100 only when automated editorial checks are complete", () => {
   });
   assert.equal(result.warningCount, 0, result.warnings.join(" | "));
   assert.equal(result.qualityScore, 100);
+  assert.equal(result.editorialAssessment, "passed_automated_checks");
+  assert.equal(result.publicationRightsStatus, "requires_manual_clearance");
   assert.equal(result.independentFactCheck, false);
   assert.match(result.qualityScoreNote, /geen garantie op feitelijke juistheid/);
 });
