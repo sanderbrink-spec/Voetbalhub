@@ -336,6 +336,35 @@ jobs:
               if method_marker not in s:
                   raise SystemExit("Could not find safe insertion point for editorial API method.")
               s = s.replace(method_marker, method + method_marker, 1)
+          if "private void addPublisherLinkSection(LinearLayout parent)" not in s:
+              method = """
+              private void addPublisherLinkSection(LinearLayout parent) {
+                  LinearLayout section = new LinearLayout(this);
+                  section.setOrientation(LinearLayout.VERTICAL);
+                  section.setPadding(dp(12), dp(10), dp(12), dp(10));
+                  section.setBackground(cardBackground());
+                  LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+                  lp.setMargins(0, 0, 0, dp(8));
+                  parent.addView(section, lp);
+                  section.addView(tv("NIEUWS BIJ DE BRON", 13, C.GREEN, true));
+                  section.addView(tv("Open het laatste nieuws rechtstreeks bij de uitgever. Koppen en foto's worden hier niet overgenomen.", 13, C.MUTED, false));
+                  String[][] publishers = {
+                      {"VI", "https://www.vi.nl/"},
+                      {"VoetbalPrimeur", "https://www.voetbalprimeur.nl/"},
+                      {"VoetbalNieuws", "https://www.voetbalnieuws.nl/"}
+                  };
+                  for (String[] publisher : publishers) {
+                      TextView link = tv("Open " + publisher[0] + "  ↗", 15, C.TEXT, true);
+                      link.setPadding(0, dp(12), 0, dp(8));
+                      link.setOnClickListener(v -> openArticle(publisher[1], publisher[0]));
+                      section.addView(link);
+                  }
+              }
+
+              """
+              marker = "    private void scheduleScoresMidnightReset()"
+              if marker not in s: raise SystemExit("Could not find insertion point for publisher links.")
+              s = s.replace(marker, method + marker, 1)
           if "addEditorialNewsSection(list);" not in s:
               news_start = s.find("private void showNews()")
               if news_start < 0:
@@ -345,7 +374,9 @@ jobs:
               if list_pos < 0:
                   raise SystemExit("Could not find news list for editorial section.")
               list_end = list_pos + len(list_marker)
-              s = s[:list_end] + "\n        addEditorialNewsSection(list);" + s[list_end:]
+              s = s[:list_end] + "\n        addEditorialNewsSection(list);\n        addPublisherLinkSection(list);" + s[list_end:]
+          elif "addPublisherLinkSection(list);" not in s:
+              s = s.replace("addEditorialNewsSection(list);", "addEditorialNewsSection(list);\n        addPublisherLinkSection(list);", 1)
 
           # Render editorial article photos only when the API carries cleared/licensed rights metadata.
           if "private void addEditorialImage(LinearLayout parent, org.json.JSONObject article)" not in s:
