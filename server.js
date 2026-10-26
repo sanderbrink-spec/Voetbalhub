@@ -49,7 +49,10 @@ function cleanExtractedSourceText(value) {
     /\s+Net zoals bij jou\b/i,
     /\s+Vooral niet speculeren\b/i,
     /\s+Jij mag op zn plekje zitten/i,
-    /\s+Zijn jullie bij VP nou helemaal gek geworden/i
+    /\s+Zijn jullie bij VP nou helemaal gek geworden/i,
+    /\s+Gek in de zin van vasthouden misschien\.?/i,
+    /\s+Bayern München is in alle opzichten een heel grote club\b/i,
+    /\s+Makkelie was echt dramatisch slecht vandaag\b/i
   ];
   let cut = text.length;
   for (const pattern of contaminationMarkers) {
