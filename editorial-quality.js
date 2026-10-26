@@ -21,6 +21,13 @@ function hasLongVerbatimOverlap(source, draft) {
   }
   return false;
 }
+function headlineContradictions(item) {
+  const headline = String(item?.headline || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const saysWin = /\b(wint|won|verslaat|versloeg|zege|gewonnen|winst|wint met|zege met)\b/.test(headline);
+  const saysDraw = /\b(gelijkspel|speelt gelijk|speelden gelijk|eindigt gelijk|eindigde gelijk|haalt gelijkspel|puntendeling|deling van punten)\b/.test(headline);
+  const winScore = /\b(?:wint met|zege met|verslaat|versloeg)\s+(?:een\s+)?\d+\s*[-–:]\s*\d+\b/.test(headline);
+  return saysWin && saysDraw || winScore && saysDraw;
+}
 function auditClaims(item) {
   const source = normalizeEvidence(sourceTextFor(item));
   const claims = Array.isArray(item?.claims) ? item.claims : [];
@@ -112,6 +119,7 @@ function editorialQuality(item) {
   const claims = Array.isArray(item?.claims) ? item.claims : []; const unverified = claims.filter(c => !c || c.status !== "supported_by_feed");
   if (unverified.length) add(String(unverified.length) + " claim(s) zijn niet letterlijk onderbouwd door de opgeslagen brongegevens.");
   if (claims.length === 0) add("Geen claim-voor-claim-bewijs opgeslagen; controleer alle feitelijke beweringen handmatig.");
+  if (headlineContradictions(item)) add("Tegenstrijdige kop: de tekst stelt zowel een overwinning als een gelijkspel. Controleer de officiële eindstand en herschrijf de kop.");
   if (!headline.trim()) add("Geen definitieve kop; concept is niet klaar voor redactionele beoordeling.");
   if (!standfirst.trim()) add("Intro ontbreekt; controleer of het belangrijkste nieuwsfeit helder wordt uitgelegd.");
   if (body.length === 0) add("Geen artikelalinea's beschikbaar; dit is nog geen uitgewerkt verslag.");
@@ -137,8 +145,10 @@ function editorialQuality(item) {
   const claimsReady = claims.length > 0 && unverified.length === 0 && item?.claimsRecheckedAgainstFinalText === true && unrelatedClaims.length === 0;
   const languageReady = item?.languagePolish === "ai_edited_source_limited" && item?.claimsRecheckedAgainstFinalText === true &&
     !englishPhrases.test(text) && !englishHeadlineWords.test(headline) && !["failed", "failed_invalid_response", "not_run", "skipped_no_source_text"].includes(item?.languagePolish);
+  const hasHeadlineContradiction = headlineContradictions(item);
   const scoreLimitations = [];
   let scoreCap = 100;
+  if (hasHeadlineContradiction) { scoreCap = 0; scoreLimitations.push("Tegenstrijdige uitslag in de kop: publicatie moet worden geblokkeerd."); }
   if (!structureReady) { scoreCap = Math.min(scoreCap, 35); scoreLimitations.push("Artikelstructuur voldoet nog niet aan de minimale eisen."); }
   if (!sourceReady) { scoreCap = Math.min(scoreCap, 45); scoreLimitations.push("Volledige broninformatie of een geldige bronlink ontbreekt."); }
   if (!claimsReady) { scoreCap = Math.min(scoreCap, 65); scoreLimitations.push("Claims zijn niet allemaal onderbouwd en opnieuw gecontroleerd tegen de definitieve tekst."); }
@@ -165,4 +175,4 @@ function editorialQuality(item) {
     publishableAutomatically: false
   };
 }
-module.exports = { auditClaims, editorialQuality, normalizeEvidence, sourceTextFor };
+module.exports = { auditClaims, editorialQuality, headlineContradictions, normalizeEvidence, sourceTextFor };
