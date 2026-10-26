@@ -609,6 +609,17 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       try { return new URL(s.url).hostname.toLowerCase().replace(/^(www|feeds|m|mobile|amp)\\./, ""); } catch { return ""; }
     }).filter(Boolean))];
     if (facts.length < 2 || sources.length < 2 || sourceDomains.length < 2) return send(res, 400, { error: "Publicatie geblokkeerd: minimaal twee gecontroleerde feiten én twee HTTPS-bronnen van verschillende domeinen zijn vereist. Gebruik niet alleen VoetbalPrimeur of twee links naar dezelfde uitgever." });
+    // Flashscore is the editorial reference for match results, standings and
+    // match statistics. This is a verification gate, not a data-scraping license.
+    const statisticalClaim = [d.headline, d.standfirst, ...publishBody].join(" ");
+    const requiresFlashscore = /\\b(?:\\d+\\s*[-–:]\\s*\\d+|uitslag|eindstand|ruststand|ranglijst|klassement|stand(?:en)?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|gele kaarten|rode kaarten|xg|expected goals|doelpuntenmaker|scoreverloop)\\b/i.test(statisticalClaim);
+    const hasFlashscoreReference = sources.some(src => {
+      try { return /(^|\\.)flashscore\\.(?:nl|com|be|de|co\\.uk)$/.test(new URL(src.url).hostname.toLowerCase()); }
+      catch { return false; }
+    });
+    if (requiresFlashscore && !hasFlashscoreReference) return send(res, 400, {
+      error: "Publicatie geblokkeerd: wedstrijdresultaten, standen of statistieken vereisen een gecontroleerde Flashscore-bronlink. Voeg de gebruikte Flashscore-wedstrijd of competitiepagina toe en controleer de cijfers handmatig."
+    });
     const imageUrl = typeof d.imageUrl === "string" ? d.imageUrl.trim().slice(0,1000) : "";
     const imageSource = typeof d.imageSource === "string" ? d.imageSource.trim().slice(0,300) : "";
     const imageCredit = typeof d.imageCredit === "string" ? d.imageCredit.trim().slice(0,200) : "";
