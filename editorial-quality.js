@@ -58,7 +58,20 @@ function auditClaims(item) {
   });
   return { ...item, claims: audited };
 }
+function trustedSourceFor(item) {
+  const raw = String(item?.source?.url || item?.sourceUrl || "").trim();
+  try {
+    const u = new URL(raw);
+    if (u.protocol !== "https:") return null;
+    const host = u.hostname.toLowerCase().replace(/^www\\./, "");
+    if (host === "flashscore.nl" || host === "flashscore.com") return "Flashscore";
+    if (host === "vi.nl") return "VI";
+    if (host === "voetbalprimeur.nl") return "VoetbalPrimeur";
+  } catch { return null; }
+  return null;
+}
 function editorialQuality(item) {
+  const trustedSource = trustedSourceFor(item);
   const headline = String(item?.headline || ""); const standfirst = String(item?.standfirst || "");
   const body = Array.isArray(item?.body) ? item.body.filter(v => typeof v === "string") : [];
   const text = [headline, standfirst, ...body].join(" "); const src = item?.source || {};
@@ -177,6 +190,8 @@ function editorialQuality(item) {
   return {
     warnings,
     editorialAssessment: editorialReady ? "passed_automated_checks" : "needs_review",
+    sourceFactAcceptance: trustedSource ? "accepted_without_secondary_source" : "requires_source_review",
+    trustedSource,
     publicationRightsStatus: rightsStatus,
     qualityScore: automaticQualityScore,
     qualityScoreLabel: automaticQualityScore >= 90 ? "Uitstekend" : automaticQualityScore >= 75 ? "Goed, laatste controles nodig" : automaticQualityScore >= 50 ? "Herzien" : "Onvoldoende",
@@ -191,4 +206,4 @@ function editorialQuality(item) {
     publishableAutomatically: false
   };
 }
-module.exports = { auditClaims, editorialQuality, headlineContradictions, normalizeEvidence, sourceTextFor };
+module.exports = { auditClaims, editorialQuality, headlineContradictions, normalizeEvidence, sourceTextFor, trustedSourceFor };
