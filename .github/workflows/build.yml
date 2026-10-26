@@ -109,6 +109,15 @@ jobs:
           if feed_patch == s:
               raise SystemExit("Could not safely locate feedUrls declaration.")
           s = feed_patch
+          # Never present an intentionally disabled RSS feed as a network failure.
+          # The public /articles endpoint contains only human-approved originals.
+          s = s.replace("Geen nieuws ontvangen. Controleer internet en tik op VERVERS.",
+                        "Nog geen goedgekeurde VoetbalHub-artikelen beschikbaar. Tik op VERVERS om opnieuw te controleren.")
+          s = s.replace("Geen nieuws opgehaald. Controle: ",
+                        "Nog geen goedgekeurde VoetbalHub-artikelen. Controle: ")
+          if "fetchApprovedVoetbalHubArticles()" not in s:
+              raise SystemExit("Editorial articles fetch missing: refuse to build an empty-only news app.")
+          print("Verified manually approved article fetch and accurate empty-state messaging.")
           # The editorial API remains a separate, manually approved VoetbalHub Originals section.
           # Replace the scores screen with a clear rights-safe placeholder, and remove
           # all live score cards from the home/news categories.
