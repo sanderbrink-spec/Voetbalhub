@@ -131,6 +131,10 @@ function editorialHardStops(item) {
   if (!headline) reasons.push("Lege kop: concept kan niet door naar publicatie.");
   if (!standfirst) reasons.push("Intro ontbreekt.");
   if (!body.length) reasons.push("Geen artikeltekst: bronlink/concept mag niet als uitgewerkt artikel worden getoond.");
+  if (body.length > 0 && body.length < 3) reasons.push("Te weinig artikelalinea's: minimaal drie inhoudelijke alinea's vereist.");
+  if (body.some(p => p.trim().length < 70)) reasons.push("Minstens één artikelalinea is te kort voor een zelfstandig nieuwsverslag.");
+  if (body.length >= 3 && new Set(body.map(p => normalizeHeadline(p))).size !== body.length) reasons.push("Dubbele artikelalinea's gevonden; verwijder herhaling.");
+  if (source && text && hasLongVerbatimOverlap(source, text)) reasons.push("Mogelijke lange tekstoverlap met de bron; herschrijf op basis van onafhankelijk gecontroleerde feiten.");
   if (!/^https:\/\//i.test(String(item?.source?.url || item?.sourceUrl || ""))) reasons.push("Geen geldige HTTPS-bronlink.");
   if (!source.trim()) reasons.push("Geen opgeslagen bronbewijs; feitelijke controle is onmogelijk.");
   if (/\b(?:haalt|eindigt op|speelt gelijk|een gelijkspel)\b/i.test(headline) && /\b(?:verslaat|wint met|zege met)\s+(?:\d+\s*[-–:]\s*\d+|\d+\s*tegen\s*\d+)\b/i.test(headline)) {
