@@ -180,7 +180,21 @@ async function polishIncomingDraft(item) {
       languagePolishNote: "AI-herschrijven geblokkeerd voor deze nieuwsuitgever. Bewaar de link; schrijf alleen op basis van onafhankelijk gecontroleerde feiten en geldige gebruiksrechten."
     };
   }
-  if (!GROQ_API_KEY) return { ...item, languagePolish: "not_run" };
+  // A source link or RSS summary is not a report. Do not keep placeholder
+  // paragraphs from ingestion as if they were editorial copy.
+  const evidenceText = [ev.content, ev.excerpt].find(v => typeof v === "string" && v.trim().length >= 250);
+  const hasSufficientEvidence = ev.evidenceLevel !== "rss_title_and_description_only" && !!evidenceText;
+  if (!hasSufficientEvidence) {
+    return {
+      ...item,
+      body: [],
+      editorialStatus: "source_only",
+      reportAvailable: false,
+      languagePolish: "skipped_rss_only_source",
+      languagePolishNote: "Alleen broninformatie beschikbaar. Geen zelfstandig verslag. Open primaire bronnen, controleer feiten en schrijf daarna een origineel artikel."
+    };
+  }
+  if (!GROQ_API_KEY) return { ...item, languagePolish: "not_run", reportAvailable: Array.isArray(item.body) && item.body.length >= 3 };
   // RSS-only input is not enough evidence to safely rewrite an article. Keep the
   // incoming draft unchanged and force editorial review instead of asking AI to expand it.
   const hasArticleText = [ev.content, ev.excerpt].some(v => typeof v === "string" && v.trim().length >= 250);
