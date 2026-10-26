@@ -273,26 +273,19 @@ async function handle(req, res) {
     res.writeHead(200, {"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"});
     return res.end(`<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VoetbalHub | Voorbeeldverslagen</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#090c0e;color:#f4f6f8;font:16px system-ui,sans-serif}main{max-width:840px;margin:auto;padding:28px 18px}h1{color:#a6ff00;font-size:32px}h2{font-size:22px}article{background:#151b1e;border:1px solid #303a3f;border-radius:16px;padding:22px;margin:22px 0}p{line-height:1.65}.flag{display:inline-block;border:1px solid #a6ff00;color:#a6ff00;border-radius:30px;padding:6px 12px;font-size:12px;font-weight:700}small{color:#b8c1c5}a{color:#b9ff55}</style><main><h1>VoetbalHub · Voorbeeldverslagen</h1><p class="flag">DEMONSTRATIE · GEEN ECHT NIEUWS</p><p>Dit zijn fictieve demonstraties van de schrijfstijl. De clubs, wedstrijdsituaties en uitslagen hieronder zijn verzonnen en niet gecontroleerd bij Flashscore. Ze verschijnen niet in de reguliere nieuwsfeed.</p><article><small>Demo 1 · wedstrijdverslag · fictieve clubs</small><h2>SV Noordstad trekt duel in slotfase naar zich toe</h2><p>SV Noordstad heeft in deze fictieve oefenwedstrijd laten zien hoe een wedstrijd in de slotfase kan kantelen. Lange tijd ging het gelijk op, maar in de laatste minuten nam de thuisploeg het initiatief.</p><p>Na rust kreeg de bezoekende ploeg meer ruimte op het middenveld. Noordstad bleef echter geduldig combineren en wist het spel terug naar de helft van de tegenstander te verplaatsen.</p><p>De demonstratie laat zien hoe VoetbalHub wedstrijdverloop, belangrijke momenten en de betekenis van een resultaat in helder Nederlands kan beschrijven. Een echt verslag krijgt pas een eindstand na controle bij Flashscore.</p></article><article><small>Demo 2 · wedstrijdanalyse · fictieve clubs</small><h2>FC Rivierdam houdt controle dankzij sterk middenveld</h2><p>FC Rivierdam bepaalde in dit verzonnen wedstrijdscenario vooral het tempo. De ploeg speelde compact en zocht via korte combinaties naar ruimte achter de verdediging.</p><p>De tegenstander probeerde met snelle omschakelingen gevaarlijk te worden, maar Rivierdam bleef georganiseerd. Vooral de samenwerking tussen de middenvelders zorgde voor rust aan de bal.</p><p>Dit voorbeeld toont een andere vorm van verslaggeving: minder nadruk op losse gebeurtenissen, meer op het spelbeeld. Er zijn bewust geen echte statistieken of uitslagen opgenomen.</p></article><p><small>Bronbeleid: Flashscore voor gecontroleerde wedstrijdgegevens; VI en VoetbalPrimeur als vertrouwde nieuwsbronnen. Overname van uitgeversteksten blijft gebonden aan publicatierechten.</small></p><p><a href="/publish-desk">Naar de Publicatiedesk</a></p></main></html>`);
   }
-  if (req.method === "GET" && url.pathname === "/nieuwslinks") {
-    if (!client?.isReady) return send(res, 503, {error:"Nieuwslinks tijdelijk niet beschikbaar."});
-    let drafts = [];
-    try { const raw = await client.get("inbox:auto"); const parsed = JSON.parse(raw || "[]"); if (Array.isArray(parsed)) drafts = parsed; }
-    catch { return send(res, 503, {error:"Nieuwslinks tijdelijk niet beschikbaar."}); }
-    const seen = new Set();
-    const links = drafts.filter(item => {
-      if (!item || typeof item !== "object" || !item.source?.url) return false;
-      if (item.editorialStatus === "rejected_low_priority" || item.editorialStatus === "rejected_verbatim_overlap") return false;
-      const checked = editorialQuality(item);
-      if (checked.leadAssessment !== "accepted_news_lead") return false;
-      let url; try { url = new URL(item.source.url); } catch { return false; }
-      if (url.protocol !== "https:" || !["vi.nl","www.vi.nl","voetbalprimeur.nl","www.voetbalprimeur.nl"].includes(url.hostname.toLowerCase())) return false;
-      if (seen.has(url.href)) return false;
-      seen.add(url.href); return true;
-    }).slice(0, 30);
-    const escLink = v => String(v || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-    const cards = links.map(item => '<article><div class="source">'+(new URL(item.source.url).hostname.includes("vi.nl")?"Voetbal International":"VoetbalPrimeur")+'</div><h2><a target="_blank" rel="noopener noreferrer" href="'+escLink(item.source.url)+'">'+escLink(item.source.title || item.headline)+'</a></h2><p>Lees het oorspronkelijke bericht bij de uitgever.</p></article>').join("");
+  if (req.method === "GET" && (url.pathname === "/nieuwslinks" || url.pathname === "/nieuws")) {
+    let articles;
+    try { articles = await getArticles(); } catch { return send(res, 503, {error:"Nieuwsoverzicht tijdelijk niet beschikbaar."}); }
+    // Public pages must never mirror publisher headlines, RSS text or unlicensed copies.
+    const originals = articles.filter(item => item && item.status === "published" &&
+      item.sourcePolicy?.status !== "link_only" && item.sourcePolicy?.status !== "unapproved" &&
+      item.sourcePolicy?.status !== "unknown" && !item.publicationGate?.blocked &&
+      Array.isArray(item.body) && item.body.length >= 3 &&
+      String(item.headline || "").trim() && String(item.standfirst || "").trim());
+    const escNews = v => String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const cards = originals.slice(0,30).map(item => '<article><div class="source">VoetbalHub · Eigen redactie</div><h2>'+escNews(item.headline)+'</h2><p>'+escNews(item.standfirst)+'</p><details><summary>Lees het artikel</summary>' + item.body.map(p=>'<p>'+escNews(p)+'</p>').join("") + '</details></article>').join("");
     res.writeHead(200, {"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"});
-    return res.end('<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VoetbalHub · Nieuwslinks</title><style>:root{color-scheme:dark}body{background:#090c0e;color:#f3f6f7;font:16px system-ui;margin:auto;max-width:860px;padding:24px}h1{color:#a6ff00}article{background:#151b1e;border:1px solid #303a3f;border-radius:14px;padding:18px;margin:15px 0}.source{color:#a6ff00;font-size:13px;font-weight:700}a{color:#e9f8d2}p{color:#b8c1c5}</style><h1>VoetbalHub · Nieuwslinks</h1><p>Actuele verwijzingen naar originele voetbalberichten van VI en VoetbalPrimeur. Geen overgenomen artikelen, geen onbevestigde uitslagen en geen automatische publicatie van eigen verslagen.</p>'+(cards||'<p>Er zijn momenteel geen geschikte nieuwslinks beschikbaar.</p>')+'</html>');
+    return res.end('<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VoetbalHub · Nieuws</title><style>:root{color-scheme:dark}body{background:#090c0e;color:#f3f6f7;font:16px system-ui;margin:auto;max-width:860px;padding:24px}h1{color:#a6ff00}article{background:#151b1e;border:1px solid #303a3f;border-radius:14px;padding:18px;margin:15px 0}.source,summary{color:#a6ff00;font-size:13px;font-weight:700}h2{font-size:22px}p{color:#c5ced2;line-height:1.6}details{margin-top:12px}</style><h1>VoetbalHub · Nieuws</h1><p>Hier verschijnen uitsluitend eigen, goedgekeurde VoetbalHub-artikelen. Geen gekopieerde uitgeversteksten of automatisch gepubliceerde RSS-berichten.</p>'+(cards||'<p>Er zijn nog geen eigen artikelen goedgekeurd voor publicatie.</p>')+'</html>');
   }
   if (req.method === "GET" && url.pathname === "/release-status") {
     return send(res, 200, {
