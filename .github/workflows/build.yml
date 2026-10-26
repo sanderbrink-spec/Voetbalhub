@@ -111,11 +111,9 @@ jobs:
           s = feed_patch
           # Never present an intentionally disabled RSS feed as a network failure.
           # The public /articles endpoint contains only human-approved originals.
-          s = s.replace("Geen nieuws ontvangen. Controleer internet en tik op VERVERS.",
-                        "Nog geen goedgekeurde VoetbalHub-artikelen beschikbaar. Tik op VERVERS om opnieuw te controleren.")
-          s = s.replace("Geen nieuws opgehaald. Controle: ",
-                        "Nog geen goedgekeurde VoetbalHub-artikelen. Controle: ")
-          # The approved-originals section is injected below; validate it after patching.
+          s = s.replace("Geen nieuws ontvangen. Controleer internet en tik op VERVERS.", "")
+          s = s.replace("Geen nieuws opgehaald. Controle: ", "")
+          # Show a single authoritative editorial empty state instead of duplicate notices.
           print("Verified manually approved article fetch and accurate empty-state messaging.")
           # The editorial API remains a separate, manually approved VoetbalHub Originals section.
           # Replace the scores screen with a clear rights-safe placeholder, and remove
