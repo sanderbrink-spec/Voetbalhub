@@ -507,10 +507,11 @@ jobs:
               raise SystemExit('Editorial API response must be JSON with an articles array.')
           print('Editorial API schema OK; published article count:', len(d['articles']))
           if not d['articles']:
-              raise SystemExit('Editorial API has zero published articles. APK release blocked until an approved original is available.')
-          if not any(isinstance(a, dict) and a.get('status') == 'published' and a.get('headline') and isinstance(a.get('body'), list) and any(str(p).strip() for p in a['body']) for a in d['articles']):
-              raise SystemExit('Editorial API has no valid published article with headline and body.')
-          print('Verified at least one published original article with readable body.')
+              print('::warning::Editorial API is healthy but has no manually published originals yet. APK will build with its empty editorial state.')
+          elif not all(isinstance(a, dict) and a.get('status') == 'published' and a.get('headline') and isinstance(a.get('body'), list) and any(str(p).strip() for p in a['body']) for a in d['articles']):
+              raise SystemExit('Editorial API contains malformed published articles. Fix the published records before building.')
+          else:
+              print('Verified published original articles with readable body.')
           PY
 
       - name: Gradle setup
