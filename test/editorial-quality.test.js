@@ -206,3 +206,21 @@ test("requires recorded match-stat verification for score and scorer claims", ()
   assert.ok(result.warnings.some(w => w.includes("niet als gecontroleerd via Flashscore vastgelegd")));
   assert.equal(result.publishableAutomatically, false);
 });
+
+
+test("trusted publishers accept source facts without secondary source requirement, but never grant publication rights", () => {
+  for (const [url, expected] of [
+    ["https://www.vi.nl/nieuws/voorbeeld", "VI"],
+    ["https://www.voetbalprimeur.nl/nieuws/voorbeeld", "VoetbalPrimeur"],
+    ["https://www.flashscore.nl/wedstrijd/voorbeeld", "Flashscore"]
+  ]) {
+    const result = editorialQuality({headline:"Voorbeeldbericht",standfirst:"Een voorbeeld van een bronmelding.",body:[],source:{url,title:"Voorbeeldbericht"},sourcePolicy:{status:"link_only"},sourceEvidence:{evidenceLevel:"rss_title_and_description_only"},claims:[]});
+    assert.equal(result.trustedSource,expected);
+    assert.equal(result.sourceFactAcceptance,"accepted_without_secondary_source");
+    assert.equal(result.publishableAutomatically,false);
+    assert.equal(result.publicationRightsStatus,"blocked");
+  }
+  const spoofed = editorialQuality({source:{url:"https://vi.nl.evil.example/story"}});
+  assert.equal(spoofed.trustedSource,null);
+  assert.equal(spoofed.sourceFactAcceptance,"requires_source_review");
+});
