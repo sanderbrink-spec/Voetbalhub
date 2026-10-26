@@ -43,7 +43,14 @@ function editorialQuality(item) {
   const add = message => { if (!warnings.includes(message)) warnings.push(message); };
   if (!src.url && !item?.sourceUrl) add("Geen oorspronkelijke bronlink opgeslagen.");
   if (!feedText.trim()) add("Geen bronkop of bronbeschrijving opgeslagen; feitelijke controle is niet mogelijk.");
-  if (ev.evidenceLevel === "rss_title_and_description_only" || /RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK/i.test(String(item?.verification_notes || item?.verificationNotes || ""))) add("Alleen RSS-gegevens gebruikt; dit is geen onafhankelijke factcheck.");
+  // The standard disclaimer is attached to every draft, including drafts with extracted article text.
+  // Do not mistake that disclaimer for evidence that the item is RSS-only; inspect the evidence level/content.
+  const hasUsableArticleEvidence = (ev.evidenceLevel === "article_text_extracted" &&
+    ((typeof ev.content === "string" && ev.content.trim().length >= 250) ||
+     (typeof ev.excerpt === "string" && ev.excerpt.trim().length >= 250)));
+  if (ev.evidenceLevel === "rss_title_and_description_only" || (!hasUsableArticleEvidence && !String(ev.content || "").trim() && !String(ev.excerpt || "").trim())) {
+    add("Alleen RSS-kop/beschrijving beschikbaar; dit is geen onafhankelijke factcheck.");
+  }
   const englishPhrases = /\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position|best team in|today's other quizzes|saturday's gossip|could be sidelined)\b/i;
   const englishHeadlineWords = /\b(happy|unsure|after|before|could|would|should|taken|hospital|collapsing|training|deal|transfer|says|said|January|February|March|April|May|June|July|August|September|October|November|December|fear|fears|gossip|quizzes)\b/i;
   const englishStopWords = (headline.match(/\b(the|and|but|after|before|could|would|says|said|with|from|over|for|to|in|at|may|fear|fears)\b/gi) || []).length;
