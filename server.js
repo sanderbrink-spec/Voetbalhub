@@ -184,7 +184,18 @@ async function polishIncomingDraft(item) {
     const data = await response.json();
     if (!response.ok) return { ...item, languagePolish: "failed" };
     const edited = JSON.parse(data.choices?.[0]?.message?.content || "{}");
-    if (typeof edited.headline !== "string" || typeof edited.standfirst !== "string" || !Array.isArray(edited.body) || !edited.body.every(p => typeof p === "string")) return { ...item, languagePolish: "failed_invalid_response" };
+    // Some model responses return the body as a single string instead of the
+    // requested array. Normalize only this representation; never invent missing
+    // editorial fields or treat malformed content as publication-ready.
+    if (typeof edited.body === "string") {
+      edited.body = edited.body.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    }
+    if (typeof edited.headline !== "string" || !edited.headline.trim() ||
+        typeof edited.standfirst !== "string" || !edited.standfirst.trim() ||
+        !Array.isArray(edited.body) || !edited.body.every(p => typeof p === "string") ||
+        edited.body.length === 0 || !["keep", "skip"].includes(edited.editorialDecision)) {
+      return { ...item, languagePolish: "failed_invalid_response", languagePolishNote: "AI-antwoord had niet alle verplichte velden in het verwachte formaat; concept blijft geblokkeerd." };
+    }
     const finalDraftText = [edited.headline, edited.standfirst, ...edited.body].join("\\n");
     if (hasLongVerbatimOverlap(sourceText, finalDraftText)) return {
       ...item,
