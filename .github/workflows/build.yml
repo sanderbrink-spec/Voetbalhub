@@ -115,8 +115,7 @@ jobs:
                         "Nog geen goedgekeurde VoetbalHub-artikelen beschikbaar. Tik op VERVERS om opnieuw te controleren.")
           s = s.replace("Geen nieuws opgehaald. Controle: ",
                         "Nog geen goedgekeurde VoetbalHub-artikelen. Controle: ")
-          if "fetchApprovedVoetbalHubArticles()" not in s:
-              raise SystemExit("Editorial articles fetch missing: refuse to build an empty-only news app.")
+          # The approved-originals section is injected below; validate it after patching.
           print("Verified manually approved article fetch and accurate empty-state messaging.")
           # The editorial API remains a separate, manually approved VoetbalHub Originals section.
           # Replace the scores screen with a clear rights-safe placeholder, and remove
@@ -471,6 +470,8 @@ jobs:
           indent = s[line_start:back_pos]
           insert = 'if (returnToNewsBottomTab()) return;' + chr(10) + indent + 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showNews();' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
           s = s[:line_start] + indent + insert + s[line_start + len(indent):]
+          if "private void addEditorialNewsSection(LinearLayout parent)" not in s or "addEditorialNewsSection(list);" not in s:
+              raise SystemExit("Approved editorial articles section is missing.")
           p.write_text(s)
           print("Patched ESPN feeds, home screen and back navigation.")
           PY
