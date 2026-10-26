@@ -160,7 +160,7 @@ function editorialQuality(item) {
   const scoreInText = [...text.matchAll(/\\b(\\d{1,2})\\s*[-–:]\\s*(\\d{1,2})\\b/g)]
     .map(m => [Number(m[1]), Number(m[2])]);
   const verifiedFinalScore = record.provider === "Flashscore" && record.verified === true &&
-    record.matchStatus === "finished" && /^https:\\/\\/(?:www\\.)?flashscore\\.(?:nl|com)\\//i.test(String(record.url || "")) && !!scoreMatch;
+    record.matchStatus === "finished" && trustedSourceFor({source:{url:record.url}}) === "Flashscore" && !!scoreMatch;
   const scoreConsistent = verifiedFinalScore && scoreInText.every(([a,b]) =>
     (a === Number(scoreMatch[1]) && b === Number(scoreMatch[2])) ||
     (a === Number(scoreMatch[2]) && b === Number(scoreMatch[1])));
