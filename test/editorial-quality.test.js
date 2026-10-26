@@ -76,3 +76,20 @@ test("warns when article numbers are not present in stored source text", () => {
   assert.ok(result.warnings.some(w => w.includes("Cijfers in kop/intro/tekst") || w.includes("Controleer cijfers")));
   assert.equal(result.publishableAutomatically, false);
 });
+
+test("does not call extracted article text RSS-only just because the standard disclaimer exists", () => {
+  const result = editorialQuality({
+    headline: "Clasie verklaart ruzie met Zerrouki",
+    standfirst: "Clasie reageerde na afloop van AZ tegen FC Twente.",
+    body: ["De aanvoerder was kritisch op het gedrag na de wedstrijd."],
+    source: { url: "https://example.com/story", title: "Clasie verklaart ruzie met Zerrouki" },
+    sourceEvidence: {
+      evidenceLevel: "article_text_extracted",
+      content: "Een volledige en voldoende lange bronpassage met de context van het artikel en de beschreven gebeurtenis. ".repeat(4)
+    },
+    verification_notes: "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: dit is een standaarddisclaimer.",
+    claims: []
+  });
+  assert.ok(!result.warnings.some(w => w.includes("Alleen RSS-kop/beschrijving beschikbaar")));
+  assert.equal(result.independentFactCheck, false);
+});
