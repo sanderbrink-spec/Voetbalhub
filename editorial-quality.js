@@ -198,7 +198,7 @@ function editorialQuality(item) {
   // A trusted publisher's RSS lead is a valid news lead, not a finished article.
   // Its copyright status must not lower the *editorial* score or force a second publisher.
   const leadContradiction = /\\b(vijf|zes|zeven|acht|negen|tien)\\s+overwinningen?\\s+in\\s+(een|twee|drie|vier)\\s+wedstrijden\\b/i.test(feedText);
-  const leadAssessment = trustedSource && /^https:\\/\\//i.test(sourceUrl) &&
+  const leadAssessment = trustedSource && sourceUrl.startsWith("https://") &&
     !!String(ev.title || src.title || headline).trim() && !!String(ev.description || "").trim() &&
     !leadContradiction && !["rejected_low_priority","rejected_verbatim_overlap"].includes(item?.editorialStatus)
     ? "accepted_news_lead" : "needs_lead_review";
