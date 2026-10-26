@@ -143,6 +143,8 @@ test("awards 100 only when automated editorial checks are complete", () => {
   });
   assert.equal(result.warningCount, 0, result.warnings.join(" | "));
   assert.equal(result.qualityScore, 100);
+  assert.equal(result.editorialAssessment, "passed_automated_checks");
+  assert.equal(result.publicationRightsStatus, "requires_manual_clearance");
   assert.equal(result.independentFactCheck, false);
   assert.match(result.qualityScoreNote, /geen garantie op feitelijke juistheid/);
 });
@@ -203,4 +205,35 @@ test("requires recorded match-stat verification for score and scorer claims", ()
   });
   assert.ok(result.warnings.some(w => w.includes("niet als gecontroleerd via Flashscore vastgelegd")));
   assert.equal(result.publishableAutomatically, false);
+});
+
+
+test("trusted publishers accept source facts without secondary source requirement, but never grant publication rights", () => {
+  for (const [url, expected] of [
+    ["https://www.vi.nl/nieuws/voorbeeld", "VI"],
+    ["https://www.voetbalprimeur.nl/nieuws/voorbeeld", "VoetbalPrimeur"],
+    ["https://www.flashscore.nl/wedstrijd/voorbeeld", "Flashscore"]
+  ]) {
+    const result = editorialQuality({headline:"Voorbeeldbericht",standfirst:"Een voorbeeld van een bronmelding.",body:[],source:{url,title:"Voorbeeldbericht"},sourcePolicy:{status:"link_only"},sourceEvidence:{evidenceLevel:"rss_title_and_description_only"},claims:[]});
+    assert.equal(result.trustedSource,expected);
+    assert.equal(result.sourceFactAcceptance,"accepted_without_secondary_source");
+    assert.equal(result.publishableAutomatically,false);
+    assert.equal(result.publicationRightsStatus,"blocked");
+  }
+  const spoofed = editorialQuality({source:{url:"https://vi.nl.evil.example/story"}});
+  assert.equal(spoofed.trustedSource,null);
+  assert.equal(spoofed.sourceFactAcceptance,"requires_source_review");
+});
+
+
+test("final Flashscore result must match article score", () => {
+  const base = {headline:"FC Groningen wint met 2-0",standfirst:"De thuisploeg wint de wedstrijd.",body:["Een voorbeeldalinea met wedstrijdinformatie die later wordt gecontroleerd.","De tweede alinea geeft aanvullende wedstrijdinformatie voor redactionele toetsing.","De derde alinea sluit het concept af zonder onbevestigde spelersnamen."],source:{url:"https://www.fcgroningen.nl/nieuws/voorbeeld",title:"FC Groningen wint met 2-0"},sourceEvidence:{evidenceLevel:"article_text_extracted",content:"FC Groningen wint met 2-0. ".repeat(20)},sourcePolicy:{status:"primary_fact_check_only"},claims:[],statsVerification:{provider:"Flashscore",verified:true,matchStatus:"finished",url:"https://www.flashscore.nl/wedstrijd/voorbeeld",finalScore:"2-0"}};
+  const good = editorialQuality(base);
+  assert.ok(!good.warnings.some(w=>w.includes("UITSLAGBLOKKADE")),good.warnings.join(" | "));
+  const bad = editorialQuality({...base,statsVerification:{...base.statsVerification,finalScore:"1-0"}});
+  assert.ok(bad.warnings.some(w=>w.includes("UITSLAGBLOKKADE")));
+  const missing = editorialQuality({...base,flashscoreVerified:true,statsVerification:undefined});
+  assert.ok(missing.warnings.some(w=>w.includes("UITSLAGBLOKKADE")));
+  const live = editorialQuality({...base,statsVerification:{...base.statsVerification,matchStatus:"live"}});
+  assert.ok(live.warnings.some(w=>w.includes("UITSLAGBLOKKADE")));
 });

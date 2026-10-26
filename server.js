@@ -269,6 +269,10 @@ async function getArticles() {
 }
 async function handle(req, res) {
   const url = new URL(req.url, "http://localhost");
+  if (req.method === "GET" && url.pathname === "/voorbeeld-verslagen") {
+    res.writeHead(200, {"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"});
+    return res.end(`<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VoetbalHub | Voorbeeldverslagen</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#090c0e;color:#f4f6f8;font:16px system-ui,sans-serif}main{max-width:840px;margin:auto;padding:28px 18px}h1{color:#a6ff00;font-size:32px}h2{font-size:22px}article{background:#151b1e;border:1px solid #303a3f;border-radius:16px;padding:22px;margin:22px 0}p{line-height:1.65}.flag{display:inline-block;border:1px solid #a6ff00;color:#a6ff00;border-radius:30px;padding:6px 12px;font-size:12px;font-weight:700}small{color:#b8c1c5}a{color:#b9ff55}</style><main><h1>VoetbalHub · Voorbeeldverslagen</h1><p class="flag">DEMONSTRATIE · GEEN ECHT NIEUWS</p><p>Dit zijn fictieve demonstraties van de schrijfstijl. De clubs, wedstrijdsituaties en uitslagen hieronder zijn verzonnen en niet gecontroleerd bij Flashscore. Ze verschijnen niet in de reguliere nieuwsfeed.</p><article><small>Demo 1 · wedstrijdverslag · fictieve clubs</small><h2>SV Noordstad trekt duel in slotfase naar zich toe</h2><p>SV Noordstad heeft in deze fictieve oefenwedstrijd laten zien hoe een wedstrijd in de slotfase kan kantelen. Lange tijd ging het gelijk op, maar in de laatste minuten nam de thuisploeg het initiatief.</p><p>Na rust kreeg de bezoekende ploeg meer ruimte op het middenveld. Noordstad bleef echter geduldig combineren en wist het spel terug naar de helft van de tegenstander te verplaatsen.</p><p>De demonstratie laat zien hoe VoetbalHub wedstrijdverloop, belangrijke momenten en de betekenis van een resultaat in helder Nederlands kan beschrijven. Een echt verslag krijgt pas een eindstand na controle bij Flashscore.</p></article><article><small>Demo 2 · wedstrijdanalyse · fictieve clubs</small><h2>FC Rivierdam houdt controle dankzij sterk middenveld</h2><p>FC Rivierdam bepaalde in dit verzonnen wedstrijdscenario vooral het tempo. De ploeg speelde compact en zocht via korte combinaties naar ruimte achter de verdediging.</p><p>De tegenstander probeerde met snelle omschakelingen gevaarlijk te worden, maar Rivierdam bleef georganiseerd. Vooral de samenwerking tussen de middenvelders zorgde voor rust aan de bal.</p><p>Dit voorbeeld toont een andere vorm van verslaggeving: minder nadruk op losse gebeurtenissen, meer op het spelbeeld. Er zijn bewust geen echte statistieken of uitslagen opgenomen.</p></article><p><small>Bronbeleid: Flashscore voor gecontroleerde wedstrijdgegevens; VI en VoetbalPrimeur als vertrouwde nieuwsbronnen. Overname van uitgeversteksten blijft gebonden aan publicatierechten.</small></p><p><a href="/publish-desk">Naar de Publicatiedesk</a></p></main></html>`);
+  }
   if (req.method === "OPTIONS") { res.writeHead(204); return res.end(); }
   if (req.method === "GET" && url.pathname === "/legacy-desk") {
     res.writeHead(200, {"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store"});
@@ -401,7 +405,27 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const rssOnly = ev.evidenceLevel === "rss_title_and_description_only" || (!ev.content && !ev.excerpt);
       const sourceHeadline = String(ev.title || item.source?.title || item.feedTitle || "").trim();
       const sourceDescription = String(ev.description || item.source?.description || item.feedDescription || "").trim();
-      const safeItem = rssOnly ? {
+      const restrictedSource = ["link_only", "unapproved", "unknown"].includes(sourcePolicy.status);
+      // Legacy records can contain AI copy and full publisher articles created
+      // before the source-policy guard. Never expose them through the review API.
+      // Keep Redis originals untouched for internal audit; only return a safe view.
+      const safeItem = restrictedSource ? {
+        ...item,
+        headline: sourceHeadline || item.headline,
+        standfirst: "Bronverwijzing — controleer feiten onafhankelijk voordat je een eigen artikel schrijft.",
+        body: [],
+        intro: "",
+        articleText: "",
+        claims: [],
+        sourceEvidence: {
+          ...ev,
+          content: "",
+          excerpt: "",
+          evidenceLevel: "publisher_link_only"
+        },
+        languagePolish: "skipped_link_only_source",
+        languagePolishNote: "Oude AI-tekst en overgenomen uitgeversinhoud verborgen; uitsluitend bronverwijzing beschikbaar."
+      } : rssOnly ? {
         ...item,
         headline: sourceHeadline || item.headline,
         // Do not promote a long RSS description or legacy AI copy into an article.

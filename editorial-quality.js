@@ -58,7 +58,20 @@ function auditClaims(item) {
   });
   return { ...item, claims: audited };
 }
+function trustedSourceFor(item) {
+  const raw = String(item?.source?.url || item?.sourceUrl || "").trim();
+  try {
+    const u = new URL(raw);
+    if (u.protocol !== "https:") return null;
+    const host = u.hostname.toLowerCase().replace(/^www\./, "");
+    if (host === "flashscore.nl" || host === "flashscore.com") return "Flashscore";
+    if (host === "vi.nl") return "VI";
+    if (host === "voetbalprimeur.nl") return "VoetbalPrimeur";
+  } catch { return null; }
+  return null;
+}
 function editorialQuality(item) {
+  const trustedSource = trustedSourceFor(item);
   const headline = String(item?.headline || ""); const standfirst = String(item?.standfirst || "");
   const body = Array.isArray(item?.body) ? item.body.filter(v => typeof v === "string") : [];
   const text = [headline, standfirst, ...body].join(" "); const src = item?.source || {};
@@ -139,7 +152,20 @@ function editorialQuality(item) {
   // Mandatory Flashscore check for match/player statistics. A source article or RSS text alone is not verification.
   const statsClaimPattern = /\b(statistiek(?:en)?|balbezit|schoten|schoten op doel|corners|hoekschoppen|doelpuntenmaker|assist(?:s)?|xg|expected goals|reddingen|passes|passnauwkeurigheid|gele kaarten|rode kaarten|wedstrijdcijfers|score van|eindstand|won met \d|versloeg .* met \d|\d+\s*[-–:]\s*\d+)\b/i;
   const hasMatchStatsClaims = statsClaimPattern.test([headline, standfirst, ...body].join(" "));
-  const flashscoreVerified = item?.flashscoreVerified === true || item?.verification?.flashscoreVerified === true || item?.statsVerification?.provider === "Flashscore" && item?.statsVerification?.verified === true;
+  // A boolean alone cannot establish a correct result. Require a recorded
+  // final Flashscore score and compare every numerical score in the copy.
+  const record = item?.statsVerification || {};
+  const score = String(record.finalScore || "").trim();
+  const scoreMatch = /^(\d{1,2})\s*[-–:]\s*(\d{1,2})$/.exec(score);
+  const scoreInText = [...text.matchAll(/\b(\d{1,2})\s*[-–:]\s*(\d{1,2})\b/g)]
+    .map(m => [Number(m[1]), Number(m[2])]);
+  const verifiedFinalScore = record.provider === "Flashscore" && record.verified === true &&
+    record.matchStatus === "finished" && trustedSourceFor({source:{url:record.url}}) === "Flashscore" && !!scoreMatch;
+  const scoreConsistent = verifiedFinalScore && scoreInText.every(([a,b]) =>
+    (a === Number(scoreMatch[1]) && b === Number(scoreMatch[2])) ||
+    (a === Number(scoreMatch[2]) && b === Number(scoreMatch[1])));
+  const flashscoreVerified = verifiedFinalScore && scoreConsistent;
+  if (scoreInText.length && !flashscoreVerified) add("UITSLAGBLOKKADE: eindstand niet aantoonbaar gelijk aan een vastgelegde definitieve Flashscore-uitslag.");
   if (hasMatchStatsClaims && !flashscoreVerified) add("VERPLICHT: wedstrijd- en spelersstatistieken zijn niet als gecontroleerd via Flashscore vastgelegd. Controleer uitslag, doelpuntenmakers, assists en genoemde cijfers op Flashscore voordat je publiceert.");
   if (!hasArticleText) add("Geen volledige artikeltekst opgeslagen; RSS-kop en -beschrijving zijn onvoldoende voor inhoudelijke factcontrole.");
   const normalizedBody = body.map(p => normalizeEvidence(p)).filter(Boolean);
@@ -164,8 +190,22 @@ function editorialQuality(item) {
   const automaticQualityScore = Math.max(0, Math.min(scoreCap, 100 - warnings.length * 6 - unverified.length * 4));
   const riskLevel = warnings.length >= 5 || unverified.length >= 3 ? "high" :
     warnings.length >= 2 || unverified.length >= 1 ? "medium" : "low";
+  // Editorial assessment is separate from publication rights. A technically
+  // sound article may pass editorial review while its source remains link-only.
+  // Neither status authorizes publication or constitutes an independent factcheck.
+  const rightsStatus = ["link_only", "unapproved", "unknown"].includes(item?.sourcePolicy?.status)
+    ? "blocked" : item?.sourcePolicy?.status === "data_provider" ? "requires_terms_review" : "requires_manual_clearance";
+  const editorialWarnings = warnings.filter(w => !/^Bronbeleid/.test(w));
+  const editorialReady = structureReady && sourceReady && claimsReady && languageReady &&
+    !hasHeadlineContradiction && editorialWarnings.length === 0 &&
+    (!hasMatchStatsClaims || flashscoreVerified) &&
+    !["rejected_low_priority", "rejected_verbatim_overlap"].includes(item?.editorialStatus);
   return {
     warnings,
+    editorialAssessment: editorialReady ? "passed_automated_checks" : "needs_review",
+    sourceFactAcceptance: trustedSource ? "accepted_without_secondary_source" : "requires_source_review",
+    trustedSource,
+    publicationRightsStatus: rightsStatus,
     qualityScore: automaticQualityScore,
     qualityScoreLabel: automaticQualityScore >= 90 ? "Uitstekend" : automaticQualityScore >= 75 ? "Goed, laatste controles nodig" : automaticQualityScore >= 50 ? "Herzien" : "Onvoldoende",
     qualityScoreNote: "Automatische redactiescore, geen garantie op feitelijke juistheid; onafhankelijke factcheck blijft apart vereist.",
@@ -179,4 +219,4 @@ function editorialQuality(item) {
     publishableAutomatically: false
   };
 }
-module.exports = { auditClaims, editorialQuality, headlineContradictions, normalizeEvidence, sourceTextFor };
+module.exports = { auditClaims, editorialQuality, headlineContradictions, normalizeEvidence, sourceTextFor, trustedSourceFor };
