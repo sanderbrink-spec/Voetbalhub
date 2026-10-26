@@ -623,13 +623,13 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (requiresFlashscore && !hasFlashscoreReference) return send(res, 400, {
       error: "Publicatie geblokkeerd: wedstrijdresultaten, standen of statistieken vereisen een gecontroleerde Flashscore-bronlink. Voeg de gebruikte Flashscore-wedstrijd of competitiepagina toe en controleer de cijfers handmatig."
     });
-    const imageUrl = typeof d.imageUrl === "string" ? d.imageUrl.trim().slice(0,1000) : "";
-    const imageSource = typeof d.imageSource === "string" ? d.imageSource.trim().slice(0,300) : "";
-    const imageCredit = typeof d.imageCredit === "string" ? d.imageCredit.trim().slice(0,200) : "";
-    const imageRights = typeof d.imageRights === "string" ? d.imageRights.trim() : "not_needed";
+    const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim().slice(0,1000) : "";
+    const imageSource = typeof body.imageSource === "string" ? body.imageSource.trim().slice(0,300) : "";
+    const imageCredit = typeof body.imageCredit === "string" ? body.imageCredit.trim().slice(0,200) : "";
+    const imageRights = typeof body.imageRights === "string" ? body.imageRights.trim() : "not_needed";
     if (imageUrl && (!/^https:\/\//i.test(imageUrl) || !["cleared","licensed"].includes(imageRights) || !imageSource || !imageCredit)) return send(res,400,{error:"Een foto vereist een HTTPS-URL, bron, naamsvermelding en bevestigde rechten (cleared/licensed)."});
     if (!imageUrl && !["not_needed","pending","rejected"].includes(imageRights)) return send(res,400,{error:"Beeldrechtenstatus zonder foto is ongeldig."});
-    if (imageUrl && (!d.imageReview || d.imageReview.kitVerified !== true || d.imageReview.playerIdentityVerified !== true || d.imageReview.aiDisclosureVerified !== true)) return send(res,400,{error:"Beeldpublicatie vereist controle van tenues, spelers en AI-vermelding."});
+    if (imageUrl && (!body.imageReview || body.imageReview.kitVerified !== true || body.imageReview.playerIdentityVerified !== true || body.imageReview.aiDisclosureVerified !== true)) return send(res,400,{error:"Beeldpublicatie vereist controle van tenues, spelers en AI-vermelding."});
     const now = new Date().toISOString();
     const article = { id: crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights} : {imageRights}), autoPublish: false };
     await client.set("article:" + article.id, JSON.stringify(article));
