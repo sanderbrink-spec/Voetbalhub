@@ -401,7 +401,27 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const rssOnly = ev.evidenceLevel === "rss_title_and_description_only" || (!ev.content && !ev.excerpt);
       const sourceHeadline = String(ev.title || item.source?.title || item.feedTitle || "").trim();
       const sourceDescription = String(ev.description || item.source?.description || item.feedDescription || "").trim();
-      const safeItem = rssOnly ? {
+      const restrictedSource = ["link_only", "unapproved", "unknown"].includes(sourcePolicy.status);
+      // Legacy records can contain AI copy and full publisher articles created
+      // before the source-policy guard. Never expose them through the review API.
+      // Keep Redis originals untouched for internal audit; only return a safe view.
+      const safeItem = restrictedSource ? {
+        ...item,
+        headline: sourceHeadline || item.headline,
+        standfirst: "Bronverwijzing — controleer feiten onafhankelijk voordat je een eigen artikel schrijft.",
+        body: [],
+        intro: "",
+        articleText: "",
+        claims: [],
+        sourceEvidence: {
+          ...ev,
+          content: "",
+          excerpt: "",
+          evidenceLevel: "publisher_link_only"
+        },
+        languagePolish: "skipped_link_only_source",
+        languagePolishNote: "Oude AI-tekst en overgenomen uitgeversinhoud verborgen; uitsluitend bronverwijzing beschikbaar."
+      } : rssOnly ? {
         ...item,
         headline: sourceHeadline || item.headline,
         // Do not promote a long RSS description or legacy AI copy into an article.
