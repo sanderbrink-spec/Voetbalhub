@@ -183,3 +183,24 @@ test("blocks a headline that claims both a 2-0 win and a draw", () => {
   assert.ok(result.scoreLimitations.some(reason => reason.includes("Tegenstrijdige uitslag")));
   assert.equal(result.publishableAutomatically, false);
 });
+
+
+test("requires recorded match-stat verification for score and scorer claims", () => {
+  const result = editorialQuality({
+    headline: "FC Twente verslaat AZ met 2-0",
+    standfirst: "FC Twente won de wedstrijd met twee doelpunten.",
+    body: [
+      "De wedstrijd eindigde in een uitslag die inhoudelijk moet worden gecontroleerd voordat er gepubliceerd kan worden.",
+      "De doelpuntenmakers en de tijdstippen moeten aan de hand van officiële wedstrijdgegevens worden bevestigd.",
+      "Zonder vastgelegde verificatie blijven score en doelpuntenmakers onzeker en mag het concept niet worden goedgekeurd."
+    ],
+    source: { url: "https://example.com/match", title: "FC Twente verslaat AZ met 2-0", description: "FC Twente wint met 2-0." },
+    sourceEvidence: { evidenceLevel: "article_text_extracted", content: "FC Twente verslaat AZ met 2-0. ".repeat(12) },
+    sourcePolicy: { status: "primary_fact_check_only" },
+    languagePolish: "ai_edited_source_limited",
+    claimsRecheckedAgainstFinalText: true,
+    claims: [{ claim: "FC Twente wint met 2-0", status: "supported_by_feed", evidence: "FC Twente verslaat AZ met 2-0" }]
+  });
+  assert.ok(result.warnings.some(w => w.includes("niet als gecontroleerd via Flashscore vastgelegd")));
+  assert.equal(result.publishableAutomatically, false);
+});
