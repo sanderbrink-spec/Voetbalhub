@@ -224,3 +224,16 @@ test("trusted publishers accept source facts without secondary source requiremen
   assert.equal(spoofed.trustedSource,null);
   assert.equal(spoofed.sourceFactAcceptance,"requires_source_review");
 });
+
+
+test("final Flashscore result must match article score", () => {
+  const base = {headline:"FC Groningen wint met 2-0",standfirst:"De thuisploeg wint de wedstrijd.",body:["Een voorbeeldalinea met wedstrijdinformatie die later wordt gecontroleerd.","De tweede alinea geeft aanvullende wedstrijdinformatie voor redactionele toetsing.","De derde alinea sluit het concept af zonder onbevestigde spelersnamen."],source:{url:"https://www.fcgroningen.nl/nieuws/voorbeeld",title:"FC Groningen wint met 2-0"},sourceEvidence:{evidenceLevel:"article_text_extracted",content:"FC Groningen wint met 2-0. ".repeat(20)},sourcePolicy:{status:"primary_fact_check_only"},claims:[],statsVerification:{provider:"Flashscore",verified:true,matchStatus:"finished",url:"https://www.flashscore.nl/wedstrijd/voorbeeld",finalScore:"2-0"}};
+  const good = editorialQuality(base);
+  assert.ok(!good.warnings.some(w=>w.includes("UITSLAGBLOKKADE")),good.warnings.join(" | "));
+  const bad = editorialQuality({...base,statsVerification:{...base.statsVerification,finalScore:"1-0"}});
+  assert.ok(bad.warnings.some(w=>w.includes("UITSLAGBLOKKADE")));
+  const missing = editorialQuality({...base,flashscoreVerified:true,statsVerification:undefined});
+  assert.ok(missing.warnings.some(w=>w.includes("UITSLAGBLOKKADE")));
+  const live = editorialQuality({...base,statsVerification:{...base.statsVerification,matchStatus:"live"}});
+  assert.ok(live.warnings.some(w=>w.includes("UITSLAGBLOKKADE")));
+});
