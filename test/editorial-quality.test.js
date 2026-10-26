@@ -160,3 +160,26 @@ test("caps quality score for link-only publishers and missing independent articl
   assert.ok(result.qualityScore <= 25);
   assert.ok(result.scoreLimitations.some(reason => reason.includes("alleen als link")));
 });
+
+
+test("blocks a headline that claims both a 2-0 win and a draw", () => {
+  const result = editorialQuality({
+    headline: "FC Twente verslaat AZ met 2-0 en haalt gelijkspel in Eredivisie",
+    standfirst: "FC Twente zou de wedstrijd hebben gewonnen.",
+    body: [
+      "Deze alinea bevat voldoende tekst om de minimale lengtecontrole te passeren, maar zegt niets extra's over de uitslag.",
+      "Deze tweede alinea bevat aanvullende tekst om de structurele controle te passeren zonder nieuwe wedstrijdfeiten te verzinnen.",
+      "Deze derde alinea sluit het concept af en laat zien dat lengtecontroles op zichzelf geen inhoudelijke juistheid garanderen."
+    ],
+    source: { url: "https://example.com/match", title: "FC Twente wint van AZ" },
+    sourceEvidence: { evidenceLevel: "article_text_extracted", content: "Officiële wedstrijdinformatie is nodig om de uitslag te controleren. ".repeat(5) },
+    sourcePolicy: { status: "primary_fact_check_only" },
+    languagePolish: "ai_edited_source_limited",
+    claimsRecheckedAgainstFinalText: true,
+    claims: [{ claim: "FC Twente wint van AZ", status: "supported_by_feed", evidence: "FC Twente wint van AZ" }]
+  });
+  assert.ok(result.warnings.some(w => w.includes("Tegenstrijdige kop")));
+  assert.equal(result.qualityScore, 0);
+  assert.ok(result.scoreLimitations.some(reason => reason.includes("Tegenstrijdige uitslag")));
+  assert.equal(result.publishableAutomatically, false);
+});
