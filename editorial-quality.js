@@ -164,8 +164,20 @@ function editorialQuality(item) {
   const automaticQualityScore = Math.max(0, Math.min(scoreCap, 100 - warnings.length * 6 - unverified.length * 4));
   const riskLevel = warnings.length >= 5 || unverified.length >= 3 ? "high" :
     warnings.length >= 2 || unverified.length >= 1 ? "medium" : "low";
+  // Editorial assessment is separate from publication rights. A technically
+  // sound article may pass editorial review while its source remains link-only.
+  // Neither status authorizes publication or constitutes an independent factcheck.
+  const rightsStatus = ["link_only", "unapproved", "unknown"].includes(item?.sourcePolicy?.status)
+    ? "blocked" : item?.sourcePolicy?.status === "data_provider" ? "requires_terms_review" : "requires_manual_clearance";
+  const editorialWarnings = warnings.filter(w => !/^Bronbeleid/.test(w));
+  const editorialReady = structureReady && sourceReady && claimsReady && languageReady &&
+    !hasHeadlineContradiction && editorialWarnings.length === 0 &&
+    (!hasMatchStatsClaims || flashscoreVerified) &&
+    !["rejected_low_priority", "rejected_verbatim_overlap"].includes(item?.editorialStatus);
   return {
     warnings,
+    editorialAssessment: editorialReady ? "passed_automated_checks" : "needs_review",
+    publicationRightsStatus: rightsStatus,
     qualityScore: automaticQualityScore,
     qualityScoreLabel: automaticQualityScore >= 90 ? "Uitstekend" : automaticQualityScore >= 75 ? "Goed, laatste controles nodig" : automaticQualityScore >= 50 ? "Herzien" : "Onvoldoende",
     qualityScoreNote: "Automatische redactiescore, geen garantie op feitelijke juistheid; onafhankelijke factcheck blijft apart vereist.",
