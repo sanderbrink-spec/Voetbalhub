@@ -26,7 +26,7 @@ function headlineContradictions(item) {
   const saysWin = /\b(wint|won|verslaat|versloeg|zege|gewonnen|winst|wint met|zege met)\b/.test(headline);
   const saysDraw = /\b(gelijkspel|speelt gelijk|speelden gelijk|eindigt gelijk|eindigde gelijk|haalt gelijkspel|puntendeling|deling van punten)\b/.test(headline);
   const winScore = /\b(?:wint met|zege met|verslaat|versloeg)\s+(?:een\s+)?\d+\s*[-–:]\s*\d+\b/.test(headline);
-  return saysWin && saysDraw || winScore && saysDraw;
+  // A past draw mentioned as context is not a contradictory result for today.\n  const historicalDraw = /\\b(?:na|sinds|ondanks)\\s+(?:(?:het|een)\\s+)?gelijkspel\\b/.test(headline);\n  const otherDraw = headline.replace(/\\b(?:na|sinds|ondanks)\\s+(?:(?:het|een)\\s+)?gelijkspel\\b/g, "");\n  const remainingDraw = /\\b(gelijkspel|speelt gelijk|speelden gelijk|eindigt gelijk|eindigde gelijk|haalt gelijkspel|puntendeling|deling van punten)\\b/.test(otherDraw);\n  return (saysWin || winScore) && saysDraw && (!historicalDraw || remainingDraw);
 }
 function auditClaims(item) {
   const source = normalizeEvidence(sourceTextFor(item));
