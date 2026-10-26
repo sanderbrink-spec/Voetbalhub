@@ -237,3 +237,20 @@ test("final Flashscore result must match article score", () => {
   const live = editorialQuality({...base,statsVerification:{...base.statsVerification,matchStatus:"live"}});
   assert.ok(live.warnings.some(w=>w.includes("UITSLAGBLOKKADE")));
 });
+
+
+test("trusted VI and VP RSS leads can be accepted without pretending to be publishable articles", () => {
+  for (const url of ["https://www.vi.nl/nieuws/test", "https://www.voetbalprimeur.nl/nieuws/test"]) {
+    const result = editorialQuality({headline:"Een voetbalbericht met betrouwbare bron",standfirst:"Bronverwijzing",body:[],source:{url,title:"Nieuwsbericht"},sourceEvidence:{title:"Nieuwsbericht",description:"De club heeft een nieuwsbericht bekendgemaakt.",evidenceLevel:"publisher_link_only"},sourcePolicy:{status:"link_only"},claims:[]});
+    assert.equal(result.leadAssessment,"accepted_news_lead");
+    assert.equal(result.editorialAssessment,"needs_review");
+    assert.equal(result.publicationRightsStatus,"blocked");
+    assert.equal(result.publishableAutomatically,false);
+  }
+});
+
+test("impossible victories in matches are flagged even from trusted publisher", () => {
+  const result = editorialQuality({headline:"Liverpool in vorm",standfirst:"Bronverwijzing",body:[],source:{url:"https://www.vi.nl/nieuws/liverpool",title:"Liverpool"},sourceEvidence:{title:"Liverpool",description:"Liverpool boekte vijf overwinningen in vier wedstrijden.",evidenceLevel:"publisher_link_only"},sourcePolicy:{status:"link_only"},claims:[]});
+  assert.equal(result.leadAssessment,"needs_lead_review");
+  assert.match(result.leadReviewReason,/Onmogelijke verhouding/);
+});
