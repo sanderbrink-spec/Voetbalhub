@@ -93,3 +93,32 @@ test("does not call extracted article text RSS-only just because the standard di
   assert.ok(!result.warnings.some(w => w.includes("Alleen RSS-kop/beschrijving beschikbaar")));
   assert.equal(result.independentFactCheck, false);
 });
+
+
+test("flags articles with too few or very short paragraphs", () => {
+  const result = editorialQuality({
+    headline: "FC Groningen wint thuis",
+    standfirst: "FC Groningen boekte een belangrijke overwinning.",
+    body: ["FC Groningen won de wedstrijd."],
+    source: { url: "https://example.com/story", title: "FC Groningen wint" },
+    sourceEvidence: { evidenceLevel: "article_text_extracted", content: "Een volledige bronpassage met meer dan genoeg tekst voor deze test. ".repeat(5) },
+    claims: [{ claim: "FC Groningen won", status: "supported_by_feed", evidence: "FC Groningen won de wedstrijd." }]
+  });
+  assert.ok(result.warnings.some(w => w.includes("minimaal drie inhoudelijke alinea's")));
+  assert.ok(result.warnings.some(w => w.includes("korter dan 70 tekens")));
+  assert.equal(result.publishableAutomatically, false);
+});
+
+test("flags duplicate article paragraphs", () => {
+  const paragraph = "FC Groningen speelde een sterke wedstrijd en pakte uiteindelijk drie belangrijke punten.";
+  const result = editorialQuality({
+    headline: "FC Groningen pakt drie punten",
+    standfirst: "De thuisploeg won een belangrijke wedstrijd.",
+    body: [paragraph, paragraph, paragraph],
+    source: { url: "https://example.com/story", title: "FC Groningen wint" },
+    sourceEvidence: { evidenceLevel: "article_text_extracted", content: "Een volledige bronpassage met meer dan genoeg tekst voor deze test. ".repeat(5) },
+    claims: [{ claim: "FC Groningen won", status: "supported_by_feed", evidence: "FC Groningen speelde een sterke wedstrijd en pakte uiteindelijk drie belangrijke punten." }]
+  });
+  assert.ok(result.warnings.some(w => w.includes("Dubbele artikelalinea's")));
+  assert.equal(result.publishableAutomatically, false);
+});
