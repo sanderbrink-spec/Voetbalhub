@@ -271,7 +271,7 @@ jobs:
               private void addEditorialNewsSection(LinearLayout parent) {
                   LinearLayout section = new LinearLayout(this);
                   section.setOrientation(LinearLayout.VERTICAL);
-                  section.setPadding(dp(12), dp(10), dp(12), dp(10));
+                  section.setPadding(dp(6), dp(7), dp(6), dp(7));
                   section.setBackground(cardBackground());
                   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
                   lp.setMargins(0, 0, 0, dp(8));
@@ -320,35 +320,35 @@ jobs:
                                   heroBg.setCornerRadius(dp(16));
                                   heroBg.setStroke(dp(1), 0xFF24573B);
                                   hero.setBackground(heroBg);
-                                  LinearLayout.LayoutParams heroLp = new LinearLayout.LayoutParams(-1, dp(205));
-                                  heroLp.setMargins(0, dp(8), 0, dp(12));
+                                  LinearLayout.LayoutParams heroLp = new LinearLayout.LayoutParams(-1, dp(225));
+                                  heroLp.setMargins(0, dp(5), 0, dp(5));
                                   section.addView(hero, heroLp);
-                                  LinearLayout artwork = new LinearLayout(this);
-                                  artwork.setOrientation(LinearLayout.VERTICAL);
-                                  artwork.setGravity(android.view.Gravity.CENTER);
-                                  android.widget.FrameLayout.LayoutParams artLp = new android.widget.FrameLayout.LayoutParams(-1, -1);
-                                  hero.addView(artwork, artLp);
                                   String headlineValue = article.optString("headline", "Voetbalnieuws");
-                                  String fixture = headlineValue.toLowerCase(java.util.Locale.ROOT).contains("groningen")
-                                      && headlineValue.toLowerCase(java.util.Locale.ROOT).contains("n.e.c.")
-                                      ? "FC GRONINGEN   ⚽   N.E.C." : "⚽  VOETBALHUB";
-                                  TextView artFixture = tv(fixture, 18, C.TEXT, true);
-                                  artFixture.setGravity(android.view.Gravity.CENTER);
-                                  artwork.addView(artFixture);
-                                  TextView artBrand = tv("VOETBALHUB ORIGINALS", 11, C.GREEN, true);
-                                  artBrand.setGravity(android.view.Gravity.CENTER);
-                                  artBrand.setPadding(0, dp(10), 0, 0);
-                                  artwork.addView(artBrand);
+                                  android.view.View field = new android.view.View(this);
+                                  android.graphics.drawable.GradientDrawable fieldBg = new android.graphics.drawable.GradientDrawable(
+                                      android.graphics.drawable.GradientDrawable.Orientation.BL_TR,
+                                      new int[]{0xFF0C2E1E, 0xFF18643B, 0xFF081713});
+                                  field.setBackground(fieldBg);
+                                  hero.addView(field, new android.widget.FrameLayout.LayoutParams(-1, -1));
+                                  android.widget.TextView ball = tv("⚽", 80, C.TEXT, true);
+                                  ball.setGravity(android.view.Gravity.CENTER);
+                                  ball.setAlpha(0.25f);
+                                  android.widget.FrameLayout.LayoutParams ballLp = new android.widget.FrameLayout.LayoutParams(dp(150), dp(150), android.view.Gravity.TOP | android.view.Gravity.RIGHT);
+                                  ballLp.setMargins(0, dp(6), dp(4), 0);
+                                  hero.addView(ball, ballLp);
                                   LinearLayout overlay = new LinearLayout(this);
                                   overlay.setOrientation(LinearLayout.VERTICAL);
-                                  overlay.setPadding(dp(14), dp(8), dp(14), dp(14));
+                                  overlay.setPadding(dp(16), dp(8), dp(16), dp(16));
                                   overlay.setGravity(android.view.Gravity.BOTTOM);
                                   android.graphics.drawable.GradientDrawable shade = new android.graphics.drawable.GradientDrawable(
                                       android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
-                                      new int[]{0x00000000, 0xF5000000});
+                                      new int[]{0x00000000, 0x55000000, 0xF9000000});
                                   overlay.setBackground(shade);
                                   hero.addView(overlay, new android.widget.FrameLayout.LayoutParams(-1, -1));
-                                  TextView headline = tv(headlineValue, 19, C.TEXT, true);
+                                  TextView label = tv("VOETBALHUB ORIGINALS", 12, C.GREEN, true);
+                                  label.setPadding(0, 0, 0, dp(8));
+                                  overlay.addView(label);
+                                  TextView headline = tv(headlineValue, 20, C.TEXT, true);
                                   overlay.addView(headline);
                                   hero.setOnClickListener(v -> showEditorialArticle(article));
                               }
