@@ -1,6 +1,7 @@
 const http = require("node:http");
 const { createClient } = require("redis");
 const { auditClaims, editorialQuality } = require("./editorial-quality");
+const { normalizeEditorialResponse } = require("./editorial-response");
 
 const PORT = Number(process.env.PORT || 10000);
 const API_SECRET = process.env.HUB_API_SECRET || "";
@@ -183,19 +184,22 @@ async function polishIncomingDraft(item) {
     });
     const data = await response.json();
     if (!response.ok) return { ...item, languagePolish: "failed" };
-    const edited = JSON.parse(data.choices?.[0]?.message?.content || "{}");
-    // Some model responses return the body as a single string instead of the
-    // requested array. Normalize only this representation; never invent missing
-    // editorial fields or treat malformed content as publication-ready.
-    if (typeof edited.body === "string") {
-      edited.body = edited.body.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    const parsed = JSON.parse(data.choices?.[0]?.message?.content || "{}");
+    const normalized = normalizeEditorialResponse(parsed);
+    if (!normalized.ok) {
+      return { ...item, languagePolish: "failed_invalid_response", languagePolishNote: normalized.reason + " Concept blijft geblokkeerd." };
     }
-    if (typeof edited.headline !== "string" || !edited.headline.trim() ||
-        typeof edited.standfirst !== "string" || !edited.standfirst.trim() ||
-        !Array.isArray(edited.body) || !edited.body.every(p => typeof p === "string") ||
-        edited.body.length === 0 || !["keep", "skip"].includes(edited.editorialDecision)) {
-      return { ...item, languagePolish: "failed_invalid_response", languagePolishNote: "AI-antwoord had niet alle verplichte velden in het verwachte formaat; concept blijft geblokkeerd." };
-    }
+    const edited = normalized.value;
+    // A valid skip is a successful editorial decision, not a malformed article.
+    // Handle it before checking fields required only for a kept article.
+    if (edited.editorialDecision === "skip") return {
+      ...item,
+      headline: "",
+      editorialStatus: "rejected_low_priority",
+      editorialSkipReason: edited.skipReason,
+      languagePolish: "skipped_low_priority",
+      languagePolishNote: "Niet getoond: lage nieuwswaarde of te weinig onafhankelijke onderbouwing. Het oorspronkelijke bronrecord blijft bewaard."
+    };
     const finalDraftText = [edited.headline, edited.standfirst, ...edited.body].join("\\n");
     if (hasLongVerbatimOverlap(sourceText, finalDraftText)) return {
       ...item,
