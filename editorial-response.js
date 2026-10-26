@@ -14,6 +14,8 @@ function normalizeEditorialResponse(input) {
   else if (Array.isArray(body)) body = body.filter(p => typeof p === "string").map(p => p.trim()).filter(Boolean);
   else body = [];
   if (!headline || !standfirst || body.length === 0) return { ok: false, reason: "AI-antwoord voor keep mist een kop, intro of artikelalinea." };
-  return { ok: true, value: { editorialDecision: "keep", headline: headline.slice(0, 240), standfirst: standfirst.slice(0, 700), body: body.slice(0, 2).map(p => p.slice(0, 900)), skipReason } };
+  if (body.length < 3) return { ok: false, reason: "AI-antwoord bevat minder dan drie inhoudelijke alinea\u2019s." };
+  if (body.some(p => p.length < 70)) return { ok: false, reason: "AI-antwoord bevat een alinea korter dan 70 tekens." };
+  return { ok: true, value: { editorialDecision: "keep", headline: headline.slice(0, 240), standfirst: standfirst.slice(0, 700), body: body.slice(0, 5).map(p => p.slice(0, 1200)), skipReason } };
 }
 module.exports = { normalizeEditorialResponse };
