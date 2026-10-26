@@ -254,3 +254,10 @@ test("impossible victories in matches are flagged even from trusted publisher", 
   assert.equal(result.leadAssessment,"needs_lead_review");
   assert.match(result.leadReviewReason,/Onmogelijke verhouding/);
 });
+
+
+test("ordinal fifth win in four games is not accepted as trusted news lead", () => {
+  const result = editorialQuality({headline:"Liverpool boekt vijfde zege",standfirst:"Bronverwijzing",body:[],source:{url:"https://www.vi.nl/nieuws/liverpool",title:"Liverpool"},sourceEvidence:{title:"Liverpool",description:"Liverpool boekte de vijfde overwinning in vier wedstrijden.",evidenceLevel:"publisher_link_only"},sourcePolicy:{status:"link_only"},claims:[]});
+  assert.equal(result.leadAssessment,"needs_lead_review");
+  assert.match(result.leadReviewReason,/Onmogelijke verhouding/);
+});
