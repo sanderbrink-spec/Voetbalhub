@@ -336,6 +336,38 @@ jobs:
                                   android.widget.FrameLayout.LayoutParams ballLp = new android.widget.FrameLayout.LayoutParams(dp(150), dp(150), android.view.Gravity.TOP | android.view.Gravity.RIGHT);
                                   ballLp.setMargins(0, dp(6), dp(4), 0);
                                   hero.addView(ball, ballLp);
+                                  // Only display artwork explicitly approved and rights-cleared by the editorial API.
+                                  String editorialImage = article.optString("imageUrl", "");
+                                  String editorialRights = article.optString("imageRights", "");
+                                  if (editorialImage.startsWith("https://") &&
+                                      ("cleared".equals(editorialRights) || "licensed".equals(editorialRights))) {
+                                      android.widget.ImageView photo = new android.widget.ImageView(this);
+                                      photo.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+                                      hero.addView(photo, new android.widget.FrameLayout.LayoutParams(-1, -1));
+                                      executor.execute(() -> {
+                                          HttpURLConnection imageConnection = null;
+                                          try {
+                                              imageConnection = (HttpURLConnection) new URL(editorialImage).openConnection();
+                                              imageConnection.setConnectTimeout(12000);
+                                              imageConnection.setReadTimeout(12000);
+                                              imageConnection.setInstanceFollowRedirects(false);
+                                              String type = imageConnection.getContentType();
+                                              int size = imageConnection.getContentLength();
+                                              if (imageConnection.getResponseCode() != 200 ||
+                                                  type == null || !type.toLowerCase(java.util.Locale.ROOT).startsWith("image/") ||
+                                                  size > 5000000) return;
+                                              android.graphics.Bitmap bitmap;
+                                              try (InputStream stream = imageConnection.getInputStream()) {
+                                                  bitmap = android.graphics.BitmapFactory.decodeStream(stream);
+                                              }
+                                              if (bitmap != null) runOnUiThread(() -> photo.setImageBitmap(bitmap));
+                                          } catch (Exception ignored) {
+                                              // Keep original gradient illustration when photo is unavailable.
+                                          } finally {
+                                              if (imageConnection != null) imageConnection.disconnect();
+                                          }
+                                      });
+                                  }
                                   LinearLayout overlay = new LinearLayout(this);
                                   overlay.setOrientation(LinearLayout.VERTICAL);
                                   overlay.setPadding(dp(16), dp(8), dp(16), dp(16));
