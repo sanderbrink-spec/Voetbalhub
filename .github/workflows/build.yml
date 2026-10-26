@@ -312,21 +312,45 @@ jobs:
                                   return;
                               }
                               for (org.json.JSONObject article : rows) {
-                                  TextView headline = tv(article.optString("headline", "Voetbalnieuws"), 16, C.TEXT, true);
-                                  headline.setPadding(0, dp(9), 0, dp(3));
-                                  headline.setOnClickListener(v -> showEditorialArticle(article));
-                                  section.addView(headline);
-                                  String intro = article.optString("standfirst", "");
-                                  if (!intro.isEmpty()) section.addView(tv(intro, 13, C.MUTED, false));
-                                  org.json.JSONArray body = article.optJSONArray("body");
-                                  if (body != null && body.length() > 0) {
-                                      TextView paragraph = tv(body.optString(0), 13, C.TEXT, false);
-                                      paragraph.setPadding(0, dp(4), 0, dp(8));
-                                      section.addView(paragraph);
-                                  }
-                                  View divider = new View(this);
-                                  divider.setBackgroundColor(0xFF20372A);
-                                  section.addView(divider, new LinearLayout.LayoutParams(-1, dp(1)));
+                                  // Image-led, original artwork card: no third-party photo or logo rights needed.
+                                  android.widget.FrameLayout hero = new android.widget.FrameLayout(this);
+                                  android.graphics.drawable.GradientDrawable heroBg = new android.graphics.drawable.GradientDrawable(
+                                      android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
+                                      new int[]{0xFF143C2B, 0xFF0D1715, 0xFF070B0A});
+                                  heroBg.setCornerRadius(dp(16));
+                                  heroBg.setStroke(dp(1), 0xFF24573B);
+                                  hero.setBackground(heroBg);
+                                  LinearLayout.LayoutParams heroLp = new LinearLayout.LayoutParams(-1, dp(205));
+                                  heroLp.setMargins(0, dp(8), 0, dp(12));
+                                  section.addView(hero, heroLp);
+                                  LinearLayout artwork = new LinearLayout(this);
+                                  artwork.setOrientation(LinearLayout.VERTICAL);
+                                  artwork.setGravity(android.view.Gravity.CENTER);
+                                  android.widget.FrameLayout.LayoutParams artLp = new android.widget.FrameLayout.LayoutParams(-1, -1);
+                                  hero.addView(artwork, artLp);
+                                  String headlineValue = article.optString("headline", "Voetbalnieuws");
+                                  String fixture = headlineValue.toLowerCase(java.util.Locale.ROOT).contains("groningen")
+                                      && headlineValue.toLowerCase(java.util.Locale.ROOT).contains("n.e.c.")
+                                      ? "FC GRONINGEN   ⚽   N.E.C." : "⚽  VOETBALHUB";
+                                  TextView artFixture = tv(fixture, 18, C.TEXT, true);
+                                  artFixture.setGravity(android.view.Gravity.CENTER);
+                                  artwork.addView(artFixture);
+                                  TextView artBrand = tv("VOETBALHUB ORIGINALS", 11, C.GREEN, true);
+                                  artBrand.setGravity(android.view.Gravity.CENTER);
+                                  artBrand.setPadding(0, dp(10), 0, 0);
+                                  artwork.addView(artBrand);
+                                  LinearLayout overlay = new LinearLayout(this);
+                                  overlay.setOrientation(LinearLayout.VERTICAL);
+                                  overlay.setPadding(dp(14), dp(8), dp(14), dp(14));
+                                  overlay.setGravity(android.view.Gravity.BOTTOM);
+                                  android.graphics.drawable.GradientDrawable shade = new android.graphics.drawable.GradientDrawable(
+                                      android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
+                                      new int[]{0x00000000, 0xF5000000});
+                                  overlay.setBackground(shade);
+                                  hero.addView(overlay, new android.widget.FrameLayout.LayoutParams(-1, -1));
+                                  TextView headline = tv(headlineValue, 19, C.TEXT, true);
+                                  overlay.addView(headline);
+                                  hero.setOnClickListener(v -> showEditorialArticle(article));
                               }
                           });
                       } catch (Exception e) {
