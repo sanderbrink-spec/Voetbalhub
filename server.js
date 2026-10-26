@@ -1,6 +1,6 @@
 const http = require("node:http");
 const { createClient } = require("redis");
-const { auditClaims, editorialQuality } = require("./editorial-quality");
+const { auditClaims, editorialQuality, headlineContradictions } = require("./editorial-quality");
 const { normalizeEditorialResponse } = require("./editorial-response");
 
 const PORT = Number(process.env.PORT || 10000);
@@ -137,8 +137,8 @@ function editorialHardStops(item) {
   if (source && text && hasLongVerbatimOverlap(source, text)) reasons.push("Mogelijke lange tekstoverlap met de bron; herschrijf op basis van onafhankelijk gecontroleerde feiten.");
   if (!/^https:\/\//i.test(String(item?.source?.url || item?.sourceUrl || ""))) reasons.push("Geen geldige HTTPS-bronlink.");
   if (!source.trim()) reasons.push("Geen opgeslagen bronbewijs; feitelijke controle is onmogelijk.");
-  if (/\b(?:haalt|eindigt op|speelt gelijk|een gelijkspel)\b/i.test(headline) && /\b(?:verslaat|wint met|zege met)\s+(?:\d+\s*[-–:]\s*\d+|\d+\s*tegen\s*\d+)\b/i.test(headline)) {
-    reasons.push("Tegenstrijdige uitslag in de kop: overwinning en gelijkspel worden tegelijk genoemd.");
+  if (headlineContradictions(item)) {
+    reasons.push("Tegenstrijdige uitslag in de kop: overwinning en gelijkspel worden tegelijk genoemd. Controleer de officiële eindstand; publicatie geblokkeerd.");
   }
   if (/\b(?:failed_invalid_response|failed)\b/.test(String(item?.languagePolish || ""))) reasons.push("Automatische taalredactie is mislukt; tekst moet opnieuw handmatig worden geredigeerd.");
   if (item?.editorialStatus === "rejected_low_priority" || item?.editorialStatus === "rejected_verbatim_overlap") reasons.push("Concept is eerder redactioneel afgewezen en hoort niet in de publicatieklare selectie.");
