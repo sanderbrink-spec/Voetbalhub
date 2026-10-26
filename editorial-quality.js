@@ -96,7 +96,7 @@ function editorialQuality(item) {
     const missing = [...unsupportedNumbers, ...unsupportedNumberWords];
     add("Controleer cijfers in kop/intro/tekst die niet letterlijk in de opgeslagen bron staan: " + missing.slice(0, 8).join(", ") + (missing.length > 8 ? "…" : "") + ". Mogelijk ontbreekt broncontext of is een uitslag/statistiek onjuist.");
   }
-  if (item?.languagePolish === "ai_edited_source_limited") add("AI heeft kop en artikeltekst herschreven; de opgeslagen claims zijn niet automatisch opnieuw uit de definitieve tekst gehaald. Controleer elke feitelijke bewering in kop, intro en body rechtstreeks bij de oorspronkelijke bron.");
+  if (item?.languagePolish === "ai_edited_source_limited" && item?.claimsRecheckedAgainstFinalText !== true) add("AI heeft kop en artikeltekst herschreven; de opgeslagen claims zijn niet automatisch opnieuw uit de definitieve tekst gehaald. Controleer elke feitelijke bewering in kop, intro en body rechtstreeks bij de oorspronkelijke bron.");
   const finalText = normalizeEvidence(text);
   const claimRecords = Array.isArray(item?.claims) ? item.claims : [];
   const unrelatedClaims = claimRecords.filter(c => {
