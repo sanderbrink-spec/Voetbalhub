@@ -9,6 +9,18 @@ function sourceTextFor(item) {
     item?.feedTitle, item?.feedDescription, item?.sourceTitle, item?.sourceDescription]
     .filter(v => typeof v === "string").join("\n");
 }
+function hasLongVerbatimOverlap(source, draft) {
+  const words = value => normalizeEvidence(value).split(/\s+/).filter(Boolean);
+  const sourceWords = words(source), draftWords = words(draft);
+  if (sourceWords.length < 8 || draftWords.length < 8) return false;
+  const phrases = new Set();
+  for (let i = 0; i <= sourceWords.length - 8; i++) phrases.add(sourceWords.slice(i, i + 8).join(" "));
+  let matches = 0;
+  for (let i = 0; i <= draftWords.length - 8; i++) {
+    if (phrases.has(draftWords.slice(i, i + 8).join(" ")) && ++matches >= 2) return true;
+  }
+  return false;
+}
 function auditClaims(item) {
   const source = normalizeEvidence(sourceTextFor(item));
   const claims = Array.isArray(item?.claims) ? item.claims : [];
@@ -43,6 +55,9 @@ function editorialQuality(item) {
   const add = message => { if (!warnings.includes(message)) warnings.push(message); };
   if (!src.url && !item?.sourceUrl) add("Geen oorspronkelijke bronlink opgeslagen.");
   if (!feedText.trim()) add("Geen bronkop of bronbeschrijving opgeslagen; feitelijke controle is niet mogelijk.");
+  if (item?.sourcePolicy?.status === "link_only") add("Bronbeleid staat alleen doorlinken toe; gebruik de uitgeverspagina niet als grondtekst voor een vervangend artikel.");
+  if (["unapproved", "unknown"].includes(item?.sourcePolicy?.status)) add("Bronbeleid is niet goedgekeurd; controleer gebruiksrechten en onafhankelijk bewijs voordat je een artikel maakt.");
+  if (feedText.trim() && text.trim() && hasLongVerbatimOverlap(feedText, text)) add("Mogelijke lange letterlijke tekstoverlap met de bron; herschrijf zelfstandig op basis van gecontroleerde feiten.");
   // The standard disclaimer is attached to every draft, including drafts with extracted article text.
   // Do not mistake that disclaimer for evidence that the item is RSS-only; inspect the evidence level/content.
   const hasUsableArticleEvidence = (ev.evidenceLevel === "article_text_extracted" &&
@@ -115,10 +130,32 @@ function editorialQuality(item) {
   const flashscoreVerified = item?.flashscoreVerified === true || item?.verification?.flashscoreVerified === true || item?.statsVerification?.provider === "Flashscore" && item?.statsVerification?.verified === true;
   if (hasMatchStatsClaims && !flashscoreVerified) add("VERPLICHT: wedstrijd- en spelersstatistieken zijn niet als gecontroleerd via Flashscore vastgelegd. Controleer uitslag, doelpuntenmakers, assists en genoemde cijfers op Flashscore voordat je publiceert.");
   if (!hasArticleText) add("Geen volledige artikeltekst opgeslagen; RSS-kop en -beschrijving zijn onvoldoende voor inhoudelijke factcontrole.");
+  const normalizedBody = body.map(p => normalizeEvidence(p)).filter(Boolean);
+  const structureReady = !!headline.trim() && !!standfirst.trim() && body.length >= 3 && body.length <= 5 &&
+    body.every(p => String(p).trim().length >= 70) && new Set(normalizedBody).size === normalizedBody.length;
+  const sourceReady = /^https:\/\//i.test(sourceUrl) && hasArticleText && ev.evidenceLevel === "article_text_extracted";
+  const claimsReady = claims.length > 0 && unverified.length === 0 && item?.claimsRecheckedAgainstFinalText === true && unrelatedClaims.length === 0;
+  const languageReady = item?.languagePolish === "ai_edited_source_limited" && item?.claimsRecheckedAgainstFinalText === true &&
+    !englishPhrases.test(text) && !englishHeadlineWords.test(headline) && !["failed", "failed_invalid_response", "not_run", "skipped_no_source_text"].includes(item?.languagePolish);
+  const scoreLimitations = [];
+  let scoreCap = 100;
+  if (!structureReady) { scoreCap = Math.min(scoreCap, 35); scoreLimitations.push("Artikelstructuur voldoet nog niet aan de minimale eisen."); }
+  if (!sourceReady) { scoreCap = Math.min(scoreCap, 45); scoreLimitations.push("Volledige broninformatie of een geldige bronlink ontbreekt."); }
+  if (!claimsReady) { scoreCap = Math.min(scoreCap, 65); scoreLimitations.push("Claims zijn niet allemaal onderbouwd en opnieuw gecontroleerd tegen de definitieve tekst."); }
+  if (!languageReady) { scoreCap = Math.min(scoreCap, 70); scoreLimitations.push("Taalredactie en hercontrole van de definitieve tekst zijn niet aantoonbaar afgerond."); }
+  if (item?.sourcePolicy?.status === "link_only") { scoreCap = Math.min(scoreCap, 25); scoreLimitations.push("Deze bron mag volgens het opgeslagen bronbeleid alleen als link worden gebruikt."); }
+  else if (["unapproved", "unknown"].includes(item?.sourcePolicy?.status)) { scoreCap = Math.min(scoreCap, 40); scoreLimitations.push("Bronbeleid en gebruiksrechten zijn niet goedgekeurd."); }
+  else if (item?.sourcePolicy?.status === "data_provider") { scoreCap = Math.min(scoreCap, 80); scoreLimitations.push("Voorwaarden en attributie van de dataleverancier moeten nog worden bevestigd."); }
+  if (item?.editorialStatus === "rejected_low_priority" || item?.editorialStatus === "rejected_verbatim_overlap") { scoreCap = Math.min(scoreCap, 20); scoreLimitations.push("Concept is redactioneel afgewezen."); }
+  const automaticQualityScore = Math.max(0, Math.min(scoreCap, 100 - warnings.length * 6 - unverified.length * 4));
   const riskLevel = warnings.length >= 5 || unverified.length >= 3 ? "high" :
     warnings.length >= 2 || unverified.length >= 1 ? "medium" : "low";
   return {
     warnings,
+    qualityScore: automaticQualityScore,
+    qualityScoreLabel: automaticQualityScore >= 90 ? "Uitstekend" : automaticQualityScore >= 75 ? "Goed, laatste controles nodig" : automaticQualityScore >= 50 ? "Herzien" : "Onvoldoende",
+    qualityScoreNote: "Automatische redactiescore, geen garantie op feitelijke juistheid; onafhankelijke factcheck blijft apart vereist.",
+    scoreLimitations,
     warningCount: warnings.length,
     claimsChecked: claims.length,
     claimsUnverified: unverified.length,
