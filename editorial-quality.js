@@ -100,6 +100,10 @@ function editorialQuality(item) {
   if (!headline.trim()) add("Geen definitieve kop; concept is niet klaar voor redactionele beoordeling.");
   if (!standfirst.trim()) add("Intro ontbreekt; controleer of het belangrijkste nieuwsfeit helder wordt uitgelegd.");
   if (body.length === 0) add("Geen artikelalinea's beschikbaar; dit is nog geen uitgewerkt verslag.");
+  if (body.length > 0 && body.length < 3) add("Te weinig artikelalinea's voor een zelfstandig nieuwsverslag; streef naar minimaal drie inhoudelijke alinea's.");
+  if (body.some(p => String(p).trim().length < 70)) add("Minstens één artikelalinea is korter dan 70 tekens; controleer of die inhoudelijk voldoende toevoegt.");
+  const normalizedParagraphs = body.map(p => normalizeEvidence(p)).filter(Boolean);
+  if (new Set(normalizedParagraphs).size !== normalizedParagraphs.length) add("Dubbele artikelalinea's gevonden; verwijder herhaling.");
   if (body.some(p => String(p).trim().length < 35)) add("Minstens één artikelalinea is erg kort; controleer of die inhoudelijk iets toevoegt.");
   const sourceUrl = String(src.url || item?.sourceUrl || "").trim();
   if (sourceUrl && !/^https:\/\//i.test(sourceUrl)) add("Bronlink gebruikt geen HTTPS; controleer de link voordat je deze opent of publiceert.");
