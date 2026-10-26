@@ -152,7 +152,20 @@ function editorialQuality(item) {
   // Mandatory Flashscore check for match/player statistics. A source article or RSS text alone is not verification.
   const statsClaimPattern = /\b(statistiek(?:en)?|balbezit|schoten|schoten op doel|corners|hoekschoppen|doelpuntenmaker|assist(?:s)?|xg|expected goals|reddingen|passes|passnauwkeurigheid|gele kaarten|rode kaarten|wedstrijdcijfers|score van|eindstand|won met \d|versloeg .* met \d|\d+\s*[-–:]\s*\d+)\b/i;
   const hasMatchStatsClaims = statsClaimPattern.test([headline, standfirst, ...body].join(" "));
-  const flashscoreVerified = item?.flashscoreVerified === true || item?.verification?.flashscoreVerified === true || item?.statsVerification?.provider === "Flashscore" && item?.statsVerification?.verified === true;
+  // A boolean alone cannot establish a correct result. Require a recorded
+  // final Flashscore score and compare every numerical score in the copy.
+  const record = item?.statsVerification || {};
+  const score = String(record.finalScore || "").trim();
+  const scoreMatch = /^(\\d{1,2})\\s*[-–:]\\s*(\\d{1,2})$/.exec(score);
+  const scoreInText = [...text.matchAll(/\\b(\\d{1,2})\\s*[-–:]\\s*(\\d{1,2})\\b/g)]
+    .map(m => [Number(m[1]), Number(m[2])]);
+  const verifiedFinalScore = record.provider === "Flashscore" && record.verified === true &&
+    record.matchStatus === "finished" && /^https:\\/\\/(?:www\\.)?flashscore\\.(?:nl|com)\\//i.test(String(record.url || "")) && !!scoreMatch;
+  const scoreConsistent = verifiedFinalScore && scoreInText.every(([a,b]) =>
+    (a === Number(scoreMatch[1]) && b === Number(scoreMatch[2])) ||
+    (a === Number(scoreMatch[2]) && b === Number(scoreMatch[1])));
+  const flashscoreVerified = verifiedFinalScore && scoreConsistent;
+  if (scoreInText.length && !flashscoreVerified) add("UITSLAGBLOKKADE: eindstand niet aantoonbaar gelijk aan een vastgelegde definitieve Flashscore-uitslag.");
   if (hasMatchStatsClaims && !flashscoreVerified) add("VERPLICHT: wedstrijd- en spelersstatistieken zijn niet als gecontroleerd via Flashscore vastgelegd. Controleer uitslag, doelpuntenmakers, assists en genoemde cijfers op Flashscore voordat je publiceert.");
   if (!hasArticleText) add("Geen volledige artikeltekst opgeslagen; RSS-kop en -beschrijving zijn onvoldoende voor inhoudelijke factcontrole.");
   const normalizedBody = body.map(p => normalizeEvidence(p)).filter(Boolean);
