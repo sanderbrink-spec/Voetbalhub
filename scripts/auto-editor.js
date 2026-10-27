@@ -198,7 +198,7 @@ async function main() {
         category: "Voetbal",
         facts: [
           "Bronkop: " + item.title,
-          "Opgehaalde tekst van de oorspronkelijke artikelpagina (gebruik uitsluitend controleerbare feiten hieruit): " + articleText,
+          "Opgehaalde broninformatie (uitsluitend controleerbare feiten): " + articleText.slice(0, 4200),
           "Huisstijl VoetbalHub: nuchter, helder, direct en compact Nederlands; actieve zinnen, geen sensatie en geen herhaling.",
           "Auteursrechtelijke zorgvuldigheid: schrijf zelfstandig vanuit de noodzakelijke feiten; kopieer geen zinnen, herkenbare formuleringen, volgorde of structuur van de bron en vertaal niet zin voor zin. Gebruik geen onnodige citaten of creatieve bronpassages.",
           "Juridische zorgvuldigheid: voeg geen onbewezen claims toe, maak geen ongefundeerde beschuldigingen en wek niet de indruk dat feiten onafhankelijk zijn geverifieerd. Bronvermelding is geen juridische garantie.",
@@ -240,7 +240,7 @@ async function main() {
       // Respect long token-per-day windows instead of retrying early and wasting requests.
       const waitMs = Math.min(8 * 60 * 1000, Math.max(7000, Math.ceil(retryAfter * 1000) + 2000));
       console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 3 over  + Math.ceil(waitMs / 1000) + " seconden.");
-      await new Promise(resolve => setTimeout(resolve, waitMs));
+      await new Promise(resolve => setTimeout(resolve, Math.max(waitMs, 20000)));
     }
     if (!r.ok) {
       if (dailyQuotaExhausted) break;
