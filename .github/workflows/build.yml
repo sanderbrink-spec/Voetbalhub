@@ -234,7 +234,7 @@ jobs:
                   content.removeAllViews();
                   LinearLayout root = new LinearLayout(this);
                   root.setOrientation(LinearLayout.VERTICAL);
-                  root.addView(sectionHeader("VoetbalHub Originals", "TERUG", this::showNews));
+                  root.addView(sectionHeader("VoetbalHub Originals", "TERUG", () -> { editorialArticleOpen = false; currentBottomTab = "Nieuws"; showNews(); }));
                   ScrollView scroll = new ScrollView(this);
                   LinearLayout page = new LinearLayout(this);
                   page.setOrientation(LinearLayout.VERTICAL);
@@ -272,6 +272,15 @@ jobs:
                                   bitmap = android.graphics.BitmapFactory.decodeStream(in);
                               }
                               if (bitmap != null) runOnUiThread(() -> {
+                                  // Add photo credit only after the bitmap has loaded successfully.
+                                  String loadedCredit = article.optString("imageCredit", "").trim();
+                                  String loadedSource = article.optString("imageSource", "").trim();
+                                  if (!loadedCredit.isEmpty()) {
+                                      boolean isAi = (loadedCredit + " " + loadedSource).toLowerCase(java.util.Locale.ROOT).contains("ai");
+                                      TextView loadedDisclosure = tv((isAi ? "AI-ILLUSTRATIE · " : "BEELD · ") + loadedCredit, 11, C.MUTED, false);
+                                      loadedDisclosure.setPadding(0, 0, 0, dp(10));
+                                      page.addView(loadedDisclosure, Math.min(3, page.getChildCount()));
+                                  }
                                   articlePhoto.setImageBitmap(bitmap);
                                   LinearLayout.LayoutParams photoLp = new LinearLayout.LayoutParams(-1, dp(190));
                                   photoLp.setMargins(0, 0, 0, dp(12));
@@ -286,7 +295,7 @@ jobs:
                   }
                   String photoCredit = article.optString("imageCredit", "").trim();
                   String photoSource = article.optString("imageSource", "").trim();
-                  if (articleImage.startsWith("https://") && !photoCredit.isEmpty()) {
+                  if (false && articleImage.startsWith("https://") && !photoCredit.isEmpty()) { // Credit is shown only when a photo is actually rendered; suppressed until loader can bind credit to success.
                       boolean aiIllustration = (photoCredit + " " + photoSource).toLowerCase(java.util.Locale.ROOT).contains("ai");
                       TextView disclosure = tv((aiIllustration ? "AI-ILLUSTRATIE · " : "BEELD · ") + photoCredit, 11, C.MUTED, false);
                       disclosure.setPadding(0, 0, 0, dp(10));
