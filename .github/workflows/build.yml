@@ -243,6 +243,16 @@ jobs:
                   TextView title = tv(article.optString("headline", "Voetbalnieuws"), 25, C.TEXT, true);
                   title.setPadding(0, dp(8), 0, dp(10));
                   page.addView(title);
+                  TextView originalArt = tv("⚽  VOETBALHUB ORIGINALS", 17, C.GREEN, true);
+                  originalArt.setGravity(android.view.Gravity.CENTER);
+                  android.graphics.drawable.GradientDrawable artBackground = new android.graphics.drawable.GradientDrawable(
+                      android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
+                      new int[]{0xFF145B36, 0xFF091C14});
+                  artBackground.setCornerRadius(dp(14));
+                  originalArt.setBackground(artBackground);
+                  LinearLayout.LayoutParams artParams = new LinearLayout.LayoutParams(-1, dp(150));
+                  artParams.setMargins(0, dp(10), 0, dp(14));
+                  page.addView(originalArt, artParams);
                   String intro = article.optString("standfirst", "").trim();
                   if (!intro.isEmpty()) {
                       TextView introText = tv(intro, 16, C.MUTED, false);
@@ -293,24 +303,6 @@ jobs:
                           }
                       });
                   }
-                  String photoCredit = article.optString("imageCredit", "").trim();
-                  String photoSource = article.optString("imageSource", "").trim();
-                  if (false && articleImage.startsWith("https://") && !photoCredit.isEmpty()) { // Credit is shown only when a photo is actually rendered; suppressed until loader can bind credit to success.
-                      boolean aiIllustration = (photoCredit + " " + photoSource).toLowerCase(java.util.Locale.ROOT).contains("ai");
-                      TextView disclosure = tv((aiIllustration ? "AI-ILLUSTRATIE · " : "BEELD · ") + photoCredit, 11, C.MUTED, false);
-                      disclosure.setPadding(0, 0, 0, dp(10));
-                      page.addView(disclosure);
-                  }
-                  TextView originalArt = tv("⚽  VOETBALHUB ORIGINALS", 17, C.GREEN, true);
-                  originalArt.setGravity(android.view.Gravity.CENTER);
-                  android.graphics.drawable.GradientDrawable artBackground = new android.graphics.drawable.GradientDrawable(
-                      android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
-                      new int[]{0xFF145B36, 0xFF091C14});
-                  artBackground.setCornerRadius(dp(14));
-                  originalArt.setBackground(artBackground);
-                  LinearLayout.LayoutParams artParams = new LinearLayout.LayoutParams(-1, dp(150));
-                  artParams.setMargins(0, dp(10), 0, dp(14));
-                  page.addView(originalArt, artParams);
                   TextView byline = tv("VoetbalHub Redactie", 11, C.MUTED, false);
                   byline.setPadding(0, 0, 0, dp(12));
                   page.addView(byline);
