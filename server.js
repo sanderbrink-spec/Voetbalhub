@@ -527,7 +527,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     unique.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false, note: "Kwaliteitssignalen zijn waarschuwingen, geen onafhankelijke factcheck." });
   }
-  if (req.method === "GET" && /^\\/generated-image\\/[0-9a-f-]{36}$/i.test(url.pathname)) {
+  if (req.method === "GET" && url.pathname.startsWith("/generated-image/") && /^[0-9a-f-]{36}$/i.test(url.pathname.slice("/generated-image/".length))) {
     if (!client?.isReady) return send(res, 503, { error: "Opslag niet beschikbaar." });
     const id = url.pathname.split("/").pop();
     const encoded = await client.get("generated-image:" + id);
