@@ -4,6 +4,7 @@ const { auditClaims, editorialQuality, headlineContradictions } = require("./edi
 const { normalizeEditorialResponse } = require("./editorial-response");
 
 const PORT = Number(process.env.PORT || 10000);
+let imageGenerationInProgress = false;
 const API_SECRET = process.env.HUB_API_SECRET || "";
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
@@ -526,6 +527,14 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     unique.sort((a,b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
     return send(res, 200, { count: unique.length, items: unique.slice(0, 200), autoPublish: false, note: "Kwaliteitssignalen zijn waarschuwingen, geen onafhankelijke factcheck." });
   }
+  if (req.method === "GET" && /^\\/generated-image\\/[0-9a-f-]{36}$/i.test(url.pathname)) {
+    if (!client?.isReady) return send(res, 503, { error: "Opslag niet beschikbaar." });
+    const id = url.pathname.split("/").pop();
+    const encoded = await client.get("generated-image:" + id);
+    if (!encoded) return send(res, 404, { error: "Afbeelding niet gevonden of verlopen." });
+    res.writeHead(200, { "Content-Type": "image/png", "Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'" });
+    return res.end(Buffer.from(encoded, "base64"));
+  }
   if (req.method !== "POST") return send(res, 404, { error: "Gebruik GET /health, GET /articles, GET /inbox of POST /draft en POST /publish." });
   if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
   let body;
@@ -601,7 +610,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     } catch { return send(res, 502, { error: "Concept kon niet worden gemaakt." }); }
   }
   if (url.pathname === "/image-prompt") {
-    // Protected preview only: no paid image API, no automatic publishing.
+    // Protected prompt preparation; image creation is a separate opt-in call.
     const draft = body.draft && typeof body.draft === "object" ? body.draft : body;
     const headline = String(draft.headline || draft.title || "").trim().slice(0,180);
     if (!headline) return send(res, 400, { error: "Een gecontroleerde artikelkop is verplicht." });
@@ -611,7 +620,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const details = body.match && typeof body.match === "object" ? body.match : {};
     const field = key => String(details[key] || "").trim().slice(0,100);
     const home = field("homeTeam"), away = field("awayTeam"), score = field("finalScore");
-    const validScore = /^\\d{1,2}\\s*[-–:]\\s*\\d{1,2}$/.test(score);
+    const validScore = /^\d{1,2}\s*[-–:]\s*\d{1,2}$/.test(score);
     const matchVerified = home && away && validScore && verifiedFacts.length >= 2 && body.factsApproved === true;
     const scene = matchVerified
       ? `Wedstrijdillustratie: ${home} tegen ${away}, eindstand ${score}. Clubnamen als tekst, stadion alleen wanneer gecontroleerd.`
@@ -628,13 +637,70 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       "Geen verzonnen feiten, transferbedragen, datums, uitslagen, quotes of stadionnamen.",
       "Voeg klein en duidelijk toe: AI-ILLUSTRATIE. Geen overbodige tekst. Controleer spelling.",
       "Maak een origineel beeld, geen reconstructie van een bestaande pers- of wedstrijdfoto."
-    ].join("\\n");
+    ].join("\n");
     return send(res, 200, {
       status: "prompt_ready_for_review", imageGenerated: false, autoPublish: false,
-      providerConfigured: false, requiresHumanReview: true,
+      providerConfigured: !!process.env.OPENAI_API_KEY, requiresHumanReview: true,
       imageRights: "pending", ratio: "16:9", prompt,
-      warnings: ["Dit endpoint maakt nog geen afbeelding. Een afzonderlijke beeld-API met sleutel en gebruiksvoorwaarden is nodig.", "Controleer alle tekst in het gegenereerde beeld en de commerciële rechten vóór publicatie."]
+      warnings: ["Gebruik POST /generate-article-image met approvedGeneration:true om een conceptafbeelding te maken; OPENAI_API_KEY moet op de server ingesteld zijn.", "Controleer alle tekst in het gegenereerde beeld en de commerciële rechten vóór publicatie."]
     });
+  }
+  if (url.pathname === "/generate-article-image") {
+    if (body.approvedGeneration !== true) return send(res, 400, { error: "Expliciete toestemming voor betaalde beeldgeneratie vereist: approvedGeneration:true." });
+    if (!process.env.OPENAI_API_KEY) return send(res, 503, { error: "OPENAI_API_KEY ontbreekt op de server. Beeldgeneratie is nog niet actief." });
+    if (!client?.isReady) return send(res, 503, { error: "Redis-opslag niet beschikbaar." });
+    const draft = body.draft && typeof body.draft === "object" ? body.draft : body;
+    const headline = String(draft.headline || draft.title || "").trim().slice(0,180);
+    if (!headline) return send(res, 400, { error: "Een artikelkop is verplicht." });
+    const category = String(body.category || draft.category || "Voetbal").slice(0,70);
+    const verifiedFacts = (Array.isArray(body.verifiedFacts) ? body.verifiedFacts : [])
+      .filter(f => typeof f === "string").map(f => f.trim().slice(0,240)).filter(Boolean).slice(0,12);
+    const details = body.match && typeof body.match === "object" ? body.match : {};
+    const field = key => String(details[key] || "").trim().slice(0,100);
+    const home = field("homeTeam"), away = field("awayTeam"), score = field("finalScore");
+    const validScore = /^\d{1,2}\s*[-–:]\s*\d{1,2}$/.test(score);
+    const matchVerified = home && away && validScore && verifiedFacts.length >= 2 && body.factsApproved === true;
+    const scene = matchVerified
+      ? `Wedstrijdillustratie: ${home} tegen ${away}, eindstand ${score}. Clubnamen als tekst, stadion alleen wanneer gecontroleerd.`
+      : "Algemene voetbalnieuwsillustratie met stadion, voetbalveld of tactisch grafisch element. GEEN scorebord of wedstrijduitslag.";
+    const prompt = [
+      "Maak ÉÉN originele, fotorealistische, hoogwaardige 16:9 VoetbalHub nieuwsillustratie.",
+      "Visuele stijl: nachtelijk voetbalstadion, filmische schijnwerpers, dynamische rook, diepzwart, fris neon-groen, krachtige redactionele typografie, overzichtelijke compositie.",
+      "VoetbalHub linksboven; de korte gecontroleerde nieuwskop links; het belangrijkste abstracte voetbalonderwerp rechts.",
+      `Artikelkop: ${JSON.stringify(headline)}. Categorie: ${JSON.stringify(category)}.`,
+      scene,
+      `Uitsluitend geverifieerde feiten: ${JSON.stringify(verifiedFacts)}.`,
+      "Geen spelers, gezichten, voetbalshirts, sponsors, handtekeningen of nagebootste officiële clublogo's.",
+      "Gebruik clubnamen als tekst, geen beschermde logo's tenzij afzonderlijk commercieel gelicentieerd en buiten het AI-beeld geplaatst.",
+      "Geen verzonnen feiten, transferbedragen, datums, uitslagen, quotes of stadionnamen.",
+      "Voeg klein en duidelijk toe: AI-ILLUSTRATIE. Geen overbodige tekst. Controleer spelling.",
+      "Maak een origineel beeld, geen reconstructie van een bestaande pers- of wedstrijdfoto."
+    ].join("\n");
+    // One request at a time per server instance; avoids accidental duplicate spend.
+    if (imageGenerationInProgress) return send(res, 429, { error: "Er wordt al een afbeelding gegenereerd. Probeer het later opnieuw." });
+    imageGenerationInProgress = true;
+    try {
+      const upstream = await fetch("https://api.openai.com/v1/images/generations", {
+        method: "POST",
+        headers: { Authorization: "Bearer " + process.env.OPENAI_API_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ model: process.env.OPENAI_IMAGE_MODEL || "gpt-image-1", prompt, size: "1536x1024", n: 1, output_format: "png" }),
+        signal: AbortSignal.timeout(110000)
+      });
+      const result = await upstream.json();
+      const encoded = result?.data?.[0]?.b64_json;
+      if (!upstream.ok || typeof encoded !== "string" || encoded.length > 14000000)
+        return send(res, 502, { error: "Beeldgeneratie mislukt.", detail: String(result?.error?.message || "Geen geldig beeld ontvangen.").slice(0,300) });
+      const id = require("node:crypto").randomUUID();
+      await client.set("generated-image:" + id, encoded, { EX: 7 * 86400 });
+      return send(res, 200, {
+        status: "image_pending_review", imageGenerated: true, autoPublish: false,
+        imageUrl: "https://" + (process.env.PUBLIC_HOST || "voetbalhub-redactie.onrender.com") + "/generated-image/" + id,
+        imageId: id, expiresInDays: 7, imageRights: "pending", requiresHumanReview: true,
+        warnings: ["Controleer feiten, spelling en commerciële rechten. Afbeelding is NIET gepubliceerd.", "De afbeelding verloopt na 7 dagen en moet voor definitieve publicatie duurzaam worden opgeslagen."]
+      });
+    } catch (err) {
+      return send(res, 502, { error: "Beeldservice niet bereikbaar.", detail: String(err.message || err).slice(0,180) });
+    } finally { imageGenerationInProgress = false; }
   }
   if (url.pathname === "/article-image") {
     if (!client?.isReady) return send(res, 503, { error: "Artikelenopslag niet beschikbaar." });
