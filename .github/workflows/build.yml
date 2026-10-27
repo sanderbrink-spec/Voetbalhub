@@ -240,9 +240,49 @@ jobs:
                   TextView title = tv(article.optString("headline", "Voetbalnieuws"), 25, C.TEXT, true);
                   title.setPadding(0, dp(8), 0, dp(10));
                   page.addView(title);
-                  page.addView(tv(article.optString("standfirst", ""), 16, C.MUTED, false));
-                  TextView byline = tv("VoetbalHub Redactie · " + article.optString("publishedAt", ""), 11, C.MUTED, false);
-                  byline.setPadding(0, dp(10), 0, dp(14));
+                  String intro = article.optString("standfirst", "").trim();
+                  if (!intro.isEmpty()) {
+                      TextView introText = tv(intro, 16, C.MUTED, false);
+                      introText.setPadding(0, 0, 0, dp(12));
+                      page.addView(introText);
+                  }
+                  String articleImage = article.optString("imageUrl", "");
+                  String articleRights = article.optString("imageRights", "");
+                  if (articleImage.startsWith("https://") &&
+                      ("cleared".equals(articleRights) || "licensed".equals(articleRights))) {
+                      android.widget.ImageView articlePhoto = new android.widget.ImageView(this);
+                      articlePhoto.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+                      // No empty image placeholder: add only after a valid bitmap has loaded.
+                      executor.execute(() -> {
+                          HttpURLConnection imageConn = null;
+                          try {
+                              imageConn = (HttpURLConnection) new URL(articleImage).openConnection();
+                              imageConn.setConnectTimeout(12000);
+                              imageConn.setReadTimeout(15000);
+                              imageConn.setInstanceFollowRedirects(false);
+                              if (imageConn.getResponseCode() != 200 ||
+                                  imageConn.getContentType() == null ||
+                                  !imageConn.getContentType().toLowerCase(java.util.Locale.ROOT).startsWith("image/") ||
+                                  imageConn.getContentLength() > 5000000) return;
+                              android.graphics.Bitmap bitmap;
+                              try (InputStream in = imageConn.getInputStream()) {
+                                  bitmap = android.graphics.BitmapFactory.decodeStream(in);
+                              }
+                              if (bitmap != null) runOnUiThread(() -> {
+                                  articlePhoto.setImageBitmap(bitmap);
+                                  LinearLayout.LayoutParams photoLp = new LinearLayout.LayoutParams(-1, dp(190));
+                                  photoLp.setMargins(0, 0, 0, dp(12));
+                                  page.addView(articlePhoto, Math.min(3, page.getChildCount()), photoLp);
+                              });
+                          } catch (Exception ignored) {
+                              // Do not reserve empty space or show misleading photo credit.
+                          } finally {
+                              if (imageConn != null) imageConn.disconnect();
+                          }
+                      });
+                  }
+                  TextView byline = tv("VoetbalHub Redactie", 11, C.MUTED, false);
+                  byline.setPadding(0, 0, 0, dp(12));
                   page.addView(byline);
                   org.json.JSONArray paragraphs = article.optJSONArray("body");
                   if (paragraphs != null) {
@@ -316,9 +356,13 @@ jobs:
                           if (data == null) throw lastNetworkError != null ? lastNetworkError : new java.io.IOException("Geen serverreactie");
                           org.json.JSONArray articles = data.optJSONArray("articles");
                           final java.util.ArrayList<org.json.JSONObject> rows = new java.util.ArrayList<>();
-                          if (articles != null) for (int i = 0; i < articles.length() && i < 8; i++) {
+                          final java.util.HashSet<String> seenHeadlines = new java.util.HashSet<>();
+                          if (articles != null) for (int i = 0; i < articles.length() && rows.size() < 8; i++) {
                               org.json.JSONObject article = articles.optJSONObject(i);
-                              if (article != null && "published".equals(article.optString("status"))) rows.add(article);
+                              if (article == null || !"published".equals(article.optString("status"))) continue;
+                              String normalizedHeadline = java.text.Normalizer.normalize(article.optString("headline", "").trim().toLowerCase(java.util.Locale.ROOT), java.text.Normalizer.Form.NFKC).replaceAll("\\s+", " ");
+                              if (normalizedHeadline.isEmpty() || !seenHeadlines.add(normalizedHeadline)) continue;
+                              rows.add(article);
                           }
                           runOnUiThread(() -> {
                               section.removeView(status);
