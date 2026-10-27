@@ -301,6 +301,16 @@ jobs:
                       disclosure.setPadding(0, 0, 0, dp(10));
                       page.addView(disclosure);
                   }
+                  TextView originalArt = tv("⚽  VOETBALHUB ORIGINALS", 17, C.GREEN, true);
+                  originalArt.setGravity(android.view.Gravity.CENTER);
+                  android.graphics.drawable.GradientDrawable artBackground = new android.graphics.drawable.GradientDrawable(
+                      android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
+                      new int[]{0xFF145B36, 0xFF091C14});
+                  artBackground.setCornerRadius(dp(14));
+                  originalArt.setBackground(artBackground);
+                  LinearLayout.LayoutParams artParams = new LinearLayout.LayoutParams(-1, dp(150));
+                  artParams.setMargins(0, dp(10), 0, dp(14));
+                  page.addView(originalArt, artParams);
                   TextView byline = tv("VoetbalHub Redactie", 11, C.MUTED, false);
                   byline.setPadding(0, 0, 0, dp(12));
                   page.addView(byline);
