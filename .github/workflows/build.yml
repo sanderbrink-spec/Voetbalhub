@@ -265,50 +265,8 @@ jobs:
                       introText.setPadding(0, 0, 0, dp(12));
                       page.addView(introText);
                   }
-                  String articleImage = article.optString("imageUrl", "");
-                  String articleRights = article.optString("imageRights", "");
-                  if (false && articleImage.startsWith("https://") &&
-                      ("cleared".equals(articleRights) || "licensed".equals(articleRights))) {
-                      android.widget.ImageView articlePhoto = new android.widget.ImageView(this);
-                      articlePhoto.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
-                      // No empty image placeholder: add only after a valid bitmap has loaded.
-                      executor.execute(() -> {
-                          HttpURLConnection imageConn = null;
-                          try {
-                              imageConn = (HttpURLConnection) new URL(articleImage).openConnection();
-                              imageConn.setConnectTimeout(12000);
-                              imageConn.setReadTimeout(15000);
-                              imageConn.setInstanceFollowRedirects(true);
-                              if (imageConn.getResponseCode() != 200 ||
-                                  imageConn.getContentType() == null ||
-                                  !imageConn.getContentType().toLowerCase(java.util.Locale.ROOT).startsWith("image/") ||
-                                  imageConn.getContentLength() > 5000000) return;
-                              android.graphics.Bitmap bitmap;
-                              try (InputStream in = imageConn.getInputStream()) {
-                                  bitmap = android.graphics.BitmapFactory.decodeStream(in);
-                              }
-                              if (bitmap != null) runOnUiThread(() -> {
-                                  // Add photo credit only after the bitmap has loaded successfully.
-                                  String loadedCredit = article.optString("imageCredit", "").trim();
-                                  String loadedSource = article.optString("imageSource", "").trim();
-                                  if (!loadedCredit.isEmpty()) {
-                                      boolean isAi = (loadedCredit + " " + loadedSource).toLowerCase(java.util.Locale.ROOT).contains("ai");
-                                      TextView loadedDisclosure = tv((isAi ? "AI-ILLUSTRATIE · " : "BEELD · ") + loadedCredit, 11, C.MUTED, false);
-                                      loadedDisclosure.setPadding(0, 0, 0, dp(10));
-                                      page.addView(loadedDisclosure, Math.min(3, page.getChildCount()));
-                                  }
-                                  articlePhoto.setImageBitmap(bitmap);
-                                  LinearLayout.LayoutParams photoLp = new LinearLayout.LayoutParams(-1, dp(190));
-                                  photoLp.setMargins(0, 0, 0, dp(12));
-                                  page.addView(articlePhoto, Math.min(3, page.getChildCount()), photoLp);
-                              });
-                          } catch (Exception ignored) {
-                              // Do not reserve empty space or show misleading photo credit.
-                          } finally {
-                              if (imageConn != null) imageConn.disconnect();
-                          }
-                      });
-                  }
+                  // Original articles use the local licensed VoetbalHub banner only.
+                  // No remote image slot or image credit is created in this reader.
                   TextView byline = tv("VoetbalHub Redactie", 11, C.MUTED, false);
                   byline.setPadding(0, 0, 0, dp(12));
                   page.addView(byline);
