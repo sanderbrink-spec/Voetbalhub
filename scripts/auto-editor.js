@@ -239,7 +239,7 @@ async function main() {
         : Math.min(45, 12 * (attempt + 1));
       // Respect long token-per-day windows instead of retrying early and wasting requests.
       const waitMs = Math.min(8 * 60 * 1000, Math.max(7000, Math.ceil(retryAfter * 1000) + 2000));
-      console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 3 over  + Math.ceil(waitMs / 1000) + " seconden.");
+    console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 3 over " + Math.ceil(waitMs / 1000) + " seconden.");
       await new Promise(resolve => setTimeout(resolve, Math.max(waitMs, 20000)));
     }
     if (!r.ok) {
