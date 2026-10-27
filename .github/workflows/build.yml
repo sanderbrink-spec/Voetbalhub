@@ -251,7 +251,7 @@ jobs:
                   }
                   String articleImage = article.optString("imageUrl", "");
                   String articleRights = article.optString("imageRights", "");
-                  if (articleImage.startsWith("https://") &&
+                  if (false && articleImage.startsWith("https://") &&
                       ("cleared".equals(articleRights) || "licensed".equals(articleRights))) {
                       android.widget.ImageView articlePhoto = new android.widget.ImageView(this);
                       articlePhoto.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
