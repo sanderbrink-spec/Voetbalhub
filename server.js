@@ -600,6 +600,42 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       return send(res, 200, { status: "draft_for_review", editorialReviewRequired: true, publishingEnabled: false, draft });
     } catch { return send(res, 502, { error: "Concept kon niet worden gemaakt." }); }
   }
+  if (url.pathname === "/image-prompt") {
+    // Protected preview only: no paid image API, no automatic publishing.
+    const draft = body.draft && typeof body.draft === "object" ? body.draft : body;
+    const headline = String(draft.headline || draft.title || "").trim().slice(0,180);
+    if (!headline) return send(res, 400, { error: "Een gecontroleerde artikelkop is verplicht." });
+    const category = String(body.category || draft.category || "Voetbal").slice(0,70);
+    const verifiedFacts = (Array.isArray(body.verifiedFacts) ? body.verifiedFacts : [])
+      .filter(f => typeof f === "string").map(f => f.trim().slice(0,240)).filter(Boolean).slice(0,12);
+    const details = body.match && typeof body.match === "object" ? body.match : {};
+    const field = key => String(details[key] || "").trim().slice(0,100);
+    const home = field("homeTeam"), away = field("awayTeam"), score = field("finalScore");
+    const validScore = /^\\d{1,2}\\s*[-–:]\\s*\\d{1,2}$/.test(score);
+    const matchVerified = home && away && validScore && verifiedFacts.length >= 2 && body.factsApproved === true;
+    const scene = matchVerified
+      ? `Wedstrijdillustratie: ${home} tegen ${away}, eindstand ${score}. Clubnamen als tekst, stadion alleen wanneer gecontroleerd.`
+      : "Algemene voetbalnieuwsillustratie met stadion, voetbalveld of tactisch grafisch element. GEEN scorebord of wedstrijduitslag.";
+    const prompt = [
+      "Maak ÉÉN originele, fotorealistische, hoogwaardige 16:9 VoetbalHub nieuwsillustratie.",
+      "Visuele stijl: nachtelijk voetbalstadion, filmische schijnwerpers, dynamische rook, diepzwart, fris neon-groen, krachtige redactionele typografie, overzichtelijke compositie.",
+      "VoetbalHub linksboven; de korte gecontroleerde nieuwskop links; het belangrijkste abstracte voetbalonderwerp rechts.",
+      `Artikelkop: ${JSON.stringify(headline)}. Categorie: ${JSON.stringify(category)}.`,
+      scene,
+      `Uitsluitend geverifieerde feiten: ${JSON.stringify(verifiedFacts)}.`,
+      "Geen spelers, gezichten, voetbalshirts, sponsors, handtekeningen of nagebootste officiële clublogo's.",
+      "Gebruik clubnamen als tekst, geen beschermde logo's tenzij afzonderlijk commercieel gelicentieerd en buiten het AI-beeld geplaatst.",
+      "Geen verzonnen feiten, transferbedragen, datums, uitslagen, quotes of stadionnamen.",
+      "Voeg klein en duidelijk toe: AI-ILLUSTRATIE. Geen overbodige tekst. Controleer spelling.",
+      "Maak een origineel beeld, geen reconstructie van een bestaande pers- of wedstrijdfoto."
+    ].join("\\n");
+    return send(res, 200, {
+      status: "prompt_ready_for_review", imageGenerated: false, autoPublish: false,
+      providerConfigured: false, requiresHumanReview: true,
+      imageRights: "pending", ratio: "16:9", prompt,
+      warnings: ["Dit endpoint maakt nog geen afbeelding. Een afzonderlijke beeld-API met sleutel en gebruiksvoorwaarden is nodig.", "Controleer alle tekst in het gegenereerde beeld en de commerciële rechten vóór publicatie."]
+    });
+  }
   if (url.pathname === "/article-image") {
     if (!client?.isReady) return send(res, 503, { error: "Artikelenopslag niet beschikbaar." });
     if (body.approved !== true) return send(res, 400, { error: "Expliciete goedkeuring ontbreekt." });
