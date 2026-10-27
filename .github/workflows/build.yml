@@ -287,18 +287,33 @@ jobs:
                   executor.execute(() -> {
                       HttpURLConnection conn = null;
                       try {
-                          conn = (HttpURLConnection) new URL(EDITORIAL_API_URL).openConnection();
-                          conn.setConnectTimeout(20000);
-                          conn.setReadTimeout(20000);
-                          conn.setRequestMethod("GET");
-                          conn.setRequestProperty("Accept", "application/json");
-                          org.json.JSONObject data;
-                          try (InputStream in = conn.getInputStream();
-                               java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream()) {
-                              byte[] buf = new byte[4096]; int n;
-                              while ((n = in.read(buf)) != -1) out.write(buf, 0, n);
-                              data = new org.json.JSONObject(out.toString("UTF-8"));
+                          org.json.JSONObject data = null;
+                          java.io.IOException lastNetworkError = null;
+                          for (int attempt = 0; attempt < 2 && data == null; attempt++) {
+                              try {
+                                  if (conn != null) { conn.disconnect(); conn = null; }
+                                  conn = (HttpURLConnection) new URL(EDITORIAL_API_URL).openConnection();
+                                  // Render free services can take a minute to wake after inactivity.
+                                  conn.setConnectTimeout(30000);
+                                  conn.setReadTimeout(75000);
+                                  conn.setRequestMethod("GET");
+                                  conn.setRequestProperty("Accept", "application/json");
+                                  conn.setRequestProperty("Cache-Control", "no-cache");
+                                  try (InputStream in = conn.getInputStream();
+                                       java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream()) {
+                                      byte[] buf = new byte[4096]; int n;
+                                      while ((n = in.read(buf)) != -1) {
+                                          if (out.size() + n > 1048576) throw new java.io.IOException("News response too large");
+                                          out.write(buf, 0, n);
+                                      }
+                                      data = new org.json.JSONObject(out.toString("UTF-8"));
+                                  }
+                              } catch (java.io.IOException networkError) {
+                                  lastNetworkError = networkError;
+                                  if (attempt == 0) runOnUiThread(() -> status.setText("Nieuwsserver wordt opnieuw benaderd…"));
+                              }
                           }
+                          if (data == null) throw lastNetworkError != null ? lastNetworkError : new java.io.IOException("Geen serverreactie");
                           org.json.JSONArray articles = data.optJSONArray("articles");
                           final java.util.ArrayList<org.json.JSONObject> rows = new java.util.ArrayList<>();
                           if (articles != null) for (int i = 0; i < articles.length() && i < 8; i++) {
