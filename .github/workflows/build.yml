@@ -360,7 +360,7 @@ jobs:
                           if (articles != null) for (int i = 0; i < articles.length() && rows.size() < 8; i++) {
                               org.json.JSONObject article = articles.optJSONObject(i);
                               if (article == null || !"published".equals(article.optString("status"))) continue;
-                              String normalizedHeadline = java.text.Normalizer.normalize(article.optString("headline", "").trim().toLowerCase(java.util.Locale.ROOT), java.text.Normalizer.Form.NFKC).replaceAll("\\s+", " ");
+                              String normalizedHeadline = java.text.Normalizer.normalize(article.optString("headline", "").trim().toLowerCase(java.util.Locale.ROOT), java.text.Normalizer.Form.NFKC).replace("  ", " ");
                               if (normalizedHeadline.isEmpty() || !seenHeadlines.add(normalizedHeadline)) continue;
                               rows.add(article);
                           }
