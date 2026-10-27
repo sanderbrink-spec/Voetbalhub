@@ -336,7 +336,8 @@ async function main() {
           facts: [
             "Strikte vormregels: kop 5-14 woorden; intro maximaal 25 woorden; drie tot vijf inhoudelijke alinea's van minimaal 70 tekens en maximaal 120 woorden per alinea.",
             "Geen herhaling: de intro mag de kop niet herhalen en de alinea's mogen de intro niet opnieuw formuleren.",
-            "Gebruik uitsluitend feiten uit de bronkop en bronbeschrijving. Voeg geen namen, citaten, scores, blessures, data of details toe die niet expliciet in de bron staan.",
+            "Gebruik uitsluitend controleerbare feiten uit de bronkop, bronbeschrijving en onderstaande opgehaalde artikelinformatie. Voeg geen onbewezen details toe. Schrijf volledig zelfstandig; kopieer geen bronzinnen of bronstructuur.",
+            "Opgehaalde artikelinformatie: " + articleText.slice(0, 4200),
             "Problemen die moeten worden opgelost: " + issues.join("; "),
             "Bronkop: " + item.title,
             "Bronbeschrijving (maximaal 800 tekens): " + (item.description || "De feed bevat geen beschrijving; schrijf voorzichtig en vermeld de beperkte broninformatie.").slice(0, 800)
@@ -363,7 +364,7 @@ async function main() {
         standfirst: String(draft.standfirst || "").slice(0, 320),
         body: Array.isArray(draft.body) ? draft.body.slice(0, 5).map(p => String(p).slice(0, 1200)) : [],
         why_it_matters: draft.why_it_matters || "",
-        verification_notes: "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: alleen de aangeleverde RSS-kop en -beschrijving zijn verwerkt. Controleer uitslag, doelpuntenmakers, statistieken, reeksen, ranglijst en overige concrete claims rechtstreeks bij betrouwbare bronnen vóór publicatie. " + String(draft.verification_notes || "").slice(0, 1200),
+        verification_notes: "BRONCONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: RSS-kop, beschrijving en opgehaalde artikeltekst zijn verwerkt. Controleer alle concrete claims bij onafhankelijke betrouwbare bronnen en verifieer de rechten vóór publicatie. " + String(draft.verification_notes || "").slice(0, 1200),
         verification_status: "needs_review",
         claims: Array.isArray(draft.claims) ? draft.claims.slice(0, 20).map(c => ({
           claim: String(c?.claim || "").slice(0, 500),
