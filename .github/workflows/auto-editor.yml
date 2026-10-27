@@ -21,6 +21,8 @@ jobs:
           node-version: "24"
       - name: Install dependencies
         run: npm install
+      - name: Check editorial script syntax
+        run: node --check scripts/auto-editor.js
       - name: Generate one source-based draft
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
