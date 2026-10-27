@@ -297,8 +297,9 @@ async function main() {
       const paragraphs = Array.isArray(candidate?.body) ? candidate.body.map(p => String(p || "").trim()).filter(Boolean) : [];
       if (wordCount(headline) < 5 || wordCount(headline) > 14) issues.push("kop moet 5 tot 14 woorden bevatten");
       if (!standfirst || wordCount(standfirst) > 25) issues.push("intro moet aanwezig zijn en maximaal 25 woorden bevatten");
-      if (!paragraphs.length || paragraphs.length > 2) issues.push("tekst moet uit één of twee alinea's bestaan");
-      if (paragraphs.some(p => wordCount(p) > 60)) issues.push("elke alinea mag maximaal 60 woorden bevatten");
+      if (paragraphs.length < 3 || paragraphs.length > 5) issues.push("tekst moet uit drie tot vijf inhoudelijke alinea's bestaan");
+      if (paragraphs.some(p => p.length < 70)) issues.push("elke alinea moet minimaal 70 tekens bevatten");
+      if (paragraphs.some(p => wordCount(p) > 120)) issues.push("elke alinea mag maximaal 120 woorden bevatten");
       const blocks = [headline, standfirst, ...paragraphs].map(normalizedText).filter(Boolean);
       for (let i = 0; i < blocks.length; i++) {
         for (let j = i + 1; j < blocks.length; j++) {
@@ -333,7 +334,7 @@ async function main() {
           topic: "HERSCHRIJF ALS KORTE, STRAKKE NEDERLANDSE VOETBALNIEUWSBERICHTGEVING: " + item.title,
           category: "Voetbal",
           facts: [
-            "Strikte vormregels: kop 5-14 woorden; intro maximaal 25 woorden; één of twee tekstalinea's, maximaal 60 woorden per alinea.",
+            "Strikte vormregels: kop 5-14 woorden; intro maximaal 25 woorden; drie tot vijf inhoudelijke alinea's van minimaal 70 tekens en maximaal 120 woorden per alinea.",
             "Geen herhaling: de intro mag de kop niet herhalen en de alinea's mogen de intro niet opnieuw formuleren.",
             "Gebruik uitsluitend feiten uit de bronkop en bronbeschrijving. Voeg geen namen, citaten, scores, blessures, data of details toe die niet expliciet in de bron staan.",
             "Problemen die moeten worden opgelost: " + issues.join("; "),
@@ -360,7 +361,7 @@ async function main() {
       body: JSON.stringify({ item: {
         headline: draft.headline || item.title,
         standfirst: String(draft.standfirst || "").slice(0, 320),
-        body: Array.isArray(draft.body) ? draft.body.slice(0, 2).map(p => String(p).slice(0, 700)) : [],
+        body: Array.isArray(draft.body) ? draft.body.slice(0, 5).map(p => String(p).slice(0, 1200)) : [],
         why_it_matters: draft.why_it_matters || "",
         verification_notes: "RSS-CONTROLE, GEEN ONAFHANKELIJKE FACTCHECK: alleen de aangeleverde RSS-kop en -beschrijving zijn verwerkt. Controleer uitslag, doelpuntenmakers, statistieken, reeksen, ranglijst en overige concrete claims rechtstreeks bij betrouwbare bronnen vóór publicatie. " + String(draft.verification_notes || "").slice(0, 1200),
         verification_status: "needs_review",
