@@ -534,67 +534,8 @@ jobs:
           elif "addPublisherLinkSection(list);" not in s:
               s = s.replace("addEditorialNewsSection(list);", "addEditorialNewsSection(list);\n        addPublisherLinkSection(list);", 1)
 
-          # Render editorial article photos only when the API carries cleared/licensed rights metadata.
-          if "private void addEditorialImage(LinearLayout parent, org.json.JSONObject article)" not in s:
-              image_method = """
-              private void addEditorialImage(LinearLayout parent, org.json.JSONObject article) {
-                  String imageUrl = article.optString("imageUrl", "").trim();
-                  String rights = article.optString("imageRights", "");
-                  if (imageUrl.isEmpty() || !imageUrl.startsWith("https://") ||
-                      !("cleared".equals(rights) || "licensed".equals(rights))) return;
-                  LinearLayout wrapper = new LinearLayout(this);
-                  wrapper.setOrientation(LinearLayout.VERTICAL);
-                  ImageView photo = new ImageView(this);
-                  photo.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                  LinearLayout.LayoutParams photoParams = new LinearLayout.LayoutParams(-1, dp(210));
-                  photoParams.setMargins(0, 0, 0, dp(5));
-                  wrapper.addView(photo, photoParams);
-                  String credit = article.optString("imageCredit", "").trim();
-                  String source = article.optString("imageSource", "").trim();
-                  if (!credit.isEmpty() || !source.isEmpty()) {
-                      wrapper.addView(tv("Foto: " + credit + (source.isEmpty() ? "" : " · " + source), 10, C.MUTED, false));
-                  }
-                  LinearLayout.LayoutParams wrapperParams = new LinearLayout.LayoutParams(-1, -2);
-                  wrapperParams.setMargins(0, 0, 0, dp(12));
-                  parent.addView(wrapper, wrapperParams);
-                  executor.execute(() -> {
-                      try {
-                          HttpURLConnection conn = (HttpURLConnection) new URL(imageUrl).openConnection();
-                          conn.setConnectTimeout(5000);
-                          conn.setReadTimeout(20000);
-                          conn.setInstanceFollowRedirects(false);
-                          conn.setRequestProperty("Accept", "image/*");
-                          if (conn.getResponseCode() != 200 || !conn.getContentType().toLowerCase(java.util.Locale.ROOT).startsWith("image/")) {
-                              conn.disconnect();
-                              return;
-                          }
-                          try (InputStream in = conn.getInputStream()) {
-                              android.graphics.Bitmap bitmap = android.graphics.BitmapFactory.decodeStream(in);
-                              if (bitmap != null) runOnUiThread(() -> photo.setImageBitmap(bitmap));
-                          } finally { conn.disconnect(); }
-                      } catch (Exception ignored) { }
-                  });
-              }
-
-              """
-              method_marker = "    private void scheduleScoresMidnightReset()"
-              if method_marker not in s:
-                  raise SystemExit("Could not find insertion point for editorial image renderer.")
-              s = s.replace(method_marker, image_method + method_marker, 1)
-          image_call = "                  addEditorialImage(page, article);"
-          if image_call not in s:
-              title_marker = "page.addView(title);"
-              if title_marker not in s:
-                  raise SystemExit("Could not find article title insertion point for image renderer.")
-              s = s.replace(title_marker, title_marker + chr(10) + image_call, 1)
-          # ImageView is an Android framework class; import it only if the source does not already use a wildcard.
-          if "import android.widget.ImageView;" not in s and "import android.widget.*;" not in s:
-              import_marker = "import android.widget.LinearLayout;"
-              if import_marker in s:
-                  s = s.replace(import_marker, import_marker + chr(10) + "import android.widget.ImageView;", 1)
-              else:
-                  raise SystemExit("Could not find Android widget import for image renderer.")
-
+          # Originals reader intentionally uses its local branded illustration.
+          # Do not inject a second image view, empty placeholder or photo credit.
           # Audit native app news sources before stripping unlicensed third-party feeds.
           print("AUDIT THIRD-PARTY FEED REFERENCES:")
           for n, line in enumerate(s.splitlines(), 1):
