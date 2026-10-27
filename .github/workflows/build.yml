@@ -351,14 +351,26 @@ jobs:
                                           if (out.size() + n > 1048576) throw new java.io.IOException("News response too large");
                                           out.write(buf, 0, n);
                                       }
-                                      data = new org.json.JSONObject(out.toString("UTF-8"));
+                                      String responseText = out.toString("UTF-8");
+                                      data = new org.json.JSONObject(responseText);
+                                      if (data.optJSONArray("articles") != null) {
+                                          getSharedPreferences("voetbalhub_editorial", MODE_PRIVATE).edit().putString("last_articles", responseText).apply();
+                                      }
                                   }
                               } catch (java.io.IOException networkError) {
                                   lastNetworkError = networkError;
                                   if (attempt == 0) runOnUiThread(() -> status.setText("Nieuwsserver wordt opnieuw benaderd…"));
                               }
                           }
-                          if (data == null) throw lastNetworkError != null ? lastNetworkError : new java.io.IOException("Geen serverreactie");
+                          if (data == null) {
+                              String savedNews = getSharedPreferences("voetbalhub_editorial", MODE_PRIVATE).getString("last_articles", "");
+                              if (!savedNews.isEmpty()) {
+                                  data = new org.json.JSONObject(savedNews);
+                                  runOnUiThread(() -> status.setText("Offline: laatst opgeslagen artikelen"));
+                              } else {
+                                  throw lastNetworkError != null ? lastNetworkError : new java.io.IOException("Geen serverreactie");
+                              }
+                          }
                           org.json.JSONArray articles = data.optJSONArray("articles");
                           final java.util.ArrayList<org.json.JSONObject> rows = new java.util.ArrayList<>();
                           final java.util.HashSet<String> seenHeadlines = new java.util.HashSet<>();
@@ -384,7 +396,7 @@ jobs:
                                   heroBg.setCornerRadius(dp(16));
                                   heroBg.setStroke(dp(1), 0xFF24573B);
                                   hero.setBackground(heroBg);
-                                  LinearLayout.LayoutParams heroLp = new LinearLayout.LayoutParams(-1, dp(225));
+                                  LinearLayout.LayoutParams heroLp = new LinearLayout.LayoutParams(-1, dp(205));
                                   heroLp.setMargins(0, dp(5), 0, dp(5));
                                   section.addView(hero, heroLp);
                                   String headlineValue = article.optString("headline", "Voetbalnieuws");
@@ -394,12 +406,29 @@ jobs:
                                       new int[]{0xFF0C2E1E, 0xFF18643B, 0xFF081713});
                                   field.setBackground(fieldBg);
                                   hero.addView(field, new android.widget.FrameLayout.LayoutParams(-1, -1));
-                                  android.widget.TextView ball = tv("⚽", 66, C.TEXT, true);
-                                  ball.setGravity(android.view.Gravity.CENTER);
-                                  ball.setAlpha(0.25f);
-                                  android.widget.FrameLayout.LayoutParams ballLp = new android.widget.FrameLayout.LayoutParams(dp(150), dp(150), android.view.Gravity.TOP | android.view.Gravity.RIGHT);
-                                  ballLp.setMargins(0, dp(6), dp(4), 0);
-                                  hero.addView(ball, ballLp);
+                                  // Original pitch-line artwork rendered locally; never presented as a match photograph.
+                                  android.view.View pitch = new android.view.View(this) {
+                                      final android.graphics.Paint p = new android.graphics.Paint(3);
+                                      @Override protected void onDraw(android.graphics.Canvas canvas) {
+                                          super.onDraw(canvas);
+                                          float w = getWidth(), h = getHeight();
+                                          p.setStyle(android.graphics.Paint.Style.STROKE);
+                                          p.setStrokeWidth(dp(2));
+                                          p.setColor(0x5555FF9D);
+                                          float left = w * 0.42f, top = h * 0.06f, right = w * 1.13f, bottom = h * 0.91f;
+                                          canvas.drawRect(left, top, right, bottom, p);
+                                          canvas.drawLine((left + right) / 2f, top, (left + right) / 2f, bottom, p);
+                                          canvas.drawCircle((left + right) / 2f, (top + bottom) / 2f, dp(52), p);
+                                          canvas.drawRect(right - w * 0.22f, top + h * 0.22f, right, bottom - h * 0.22f, p);
+                                          p.setStyle(android.graphics.Paint.Style.FILL);
+                                      }
+                                  };
+                                  hero.addView(pitch, new android.widget.FrameLayout.LayoutParams(-1, -1));
+                                  android.widget.TextView watermark = tv("VH", 80, C.TEXT, true);
+                                  watermark.setGravity(android.view.Gravity.CENTER);
+                                  watermark.setAlpha(0.07f);
+                                  android.widget.FrameLayout.LayoutParams wmLp = new android.widget.FrameLayout.LayoutParams(dp(155), dp(150), android.view.Gravity.TOP | android.view.Gravity.RIGHT);
+                                  hero.addView(watermark, wmLp);
                                   // Only display artwork explicitly approved and rights-cleared by the editorial API.
                                   String editorialImage = article.optString("imageUrl", "");
                                   String editorialRights = article.optString("imageRights", "");
