@@ -226,7 +226,10 @@ jobs:
               method = '''
               private static final String EDITORIAL_API_URL = "ENDPOINT_VALUE";
 
+              private boolean editorialArticleOpen = false;
+
               private void showEditorialArticle(org.json.JSONObject article) {
+                  editorialArticleOpen = true;
                   if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
                   content.removeAllViews();
                   LinearLayout root = new LinearLayout(this);
@@ -259,7 +262,7 @@ jobs:
                               imageConn = (HttpURLConnection) new URL(articleImage).openConnection();
                               imageConn.setConnectTimeout(12000);
                               imageConn.setReadTimeout(15000);
-                              imageConn.setInstanceFollowRedirects(false);
+                              imageConn.setInstanceFollowRedirects(true);
                               if (imageConn.getResponseCode() != 200 ||
                                   imageConn.getContentType() == null ||
                                   !imageConn.getContentType().toLowerCase(java.util.Locale.ROOT).startsWith("image/") ||
@@ -629,7 +632,7 @@ jobs:
           back_pos = s.index("if (backPressedOnce)", method_start)
           line_start = s.rfind(chr(10), 0, back_pos) + 1
           indent = s[line_start:back_pos]
-          insert = 'if (returnToNewsBottomTab()) return;' + chr(10) + indent + 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showNews();' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
+          insert = 'if (editorialArticleOpen) { editorialArticleOpen = false; currentBottomTab = "Nieuws"; active = "Voor jou"; showNews(); backPressedOnce = false; main.removeCallbacks(resetBackPressed); return; }' + chr(10) + indent + 'if (returnToNewsBottomTab()) return;' + chr(10) + indent + 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showNews();' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
           s = s[:line_start] + indent + insert + s[line_start + len(indent):]
           if "private void addEditorialNewsSection(LinearLayout parent)" not in s or "addEditorialNewsSection(list);" not in s:
               raise SystemExit("Approved editorial articles section is missing.")
