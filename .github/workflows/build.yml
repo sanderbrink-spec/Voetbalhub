@@ -281,6 +281,14 @@ jobs:
                           }
                       });
                   }
+                  String photoCredit = article.optString("imageCredit", "").trim();
+                  String photoSource = article.optString("imageSource", "").trim();
+                  if (articleImage.startsWith("https://") && !photoCredit.isEmpty()) {
+                      boolean aiIllustration = (photoCredit + " " + photoSource).toLowerCase(java.util.Locale.ROOT).contains("ai");
+                      TextView disclosure = tv((aiIllustration ? "AI-ILLUSTRATIE · " : "BEELD · ") + photoCredit, 11, C.MUTED, false);
+                      disclosure.setPadding(0, 0, 0, dp(10));
+                      page.addView(disclosure);
+                  }
                   TextView byline = tv("VoetbalHub Redactie", 11, C.MUTED, false);
                   byline.setPadding(0, 0, 0, dp(12));
                   page.addView(byline);
@@ -473,6 +481,12 @@ jobs:
                                   TextView label = tv(article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT) + "  ·  VOETBALHUB ORIGINALS", 12, C.GREEN, true);
                                   label.setPadding(0, 0, 0, dp(8));
                                   overlay.addView(label);
+                                  String attribution = (article.optString("imageCredit", "") + " " + article.optString("imageSource", "")).toLowerCase(java.util.Locale.ROOT);
+                                  if (editorialImage.startsWith("https://") && attribution.contains("ai")) {
+                                      TextView aiTag = tv("AI-ILLUSTRATIE", 11, C.TEXT, true);
+                                      aiTag.setPadding(0, 0, 0, dp(6));
+                                      overlay.addView(aiTag);
+                                  }
                                   TextView headline = tv(headlineValue, 20, C.TEXT, true);
                                   overlay.addView(headline);
                                   hero.setOnClickListener(v -> showEditorialArticle(article));
