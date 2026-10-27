@@ -391,6 +391,6 @@ async function main() {
     if (savedData.status === "saved_for_review") { saved++; console.log("Concept opgeslagen ter controle:", draft.headline); break; }
     if (savedData.status === "duplicate_skipped") console.log("Dubbel bronitem overgeslagen:", item.link);
   }
-  if (!saved) console.log("Geen nieuw concept opgeslagen; beschikbare items waren mogelijk al verwerkt.");
+  if (!saved) console.warn("::warning title=Geen nieuw redactieconcept::Deze run heeft geen nieuw concept opgeslagen. Controleer kwaliteitsafkeuringen, AI-limieten en duplicaten in de logs.");
 }
 main().catch(e => { console.error(e.message); process.exit(1); });
