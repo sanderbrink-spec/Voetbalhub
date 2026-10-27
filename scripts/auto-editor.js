@@ -209,7 +209,7 @@ async function main() {
       signal: AbortSignal.timeout(45000)
     });
     let r, data;
-    for (let attempt = 0; attempt < 5; attempt++) {
+    for (let attempt = 0; attempt < 3; attempt++) {
       r = await requestDraft();
       data = {};
       try { data = await r.json(); } catch {}
@@ -224,9 +224,9 @@ async function main() {
         r = { ok: false, status: r.status };
         break;
       }
-      if (!rateLimited || attempt === 4) {
+      if (!rateLimited || attempt === 2) {
         if (rateLimited) {
-          console.log("AI-tokenlimiet blijft actief na vijf pogingen; item veilig overgeslagen, geen concept verzonnen:", item.title);
+          console.log("AI-tokenlimiet blijft actief na drie pogingen; item veilig overgeslagen, geen concept verzonnen:", item.title);
           r = { ok: false, status: r.status };
           break;
         }
@@ -239,7 +239,7 @@ async function main() {
         : Math.min(45, 12 * (attempt + 1));
       // Respect long token-per-day windows instead of retrying early and wasting requests.
       const waitMs = Math.min(8 * 60 * 1000, Math.max(7000, Math.ceil(retryAfter * 1000) + 2000));
-      console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 5 over " + Math.ceil(waitMs / 1000) + " seconden.");
+      console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 3 over  + Math.ceil(waitMs / 1000) + " seconden.");
       await new Promise(resolve => setTimeout(resolve, waitMs));
     }
     if (!r.ok) {
