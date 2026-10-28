@@ -790,6 +790,28 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (imageUrl && (!/^https:\/\//i.test(imageUrl) || !["cleared","licensed"].includes(imageRights) || !imageSource || !imageCredit)) return send(res,400,{error:"Een foto vereist een HTTPS-URL, bron, naamsvermelding en bevestigde rechten (cleared/licensed)."});
     if (!imageUrl && !["not_needed","pending","rejected"].includes(imageRights)) return send(res,400,{error:"Beeldrechtenstatus zonder foto is ongeldig."});
     if (imageUrl && (!body.imageReview || body.imageReview.kitVerified !== true || body.imageReview.playerIdentityVerified !== true || body.imageReview.aiDisclosureVerified !== true)) return send(res,400,{error:"Beeldpublicatie vereist controle van tenues, spelers en AI-vermelding."});
+    // Reject repeated publication even when the editor marks "duplicate checked".
+    const canonical = value => String(value || "").normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const incomingHeadline = canonical(d.headline);
+    const incomingBody = canonical([d.standfirst, ...publishBody].join(" "));
+    const existingKeys = await client.keys("article:*");
+    for (const key of existingKeys) {
+      const raw = await client.get(key);
+      if (!raw) continue;
+      let existing;
+      try { existing = JSON.parse(raw); } catch { continue; }
+      if (existing.status !== "published") continue;
+      const oldHeadline = canonical(existing.headline);
+      const oldBody = canonical([existing.standfirst, ...(Array.isArray(existing.body) ? existing.body : [])].join(" "));
+      const oldWords = new Set(oldBody.split(" ").filter(w => w.length > 4));
+      const newWords = new Set(incomingBody.split(" ").filter(w => w.length > 4));
+      const shared = [...oldWords].filter(w => newWords.has(w)).length;
+      const overlap = Math.min(oldWords.size, newWords.size) ? shared / Math.min(oldWords.size, newWords.size) : 0;
+      if (incomingHeadline === oldHeadline || (oldWords.size >= 18 && newWords.size >= 18 && overlap >= 0.88)) {
+        return send(res, 409, { error: "Dubbele publicatie geblokkeerd: een vrijwel identiek artikel bestaat al.", existingArticleId: existing.id });
+      }
+    }
     const now = new Date().toISOString();
     const article = { id: crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights} : {imageRights}), autoPublish: false };
     await client.set("article:" + article.id, JSON.stringify(article));
