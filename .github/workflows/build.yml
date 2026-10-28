@@ -2,6 +2,8 @@ name: VoetbalHub API test and APK build
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main, master]
 
 jobs:
   api-test-and-build:
