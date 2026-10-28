@@ -393,7 +393,7 @@ async function main() {
     });
     const savedData = await save.json();
     if (!save.ok) throw new Error("Opslaan mislukt: " + JSON.stringify(savedData));
-    if (savedData.status === "saved_for_review") { saved++; console.log("Concept opgeslagen ter controle:", draft.headline); break; }
+    if (savedData.status === "saved_for_review") { saved++; console.log("Bronmelding veilig opgeslagen voor menselijke controle (publicatierechten niet vastgesteld):", draft.headline); break; }
     if (savedData.status === "duplicate_skipped") console.log("Dubbel bronitem overgeslagen:", item.link);
   }
   if (!saved) console.warn("::warning title=Geen nieuw redactieconcept::Deze run heeft geen nieuw concept opgeslagen. Controleer kwaliteitsafkeuringen, AI-limieten en duplicaten in de logs.");
