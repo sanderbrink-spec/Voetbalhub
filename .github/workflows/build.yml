@@ -653,10 +653,13 @@ jobs:
               if list_pos < 0:
                   raise SystemExit("Could not find news list for editorial section.")
               list_end = list_pos + len(list_marker)
-              s = s[:list_end] + "\n        addEditorialNewsSection(list, false);\n        addPublisherLinkSection(list);" + s[list_end:]
+              s = s[:list_end] + '\n        if ("Voor jou".equals(active)) { addEditorialNewsSection(list, false); addPublisherLinkSection(list); }' + s[list_end:]
           elif "addPublisherLinkSection(list);" not in s:
-              s = s.replace("addEditorialNewsSection(list, false);", "addEditorialNewsSection(list, false);\n        addPublisherLinkSection(list);", 1)
+              s = s.replace("addEditorialNewsSection(list, false);", 'if ("Voor jou".equals(active)) { addEditorialNewsSection(list, false); addPublisherLinkSection(list); }', 1)
 
+          # Keep the headline readable on compact screens instead of clipping its second line.
+          s = s.replace('sectionHeader("Laatste voetbalnieuws", "VERVERS", this::refreshNews)', 'sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews)')
+          # The Originals feed is a home-page feature, not a repeated card on every category.
           # Originals reader intentionally uses its local branded illustration.
           # Do not inject a second image view, empty placeholder or photo credit.
           # Audit native app news sources before stripping unlicensed third-party feeds.
