@@ -232,7 +232,10 @@ jobs:
               TextView heading = tv("Door Sander Brink", 27, C.TEXT, true);
               heading.setPadding(0, dp(8), 0, dp(8));
               page.addView(heading);
-              page.addView(tv("Iedere speelronde mijn eigen, ongefilterde kijk op de Eredivisie. De column wordt volledig door mijzelf geschreven.", 16, C.MUTED, false));
+              page.addView(tv("Geen meeloperij. Geen excuses. Gewoon mijn kijk op voetbal.", 16, C.MUTED, false));
+              TextView columnPromise = tv("Iedere week een scherpe, volledig zelfgeschreven column over de Eredivisie. Geen automatische AI-columns en geen publicatie zonder mijn akkoord.", 14, C.MUTED, false);
+              columnPromise.setPadding(0, dp(12), 0, dp(8));
+              page.addView(columnPromise);
               TextView archive = tv("COLUMN & ARTIKELEN", 13, C.GREEN, true);
               archive.setPadding(0, dp(22), 0, dp(10));
               page.addView(archive);
