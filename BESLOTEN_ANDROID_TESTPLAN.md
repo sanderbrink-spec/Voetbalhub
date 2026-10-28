@@ -43,3 +43,15 @@ Status: **voorbereiding, nog niet vrijgegeven**. Dit document is een releasepoor
 - De build-workflow bevat omvangrijke automatische wijzigingen aan Android-broncode tijdens het bouwen. Daarom is een groene build alleen niet voldoende als functionele acceptatie.
 - De Render-backend had recent een `live` deployment, maar dit bevestigt niet de end-to-end Android-werking.
 - Publicatie blijft handmatig; betaalde AI-beeldgeneratie is geen voorwaarde voor de test.
+
+## 7. Wekelijkse Eredivisie-column — redactionele pilot
+- [ ] Pilot van vier speelronden: iedere maandag na afloop van de volledige speelronde een column, uitsluitend als er een duidelijke invalshoek is.
+- [ ] Werktitel: **De Derde Helft**; definitieve rubrieksnaam door de eigenaar goed te keuren.
+- [ ] Auteur bepaalt zelf de stelling, observaties en mening; AI mag uitsluitend helpen met structuur, taal en controle, niet met het verzinnen van ervaringen of standpunten.
+- [ ] Richtlengte 600–800 woorden; liever korter en scherp dan opgevuld. Geen verplicht wedstrijd-voor-wedstrijd overzicht.
+- [ ] Opbouw: centrale stelling, opvallende winnaar/verliezer, een tactisch of individueel inzicht, aandacht voor minder belichte clubs, afsluitende scherpe conclusie.
+- [ ] Controleer uitslagen, standen, spelersnamen, quotes en wedstrijdfeiten onafhankelijk (Flashscore als wedstrijdreferentie); scheid feit en mening duidelijk.
+- [ ] Alleen eigen formuleringen en rechtenvrij of gelicentieerd beeld; geen overgenomen columns of uitgeversteksten.
+- [ ] Elke column blijft concept totdat de auteur expliciet goedkeurt; geen automatische publicatie.
+- [ ] Meet na vier edities: kwaliteit (doel >= 8/10 bij menselijke review), lezersreacties, leestijd/uitgelezen percentage indien privacyvriendelijk meetbaar, en tijdsinvestering per editie.
+- [ ] Stop of wijzig de rubriek als de columns generiek worden, te veel tijd kosten of de gewone nieuwsredactie vertragen.
