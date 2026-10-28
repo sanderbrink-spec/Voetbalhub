@@ -224,9 +224,13 @@ async function main() {
         r = { ok: false, status: r.status };
         break;
       }
-      if (!rateLimited || attempt === 2) {
-        if (rateLimited) {
-          console.log("AI-tokenlimiet blijft actief na drie pogingen; item veilig overgeslagen, geen concept verzonnen:", item.title);
+      // Groq can intermittently fail strict JSON generation. Retry once with
+      // a short cooldown, but never retry permanent input/validation errors.
+      const transientJsonFailure = (r.status === 502 || r.status === 503) &&
+        /Failed to generate JSON|failed_generation/i.test(detail);
+      if ((!rateLimited && !transientJsonFailure) || attempt === 2) {
+        if (rateLimited || transientJsonFailure) {
+          console.log("AI-provider bleef tijdelijk onbeschikbaar; bronitem overgeslagen zonder concept:", item.title);
           r = { ok: false, status: r.status };
           break;
         }
@@ -236,10 +240,10 @@ async function main() {
       const waitMatch = detail.match(/try again in\s+(?:(\d+)m\s*)?([0-9.]+)s/i);
       const retryAfter = waitMatch
         ? (Number(waitMatch[1] || 0) * 60 + Number(waitMatch[2]))
-        : Math.min(45, 12 * (attempt + 1));
+        : transientJsonFailure ? 3 : Math.min(45, 12 * (attempt + 1));
       // Respect long token-per-day windows instead of retrying early and wasting requests.
       const waitMs = Math.min(8 * 60 * 1000, Math.max(7000, Math.ceil(retryAfter * 1000) + 2000));
-    console.log("AI-tokenlimiet bereikt; poging " + (attempt + 2) + " van 3 over " + Math.ceil(waitMs / 1000) + " seconden.");
+    console.log("Tijdelijke AI-fout; poging " + (attempt + 2) + " van 3 over " + Math.ceil(Math.max(waitMs, 20000) / 1000) + " seconden.");
       await new Promise(resolve => setTimeout(resolve, Math.max(waitMs, 20000)));
     }
     if (!r.ok) {
