@@ -239,7 +239,7 @@ jobs:
               TextView archive = tv("COLUMN & ARTIKELEN", 13, C.GREEN, true);
               archive.setPadding(0, dp(22), 0, dp(10));
               page.addView(archive);
-              addEditorialNewsSection(page);
+              addEditorialNewsSection(page, true);
               scroll.addView(page);
               root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
               content.addView(root);
@@ -281,7 +281,7 @@ jobs:
               raise SystemExit("EDITORIAL_API_URL must be an HTTPS URL.")
           endpoint = api_url or "https://voetbalhub-redactie.onrender.com/articles"
           method_marker = "    private void scheduleScoresMidnightReset()"
-          if "private void addEditorialNewsSection(LinearLayout parent)" not in s:
+          if "private void addEditorialNewsSection(LinearLayout parent, boolean columnOnly)" not in s:
               method = '''
               private static final String EDITORIAL_API_URL = "ENDPOINT_VALUE";
 
@@ -367,7 +367,7 @@ jobs:
                   }
               }
 
-              private void addEditorialNewsSection(LinearLayout parent) {
+              private void addEditorialNewsSection(LinearLayout parent, boolean columnOnly) {
                   LinearLayout section = new LinearLayout(this);
                   section.setOrientation(LinearLayout.VERTICAL);
                   section.setPadding(dp(6), dp(7), dp(6), dp(7));
@@ -471,7 +471,6 @@ jobs:
                               if (article == null || !"published".equals(article.optString("status"))) continue;
                               String normalizedHeadline = java.text.Normalizer.normalize(article.optString("headline", "").trim().toLowerCase(java.util.Locale.ROOT), java.text.Normalizer.Form.NFKC).replace("  ", " ");
                               if (normalizedHeadline.isEmpty() || !seenHeadlines.add(normalizedHeadline)) continue;
-                              boolean columnOnly = "Column".equals(currentBottomTab);
                               String itemType = article.optString("type", "");
                               String itemCategory = article.optString("category", "");
                               boolean columnArticle = "column".equalsIgnoreCase(itemType) || "column".equalsIgnoreCase(itemCategory) || "de derde helft".equalsIgnoreCase(itemCategory);
@@ -481,7 +480,7 @@ jobs:
                           runOnUiThread(() -> {
                               section.removeView(status);
                               if (rows.isEmpty()) {
-                                  section.addView(tv("Column".equals(currentBottomTab) ? "De eerste column van Sander Brink verschijnt hier na zijn persoonlijke goedkeuring." : "Er zijn nog geen door de redactie goedgekeurde VoetbalHub-artikelen. Externe nieuwsfeeds zijn uitgeschakeld zolang hergebruikrechten niet zijn bevestigd.", 13, C.MUTED, false));
+                                  section.addView(tv(columnOnly ? "De eerste column van Sander Brink verschijnt hier na zijn persoonlijke goedkeuring." : "Er zijn nog geen door de redactie goedgekeurde VoetbalHub-artikelen. Externe nieuwsfeeds zijn uitgeschakeld zolang hergebruikrechten niet zijn bevestigd.", 13, C.MUTED, false));
                                   return;
                               }
                               org.json.JSONObject latestColumn = null;
@@ -643,7 +642,7 @@ jobs:
               marker = "    private void scheduleScoresMidnightReset()"
               if marker not in s: raise SystemExit("Could not find insertion point for publisher links.")
               s = s.replace(marker, method + marker, 1)
-          if "addEditorialNewsSection(list);" not in s:
+          if "addEditorialNewsSection(list, false);" not in s:
               news_start = s.find("private void showNews()")
               if news_start < 0:
                   raise SystemExit("Could not find showNews() for editorial section.")
@@ -652,9 +651,9 @@ jobs:
               if list_pos < 0:
                   raise SystemExit("Could not find news list for editorial section.")
               list_end = list_pos + len(list_marker)
-              s = s[:list_end] + "\n        addEditorialNewsSection(list);\n        addPublisherLinkSection(list);" + s[list_end:]
+              s = s[:list_end] + "\n        addEditorialNewsSection(list, false);\n        addPublisherLinkSection(list);" + s[list_end:]
           elif "addPublisherLinkSection(list);" not in s:
-              s = s.replace("addEditorialNewsSection(list);", "addEditorialNewsSection(list);\n        addPublisherLinkSection(list);", 1)
+              s = s.replace("addEditorialNewsSection(list, false);", "addEditorialNewsSection(list, false);\n        addPublisherLinkSection(list);", 1)
 
           # Originals reader intentionally uses its local branded illustration.
           # Do not inject a second image view, empty placeholder or photo credit.
@@ -681,7 +680,7 @@ jobs:
           indent = s[line_start:back_pos]
           insert = 'if (editorialArticleOpen) { editorialArticleOpen = false; currentBottomTab = "Nieuws"; active = "Voor jou"; showNews(); backPressedOnce = false; main.removeCallbacks(resetBackPressed); return; }' + chr(10) + indent + 'if (returnToNewsBottomTab()) return;' + chr(10) + indent + 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showNews();' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
           s = s[:line_start] + indent + insert + s[line_start + len(indent):]
-          if "private void addEditorialNewsSection(LinearLayout parent)" not in s or "addEditorialNewsSection(list);" not in s:
+          if "private void addEditorialNewsSection(LinearLayout parent)" not in s or "addEditorialNewsSection(list, false);" not in s:
               raise SystemExit("Approved editorial articles section is missing.")
           p.write_text(s)
           print("Patched ESPN feeds, home screen and back navigation.")
