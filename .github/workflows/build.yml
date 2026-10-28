@@ -192,6 +192,64 @@ jobs:
                   end = s.find("break;", pos)
                   if end >= 0 and "currentBottomTab" not in s[pos:end]:
                       s = s[:pos] + marker_case + ' currentBottomTab = "' + tab + '";' + s[pos+len(marker_case):]
+          # Replace the disabled Uitslagen bottom-navigation slot with a permanent column tab.
+          # The column is a first-class destination, not merely a transient home-page card.
+          nav_start = s.find("String[][] items =")
+          if nav_start < 0:
+              raise SystemExit("Cannot locate bottom navigation to install column tab.")
+          nav_end = s.find("};", nav_start)
+          if nav_end < 0:
+              raise SystemExit("Cannot locate bottom navigation item array end.")
+          nav = s[nav_start:nav_end+2]
+          if '"Uitslagen"' not in nav:
+              raise SystemExit("Expected disabled Uitslagen navigation slot is missing.")
+          s = s[:nav_start] + nav.replace('"Uitslagen"', '"Column"') + s[nav_end+2:]
+          # The bottom tab dispatcher now opens the dedicated column destination.
+          nav_start = s.find("String[][] items =")
+          switch_pos = s.find('case "Uitslagen":', nav_start)
+          if switch_pos < 0:
+              raise SystemExit("Cannot locate Uitslagen bottom navigation switch case.")
+          switch_end = s.find("break;", switch_pos)
+          if switch_end < 0:
+              raise SystemExit("Cannot locate bottom navigation switch case end.")
+          old_case = s[switch_pos:switch_end]
+          new_case = old_case.replace('case "Uitslagen":', 'case "Column":').replace('showScores()', 'showColumn()').replace('currentBottomTab = "Uitslagen"', 'currentBottomTab = "Column"')
+          s = s[:switch_pos] + new_case + s[switch_end:]
+          if "private void showColumn()" not in s:
+              column_page = """
+          private void showColumn() {
+              if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
+              scoresPageVisible = false;
+              content.removeAllViews();
+              LinearLayout root = new LinearLayout(this);
+              root.setOrientation(LinearLayout.VERTICAL);
+              root.addView(sectionHeader("De Derde Helft", "NIEUWS", this::showNews));
+              ScrollView scroll = new ScrollView(this);
+              LinearLayout page = new LinearLayout(this);
+              page.setOrientation(LinearLayout.VERTICAL);
+              page.setPadding(dp(14), dp(16), dp(14), dp(28));
+              page.addView(tv("DE DERDE HELFT", 18, C.GREEN, true));
+              TextView heading = tv("Door Sander Brink", 27, C.TEXT, true);
+              heading.setPadding(0, dp(8), 0, dp(8));
+              page.addView(heading);
+              page.addView(tv("Iedere speelronde mijn eigen, ongefilterde kijk op de Eredivisie. De column wordt volledig door mijzelf geschreven.", 16, C.MUTED, false));
+              TextView archive = tv("COLUMN & ARTIKELEN", 13, C.GREEN, true);
+              archive.setPadding(0, dp(22), 0, dp(10));
+              page.addView(archive);
+              addEditorialNewsSection(page);
+              scroll.addView(page);
+              root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
+              content.addView(root);
+          }
+
+          """
+              insert_at = s.find("private void showScores()")
+              if insert_at < 0:
+                  raise SystemExit("Cannot insert column destination without scores placeholder.")
+              s = s[:insert_at] + column_page + s[insert_at:]
+          # Avoid silently losing the permanent tab when future UI patches run.
+          if 'case "Column":' not in s or "private void showColumn()" not in s:
+              raise SystemExit("Permanent column navigation patch incomplete.")
           # Add a safe helper to find and activate the bottom Nieuws item if a tab is active.
           back_marker = "public void onBackPressed()"
           if "private boolean returnToNewsBottomTab()" not in s:
