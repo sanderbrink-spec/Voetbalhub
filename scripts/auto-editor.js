@@ -154,7 +154,7 @@ async function main() {
   };
   let saved = 0;
   let dailyQuotaExhausted = false;
-  for (const item of candidates.slice(0, 5)) {
+  for (const item of candidates.slice(0, 15)) {
     // Nederlandse feeds kunnen soms toch een Engelstalige kop bevatten; zulke items worden uitgesloten.
     const title = String(item.title || "");
     const englishPhrases = /\\b(happy at|unsure about|according to|the club|is taken to|was taken to|could be|will be|he said|she said|they said|after collapsing|over the summer|in difficult position|lay down marker|promotion favourites|transfer gossip)\\b/i;
@@ -360,7 +360,7 @@ async function main() {
         continue;
       }
     }
-    const save = await fetch(API_URL + "/auto-inbox", {
+    // Enforce the same quality and language checks on the final version.\n    const finalIssues = qualityIssues(draft);\n    if (draftHasEnglish(draft) || finalIssues.length) {\n      console.log("Eindcontrole afgekeurd; niet opgeslagen:", finalIssues.join("; ") || "Engelstalige tekst");\n      continue;\n    }\n    const save = await fetch(API_URL + "/auto-inbox", {
       method: "POST",
       headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
       body: JSON.stringify({ item: {
