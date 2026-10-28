@@ -234,7 +234,7 @@ async function main() {
           r = { ok: false, status: r.status };
           break;
         }
-        if (r.status === 502 || r.status === 503 || r.status === 429) throw new Error(detail || data.error || "AI-service fout");
+        if (r.status === 502 || r.status === 503 || r.status === 429) { console.warn("AI-service fout; bronitem overgeslagen, overige items worden nog geprobeerd:", detail); r = { ok: false, status: r.status }; break; }
         break;
       }
       const waitMatch = detail.match(/try again in\s+(?:(\d+)m\s*)?([0-9.]+)s/i);
@@ -243,7 +243,7 @@ async function main() {
         : transientJsonFailure ? 3 : Math.min(45, 12 * (attempt + 1));
       // Respect long token-per-day windows instead of retrying early and wasting requests.
       const waitMs = Math.min(8 * 60 * 1000, Math.max(7000, Math.ceil(retryAfter * 1000) + 2000));
-    console.log("Tijdelijke AI-fout; poging " + (attempt + 2) + " van 3 over " + Math.ceil(Math.max(waitMs, 20000) / 1000) + " seconden.");
+      console.log("Tijdelijke AI-fout; poging " + (attempt + 2) + " van 3 over " + Math.ceil(Math.max(waitMs, 20000) / 1000) + " seconden.");
       await new Promise(resolve => setTimeout(resolve, Math.max(waitMs, 20000)));
     }
     if (!r.ok) {
