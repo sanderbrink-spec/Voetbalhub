@@ -15,3 +15,18 @@ Kleine taal- of stijlfouten zijn geen automatische afkeuringsgrond. Verkeerde ui
 
 ## Wijzigingsbeheer
 Deze bronafspraak is de standaard voor nieuwe redactionele wijzigingen en tests. Wijzig de driebronnen-allowlist alleen na een expliciet nieuw besluit. Behoud veilige controles op authenticiteit van de URL, scorecorrectheid en publicatierechten.
+
+
+## Geplande rubriek: wekelijkse Eredivisie-column
+
+**Status:** opgenomen in redactieplan; nog niet technisch geïmplementeerd of automatisch ingepland.
+
+- Werknaam: **De Derde Helft** (definitieve titel door hoofdredacteur te bepalen).
+- Verschijnt na afloop van de volledige Eredivisie-speelronde; uitstel bij gespreide speelrondes.
+- 500–700 woorden, één centrale stelling, maximaal drie inhoudelijke onderwerpen, duidelijke conclusie.
+- Eigen, herkenbare opinie van de auteur; feiten, uitslagen, doelpuntenmakers en statistieken worden afzonderlijk geverifieerd (Flashscore als wedstrijdcheck en waar mogelijk officiële club-/competitiebronnen).
+- Maak duidelijk onderscheid tussen feiten, interpretaties en meningen. Geen onbewezen beschuldigingen of suggestieve claims.
+- Geen hergebruik of parafrase van andermans column; geen overname van auteursrechtelijk beschermde artikelteksten.
+- Concept vooraf door de auteur beoordelen en expliciet goedkeuren; nooit automatisch publiceren.
+- Redactionele toets: concrete wedstrijdvoorbeelden, originele invalshoek, geen herhaling, begrijpelijke taal en relevantie voor de hele Eredivisie.
+- Na vier proefcolumns evalueren op kwaliteit, leestijd en reacties voordat een vaste publicatiefrequentie wordt vastgelegd.
