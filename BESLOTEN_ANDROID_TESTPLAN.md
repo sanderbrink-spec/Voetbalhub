@@ -55,3 +55,31 @@ Status: **voorbereiding, nog niet vrijgegeven**. Dit document is een releasepoor
 - [ ] Elke column blijft concept totdat Sander de lichte nacontrole heeft bekeken en zelf expliciet goedkeurt; geen automatische publicatie.
 - [ ] Meet na vier edities: kwaliteit (doel >= 8/10 bij menselijke review), lezersreacties, leestijd/uitgelezen percentage indien privacyvriendelijk meetbaar, en tijdsinvestering per editie.
 - [ ] Stop of wijzig de rubriek als de columns generiek worden, te veel tijd kosten of de gewone nieuwsredactie vertragen.
+
+## 8. VoetbalHub 2.0 — voorpagina en visuele herbouw
+Status: **ontwerp goedgekeurd als richting, nog niet geïmplementeerd in de Android-APK**.
+
+### Visuele eisen
+- [ ] Behoud het **bestaande echte VoetbalHub-logo** en de slogan 'Alles voetbal. Eén hub.'; geen AI-verzonnen logo of portret.
+- [ ] Donkere achtergrond, neon-groene accenten, strakke sportredactionele typografie, consistente kaarten en ruime maar compacte mobiele opmaak.
+- [ ] Voorpagina: compacte kop/navigatie, één prominente kaart voor de nieuwste column, daarna actuele eigen nieuwsartikelen en relevante categorieën.
+- [ ] Columnkaart: 'DE DERDE HELFT', 'Door Sander Brink', datum, geschatte leestijd, krachtige eigen kop en duidelijke leesactie. Geen fictieve foto van de auteur; alleen echte aangeleverde foto of neutrale grafische cover.
+- [ ] Geen demonstratiekoppen, verzonnen wedstrijden, fictieve reacties of oncontroleerbare spelersfoto's in de productie-app.
+- [ ] Columnarchief en eigen rubriek, zonder dat de column gewone nieuwsartikelen wegdrukt.
+- [ ] Volledige breedte op Android zonder horizontale overflow; respecteer statusbalk, camerauitsparing en onderste systeemnavigatie.
+
+### Behoud van bestaande functionaliteit
+- [ ] Nieuws laden uit de bestaande productie-API; uitsluitend handmatig gepubliceerde en gecontroleerde eigen artikelen.
+- [ ] Bestaande favorieten, 'meer laden', navigatie/terugknop en introanimatie behouden en regressietesten.
+- [ ] Artikelfoto's zowel op de voorpagina als in het volledige artikel zichtbaar; bron en beeldrechten controleren.
+- [ ] Geen herintroductie van verwijderde Europese livescores, onbetrouwbare scorepanelen of externe RSS-artikelteksten.
+- [ ] Advertentiebanner blijft tijdelijk uit; geen nieuwe advertentie-SDK activeren tijdens deze herbouw.
+- [ ] Dubbele nieuwsartikelen blokkeren op de server en bestaande dubbele publicaties afzonderlijk laten beoordelen.
+
+### Uitvoeringsvolgorde
+1. Android-bronproject uit `VoetbalHub-4.22-API-Football.zip` inspecteren, bestaande schermen en build-mutaties in kaart brengen.
+2. Bestaande APK reproduceerbaar bouwen en basisfunctionaliteit testen vóór UI-aanpassingen.
+3. Nieuw voorpagina-ontwerp als echte Android-layout implementeren met behoud van databindingen en navigatie.
+4. Columnrubriek met auteur, archief en uitsluitend handmatige publicatie toevoegen.
+5. Testen op ten minste twee Android-apparaten, schermbreedte, afbeeldingen, netwerkfouten, terugnavigatie en upgrades.
+6. Pas na groene tests en visuele beoordeling een nieuwe test-APK aanbieden.
