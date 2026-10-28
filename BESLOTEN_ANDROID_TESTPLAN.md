@@ -47,11 +47,11 @@ Status: **voorbereiding, nog niet vrijgegeven**. Dit document is een releasepoor
 ## 7. Wekelijkse Eredivisie-column — redactionele pilot
 - [ ] Pilot van vier speelronden: iedere maandag na afloop van de volledige speelronde een column, uitsluitend als er een duidelijke invalshoek is.
 - [ ] Werktitel: **De Derde Helft**; definitieve rubrieksnaam door de eigenaar goed te keuren.
-- [ ] Auteur bepaalt zelf de stelling, observaties en mening; AI mag uitsluitend helpen met structuur, taal en controle, niet met het verzinnen van ervaringen of standpunten.
+- [ ] **Auteur: Sander Brink, met eigen naamsvermelding.** Sander schrijft de column volledig zelf, inclusief stelling, observaties, mening en formulering. AI doet alleen op verzoek een lichte nacontrole op spelling, grammatica, leesbaarheid en verifieerbare feiten; geen ongevraagde herschrijving of verandering van toon, argumenten of standpunten.
 - [ ] Richtlengte 600–800 woorden; liever korter en scherp dan opgevuld. Geen verplicht wedstrijd-voor-wedstrijd overzicht.
 - [ ] Opbouw: centrale stelling, opvallende winnaar/verliezer, een tactisch of individueel inzicht, aandacht voor minder belichte clubs, afsluitende scherpe conclusie.
 - [ ] Controleer uitslagen, standen, spelersnamen, quotes en wedstrijdfeiten onafhankelijk (Flashscore als wedstrijdreferentie); scheid feit en mening duidelijk.
 - [ ] Alleen eigen formuleringen en rechtenvrij of gelicentieerd beeld; geen overgenomen columns of uitgeversteksten.
-- [ ] Elke column blijft concept totdat de auteur expliciet goedkeurt; geen automatische publicatie.
+- [ ] Elke column blijft concept totdat Sander de lichte nacontrole heeft bekeken en zelf expliciet goedkeurt; geen automatische publicatie.
 - [ ] Meet na vier edities: kwaliteit (doel >= 8/10 bij menselijke review), lezersreacties, leestijd/uitgelezen percentage indien privacyvriendelijk meetbaar, en tijdsinvestering per editie.
 - [ ] Stop of wijzig de rubriek als de columns generiek worden, te veel tijd kosten of de gewone nieuwsredactie vertragen.
