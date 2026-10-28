@@ -332,13 +332,23 @@ jobs:
                   TextView columnTag = tv("✍  DE DERDE HELFT", 15, C.GREEN, true);
                   columnTag.setPadding(0, 0, 0, dp(12));
                   columnHero.addView(columnTag);
-                  TextView columnTitle = tv("Geen meeloperij. Geen excuses.", 25, C.TEXT, true);
+                  TextView columnTitle = tv("Negen wedstrijden. Eén uitgesproken mening.", 26, C.TEXT, true);
                   columnHero.addView(columnTitle);
-                  TextView columnSub = tv("Gewoon mijn kijk op voetbal. Iedere speelronde een uitgesproken column over de Eredivisie.", 15, C.TEXT, false);
+                  TextView columnSub = tv("Scherpe analyses, eerlijke kritiek en geen meeloperij. Iedere week de Eredivisie door de ogen van Sander Brink.", 15, C.TEXT, false);
                   columnSub.setPadding(0, dp(10), 0, dp(13));
                   columnHero.addView(columnSub);
                   TextView columnAuthor = tv("DOOR SANDER BRINK  ·  BINNENKORT", 12, C.GREEN, true);
                   columnHero.addView(columnAuthor);
+                  TextView columnAction = tv("ONTDEK DE RUBRIEK  →", 16, 0xFF091109, true);
+                  columnAction.setGravity(android.view.Gravity.CENTER);
+                  columnAction.setPadding(dp(12), dp(12), dp(12), dp(12));
+                  android.graphics.drawable.GradientDrawable actionBg = new android.graphics.drawable.GradientDrawable();
+                  actionBg.setColor(0xFF9CFF00);
+                  actionBg.setCornerRadius(dp(12));
+                  columnAction.setBackground(actionBg);
+                  LinearLayout.LayoutParams actionLp = new LinearLayout.LayoutParams(-1, -2);
+                  actionLp.setMargins(0, dp(18), 0, 0);
+                  columnHero.addView(columnAction, actionLp);
                   columnHero.setOnClickListener(v -> new android.app.AlertDialog.Builder(this)
                       .setTitle("De Derde Helft")
                       .setMessage("Binnenkort: de wekelijkse Eredivisie-column van Sander Brink. De eerste editie verschijnt pas na persoonlijke goedkeuring.")
@@ -410,6 +420,24 @@ jobs:
                                   section.addView(tv("Er zijn nog geen door de redactie goedgekeurde VoetbalHub-artikelen. Externe nieuwsfeeds zijn uitgeschakeld zolang hergebruikrechten niet zijn bevestigd. Open hieronder een nieuwsbron of laad opnieuw zodra een artikel is goedgekeurd.", 13, C.MUTED, false));
                                   return;
                               }
+                              org.json.JSONObject latestColumn = null;
+                              for (org.json.JSONObject item : rows) {
+                                  String kind = item.optString("type", "");
+                                  String cat = item.optString("category", "");
+                                  if ("column".equalsIgnoreCase(kind) || "column".equalsIgnoreCase(cat) || "de derde helft".equalsIgnoreCase(cat)) {
+                                      latestColumn = item;
+                                      break;
+                                  }
+                              }
+                              if (latestColumn != null) {
+                                  final org.json.JSONObject featured = latestColumn;
+                                  columnTitle.setText(featured.optString("headline", "De Derde Helft"));
+                                  columnSub.setText(featured.optString("standfirst", "De wekelijkse Eredivisie-column."));
+                                  columnAuthor.setText("DOOR " + featured.optString("author", "Sander Brink").toUpperCase(java.util.Locale.ROOT));
+                                  columnAction.setText("LEES DE COLUMN  →");
+                                  columnHero.setOnClickListener(v -> showEditorialArticle(featured));
+                              }
+                              section.addView(tv("LAATSTE NIEUWS  ·  VOETBALHUB ORIGINALS", 14, C.GREEN, true));
                               for (org.json.JSONObject article : rows) {
                                   // Image-led, original artwork card: no third-party photo or logo rights needed.
                                   android.widget.FrameLayout hero = new android.widget.FrameLayout(this);
