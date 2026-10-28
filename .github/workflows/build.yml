@@ -728,6 +728,49 @@ jobs:
               print('Verified published original articles with readable body.')
           PY
 
+      - name: VoetbalHub 2.0 visual design
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
+          s = p.read_text()
+          replacements = {
+              "static final int GREEN = 0xFF25F06B;": "static final int GREEN = 0xFFAAFF00;",
+              "static final int CARD = 0xFF0C1210;": "static final int CARD = 0xFF101915;",
+              "static final int BORDER = 0xFF1B2822;": "static final int BORDER = 0xFF2A3B30;",
+              "static final int MUTED = 0xFF8E9B95;": "static final int MUTED = 0xFFA3B4A8;",
+              'sectionHeader("Laatste voetbalnieuws", "VERVERS", this::refreshNews)': 'sectionHeader("Het laatste voetbalnieuws", "VERVERS", this::refreshNews)',
+              'String[][] items = {{"⌂", "Nieuws"}, {"▣", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};': 'String[][] items = {{"⌂", "Nieuws"}, {"✎", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};',
+              'page.setPadding(dp(14), dp(16), dp(14), dp(28));': 'page.setPadding(dp(20), dp(24), dp(20), dp(32));',
+              'tv("DE DERDE HELFT", 18, C.GREEN, true)': 'tv("DE DERDE HELFT  /  DE COLUMN", 16, C.GREEN, true)',
+              'tv("Door Sander Brink", 27, C.TEXT, true)': 'tv("De Derde Helft\\nDoor Sander Brink", 30, C.TEXT, true)',
+          }
+          for before, after in replacements.items():
+              if before not in s: raise SystemExit("Visual design patch marker missing: " + before[:90])
+              s = s.replace(before, after, 1)
+          # Bottom navigation reacts to the active destination, including column.
+          s = s.replace('index == 0 ? C.GREEN : C.MUTED', 'page.equals(currentBottomTab) ? C.GREEN : C.MUTED')
+          s = s.replace('index == 0)', 'page.equals(currentBottomTab))')
+          s = s.replace('            nav.addView(box, new LinearLayout.LayoutParams(0, -1, 1));', '            nav.addView(box, new LinearLayout.LayoutParams(0, -1, 1));')
+          s = s.replace('case "Column": currentBottomTab = "Column"; showColumn(); break;', 'case "Column": currentBottomTab = "Column"; buildNav(); showColumn(); break;')
+          s = s.replace('case "Nieuws": currentBottomTab = "Nieuws"; active = "Voor jou";', 'case "Nieuws": currentBottomTab = "Nieuws"; buildNav(); active = "Voor jou";')
+          s = s.replace('case "Competities": currentBottomTab = "Competities"; showCompetitions();', 'case "Competities": currentBottomTab = "Competities"; buildNav(); showCompetitions();')
+          s = s.replace('case "Favorieten": currentBottomTab = "Favorieten"; showFavorites();', 'case "Favorieten": currentBottomTab = "Favorieten"; buildNav(); showFavorites();')
+          p.write_text(s)
+          layout = Path("app/src/main/res/layout/activity_main.xml")
+          x = layout.read_text()
+          x = x.replace('Alles wat voetbal beweegt', 'Alles voetbal. Eén hub.')
+          x = x.replace('android:textSize="20sp"', 'android:textSize="23sp"')
+          x = x.replace('android:layout_height="64dp"', 'android:layout_height="72dp"', 1)
+          x = x.replace('android:layout_height="76dp"', 'android:layout_height="72dp"')
+          x = x.replace('#090D0B', '#0D1510').replace('#8E9B95', '#A3B4A8')
+          x = x.replace('android:elevation="12dp"', 'android:elevation="18dp"')
+          layout.write_text(x)
+          print("VoetbalHub 2.0 design applied to real Android source.")
+          PY
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
