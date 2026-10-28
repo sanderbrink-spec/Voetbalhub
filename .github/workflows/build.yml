@@ -316,6 +316,34 @@ jobs:
                   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
                   lp.setMargins(0, 0, 0, dp(8));
                   parent.addView(section, 0, lp);
+                  // Prominent editorial column feature: visible even before the first column is published.
+                  LinearLayout columnHero = new LinearLayout(this);
+                  columnHero.setOrientation(LinearLayout.VERTICAL);
+                  columnHero.setPadding(dp(18), dp(18), dp(18), dp(18));
+                  android.graphics.drawable.GradientDrawable columnBg = new android.graphics.drawable.GradientDrawable(
+                      android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
+                      new int[]{0xFF143A26, 0xFF091511, 0xFF080C0B});
+                  columnBg.setCornerRadius(dp(18));
+                  columnBg.setStroke(dp(1), 0xFF8AF000);
+                  columnHero.setBackground(columnBg);
+                  LinearLayout.LayoutParams columnLp = new LinearLayout.LayoutParams(-1, -2);
+                  columnLp.setMargins(0, dp(2), 0, dp(16));
+                  section.addView(columnHero, columnLp);
+                  TextView columnTag = tv("✍  DE DERDE HELFT", 15, C.GREEN, true);
+                  columnTag.setPadding(0, 0, 0, dp(12));
+                  columnHero.addView(columnTag);
+                  TextView columnTitle = tv("Geen meeloperij. Geen excuses.", 25, C.TEXT, true);
+                  columnHero.addView(columnTitle);
+                  TextView columnSub = tv("Gewoon mijn kijk op voetbal. Iedere speelronde een uitgesproken column over de Eredivisie.", 15, C.TEXT, false);
+                  columnSub.setPadding(0, dp(10), 0, dp(13));
+                  columnHero.addView(columnSub);
+                  TextView columnAuthor = tv("DOOR SANDER BRINK  ·  BINNENKORT", 12, C.GREEN, true);
+                  columnHero.addView(columnAuthor);
+                  columnHero.setOnClickListener(v -> new android.app.AlertDialog.Builder(this)
+                      .setTitle("De Derde Helft")
+                      .setMessage("Binnenkort: de wekelijkse Eredivisie-column van Sander Brink. De eerste editie verschijnt pas na persoonlijke goedkeuring.")
+                      .setPositiveButton("Sluiten", (dialog, which) -> dialog.dismiss())
+                      .show());
                   // The image cards already carry the Originals label; avoid duplicate headings.
                   TextView status = tv("Eigen voetbalartikelen laden…", 13, C.MUTED, false);
                   status.setPadding(0, dp(5), 0, 0);
