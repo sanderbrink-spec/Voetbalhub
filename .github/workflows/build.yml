@@ -803,7 +803,7 @@ jobs:
               signature = "private void " + method + "() {"
               if signature not in source:
                   raise SystemExit("Missing page method: " + method)
-              source = source.replace(signature, signature + '\\n        currentBottomTab = "' + label + '";\\n        buildNav();', 1)
+              source = source.replace(signature, signature + '\n        currentBottomTab = "' + label + '";\n        buildNav();', 1)
           # Update branding and use the screen width without overlapping system bars.
           xml = xml.replace('Alles wat voetbal beweegt', 'Alles voetbal. Eén hub.')
           xml = xml.replace('android:textSize="20sp"', 'android:textSize="23sp"')
