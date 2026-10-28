@@ -680,7 +680,7 @@ jobs:
           indent = s[line_start:back_pos]
           insert = 'if (editorialArticleOpen) { editorialArticleOpen = false; currentBottomTab = "Nieuws"; active = "Voor jou"; showNews(); backPressedOnce = false; main.removeCallbacks(resetBackPressed); return; }' + chr(10) + indent + 'if (returnToNewsBottomTab()) return;' + chr(10) + indent + 'if (active != null && !active.equals("Voor jou")) {' + chr(10) + indent + '    active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showNews();' + chr(10) + indent + '    backPressedOnce = false;' + chr(10) + indent + '    main.removeCallbacks(resetBackPressed);' + chr(10) + indent + '    return;' + chr(10) + indent + '}' + chr(10) + indent
           s = s[:line_start] + indent + insert + s[line_start + len(indent):]
-          if "private void addEditorialNewsSection(LinearLayout parent)" not in s or "addEditorialNewsSection(list, false);" not in s:
+          if "private void addEditorialNewsSection(LinearLayout parent, boolean columnOnly)" not in s or "addEditorialNewsSection(list, false);" not in s:
               raise SystemExit("Approved editorial articles section is missing.")
           p.write_text(s)
           print("Patched ESPN feeds, home screen and back navigation.")
