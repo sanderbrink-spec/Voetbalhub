@@ -267,7 +267,7 @@ jobs:
                   }
                   // Original articles use the local licensed VoetbalHub banner only.
                   // No remote image slot or image credit is created in this reader.
-                  TextView byline = tv("VoetbalHub Redactie", 11, C.MUTED, false);
+                  TextView byline = tv(article.optString("author", "VoetbalHub Redactie"), 11, C.MUTED, false);
                   byline.setPadding(0, 0, 0, dp(12));
                   page.addView(byline);
                   org.json.JSONArray paragraphs = article.optJSONArray("body");
@@ -465,7 +465,8 @@ jobs:
                                       new int[]{0x00000000, 0x55000000, 0xF9000000});
                                   overlay.setBackground(shade);
                                   hero.addView(overlay, new android.widget.FrameLayout.LayoutParams(-1, -1));
-                                  TextView label = tv(article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT) + "  ·  VOETBALHUB ORIGINALS", 12, C.GREEN, true);
+                                  boolean isColumn = "column".equalsIgnoreCase(article.optString("type", "")) || "column".equalsIgnoreCase(article.optString("category", "")) || "de derde helft".equalsIgnoreCase(article.optString("category", ""));
+                                  TextView label = tv(isColumn ? "✍  DE DERDE HELFT  ·  DOOR SANDER BRINK" : article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT) + "  ·  VOETBALHUB ORIGINALS", 12, C.GREEN, true);
                                   label.setPadding(0, 0, 0, dp(8));
                                   overlay.addView(label);
                                   String attribution = (article.optString("imageCredit", "") + " " + article.optString("imageSource", "")).toLowerCase(java.util.Locale.ROOT);
@@ -474,8 +475,9 @@ jobs:
                                       aiTag.setPadding(0, 0, 0, dp(6));
                                       overlay.addView(aiTag);
                                   }
-                                  TextView headline = tv(headlineValue, 20, C.TEXT, true);
+                                  TextView headline = tv(headlineValue, isColumn ? 23 : 20, C.TEXT, true);
                                   overlay.addView(headline);
+                                  if (isColumn) overlay.addView(tv("Geen meeloperij. Geen excuses. Gewoon mijn kijk op voetbal.", 12, C.TEXT, false));
                                   hero.setOnClickListener(v -> showEditorialArticle(article));
                               }
                           });
