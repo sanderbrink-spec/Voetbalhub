@@ -784,9 +784,9 @@ jobs:
           xml = layout.read_text()
           if 'case "Column":' not in source or 'private void showColumn()' not in source:
               raise SystemExit("Permanent column tab missing: refuse to build.")
-          if 'static final int GREEN = 0xFF25F06B;' not in source:
-              raise SystemExit("Unexpected theme source: refuse to silently skip redesign.")
-          source = source.replace('static final int GREEN = 0xFF25F06B;', 'static final int GREEN = 0xFFB6FF32;')
+          if not re.search(r"static final int GREEN = 0xFF[0-9A-Fa-f]{6};", source):
+              raise SystemExit("Cannot find theme color.")
+          source = re.sub(r'static final int GREEN = 0xFF[0-9A-Fa-f]{6};', 'static final int GREEN = 0xFFB6FF32;', source, count=1)
           source = source.replace('static final int CARD = 0xFF0C1210;', 'static final int CARD = 0xFF101813;')
           source = source.replace('static final int BORDER = 0xFF1B2822;', 'static final int BORDER = 0xFF2A392E;')
           source = source.replace('static final int MUTED = 0xFF8E9B95;', 'static final int MUTED = 0xFFA1B1A5;')
