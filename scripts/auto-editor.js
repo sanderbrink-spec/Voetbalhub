@@ -2,12 +2,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const HUB_API_SECRET = process.env.HUB_API_SECRET || "";
 const API_URL = process.env.VOETBALHUB_API_URL || "https://voetbalhub-redactie.onrender.com";
 const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
-const FEEDS = [
-  // Nederlandse voetbalbronnen: geen automatische ingestroom van Engelstalige buitenlandse media.
-  "https://feeds.nos.nl/nosvoetbal",
-  "https://www.vi.nl/feed/news.xml",
-  "https://www.voetbalprimeur.nl/feed/news.xml"
-];
+const FEEDS = []; // Externe RSS-bronnen uitgeschakeld conform redactioneel beleid.
 
 function decode(s = "") {
   return s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
@@ -87,6 +82,10 @@ function extractItems(xml) {
 }
 async function main() {
   if (!GROQ_API_KEY || !HUB_API_SECRET) throw new Error("GROQ_API_KEY en HUB_API_SECRET moeten als GitHub Actions secrets zijn ingesteld.");
+  if (FEEDS.length === 0) {
+    console.log("Externe RSS-ingestie uitgeschakeld; geen concepten gegenereerd.");
+    return;
+  }
   const candidates = [];
   // Alleen toegestane Nederlandstalige redacties.
   const allowedHosts = new Set(["feeds.nos.nl", "nos.nl", "www.nos.nl", "vi.nl", "www.vi.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
@@ -360,7 +359,13 @@ async function main() {
         continue;
       }
     }
-    // Enforce the same quality and language checks on the final version.\n    const finalIssues = qualityIssues(draft);\n    if (draftHasEnglish(draft) || finalIssues.length) {\n      console.log("Eindcontrole afgekeurd; niet opgeslagen:", finalIssues.join("; ") || "Engelstalige tekst");\n      continue;\n    }\n    const save = await fetch(API_URL + "/auto-inbox", {
+    // Enforce the same quality and language checks on the final version.
+    const finalIssues = qualityIssues(draft);
+    if (draftHasEnglish(draft) || finalIssues.length) {
+      console.log("Eindcontrole afgekeurd; niet opgeslagen:", finalIssues.join("; ") || "Engelstalige tekst");
+      continue;
+    }
+    const save = await fetch(API_URL + "/auto-inbox", {
       method: "POST",
       headers: { "Authorization": "Bearer " + HUB_API_SECRET, "Content-Type": "application/json" },
       body: JSON.stringify({ item: {
