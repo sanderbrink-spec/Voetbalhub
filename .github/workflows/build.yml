@@ -468,12 +468,17 @@ jobs:
                               if (article == null || !"published".equals(article.optString("status"))) continue;
                               String normalizedHeadline = java.text.Normalizer.normalize(article.optString("headline", "").trim().toLowerCase(java.util.Locale.ROOT), java.text.Normalizer.Form.NFKC).replace("  ", " ");
                               if (normalizedHeadline.isEmpty() || !seenHeadlines.add(normalizedHeadline)) continue;
+                              boolean columnOnly = "Column".equals(currentBottomTab);
+                              String itemType = article.optString("type", "");
+                              String itemCategory = article.optString("category", "");
+                              boolean columnArticle = "column".equalsIgnoreCase(itemType) || "column".equalsIgnoreCase(itemCategory) || "de derde helft".equalsIgnoreCase(itemCategory);
+                              if (columnOnly && !columnArticle) continue;
                               rows.add(article);
                           }
                           runOnUiThread(() -> {
                               section.removeView(status);
                               if (rows.isEmpty()) {
-                                  section.addView(tv("Er zijn nog geen door de redactie goedgekeurde VoetbalHub-artikelen. Externe nieuwsfeeds zijn uitgeschakeld zolang hergebruikrechten niet zijn bevestigd. Open hieronder een nieuwsbron of laad opnieuw zodra een artikel is goedgekeurd.", 13, C.MUTED, false));
+                                  section.addView(tv("Column".equals(currentBottomTab) ? "De eerste column van Sander Brink verschijnt hier na zijn persoonlijke goedkeuring." : "Er zijn nog geen door de redactie goedgekeurde VoetbalHub-artikelen. Externe nieuwsfeeds zijn uitgeschakeld zolang hergebruikrechten niet zijn bevestigd.", 13, C.MUTED, false));
                                   return;
                               }
                               org.json.JSONObject latestColumn = null;
