@@ -771,6 +771,57 @@ jobs:
           print("VoetbalHub 2.0 design applied to real Android source.")
           PY
 
+      - name: Apply VoetbalHub 2.0 visual identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          activity = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
+          layout = Path("app/src/main/res/layout/activity_main.xml")
+          source = activity.read_text()
+          xml = layout.read_text()
+          if 'case "Column":' not in source or 'private void showColumn()' not in source:
+              raise SystemExit("Permanent column tab missing: refuse to build.")
+          if 'static final int GREEN = 0xFF25F06B;' not in source:
+              raise SystemExit("Unexpected theme source: refuse to silently skip redesign.")
+          source = source.replace('static final int GREEN = 0xFF25F06B;', 'static final int GREEN = 0xFFB6FF32;')
+          source = source.replace('static final int CARD = 0xFF0C1210;', 'static final int CARD = 0xFF101813;')
+          source = source.replace('static final int BORDER = 0xFF1B2822;', 'static final int BORDER = 0xFF2A392E;')
+          source = source.replace('static final int MUTED = 0xFF8E9B95;', 'static final int MUTED = 0xFFA1B1A5;')
+          source = source.replace('String[] labels = {"Voor jou", "Laatste nieuws", "Transfers", "Eredivisie", "Buitenland", "Video"};', 'String[] labels = {"Voor jou", "Laatste nieuws", "Transfers", "Eredivisie", "Buitenland", "Video"};')
+          # Make navigation selection visible after every page change.
+          if 'private String currentBottomTab = "Nieuws";' not in source:
+              raise SystemExit("Missing navigation state from previous patch.")
+          source = source.replace('index == 0 ? C.GREEN : C.MUTED', 'page.equals(currentBottomTab) ? C.GREEN : C.MUTED')
+          source = source.replace('index == 0)', 'page.equals(currentBottomTab))')
+          # Give the column its own unmistakable icon and remove the disabled scores tab.
+          source = source.replace('{"▣", "Column"}', '{"✎", "Column"}')
+          # Keep the tab highlight in sync with the rendered page.
+          for label, method in [("Nieuws", "showNews"), ("Column", "showColumn"), ("Competities", "showCompetitions"), ("Favorieten", "showFavorites"), ("Meer", "showMore")]:
+              signature = "private void " + method + "() {"
+              if signature not in source:
+                  raise SystemExit("Missing page method: " + method)
+              source = source.replace(signature, signature + '\\n        currentBottomTab = "' + label + '";\\n        buildNav();', 1)
+          # Update branding and use the screen width without overlapping system bars.
+          xml = xml.replace('Alles wat voetbal beweegt', 'Alles voetbal. Eén hub.')
+          xml = xml.replace('android:textSize="20sp"', 'android:textSize="23sp"')
+          xml = xml.replace('android:layout_height="64dp"', 'android:layout_height="72dp"')
+          xml = xml.replace('android:layout_height="76dp"', 'android:layout_height="70dp"')
+          xml = xml.replace('android:layout_height="50dp" android:minHeight="50dp"', 'android:layout_height="0dp" android:minHeight="0dp"')
+          xml = xml.replace('#090D0B', '#0B130E')
+          for f in Path("app/src/main/res/drawable").glob("rounded_*.xml"):
+              data = f.read_text()
+              if "#25F06B" in data:
+                  f.write_text(data.replace("#25F06B", "#B6FF32"))
+          activity.write_text(source)
+          layout.write_text(xml)
+          assert 'Alles voetbal. Eén hub.' in xml
+          assert 'private void showColumn()' in source
+          print("VoetbalHub 2.0 theme, permanent column tab, nav highlights and branding applied.")
+          PY
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
