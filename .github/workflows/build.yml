@@ -847,8 +847,11 @@ jobs:
           assert old in s, "News heading marker changed"
           s = s.replace(old, 'root.addView(sectionHeader(active.equals("Voor jou") ? "Voor jou" : active, "VERVERS", this::refreshNews));', 1)
           # A recognizable editorial masthead above the homepage feed, but not repeated in other categories.
-          old = 'list.setPadding(dp(4),0,dp(4),dp(24));'
-          assert old in s, "News list padding marker changed"
+          old = 'LinearLayout list = new LinearLayout(this);'
+          news_start = s.find("private void showNews()")
+          assert news_start >= 0, "News page missing"
+          list_pos = s.find(old, news_start)
+          assert list_pos >= 0, "News list missing"
           new = """if (active.equals("Voor jou")) {
               LinearLayout masthead = new LinearLayout(this);
               masthead.setOrientation(LinearLayout.VERTICAL);
@@ -868,7 +871,7 @@ jobs:
               masthead.addView(headline);
               masthead.addView(tv("Eigen verhalen, scherpe analyses en de Eredivisie op één plek.", 15, C.MUTED, false));
           }"""
-          s = s.replace(old, old + "\n        " + new, 1)
+          s = s[:list_pos + len(old)] + "\n        " + new + s[list_pos + len(old):]
           p.write_text(s)
           print("3.0 homepage masthead, unclipped headings and category-specific titles installed.")
           PY
