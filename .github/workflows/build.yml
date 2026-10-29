@@ -744,7 +744,7 @@ jobs:
               "static final int CARD = 0xFF0C1210;": "static final int CARD = 0xFF101915;",
               "static final int BORDER = 0xFF1B2822;": "static final int BORDER = 0xFF2A3B30;",
               "static final int MUTED = 0xFF8E9B95;": "static final int MUTED = 0xFFA3B4A8;",
-              'sectionHeader("Laatste voetbalnieuws", "VERVERS", this::refreshNews)': 'sectionHeader("Het laatste voetbalnieuws", "VERVERS", this::refreshNews)',
+              'sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews)': 'sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews)',
               'String[][] items = {{"⌂", "Nieuws"}, {"▣", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};': 'String[][] items = {{"⌂", "Nieuws"}, {"✎", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};',
               'page.setPadding(dp(14), dp(16), dp(14), dp(28));': 'page.setPadding(dp(20), dp(24), dp(20), dp(32));',
               'tv("DE DERDE HELFT", 18, C.GREEN, true)': 'tv("DE DERDE HELFT  /  DE COLUMN", 16, C.GREEN, true)',
