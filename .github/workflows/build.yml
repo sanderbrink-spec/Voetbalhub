@@ -246,10 +246,10 @@ jobs:
               intro.setPadding(0, dp(12), 0, dp(6));
               page.addView(intro);
               TextView columnPromise = tv("Iedere week een scherpe, volledig zelfgeschreven column over de Eredivisie. Geen automatische AI-columns en geen publicatie zonder mijn akkoord.", 14, C.MUTED, false);
-              columnPromise.setPadding(0, dp(12), 0, dp(8));
+              columnPromise.setPadding(0, dp(12), 0, dp(18));
               page.addView(columnPromise);
               TextView archive = tv("COLUMN & ARTIKELEN", 13, C.GREEN, true);
-              archive.setPadding(0, dp(22), 0, dp(10));
+              archive.setPadding(0, dp(12), 0, dp(14));
               page.addView(archive);
               addEditorialNewsSection(page, true);
               scroll.addView(page);
