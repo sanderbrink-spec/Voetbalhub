@@ -468,15 +468,20 @@ jobs:
                           org.json.JSONArray articles = data.optJSONArray("articles");
                           final java.util.ArrayList<org.json.JSONObject> rows = new java.util.ArrayList<>();
                           final java.util.HashSet<String> seenHeadlines = new java.util.HashSet<>();
-                          if (articles != null) for (int i = 0; i < articles.length() && rows.size() < 8; i++) {
+                          final java.util.HashSet<String> seenIds = new java.util.HashSet<>();
+                          if (articles != null) for (int i = 0; i < articles.length() && rows.size() < 12; i++) {
                               org.json.JSONObject article = articles.optJSONObject(i);
                               if (article == null || !"published".equals(article.optString("status"))) continue;
                               String normalizedHeadline = java.text.Normalizer.normalize(article.optString("headline", "").trim().toLowerCase(java.util.Locale.ROOT), java.text.Normalizer.Form.NFKC).replace("  ", " ");
-                              if (normalizedHeadline.isEmpty() || !seenHeadlines.add(normalizedHeadline)) continue;
+                              if (normalizedHeadline.isEmpty()) continue;
+                              String uniqueId = article.optString("id", "").trim();
+                              if (!uniqueId.isEmpty() && !seenIds.add(uniqueId)) continue;
+                              if (!seenHeadlines.add(normalizedHeadline)) continue;
                               String itemType = article.optString("type", "");
                               String itemCategory = article.optString("category", "");
                               boolean columnArticle = "column".equalsIgnoreCase(itemType) || "column".equalsIgnoreCase(itemCategory) || "de derde helft".equalsIgnoreCase(itemCategory);
                               if (columnOnly && !columnArticle) continue;
+                              if (!columnOnly && columnArticle) continue;
                               rows.add(article);
                           }
                           runOnUiThread(() -> {
