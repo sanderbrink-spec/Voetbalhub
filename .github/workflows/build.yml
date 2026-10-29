@@ -393,6 +393,13 @@ jobs:
                   TextView columnTag = tv("✍  DE DERDE HELFT", 15, C.GREEN, true);
                   columnTag.setPadding(0, 0, 0, dp(12));
                   columnHero.addView(columnTag);
+                  android.widget.ImageView homeColumnPortrait = new android.widget.ImageView(this);
+                  homeColumnPortrait.setImageResource(nl.voetbalhub.app.R.drawable.column_sander_brink);
+                  homeColumnPortrait.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+                  homeColumnPortrait.setAdjustViewBounds(true);
+                  LinearLayout.LayoutParams homePortraitParams = new LinearLayout.LayoutParams(-1, dp(200));
+                  homePortraitParams.setMargins(0, dp(4), 0, dp(14));
+                  columnHero.addView(homeColumnPortrait, homePortraitParams);
                   TextView columnTitle = tv("Negen wedstrijden. Eén uitgesproken mening.", 26, C.TEXT, true);
                   columnHero.addView(columnTitle);
                   TextView columnSub = tv("Scherpe analyses, eerlijke kritiek en geen meeloperij. Iedere week de Eredivisie door de ogen van Sander Brink.", 15, C.TEXT, false);
