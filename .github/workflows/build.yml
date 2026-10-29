@@ -868,7 +868,7 @@ jobs:
               masthead.addView(headline);
               masthead.addView(tv("Eigen verhalen, scherpe analyses en de Eredivisie op één plek.", 15, C.MUTED, false));
           }"""
-          s = s.replace(old, old + "\\n        " + new, 1)
+          s = s.replace(old, old + "\n        " + new, 1)
           p.write_text(s)
           print("3.0 homepage masthead, unclipped headings and category-specific titles installed.")
           PY
