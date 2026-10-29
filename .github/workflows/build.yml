@@ -846,10 +846,11 @@ jobs:
           old = 'root.addView(sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews));'
           assert old in s, "News heading marker changed"
           s = s.replace(old, 'root.addView(sectionHeader(active.equals("Voor jou") ? "Voor jou" : active, "VERVERS", this::refreshNews));', 1)
-          # A recognizable editorial masthead above the homepage feed, but not repeated in other categories.
-          old = 'LinearLayout list = new LinearLayout(this);'
+          # Replace the generic intro with a dedicated, clickable column cover,
+          # matching the approved six-screen reference rather than stacking banners.
           news_start = s.find("private void showNews()")
           assert news_start >= 0, "News page missing"
+          old = 'LinearLayout list = new LinearLayout(this);'
           list_pos = s.find(old, news_start)
           assert list_pos >= 0, "News list missing"
           new = """if (active.equals("Voor jou")) {
@@ -858,20 +859,42 @@ jobs:
               masthead.setPadding(dp(20), dp(20), dp(20), dp(20));
               android.graphics.drawable.GradientDrawable mastheadBg = new android.graphics.drawable.GradientDrawable(
                   android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
-                  new int[]{0xFF193E26, 0xFF0B1711, 0xFF070B09});
-              mastheadBg.setCornerRadius(dp(18));
-              mastheadBg.setStroke(dp(1), 0xFF7ACA28);
+                  new int[]{0xFF16442C, 0xFF0A1711, 0xFF060B09});
+              mastheadBg.setCornerRadius(dp(16));
+              mastheadBg.setStroke(dp(1), 0xFF377B4B);
               masthead.setBackground(mastheadBg);
               LinearLayout.LayoutParams mastheadLp = new LinearLayout.LayoutParams(-1, -2);
-              mastheadLp.setMargins(dp(10), dp(6), dp(10), dp(16));
+              mastheadLp.setMargins(dp(10), dp(12), dp(10), dp(16));
               list.addView(masthead, mastheadLp);
-              masthead.addView(tv("VOETBALHUB  /  UITGELICHT", 12, C.GREEN, true));
-              TextView headline = tv("Alles voetbal.\\nEén hub.", 32, C.TEXT, true);
-              headline.setPadding(0, dp(8), 0, dp(10));
-              masthead.addView(headline);
-              masthead.addView(tv("Eigen verhalen, scherpe analyses en de Eredivisie op één plek.", 15, C.MUTED, false));
+              TextView kicker = tv("DE DERDE", 31, C.TEXT, true);
+              masthead.addView(kicker);
+              TextView secondLine = tv("HELFT", 39, C.GREEN, true);
+              masthead.addView(secondLine);
+              TextView author = tv("Door Sander Brink", 15, C.GREEN, true);
+              author.setPadding(0, dp(5), 0, dp(6));
+              masthead.addView(author);
+              masthead.addView(tv("Geen meeloperij. Geen excuses. Gewoon mijn kijk op voetbal.", 14, C.TEXT, false));
+              TextView action = tv("Lees de nieuwste column  →", 15, 0xFF061006, true);
+              action.setGravity(android.view.Gravity.CENTER);
+              action.setPadding(dp(14), dp(12), dp(14), dp(12));
+              android.graphics.drawable.GradientDrawable buttonBg = new android.graphics.drawable.GradientDrawable();
+              buttonBg.setColor(C.GREEN);
+              buttonBg.setCornerRadius(dp(22));
+              action.setBackground(buttonBg);
+              LinearLayout.LayoutParams actionLp = new LinearLayout.LayoutParams(-1, -2);
+              actionLp.setMargins(0, dp(15), 0, 0);
+              masthead.addView(action, actionLp);
+              masthead.setOnClickListener(v -> showColumn());
           }"""
           s = s[:list_pos + len(old)] + "\n        " + new + s[list_pos + len(old):]
+          # Give the column tab the approved editorial masthead and hierarchy.
+          column_start = s.find("private void showColumn()")
+          assert column_start >= 0, "Column page missing"
+          old = 'page.addView(tv("DE DERDE HELFT  /  DE COLUMN", 16, C.GREEN, true));'
+          pos = s.find(old, column_start)
+          assert pos >= 0, "Column heading missing"
+          s = s[:pos] + s[pos:].replace(old, 'page.addView(tv("DE DERDE", 33, C.TEXT, true));\\n              page.addView(tv("HELFT", 42, C.GREEN, true));', 1)
+          s = s.replace('tv("De Derde Helft\\nDoor Sander Brink", 30, C.TEXT, true)', 'tv("Door Sander Brink", 19, C.GREEN, true)', 1)
           p.write_text(s)
           print("3.0 homepage masthead, unclipped headings and category-specific titles installed.")
           PY
