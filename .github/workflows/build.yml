@@ -417,11 +417,8 @@ jobs:
                   LinearLayout.LayoutParams actionLp = new LinearLayout.LayoutParams(-1, -2);
                   actionLp.setMargins(0, dp(18), 0, 0);
                   columnHero.addView(columnAction, actionLp);
-                  columnHero.setOnClickListener(v -> new android.app.AlertDialog.Builder(this)
-                      .setTitle("De Derde Helft")
-                      .setMessage("Binnenkort: de wekelijkse Eredivisie-column van Sander Brink. De eerste editie verschijnt pas na persoonlijke goedkeuring.")
-                      .setPositiveButton("Sluiten", (dialog, which) -> dialog.dismiss())
-                      .show());
+                  columnHero.setOnClickListener(v -> showColumn());
+                  columnAction.setOnClickListener(v -> showColumn());
                   // The image cards already carry the Originals label; avoid duplicate headings.
                   TextView status = tv("Eigen voetbalartikelen laden…", 13, C.MUTED, false);
                   status.setPadding(0, dp(5), 0, 0);
