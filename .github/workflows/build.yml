@@ -380,7 +380,7 @@ jobs:
                   // Prominent editorial column feature: visible even before the first column is published.
                   LinearLayout columnHero = new LinearLayout(this);
                   columnHero.setOrientation(LinearLayout.VERTICAL);
-                  columnHero.setPadding(dp(18), dp(18), dp(18), dp(18));
+                  columnHero.setPadding(dp(10), dp(12), dp(10), dp(14));
                   android.graphics.drawable.GradientDrawable columnBg = new android.graphics.drawable.GradientDrawable(
                       android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
                       new int[]{0xFF143A26, 0xFF091511, 0xFF080C0B});
@@ -398,9 +398,9 @@ jobs:
                   homeColumnPortrait.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
                   homeColumnPortrait.setAdjustViewBounds(true);
                   LinearLayout.LayoutParams homePortraitParams = new LinearLayout.LayoutParams(-1, -2);
-                  homePortraitParams.setMargins(0, dp(4), 0, dp(14));
+                  homePortraitParams.setMargins(0, 0, 0, dp(9));
                   columnHero.addView(homeColumnPortrait, homePortraitParams);
-                  TextView columnTitle = tv("Negen wedstrijden. Eén uitgesproken mening.", 26, C.TEXT, true);
+                  TextView columnTitle = tv("Negen wedstrijden. Eén uitgesproken mening.", 23, C.TEXT, true);
                   columnHero.addView(columnTitle);
                   TextView columnSub = tv("Scherpe analyses, eerlijke kritiek en geen meeloperij. Iedere week de Eredivisie door de ogen van Sander Brink.", 15, C.TEXT, false);
                   columnSub.setPadding(0, dp(10), 0, dp(13));
