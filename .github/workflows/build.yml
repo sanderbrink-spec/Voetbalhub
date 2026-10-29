@@ -830,6 +830,50 @@ jobs:
           print("VoetbalHub 2.0 theme, permanent column tab, nav highlights and branding applied.")
           PY
 
+      - name: VoetbalHub 3.0 homepage hierarchy and category layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("app/src/main/java/nl/voetbalhub/app/MainActivity.java")
+          s = p.read_text()
+          # Fix clipped two-line titles on smaller phones.
+          old = 'row.addView(tv(title, 22, C.TEXT, true), new LinearLayout.LayoutParams(0, dp(40), 1));'
+          assert old in s, "Section heading marker changed"
+          s = s.replace(old, 'row.addView(tv(title, 22, C.TEXT, true), new LinearLayout.LayoutParams(0, -2, 1));', 1)
+          # Give each category its own clear heading rather than reusing one title.
+          old = 'root.addView(sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews));'
+          assert old in s, "News heading marker changed"
+          s = s.replace(old, 'root.addView(sectionHeader(active.equals("Voor jou") ? "Voor jou" : active, "VERVERS", this::refreshNews));', 1)
+          # A recognizable editorial masthead above the homepage feed, but not repeated in other categories.
+          old = 'if (active.equals("Voor jou")) addColumnSpotlight(list);'
+          assert old in s, "Home feature marker changed"
+          new = """if (active.equals("Voor jou")) {
+              LinearLayout masthead = new LinearLayout(this);
+              masthead.setOrientation(LinearLayout.VERTICAL);
+              masthead.setPadding(dp(20), dp(20), dp(20), dp(20));
+              android.graphics.drawable.GradientDrawable mastheadBg = new android.graphics.drawable.GradientDrawable(
+                  android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
+                  new int[]{0xFF193E26, 0xFF0B1711, 0xFF070B09});
+              mastheadBg.setCornerRadius(dp(18));
+              mastheadBg.setStroke(dp(1), 0xFF7ACA28);
+              masthead.setBackground(mastheadBg);
+              LinearLayout.LayoutParams mastheadLp = new LinearLayout.LayoutParams(-1, -2);
+              mastheadLp.setMargins(dp(10), dp(6), dp(10), dp(16));
+              list.addView(masthead, mastheadLp);
+              masthead.addView(tv("VOETBALHUB  /  UITGELICHT", 12, C.GREEN, true));
+              TextView headline = tv("Alles voetbal.\\nEén hub.", 32, C.TEXT, true);
+              headline.setPadding(0, dp(8), 0, dp(10));
+              masthead.addView(headline);
+              masthead.addView(tv("Eigen verhalen, scherpe analyses en de Eredivisie op één plek.", 15, C.MUTED, false));
+              addColumnSpotlight(list);
+          }"""
+          s = s.replace(old, new, 1)
+          p.write_text(s)
+          print("3.0 homepage masthead, unclipped headings and category-specific titles installed.")
+          PY
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
