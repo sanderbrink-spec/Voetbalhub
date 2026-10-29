@@ -893,7 +893,7 @@ jobs:
           old = 'page.addView(tv("DE DERDE HELFT  /  DE COLUMN", 16, C.GREEN, true));'
           pos = s.find(old, column_start)
           assert pos >= 0, "Column heading missing"
-          s = s[:pos] + s[pos:].replace(old, 'page.addView(tv("DE DERDE", 33, C.TEXT, true));\\n              page.addView(tv("HELFT", 42, C.GREEN, true));', 1)
+          s = s[:pos] + s[pos:].replace(old, 'page.addView(tv("DE DERDE", 33, C.TEXT, true));\n              page.addView(tv("HELFT", 42, C.GREEN, true));', 1)
           s = s.replace('tv("De Derde Helft\\nDoor Sander Brink", 30, C.TEXT, true)', 'tv("Door Sander Brink", 19, C.GREEN, true)', 1)
           p.write_text(s)
           print("3.0 homepage masthead, unclipped headings and category-specific titles installed.")
