@@ -395,10 +395,10 @@ jobs:
                   columnHero.addView(columnTag);
                   android.widget.ImageView homeColumnPortrait = new android.widget.ImageView(this);
                   homeColumnPortrait.setImageResource(nl.voetbalhub.app.R.drawable.column_sander_brink);
-                  homeColumnPortrait.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+                  homeColumnPortrait.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
                   homeColumnPortrait.setAdjustViewBounds(true);
                   LinearLayout.LayoutParams homePortraitParams = new LinearLayout.LayoutParams(-1, -2);
-                  homePortraitParams.setMargins(0, 0, 0, dp(9));
+                  homePortraitParams.setMargins(-dp(10), 0, -dp(10), dp(12));
                   columnHero.addView(homeColumnPortrait, homePortraitParams);
                   TextView columnTitle = tv("Negen wedstrijden. Eén uitgesproken mening.", 23, C.TEXT, true);
                   columnHero.addView(columnTitle);
