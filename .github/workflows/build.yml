@@ -248,8 +248,13 @@ jobs:
               TextView columnPromise = tv("Iedere week een scherpe, volledig zelfgeschreven column over de Eredivisie. Geen automatische AI-columns en geen publicatie zonder mijn akkoord.", 14, C.MUTED, false);
               columnPromise.setPadding(0, dp(12), 0, dp(18));
               page.addView(columnPromise);
-              TextView archive = tv("COLUMN & ARTIKELEN", 13, C.GREEN, true);
-              archive.setPadding(0, dp(12), 0, dp(14));
+              android.view.View archiveDivider = new android.view.View(this);
+              archiveDivider.setBackgroundColor(0xFF294333);
+              LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(-1, dp(1));
+              dividerParams.setMargins(0, dp(6), 0, dp(18));
+              page.addView(archiveDivider, dividerParams);
+              TextView archive = tv("COLUMN & ARTIKELEN", 15, C.GREEN, true);
+              archive.setPadding(0, dp(4), 0, dp(16));
               page.addView(archive);
               addEditorialNewsSection(page, true);
               scroll.addView(page);
