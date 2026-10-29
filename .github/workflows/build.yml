@@ -940,6 +940,27 @@ jobs:
           s = s.replace(old, new, 1)
           # Column cover is an entry point, not a second generic marketing banner.
           assert 'masthead.setOnClickListener(v -> showColumn());' in s
+          # Make column detail visually distinct from ordinary news articles.
+          old = 'root.addView(sectionHeader("VoetbalHub Originals", "TERUG", this::closeEditorialArticle));'
+          assert old in s, "Article toolbar missing"
+          s = s.replace(old, 'root.addView(sectionHeader(("column".equalsIgnoreCase(article.optString("type", "")) || "de derde helft".equalsIgnoreCase(article.optString("category", ""))) ? "De Derde Helft" : "VoetbalHub Originals", "TERUG", this::closeEditorialArticle));', 1)
+          old = 'page.addView(tv(article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT), 12, C.GREEN, true));'
+          assert old in s, "Article category marker missing"
+          s = s.replace(old, """boolean isColumnReader = "column".equalsIgnoreCase(article.optString("type", "")) ||
+                      "de derde helft".equalsIgnoreCase(article.optString("category", ""));
+                  if (isColumnReader) {
+                      page.addView(tv("DE DERDE", 30, C.TEXT, true));
+                      page.addView(tv("HELFT", 40, C.GREEN, true));
+                      TextView columnByline = tv("Door Sander Brink", 16, C.GREEN, true);
+                      columnByline.setPadding(0, dp(2), 0, dp(18));
+                      page.addView(columnByline);
+                  } else {
+                      page.addView(tv(article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT), 12, C.GREEN, true));
+                  }""", 1)
+          # Make a larger, more readable headline without forcing a fixed line count.
+          old = 'TextView title = tv(article.optString("headline", "Voetbalnieuws"), 25, C.TEXT, true);'
+          assert old in s, "Article headline marker missing"
+          s = s.replace(old, 'TextView title = tv(article.optString("headline", "Voetbalnieuws"), 29, C.TEXT, true);', 1)
           p.write_text(s)
           print("3.0 homepage masthead, unclipped headings and category-specific titles installed.")
           PY
