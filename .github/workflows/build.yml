@@ -229,7 +229,7 @@ jobs:
               ScrollView scroll = new ScrollView(this);
               LinearLayout page = new LinearLayout(this);
               page.setOrientation(LinearLayout.VERTICAL);
-              page.setPadding(dp(14), dp(16), dp(14), dp(28));
+              page.setPadding(dp(8), 0, dp(8), dp(20));
               page.addView(tv("DE DERDE HELFT", 18, C.GREEN, true));
               TextView heading = tv("Door Sander Brink", 27, C.TEXT, true);
               heading.setPadding(0, dp(8), 0, dp(8));
