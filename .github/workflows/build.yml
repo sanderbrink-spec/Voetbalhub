@@ -235,6 +235,7 @@ jobs:
               columnBanner.setImageResource(nl.voetbalhub.app.R.drawable.column_sander_brink);
               columnBanner.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
               columnBanner.setAdjustViewBounds(true);
+              columnBanner.setContentDescription("De Derde Helft, portret bij de column");
               LinearLayout.LayoutParams bannerParams = new LinearLayout.LayoutParams(-1, -2);
               bannerParams.setMargins(0, dp(12), 0, dp(14));
               page.addView(columnBanner, bannerParams);
@@ -412,6 +413,7 @@ jobs:
                   homeColumnPortrait.setImageResource(nl.voetbalhub.app.R.drawable.column_sander_brink);
                   homeColumnPortrait.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
                   homeColumnPortrait.setAdjustViewBounds(true);
+                  homeColumnPortrait.setContentDescription("De Derde Helft, column van Sander Brink");
                   LinearLayout.LayoutParams homePortraitParams = new LinearLayout.LayoutParams(-1, -2);
                   homePortraitParams.setMargins(-dp(10), 0, -dp(10), dp(12));
                   columnHero.addView(homeColumnPortrait, homePortraitParams);
@@ -432,7 +434,10 @@ jobs:
                   LinearLayout.LayoutParams actionLp = new LinearLayout.LayoutParams(-1, -2);
                   actionLp.setMargins(0, dp(18), 0, 0);
                   columnHero.addView(columnAction, actionLp);
+                  columnHero.setContentDescription("Open de columnrubriek De Derde Helft");
+                  columnHero.setFocusable(true);
                   columnHero.setOnClickListener(v -> showColumn());
+                  columnAction.setContentDescription("Bekijk De Derde Helft");
                   columnAction.setOnClickListener(v -> showColumn());
                   // The image cards already carry the Originals label; avoid duplicate headings.
                   TextView status = tv("Eigen voetbalartikelen laden…", 13, C.MUTED, false);
