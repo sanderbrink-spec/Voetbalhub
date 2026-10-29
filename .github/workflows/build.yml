@@ -758,7 +758,7 @@ jobs:
               "static final int MUTED = 0xFF8E9B95;": "static final int MUTED = 0xFFA3B4A8;",
               'sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews)': 'sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews)',
               'String[][] items = {{"⌂", "Nieuws"}, {"▣", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};': 'String[][] items = {{"⌂", "Nieuws"}, {"✎", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};',
-              'page.setPadding(dp(14), dp(16), dp(14), dp(28));': 'page.setPadding(dp(20), dp(24), dp(20), dp(32));',
+              'page.setPadding(dp(8), 0, dp(8), dp(20));': 'page.setPadding(dp(8), 0, dp(8), dp(20));',
               'tv("DE DERDE HELFT", 18, C.GREEN, true)': 'tv("DE DERDE HELFT  /  DE COLUMN", 16, C.GREEN, true)',
               'tv("Door Sander Brink", 27, C.TEXT, true)': 'tv("De Derde Helft\\nDoor Sander Brink", 30, C.TEXT, true)',
           }
