@@ -895,6 +895,51 @@ jobs:
           assert pos >= 0, "Column heading missing"
           s = s[:pos] + s[pos:].replace(old, 'page.addView(tv("DE DERDE", 33, C.TEXT, true));\n              page.addView(tv("HELFT", 42, C.GREEN, true));', 1)
           s = s.replace('tv("De Derde Helft\\nDoor Sander Brink", 30, C.TEXT, true)', 'tv("Door Sander Brink", 19, C.GREEN, true)', 1)
+          # Article reader: display the same rights-cleared cover as its feed card.
+          old = 'page.addView(originalArt, artParams);'
+          assert old in s, "Reader artwork anchor missing"
+          new = """page.addView(originalArt, artParams);
+                  String coverUrl = article.optString("imageUrl", "").trim();
+                  String coverRights = article.optString("imageRights", "").trim().toLowerCase(java.util.Locale.ROOT);
+                  if (coverUrl.startsWith("https://") && ("cleared".equals(coverRights) || "licensed".equals(coverRights))) {
+                      android.widget.ImageView cover = new android.widget.ImageView(this);
+                      cover.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+                      cover.setContentDescription("Afbeelding bij artikel");
+                      LinearLayout.LayoutParams coverLp = new LinearLayout.LayoutParams(-1, dp(210));
+                      coverLp.setMargins(0, dp(8), 0, dp(14));
+                      page.addView(cover, coverLp);
+                      originalArt.setVisibility(android.view.View.GONE);
+                      executor.execute(() -> {
+                          HttpURLConnection imageConn = null;
+                          try {
+                              imageConn = (HttpURLConnection) new URL(coverUrl).openConnection();
+                              imageConn.setConnectTimeout(10000);
+                              imageConn.setReadTimeout(12000);
+                              imageConn.setInstanceFollowRedirects(false);
+                              int length = imageConn.getContentLength();
+                              String type = imageConn.getContentType();
+                              if (imageConn.getResponseCode() != 200 || type == null ||
+                                  !type.toLowerCase(java.util.Locale.ROOT).startsWith("image/") ||
+                                  length > 5000000) throw new java.io.IOException("Invalid image");
+                              android.graphics.Bitmap bitmap;
+                              try (InputStream stream = imageConn.getInputStream()) {
+                                  bitmap = android.graphics.BitmapFactory.decodeStream(stream);
+                              }
+                              if (bitmap == null) throw new java.io.IOException("Invalid bitmap");
+                              runOnUiThread(() -> cover.setImageBitmap(bitmap));
+                          } catch (Exception ignored) {
+                              runOnUiThread(() -> {
+                                  cover.setVisibility(android.view.View.GONE);
+                                  originalArt.setVisibility(android.view.View.VISIBLE);
+                              });
+                          } finally {
+                              if (imageConn != null) imageConn.disconnect();
+                          }
+                      });
+                  }"""
+          s = s.replace(old, new, 1)
+          # Column cover is an entry point, not a second generic marketing banner.
+          assert 'masthead.setOnClickListener(v -> showColumn());' in s
           p.write_text(s)
           print("3.0 homepage masthead, unclipped headings and category-specific titles installed.")
           PY
