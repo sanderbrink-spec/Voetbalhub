@@ -15,3 +15,8 @@ test('a WebP stadium served with a PNG header is normalized and actually visible
  const pixel=await sharp(png).extract({left:10,top:300,width:1,height:1}).removeAlpha().raw().toBuffer();
  assert.ok(pixel[2]>pixel[0]+30,'The verified stadium must remain visible, rather than silently disappearing.');
 });
+test('official short club names resolve to exact provider identities without choosing a similarly named foreign club',async()=>{
+ const {resolveTeam}=require('../scripts/eredivisie-covers');
+ const mock=async()=>({ok:true,json:async()=>({errors:[],response:[{team:{id:10,name:'PSV Eindhoven',country:'Netherlands',logo:'https://media.api-sports.io/logo.png'},venue:{id:20,name:'Philips Stadion'}}]})});
+ assert.equal((await resolveTeam('PSV','key',mock)).venue.name,'Philips Stadion');
+});

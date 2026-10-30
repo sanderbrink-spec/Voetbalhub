@@ -14,11 +14,12 @@ function kickoffFromFacts(p){
 const teamCache=new Map();
 async function resolveTeam(name,key,fetcher){
  if(teamCache.has(name))return teamCache.get(name);
- const query=name==='AZ'?'AZ Alkmaar':name.replace(/^FC |^SC /i,'');
+ const aliases={AZ:'AZ Alkmaar',PSV:'PSV Eindhoven'};
+ const query=aliases[name]||name.replace(/^FC |^SC /i,'');
  const rows=await apiRequest('teams',query.length<3?{name:query}:{search:query},key,fetcher);
  const unique=[...new Map(rows.filter(x=>name==='FC Midtjylland'||x.team?.country==='Netherlands').map(x=>[x.team.id,x])).values()];
  const exact=unique.filter(x=>String(x.team?.name).toLowerCase()===name.toLowerCase());
- const match=exact.length===1?exact:unique.filter(x=>norm(x.team?.name)===norm(name)||(name==='AZ'&&norm(x.team?.name)==='azalkmaar'));
+ const match=exact.length===1?exact:unique.filter(x=>norm(x.team?.name)===norm(name)||(aliases[name]&&norm(x.team?.name)===norm(aliases[name])));
  if(match.length!==1)throw Error('Clublogo en stadion niet eenduidig bevestigd: '+name+' ('+match.map(x=>x.team.name).join(', ')+')');
  const result={id:match[0].team.id,name,logo:match[0].team.logo,venue:{...match[0].venue,provider:'API-SPORTS'}};
  teamCache.set(name,result);return result;
