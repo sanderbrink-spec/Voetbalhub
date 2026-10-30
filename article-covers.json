@@ -1,0 +1,20 @@
+[
+  {
+    "key": "groningen-emmen-beker-2026-10-29",
+    "headline": "Groningen uit de beker na dubbelslag van Cooper-Love",
+    "contentHash": "dafd457c92a778b23fcda16a44f5fb89de1d4a49092d38887f9e0ac1ad713adb",
+    "file": "groningen-emmen-2026-10-29.webp",
+    "assetSha256": "b4a6c946c4e32a56873d55b731d97f3744c375ee13b806a32d444a239167bd7d",
+    "reviewed": true,
+    "reviewNotes": "AI-illustratie visueel gecontroleerd: clubnamen, datum en uitslag of aftraptijd komen overeen met het bijbehorende artikel en de officiële clubbron. Geen spelers, gezichten, tenues of clublogo’s afgebeeld. AI-vermelding zichtbaar in het beeld."
+  },
+  {
+    "key": "emmen-den-bosch-programma-2026-11-01",
+    "headline": "Emmen ontvangt Den Bosch zondagmiddag in plaats van vrijdagavond",
+    "contentHash": "1d1a32b4476b49f4fcefa607d50a029d051fd962277c833031181dd22c5b5fa4",
+    "file": "emmen-den-bosch-2026-11-01.webp",
+    "assetSha256": "10ebc942568cf5b4868f2b6adadfc9d49b83e6a352e4e2a5c5036bf0ecd660f6",
+    "reviewed": true,
+    "reviewNotes": "AI-illustratie visueel gecontroleerd: clubnamen, datum en uitslag of aftraptijd komen overeen met het bijbehorende artikel en de officiële clubbron. Geen spelers, gezichten, tenues of clublogo’s afgebeeld. AI-vermelding zichtbaar in het beeld."
+  }
+]

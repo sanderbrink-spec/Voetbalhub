@@ -2,6 +2,7 @@ const http = require("node:http");
 const { createClient } = require("redis");
 const { auditClaims, editorialQuality, headlineContradictions } = require("./editorial-quality");
 const { normalizeEditorialResponse } = require("./editorial-response");
+const { readCover, withArticleCover } = require("./article-covers");
 
 const PORT = Number(process.env.PORT || 10000);
 let imageGenerationInProgress = false;
@@ -278,13 +279,20 @@ async function getArticles() {
   for (const key of keys.slice(0, 200)) {
     const raw = await client.get(key);
     if (!raw) continue;
-    try { const article = JSON.parse(raw); if (article.status === "published") articles.push(article); } catch {}
+    try { const article = JSON.parse(raw); if (article.status === "published") articles.push(withArticleCover(article)); } catch {}
   }
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return articles;
 }
 async function handle(req, res) {
   const url = new URL(req.url, "http://localhost");
+  if (req.method === "GET" && url.pathname.startsWith("/article-covers/")) {
+    const bytes = readCover(url.pathname.slice("/article-covers/".length));
+    if (!bytes) return send(res, 404, {error:"Afbeelding niet gevonden."});
+    res.writeHead(200, {"Content-Type":"image/webp", "Content-Length":bytes.length,
+      "Cache-Control":"public, max-age=86400", "X-Content-Type-Options":"nosniff"});
+    return res.end(bytes);
+  }
   const deskAssets = {"/desk-facts.js": "editorial-facts.js", "/desk-model.js": "editorial-desk-model.js", "/desk.js": "public/desk.js"};
   if (req.method === "GET" && Object.hasOwn(deskAssets, url.pathname)) {
     res.writeHead(200, {"Content-Type":"text/javascript; charset=utf-8", "Cache-Control":"no-store", "X-Content-Type-Options":"nosniff"});
@@ -304,7 +312,7 @@ async function handle(req, res) {
       Array.isArray(item.body) && item.body.length >= 3 &&
       String(item.headline || "").trim() && String(item.standfirst || "").trim());
     const escNews = v => String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-    const cards = originals.slice(0,30).map(item => '<article><div class="source">VoetbalHub · Eigen redactie</div><h2>'+escNews(item.headline)+'</h2><p>'+escNews(item.standfirst)+'</p><details><summary>Lees het artikel</summary>' + item.body.map(p=>'<p>'+escNews(p)+'</p>').join("") + '</details></article>').join("");
+    const cards = originals.slice(0,30).map(item => '<article>'+(['cleared','licensed'].includes(item.imageRights) && /^https:\/\//i.test(item.imageUrl || '') ? '<img style="width:100%;height:auto;display:block" src="'+escNews(item.imageUrl)+'" alt="'+escNews(item.imageCredit || 'Afbeelding bij artikel')+'">' : '')+'<div class="source">VoetbalHub · Eigen redactie</div><h2>'+escNews(item.headline)+'</h2><p>'+escNews(item.standfirst)+'</p><details><summary>Lees het artikel</summary>' + item.body.map(p=>'<p>'+escNews(p)+'</p>').join("") + '</details></article>').join("");
     res.writeHead(200, {"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"});
     return res.end('<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VoetbalHub · Nieuws</title><style>:root{color-scheme:dark}body{background:#090c0e;color:#f3f6f7;font:16px system-ui;margin:auto;max-width:860px;padding:24px}h1{color:#a6ff00}article{background:#151b1e;border:1px solid #303a3f;border-radius:14px;padding:18px;margin:15px 0}.source,summary{color:#a6ff00;font-size:13px;font-weight:700}h2{font-size:22px}p{color:#c5ced2;line-height:1.6}details{margin-top:12px}</style><h1>VoetbalHub · Nieuws</h1><p>Hier verschijnen uitsluitend eigen, goedgekeurde VoetbalHub-artikelen. Geen gekopieerde uitgeversteksten of automatisch gepubliceerde RSS-berichten.</p>'+(cards||'<p>Er zijn nog geen eigen artikelen goedgekeurd voor publicatie.</p>')+'</html>');
   }
@@ -315,6 +323,7 @@ async function handle(req, res) {
       gitBranch: process.env.RENDER_GIT_BRANCH || null,
       deploymentVerified: Boolean(process.env.RENDER_GIT_COMMIT),
       sourcePolicy: "trusted-three-sources",
+      automaticImagePublication: "reviewed_match_covers",
       autoPublishing: false
     });
   }
@@ -745,6 +754,8 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept niet beschikbaar."}); }
     }
     if(reviewedDraft)body={...reviewedDraft.payload,approved:body.approved};
+    // Reviewed match artwork travels with automatic and manual publication alike.
+    body=withArticleCover(body);
     const d = body.draft || {};
     const facts = Array.isArray(body.verifiedFacts) ? body.verifiedFacts.filter(x => typeof x === "string" && x.trim()) : [];
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => s && typeof s.url === "string" && s.url.startsWith("https://")) : [];
@@ -789,7 +800,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       }
     }
     const now = new Date().toISOString();
-    const article = { id: reviewedDraft ? reviewedDraft.id.slice(14) : crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights} : {imageRights}), autoPublish: false };
+    const article = { id: reviewedDraft ? reviewedDraft.id.slice(14) : crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
     const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
     if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
     if(reviewedDraft) { try {await require("./editorial-drafts").markPublished(client,reviewedDraft,article.id);} catch {console.warn("Published article retained; draft status update deferred.");} }
@@ -809,3 +820,4 @@ async function start() {
   server.listen(PORT, "0.0.0.0", () => console.log("VoetbalHub API listening on", PORT));
 }
 start();
+

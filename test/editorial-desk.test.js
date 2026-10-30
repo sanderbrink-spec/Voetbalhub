@@ -179,3 +179,33 @@ test('unsupported match narrative cannot be approved just by ticking all control
  const p=valid();p.draft.body[0]+=' Ajax domineerde het duel maar Groningen maakte een comeback.';
  const r=await saveOwn({payload:p,approve:true});assert.equal(r.status,400);assert.match((await r.json()).error,/Niet aangeleverd wedstrijdverloop/);
 });
+
+test('existing published articles gain reviewed covers in the public feed without duplicate writes',async()=>{
+ const packet=require('../redactie/curated/articles.json')[0];
+ const article={...packet.payload.draft,id:'cover-feed-test',status:'published',publishedAt:new Date().toISOString()};
+ store.set('article:'+article.id,JSON.stringify(article));
+ const before=store.size;
+ const feed=await (await fetch(base+'/articles')).json();
+ const linked=feed.articles.find(a=>a.id===article.id);
+ assert.match(linked.imageUrl,/groningen-emmen-2026-10-29\.webp$/);
+ assert.equal(linked.imageRights,'cleared');
+ assert.equal(store.size,before);
+ assert.equal(JSON.parse(store.get('article:'+article.id)).imageUrl,undefined);
+ store.delete('article:'+article.id);
+});
+test('approved publication carries the reviewed image and public image URL responds without a redirect',async()=>{
+ const p=structuredClone(require('../redactie/trial/article.json').payload);
+ p.editorialChecks=Object.fromEntries(M.checks.map(k=>[k,true]));
+ const saved=await saveOwn({payload:p,approve:true});assert.equal(saved.status,200);
+ const record=(await saved.json()).record;
+ const result=await publish({...p,approved:true,editorialDraftId:record.id,expectedRevision:record.revision});
+ assert.equal(result.status,200,await result.clone().text());
+ const article=(await result.json()).article;
+ assert.match(article.imageUrl,/emmen-den-bosch-2026-11-01\.webp$/);
+ assert.equal(JSON.parse(store.get('article:'+article.id)).imageUrl,article.imageUrl);
+ const image=await fetch(base+new URL(article.imageUrl).pathname,{redirect:'manual'});
+ assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/webp');
+ assert.equal((await image.arrayBuffer()).byteLength,Number(image.headers.get('content-length')));
+ assert.equal((await fetch(base+'/article-covers/not-approved.webp')).status,404);
+});
+
