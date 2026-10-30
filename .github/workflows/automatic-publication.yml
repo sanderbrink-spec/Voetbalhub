@@ -15,7 +15,7 @@ permissions:
   contents: write
 concurrency:
   group: automatic-verified-editorial-publication
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   publish:
     runs-on: ubuntu-24.04
