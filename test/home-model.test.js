@@ -10,3 +10,11 @@ test('Finished and stale weekly matches are never offered as an upcoming preview
 test('Cached videos expire on the device even if the refresh service fails',()=>{const now=Date.parse('2026-10-30T20:00Z');assert.equal(model.videos({videos:[{id:'AAAAAAAAAAA',title:'Ajax',publishedAt:'2026-10-20'}]},now).length,0);});
 
 test('A stadium backdrop must match the verified venue, never use a cover with baked-in text',()=>{const m={fixture:{venue:{name:'Philips Stadion'}},imageReview:{method:'fixture-specific-stadium-and-logos-v4',stadiumVenueName:'Johan Cruijff Arena',stadiumImageUrl:'https://example.org/arena.png'}};assert.equal(model.stadiumImage(m),'');m.imageReview.stadiumVenueName='Philips Stadion';assert.equal(model.stadiumImage(m),'https://example.org/arena.png');});
+
+test('Inline playback covers only the paired cards and video rail, at their measured height',()=>{
+ const now=Date.parse('2026-10-30T20:00Z'),data={videos:[{id:'AAAAAAAAAAA',title:'Actuele Eredivisie',publishedAt:'2026-10-30T19:00Z'}]};
+ assert.deepEqual(model.playbackRequest(data,'AAAAAAAAAAA',245,619.4,now),{id:'AAAAAAAAAAA',top:245,height:375});
+ for(const id of ['BBBBBBBBBBB','bad'])assert.equal(model.playbackRequest(data,id,245,619.4,now),null);
+ assert.equal(model.playbackRequest(data,'AAAAAAAAAAA',245,619.4,now+8*86400000),null);
+ for(const bounds of [[-1,620],[245,400],[NaN,620],[245,Infinity]])assert.equal(model.playbackRequest(data,'AAAAAAAAAAA',...bounds,now),null);
+});
