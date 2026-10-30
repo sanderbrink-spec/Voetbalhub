@@ -46,7 +46,13 @@ test('queue preserves undated/news leads and distinguishes draft body shapes',()
 });
 let server,base,store,redisOptions;
 test.before(async()=>{
-  store=new Map();const redis={isReady:true,on(){},get:async key=>store.get(key)||null,set:async(key,value)=>store.set(key,value),keys:async pattern=>[...store.keys()].filter(k=>k.startsWith(pattern.slice(0,-1)))};
+  store=new Map();const redis={isReady:true,on(){},get:async key=>store.get(key)||null,set:async(key,value,options)=>{if(options?.NX&&store.has(key))return null;store.set(key,value);return 'OK';},
+  eval:async(script,options)=>{
+    assert.match(script,/record.revision/);
+    const key=options.keys[0],current=store.get(key),expected=Number(options.arguments[0]);
+    if(current?JSON.parse(current).revision!==expected:expected!==0)return 0;
+    store.set(key,options.arguments[1]);return 1;
+  },keys:async pattern=>[...store.keys()].filter(k=>k.startsWith(pattern.slice(0,-1)))};
   const serverPath=path.join(__dirname,'../server.js'),realRequire=createRequire(serverPath);
   const context={require:id=>id==='redis'?{createClient:options=>{redisOptions=options;return redis;}}:realRequire(id),process:{env:{HUB_API_SECRET:'test-only',REDIS_URL:'test://mock'}},console,URL,Buffer,crypto:require('node:crypto'),__dirname:path.dirname(serverPath),module:{exports:{}},fetch};
   const source=fs.readFileSync(serverPath,'utf8').replace(/start\(\);\s*$/,'module.exports={handle};');
@@ -115,4 +121,49 @@ test('the browser preflight and publication server both reject repeated paragrap
  const p=valid();p.draft.body=[p.draft.body[0],p.draft.body[0],p.draft.body[2]];
  assert.ok(M.publicationIssues(p).some(x=>x.includes('herhalen')));
  const before=store.size,r=await publish(p);assert.equal(r.status,400);assert.match((await r.json()).error,/herhalen/);assert.equal(store.size,before);
+});
+
+function ownPayload(){
+ const p=valid();p.draft={headline:'Club bespreekt nieuwe plannen voor supporters rond het stadion',standfirst:'Vertegenwoordigers van de club overleggen met supporters over de bereikbaarheid van het stadion en de ontvangst tijdens toekomstige evenementen.',body:[
+ 'De directie verzamelde tijdens een bijeenkomst voorstellen van bezoekers over de toegangswegen en besprak welke praktische verbeteringen op korte termijn onderzocht kunnen worden.',
+ 'Medewerkers van verschillende afdelingen spraken vervolgens over afspraken voor de ontvangst van gezinnen waarbij duidelijke informatie op de toegangsbewijzen een belangrijk aandachtspunt vormde.',
+ 'Een werkgroep neemt de verzamelde reacties mee naar een volgend overleg en zal per voorstel bekijken welke betrokken partijen verantwoordelijk zijn voor verdere uitwerking.'
+ ]};return p;
+}
+const saveOwn=p=>fetch(base+'/editorial-drafts',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer test-only'},body:JSON.stringify(p)});
+let ownRecord;
+test('full own drafts stay private and can be reopened with facts and sources',async()=>{
+ assert.equal((await fetch(base+'/editorial-drafts')).status,401);
+ const p=ownPayload();p.editorialChecks={};
+ const before=(await (await fetch(base+'/articles')).json()).count;
+ const r=await saveOwn({payload:{...p,secret:'must-not-persist'},approve:false});assert.equal(r.status,200);
+ ownRecord=(await r.json()).record;assert.equal(ownRecord.status,'draft');assert.equal(ownRecord.revision,1);
+ assert.equal(ownRecord.payload.draft.body.length,3);assert.equal(ownRecord.payload.verifiedFacts.length,2);assert.equal(ownRecord.payload.sources.length,2);
+ assert.ok(!JSON.stringify(ownRecord).includes('must-not-persist'));
+ const records=(await (await fetch(base+'/editorial-drafts',{headers:{Authorization:'Bearer test-only'}})).json()).items;
+ assert.ok(records.some(x=>x.id===ownRecord.id));
+ assert.equal((await (await fetch(base+'/articles')).json()).count,before);
+});
+test('own draft approval requires completed checks and an unchanged revision',async()=>{
+ let r=await saveOwn({id:ownRecord.id,expectedRevision:1,payload:ownRecord.payload,approve:true});assert.equal(r.status,400);
+ r=await publish({...ownPayload(),editorialDraftId:ownRecord.id,expectedRevision:1});assert.equal(r.status,409);
+ r=await saveOwn({id:ownRecord.id,expectedRevision:1,payload:ownPayload(),approve:true});assert.equal(r.status,200);ownRecord=(await r.json()).record;
+ assert.equal(ownRecord.status,'approved');assert.equal(ownRecord.revision,2);
+ r=await saveOwn({id:ownRecord.id,expectedRevision:1,payload:ownPayload()});assert.equal(r.status,409);
+});
+test('only the exact approved draft can be published and retries cannot duplicate it',async()=>{
+ const p=ownPayload();p.draft.headline='Andere kop met voldoende woorden voor een artikel';
+ let r=await publish({...p,editorialDraftId:ownRecord.id,expectedRevision:2});assert.equal(r.status,409);
+ const before=(await (await fetch(base+'/articles')).json()).count;
+ const payload={...ownPayload(),editorialDraftId:ownRecord.id,expectedRevision:2};
+ r=await publish(payload);assert.equal(r.status,200);const published=await r.json();assert.equal(published.article.id,ownRecord.id.slice(14));
+ r=await publish(payload);assert.equal(r.status,200);assert.equal((await r.json()).article.id,published.article.id);
+ assert.equal((await (await fetch(base+'/articles')).json()).count,before+1);
+ const records=(await (await fetch(base+'/editorial-drafts',{headers:{Authorization:'Bearer test-only'}})).json()).items;
+ assert.equal(records.find(x=>x.id===ownRecord.id).status,'published');
+});
+test('concurrent saves of the same revision cannot overwrite each other',async()=>{
+ let r=await saveOwn({payload:ownPayload()});const record=(await r.json()).record;
+ const results=await Promise.all([saveOwn({id:record.id,expectedRevision:1,payload:ownPayload()}),saveOwn({id:record.id,expectedRevision:1,payload:ownPayload()})]);
+ assert.deepEqual(results.map(x=>x.status).sort(),[200,409]);
 });

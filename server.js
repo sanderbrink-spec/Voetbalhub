@@ -358,6 +358,12 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     try { const articles = await getArticles(); return send(res, 200, { count: articles.length, articles }); }
     catch { return send(res, 503, { error: "Artikelenopslag is nog niet verbonden. Configureer REDIS_URL in Render." }); }
   }
+  if (req.method === "GET" && url.pathname === "/editorial-drafts") {
+    if (!authorized(req)) return send(res,401,{error:"Niet geautoriseerd."});
+    if (!client?.isReady) return send(res,503,{error:"Conceptenopslag tijdelijk niet beschikbaar."});
+    const items=await require("./editorial-drafts").listDrafts(client);
+    return send(res,200,{items,autoPublish:false});
+  }
   if (req.method === "GET" && url.pathname === "/inbox") {
     if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
     if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden. Controleer REDIS_URL en de Redis-verbinding in Render." });
@@ -530,6 +536,13 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
   let body;
   try { body = await readBody(req); } catch (e) { return send(res, 400, { error: e.message === "body_too_large" ? "Verzoek te groot." : "Ongeldige JSON." }); }
+  if (url.pathname === "/editorial-drafts") {
+    if (!client?.isReady) return send(res,503,{error:"Conceptenopslag tijdelijk niet beschikbaar."});
+    try {
+      const record=await require("./editorial-drafts").saveDraft(client,{id:body.id,expectedRevision:body.expectedRevision,payload:body.payload,approve:body.approve===true});
+      return send(res,200,{record,published:false});
+    } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept kon niet worden opgeslagen."}); }
+  }
   if (url.pathname === "/auto-inbox") {
     if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden." });
     const item = body.item;
@@ -582,7 +595,12 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         facts: uniqueFacts.map(f => f.slice(0,5000)),
         sourceUrls: (Array.isArray(body.sourceUrls) ? body.sourceUrls : []).filter(u => typeof u === "string" && /^https:\/\//i.test(u)).slice(0,10)
       }, {apiKey:GROQ_API_KEY,model:MODEL});
-      return send(res, 200, {status:"draft_for_review",editorialReviewRequired:true,publishingEnabled:false,draft});
+      let savedDraft=null,storageWarning="";
+      if (client?.isReady) {
+        try { savedDraft=await require("./editorial-drafts").saveDraft(client,{payload:{draft,category:body.category,verifiedFacts:uniqueFacts,sources:(body.sourceUrls||[]).map(url=>({url})),imageRights:"not_needed"}}); }
+        catch { storageWarning="Concept gemaakt, maar nog niet op de server bewaard. Gebruik Concept opslaan."; }
+      } else storageWarning="Concept gemaakt; serveropslag is niet beschikbaar. Houd de bewerking open.";
+      return send(res, 200, {status:"draft_for_review",editorialReviewRequired:true,publishingEnabled:false,draft,savedDraft,storageWarning});
     } catch(error) {
       if (error.retryAfter) res.setHeader("Retry-After", String(error.retryAfter));
       return send(res, error.status || 502, {error:error.message || "Concept kon niet worden gemaakt.", ...(error.retryAfter ? {retryAfter:error.retryAfter} : {})});
@@ -713,6 +731,20 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   }
   if (url.pathname === "/publish") {
     if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden. Controleer REDIS_URL en de Redis-verbinding in Render." });
+    let reviewedDraft=null;
+    if (body.editorialDraftId) {
+      try {
+        reviewedDraft=await require("./editorial-drafts").getDraft(client,body.editorialDraftId);
+        const matchingContent=require("./editorial-drafts").fingerprint(body)===reviewedDraft.contentHash;
+        if (reviewedDraft.status==="published" && matchingContent) {
+          const existing=await client.get("article:"+reviewedDraft.id.slice(14));
+          if(existing)return send(res,200,{status:"published",article:JSON.parse(existing)});
+        }
+        if (body.expectedRevision!==reviewedDraft.revision || reviewedDraft.status!=="approved" || !matchingContent)
+          return send(res,409,{error:"Deze versie is nog niet inhoudelijk goedgekeurd of is gewijzigd. Sla op en keur de huidige tekst opnieuw goed."});
+      } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept niet beschikbaar."}); }
+    }
+    if(reviewedDraft)body={...reviewedDraft.payload,approved:body.approved};
     const d = body.draft || {};
     const facts = Array.isArray(body.verifiedFacts) ? body.verifiedFacts.filter(x => typeof x === "string" && x.trim()) : [];
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => s && typeof s.url === "string" && s.url.startsWith("https://")) : [];
@@ -757,8 +789,10 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       }
     }
     const now = new Date().toISOString();
-    const article = { id: crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights} : {imageRights}), autoPublish: false };
-    await client.set("article:" + article.id, JSON.stringify(article));
+    const article = { id: reviewedDraft ? reviewedDraft.id.slice(14) : crypto.randomUUID(), status: "published", author: "VoetbalHub Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights} : {imageRights}), autoPublish: false };
+    const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
+    if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
+    if(reviewedDraft) { try {await require("./editorial-drafts").markPublished(client,reviewedDraft,article.id);} catch {console.warn("Published article retained; draft status update deferred.");} }
     return send(res, 200, { status: "published", article });
   }
   return send(res, 404, { error: "Onbekend endpoint." });
