@@ -18,10 +18,15 @@ public final class EredivisieStatsView extends LinearLayout {
     private static final String FEED = "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json";
     private final Activity activity;
     private final WebView web;
+    private final WebPageHistory pageHistory;
+    private final String restoredState;
     private String json;
     private boolean ready;
     public EredivisieStatsView(Activity activity, Runnable back, boolean feature) {
-        super(activity); this.activity = activity;
+        this(activity,back,feature,"");
+    }
+    public EredivisieStatsView(Activity activity,Runnable back,boolean feature,String restoredState){
+        super(activity);this.restoredState=restoredState; this.activity = activity;
         setOrientation(VERTICAL); setBackgroundColor(0xFF070D0B);
         TextView header = new TextView(activity); header.setText("‹  Eredivisie");
         header.setTextColor(Color.WHITE); header.setTextSize(22); header.setPadding(20,18,20,18);
@@ -31,14 +36,17 @@ public final class EredivisieStatsView extends LinearLayout {
         web.getSettings().setAllowFileAccess(true);
         web.getSettings().setAllowContentAccess(false);
         web.getSettings().setDomStorageEnabled(false);
+        pageHistory=new WebPageHistory(web);
         web.setWebViewClient(new WebViewClient(){
-            @Override public void onPageFinished(WebView view,String url){ready=true; deliver(); if(feature)web.evaluateJavascript("window.showFeatured&&window.showFeatured()",null);}
+            @Override public void onPageFinished(WebView view,String url){ready=true;pageHistory.restore(restoredState); deliver(); if(feature&&restoredState.isEmpty())web.evaluateJavascript("window.showFeatured&&window.showFeatured()",null);}
             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest req){if("app".equals(req.getUrl().getScheme())&&"retry".equals(req.getUrl().getHost()))load();return true;}
         });
         addView(web,new LayoutParams(-1,0,1));
         json=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot",null);
         web.loadUrl("file:///android_asset/eredivisie.html"); load();
     }
+    public boolean handleBack(){return pageHistory.back();}
+    public String navigationState(){return pageHistory.snapshot();}
     private void deliver(){if(!ready)return; if(json!=null)web.evaluateJavascript("window.setData("+JSONObject.quote(json)+")",null);}
     private void load(){new Thread(()->{
         HttpURLConnection conn=null;
