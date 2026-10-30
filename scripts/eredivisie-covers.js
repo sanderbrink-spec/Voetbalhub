@@ -14,10 +14,11 @@ function kickoffFromFacts(p){
 const teamCache=new Map();
 async function resolveTeam(name,key,fetcher){
  if(teamCache.has(name))return teamCache.get(name);
- const query=name.replace(/^FC |^SC /i,'');
+ const query=name==='AZ'?'AZ Alkmaar':name.replace(/^FC |^SC /i,'');
  const rows=await apiRequest('teams',query.length<3?{name:query}:{search:query},key,fetcher);
- const exact=rows.filter(x=>String(x.team?.name).toLowerCase()===name.toLowerCase());
- const match=exact.length===1?exact:rows.filter(x=>norm(x.team?.name)===norm(name));
+ const unique=[...new Map(rows.filter(x=>name==='FC Midtjylland'||x.team?.country==='Netherlands').map(x=>[x.team.id,x])).values()];
+ const exact=unique.filter(x=>String(x.team?.name).toLowerCase()===name.toLowerCase());
+ const match=exact.length===1?exact:unique.filter(x=>norm(x.team?.name)===norm(name)||(name==='AZ'&&norm(x.team?.name)==='azalkmaar'));
  if(match.length!==1)throw Error('Clublogo en stadion niet eenduidig bevestigd: '+name+' ('+match.map(x=>x.team.name).join(', ')+')');
  const result={id:match[0].team.id,name,logo:match[0].team.logo,venue:{...match[0].venue,provider:'API-SPORTS'}};
  teamCache.set(name,result);return result;
@@ -30,7 +31,7 @@ async function sync({key,secret,token,fetcher=fetch}={}){
  const packets=[...before.filter(a=>a.match&&Number.isInteger(a.match.homeScore)&&Number.isInteger(a.match.awayScore)).map(a=>({payload:{draft:{headline:a.headline,standfirst:a.standfirst,body:a.body},match:a.match},kind:'report',home:a.match.homeTeam,away:a.match.awayTeam,date:a.match.playedAt,goals:{home:a.match.homeScore,away:a.match.awayScore},category:a.category})),...require('../automatic-bootstrap.json').map(p=>({payload:{draft:p.draft},kind:'preview',home:p.candidate.teams[0],away:p.candidate.teams[1],date:kickoffFromFacts(p),category:p.candidate.category})),{payload:require('../redactie/trial/article.json').payload,kind:'preview',home:'FC Emmen',away:'FC Den Bosch',date:'2026-11-01T14:30:00+01:00',category:'Keuken Kampioen Divisie'},...require('../redactie/curated/articles.json').filter(p=>p.payload.match).map(p=>({payload:p.payload,kind:'report',home:p.payload.match.homeTeam,away:p.payload.match.awayTeam,date:p.payload.match.playedAt,goals:{home:p.payload.match.homeScore,away:p.payload.match.awayScore},category:'KNVB Beker'}))];
  let stats=null;try{const r=await fetcher(DATA_URL);if(r.ok)stats=await r.json();}catch{}
  for(const a of before){
-  if(a.status!=='published'||String(a.imageUrl||'').includes('/match-covers/'))continue;
+  if(a.status!=='published'||a.imageReview?.method==='fixture-specific-stadium-and-logos-v2')continue;
   const packet=packets.find(p=>contentHash(a)===contentHash(p.payload));if(!packet)continue;
   try{
    const home=await resolveTeam(packet.home,key,fetcher),away=await resolveTeam(packet.away,key,fetcher);
