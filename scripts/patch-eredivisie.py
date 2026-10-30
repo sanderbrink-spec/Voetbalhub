@@ -210,3 +210,6 @@ xml=layout.read_text().replace('android:layout_height="72dp"','android:layout_he
 layout.write_text(xml)
 for f in Path('app/src/main/res/drawable').glob('rounded_*.xml'):
  f.write_text(f.read_text().replace('#B6FF32','#25F06B'))
+
+portrait_assets=Path("app/src/main/res/drawable-nodpi");portrait_assets.mkdir(parents=True,exist_ok=True)
+shutil.copyfile("android-ui/drawable-nodpi/column_sander_brink_clean.webp",portrait_assets/"column_sander_brink_clean.webp")
