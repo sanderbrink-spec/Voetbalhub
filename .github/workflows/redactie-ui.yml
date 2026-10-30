@@ -40,6 +40,8 @@ jobs:
         run: node scripts/browser/eredivisie.cjs
       - name: Check dedicated match reader and delayed navigation
         run: node scripts/browser/match-preview.cjs
+      - name: Check personal clubs, saved originals and search
+        run: node scripts/browser/personal-hub.cjs
       - name: Keep statistics screen for visual inspection
         if: always()
         uses: actions/upload-artifact@v4

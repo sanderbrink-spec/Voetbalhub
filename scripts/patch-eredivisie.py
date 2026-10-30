@@ -213,3 +213,68 @@ for f in Path('app/src/main/res/drawable').glob('rounded_*.xml'):
 
 portrait_assets=Path("app/src/main/res/drawable-nodpi");portrait_assets.mkdir(parents=True,exist_ok=True)
 shutil.copyfile("android-ui/drawable-nodpi/column_sander_brink_clean.webp",portrait_assets/"column_sander_brink_clean.webp")
+
+# Personal hub replaces the legacy RSS search and bookmarks with published originals.
+s=p.read_text()
+s=s.replace('private boolean weeklyPreviewVisible = false;','private boolean weeklyPreviewVisible = false;\n    private boolean personalHubVisible = false;\n    private PersonalHubView personalHub;')
+for method in ['showNews','showColumn','showScores','showCompetitions','showMore']:
+ marker='private void '+method+'() {'
+ s=s.replace(marker,marker+'\n        personalHubVisible = false; personalHub = null;',1)
+s=s.replace('private void showWeeklyPreview(String snapshot) {','private void showWeeklyPreview(String snapshot) {\n        personalHubVisible = false; personalHub = null;',1)
+s=s.replace('private void showEredivisieStatistics(boolean feature) {','private void showEredivisieStatistics(boolean feature) {\n        personalHubVisible = false; personalHub = null;',1)
+s=s.replace('public void onBackPressed() {','public void onBackPressed() {\n        if (personalHubVisible && !editorialArticleOpen) { showNews(); return; }',1)
+s=replace_java_method(s,'private void showFavorites()', '''private void showFavorites() { showPersonalHub("favorites", ""); }''')
+s=replace_java_method(s,'private void showSearch()', '''private void showSearch() { showPersonalHub("search", ""); }''')
+s=replace_java_method(s,'private void search(String q)', '''private void search(String q) { showPersonalHub("search", q); }''')
+methods='''
+    private void showPersonalHub(String mode,String query) {
+        if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
+        scoresPageVisible = false; weeklyPreviewVisible = false; eredivisieStatisticsVisible = false;
+        personalHubVisible = true;
+        currentBottomTab = "favorites".equals(mode) ? "Favorieten" : "Nieuws";
+        buildNav(); findViewById(R.id.header).setVisibility(android.view.View.GONE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
+        content.removeAllViews();personalHub = new PersonalHubView(this, mode, query, this::showEditorialArticle, this::showNews);
+        content.addView(personalHub, new android.widget.FrameLayout.LayoutParams(-1, -1));
+    }
+'''
+s=s.replace('private void showFavorites()',methods+'\n    private void showFavorites()',1)
+start=s.index('private void showEditorialArticle(');end=s.index('private void addEditorialNewsSection(',start)
+reader=s[start:end]
+anchor='ScrollView scroll = new ScrollView(this);'
+controls='''final java.util.ArrayList<TextView> readingText = new java.util.ArrayList<>();
+        LinearLayout tools = new LinearLayout(this); tools.setGravity(Gravity.CENTER_VERTICAL);tools.setPadding(dp(14), dp(4), dp(14), dp(8));
+        TextView save = tv(EditorialStore.contains(this, article) ? "★ Bewaard" : "☆ Bewaren", 13, C.GREEN, true);
+        save.setGravity(Gravity.CENTER_VERTICAL); tools.addView(save, new LinearLayout.LayoutParams(0, dp(44), 1));
+        save.setOnClickListener(v -> { boolean stored = EditorialStore.toggle(this, article); save.setText(stored ? "★ Bewaard" : "☆ Bewaren"); Toast.makeText(this, stored ? "Artikel bewaard op dit apparaat" : "Artikel uit leeslijst verwijderd", Toast.LENGTH_SHORT).show(); });
+        TextView smaller = tv("A−", 14, C.TEXT, true); smaller.setGravity(Gravity.CENTER); tools.addView(smaller, new LinearLayout.LayoutParams(dp(44),dp(44)));smaller.setContentDescription("Kleinere artikeltekst");
+        TextView larger = tv("A+", 17, C.TEXT, true); larger.setGravity(Gravity.CENTER); tools.addView(larger, new LinearLayout.LayoutParams(dp(44),dp(44)));larger.setContentDescription("Grotere artikeltekst");
+        android.view.View.OnClickListener resize = v -> {int size = Math.max(15, Math.min(23, prefs.getInt("readerFontSize",17) + (v == larger ? 1 : -1)));prefs.edit().putInt("readerFontSize",size).apply();for(TextView paragraph : readingText)paragraph.setTextSize(size);};smaller.setOnClickListener(resize);larger.setOnClickListener(resize);
+        TextView share = tv("Delen", 12, C.MUTED, true);share.setGravity(Gravity.CENTER);tools.addView(share,new LinearLayout.LayoutParams(dp(52),dp(44)));share.setOnClickListener(v -> {Intent send = new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_SUBJECT,article.optString("headline"));send.putExtra(Intent.EXTRA_TEXT,article.optString("headline")+"\\n\\n"+article.optString("standfirst")+"\\n\\nVoetbalHub · Alles voetbal. Eén hub.");try{startActivity(Intent.createChooser(send,"Artikel delen"));}catch(Exception ignored){}});
+        root.addView(tools);
+        ScrollView scroll = new ScrollView(this);'''
+assert anchor in reader;reader=reader.replace(anchor,controls,1)
+a=reader.index('if (isColumnReader) {');b=reader.index('} else {',a)
+reader=reader[:a]+'''if (isColumnReader) {
+            LinearLayout.LayoutParams banner = new LinearLayout.LayoutParams(-1, dp(190));banner.bottomMargin=dp(16);page.addView(new ColumnBannerView(this, this::showColumn, false),banner);
+        '''+reader[b:]
+reader=reader.replace('page.addView(title);','''page.addView(title);
+        String published = article.optString("publishedAt", "");String dateLabel = "";
+        try {dateLabel = java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy · HH:mm", new java.util.Locale("nl","NL")).withZone(java.time.ZoneId.of("Europe/Amsterdam")).format(java.time.Instant.parse(published));} catch(Exception ignored) {}
+        int words = 0;org.json.JSONArray readBody = article.optJSONArray("body");if(readBody!=null)for(int i=0;i<readBody.length();i++)words+=readBody.optString(i, "").trim().split("\\\\s+").length;
+        TextView metadata = tv((dateLabel.isEmpty()?"":dateLabel+" · ")+Math.max(1,(words+199)/200)+" min leestijd", 11, C.MUTED, false);metadata.setPadding(0,0,0,dp(10));page.addView(metadata);''',1)
+reader=reader.replace('page.addView(originalArt, artParams);','page.addView(originalArt, artParams);if(isColumnReader)originalArt.setVisibility(android.view.View.GONE);')
+reader=reader.replace('if (coverUrl.startsWith("https://")','if (!isColumnReader && coverUrl.startsWith("https://")',1)
+reader=reader.replace('cover.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);','cover.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);cover.setAdjustViewBounds(true);')
+reader=reader.replace('new LinearLayout.LayoutParams(-1, dp(210))','new LinearLayout.LayoutParams(-1, -2)')
+reader=reader.replace('TextView bodyText = tv(paragraph, 16, C.TEXT, false);','TextView bodyText = tv(paragraph, prefs.getInt("readerFontSize",17), C.TEXT, false);bodyText.setLineSpacing(dp(5),1f);bodyText.setTextIsSelectable(true);readingText.add(bodyText);')
+reader=reader.replace('editorialArticleOpen = false; editorialDialog = null;','editorialArticleOpen = false; editorialDialog = null;if(personalHub!=null)personalHub.refreshSaved();')
+s=s[:start]+reader+s[end:]
+# Make the complete editorial catalogue reachable after the home preview list.
+needle='section.addView(status);'
+assert needle in s
+s=s.replace(needle,needle+'''
+        if(!columnOnly){TextView allNews = tv("Alle eigen artikelen bekijken  →", 12, C.GREEN, true);allNews.setPadding(dp(2),dp(5),0,dp(10));allNews.setMinHeight(dp(44));allNews.setOnClickListener(v -> showPersonalHub("search", ""));section.addView(allNews);}''',1)
+p.write_text(s)
+for filename in ['EditorialStore.java','PersonalHubView.java']:
+ shutil.copyfile('android-ui/java/'+filename,p.parent/filename)
+shutil.copyfile('android-ui/assets/personal-hub.html',assets/'personal-hub.html')
