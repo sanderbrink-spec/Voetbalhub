@@ -1,0 +1,46 @@
+name: Automatic verified news and images
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'automatic-editorial.json'
+      - 'scripts/automatic-publication.js'
+      - 'scripts/render-editorial-cover.py'
+      - '.github/workflows/automatic-publication.yml'
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: automatic-verified-editorial-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m pip install Pillow
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Validate publication gates
+        run: npm test
+      - name: Collect official sources and publish checked stories with artwork
+        env:
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/automatic-publication.js
+      - name: Keep editorial run report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automatic-editorial-report
+          path: .automatic-output/report.json
+          if-no-files-found: ignore

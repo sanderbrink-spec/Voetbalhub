@@ -1,0 +1,25 @@
+{
+  "enabled": true,
+  "maxPerRun": 6,
+  "maxPerDay": 20,
+  "maxAgeHours": 72,
+  "previewHorizonDays": 7,
+  "model": "openai/gpt-oss-120b",
+  "mediaBranch": "editorial-media",
+  "officialDomains": ["ajax.nl", "az.nl", "psv.nl", "willem-ii.nl", "feyenoord.com", "fortunasittard.nl", "fcemmen.nl", "fcdenbosch.nl", "fcgroningen.nl", "knvb.nl", "eurojackpotknvbbeker.nl", "inter.it", "clubbrugge.be", "fctwente.nl", "eredivisie.nl"],
+  "newsIndexes": [
+    {"url":"https://fcemmen.nl/nieuws/","articlePath":"^/[^/]+/$"},
+    {"url":"https://www.ajax.nl/artikelen/","articlePath":"^/artikelen/[^/]+/?$"},
+    {"url":"https://www.feyenoord.com/nl/news/","articlePath":"^/nl/news/[^/]+/?$"},
+    {"url":"https://www.fcgroningen.nl/nieuws/","articlePath":"^/nieuws/[^/]+/?$"},
+    {"url":"https://www.az.nl/inside-az/nieuws/","articlePath":"^/inside-az/nieuws/[0-9]{4}/[^/]+/[^/]+/?$"}
+  ],
+  "sourceGroups": [
+    ["https://www.ajax.nl/wedstrijden/", "https://www.az.nl/inside-az/nieuws/2026/oktober/de-az-connectie-ajax-az"],
+    ["https://www.psv.nl/ticketinfo/veelgestelde-vragen/informatie-psv-willem-ii-31102026", "https://www.willem-ii.nl/artikel/verkoopinformatie-psv-willem-ii"],
+    ["https://www.feyenoord.com/nl/service/wedstrijdbezoek/kaartverkoopinformatie-feyenoord-fortuna-sittard", "https://fortunasittard.nl/nieuws/fortuna-opent-nieuw-seizoen-bij-landskampioen-psv"],
+    ["https://www.feyenoord.com/nl/news/kaartverkoop-feyenoord-inter-start-vrijdag-271026", "https://www.inter.it/en/news/feyenoord-inter-tickets-away-section-champions-league"],
+    ["https://www.psv.nl/match-center", "https://www.willem-ii.nl/artikel/speelschema-tot-en-met-januari-bekend"],
+    ["https://fcemmen.nl/wedstrijdprogramma/", "https://www.fcdenbosch.nl/eerste-elftal/wedstrijden/"]
+  ]
+}
