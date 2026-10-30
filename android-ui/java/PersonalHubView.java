@@ -26,14 +26,20 @@ public final class PersonalHubView extends LinearLayout {
     private final OpenArticle open;
     private final Runnable back;
     private final String mode,query;
+    private final WebPageHistory pageHistory;
+    private final String restoredState;
     private JSONObject articles=new JSONObject(),stats=new JSONObject();
     private boolean ready,offline;
     private int pending=2;
     public PersonalHubView(Activity activity,String mode,String query,OpenArticle open,Runnable back){
-        super(activity);this.activity=activity;this.mode=mode;this.query=query;this.open=open;this.back=back;setOrientation(VERTICAL);setBackgroundColor(0xFF050807);
+        this(activity,mode,query,open,back,"");
+    }
+    public PersonalHubView(Activity activity,String mode,String query,OpenArticle open,Runnable back,String restoredState){
+        super(activity);this.restoredState=restoredState;this.activity=activity;this.mode=mode;this.query=query;this.open=open;this.back=back;setOrientation(VERTICAL);setBackgroundColor(0xFF050807);
         web=new WebView(activity);web.setBackgroundColor(0xFF050807);web.getSettings().setJavaScriptEnabled(true);web.getSettings().setAllowContentAccess(false);web.getSettings().setAllowFileAccess(true);web.getSettings().setDomStorageEnabled(false);
+        pageHistory=new WebPageHistory(web);
         web.addJavascriptInterface(new Bridge(),"PersonalHub");web.setWebViewClient(new WebViewClient(){
-            @Override public void onPageFinished(WebView view,String url){ready=true;deliver();}
+            @Override public void onPageFinished(WebView view,String url){ready=true;pageHistory.restore(restoredState);deliver();}
             @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return true;}
         });addView(web,new LayoutParams(-1,-1));
         try{articles=new JSONObject(activity.getSharedPreferences("voetbalhub_editorial",0).getString("last_articles","{}"));}catch(Exception ignored){}
@@ -43,6 +49,8 @@ public final class PersonalHubView extends LinearLayout {
         fetch("https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json",false);
     }
     public void refreshSaved(){deliver();}
+    public boolean handleBack(){return pageHistory.back();}
+    public String navigationState(){return pageHistory.snapshot();}
     private void deliver(){if(!ready||activity.isFinishing())return;try{
         JSONObject payload=new JSONObject();payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);

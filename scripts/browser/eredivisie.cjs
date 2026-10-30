@@ -5,7 +5,7 @@ const {chromium}=require('playwright');const fs=require('node:fs');const assert=
  try{
   const page=await browser.newPage({viewport:{width:393,height:852},deviceScaleFactor:1});const errors=[];page.on('pageerror',e=>errors.push(e.message));
   const response=await fetch('https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json');const data=response.ok?await response.json():await require('../eredivisie-official').collectOfficial({save:false});
-  await page.setContent(fs.readFileSync('android-ui/assets/eredivisie.html','utf8'));
+  await page.setContent(fs.readFileSync('android-ui/assets/eredivisie.html','utf8').replace('<script src="page-history.js"></script>','<script>'+fs.readFileSync('android-ui/assets/page-history.js','utf8')+'</script>'));
   await page.evaluate(x=>window.setData(JSON.stringify(x)),data);
   await page.getByRole('heading',{name:'De stand',exact:true}).waitFor();
   assert.equal(await page.locator('tbody tr').count(),18);

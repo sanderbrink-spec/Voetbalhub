@@ -4,7 +4,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
  const page=await browser.newPage({viewport:{width:393,height:852}}),errors=[],calls=[];
  page.on('pageerror',e=>errors.push(e.message));await page.exposeFunction('record',(method,value)=>calls.push({method,value}));
  await page.route('https://**/*',route=>route.abort());
- await page.setContent(fs.readFileSync('android-ui/assets/personal-hub.html','utf8'));
+ await page.setContent(fs.readFileSync('android-ui/assets/personal-hub.html','utf8').replace('<script src="page-history.js"></script>','<script>'+fs.readFileSync('android-ui/assets/page-history.js','utf8')+'</script>'));
  await page.evaluate(()=>{window.PersonalHub={saveClubs:x=>window.record('clubs',x),openArticle:x=>window.record('open',x),removeSaved:x=>window.record('remove',x),back:()=>window.record('back','')};});
  const team=(id,name)=>({id,name,logo:'https://eredivisie.b-cdn.net/'+id+'.png'}),groningen=team('gro','FC Groningen'),ajax=team('aja','Ajax'),az=team('az','AZ');
  const article=(id,headline,body=[])=>({id,headline,body,status:'published',publishedAt:'2026-10-30T15:00:00Z',category:'Eredivisie',standfirst:''});
@@ -32,7 +32,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
  await page.getByRole('searchbox').fill('Ajax');await page.screenshot({path:'.browser-output/search-mobile.png',fullPage:true});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.equal(await page.evaluate(()=>{const b=document.querySelector('.back').getBoundingClientRect(),h=document.querySelector('header h1').getBoundingClientRect();return b.right<=h.left;}),true);assert.equal(await page.locator('.club img:not([hidden])').count(),0);assert.deepEqual(errors,[]);
  // Initial search route, late data, empty offline state and pagination are separate documents.
- const search=await browser.newPage({viewport:{width:320,height:720}});search.on('pageerror',e=>errors.push(e.message));await search.route('https://**/*',r=>r.abort());await search.setContent(fs.readFileSync('android-ui/assets/personal-hub.html','utf8'));
+ const search=await browser.newPage({viewport:{width:320,height:720}});search.on('pageerror',e=>errors.push(e.message));await search.route('https://**/*',r=>r.abort());await search.setContent(fs.readFileSync('android-ui/assets/personal-hub.html','utf8').replace('<script src="page-history.js"></script>','<script>'+fs.readFileSync('android-ui/assets/page-history.js','utf8')+'</script>'));
  await search.evaluate(()=>setData(JSON.stringify({mode:'search',query:'analyse',articles:[],saved:[],clubs:[],stats:{},loading:true})));assert.equal(await search.locator('.tabs').isVisible(),false);
  await search.evaluate(()=>setData(JSON.stringify({mode:'search',articles:[],saved:[{id:'offline',status:'published',headline:'Offline analyse',body:['Volledige tekst']}],clubs:[],stats:{},loading:false,offline:true})));assert.equal(await search.locator('[data-article="offline"]').count(),1);
  await search.getByRole('searchbox').fill('');await search.evaluate(()=>setData(JSON.stringify({mode:'search',articles:Array.from({length:45},(_,i)=>({id:String(i),headline:'Nieuws '+i,status:'published'})),saved:[],clubs:[],stats:{},loading:false})));assert.equal(await search.locator('[data-article]').count(),30);await search.getByRole('button',{name:'Meer berichten (15)'}).click();assert.equal(await search.locator('[data-article]').count(),45);

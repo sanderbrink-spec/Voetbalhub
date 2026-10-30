@@ -941,6 +941,15 @@ jobs:
       - name: Install reference homepage and current YouTube rail
         run: python3 scripts/patch-home.py
 
+      - name: Verify previous-screen and exit navigation
+        run: |
+          mkdir -p /tmp/voetbalhub-navigation
+          java com.sun.tools.javac.Main -d /tmp/voetbalhub-navigation android-ui/java/ScreenHistory.java test/ScreenHistoryTest.java
+          java -cp /tmp/voetbalhub-navigation nl.voetbalhub.app.ScreenHistoryTest
+
+      - name: Install previous-screen navigation and contact page
+        run: python3 scripts/patch-navigation-contact.py
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
