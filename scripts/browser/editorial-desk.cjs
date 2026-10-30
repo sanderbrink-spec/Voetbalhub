@@ -18,7 +18,7 @@ await page.locator('#headline').fill('Mijn eigen kop die later hersteld moet wor
 await page.locator('#body').fill('Bewerkte tekst om te bewaren.');assert.equal(await page.locator('#sourceCheck').isChecked(),false);
 const stored=await page.evaluate(()=>sessionStorage.getItem('voetbalhubDeskWorkingDraftV2'));assert.ok(!stored.includes('not-a-real-secret'));assert.ok(!stored.includes('sourceCheck'));
 await page.reload();await page.locator('#restoreDraft').click();assert.equal(await page.locator('#body').inputValue(),'Bewerkte tekst om te bewaren.');assert.equal(await page.locator('#sourceCheck').isChecked(),false);
-await page.locator('#imageUrl').fill('https://example.org/picture.jpg');await page.locator('#imageRights').selectOption('cleared');await page.locator('#kitCheck').check();
+await page.locator('#editor details summary').click();await page.locator('#imageUrl').fill('https://example.org/picture.jpg');await page.locator('#imageRights').selectOption('cleared');await page.locator('#kitCheck').check();
 await page.locator('#cancel').click();await page.locator('#newDraft').click();assert.equal(await page.locator('#imageUrl').inputValue(),'');assert.equal(await page.locator('#imageRights').inputValue(),'not_needed');assert.equal(await page.locator('#kitCheck').isChecked(),false);
 assert.equal(posted.length,0);
 await page.locator('#headline').fill('FC Groningen wint na spannende slotfase van Ajax');await page.locator('#standfirst').fill('Groningen boekte een overwinning na een intensieve wedstrijd waarin de bezoekers tot het laatste moment bleven aandringen.');
