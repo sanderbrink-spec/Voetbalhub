@@ -17,3 +17,5 @@ test('Publication runner requires the deployed capability and verifies exact pub
  const result=await publish({packet,secret:'test-only',fetcher,attempts:1});assert.equal(result.id,article.id);assert.equal(calls[1].options.headers.Authorization,'Bearer test-only');assert.equal(JSON.parse(calls[1].options.body).manuscript,packet.manuscript);
  await assert.rejects(publish({packet,secret:'test-only',attempts:1,fetcher:async()=>({ok:true,json:async()=>({storage:'connected'})})}),/nog niet beschikbaar/);
 });
+
+test('A first deployment can defer publication without blocking the API rollout or claiming publication',async()=>{const result=await publish({packet:request(),secret:'test-only',attempts:1,deferIfUnavailable:true,fetcher:async()=>({ok:true,json:async()=>({storage:'connected'})})});assert.equal(result.status,'awaiting_server');assert.equal(result.published,false);});
