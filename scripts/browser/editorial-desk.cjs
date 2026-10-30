@@ -27,6 +27,7 @@ await page.locator('#fact1').fill('Eerste gecontroleerde feit');await page.locat
 for(const id of ['sourceCheck','factCheck','duplicateCheck','languageCheck'])await page.locator('#'+id).check();
 assert.ok((await page.locator('#preflight').textContent()).includes('Formulier compleet'));
 await page.locator('#previewToggle').click();assert.ok(await page.locator('#articlePreview').isVisible());
+assert.equal(await page.locator('#secret').inputValue(),'');await page.locator('#secret').fill('not-a-real-secret');
 page.on('dialog',d=>d.accept());await page.locator('#publish').click();await page.waitForFunction(()=>document.getElementById('publishStatus').textContent.includes('Gepubliceerd.'));
 assert.equal(posted.length,1);assert.equal(await page.locator('#publish').isDisabled(),true);assert.equal(await page.evaluate(()=>sessionStorage.getItem('voetbalhubDeskWorkingDraftV2')),null);
 assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
