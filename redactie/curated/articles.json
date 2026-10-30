@@ -1,0 +1,47 @@
+[
+  {
+    "key": "groningen-emmen-beker-2026-10-29",
+    "payload": {
+      "category": "FC Groningen",
+      "draft": {
+        "headline": "Groningen uit de beker na dubbelslag van Cooper-Love",
+        "standfirst": "FC Groningen is in de eerste bekerronde uitgeschakeld door FC Emmen. Jack Cooper-Love maakte beide doelpunten in de Euroborg: 0-2.",
+        "body": [
+          "Het bekerduel van donderdag 29 oktober betekende voor Groningen meteen het einde van het toernooi. De thuisploeg kwam in de Euroborg niet tot scoren, terwijl de bezoekers in beide helften een doelpunt maakten. Emmen plaatste zich daarmee voor de volgende ronde.",
+          "Cooper-Love zette Emmen vóór de pauze op voorsprong en verdubbelde de marge na rust. Bij beide treffers verzorgde Sybrand Veldhuis de voorbereiding. Die samenwerking leverde de bezoekers uiteindelijk alle doelpunten op in de noordelijke ontmoeting; Groningen kon daar geen treffer tegenover zetten.",
+          "Ook doelman Kelle Roos had een aandeel in het resultaat. Hij hield zijn doel schoon en keerde onder meer pogingen van Thom van Bergen en Jacob Ondrejka. Zijn reddingen voorkwamen dat Groningen de achterstand kon verkleinen en hielden de thuisploeg op nul doelpunten."
+        ]
+      },
+      "verifiedFacts": [
+        "FC Groningen speelde op donderdag 2026-10-29 thuis in de Euroborg tegen FC Emmen in de eerste ronde van de KNVB Beker. De eindstand thuis-uit was 0-2.",
+        "FC Groningen maakte geen doelpunten in dit bekerduel en is uitgeschakeld. FC Emmen plaatste zich voor de volgende ronde.",
+        "Jack Cooper-Love maakte beide doelpunten voor FC Emmen: één vóór de pauze in de eerste helft en één na rust in de tweede helft. Hij zette Emmen op voorsprong en vergrootte de marge. Groningen kwam hierdoor op achterstand en wist die niet te verkleinen.",
+        "Sybrand Veldhuis verzorgde bij allebei de doelpunten van Jack Cooper-Love de voorbereiding.",
+        "Kelle Roos was de doelman van FC Emmen. Hij hield zijn doel schoon in de Euroborg en verrichtte reddingen op pogingen van Thom van Bergen en Jacob Ondrejka.",
+        "Doelminuten en aanvullende statistieken zijn niet in het concept opgenomen. De opgehaalde bronnen geven verschillende notaties voor de doelminuten; die details zijn niet als definitief gecontroleerd aangemerkt."
+      ],
+      "sources": [
+        {
+          "url": "https://fcemmen.nl/fc-emmen-stunt-in-euroborg-en-bekert-verder/"
+        },
+        {
+          "url": "https://www.eurosport.nl/voetbal/eurojackpot-knvb-beker/2026-2027/live-fc-groningen-fc-emmen_mtc21934253/live.shtml"
+        },
+        {
+          "url": "https://www.flashscore.com/match/football/fc-emmen-Stafar0g/groningen-MBUGcjb9/"
+        }
+      ],
+      "match": {
+        "homeTeam": "FC Groningen",
+        "awayTeam": "FC Emmen",
+        "homeScore": 0,
+        "awayScore": 2,
+        "playedAt": "2026-10-29"
+      },
+      "reviewNotes": "Volledig eigen concept op basis van gecontroleerde feitelijke gegevens. De clubbron en Eurosport bevestigen datum, uitslag en doelpuntenmaker. Aanvullende wedstrijdgebeurtenissen zijn ontleend aan de clubbron en vereisen jouw inhoudelijke eindcontrole. De opgehaalde Flashscore-pagina gaf geen eindstand terug: de verplichte Flashscore-controle is dus NIET afgerond. Doelminuten zijn bewust weggelaten wegens afwijkende notaties tussen de bronnen. Nog niet goedgekeurd en niet gepubliceerd.",
+      "editorialChecks": {},
+      "factChecks": {},
+      "imageRights": "not_needed"
+    }
+  }
+]
