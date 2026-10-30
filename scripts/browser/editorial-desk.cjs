@@ -1,0 +1,38 @@
+const {chromium}=require('playwright');
+const http=require('node:http'),fs=require('node:fs'),assert=require('node:assert/strict');
+const root=require('node:path').resolve(__dirname,'../..');
+(async()=>{
+const server=http.createServer((req,res)=>{const paths={'/publish-desk':'public/publish-desk.html','/desk.js':'public/desk.js','/desk-model.js':'editorial-desk-model.js'};if(!paths[req.url]){res.writeHead(404);return res.end();}res.setHeader('Content-Type',req.url.endsWith('.js')?'text/javascript':'text/html');res.end(fs.readFileSync(root+'/'+paths[req.url]));});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:393,height:851}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const fixture=[{id:'a',headline:'FC Groningen onderzoekt nieuwe plannen voor volgend seizoen',category:'Eredivisie',source:{publishedAt:new Date().toISOString(),url:'https://fcgroningen.nl/a'},body:['Eigen artikeltekst.'],qualityReview:{warnings:['Controleer feit.']}},{id:'b',headline:'Ajax kijkt vooruit naar de komende speelronde',category:'Eredivisie',source:{publishedAt:new Date(Date.now()-3600000).toISOString(),url:'https://ajax.nl/b'},sourceEvidence:{evidenceLevel:'rss_title_and_description_only'}}];
+await page.route('**/inbox',route=>route.fulfill({json:{items:fixture}}));let posted=[];
+await page.route('**/publish',route=>{posted.push(route.request().postDataJSON());return route.fulfill({json:{article:{id:'test-published'}}});});
+await page.route('**/articles',route=>route.fulfill({json:{articles:[]}}));
+await page.goto('http://127.0.0.1:'+server.address().port+'/publish-desk');
+await page.locator('#secret').fill('not-a-real-secret');await page.locator('#load').click();await page.locator('[data-open]').first().waitFor();
+assert.equal(await page.locator('[data-open]').count(),2);assert.equal(await page.locator('#originalStory').count(),0);
+await page.locator('#searchDrafts').fill('ajax');assert.equal(await page.locator('[data-open]').count(),1);
+await page.locator('#searchDrafts').fill('');await page.locator('[data-open="0"]').click();
+await page.locator('#headline').fill('Mijn eigen kop die later hersteld moet worden');await page.locator('#sourceCheck').check();
+await page.locator('#body').fill('Bewerkte tekst om te bewaren.');assert.equal(await page.locator('#sourceCheck').isChecked(),false);
+const stored=await page.evaluate(()=>sessionStorage.getItem('voetbalhubDeskWorkingDraftV2'));assert.ok(!stored.includes('not-a-real-secret'));assert.ok(!stored.includes('sourceCheck'));
+await page.reload();await page.locator('#restoreDraft').click();assert.equal(await page.locator('#body').inputValue(),'Bewerkte tekst om te bewaren.');assert.equal(await page.locator('#sourceCheck').isChecked(),false);
+await page.locator('#imageUrl').fill('https://example.org/picture.jpg');await page.locator('#imageRights').selectOption('cleared');await page.locator('#kitCheck').check();
+await page.locator('#cancel').click();await page.locator('#newDraft').click();assert.equal(await page.locator('#imageUrl').inputValue(),'');assert.equal(await page.locator('#imageRights').inputValue(),'not_needed');assert.equal(await page.locator('#kitCheck').isChecked(),false);
+assert.equal(posted.length,0);
+await page.locator('#headline').fill('FC Groningen wint na spannende slotfase van Ajax');await page.locator('#standfirst').fill('Groningen boekte een overwinning na een intensieve wedstrijd waarin de bezoekers tot het laatste moment bleven aandringen.');
+await page.locator('#body').fill(['De thuisploeg begon met veel druk op de tegenstander en zocht via de vleugels voortdurend naar vrije spelers achter de verdediging.','Na de onderbreking koos de bezoekende trainer voor twee wissels op het middenveld om meer controle te krijgen over het balbezit.','Supporters bleven hun team aanmoedigen terwijl beide trainers richting het laatste fluitsignaal de resterende spelers op de bank instructies gaven.'].join('\n\n'));
+await page.locator('#fact1').fill('Eerste gecontroleerde feit');await page.locator('#fact2').fill('Tweede gecontroleerde feit');await page.locator('#source1').fill('https://flashscore.nl/wedstrijd/test');await page.locator('#source2').fill('https://fcgroningen.nl/test');
+for(const id of ['sourceCheck','factCheck','duplicateCheck','languageCheck'])await page.locator('#'+id).check();
+assert.ok((await page.locator('#preflight').textContent()).includes('Formulier compleet'));
+await page.locator('#previewToggle').click();assert.ok(await page.locator('#articlePreview').isVisible());
+page.on('dialog',d=>d.accept());await page.locator('#publish').click();await page.waitForFunction(()=>document.getElementById('publishStatus').textContent.includes('Gepubliceerd.'));
+assert.equal(posted.length,1);assert.equal(await page.locator('#publish').isDisabled(),true);assert.equal(await page.evaluate(()=>sessionStorage.getItem('voetbalhubDeskWorkingDraftV2')),null);
+assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
+// Mocked API routes guarantee that this test cannot publish real articles.
+await page.setViewportSize({width:1280,height:800});
+await page.reload();
+assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
+await browser.close();await new Promise(r=>server.close(r));console.log('Mobile browser checks passed: queue, search, recovery, checkbox reset, image reset, preview, one explicit publish, no overflow or JS errors.');
+})().catch(e=>{console.error(e);process.exit(1)});
