@@ -6,7 +6,8 @@
     "file": "groningen-emmen-2026-10-29.webp",
     "assetSha256": "b4a6c946c4e32a56873d55b731d97f3744c375ee13b806a32d444a239167bd7d",
     "reviewed": true,
-    "reviewNotes": "AI-illustratie visueel gecontroleerd: clubnamen, datum en uitslag of aftraptijd komen overeen met het bijbehorende artikel en de officiële clubbron. Geen spelers, gezichten, tenues of clublogo’s afgebeeld. AI-vermelding zichtbaar in het beeld."
+    "reviewNotes": "AI-illustratie visueel gecontroleerd: clubnamen, datum en uitslag of aftraptijd komen overeen met het bijbehorende artikel en de officiële clubbron. Geen spelers, gezichten, tenues of clublogo’s afgebeeld. AI-vermelding zichtbaar in het beeld.",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e4de1f06ba5ba618f8438063528e25f580fc0c64/public/article-covers/groningen-emmen-2026-10-29.webp"
   },
   {
     "key": "emmen-den-bosch-programma-2026-11-01",
@@ -15,6 +16,7 @@
     "file": "emmen-den-bosch-2026-11-01.webp",
     "assetSha256": "10ebc942568cf5b4868f2b6adadfc9d49b83e6a352e4e2a5c5036bf0ecd660f6",
     "reviewed": true,
-    "reviewNotes": "AI-illustratie visueel gecontroleerd: clubnamen, datum en uitslag of aftraptijd komen overeen met het bijbehorende artikel en de officiële clubbron. Geen spelers, gezichten, tenues of clublogo’s afgebeeld. AI-vermelding zichtbaar in het beeld."
+    "reviewNotes": "AI-illustratie visueel gecontroleerd: clubnamen, datum en uitslag of aftraptijd komen overeen met het bijbehorende artikel en de officiële clubbron. Geen spelers, gezichten, tenues of clublogo’s afgebeeld. AI-vermelding zichtbaar in het beeld.",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e4de1f06ba5ba618f8438063528e25f580fc0c64/public/article-covers/emmen-den-bosch-2026-11-01.webp"
   }
 ]

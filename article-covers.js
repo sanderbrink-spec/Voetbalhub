@@ -26,7 +26,7 @@ function withArticleCover(article) {
   if (!entry || !readCover(entry.file)) return article;
   return {
     ...article,
-    imageUrl: ORIGIN + '/article-covers/' + entry.file,
+    imageUrl: entry.imageUrl || ORIGIN + '/article-covers/' + entry.file,
     imageSource: 'VoetbalHub · AI-illustratie',
     imageCredit: 'VoetbalHub · AI-illustratie',
     imageRights: 'cleared',

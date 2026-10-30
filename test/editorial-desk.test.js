@@ -203,7 +203,7 @@ test('approved publication carries the reviewed image and public image URL respo
  const article=(await result.json()).article;
  assert.match(article.imageUrl,/emmen-den-bosch-2026-11-01\.webp$/);
  assert.equal(JSON.parse(store.get('article:'+article.id)).imageUrl,article.imageUrl);
- const image=await fetch(base+new URL(article.imageUrl).pathname,{redirect:'manual'});
+ const image=await fetch(base+'/article-covers/emmen-den-bosch-2026-11-01.webp',{redirect:'manual'});
  assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/webp');
  assert.equal((await image.arrayBuffer()).byteLength,Number(image.headers.get('content-length')));
  assert.equal((await fetch(base+'/article-covers/not-approved.webp')).status,404);

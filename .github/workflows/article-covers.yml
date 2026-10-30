@@ -1,0 +1,40 @@
+name: Publish reviewed match images
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'article-covers.js'
+      - 'article-covers.json'
+      - 'public/article-covers/**'
+      - 'scripts/sync-article-covers.js'
+      - '.github/workflows/article-covers.yml'
+  workflow_run:
+    workflows: ['Single automatically checked publication trial']
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: publish-reviewed-match-images
+  cancel-in-progress: false
+jobs:
+  publish-images:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate match identity and publication behavior
+        run: node --test test/article-covers.test.js test/article-cover-sync.test.js
+      - name: Attach reviewed illustrations to matching published articles
+        env:
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+        run: node scripts/sync-article-covers.js
