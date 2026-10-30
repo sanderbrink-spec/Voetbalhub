@@ -2,6 +2,12 @@ name: VoetbalHub API test and APK build
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "android-ui/**"
+      - "scripts/patch-*.py"
+      - ".github/workflows/build.yml"
   push:
     branches: [main, master]
 
@@ -931,6 +937,9 @@ jobs:
 
       - name: Install internal Eredivisie statistics and weekly feature
         run: python3 scripts/patch-eredivisie.py
+
+      - name: Install reference homepage and current YouTube rail
+        run: python3 scripts/patch-home.py
 
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4

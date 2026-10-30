@@ -1,0 +1,27 @@
+name: Actuele Eredivisie YouTube-video’s
+on:
+  push:
+    branches: [main]
+    paths: ['scripts/youtube-videos.js', '.github/workflows/youtube-videos.yml']
+  schedule:
+    - cron: '19 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: eredivisie-youtube
+  cancel-in-progress: false
+jobs:
+  videos:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test test/youtube-videos.test.js
+      - name: Refresh official YouTube links
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/youtube-videos.js
