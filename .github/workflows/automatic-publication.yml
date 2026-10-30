@@ -33,11 +33,6 @@ jobs:
       - run: npm install --ignore-scripts --no-audit --no-fund
       - name: Validate publication gates
         run: npm test
-      - name: Refresh existing automatic illustrations without changing articles
-        env:
-          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
-          GITHUB_TOKEN: ${{ github.token }}
-        run: node scripts/refresh-automatic-covers.js
       - name: Collect official sources and publish checked stories with artwork
         env:
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}

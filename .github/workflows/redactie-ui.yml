@@ -36,3 +36,12 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Check mobile and desktop editorial flow
         run: node scripts/browser/editorial-desk.cjs
+      - name: Check internal Eredivisie statistics on mobile
+        run: node scripts/browser/eredivisie.cjs
+      - name: Keep statistics screen for visual inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eredivisie-mobile-preview
+          path: .browser-output/eredivisie-mobile.png
+          if-no-files-found: ignore

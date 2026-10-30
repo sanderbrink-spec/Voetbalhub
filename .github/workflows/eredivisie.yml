@@ -29,4 +29,10 @@ jobs:
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: node scripts/eredivisie-data.js
+        run: node scripts/eredivisie-official.js
+      - name: Apply stadium previews and logo-score reports to matching existing articles
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/eredivisie-covers.js

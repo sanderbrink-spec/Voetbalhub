@@ -929,6 +929,9 @@ jobs:
           print("3.0 homepage masthead, unclipped headings and category-specific titles installed.")
           PY
 
+      - name: Install internal Eredivisie statistics and weekly feature
+        run: python3 scripts/patch-eredivisie.py
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:

@@ -8,6 +8,7 @@
     "test": "node --check server.js && node --check editorial-quality.js && node --test"
   },
   "dependencies": {
-    "redis": "^4.7.0"
+    "redis": "^4.7.0",
+    "@resvg/resvg-js": "^2.6.2"
   }
 }

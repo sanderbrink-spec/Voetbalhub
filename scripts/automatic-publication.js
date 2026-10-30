@@ -237,6 +237,7 @@ async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={})
    const evidenceIssues=validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
    const sourceIndices=[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
+   if(candidate.kind==='preview'){report.skipped.push({topic,reason:'Voorbeschouwingen lopen uitsluitend via de gekozen wedstrijd van de speelronde.'});continue;}
    const facts=candidate.facts.map(f=>f.text);
    const sources=sourceIndices.map(i=>({url:group[i].url}));
    const draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:aiFetch,timeoutMs:180000});
