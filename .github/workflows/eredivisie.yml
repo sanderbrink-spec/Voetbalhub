@@ -1,0 +1,32 @@
+name: Eredivisie statistics and match of the round
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/eredivisie-*.js'
+      - 'scripts/match-cover*'
+      - '.github/workflows/eredivisie.yml'
+  schedule:
+    - cron: '7 */3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: eredivisie-statistics
+  cancel-in-progress: false
+jobs:
+  statistics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: node --test test/eredivisie*.test.js
+      - name: Update statistics and select one featured fixture per round
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/eredivisie-data.js
