@@ -776,8 +776,6 @@ jobs:
               'sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews)': 'sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews)',
               'String[][] items = {{"⌂", "Nieuws"}, {"▣", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};': 'String[][] items = {{"⌂", "Nieuws"}, {"✎", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};',
               'page.setPadding(dp(8), 0, dp(8), dp(20));': 'page.setPadding(dp(8), 0, dp(8), dp(20));',
-              'tv("DE DERDE HELFT", 18, C.GREEN, true)': 'tv("DE DERDE HELFT  /  DE COLUMN", 16, C.GREEN, true)',
-              'tv("Door Sander Brink", 27, C.TEXT, true)': 'tv("De Derde Helft\\nDoor Sander Brink", 30, C.TEXT, true)',
           }
           for before, after in replacements.items():
               if before not in s: raise SystemExit("Visual design patch marker missing: " + before[:90])
@@ -911,14 +909,14 @@ jobs:
               masthead.setOnClickListener(v -> showColumn());
           }"""
           s = s[:list_pos + len(old)] + "\n        " + new + s[list_pos + len(old):]
-          # Give the column tab the approved editorial masthead and hierarchy.
+          # Preserve the current column layout, portrait and editorial archive.
           column_start = s.find("private void showColumn()")
           assert column_start >= 0, "Column page missing"
-          old = 'page.addView(tv("DE DERDE HELFT  /  DE COLUMN", 16, C.GREEN, true));'
-          pos = s.find(old, column_start)
-          assert pos >= 0, "Column heading missing"
-          s = s[:pos] + s[pos:].replace(old, 'page.addView(tv("DE DERDE", 33, C.TEXT, true));\n              page.addView(tv("HELFT", 42, C.GREEN, true));', 1)
-          s = s.replace('tv("De Derde Helft\\nDoor Sander Brink", 30, C.TEXT, true)', 'tv("Door Sander Brink", 19, C.GREEN, true)', 1)
+          column_end = s.find("private void showScores()", column_start)
+          assert column_end > column_start, "Column page boundary missing"
+          column = s[column_start:column_end]
+          for marker in ('R.drawable.column_sander_brink', 'COLUMN & ARTIKELEN', 'addEditorialNewsSection(page, true)'):
+              assert marker in column, "Column layout incomplete: " + marker
           # Article reader: display the same rights-cleared cover as its feed card.
           old = 'page.addView(originalArt, artParams);'
           assert old in s, "Reader artwork anchor missing"
