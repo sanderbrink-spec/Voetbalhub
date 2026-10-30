@@ -5,7 +5,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;',
 let items = [], visible = [], activeFilter = 'all', selected = null, published = false, publishing = false;
 let loadedOnce = false, serverClockOffset = 0, recoveryNotice = '', generating = false;
 const queueNow = () => Date.now() + serverClockOffset;
-const fields = ['category','headline','standfirst','body','fact1','fact2','source1','source2','imageUrl','imageSource','imageCredit','imageRights'];
+const fields = ['category','headline','standfirst','body','fact1','fact2','extraFacts','source1','source2','imageUrl','imageSource','imageCredit','imageRights'];
 const textChecks = ['sourceCheck','factCheck','duplicateCheck','languageCheck'];
 const imageChecks = ['kitCheck','identityCheck','aiDisclosure'];
 const draftKey = 'voetbalhubDeskWorkingDraftV2';
@@ -91,8 +91,11 @@ $('exportDrafts').onclick=()=>{
 };
 $('copyHeadlines').onclick=async()=>{try{await navigator.clipboard.writeText(visible.map(x=>x.headline).join('\n'));$('queueCount').textContent=`${visible.length} zichtbare koppen gekopieerd.`;}catch{$('queueCount').textContent='Kopiëren niet beschikbaar; gebruik JSON-export.';}};
 function resetChecks() { [...textChecks,...imageChecks,'generationFactCheck'].forEach(id=>$(id).checked=false); }
+function checkedFacts() {
+  return [...new Set([$ ('fact1').value,$ ('fact2').value,...$('extraFacts').value.split(/\n+/)].map(f=>f.trim()).filter(Boolean))].slice(0,20);
+}
 function payload() {
-  return {approved:true, category:$('category').value.trim()||'Voetbal',draft:{headline:$('headline').value.trim(),standfirst:$('standfirst').value.trim(),body:$('body').value.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean),why_it_matters:''},verifiedFacts:[$('fact1').value.trim(),$('fact2').value.trim()].filter(Boolean),sources:[$('source1').value.trim(),$('source2').value.trim()].filter(Boolean).map(url=>({url})),imageUrl:$('imageUrl').value.trim(),imageSource:$('imageSource').value.trim(),imageCredit:$('imageCredit').value.trim(),imageRights:$('imageRights').value,imageReview:{kitVerified:$('kitCheck').checked,playerIdentityVerified:$('identityCheck').checked,aiDisclosureVerified:$('aiDisclosure').checked},editorialChecks:{originalSourceReviewed:$('sourceCheck').checked,claimsIndependentlyChecked:$('factCheck').checked,duplicateChecked:$('duplicateCheck').checked,languageChecked:$('languageCheck').checked}};
+  return {approved:true, category:$('category').value.trim()||'Voetbal',draft:{headline:$('headline').value.trim(),standfirst:$('standfirst').value.trim(),body:$('body').value.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean),why_it_matters:''},verifiedFacts:checkedFacts(),sources:[$('source1').value.trim(),$('source2').value.trim()].filter(Boolean).map(url=>({url})),imageUrl:$('imageUrl').value.trim(),imageSource:$('imageSource').value.trim(),imageCredit:$('imageCredit').value.trim(),imageRights:$('imageRights').value,imageReview:{kitVerified:$('kitCheck').checked,playerIdentityVerified:$('identityCheck').checked,aiDisclosureVerified:$('aiDisclosure').checked},editorialChecks:{originalSourceReviewed:$('sourceCheck').checked,claimsIndependentlyChecked:$('factCheck').checked,duplicateChecked:$('duplicateCheck').checked,languageChecked:$('languageCheck').checked}};
 }
 function preview() {
   const d=payload().draft;
@@ -100,7 +103,7 @@ function preview() {
 }
 function updatePreflight() {
   const p=payload(), issues=M.publicationIssues(p);
-  $('preflight').innerHTML=`<strong>${issues.length?'Nog '+issues.length+' punten afronden':'Formulier compleet voor handmatige eindcontrole'}</strong>${issues.length?'<ul>'+issues.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p>De server controleert inhoud en dubbele publicatie opnieuw wanneer je publiceert.</p>'}<p class="muted">${p.draft.headline.split(/\s+/).filter(Boolean).length} woorden in de kop · ${p.draft.body.length} alinea’s${M.requiresFlashscore(p.draft)?' · Flashscore-controle vereist':''}</p>`;
+  $('preflight').innerHTML=`<strong>${issues.length?'Nog '+issues.length+' punten afronden':'Formulier compleet voor handmatige eindcontrole'}</strong>${issues.length?'<ul>'+issues.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p>De server controleert inhoud en dubbele publicatie opnieuw wanneer je publiceert.</p>'}<p class="muted">${p.draft.headline.split(/\s+/).filter(Boolean).length} woorden in de kop · ${p.draft.body.length} alinea’s · ${p.verifiedFacts.length} gecontroleerde feiten${M.requiresFlashscore(p.draft)?' · Flashscore-controle vereist':''}</p>`;
   $('publish').disabled=published||publishing;
   preview();
 }
@@ -121,7 +124,7 @@ function openItem(item, restoring=false) {
   $('category').value=item.category||'Voetbal';$('headline').value=item.headline||'';$('standfirst').value=item.standfirst||'';$('body').value=M.paragraphs(item).join('\n\n');
   $('source1').value=safeLink(item.source?.url||item.sourceUrl||'');
   $('editor').hidden=false;$('articlePreview').hidden=true;
-  $('generationStatus').textContent='Gebruikt je ingestelde AI-dienst; API-kosten kunnen ontstaan. Het concept blijft privé en wordt niet automatisch gepubliceerd.';
+  $('generationStatus').textContent='Maakt een concept en herstelt zo nodig één keer de tekst. API-kosten kunnen ontstaan. Het concept blijft privé.';
   $('publishStatus').textContent='Controleer de feiten en schrijf uitsluitend eigen tekst. Er is niets gepubliceerd.';
   updatePreflight();if(!restoring)saveDraft();$('editor').scrollIntoView({behavior:'smooth',block:'start'});$('headline').focus({preventScroll:true});return true;
 }
@@ -180,7 +183,7 @@ refreshService();
 $('generateDraft').onclick=async()=>{
   if(generating||publishing||published)return;
   const key=$('secret').value.trim(),topic=$('headline').value.trim();
-  const facts=[$('fact1').value.trim(),$('fact2').value.trim()].filter(Boolean);
+  const facts=checkedFacts();
   const sourceUrls=[$('source1').value.trim(),$('source2').value.trim()].filter(Boolean);
   if(!key||!topic||new Set(facts).size<2||sourceUrls.length<2||sourceUrls.some(u=>!M.host(u))||new Set(sourceUrls.map(M.host)).size<2||!$('generationFactCheck').checked){
     $('generationStatus').textContent='Vul je redactiesleutel, onderwerp, twee verschillende gecontroleerde feiten en twee HTTPS-bronlinks van verschillende websites in. Bevestig de feitencontrole.';return;
@@ -194,7 +197,7 @@ $('generateDraft').onclick=async()=>{
     if(!d.draft||M.draftIssues(d.draft).length)throw Error('Geen volledig en bruikbaar concept ontvangen. Je vorige tekst blijft staan.');
     $('headline').value=d.draft.headline;$('standfirst').value=d.draft.standfirst;$('body').value=d.draft.body.join('\n\n');
     resetChecks();saveDraft();preview();$('articlePreview').hidden=false;
-    $('generationStatus').textContent='Nieuw concept gereed en tijdelijk bewaard. Controleer de uiteindelijke tekst en feiten opnieuw vóór publicatie.';
+    $('generationStatus').textContent='Nieuw concept gereed en tijdelijk bewaard. '+(d.draft.qualityReview?.revisionApplied?'De tekst is na de eerste controle gericht hersteld. ':'')+'De tekstcontroles zijn geslaagd; controleer de uiteindelijke feiten en bronnen vóór publicatie.';
     $('publishStatus').textContent='AI-concept ontvangen. Nog niet goedgekeurd en niet gepubliceerd.';
   }catch(e){$('generationStatus').textContent=e.message;}
   finally{generating=false;controls.forEach(e=>e.disabled=false);updatePreflight();}

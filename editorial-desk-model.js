@@ -21,6 +21,19 @@
     if (words(d.headline) < 5 || words(d.headline) > 14) issues.push('Kop: 5 tot 14 woorden.');
     if (words(d.standfirst) < 8 || words(d.standfirst) > 35) issues.push('Intro: 8 tot 35 woorden.');
     if (body.length < 3 || body.length > 5 || body.some(p => p.length < 70 || words(p) < 18 || words(p) > 120)) issues.push('Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.');
+    const normalize = value => String(value || '').toLowerCase().normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+    const blocks = [d.standfirst, ...body].map(normalize).filter(Boolean);
+    for (let i=0;i<blocks.length;i++) for(let j=i+1;j<blocks.length;j++) {
+      const first=new Set(blocks[i].split(' ').filter(w=>w.length>3));
+      const second=new Set(blocks[j].split(' ').filter(w=>w.length>3));
+      const smaller=Math.min(first.size,second.size);
+      const overlap=smaller?[...first].filter(w=>second.has(w)).length/smaller:0;
+      if(blocks[i]===blocks[j]||(smaller>=8&&overlap>=0.82)) {
+        issues.push('Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.');
+        return issues;
+      }
+    }
     return issues;
   }
   function publicationIssues(payload) {

@@ -726,28 +726,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (missingChecks.length) return send(res, 400, { error: "Publicatie geblokkeerd: voltooi alle redactionele controles.", missingChecks });
     const publishBody = Array.isArray(d.body) ? d.body.filter(p => typeof p === "string").map(p => p.trim()).filter(Boolean) : [];
     if (typeof d.headline !== "string" || !d.headline.trim() || typeof d.standfirst !== "string" || !d.standfirst.trim() || publishBody.length < 3 || publishBody.length > 5 || publishBody.some(p => p.length < 70)) return send(res, 400, { error: "Publicatie geblokkeerd: kop, intro en 3-5 inhoudelijke alinea's van minimaal 70 tekens zijn verplicht." });
-    // Server-side quality gate: client checkboxes alone cannot approve repetitive copy.
-    const wordCount = value => String(value || "").trim().split(/\s+/).filter(Boolean).length;
-    const headlineWords = wordCount(d.headline);
-    const introWords = wordCount(d.standfirst);
-    if (headlineWords < 5 || headlineWords > 14 || introWords < 8 || introWords > 35 ||
-        publishBody.some(p => wordCount(p) < 18 || wordCount(p) > 120)) {
-      return send(res, 400, { error: "Kwaliteitscontrole afgekeurd: kop 5-14 woorden, intro 8-35 woorden en iedere alinea 18-120 woorden. Controleer inhoud en vermijd opvultekst." });
-    }
-    const normalizeCopy = value => String(value || "").toLowerCase().normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
-    const blocks = [d.standfirst, ...publishBody].map(normalizeCopy);
-    for (let i = 0; i < blocks.length; i++) {
-      for (let j = i + 1; j < blocks.length; j++) {
-        const a = new Set(blocks[i].split(" ").filter(w => w.length > 3));
-        const b = new Set(blocks[j].split(" ").filter(w => w.length > 3));
-        const smaller = Math.min(a.size, b.size);
-        const overlap = smaller ? [...a].filter(w => b.has(w)).length / smaller : 0;
-        if (blocks[i] === blocks[j] || (smaller >= 8 && overlap >= 0.82)) {
-          return send(res, 400, { error: "Kwaliteitscontrole afgekeurd: intro en alinea's herhalen te veel dezelfde inhoud. Herschrijf met nieuwe, gecontroleerde informatie." });
-        }
-      }
-    }
+    // Shared preflight already checks headline, intro, paragraphs and repeated copy.
     const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim().slice(0,1000) : "";
     const imageSource = typeof body.imageSource === "string" ? body.imageSource.trim().slice(0,300) : "";
     const imageCredit = typeof body.imageCredit === "string" ? body.imageCredit.trim().slice(0,200) : "";

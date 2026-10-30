@@ -111,3 +111,8 @@ test('service status accurately reports fact-based drafts and disabled automatic
  const d=await (await fetch(base+'/health')).json();
  assert.equal(d.draftMode,'verified_facts_only');assert.equal(d.automaticSourceIngestion,false);assert.equal(d.autoPublish,false);
 });
+test('the browser preflight and publication server both reject repeated paragraphs',async()=>{
+ const p=valid();p.draft.body=[p.draft.body[0],p.draft.body[0],p.draft.body[2]];
+ assert.ok(M.publicationIssues(p).some(x=>x.includes('herhalen')));
+ const before=store.size,r=await publish(p);assert.equal(r.status,400);assert.match((await r.json()).error,/herhalen/);assert.equal(store.size,before);
+});

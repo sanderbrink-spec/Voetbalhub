@@ -14,9 +14,10 @@ let draftCalls=0,draftMode='success',generatedDraft,releaseDraft;
 const draftGate=new Promise(resolve=>{releaseDraft=resolve;});
 await page.route('**/draft',async route=>{
  draftCalls++;
+ assert.equal(route.request().postDataJSON().facts.length,4);
  if(draftMode==='error')return route.fulfill({status:429,json:{error:'AI-limiet bereikt. Je invoer blijft bewaard.'}});
  await draftGate;
- return route.fulfill({json:{draft:generatedDraft,status:'draft_for_review',publishingEnabled:false}});
+ return route.fulfill({json:{draft:{...generatedDraft,qualityReview:{revisionApplied:true,automatedTextChecksPassed:true}},status:'draft_for_review',publishingEnabled:false}});
 });
 await page.goto('http://127.0.0.1:'+server.address().port+'/publish-desk');
 await page.locator('#secret').fill('not-a-real-secret');await page.locator('#load').click();await page.locator('[data-open]').first().waitFor();
@@ -37,11 +38,13 @@ await page.locator('#fact1').fill('Eerste gecontroleerde feit');await page.locat
 assert.equal(await page.locator('#secret').inputValue(),'');await page.locator('#secret').fill('not-a-real-secret');
 generatedDraft=await page.evaluate(()=>payload().draft);
 generatedDraft.headline='FC Groningen bespreekt plannen voor de komende speelronde';
+await page.locator('#extraFacts').fill('Derde door de redactie gecontroleerde feit.\nVierde door de redactie gecontroleerde feit.');
 await page.locator('#generationFactCheck').check();
 const draftRequest=page.waitForRequest('**/draft');await page.locator('#generateDraft').click();await draftRequest;
 assert.equal(await page.locator('#headline').isDisabled(),true);
 releaseDraft();await page.waitForFunction(()=>document.getElementById('generationStatus').textContent.includes('Nieuw concept gereed'));
 assert.equal(await page.locator('#headline').inputValue(),generatedDraft.headline);
+assert.ok((await page.locator('#generationStatus').textContent()).includes('gericht hersteld'));
 assert.equal(await page.locator('#generationFactCheck').isChecked(),false);
 assert.equal(await page.locator('#sourceCheck').isChecked(),false);
 assert.equal(posted.length,0);
