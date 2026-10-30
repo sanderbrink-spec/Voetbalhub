@@ -1,0 +1,39 @@
+{
+  "reviewed": [
+    {
+      "venue": "Philips Stadion",
+      "aliases": [
+        "Philips Stadion",
+        "Philips Stadium"
+      ],
+      "file": "philips-stadion.jpg",
+      "sha256": "cb5779d1d74c08da86fc9ae7feda5ca5f4aa73f0b9b0276dc41f3ca75515a0b2",
+      "sourcePage": "https://www.psv.nl/museum-tours/museum-tours",
+      "sourceImage": "https://www.psv.nl/upload/64d3d91d-9914-40c1-8c12-c3afb2fb882d_d00154a4-3a25-4f35-b681-c5472d0e6539_experience-philipsstadion-1470x720.jpg",
+      "credit": "Foto: PSV · Philips Stadion",
+      "reviewNotes": "Officiële PSV Museum & Tours-foto visueel gecontroleerd. Herkenbare open dakconstructie, rode tribunes met PSV en de Philips Stadion-loges. Geen overdekte Amsterdam ArenA."
+    }
+  ],
+  "knownPhotoIdentities": [
+    {
+      "sha256": "d3bae91b1f90f85b75da205cf43b18fe94743c33d83814afd02b832a4bc7af83",
+      "venue": "Johan Cruijff Arena"
+    },
+    {
+      "sha256": "eddd7d981c57ff533764cfb2db6fff79f5711f43cec9fd09811778fdf8169d81",
+      "venue": "MCH Arena"
+    },
+    {
+      "sha256": "2c50db9301e4774cd6db6e9c19c4ea9796dd7112a7aeb3dbd03c6bf8cc93549b",
+      "venue": "Koning Willem II Stadion"
+    },
+    {
+      "sha256": "62435b1d5ea8ab6e6ce1b151c69966eae452de3234376f5aaace0ce8e77eee60",
+      "venue": "De Oude Meerdijk"
+    },
+    {
+      "sha256": "cb5779d1d74c08da86fc9ae7feda5ca5f4aa73f0b9b0276dc41f3ca75515a0b2",
+      "venue": "Philips Stadion"
+    }
+  ]
+}

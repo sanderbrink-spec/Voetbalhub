@@ -8,3 +8,5 @@
 - Per speelronde één uitgelichte wedstrijd. Publicatievenster opent 48 uur vóór de eerste geplande aftrap van die speelronde. Selectie op klassering, nabijheid op de ranglijst en vastgelegde rivaliteiten. Een eenmaal aangekondigde keuze wordt niet bij elke update vervangen.
 - De vooruitblik bevat feitelijke statistieken. Geen verzonnen blessures, opstellingen, tactische conclusies of winstkansen.
 - Stand, uitslagen en spelerscijfers hebben een bron en zichtbare ophaaltijd. Geen oud seizoen als vervanging voor ontbrekende actuele cijfers.
+
+- Een geldige stadion-ID bewijst niet dat de geleverde foto klopt. Bekende fotobestanden zijn via hun SHA-256 aan één stadion gebonden. Een foto van de ArenA mag nooit onder Philips Stadion worden geplaatst. Gecontroleerde vervangingen hebben een vaste bron, visuele beoordeling en bestandscontrole.

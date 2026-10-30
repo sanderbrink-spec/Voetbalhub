@@ -54,10 +54,10 @@ async function collectOfficial({token,key,fetcher=fetch,now=Date.now(),save=true
   }).filter(f=>Number.isInteger(f.goals.home)&&Number.isInteger(f.goals.away));
   s.headToHead=[...new Map([...s.headToHead,...history].map(f=>[f.date.slice(0,10)+f.home.id+f.away.id,f])).values()].sort((a,b)=>Date.parse(b.date)-Date.parse(a.date)).slice(0,5);
   s.featured={...feature,preview:buildPreview(s,feature)};
-  if(previous?.fixtureId===feature.fixtureId&&previous.imageUrl&&previous.imageVersion===3){s.featured.imageUrl=previous.imageUrl;s.featured.imageVersion=3;s.featured.imageCredit=previous.imageCredit;s.featured.imageReview=previous.imageReview;}
+  if(previous?.fixtureId===feature.fixtureId&&previous.imageUrl&&previous.imageVersion===4){s.featured.imageUrl=previous.imageUrl;s.featured.imageVersion=4;s.featured.imageCredit=previous.imageCredit;s.featured.imageReview=previous.imageReview;}
   if(!s.featured.imageUrl){try{const {stadiumFor,createCover}=require('./match-cover');const resolved=await require('./eredivisie-covers').resolveTeam(feature.fixture.home.name,key,fetcher);
  if(norm(resolved.venue.name)!==norm(feature.fixture.venue.name))throw Error('Stadion van de wedstrijd wijkt af van de clublocatie.');
- const stadium=await stadiumFor(resolved.venue,key,fetcher);const image=await createCover({kind:'preview',fixture:feature.fixture,...stadium,competition:'Eredivisie'},{token,fetcher});s.featured.imageUrl=image.imageUrl;s.featured.imageCredit=image.imageCredit;s.featured.imageVersion=3;s.featured.imageReview=image.imageReview;}catch(e){warnings.push('Beeldcontrole: '+e.message);}}
+ const stadium=await stadiumFor(resolved.venue,key,fetcher);const image=await createCover({kind:'preview',fixture:feature.fixture,...stadium,competition:'Eredivisie'},{token,fetcher});s.featured.imageUrl=image.imageUrl;s.featured.imageCredit=image.imageCredit;s.featured.imageVersion=4;s.featured.imageReview=image.imageReview;}catch(e){warnings.push('Beeldcontrole: '+e.message);}}
  }
  if(save)await githubFile('statistics/eredivisie.json',JSON.stringify(s),{token,fetcher});
  return s;

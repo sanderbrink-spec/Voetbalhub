@@ -20,3 +20,17 @@ test('official short club names resolve to exact provider identities without cho
  const mock=async()=>({ok:true,json:async()=>({errors:[],response:[{team:{id:10,name:'PSV Eindhoven',country:'Netherlands',logo:'https://media.api-sports.io/logo.png'},venue:{id:20,name:'Philips Stadion'}}]})});
  assert.equal((await resolveTeam('PSV','key',mock)).venue.name,'Philips Stadion');
 });
+test('the same stadium photograph cannot be reused under another venue name even with a different provider ID',()=>{
+ const {assertStadiumIdentity}=require('../scripts/match-cover');
+ const arena='d3bae91b1f90f85b75da205cf43b18fe94743c33d83814afd02b832a4bc7af83';
+ assert.doesNotThrow(()=>assertStadiumIdentity(arena,'Johan Cruijff Arena'));
+ assert.throws(()=>assertStadiumIdentity(arena,'Philips Stadion'),/Verkeerd stadionbeeld/);
+});
+test('the PSV override is bound to the exact reviewed file and source stadium',async()=>{
+ const fs=require('node:fs'),path=require('node:path'),{hash}=require('../scripts/eredivisie-data');
+ const {stadiumFor}=require('../scripts/match-cover');
+ const entry=require('../stadium-assets.json').reviewed.find(e=>e.venue==='Philips Stadion');
+ assert.equal(hash(fs.readFileSync(path.join(__dirname,'../public/stadiums',entry.file))),entry.sha256);
+ const choice=await stadiumFor({name:'Philips Stadion',provider:'API-SPORTS',id:1143},'',()=>{throw Error('Wrong provider image must not be requested');});
+ assert.equal(choice.stadiumAsset,entry.file);assert.match(choice.stadiumSourceUrl,/www\.psv\.nl/);
+});

@@ -5,7 +5,7 @@ const BRANCH='editorial-media';
 const DATA_URL=`https://raw.githubusercontent.com/${REPO}/${BRANCH}/statistics/eredivisie.json`;
 const DONE=new Set(['FT','AET','PEN']);
 const ACTIVE=new Set(['NS','TBD']);
-const hash=x=>crypto.createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
+const hash=x=>crypto.createHash('sha256').update(typeof x==='string'||Buffer.isBuffer(x)||x instanceof Uint8Array?x:JSON.stringify(x)).digest('hex');
 function seasonFor(now=Date.now()){const d=new Date(now);return d.getUTCMonth()>=6?d.getUTCFullYear():d.getUTCFullYear()-1;}
 function fixtureRow(f,{leagueOnly=true}={}){
  if((leagueOnly&&f.league?.id!==88)||!Number.isInteger(f.fixture?.id)||!Number.isFinite(Date.parse(f.fixture.date))||!f.teams?.home?.id||!f.teams?.away?.id)throw Error('Ongeldige Eredivisiewedstrijd.');

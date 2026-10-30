@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/eredivisie-*.js'
       - 'scripts/match-cover*'
+      - 'stadium-assets.json'
+      - 'public/stadiums/**'
       - '.github/workflows/eredivisie.yml'
   schedule:
     - cron: '7 */3 * * *'

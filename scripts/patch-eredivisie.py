@@ -35,31 +35,12 @@ methods='''
         content.addView(new EredivisieStatsView(this, this::showCompetitions, feature), new android.widget.FrameLayout.LayoutParams(-1, -1));
     }
     private void addEredivisieFeature(LinearLayout parent) {
-        LinearLayout card = new LinearLayout(this); card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(dp(16), dp(16), dp(16), dp(16)); card.setBackground(cardBackground());
-        TextView title = tv("Eredivisie · Alle statistieken  ›", 17, C.TEXT, true);
-        card.addView(tv("WEDSTRIJD VAN DE SPEELRONDE", 11, C.GREEN, true));card.addView(title);
-        card.addView(tv("Stand, programma, uitslagen en topscorers", 12, C.MUTED, false));
-        card.setOnClickListener(v -> showEredivisieStatistics(false));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1,-2);lp.setMargins(dp(4),dp(8),dp(4),dp(12));parent.addView(card,lp);
-        executor.execute(() -> {
-            HttpURLConnection connection = null;
-            try {
-                connection=(HttpURLConnection)new URL("https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json?v="+(System.currentTimeMillis()/60000)).openConnection();
-                connection.setConnectTimeout(12000);connection.setReadTimeout(15000);connection.setInstanceFollowRedirects(false);
-                if(connection.getResponseCode()!=200)return;
-                java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-                try(InputStream in=connection.getInputStream()){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>3000000)return;}}
-                JSONObject data=new JSONObject(out.toString("UTF-8")),feature=data.optJSONObject("featured");
-                if(feature==null)return;
-                JSONObject preview=feature.optJSONObject("preview");if(preview==null)return;
-                String kickoff=preview.getJSONObject("fixture").optString("date", "");
-                long time=java.time.Instant.parse(kickoff).toEpochMilli();if(time<=System.currentTimeMillis())return;
-                String headline=preview.optString("headline", "Wedstrijd van de speelronde");
-                runOnUiThread(() -> {title.setText(headline+"  ›");card.setOnClickListener(v->showEredivisieStatistics(true));});
-            } catch(Exception ignored) {} finally {if(connection!=null)connection.disconnect();}
-        });
+        WeeklyMatchCard feature = new WeeklyMatchCard(this, () -> showEredivisieStatistics(false), () -> showEredivisieStatistics(true));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.setMargins(dp(4), dp(8), dp(4), dp(16));
+        parent.addView(feature, lp);
     }
+
 '''
 marker='    private void showCompetitions()'
 s=s.replace(marker,methods+'\n'+marker,1)
@@ -67,8 +48,51 @@ s=s.replace(marker,methods+'\n'+marker,1)
 marker='if ("Voor jou".equals(active)) { addEditorialNewsSection(list, false);'
 assert marker in s
 s=s.replace(marker,'if ("Voor jou".equals(active)) { addEredivisieFeature(list); addEditorialNewsSection(list, false);',1)
+# Keep the home column compact; the dedicated Column tab retains its full portrait.
+start = s.index('                  // Prominent editorial column feature:') if '                  // Prominent editorial column feature:' in s else s.index('// Prominent editorial column feature:')
+end = s.index('// The image cards already carry the Originals label;',start)
+column = """LinearLayout columnHero = new LinearLayout(this);
+                  columnHero.setOrientation(LinearLayout.HORIZONTAL);
+                  columnHero.setGravity(android.view.Gravity.CENTER_VERTICAL);
+                  columnHero.setPadding(dp(12), dp(12), dp(12), dp(12));
+                  columnHero.setBackground(cardBackground());
+                  LinearLayout.LayoutParams columnLp = new LinearLayout.LayoutParams(-1, -2);
+                  columnLp.setMargins(0, dp(2), 0, dp(16));
+                  if (!columnOnly && "Voor jou".equals(active)) section.addView(columnHero, columnLp);
+                  android.widget.ImageView homeColumnPortrait = new android.widget.ImageView(this);
+                  homeColumnPortrait.setImageResource(nl.voetbalhub.app.R.drawable.column_sander_brink);
+                  homeColumnPortrait.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+                  homeColumnPortrait.setContentDescription("Column door Sander Brink");
+                  LinearLayout.LayoutParams thumb = new LinearLayout.LayoutParams(dp(72), dp(96));
+                  thumb.setMargins(0, 0, dp(14), 0);
+                  columnHero.addView(homeColumnPortrait, thumb);
+                  LinearLayout columnCopy = new LinearLayout(this); columnCopy.setOrientation(LinearLayout.VERTICAL);
+                  columnHero.addView(columnCopy, new LinearLayout.LayoutParams(0, -2, 1));
+                  TextView columnAuthor = tv("COLUMN · SANDER BRINK", 10, C.GREEN, true);
+                  columnCopy.addView(columnAuthor);
+                  TextView columnTitle = tv("De Derde Helft", 19, C.TEXT, true);
+                  columnTitle.setPadding(0, dp(5), 0, dp(5)); columnTitle.setMaxLines(2); columnTitle.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                  columnCopy.addView(columnTitle);
+                  TextView columnSub = tv("Een eigen kijk op het voetbal.", 12, C.MUTED, false);
+                  columnSub.setMaxLines(2); columnSub.setEllipsize(android.text.TextUtils.TruncateAt.END);columnCopy.addView(columnSub);
+                  TextView columnAction = tv("Bekijk de column  →", 12, C.GREEN, true);
+                  columnAction.setPadding(0, dp(8), 0, 0);columnCopy.addView(columnAction);
+                  columnHero.setOnClickListener(v -> showColumn());
+                  columnAction.setOnClickListener(v -> showColumn());
+                  """
+s=s[:start]+column+s[end:]
+s=s.replace('columnHero.setOnClickListener(v -> showEditorialArticle(featured));','columnHero.setOnClickListener(v -> showEditorialArticle(featured)); columnAction.setOnClickListener(v -> showEditorialArticle(featured));')
+s=s.replace('if (!columnOnly) section.setBackground(cardBackground());','')
+s=s.replace('section.setPadding(columnOnly ? 0 : dp(6), dp(7), columnOnly ? 0 : dp(6), dp(7));','section.setPadding(0, dp(7), 0, dp(7));')
+s=s.replace('Alleen eigen VoetbalHub-artikelen','Nieuws, achtergronden en jouw clubs')
+s=s.replace('tv("LAATSTE NIEUWS  ·  VOETBALHUB ORIGINALS", 14, C.GREEN, true)','tv("Laatste nieuws", 18, C.TEXT, true)')
+s=s.replace('card.setBackgroundColor(0xFF101917);','card.setBackground(cardBackground()); card.setClipToOutline(true);')
+s=s.replace('headline.setLineSpacing(dp(3), 1.0f);','headline.setLineSpacing(dp(3), 1.0f); headline.setMaxLines(3); headline.setEllipsize(android.text.TextUtils.TruncateAt.END);')
+
 p.write_text(s)
 assets=Path('app/src/main/assets');assets.mkdir(parents=True,exist_ok=True)
 shutil.copyfile('android-ui/assets/eredivisie.html',assets/'eredivisie.html')
 shutil.copyfile('android-ui/java/EredivisieStatsView.java',p.parent/'EredivisieStatsView.java')
 print('Installed internal Eredivisie statistics and weekly feature subpage')
+
+shutil.copyfile('android-ui/java/WeeklyMatchCard.java',p.parent/'WeeklyMatchCard.java')
