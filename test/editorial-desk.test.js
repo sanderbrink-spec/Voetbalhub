@@ -7,11 +7,11 @@ const http = require('node:http');
 const {createRequire} = require('node:module');
 const M = require('../editorial-desk-model');
 function valid() {
-  return {approved:true, draft:{headline:'FC Groningen wint na spannende slotfase van Ajax',standfirst:'Groningen boekte een overwinning na een intensieve wedstrijd waarin de bezoekers tot het laatste moment bleven aandringen.',body:[
+  const result={approved:true,match:{homeTeam:'FC Groningen',awayTeam:'Ajax',homeScore:2,awayScore:0,playedAt:'2026-10-29'},factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}, draft:{headline:'FC Groningen wint na spannende slotfase van Ajax',standfirst:'Groningen boekte een overwinning na een intensieve wedstrijd waarin de bezoekers tot het laatste moment bleven aandringen.',body:[
     'De thuisploeg begon met veel druk op de tegenstander en zocht via de vleugels voortdurend naar vrije spelers achter de verdediging.',
     'Na de onderbreking koos de bezoekende trainer voor twee wissels op het middenveld om meer controle te krijgen over het balbezit.',
     'Supporters bleven hun team aanmoedigen terwijl beide trainers richting het laatste fluitsignaal de resterende spelers op de bank instructies gaven.'
-  ]},verifiedFacts:['Gecontroleerd feit één','Gecontroleerd feit twee'],sources:[{url:'https://flashscore.nl/wedstrijd/test'},{url:'https://fcgroningen.nl/nieuws/test'}],editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed'};
+  ]},verifiedFacts:['FC Groningen speelde thuis tegen Ajax op 2026-10-29. De eindstand thuis-uit was 2-0.','Een tweede door de redactie gecontroleerd feit.'],sources:[{url:'https://flashscore.nl/wedstrijd/test'},{url:'https://fcgroningen.nl/nieuws/test'}],editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed'};result.verifiedFacts.push(...result.draft.body);return result;
 }
 test('shared publication preflight accepts complete review',()=>assert.deepEqual(M.publicationIssues(valid()),[]));
 test('Flashscore required for scores and actual Flashscore host, not lookalikes',()=>{
@@ -138,7 +138,7 @@ test('full own drafts stay private and can be reopened with facts and sources',a
  const before=(await (await fetch(base+'/articles')).json()).count;
  const r=await saveOwn({payload:{...p,secret:'must-not-persist'},approve:false});assert.equal(r.status,200);
  ownRecord=(await r.json()).record;assert.equal(ownRecord.status,'draft');assert.equal(ownRecord.revision,1);
- assert.equal(ownRecord.payload.draft.body.length,3);assert.equal(ownRecord.payload.verifiedFacts.length,2);assert.equal(ownRecord.payload.sources.length,2);
+ assert.equal(ownRecord.payload.draft.body.length,3);assert.ok(ownRecord.payload.verifiedFacts.length>=2);assert.equal(ownRecord.payload.sources.length,2);
  assert.ok(!JSON.stringify(ownRecord).includes('must-not-persist'));
  const records=(await (await fetch(base+'/editorial-drafts',{headers:{Authorization:'Bearer test-only'}})).json()).items;
  assert.ok(records.some(x=>x.id===ownRecord.id));
@@ -166,4 +166,16 @@ test('concurrent saves of the same revision cannot overwrite each other',async()
  let r=await saveOwn({payload:ownPayload()});const record=(await r.json()).record;
  const results=await Promise.all([saveOwn({id:record.id,expectedRevision:1,payload:ownPayload()}),saveOwn({id:record.id,expectedRevision:1,payload:ownPayload()})]);
  assert.deepEqual(results.map(x=>x.status).sort(),[200,409]);
+});
+test('general approval cannot bypass the report-specific factual checks',async()=>{
+ const p=valid();delete p.factChecks;delete p.match;
+ const r=await publish(p);assert.equal(r.status,400);assert.match((await r.json()).error,/Wedstrijdverslag|Feitencontrole/);
+});
+test('reversed result stays blocked by the publication API despite checked boxes',async()=>{
+ const p=valid();p.draft.headline='FC Groningen wint met 0-2 van Ajax';
+ const r=await publish(p);assert.equal(r.status,400);assert.match((await r.json()).error,/Uitslag of tussenstand/);
+});
+test('unsupported match narrative cannot be approved just by ticking all controls',async()=>{
+ const p=valid();p.draft.body[0]+=' Ajax domineerde het duel maar Groningen maakte een comeback.';
+ const r=await saveOwn({payload:p,approve:true});assert.equal(r.status,400);assert.match((await r.json()).error,/Niet aangeleverd wedstrijdverloop/);
 });

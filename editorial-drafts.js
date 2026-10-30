@@ -17,6 +17,8 @@ function cleanPayload(value={}){
  const d=value.draft||{};
  return {
   draft:{headline:String(d.headline||'').trim().slice(0,200),standfirst:String(d.standfirst||'').trim().slice(0,700),body:Array.isArray(d.body)?d.body.filter(x=>typeof x==='string').map(x=>x.trim().slice(0,6000)).filter(Boolean).slice(0,5):[],why_it_matters:String(d.why_it_matters||'').slice(0,1000)},
+  match:value.match?{homeTeam:String(value.match.homeTeam||'').trim().slice(0,100),awayTeam:String(value.match.awayTeam||'').trim().slice(0,100),homeScore:Number.isInteger(value.match.homeScore)?value.match.homeScore:null,awayScore:Number.isInteger(value.match.awayScore)?value.match.awayScore:null,playedAt:String(value.match.playedAt||'').slice(0,10)}:null,
+  factChecks:Object.fromEntries(['resultVerified','namesVerified','dateVerified','timelineVerified'].map(k=>[k,value.factChecks?.[k]===true])),
   category:String(value.category||'Voetbal').slice(0,80),
   verifiedFacts:Array.isArray(value.verifiedFacts)?value.verifiedFacts.filter(x=>typeof x==='string').map(x=>x.trim().slice(0,5000)).filter(Boolean).slice(0,20):[],
   sources:Array.isArray(value.sources)?value.sources.filter(x=>x&&typeof x.url==='string').map(x=>({url:x.url.trim().slice(0,1500)})).slice(0,10):[],

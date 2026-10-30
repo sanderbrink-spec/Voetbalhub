@@ -1,7 +1,7 @@
 (function (root, factory) {
-  if (typeof module === 'object' && module.exports) module.exports = factory();
-  else root.DeskModel = factory();
-})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  if (typeof module === 'object' && module.exports) module.exports = factory(require("./editorial-facts"));
+  else root.DeskModel = factory(root.DeskFacts);
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (factAudit) {
   const checks = ['originalSourceReviewed', 'claimsIndependentlyChecked', 'duplicateChecked', 'languageChecked'];
   const words = value => String(value || '').trim().split(/\s+/).filter(Boolean).length;
   function host(value) {
@@ -39,6 +39,7 @@
   function publicationIssues(payload) {
     const issues = [], d = payload.draft || {};
     issues.push(...draftIssues(d));
+    issues.push(...factAudit.audit(payload));
     if (!Array.isArray(payload.verifiedFacts) || payload.verifiedFacts.filter(x => typeof x === 'string' && x.trim()).length < 2) issues.push('Vul twee zelf gecontroleerde feiten in.');
     const sources = Array.isArray(payload.sources) ? payload.sources : [];
     const hosts = sources.map(s => host(s?.url));
@@ -80,5 +81,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { draftIssues, excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

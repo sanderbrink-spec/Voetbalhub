@@ -6,7 +6,7 @@ const good={headline:'FC Groningen bespreekt plannen voor het komende seizoen',s
 'Tijdens een apart overleg spraken vertegenwoordigers van de club met supporters over praktische onderwerpen rond de ontvangst van bezoekers en bereikbaarheid van het stadion.',
 'Het bestuur zal de verschillende voorstellen tijdens een volgende vergadering bespreken voordat de verantwoordelijke afdelingen verdere afspraken over uitvoering en planning kunnen maken.'
 ]};
-const input={topic:'Clubplannen',facts:['Feit een','Feit twee'],category:'Voetbal',sourceUrls:['https://fcgroningen.nl/nieuws']};
+const input={topic:'Clubplannen',facts:[good.headline,good.standfirst,...good.body],category:'Voetbal',sourceUrls:['https://fcgroningen.nl/nieuws']};
 const config={apiKey:'test-secret-not-real',model:'test-model'};
 const reply=d=>new Response(JSON.stringify({choices:[{message:{content:JSON.stringify(d)}}]}),{status:200,headers:{'Content-Type':'application/json'}});
 test('draft generation sends only supplied facts with timeout signal and returns unpublished draft',async()=>{
@@ -56,7 +56,7 @@ test('new numbers cause a targeted repair instead of being accepted as supplied 
  let calls=0;
  await createEditorialDraft(input,{...config,fetcher:async(_,options)=>{
   if(++calls===1)return reply({...good,headline:'FC Groningen bespreekt 27 plannen voor het nieuwe seizoen'});
-  assert.match(JSON.parse(options.body).messages.at(-1).content,/Niet aangeleverde cijfers: 27/);
+  assert.match(JSON.parse(options.body).messages.at(-1).content,/Cijfers ontbreken in de gecontroleerde feiten: 27/);
   return reply(good);
  }});assert.equal(calls,2);
 });

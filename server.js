@@ -285,7 +285,7 @@ async function getArticles() {
 }
 async function handle(req, res) {
   const url = new URL(req.url, "http://localhost");
-  const deskAssets = {"/desk-model.js": "editorial-desk-model.js", "/desk.js": "public/desk.js"};
+  const deskAssets = {"/desk-facts.js": "editorial-facts.js", "/desk-model.js": "editorial-desk-model.js", "/desk.js": "public/desk.js"};
   if (req.method === "GET" && Object.hasOwn(deskAssets, url.pathname)) {
     res.writeHead(200, {"Content-Type":"text/javascript; charset=utf-8", "Cache-Control":"no-store", "X-Content-Type-Options":"nosniff"});
     return res.end(require("node:fs").readFileSync(require("node:path").join(__dirname, deskAssets[url.pathname]), "utf8"));
@@ -591,13 +591,13 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (uniqueFacts.length < 2) return send(res, 400, { error: "Vul minimaal twee verschillende gecontroleerde feiten in." });
     try {
       const draft = await require("./editorial-ai").createEditorialDraft({
-        topic, category: String(body.category || "Voetbal").slice(0,80),
+        topic, category: String(body.category || "Voetbal").slice(0,80),match:body.match||null,
         facts: uniqueFacts.map(f => f.slice(0,5000)),
         sourceUrls: (Array.isArray(body.sourceUrls) ? body.sourceUrls : []).filter(u => typeof u === "string" && /^https:\/\//i.test(u)).slice(0,10)
       }, {apiKey:GROQ_API_KEY,model:MODEL});
       let savedDraft=null,storageWarning="";
       if (client?.isReady) {
-        try { savedDraft=await require("./editorial-drafts").saveDraft(client,{payload:{draft,category:body.category,verifiedFacts:uniqueFacts,sources:(body.sourceUrls||[]).map(url=>({url})),imageRights:"not_needed"}}); }
+        try { savedDraft=await require("./editorial-drafts").saveDraft(client,{payload:{draft,category:body.category,match:body.match||null,verifiedFacts:uniqueFacts,sources:(body.sourceUrls||[]).map(url=>({url})),imageRights:"not_needed"}}); }
         catch { storageWarning="Concept gemaakt, maar nog niet op de server bewaard. Gebruik Concept opslaan."; }
       } else storageWarning="Concept gemaakt; serveropslag is niet beschikbaar. Houd de bewerking open.";
       return send(res, 200, {status:"draft_for_review",editorialReviewRequired:true,publishingEnabled:false,draft,savedDraft,storageWarning});

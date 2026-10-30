@@ -6,9 +6,10 @@ let items = [], visible = [], activeFilter = 'all', selected = null, published =
 let loadedOnce = false, serverClockOffset = 0, recoveryNotice = '', generating = false;
 let ownRecords=[],savedRecord=null,lastSavedSnapshot='',saving=false;
 const queueNow = () => Date.now() + serverClockOffset;
-const fields = ['category','headline','standfirst','body','fact1','fact2','extraFacts','source1','source2','imageUrl','imageSource','imageCredit','imageRights'];
+const fields = ['category','headline','standfirst','body','fact1','fact2','extraFacts','source1','source2','imageUrl','imageSource','imageCredit','imageRights','homeTeam','awayTeam','homeScore','awayScore','playedAt'];
 const textChecks = ['sourceCheck','factCheck','duplicateCheck','languageCheck'];
 const imageChecks = ['kitCheck','identityCheck','aiDisclosure'];
+const factCheckIds=['resultVerified','namesVerified','dateVerified','timelineVerified'];
 const draftKey = 'voetbalhubDeskWorkingDraftV2';
 function safeLink(value) { return M.host(value) ? value : ''; }
 async function request(path, options = {}) {
@@ -95,21 +96,26 @@ $('exportDrafts').onclick=()=>{
   const a=document.createElement('a'); a.href=url;a.download='voetbalhub-concepten-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
 $('copyHeadlines').onclick=async()=>{try{await navigator.clipboard.writeText(visible.map(x=>x.headline).join('\n'));$('queueCount').textContent=`${visible.length} zichtbare koppen gekopieerd.`;}catch{$('queueCount').textContent='Kopiëren niet beschikbaar; gebruik JSON-export.';}};
-function resetChecks() { [...textChecks,...imageChecks,'generationFactCheck'].forEach(id=>$(id).checked=false); }
+function resetChecks() { [...textChecks,...imageChecks,...factCheckIds,'generationFactCheck'].forEach(id=>$(id).checked=false); }
 function checkedFacts() {
   return [...new Set([$ ('fact1').value,$ ('fact2').value,...$('extraFacts').value.split(/\n+/)].map(f=>f.trim()).filter(Boolean))].slice(0,20);
 }
+function readMatch(){
+ const values=Object.fromEntries(['homeTeam','awayTeam','homeScore','awayScore','playedAt'].map(id=>[id,$(id).value.trim()]));
+ if(!Object.values(values).some(Boolean))return null;
+ return {...values,homeScore:/^\d{1,2}$/.test(values.homeScore)?Number(values.homeScore):null,awayScore:/^\d{1,2}$/.test(values.awayScore)?Number(values.awayScore):null};
+}
 function payload() {
-  return {approved:true, category:$('category').value.trim()||'Voetbal',draft:{headline:$('headline').value.trim(),standfirst:$('standfirst').value.trim(),body:$('body').value.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean),why_it_matters:''},verifiedFacts:checkedFacts(),sources:[$('source1').value.trim(),$('source2').value.trim()].filter(Boolean).map(url=>({url})),imageUrl:$('imageUrl').value.trim(),imageSource:$('imageSource').value.trim(),imageCredit:$('imageCredit').value.trim(),imageRights:$('imageRights').value,imageReview:{kitVerified:$('kitCheck').checked,playerIdentityVerified:$('identityCheck').checked,aiDisclosureVerified:$('aiDisclosure').checked},editorialChecks:{originalSourceReviewed:$('sourceCheck').checked,claimsIndependentlyChecked:$('factCheck').checked,duplicateChecked:$('duplicateCheck').checked,languageChecked:$('languageCheck').checked}};
+  return {approved:true,match:readMatch(),factChecks:Object.fromEntries(factCheckIds.map(id=>[id,$(id).checked])), category:$('category').value.trim()||'Voetbal',draft:{headline:$('headline').value.trim(),standfirst:$('standfirst').value.trim(),body:$('body').value.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean),why_it_matters:''},verifiedFacts:checkedFacts(),sources:[$('source1').value.trim(),$('source2').value.trim()].filter(Boolean).map(url=>({url})),imageUrl:$('imageUrl').value.trim(),imageSource:$('imageSource').value.trim(),imageCredit:$('imageCredit').value.trim(),imageRights:$('imageRights').value,imageReview:{kitVerified:$('kitCheck').checked,playerIdentityVerified:$('identityCheck').checked,aiDisclosureVerified:$('aiDisclosure').checked},editorialChecks:{originalSourceReviewed:$('sourceCheck').checked,claimsIndependentlyChecked:$('factCheck').checked,duplicateChecked:$('duplicateCheck').checked,languageChecked:$('languageCheck').checked}};
 }
 function preview() {
   const d=payload().draft;
-  $('articlePreview').innerHTML=`<p class="muted">Volledig eigen artikel · ${savedRecord?.status==='published'?'gepubliceerd':savedRecord?.status==='approved'?'deze versie is goedgekeurd':'nog te beoordelen'}</p><h2>${esc(d.headline||'Nog geen kop')}</h2><p><strong>${esc(d.standfirst)}</strong></p>${d.body.map(p=>'<p>'+esc(p)+'</p>').join('')}<h3>Gecontroleerde feiten</h3><ul>${checkedFacts().map(f=>'<li>'+esc(f)+'</li>').join('')}</ul><h3>Bronnen controleren</h3>${payload().sources.filter(s=>safeLink(s.url)).map(s=>`<p><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(M.host(s.url))} ↗</a></p>`).join('')}`;
+  $('articlePreview').innerHTML=`<p class="muted">Volledig eigen artikel · ${savedRecord?.status==='published'?'gepubliceerd':savedRecord?.status==='approved'?'deze versie is goedgekeurd':'nog te beoordelen'}</p><h2>${esc(d.headline||'Nog geen kop')}</h2><p><strong>${esc(d.standfirst)}</strong></p>${d.body.map(p=>'<p>'+esc(p)+'</p>').join('')}${payload().match?`<h3>Vastgelegde wedstrijdfeiten</h3><p>${esc(payload().match.homeTeam)} – ${esc(payload().match.awayTeam)}<br>Eindstand thuis-uit: ${esc(payload().match.homeScore)}-${esc(payload().match.awayScore)}<br>Datum: ${esc(payload().match.playedAt)}</p>`:''}<h3>Gecontroleerde feiten</h3><ul>${checkedFacts().map(f=>'<li>'+esc(f)+'</li>').join('')}</ul><h3>Bronnen controleren</h3>${payload().sources.filter(s=>safeLink(s.url)).map(s=>`<p><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(M.host(s.url))} ↗</a></p>`).join('')}`;
 }
 function updatePreflight() {
   const p=payload(), issues=M.publicationIssues(p);
   $('preflight').innerHTML=`<strong>${issues.length?'Nog '+issues.length+' punten afronden':'Formulier compleet voor handmatige eindcontrole'}</strong>${issues.length?'<ul>'+issues.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p>De server controleert inhoud en dubbele publicatie opnieuw wanneer je publiceert.</p>'}<p class="muted">${p.draft.headline.split(/\s+/).filter(Boolean).length} woorden in de kop · ${p.draft.body.length} alinea’s · ${p.verifiedFacts.length} gecontroleerde feiten${M.requiresFlashscore(p.draft)?' · Flashscore-controle vereist':''}</p>`;
-  $('publish').disabled=published||publishing||saving||!approvalCurrent();
+  $('publish').disabled=published||publishing||saving||issues.length>0||!approvalCurrent();
   $('approveServerDraft').disabled=published||publishing||saving;
   $('saveServerDraft').disabled=published||publishing||saving;
   $('generateDraft').disabled=published||publishing||saving||generating;
@@ -149,7 +155,7 @@ $('restoreDraft').onclick=()=>{
 };
 try { $('restoreDraft').hidden=!sessionStorage.getItem(draftKey); } catch {}
 for(const id of fields) $(id).addEventListener('input',()=>{if(published)return;resetChecks();updatePreflight();saveDraft();});
-[...textChecks,...imageChecks].forEach(id=>$(id).onchange=updatePreflight);
+[...textChecks,...imageChecks,...factCheckIds].forEach(id=>$(id).onchange=updatePreflight);
 $('previewToggle').onclick=()=>{$('articlePreview').hidden=!$('articlePreview').hidden;preview();};
 $('cancel').onclick=()=>{if(publishing||generating||saving)return;saveDraft();$('editor').hidden=true;selected=null;};
 $('publish').onclick=async()=>{
@@ -205,7 +211,7 @@ $('generateDraft').onclick=async()=>{
   const controls=[...$('editor').querySelectorAll('input,textarea,select,button')];controls.forEach(e=>e.disabled=true);
   $('generationStatus').textContent='AI-concept wordt gemaakt. Je huidige bewerking blijft bewaard.';
   try{
-    const d=await request('/draft',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify({topic,category:$('category').value.trim()||'Voetbal',facts,sourceUrls})});
+    const d=await request('/draft',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify({topic,category:$('category').value.trim()||'Voetbal',facts,sourceUrls,match:readMatch()})});
     if(!d.draft||M.draftIssues(d.draft).length)throw Error('Geen volledig en bruikbaar concept ontvangen. Je vorige tekst blijft staan.');
     $('headline').value=d.draft.headline;$('standfirst').value=d.draft.standfirst;$('body').value=d.draft.body.join('\n\n');
     resetChecks();
@@ -224,7 +230,7 @@ function renderOwnDrafts(){
  $('ownDraftStatus').textContent=ownRecords.length?`${ownRecords.length} eigen artikelen opgeslagen. Volledige tekst, feiten en bronnen blijven bij ieder concept bewaard.`:'Nog geen volledige eigen artikelen opgeslagen. Maak een eigen artikel of herstel een bestaande bewerking en kies Concept opslaan.';
  $('ownDraftQueue').innerHTML=ownRecords.map((r,i)=>{
   const p=r.payload||{},d=p.draft||{};
-  const label=r.status==='published'?'Gepubliceerd':r.status==='approved'?'Goedgekeurd voor de app':'Inhoudelijk beoordelen';
+  const label=r.status==='published'?'Gepubliceerd':r.status==='approved'?(M.factAuditIssues(p).length?'Aanvullende feitencontrole nodig':'Goedgekeurd voor de app'):'Inhoudelijk beoordelen';
   return `<article class="card"><span class="badge">${esc(label)}</span><h3>${esc(d.headline)}</h3><p>${esc(d.standfirst)}</p><details><summary>Volledige tekst lezen</summary><div class="article-text">${(d.body||[]).map(t=>'<p>'+esc(t)+'</p>').join('')}</div></details>${r.status==='published'?'<p class="muted">Dit artikel is beschikbaar voor de app.</p>':`<button data-own-open="${i}">Lees en beoordeel</button>`}</article>`;
  }).join('');
  document.querySelectorAll('[data-own-open]').forEach(b=>b.onclick=()=>openOwnRecord(ownRecords[Number(b.dataset.ownOpen)]));
@@ -235,9 +241,12 @@ function openOwnRecord(record){
  savedRecord=record;selected={id:record.id,own:true};
  $('fact1').value=p.verifiedFacts?.[0]||'';$('fact2').value=p.verifiedFacts?.[1]||'';$('extraFacts').value=(p.verifiedFacts||[]).slice(2).join('\n');
  $('source1').value=p.sources?.[0]?.url||'';$('source2').value=p.sources?.[1]?.url||'';
+ for(const id of ['homeTeam','awayTeam','homeScore','awayScore','playedAt'])$(id).value=p.match?.[id]??'';
+ $('matchFields').open=M.needsMatch(d);
  for(const id of ['imageUrl','imageSource','imageCredit','imageRights'])if(typeof p[id]==='string')$(id).value=p[id];
  if(record.status==='approved'){
   const mapping={sourceCheck:'originalSourceReviewed',factCheck:'claimsIndependentlyChecked',duplicateCheck:'duplicateChecked',languageCheck:'languageChecked'};
+  factCheckIds.forEach(id=>$(id).checked=p.factChecks?.[id]===true);
   Object.entries(mapping).forEach(([id,key])=>$(id).checked=p.editorialChecks?.[key]===true);
   $('kitCheck').checked=p.imageReview?.kitVerified===true;$('identityCheck').checked=p.imageReview?.playerIdentityVerified===true;$('aiDisclosure').checked=p.imageReview?.aiDisclosureVerified===true;
  }
