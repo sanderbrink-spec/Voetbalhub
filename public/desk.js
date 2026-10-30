@@ -3,7 +3,7 @@ const $ = id => document.getElementById(id);
 const M = window.DeskModel;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let items = [], visible = [], activeFilter = 'all', selected = null, published = false, publishing = false;
-let loadedOnce = false, serverClockOffset = 0, recoveryNotice = '';
+let loadedOnce = false, serverClockOffset = 0, recoveryNotice = '', generating = false;
 const queueNow = () => Date.now() + serverClockOffset;
 const fields = ['category','headline','standfirst','body','fact1','fact2','source1','source2','imageUrl','imageSource','imageCredit','imageRights'];
 const textChecks = ['sourceCheck','factCheck','duplicateCheck','languageCheck'];
@@ -90,7 +90,7 @@ $('exportDrafts').onclick=()=>{
   const a=document.createElement('a'); a.href=url;a.download='voetbalhub-concepten-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
 $('copyHeadlines').onclick=async()=>{try{await navigator.clipboard.writeText(visible.map(x=>x.headline).join('\n'));$('queueCount').textContent=`${visible.length} zichtbare koppen gekopieerd.`;}catch{$('queueCount').textContent='Kopiëren niet beschikbaar; gebruik JSON-export.';}};
-function resetChecks() { [...textChecks,...imageChecks].forEach(id=>$(id).checked=false); }
+function resetChecks() { [...textChecks,...imageChecks,'generationFactCheck'].forEach(id=>$(id).checked=false); }
 function payload() {
   return {approved:true, category:$('category').value.trim()||'Voetbal',draft:{headline:$('headline').value.trim(),standfirst:$('standfirst').value.trim(),body:$('body').value.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean),why_it_matters:''},verifiedFacts:[$('fact1').value.trim(),$('fact2').value.trim()].filter(Boolean),sources:[$('source1').value.trim(),$('source2').value.trim()].filter(Boolean).map(url=>({url})),imageUrl:$('imageUrl').value.trim(),imageSource:$('imageSource').value.trim(),imageCredit:$('imageCredit').value.trim(),imageRights:$('imageRights').value,imageReview:{kitVerified:$('kitCheck').checked,playerIdentityVerified:$('identityCheck').checked,aiDisclosureVerified:$('aiDisclosure').checked},editorialChecks:{originalSourceReviewed:$('sourceCheck').checked,claimsIndependentlyChecked:$('factCheck').checked,duplicateChecked:$('duplicateCheck').checked,languageChecked:$('languageCheck').checked}};
 }
@@ -114,13 +114,14 @@ function saveDraft() {
   } catch { $('draftSaveStatus').textContent='Bewerking kon niet worden bewaard. Houd deze pagina open totdat je klaar bent.'; }
 }
 function openItem(item, restoring=false) {
-  if (publishing) return false;
+  if (publishing || generating) return false;
   if (!$('editor').hidden && !published && !confirm('Open een ander concept? De huidige bewerking wordt vervangen.')) return false;
   selected=item; published=false;
   fields.forEach(id=>$(id).value=''); $('imageRights').value='not_needed';resetChecks();
   $('category').value=item.category||'Voetbal';$('headline').value=item.headline||'';$('standfirst').value=item.standfirst||'';$('body').value=M.paragraphs(item).join('\n\n');
   $('source1').value=safeLink(item.source?.url||item.sourceUrl||'');
   $('editor').hidden=false;$('articlePreview').hidden=true;
+  $('generationStatus').textContent='Gebruikt je ingestelde AI-dienst; API-kosten kunnen ontstaan. Het concept blijft privé en wordt niet automatisch gepubliceerd.';
   $('publishStatus').textContent='Controleer de feiten en schrijf uitsluitend eigen tekst. Er is niets gepubliceerd.';
   updatePreflight();if(!restoring)saveDraft();$('editor').scrollIntoView({behavior:'smooth',block:'start'});$('headline').focus({preventScroll:true});return true;
 }
@@ -137,9 +138,9 @@ try { $('restoreDraft').hidden=!sessionStorage.getItem(draftKey); } catch {}
 for(const id of fields) $(id).addEventListener('input',()=>{if(published)return;resetChecks();updatePreflight();saveDraft();});
 [...textChecks,...imageChecks].forEach(id=>$(id).onchange=updatePreflight);
 $('previewToggle').onclick=()=>{$('articlePreview').hidden=!$('articlePreview').hidden;preview();};
-$('cancel').onclick=()=>{if(publishing)return;saveDraft();$('editor').hidden=true;selected=null;};
+$('cancel').onclick=()=>{if(publishing||generating)return;saveDraft();$('editor').hidden=true;selected=null;};
 $('publish').onclick=async()=>{
-  if(publishing||published)return;
+  if(publishing||published||generating)return;
   const p=payload(),issues=M.publicationIssues(p),key=$('secret').value.trim();
   if(!key){$('publishStatus').textContent='Vul eerst de redactiesleutel in.';return;}
   if(issues.length){$('publishStatus').textContent='Publicatie geblokkeerd. Rond de bovenstaande punten af.';updatePreflight();return;}
@@ -165,3 +166,36 @@ $("existingArticle").closest("details").addEventListener("toggle",e=>{if(e.targe
 $("imageSave").onclick=async()=>{const id=$("existingArticle").value,key=$("secret").value.trim(),imageUrl=$("existingImageUrl").value.trim(),imageSource=$("existingImageSource").value.trim(),imageCredit=$("existingImageCredit").value.trim(),imageRights=$("existingImageRights").value;if(!id||!key||!imageUrl.startsWith("https://")||!imageSource||!imageCredit||!$("existingKit").checked||!$("existingIdentity").checked||!$("existingDisclosure").checked){$("imageStatus").textContent="Vul de redactiesleutel, beeldgegevens en alle controles in.";return}if(!confirm("Koppel deze goedgekeurde afbeelding aan het bestaande artikel?"))return;$("imageSave").disabled=true;try{const r=await fetch("/article-image",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({approved:true,articleId:id,imageUrl,imageSource,imageCredit,imageRights,imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true}})});const d=await r.json();if(!r.ok)throw Error(d.error||"Koppelen mislukt");$("imageStatus").textContent="Afbeelding gekoppeld. Ververs de app om het resultaat te zien."}catch(e){$("imageStatus").textContent=e.message}finally{$("imageSave").disabled=false}};
 
 ["existingImageUrl","existingImageSource","existingImageCredit","existingImageRights"].forEach(id=>$(id).addEventListener("input",()=>["existingKit","existingIdentity","existingDisclosure"].forEach(k=>$(k).checked=false)));
+
+async function refreshService() {
+  $('refreshService').disabled=true;
+  try {
+    const d=await request('/health');
+    $('serviceStatus').textContent=(d.storage==='connected'?'Opslag verbonden. ':'Opslag tijdelijk niet bereikbaar; laden en publiceren zijn niet beschikbaar. ')+(d.aiConfigured?'AI-dienst ingesteld. ':'AI-dienst nog niet ingesteld. ')+(d.automaticSourceIngestion===false?'Automatische broninname staat uit. Maak een eigen concept uit gecontroleerde feiten.':'');
+  } catch(e) { $('serviceStatus').textContent='Status niet beschikbaar. '+e.message; }
+  finally { $('refreshService').disabled=false; }
+}
+$('refreshService').onclick=refreshService;
+refreshService();
+$('generateDraft').onclick=async()=>{
+  if(generating||publishing||published)return;
+  const key=$('secret').value.trim(),topic=$('headline').value.trim();
+  const facts=[$('fact1').value.trim(),$('fact2').value.trim()].filter(Boolean);
+  const sourceUrls=[$('source1').value.trim(),$('source2').value.trim()].filter(Boolean);
+  if(!key||!topic||new Set(facts).size<2||sourceUrls.length<2||sourceUrls.some(u=>!M.host(u))||new Set(sourceUrls.map(M.host)).size<2||!$('generationFactCheck').checked){
+    $('generationStatus').textContent='Vul je redactiesleutel, onderwerp, twee verschillende gecontroleerde feiten en twee HTTPS-bronlinks van verschillende websites in. Bevestig de feitencontrole.';return;
+  }
+  if(($('body').value.trim()||$('standfirst').value.trim())&&!confirm('Vervang de huidige kop, intro en tekst door een nieuw AI-concept op basis van deze feiten?'))return;
+  saveDraft();generating=true;
+  const controls=[...$('editor').querySelectorAll('input,textarea,select,button')];controls.forEach(e=>e.disabled=true);
+  $('generationStatus').textContent='AI-concept wordt gemaakt. Je huidige bewerking blijft bewaard.';
+  try{
+    const d=await request('/draft',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify({topic,category:$('category').value.trim()||'Voetbal',facts,sourceUrls})});
+    if(!d.draft||M.draftIssues(d.draft).length)throw Error('Geen volledig en bruikbaar concept ontvangen. Je vorige tekst blijft staan.');
+    $('headline').value=d.draft.headline;$('standfirst').value=d.draft.standfirst;$('body').value=d.draft.body.join('\n\n');
+    resetChecks();saveDraft();preview();$('articlePreview').hidden=false;
+    $('generationStatus').textContent='Nieuw concept gereed en tijdelijk bewaard. Controleer de uiteindelijke tekst en feiten opnieuw vóór publicatie.';
+    $('publishStatus').textContent='AI-concept ontvangen. Nog niet goedgekeurd en niet gepubliceerd.';
+  }catch(e){$('generationStatus').textContent=e.message;}
+  finally{generating=false;controls.forEach(e=>e.disabled=false);updatePreflight();}
+};

@@ -15,12 +15,17 @@
     return /\b(?:\d+\s*[-–:]\s*\d+|uitslag|eindstand|ruststand|ranglijst|klassement|standen?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|gele kaarten|rode kaarten|xg|expected goals|doelpuntenmaker|scoreverloop)\b/i
       .test([draft.headline, draft.standfirst, ...(Array.isArray(draft.body) ? draft.body : [])].join(' '));
   }
-  function publicationIssues(payload) {
-    const issues = [], d = payload.draft || {};
+  function draftIssues(d = {}) {
+    const issues = [];
     const body = Array.isArray(d.body) ? d.body.filter(p => typeof p === 'string' && p.trim()).map(p => p.trim()) : [];
     if (words(d.headline) < 5 || words(d.headline) > 14) issues.push('Kop: 5 tot 14 woorden.');
     if (words(d.standfirst) < 8 || words(d.standfirst) > 35) issues.push('Intro: 8 tot 35 woorden.');
     if (body.length < 3 || body.length > 5 || body.some(p => p.length < 70 || words(p) < 18 || words(p) > 120)) issues.push('Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.');
+    return issues;
+  }
+  function publicationIssues(payload) {
+    const issues = [], d = payload.draft || {};
+    issues.push(...draftIssues(d));
     if (!Array.isArray(payload.verifiedFacts) || payload.verifiedFacts.filter(x => typeof x === 'string' && x.trim()).length < 2) issues.push('Vul twee zelf gecontroleerde feiten in.');
     const sources = Array.isArray(payload.sources) ? payload.sources : [];
     const hosts = sources.map(s => host(s?.url));
@@ -62,5 +67,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { draftIssues, excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

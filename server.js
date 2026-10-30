@@ -10,7 +10,8 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 const client = process.env.REDIS_URL ? createClient({
   url: process.env.REDIS_URL,
-  socket: { reconnectStrategy: false }
+  disableOfflineQueue: true,
+  socket: { connectTimeout: 5000, reconnectStrategy: retries => Math.min(250 * (2 ** Math.min(retries, 5)), 5000) }
 }) : null;
 if (client) client.on("error", (err) => console.error("Redis connection error:", err.message));
 
@@ -351,7 +352,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY });
+    return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const articles = await getArticles(); return send(res, 200, { count: articles.length, articles }); }
@@ -573,33 +574,19 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const facts = Array.isArray(body.facts) ? body.facts.filter(x => typeof x === "string" && x.trim()).slice(0,20) : [];
     if (!topic || facts.length < 2) return send(res, 400, { error: "Onderwerp en minimaal twee gecontroleerde feiten zijn vereist." });
     if (!GROQ_API_KEY) return send(res, 503, { error: "GROQ_API_KEY ontbreekt in Render environment variables." });
+    const uniqueFacts = [...new Set(facts.map(f => f.trim()))];
+    if (uniqueFacts.length < 2) return send(res, 400, { error: "Vul minimaal twee verschillende gecontroleerde feiten in." });
     try {
-      const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: [
-            { role: "system", content: `Je bent de Nederlandstalige VoetbalHub-redactie. Schrijf uitsluitend een zelfstandig en feitelijk voetbalnieuwsconcept op basis van de meegegeven brongegevens; URL's zijn geen bewijs dat je pagina's hebt gelezen. Geen verzonnen feiten, citaten, scores, namen, blessures, conclusies of attributies. Behandel onzekerheden als onzekerheden. Geen letterlijke overname of vertaling van uitgeverstekst. Als de gegevens onvoldoende zijn voor drie verschillende inhoudelijke alinea's, geef JSON {"skip":true,"reason":"onvoldoende feiten"}; verzin nooit opvulling. Anders: geef uitsluitend JSON met headline (Nederlands, 5-14 woorden), standfirst (maximaal 25 woorden), body (3-5 Nederlandse alinea's van minimaal 70 tekens, ieder een nieuw onderbouwd feit), why_it_matters, verification_notes en claims. Vermijd herhaling tussen kop, intro en alinea's. Claims bevatten claim, evidence en status; status supported_by_feed uitsluitend als het bewijs letterlijk in aangeleverde feiten staat, anders unverified. verification_notes begint met "BRONCONTROLE VEREIST: AI heeft de aangeleverde feiten en URL's niet zelfstandig onafhankelijk geverifieerd." Dit is uitsluitend een concept voor menselijke bron-, rechten- en feitencontrole. Nooit automatisch publiceren.` },
-            { role: "user", content: "Gebruik de volgende JSON-invoer als brongegevens. JSON: " + JSON.stringify({ topic, category: body.category || "Voetbal", facts, sourceUrls: body.sourceUrls || [] }) }
-          ],
-          response_format: { type: "json_object" },
-          temperature: 0.2,
-          max_completion_tokens: 1600
-        })
-      });
-      const data = await r.json();
-      if (!r.ok) return send(res, 502, { error: "AI-dienstfout", detail: data.error?.message || "Onbekende fout" });
-      const text = data.choices?.[0]?.message?.content || "";
-      const draft = JSON.parse(text);
-      if (draft.skip === true) return send(res, 422, { error: "Onvoldoende controleerbare feiten voor een origineel concept.", detail: String(draft.reason || "Broninformatie te beperkt.").slice(0, 200) });
-      const draftBody = Array.isArray(draft.body) ? draft.body.filter(p => typeof p === "string").map(p => p.trim()).filter(Boolean) : [];
-      if (typeof draft.headline !== "string" || !draft.headline.trim() || typeof draft.standfirst !== "string" || !draft.standfirst.trim() || draftBody.length < 3 || draftBody.length > 5 || draftBody.some(p => p.length < 70)) {
-        return send(res, 502, { error: "AI-concept voldoet niet aan de kwaliteitsnorm.", detail: "Er zijn 3-5 inhoudelijke alinea's van minimaal 70 tekens nodig. Er wordt niets opgevuld of gepubliceerd." });
-      }
-      draft.body = draftBody;
-      return send(res, 200, { status: "draft_for_review", editorialReviewRequired: true, publishingEnabled: false, draft });
-    } catch { return send(res, 502, { error: "Concept kon niet worden gemaakt." }); }
+      const draft = await require("./editorial-ai").createEditorialDraft({
+        topic, category: String(body.category || "Voetbal").slice(0,80),
+        facts: uniqueFacts.map(f => f.slice(0,5000)),
+        sourceUrls: (Array.isArray(body.sourceUrls) ? body.sourceUrls : []).filter(u => typeof u === "string" && /^https:\/\//i.test(u)).slice(0,10)
+      }, {apiKey:GROQ_API_KEY,model:MODEL});
+      return send(res, 200, {status:"draft_for_review",editorialReviewRequired:true,publishingEnabled:false,draft});
+    } catch(error) {
+      if (error.retryAfter) res.setHeader("Retry-After", String(error.retryAfter));
+      return send(res, error.status || 502, {error:error.message || "Concept kon niet worden gemaakt.", ...(error.retryAfter ? {retryAfter:error.retryAfter} : {})});
+    }
   }
   if (url.pathname === "/image-prompt") {
     // Protected prompt preparation; image creation is a separate opt-in call.
@@ -799,8 +786,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
 }
 async function start() {
   if (client) {
-    try { await client.connect(); console.log("Redis connected"); }
-    catch (e) { console.error("Redis not connected; configure REDIS_URL in Render."); }
+    // Listen immediately; storage routes report 503 while Redis reconnects.
+    client.connect().then(() => console.log("Redis connected"))
+      .catch(() => console.error("Redis connection unavailable; background reconnect enabled."));
   } else {
     console.warn("REDIS_URL is not configured; storage endpoints will return 503 until configured.");
   }

@@ -81,11 +81,13 @@ function extractItems(xml) {
   }).filter(x => x.title && /^https?:\/\//i.test(x.link));
 }
 async function main() {
-  if (!GROQ_API_KEY || !HUB_API_SECRET) throw new Error("GROQ_API_KEY en HUB_API_SECRET moeten als GitHub Actions secrets zijn ingesteld.");
   if (FEEDS.length === 0) {
-    console.log("Externe RSS-ingestie uitgeschakeld; geen concepten gegenereerd.");
+    const summary = "Automatische broninname staat uit volgens het redactionele beleid. Deze run maakt 0 nieuwe concepten en publiceert niets. Maak eigen concepten via de Publicatiedesk met gecontroleerde feiten.";
+    console.log("::notice title=Automatische broninname uit::" + summary);
+    if (process.env.GITHUB_STEP_SUMMARY) require("node:fs").appendFileSync(process.env.GITHUB_STEP_SUMMARY, "## Redactiestatus\n\n" + summary + "\n");
     return;
   }
+  if (!GROQ_API_KEY || !HUB_API_SECRET) throw new Error("GROQ_API_KEY en HUB_API_SECRET moeten als GitHub Actions secrets zijn ingesteld.");
   const candidates = [];
   // Alleen toegestane Nederlandstalige redacties.
   const allowedHosts = new Set(["feeds.nos.nl", "nos.nl", "www.nos.nl", "vi.nl", "www.vi.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);

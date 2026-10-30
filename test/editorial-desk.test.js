@@ -44,11 +44,11 @@ test('queue preserves undated/news leads and distinguishes draft body shapes',()
   assert.equal(M.queue([item],{undated:true,rss:true,filter:'text'}).length,1);
   assert.equal(M.queue([item],{undated:false,rss:true}).length,0);
 });
-let server,base,store;
+let server,base,store,redisOptions;
 test.before(async()=>{
   store=new Map();const redis={isReady:true,on(){},get:async key=>store.get(key)||null,set:async(key,value)=>store.set(key,value),keys:async pattern=>[...store.keys()].filter(k=>k.startsWith(pattern.slice(0,-1)))};
   const serverPath=path.join(__dirname,'../server.js'),realRequire=createRequire(serverPath);
-  const context={require:id=>id==='redis'?{createClient:()=>redis}:realRequire(id),process:{env:{HUB_API_SECRET:'test-only',REDIS_URL:'test://mock'}},console,URL,Buffer,crypto:require('node:crypto'),__dirname:path.dirname(serverPath),module:{exports:{}},fetch};
+  const context={require:id=>id==='redis'?{createClient:options=>{redisOptions=options;return redis;}}:realRequire(id),process:{env:{HUB_API_SECRET:'test-only',REDIS_URL:'test://mock'}},console,URL,Buffer,crypto:require('node:crypto'),__dirname:path.dirname(serverPath),module:{exports:{}},fetch};
   const source=fs.readFileSync(serverPath,'utf8').replace(/start\(\);\s*$/,'module.exports={handle};');
   vm.runInNewContext(source,context,{filename:serverPath});
   server=http.createServer((req,res)=>context.module.exports.handle(req,res).catch(err=>{res.writeHead(500);res.end(String(err));}));
@@ -99,4 +99,15 @@ test('queue exclusion reasons identify saved RSS, search and view filters',()=>{
 test('inbox exposes server time so phone clock cannot empty the recent queue',async()=>{
   const r=await fetch(base+'/inbox',{headers:{Authorization:'Bearer test-only'}}),d=await r.json();
   assert.equal(r.status,200);assert.ok(Math.abs(Date.parse(d.serverTime)-Date.now())<5000);
+});
+
+test('storage reconnects with bounded backoff and fails offline commands promptly',()=>{
+ assert.equal(redisOptions.disableOfflineQueue,true);
+ assert.equal(redisOptions.socket.connectTimeout,5000);
+ assert.ok(redisOptions.socket.reconnectStrategy(0)>0);
+ assert.equal(redisOptions.socket.reconnectStrategy(100),5000);
+});
+test('service status accurately reports fact-based drafts and disabled automatic intake',async()=>{
+ const d=await (await fetch(base+'/health')).json();
+ assert.equal(d.draftMode,'verified_facts_only');assert.equal(d.automaticSourceIngestion,false);assert.equal(d.autoPublish,false);
 });
