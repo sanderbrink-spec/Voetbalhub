@@ -597,7 +597,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       }, {apiKey:GROQ_API_KEY,model:MODEL});
       let savedDraft=null,storageWarning="";
       if (client?.isReady) {
-        try { savedDraft=await require("./editorial-drafts").saveDraft(client,{payload:{draft,category:body.category,match:body.match||null,verifiedFacts:uniqueFacts,sources:(body.sourceUrls||[]).map(url=>({url})),imageRights:"not_needed"}}); }
+        try { savedDraft=await require("./editorial-drafts").saveDraft(client,{payload:{draft,category:body.category,reviewNotes:body.reviewNotes||"",match:body.match||null,verifiedFacts:uniqueFacts,sources:(body.sourceUrls||[]).map(url=>({url})),imageRights:"not_needed"}}); }
         catch { storageWarning="Concept gemaakt, maar nog niet op de server bewaard. Gebruik Concept opslaan."; }
       } else storageWarning="Concept gemaakt; serveropslag is niet beschikbaar. Houd de bewerking open.";
       return send(res, 200, {status:"draft_for_review",editorialReviewRequired:true,publishingEnabled:false,draft,savedDraft,storageWarning});

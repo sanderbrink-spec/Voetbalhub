@@ -1,0 +1,26 @@
+name: Import full own article drafts
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - redactie/curated/articles.json
+permissions:
+  contents: read
+concurrency:
+  group: import-curated-editorial-drafts
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Store complete drafts privately for human review
+        env:
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+          VOETBALHUB_API_URL: https://voetbalhub-redactie.onrender.com
+        run: node scripts/import-curated-drafts.js
