@@ -179,7 +179,7 @@ async function verifyDraft(payload,candidate,docs,options){
  return review;
 }
 async function uploadCover(payload,{token,fetcher=fetch}){
- const identity=sha(JSON.stringify([payload.draft.headline,payload.draft.standfirst,payload.draft.body]));
+ const identity=sha(JSON.stringify(['fixture-graphic-v2',payload.draft.headline,payload.draft.standfirst,payload.draft.body]));
  const file=path.join(process.cwd(),'.automatic-output',identity+'.webp');
  const rendered=spawnSync('python3',['scripts/render-editorial-cover.py',file],{input:JSON.stringify(payload),encoding:'utf8'});
  if(rendered.status!==0)throw Error('Artikelafbeelding kon niet worden opgebouwd.');
@@ -195,7 +195,7 @@ async function uploadCover(payload,{token,fetcher=fetch}){
  const imageUrl='https://raw.githubusercontent.com/'+REPO+'/'+config.mediaBranch+'/automatic-covers/'+identity+'.webp';
  const image=await fetcher(imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
  if(!image.ok||!/^image\/webp/i.test(image.headers.get('content-type')||'')||sha(Buffer.from(await image.arrayBuffer()))!==sha(bytes))throw Error('Openbare artikelafbeelding niet bevestigd.');
- return {imageUrl,imageSource:'VoetbalHub · eigen artikelillustratie',imageCredit:'VoetbalHub · AI-illustratie en redactionele vormgeving',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Originele AI-achtergrond met uitsluitend de exact gecontroleerde artikelkop en categorie. Geen spelers, tenues, sponsors of stadionidentiteit. AI-vermelding wordt deterministisch gezet.',assetSha256:sha(bytes)}};
+ return {imageUrl,imageSource:'VoetbalHub · eigen artikelillustratie',imageCredit:'VoetbalHub · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele wedstrijdillustratie. Alleen clubnamen uit de gecontroleerde kop. Geen foto, uitslag, thuis-uitclaim, spelers, clublogos of nagemaakte tenues. Geen ingebakken artikelkop.',assetSha256:sha(bytes)}};
 }
 async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={}){
  if(!config.enabled)return {status:'disabled',published:0};
@@ -269,4 +269,4 @@ async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={})
  return report;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>console.log(JSON.stringify({published:r.published?.length||0,skipped:r.skipped?.length||0,sourceErrors:r.sourceErrors?.length||0,status:r.status||'completed'}))).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
+module.exports={uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};

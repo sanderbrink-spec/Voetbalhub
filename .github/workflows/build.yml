@@ -516,9 +516,16 @@ jobs:
                                   heroBg.setCornerRadius(dp(16));
                                   heroBg.setStroke(dp(1), 0xFF24573B);
                                   hero.setBackground(heroBg);
-                                  LinearLayout.LayoutParams heroLp = new LinearLayout.LayoutParams(-1, dp(205));
+                                  LinearLayout card = new LinearLayout(this);
+                                  card.setOrientation(LinearLayout.VERTICAL);
+                                  card.setBackgroundColor(0xFF101917);
+                                  LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(-1, -2);
+                                  cardLp.setMargins(0, dp(6), 0, dp(10));
+                                  section.addView(card, cardLp);
+                                  hero.setClipToOutline(true);
+                                  LinearLayout.LayoutParams heroLp = new LinearLayout.LayoutParams(-1, dp(185));
                                   heroLp.setMargins(0, dp(5), 0, dp(5));
-                                  section.addView(hero, heroLp);
+                                  card.addView(hero, heroLp);
                                   String headlineValue = article.optString("headline", "Voetbalnieuws");
                                   android.view.View field = new android.view.View(this);
                                   android.graphics.drawable.GradientDrawable fieldBg = new android.graphics.drawable.GradientDrawable(
@@ -584,14 +591,14 @@ jobs:
                                   LinearLayout overlay = new LinearLayout(this);
                                   overlay.setOrientation(LinearLayout.VERTICAL);
                                   overlay.setPadding(dp(16), dp(8), dp(16), dp(16));
-                                  overlay.setGravity(android.view.Gravity.BOTTOM);
+                                  overlay.setGravity(android.view.Gravity.TOP);
                                   android.graphics.drawable.GradientDrawable shade = new android.graphics.drawable.GradientDrawable(
                                       android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
                                       new int[]{0x00000000, 0x55000000, 0xF9000000});
-                                  overlay.setBackground(shade);
-                                  hero.addView(overlay, new android.widget.FrameLayout.LayoutParams(-1, -1));
+                                  overlay.setBackgroundColor(0xFF101917);
+                                  card.addView(overlay, new LinearLayout.LayoutParams(-1, -2));
                                   boolean isColumn = "column".equalsIgnoreCase(article.optString("type", "")) || "column".equalsIgnoreCase(article.optString("category", "")) || "de derde helft".equalsIgnoreCase(article.optString("category", ""));
-                                  TextView label = tv(isColumn ? "✍  DE DERDE HELFT  ·  DOOR SANDER BRINK" : article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT) + "  ·  VOETBALHUB ORIGINALS", 12, C.GREEN, true);
+                                  TextView label = tv(isColumn ? "✍  DE DERDE HELFT  ·  DOOR SANDER BRINK" : article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT), 11, C.GREEN, true);
                                   label.setPadding(0, 0, 0, dp(8));
                                   overlay.addView(label);
                                   String attribution = (article.optString("imageCredit", "") + " " + article.optString("imageSource", "")).toLowerCase(java.util.Locale.ROOT);
@@ -600,10 +607,11 @@ jobs:
                                       aiTag.setPadding(0, 0, 0, dp(6));
                                       overlay.addView(aiTag);
                                   }
-                                  TextView headline = tv(headlineValue, isColumn ? 23 : 20, C.TEXT, true);
+                                  TextView headline = tv(headlineValue, isColumn ? 22 : 19, C.TEXT, true);
+                                  headline.setLineSpacing(dp(3), 1.0f);
                                   overlay.addView(headline);
                                   if (isColumn) overlay.addView(tv("Geen meeloperij. Geen excuses. Gewoon mijn kijk op voetbal.", 12, C.TEXT, false));
-                                  hero.setOnClickListener(v -> showEditorialArticle(article));
+                                  card.setOnClickListener(v -> showEditorialArticle(article));
                               }
                           });
                       } catch (Exception e) {
