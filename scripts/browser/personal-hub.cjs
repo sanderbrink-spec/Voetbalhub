@@ -30,7 +30,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
  // Untrusted titles and IDs must remain text, never DOM or script.
  const malicious=article('evil" onclick="window.bad=true','<img src=x onerror="window.bad=true">');state.articles.push(malicious);await page.evaluate(x=>setData(JSON.stringify(x)),state);assert.equal(await page.evaluate(()=>window.bad),undefined);assert.equal(await page.locator('.row-copy img').count(),0);
  await page.getByRole('searchbox').fill('Ajax');await page.screenshot({path:'.browser-output/search-mobile.png',fullPage:true});
- assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.deepEqual(errors,[]);
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.equal(await page.evaluate(()=>{const b=document.querySelector('.back').getBoundingClientRect(),h=document.querySelector('header h1').getBoundingClientRect();return b.right<=h.left;}),true);assert.equal(await page.locator('.club img:not([hidden])').count(),0);assert.deepEqual(errors,[]);
  // Initial search route, late data, empty offline state and pagination are separate documents.
  const search=await browser.newPage({viewport:{width:320,height:720}});search.on('pageerror',e=>errors.push(e.message));await search.route('https://**/*',r=>r.abort());await search.setContent(fs.readFileSync('android-ui/assets/personal-hub.html','utf8'));
  await search.evaluate(()=>setData(JSON.stringify({mode:'search',query:'analyse',articles:[],saved:[],clubs:[],stats:{},loading:true})));assert.equal(await search.locator('.tabs').isVisible(),false);
