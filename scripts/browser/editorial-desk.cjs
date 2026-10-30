@@ -2,7 +2,7 @@ const {chromium}=require('playwright');
 const http=require('node:http'),fs=require('node:fs'),assert=require('node:assert/strict');
 const root=require('node:path').resolve(__dirname,'../..');
 (async()=>{
-const server=http.createServer((req,res)=>{const paths={'/publish-desk':'public/publish-desk.html','/desk.js':'public/desk.js','/desk-model.js':'editorial-desk-model.js'};if(!paths[req.url]){res.writeHead(404);return res.end();}res.setHeader('Content-Type',req.url.endsWith('.js')?'text/javascript':'text/html');res.end(fs.readFileSync(root+'/'+paths[req.url]));});
+const server=http.createServer((req,res)=>{const paths={'/publish-desk':'public/publish-desk.html','/desk.js':'public/desk.js','/desk-model.js':'editorial-desk-model.js'};if(!paths[req.url]){res.writeHead(404);return res.end();}res.setHeader('Content-Type',req.url.endsWith('.js')?'text/javascript; charset=utf-8':'text/html; charset=utf-8');res.end(fs.readFileSync(root+'/'+paths[req.url]));});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:393,height:851}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
 let fixture=[{id:'a',headline:'FC Groningen onderzoekt nieuwe plannen voor volgend seizoen',category:'Eredivisie',source:{publishedAt:new Date().toISOString(),url:'https://fcgroningen.nl/a'},body:['Eigen artikeltekst.'],qualityReview:{warnings:['Controleer feit.']}},{id:'b',headline:'Ajax kijkt vooruit naar de komende speelronde',category:'Eredivisie',source:{publishedAt:new Date(Date.now()-3600000).toISOString(),url:'https://ajax.nl/b'},sourceEvidence:{evidenceLevel:'rss_title_and_description_only'}}];
