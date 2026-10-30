@@ -32,7 +32,7 @@ public final class EredivisieStatsView extends LinearLayout {
         web.getSettings().setAllowContentAccess(false);
         web.getSettings().setDomStorageEnabled(false);
         web.setWebViewClient(new WebViewClient(){
-            @Override public void onPageFinished(WebView view,String url){ready=true; deliver(); if(feature)web.evaluateJavascript("window.openFeatured=true;window.render&&window.render()",null);}
+            @Override public void onPageFinished(WebView view,String url){ready=true; deliver(); if(feature)web.evaluateJavascript("window.showFeatured&&window.showFeatured()",null);}
             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest req){if("app".equals(req.getUrl().getScheme())&&"retry".equals(req.getUrl().getHost()))load();return true;}
         });
         addView(web,new LayoutParams(-1,0,1));

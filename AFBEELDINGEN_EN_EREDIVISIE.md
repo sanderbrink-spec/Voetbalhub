@@ -10,3 +10,6 @@
 - Stand, uitslagen en spelerscijfers hebben een bron en zichtbare ophaaltijd. Geen oud seizoen als vervanging voor ontbrekende actuele cijfers.
 
 - Een geldige stadion-ID bewijst niet dat de geleverde foto klopt. Bekende fotobestanden zijn via hun SHA-256 aan één stadion gebonden. Een foto van de ArenA mag nooit onder Philips Stadion worden geplaatst. Gecontroleerde vervangingen hebben een vaste bron, visuele beoordeling en bestandscontrole.
+
+- De wedstrijdkaart opent een eigen voorbeschouwingspagina met de inhoud van precies de aangeklikte wedstrijd. Zij verwijst niet naar het algemene overzicht met uitslagen en standen. Terug brengt de lezer naar het nieuws.
+- Visuele richting: brede De Derde Helft-banner, compacte nieuwsrijen met beeld links, zwarte oppervlakken met groene accenten en consistente lijniconen. Voorbeeldscores en artikelen uit een ontwerp worden niet als echt nieuws gepubliceerd.
