@@ -11,7 +11,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: publish-author-column
+  group: publish-author-column-${{ github.sha }}
   cancel-in-progress: false
 jobs:
   publish:
