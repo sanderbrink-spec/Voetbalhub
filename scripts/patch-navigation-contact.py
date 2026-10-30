@@ -47,7 +47,7 @@ helpers='''
             ScrollView scroll=pageScroll(content);if(scroll==null)return;
             android.view.ViewTreeObserver.OnGlobalLayoutListener[] listener=new android.view.ViewTreeObserver.OnGlobalLayoutListener[1];
             cancelScrollRestore=()->{if(content.getViewTreeObserver().isAlive())content.getViewTreeObserver().removeOnGlobalLayoutListener(listener[0]);scroll.setOnTouchListener(null);};
-            listener[0]=()->{if(!screenHistory.current().key.equals(route)){cancelScrollRestore.run();return;}int range=scroll.getChildCount()==0?0:Math.max(0,scroll.getChildAt(0).getHeight()-scroll.getHeight());scroll.scrollTo(0,y);if(range>=y&&cancelScrollRestore!=null){cancelScrollRestore.run();cancelScrollRestore=null;}};
+            listener[0]=()->{if(!screenHistory.current().key.equals(route)){if(cancelScrollRestore!=null)cancelScrollRestore.run();return;}int range=scroll.getChildCount()==0?0:Math.max(0,scroll.getChildAt(0).getHeight()-scroll.getHeight());scroll.scrollTo(0,y);if(range>=y&&cancelScrollRestore!=null){cancelScrollRestore.run();cancelScrollRestore=null;}};
             scroll.setOnTouchListener((v,event)->{if(event.getAction()==android.view.MotionEvent.ACTION_DOWN&&cancelScrollRestore!=null){cancelScrollRestore.run();cancelScrollRestore=null;}return false;});
             content.getViewTreeObserver().addOnGlobalLayoutListener(listener[0]);listener[0].onGlobalLayout();
         });
@@ -107,6 +107,9 @@ back=back.replace('        screenHistory.resetExit();\n','')
 # Only actual page/modal Back steps reset exit arming.
 back=back.replace('closeEditorialArticle();return;', 'screenHistory.resetExit();closeEditorialArticle();return;').replace('closeArticleView();return;', 'screenHistory.resetExit();closeArticleView();return;')
 s=replace_method(s,'public void onBackPressed()',back)
+# Remove the former home-only exit flow; only ScreenHistory handles Back now.
+s=replace_method(s,'private boolean returnToNewsBottomTab()', '')
+s=s.replace('    private boolean backPressedOnce = false;','').replace('    private final Runnable resetBackPressed = () -> backPressedOnce = false;','').replace('        main.removeCallbacks(resetBackPressed);','')
 # previousScreen must not reset exit arming if there is no previous route.
 s=s.replace('        if(!screenHistory.back())return false;', '        if(!screenHistory.canGoBack())return false;\n        screenHistory.back();')
 # A background refresh must never navigate away from contact/search/statistics.
