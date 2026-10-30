@@ -5,8 +5,8 @@ const root=require('node:path').resolve(__dirname,'../..');
 const server=http.createServer((req,res)=>{const paths={'/publish-desk':'public/publish-desk.html','/desk.js':'public/desk.js','/desk-model.js':'editorial-desk-model.js'};if(!paths[req.url]){res.writeHead(404);return res.end();}res.setHeader('Content-Type',req.url.endsWith('.js')?'text/javascript':'text/html');res.end(fs.readFileSync(root+'/'+paths[req.url]));});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:393,height:851}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
-const fixture=[{id:'a',headline:'FC Groningen onderzoekt nieuwe plannen voor volgend seizoen',category:'Eredivisie',source:{publishedAt:new Date().toISOString(),url:'https://fcgroningen.nl/a'},body:['Eigen artikeltekst.'],qualityReview:{warnings:['Controleer feit.']}},{id:'b',headline:'Ajax kijkt vooruit naar de komende speelronde',category:'Eredivisie',source:{publishedAt:new Date(Date.now()-3600000).toISOString(),url:'https://ajax.nl/b'},sourceEvidence:{evidenceLevel:'rss_title_and_description_only'}}];
-await page.route('**/inbox',route=>route.fulfill({json:{items:fixture}}));let posted=[];
+let fixture=[{id:'a',headline:'FC Groningen onderzoekt nieuwe plannen voor volgend seizoen',category:'Eredivisie',source:{publishedAt:new Date().toISOString(),url:'https://fcgroningen.nl/a'},body:['Eigen artikeltekst.'],qualityReview:{warnings:['Controleer feit.']}},{id:'b',headline:'Ajax kijkt vooruit naar de komende speelronde',category:'Eredivisie',source:{publishedAt:new Date(Date.now()-3600000).toISOString(),url:'https://ajax.nl/b'},sourceEvidence:{evidenceLevel:'rss_title_and_description_only'}}];
+await page.route('**/inbox',route=>route.fulfill({json:{items:fixture,serverTime:new Date().toISOString()}}));let posted=[];
 await page.route('**/publish',route=>{posted.push(route.request().postDataJSON());return route.fulfill({json:{article:{id:'test-published'}}});});
 await page.route('**/articles',route=>route.fulfill({json:{articles:[]}}));
 await page.goto('http://127.0.0.1:'+server.address().port+'/publish-desk');
@@ -35,5 +35,26 @@ assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>document.docume
 await page.setViewportSize({width:1280,height:800});
 await page.reload();
 assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
+// Reproduce the reported 0-visible / 49-loaded queue using legacy saved filters.
+await page.setViewportSize({width:393,height:851});
+fixture=Array.from({length:49},(_,i)=>({id:'archive-'+i,headline:'Opgeslagen nieuwsaanleiding '+i,source:{publishedAt:new Date(Date.now()-6*24*3600000).toISOString(),url:'https://fcgroningen.nl/archive/'+i},body:[],sourceEvidence:{evidenceLevel:'publisher_link_only'}}));
+await page.evaluate(()=>localStorage.setItem('voetbalhubDeskSettings',JSON.stringify({ageWindow:36,includeUndated:false,includeRss:false,includeEnglish:false})));
+await page.reload();await page.locator('#secret').fill('not-a-real-secret');await page.locator('#load').click();
+await page.waitForFunction(()=>document.querySelectorAll('[data-open]').length===49);
+assert.ok((await page.locator('#queueCount').textContent()).includes('49 zichtbaar · 49 geladen'));
+assert.equal(await page.locator('#ageWindow').inputValue(),'all');
+assert.ok(await page.locator('#queueNotice').isVisible());
+assert.equal(await page.locator('.badge').filter({hasText:'Archief'}).count(),49);
+await page.locator('#ageWindow').selectOption('24');
+assert.equal(await page.locator('[data-open]').count(),0);
+assert.ok((await page.locator('#queueCount').textContent()).includes('nieuwsvenster'));
+await page.locator('#showAllDrafts').click();assert.equal(await page.locator('[data-open]').count(),49);
+await page.locator('#searchDrafts').fill('bestaat niet');assert.equal(await page.locator('[data-open]').count(),0);
+assert.ok((await page.locator('#queueCount').textContent()).includes('zoekopdracht'));
+await page.locator('#showAllDrafts').click();assert.equal(await page.locator('[data-open]').count(),49);
+assert.equal(posted.length,1); // Only the earlier explicitly approved mock article was submitted.
+assert.deepEqual(errors,[]);
+assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
+console.log('49-loaded/0-visible regression passed: startup recovery, archive labels, explicit filters, reset and no automatic publication.');
 await browser.close();await new Promise(r=>server.close(r));console.log('Mobile browser checks passed: queue, search, recovery, checkbox reset, image reset, preview, one explicit publish, no overflow or JS errors.');
 })().catch(e=>{console.error(e);process.exit(1)});

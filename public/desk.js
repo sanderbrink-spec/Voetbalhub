@@ -3,6 +3,8 @@ const $ = id => document.getElementById(id);
 const M = window.DeskModel;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let items = [], visible = [], activeFilter = 'all', selected = null, published = false, publishing = false;
+let loadedOnce = false, serverClockOffset = 0, recoveryNotice = '';
+const queueNow = () => Date.now() + serverClockOffset;
 const fields = ['category','headline','standfirst','body','fact1','fact2','source1','source2','imageUrl','imageSource','imageCredit','imageRights'];
 const textChecks = ['sourceCheck','factCheck','duplicateCheck','languageCheck'];
 const imageChecks = ['kitCheck','identityCheck','aiDisclosure'];
@@ -18,11 +20,11 @@ async function request(path, options = {}) {
   return data;
 }
 function preferences() {
-  return {hours:Number($('ageWindow').value),undated:$('includeUndated').checked,rss:$('includeRss').checked,english:$('includeEnglish').checked,search:$('searchDrafts').value,filter:activeFilter,sort:$('queueSort').value};
+  return {hours:$('ageWindow').value === 'all' ? 'all' : Number($('ageWindow').value),undated:$('includeUndated').checked,rss:$('includeRss').checked,english:$('includeEnglish').checked,search:$('searchDrafts').value,filter:activeFilter,sort:$('queueSort').value};
 }
 try {
   const p = JSON.parse(localStorage.getItem('voetbalhubDeskSettings') || '{}');
-  if ([24,36,48,72,168].includes(Number(p.ageWindow))) $('ageWindow').value = p.ageWindow;
+  if (p.ageWindow === 'all' || [24,36,48,72,168].includes(Number(p.ageWindow))) $('ageWindow').value = p.ageWindow;
   for (const id of ['includeUndated','includeRss','includeEnglish']) if (typeof p[id] === 'boolean') $(id).checked = p[id];
 } catch { $('settingsStatus').textContent = 'Standaardinstellingen actief; browseropslag niet beschikbaar.'; }
 $('saveSettings').onclick = () => {
@@ -31,14 +33,35 @@ $('saveSettings').onclick = () => {
   catch { $('settingsStatus').textContent='Instellingen gelden deze sessie; bewaren is niet toegestaan door de browser.'; }
   renderQueue();
 };
-function renderQueue() {
-  visible = M.queue(items, preferences());
+function showAllSelection() {
+  $('ageWindow').value='all';
+  ['includeUndated','includeRss','includeEnglish'].forEach(id=>$(id).checked=true);
+  $('searchDrafts').value='';activeFilter='all';
+}
+function renderQueue(recoverEmpty=false) {
+  const now=queueNow(), p=preferences();
+  visible = M.queue(items, p, now);
+  const hiddenReasons = {};
+  for (const item of items) {
+    const reason=M.excludedBy(item,p,now);
+    if(reason)hiddenReasons[reason]=(hiddenReasons[reason]||0)+1;
+  }
+  const labels={date:'nieuwsvenster of ontbrekende brondatum',rss:'RSS-filter',english:'taalfilter',search:'zoekopdracht',type:'gekozen overzicht',invalid:'onvolledige gegevens'};
+  const reasonText=Object.entries(hiddenReasons).map(([key,count])=>`${count} door ${labels[key]}`).join(' · ');
+  if (recoverEmpty && items.length && !visible.length) {
+    showAllSelection();visible=M.queue(items,preferences(),now);
+    recoveryNotice=`Je vorige selectie verborg alle ${items.length} geladen concepten${reasonText ? ': '+reasonText : ''}. Alle opgeslagen concepten worden nu getoond. Oudere berichten zijn als archief gemarkeerd.`;
+  }
+  $('queueNotice').hidden=!recoveryNotice;
+  $('queueNotice').textContent=recoveryNotice;
+  $('showAllDrafts').hidden=!items.length || (!Object.keys(hiddenReasons).length && preferences().hours==='all');
   $('queueTools').hidden = !items.length;
-  $('queueCount').textContent = `${visible.length} zichtbaar · ${items.length} geladen · ${visible.filter(x=>M.paragraphs(x).length).length} met artikeltekst · ${visible.filter(M.rssOnly).length} alleen broninformatie`;
+  $('queueCount').textContent = `${visible.length} zichtbaar · ${items.length} geladen${!visible.length && reasonText ? ' · Verborgen: '+reasonText : ''} · ${visible.filter(x=>M.paragraphs(x).length).length} met artikeltekst · ${visible.filter(M.rssOnly).length} alleen broninformatie`;
   document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===activeFilter));
   $('queue').innerHTML = visible.length ? visible.map((x,i) => {
     const paragraphs=M.paragraphs(x), warnings=M.warnings(x), link=safeLink(x.source?.url || x.sourceUrl || ''), date=M.date(x);
-    return `<article class="card"><div class="queue-meta"><span class="badge">${paragraphs.length?'Artikelconcept':'Nieuwsaanleiding'}</span><span class="badge">${esc(x.category||'Voetbal')}</span><span class="badge ${warnings.length?'warn':''}">${warnings.length} controlesignalen</span></div><h2>${esc(x.headline)}</h2><p class="muted">${date?new Date(date).toLocaleString('nl-NL'):'Brondatum onbekend'} · ${esc(M.host(link)||'Bron onbekend')}</p><p>${esc(x.standfirst||'Nog geen eigen intro geschreven.')}</p><p class="muted">${esc(x.sourcePolicy?.label || 'Bronbeleid nog beoordelen')} · ${paragraphs.length?'Artikeltekst nog beoordelen.':'Alleen broninformatie; schrijf een eigen artikel na feitencontrole.'}</p><details><summary>Controles en broninformatie</summary><p class="muted">Kwaliteitssignaal: ${esc(x.qualityReview?.qualityScore??'onbekend')}/100. Dit is geen feitencontrole.</p>${warnings.length?'<ul>'+warnings.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul>':'<p>Geen automatische waarschuwingen. Handmatige controle blijft nodig.</p>'}<p>${esc(x.qualityReview?.leadReviewReason||x.verification_notes||'Controleer de oorspronkelijke bron en concrete feiten.')}</p>${link?`<p><a href="${esc(link)}" target="_blank" rel="noopener noreferrer">Open oorspronkelijke bron ↗</a></p>`:''}${paragraphs.length?'<div class="article-text">'+paragraphs.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>':''}</details><button data-open="${i}" class="secondary">${paragraphs.length?'Bewerken en beoordelen':'Eigen artikel voorbereiden'}</button></article>`;
+    const ageLabel=!date?'Brondatum onbekend':date>now?'Toekomstige brondatum, controleren':now-date>36*3600000?'Archief · ouder dan 36 uur':'';
+    return `<article class="card"><div class="queue-meta">${ageLabel ? `<span class="badge warn">${esc(ageLabel)}</span>` : ''}<span class="badge">${paragraphs.length?'Artikelconcept':'Nieuwsaanleiding'}</span><span class="badge">${esc(x.category||'Voetbal')}</span><span class="badge ${warnings.length?'warn':''}">${warnings.length} controlesignalen</span></div><h2>${esc(x.headline)}</h2><p class="muted">${date?new Date(date).toLocaleString('nl-NL'):'Brondatum onbekend'} · ${esc(M.host(link)||'Bron onbekend')}</p><p>${esc(x.standfirst||'Nog geen eigen intro geschreven.')}</p><p class="muted">${esc(x.sourcePolicy?.label || 'Bronbeleid nog beoordelen')} · ${paragraphs.length?'Artikeltekst nog beoordelen.':'Alleen broninformatie; schrijf een eigen artikel na feitencontrole.'}</p><details><summary>Controles en broninformatie</summary><p class="muted">Kwaliteitssignaal: ${esc(x.qualityReview?.qualityScore??'onbekend')}/100. Dit is geen feitencontrole.</p>${warnings.length?'<ul>'+warnings.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul>':'<p>Geen automatische waarschuwingen. Handmatige controle blijft nodig.</p>'}<p>${esc(x.qualityReview?.leadReviewReason||x.verification_notes||'Controleer de oorspronkelijke bron en concrete feiten.')}</p>${link?`<p><a href="${esc(link)}" target="_blank" rel="noopener noreferrer">Open oorspronkelijke bron ↗</a></p>`:''}${paragraphs.length?'<div class="article-text">'+paragraphs.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>':''}</details><button data-open="${i}" class="secondary">${paragraphs.length?'Bewerken en beoordelen':'Eigen artikel voorbereiden'}</button></article>`;
   }).join('') : '<div class="card">Geen concepten binnen deze selectie. Pas het nieuwsvenster of de filters aan.</div>';
   document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openItem(visible[Number(b.dataset.open)]));
 }
@@ -49,14 +72,19 @@ $('load').onclick = async () => {
   try {
     const d=await request('/inbox',{headers:{Authorization:'Bearer '+key}});
     if (!Array.isArray(d.items)) throw Error('De server gaf geen conceptenlijst terug.');
-    items=d.items; renderQueue();
+    items=d.items;
+    const serverTime=Date.parse(d.serverTime||'');
+    serverClockOffset=Number.isFinite(serverTime)?serverTime-Date.now():0;
+    recoveryNotice='';renderQueue(!loadedOnce);loadedOnce=true;
     $('status').textContent=`${items.length} concepten geladen om ${new Date().toLocaleTimeString('nl-NL')}. Publicatie blijft handmatig.`;
   } catch(e) { $('status').textContent=e.message; }
   finally { $('load').disabled=false; }
 };
-$('searchDrafts').oninput=renderQueue; $('queueSort').onchange=renderQueue;
-for (const id of ['ageWindow','includeUndated','includeRss','includeEnglish']) $(id).onchange=renderQueue;
-document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{activeFilter=b.dataset.filter;renderQueue();});
+function applySelection(){recoveryNotice='';renderQueue();}
+$('showAllDrafts').onclick=()=>{showAllSelection();recoveryNotice='Alle opgeslagen concepten worden getoond. Oudere berichten zijn als archief gemarkeerd.';renderQueue();};
+$('searchDrafts').oninput=applySelection; $('queueSort').onchange=applySelection;
+for (const id of ['ageWindow','includeUndated','includeRss','includeEnglish']) $(id).onchange=applySelection;
+document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{activeFilter=b.dataset.filter;applySelection();});
 $('exportDrafts').onclick=()=>{
   const url=URL.createObjectURL(new Blob([JSON.stringify(visible,null,2)],{type:'application/json;charset=utf-8'}));
   const a=document.createElement('a'); a.href=url;a.download='voetbalhub-concepten-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);

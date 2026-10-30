@@ -76,3 +76,27 @@ test('server blocks contradictory headline despite checked boxes',async()=>{
   const p=valid();p.draft.headline='FC Twente wint en speelt gelijk tegen AZ';
   const before=store.size,r=await publish(p);assert.equal(r.status,400);assert.match((await r.json()).error,/Tegenstrijdige kop/);assert.equal(store.size,before);
 });
+test('all-time queue reveals all 49 stored records without changing their dates or content',()=>{
+  const now=Date.parse('2026-10-30T10:00:00Z');
+  const items=Array.from({length:49},(_,i)=>({id:String(i),headline:'Opgeslagen nieuwsaanleiding '+i,source:{publishedAt:'2026-10-24T08:00:00Z'},body:[],sourceEvidence:{evidenceLevel:'publisher_link_only'}}));
+  const before=JSON.stringify(items);
+  assert.equal(M.queue(items,{hours:36,rss:true,english:true,undated:true},now).length,0);
+  assert.equal(M.queue(items,{hours:'all',rss:true,english:true,undated:true},now).length,49);
+  assert.equal(M.excludedBy(items[0],{hours:36,rss:true,english:true,undated:true},now),'date');
+  assert.equal(JSON.stringify(items),before);
+});
+test('legacy malformed date falls through to valid evidence date; creation date never substitutes',()=>{
+  const time='2026-10-30T08:00:00Z';
+  assert.equal(M.date({source:{publishedAt:'onbekend'},sourceEvidence:{publishedAt:time}}),Date.parse(time));
+  assert.equal(M.date({createdAt:time}),0);
+});
+test('queue exclusion reasons identify saved RSS, search and view filters',()=>{
+  const item={headline:'FC Groningen kijkt vooruit',body:[]};
+  assert.equal(M.excludedBy(item,{hours:'all',undated:true,rss:false},Date.now()),'rss');
+  assert.equal(M.excludedBy(item,{hours:'all',undated:true,rss:true,search:'Ajax'},Date.now()),'search');
+  assert.equal(M.excludedBy(item,{hours:'all',undated:true,rss:true,filter:'text'},Date.now()),'type');
+});
+test('inbox exposes server time so phone clock cannot empty the recent queue',async()=>{
+  const r=await fetch(base+'/inbox',{headers:{Authorization:'Bearer test-only'}}),d=await r.json();
+  assert.equal(r.status,200);assert.ok(Math.abs(Date.parse(d.serverTime)-Date.now())<5000);
+});

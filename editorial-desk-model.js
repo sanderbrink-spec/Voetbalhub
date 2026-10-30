@@ -35,24 +35,32 @@
     const value = x?.body ?? x?.draft?.body;
     return (Array.isArray(value) ? value : typeof value === 'string' ? value.split(/\n\s*\n/) : []).filter(p => typeof p === 'string' && p.trim());
   };
-  const date = x => Date.parse(x?.source?.publishedAt || x?.sourceEvidence?.publishedAt || x?.publishedAt || '') || 0;
+  function date(x) {
+    // A malformed legacy date must not shadow another valid source timestamp.
+    for (const value of [x?.source?.publishedAt, x?.sourceEvidence?.publishedAt, x?.publishedAt, x?.source?.pubDate, x?.sourceEvidence?.pubDate]) {
+      const timestamp = Date.parse(value || '');
+      if (Number.isFinite(timestamp) && timestamp > 0) return timestamp;
+    }
+    return 0;
+  }
+  function excludedBy(x, options, now) {
+    if (!x || typeof x.headline !== 'string') return 'invalid';
+    const time = date(x), allTime = options.hours === 'all';
+    const cutoff = now - (Number(options.hours) || 36) * 3600000;
+    if (time ? !allTime && (time < cutoff || time > now) : !options.undated) return 'date';
+    if (!options.rss && rssOnly(x)) return 'rss';
+    if (!options.english && /\b(the|and|with|after|before|could|would|reports)\b/i.test(x.headline) && !/\b(de|het|een|van|voor|bij|met|na|trainer|voetbal|wint|zegt)\b/i.test(x.headline)) return 'english';
+    const query = String(options.search || '').toLocaleLowerCase('nl');
+    if (!`${x.headline} ${x.category || ''} ${x.source?.url || ''}`.toLocaleLowerCase('nl').includes(query)) return 'search';
+    if (options.filter === 'text' && !paragraphs(x).length) return 'type';
+    if (options.filter === 'rss' && !rssOnly(x)) return 'type';
+    if (options.filter === 'warnings' && !warnings(x).length && !x.qualityReview?.claimsUnverified) return 'type';
+    return '';
+  }
   const rssOnly = x => x?.sourceEvidence?.evidenceLevel === 'rss_title_and_description_only' || String(x?.sourceEvidence?.content || x?.sourceEvidence?.excerpt || '').trim().length < 250;
   const warnings = x => Array.isArray(x?.qualityReview?.warnings) ? x.qualityReview.warnings : [];
   function queue(items, options = {}, now = Date.now()) {
-    const cutoff = now - (Number(options.hours) || 36) * 3600000;
-    const query = String(options.search || '').toLocaleLowerCase('nl');
-    return items.filter(x => {
-      if (!x || typeof x.headline !== 'string') return false;
-      const time = date(x);
-      if (time ? time < cutoff || time > now : !options.undated) return false;
-      if (!options.rss && rssOnly(x)) return false;
-      if (!options.english && /\b(the|and|with|after|before|could|would|reports)\b/i.test(x.headline) && !/\b(de|het|een|van|voor|bij|met|na|trainer|voetbal|wint|zegt)\b/i.test(x.headline)) return false;
-      if (!`${x.headline} ${x.category || ''} ${x.source?.url || ''}`.toLocaleLowerCase('nl').includes(query)) return false;
-      if (options.filter === 'text' && !paragraphs(x).length) return false;
-      if (options.filter === 'rss' && !rssOnly(x)) return false;
-      if (options.filter === 'warnings' && !warnings(x).length && !x.qualityReview?.claimsUnverified) return false;
-      return true;
-    }).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
+    return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });
