@@ -1,0 +1,25 @@
+name: Single automatically checked publication trial
+on:
+  push:
+    branches: [main]
+    paths: [redactie/trial/article.json]
+permissions:
+  contents: read
+concurrency:
+  group: single-editorial-publication-trial
+  cancel-in-progress: false
+jobs:
+  trial:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - name: Quality gates and single publication
+        env:
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+        run: node scripts/publish-one-trial.js
