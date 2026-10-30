@@ -230,7 +230,6 @@ jobs:
               LinearLayout page = new LinearLayout(this);
               page.setOrientation(LinearLayout.VERTICAL);
               page.setPadding(dp(8), 0, dp(8), dp(20));
-              page.addView(tv("DE DERDE HELFT  /  OPINIE", 15, C.GREEN, true));
               android.widget.ImageView columnBanner = new android.widget.ImageView(this);
               columnBanner.setImageResource(nl.voetbalhub.app.R.drawable.column_sander_brink);
               columnBanner.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
@@ -239,21 +238,6 @@ jobs:
               LinearLayout.LayoutParams bannerParams = new LinearLayout.LayoutParams(-1, -2);
               bannerParams.setMargins(0, dp(12), 0, dp(14));
               page.addView(columnBanner, bannerParams);
-              TextView heading = tv("De Derde Helft", 32, C.TEXT, true);
-              heading.setPadding(0, dp(4), 0, dp(4));
-              page.addView(heading);
-              page.addView(tv("DOOR SANDER BRINK", 14, C.GREEN, true));
-              TextView intro = tv("Geen meeloperij. Geen excuses. Gewoon mijn kijk op voetbal.", 17, C.TEXT, false);
-              intro.setPadding(0, dp(12), 0, dp(6));
-              page.addView(intro);
-              TextView columnPromise = tv("Iedere week een scherpe, volledig zelfgeschreven column over de Eredivisie. Geen automatische AI-columns en geen publicatie zonder mijn akkoord.", 14, C.MUTED, false);
-              columnPromise.setPadding(0, dp(12), 0, dp(18));
-              page.addView(columnPromise);
-              android.view.View archiveDivider = new android.view.View(this);
-              archiveDivider.setBackgroundColor(0xFF294333);
-              LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(-1, dp(1));
-              dividerParams.setMargins(0, dp(6), 0, dp(18));
-              page.addView(archiveDivider, dividerParams);
               TextView archive = tv("COLUMN & ARTIKELEN", 15, C.GREEN, true);
               archive.setPadding(0, dp(4), 0, dp(16));
               page.addView(archive);
@@ -388,34 +372,25 @@ jobs:
               private void addEditorialNewsSection(LinearLayout parent, boolean columnOnly) {
                   LinearLayout section = new LinearLayout(this);
                   section.setOrientation(LinearLayout.VERTICAL);
-                  section.setPadding(dp(6), dp(7), dp(6), dp(7));
-                  section.setBackground(cardBackground());
+                  section.setPadding(columnOnly ? 0 : dp(6), dp(7), columnOnly ? 0 : dp(6), dp(7));
+                  if (!columnOnly) section.setBackground(cardBackground());
                   LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
                   lp.setMargins(0, 0, 0, dp(8));
-                  parent.addView(section, 0, lp);
+                  parent.addView(section, lp);
                   // Prominent editorial column feature: visible even before the first column is published.
                   LinearLayout columnHero = new LinearLayout(this);
                   columnHero.setOrientation(LinearLayout.VERTICAL);
-                  columnHero.setPadding(dp(10), dp(14), dp(10), dp(18));
-                  android.graphics.drawable.GradientDrawable columnBg = new android.graphics.drawable.GradientDrawable(
-                      android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
-                      new int[]{0xFF143A26, 0xFF091511, 0xFF080C0B});
-                  columnBg.setCornerRadius(dp(18));
-                  columnBg.setStroke(dp(1), 0xFF8AF000);
-                  columnHero.setBackground(columnBg);
+                  columnHero.setPadding(0, 0, 0, dp(18));
                   LinearLayout.LayoutParams columnLp = new LinearLayout.LayoutParams(-1, -2);
                   columnLp.setMargins(0, dp(2), 0, dp(16));
-                  section.addView(columnHero, columnLp);
-                  TextView columnTag = tv("✍  DE DERDE HELFT", 15, C.GREEN, true);
-                  columnTag.setPadding(0, 0, 0, dp(12));
-                  columnHero.addView(columnTag);
+                  if (!columnOnly && "Voor jou".equals(active)) section.addView(columnHero, columnLp);
                   android.widget.ImageView homeColumnPortrait = new android.widget.ImageView(this);
                   homeColumnPortrait.setImageResource(nl.voetbalhub.app.R.drawable.column_sander_brink);
-                  homeColumnPortrait.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+                  homeColumnPortrait.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
                   homeColumnPortrait.setAdjustViewBounds(true);
                   homeColumnPortrait.setContentDescription("De Derde Helft, column van Sander Brink");
                   LinearLayout.LayoutParams homePortraitParams = new LinearLayout.LayoutParams(-1, -2);
-                  homePortraitParams.setMargins(-dp(10), 0, -dp(10), dp(12));
+                  homePortraitParams.setMargins(0, 0, 0, dp(12));
                   columnHero.addView(homeColumnPortrait, homePortraitParams);
                   TextView columnTitle = tv("Negen wedstrijden. Eén uitgesproken mening.", 27, C.TEXT, true);
                   columnHero.addView(columnTitle);
@@ -531,7 +506,7 @@ jobs:
                                   columnAction.setText("LEES DE COLUMN  →");
                                   columnHero.setOnClickListener(v -> showEditorialArticle(featured));
                               }
-                              section.addView(tv("LAATSTE NIEUWS  ·  VOETBALHUB ORIGINALS", 14, C.GREEN, true));
+                              if (!columnOnly) section.addView(tv("LAATSTE NIEUWS  ·  VOETBALHUB ORIGINALS", 14, C.GREEN, true));
                               for (org.json.JSONObject article : rows) {
                                   // Image-led, original artwork card: no third-party photo or logo rights needed.
                                   android.widget.FrameLayout hero = new android.widget.FrameLayout(this);
@@ -868,47 +843,6 @@ jobs:
           old = 'root.addView(sectionHeader("Laatste nieuws", "VERVERS", this::refreshNews));'
           assert old in s, "News heading marker changed"
           s = s.replace(old, 'root.addView(sectionHeader(active.equals("Voor jou") ? "Voor jou" : active, "VERVERS", this::refreshNews));', 1)
-          # Replace the generic intro with a dedicated, clickable column cover,
-          # matching the approved six-screen reference rather than stacking banners.
-          news_start = s.find("private void showNews()")
-          assert news_start >= 0, "News page missing"
-          old = 'LinearLayout list = new LinearLayout(this);'
-          list_pos = s.find(old, news_start)
-          assert list_pos >= 0, "News list missing"
-          new = """if (active.equals("Voor jou")) {
-              LinearLayout masthead = new LinearLayout(this);
-              masthead.setOrientation(LinearLayout.VERTICAL);
-              masthead.setPadding(dp(20), dp(20), dp(20), dp(20));
-              android.graphics.drawable.GradientDrawable mastheadBg = new android.graphics.drawable.GradientDrawable(
-                  android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
-                  new int[]{0xFF16442C, 0xFF0A1711, 0xFF060B09});
-              mastheadBg.setCornerRadius(dp(16));
-              mastheadBg.setStroke(dp(1), 0xFF377B4B);
-              masthead.setBackground(mastheadBg);
-              LinearLayout.LayoutParams mastheadLp = new LinearLayout.LayoutParams(-1, -2);
-              mastheadLp.setMargins(dp(10), dp(12), dp(10), dp(16));
-              list.addView(masthead, mastheadLp);
-              TextView kicker = tv("DE DERDE", 31, C.TEXT, true);
-              masthead.addView(kicker);
-              TextView secondLine = tv("HELFT", 39, C.GREEN, true);
-              masthead.addView(secondLine);
-              TextView author = tv("Door Sander Brink", 15, C.GREEN, true);
-              author.setPadding(0, dp(5), 0, dp(6));
-              masthead.addView(author);
-              masthead.addView(tv("Geen meeloperij. Geen excuses. Gewoon mijn kijk op voetbal.", 14, C.TEXT, false));
-              TextView action = tv("Lees de nieuwste column  →", 15, 0xFF061006, true);
-              action.setGravity(android.view.Gravity.CENTER);
-              action.setPadding(dp(14), dp(12), dp(14), dp(12));
-              android.graphics.drawable.GradientDrawable buttonBg = new android.graphics.drawable.GradientDrawable();
-              buttonBg.setColor(C.GREEN);
-              buttonBg.setCornerRadius(dp(22));
-              action.setBackground(buttonBg);
-              LinearLayout.LayoutParams actionLp = new LinearLayout.LayoutParams(-1, -2);
-              actionLp.setMargins(0, dp(15), 0, 0);
-              masthead.addView(action, actionLp);
-              masthead.setOnClickListener(v -> showColumn());
-          }"""
-          s = s[:list_pos + len(old)] + "\n        " + new + s[list_pos + len(old):]
           # Preserve the current column layout, portrait and editorial archive.
           column_start = s.find("private void showColumn()")
           assert column_start >= 0, "Column page missing"
@@ -960,8 +894,8 @@ jobs:
                       });
                   }"""
           s = s.replace(old, new, 1)
-          # Column cover is an entry point, not a second generic marketing banner.
-          assert 'masthead.setOnClickListener(v -> showColumn());' in s
+          # The column destination owns a single unframed portrait.
+          assert column.count("setImageResource(nl.voetbalhub.app.R.drawable.column_sander_brink)") == 1
           # Make column detail visually distinct from ordinary news articles.
           old = 'root.addView(sectionHeader("VoetbalHub Originals", "TERUG", this::closeEditorialArticle));'
           assert old in s, "Article toolbar missing"
