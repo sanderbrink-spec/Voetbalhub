@@ -27,4 +27,4 @@ jobs:
       - name: Publish exact approved manuscript and verify public feed
         env:
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
-        run: node scripts/publish-column.js
+        run: node scripts/publish-column.js --defer-until-live

@@ -552,6 +552,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       return send(res,200,{record,published:false});
     } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept kon niet worden opgeslagen."}); }
   }
+  // Author columns have their own explicit approval and complete-manuscript contract.
   if (url.pathname === "/publish-column") {
     if (!client?.isReady) return send(res,503,{error:"Artikelenopslag is nog niet verbonden."});
     try {return send(res,200,await require("./column-publication").publishColumn(client,body));}
