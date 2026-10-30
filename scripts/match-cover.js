@@ -21,7 +21,8 @@ async function asset(url,fetcher=fetch){
  const r=await fetcher(url,{redirect:'error',signal:AbortSignal.timeout(25000)});
  if(!r.ok||!/^image\/(png|jpeg|webp)/i.test(r.headers.get('content-type')||''))throw Error('Afbeelding niet beschikbaar.');
  const bytes=Buffer.from(await r.arrayBuffer());if(!bytes.length||bytes.length>8000000)throw Error('Ongeldig beeldbestand.');
- return 'data:'+r.headers.get('content-type').split(';')[0]+';base64,'+bytes.toString('base64');
+ const normalized=await require('sharp')(bytes,{limitInputPixels:20000000}).rotate().png().toBuffer();
+ return 'data:image/png;base64,'+normalized.toString('base64');
 }
 async function stadiumFor(venue,key,fetcher=fetch){
  if(!venue?.name)throw Error('Stadionidentiteit ontbreekt.');
@@ -44,6 +45,6 @@ async function createCover(m,{token,fetcher=fetch}={}){
  const imageUrl=`https://raw.githubusercontent.com/${REPO}/${BRANCH}/${filename}`;
  const check=await fetcher(imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
  if(!check.ok||hash(Buffer.from(await check.arrayBuffer()))!==hash(png))throw Error('Wedstrijdbeeld niet openbaar bevestigd.');
- return {imageUrl,imageRights:'cleared',imageSource:'VoetbalHub · wedstrijdvormgeving',imageCredit:'Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: VoetbalHub',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Vaste beeldafspraak: '+m.kind+'. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.',assetSha256:hash(png),stadiumImageUrl:m.stadiumImage||'',method:'fixture-specific-stadium-and-logos-v2'}};
+ return {imageUrl,imageRights:'cleared',imageSource:'VoetbalHub · wedstrijdvormgeving',imageCredit:'Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: VoetbalHub',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Vaste beeldafspraak: '+m.kind+'. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.',assetSha256:hash(png),stadiumImageUrl:m.stadiumImage||'',method:'fixture-specific-stadium-and-logos-v3'}};
 }
 module.exports={assertMatch,svg,safeAsset,asset,stadiumFor,createCover};

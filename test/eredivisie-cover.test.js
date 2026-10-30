@@ -5,3 +5,13 @@ const fixture={id:1,date:'2026-11-01T12:00:00Z',status:'NS',home:{id:1,name:'Thu
 test('previews require the actual verified stadium, never a generic replacement',()=>{assert.throws(()=>assertMatch({kind:'preview',fixture}),/stadionbeeld/);const m={kind:'preview',fixture,venueVerified:true,stadiumImage:'https://media.api-sports.io/venue.png'};const s=svg(m,{home:'home',away:'away',stadium:'stadium'});assert.ok(s.includes('stadium'));assert.ok(s.includes('VOORBESCHOUWING'));assert.ok(!s.includes('EINDSTAND'));assert.ok(s.indexOf('Thuisclub')<s.indexOf('Uitclub'));});
 test('reports require a completed result and show logos with the exact score',()=>{assert.throws(()=>assertMatch({kind:'report',fixture}),/eindstand/);const m={kind:'report',fixture:{...fixture,status:'FT',goals:{home:0,away:2}}};const s=svg(m,{home:'home',away:'away'});assert.ok(s.includes('0 – 2'));assert.ok(s.includes('EINDSTAND'));assert.ok(s.includes('NABESCHOUWING'));assert.ok(!s.includes('undefined'));});
 test('fixture content and type determine a unique image, uncontrolled image hosts are blocked',()=>{const m={kind:'report',fixture:{...fixture,status:'FT',goals:{home:1,away:1}}};assert.notEqual(svg(m,{home:'x',away:'y'}),svg({...m,fixture:{...m.fixture,goals:{home:2,away:1}}},{home:'x',away:'y'}));assert.equal(safeAsset('https://media.api-sports.io/x.png'),true);assert.equal(safeAsset('https://evil.example/x.png'),false);});
+test('a WebP stadium served with a PNG header is normalized and actually visible in the rendered cover',async()=>{
+ const sharp=require('sharp'),{asset}=require('../scripts/match-cover'),{Resvg}=require('@resvg/resvg-js');
+ const bytes=await sharp({create:{width:400,height:200,channels:3,background:{r:0,g:20,b:220}}}).webp().toBuffer();
+ const normalized=await asset('https://media.api-sports.io/stadium.png',async()=>({ok:true,headers:new Headers({'content-type':'image/png'}),arrayBuffer:async()=>bytes}));
+ assert.ok(normalized.startsWith('data:image/png;base64,'));
+ const m={kind:'preview',fixture,venueVerified:true,stadiumImage:'https://media.api-sports.io/stadium.png'};
+ const png=new Resvg(svg(m,{home:normalized,away:normalized,stadium:normalized})).render().asPng();
+ const pixel=await sharp(png).extract({left:10,top:300,width:1,height:1}).removeAlpha().raw().toBuffer();
+ assert.ok(pixel[2]>pixel[0]+30,'The verified stadium must remain visible, rather than silently disappearing.');
+});
