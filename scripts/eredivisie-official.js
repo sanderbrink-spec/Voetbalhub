@@ -49,7 +49,9 @@ async function collectOfficial({token,key,fetcher=fetch,now=Date.now(),save=true
   s.headToHead=s.fixtures.filter(f=>DONE.has(f.status)&&[feature.fixture.home.id,feature.fixture.away.id].includes(f.home.id)&&[feature.fixture.home.id,feature.fixture.away.id].includes(f.away.id)).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date)).slice(0,5);
   s.featured={...feature,preview:buildPreview(s,feature)};
   if(previous?.fixtureId===feature.fixtureId&&previous.imageUrl)s.featured.imageUrl=previous.imageUrl;
-  if(!s.featured.imageUrl){try{const {stadiumFor,createCover}=require('./match-cover');const stadium=await stadiumFor(feature.fixture.venue,key,fetcher);const image=await createCover({kind:'preview',fixture:feature.fixture,...stadium,competition:'Eredivisie'},{token,fetcher});s.featured.imageUrl=image.imageUrl;s.featured.imageCredit=image.imageCredit;}catch(e){warnings.push('Beeldcontrole: '+e.message);}}
+  if(!s.featured.imageUrl){try{const {stadiumFor,createCover}=require('./match-cover');const resolved=await require('./eredivisie-covers').resolveTeam(feature.fixture.home.name,key,fetcher);
+ if(norm(resolved.venue.name)!==norm(feature.fixture.venue.name))throw Error('Stadion van de wedstrijd wijkt af van de clublocatie.');
+ const stadium=await stadiumFor(resolved.venue,key,fetcher);const image=await createCover({kind:'preview',fixture:feature.fixture,...stadium,competition:'Eredivisie'},{token,fetcher});s.featured.imageUrl=image.imageUrl;s.featured.imageCredit=image.imageCredit;}catch(e){warnings.push('Beeldcontrole: '+e.message);}}
  }
  if(save)await githubFile('statistics/eredivisie.json',JSON.stringify(s),{token,fetcher});
  return s;

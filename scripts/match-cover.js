@@ -25,9 +25,11 @@ async function asset(url,fetcher=fetch){
 }
 async function stadiumFor(venue,key,fetcher=fetch){
  if(!venue?.name)throw Error('Stadionidentiteit ontbreekt.');
+ if(venue.provider==='API-SPORTS'&&Number.isInteger(venue.id))return {stadiumImage:`https://media.api-sports.io/football/venues/${venue.id}.png`,venueVerified:true};
  const aliases={'johancruijffarena':'Johan Cruijff ArenA','koningwillemiistadion':'Koning Willem II Stadion','mhcarena':'MCH Arena'};
  const name=aliases[norm(venue.name)]||venue.name;
- const rows=await apiRequest('venues',{name},key,fetcher);
+ let rows=await apiRequest('venues',{name},key,fetcher);
+ if(!rows.length&&norm(name)==='johancruijffarena'){const teams=await apiRequest('teams',{name:'Ajax'},key,fetcher);rows=teams.filter(t=>norm(t.team?.name)==='ajax'&&norm(t.venue?.name)==='johancruijffarena').map(t=>t.venue);}
  const matching=rows.filter(v=>norm(v.name)===norm(name));
  if(matching.length!==1||!Number.isInteger(matching[0].id))throw Error('Stadionfoto niet eenduidig bevestigd: '+venue.name);
  return {stadiumImage:`https://media.api-sports.io/football/venues/${matching[0].id}.png`,venueVerified:true};

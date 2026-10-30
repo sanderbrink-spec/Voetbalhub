@@ -59,10 +59,18 @@ function buildPreview(s,feature){
  ];
  return {headline:`${f.home.name} tegen ${f.away.name}: de cijfers vóór de aftrap`,standfirst:'Wedstrijd van de speelronde. Een vooruitblik op basis van klassering, thuis- en uitbalans, doelpunten en recente vorm.',body:paragraphs,homeForm:formFor(s,f.home.id),awayForm:formFor(s,f.away.id),scorers:s.players.scorers.filter(p=>[f.home.id,f.away.id].includes(p.teamId)),headToHead:s.headToHead||[],fixture:f,selection:feature.reason,publishedAt:feature.selectedAt};
 }
+let nextProviderCall=0;
 async function apiRequest(endpoint,params,key,fetcher=fetch){
  if(!key)throw Error('API_FOOTBALL_KEY ontbreekt.');
  const u=new URL('https://v3.football.api-sports.io/'+endpoint);for(const [k,v]of Object.entries(params))u.searchParams.set(k,v);
- const r=await fetcher(u,{headers:{'x-apisports-key':key},signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error(`Statistiekbron HTTP ${r.status}.`);
+ let r;
+ for(let attempt=0;attempt<3;attempt++){
+  if(fetcher===fetch){const delay=Math.max(0,nextProviderCall-Date.now());if(delay)await new Promise(resolve=>setTimeout(resolve,delay));nextProviderCall=Date.now()+6500;}
+  r=await fetcher(u,{headers:{'x-apisports-key':key},signal:AbortSignal.timeout(25000)});
+  if(r.status!==429||attempt===2)break;
+  await new Promise(resolve=>setTimeout(resolve,60000));
+ }
+ if(!r.ok)throw Error(`Statistiekbron HTTP ${r.status}.`);
  const d=await r.json();if((Array.isArray(d.errors)?d.errors.length:Object.keys(d.errors||{}).length)||!Array.isArray(d.response))throw Error('Statistiekbron: '+JSON.stringify(d.errors||'ongeldig antwoord'));
  return d.response;
 }
