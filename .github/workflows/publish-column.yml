@@ -1,0 +1,30 @@
+name: Publish personally approved author column
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'redactie/columns/**'
+      - 'column-publication.js'
+      - 'scripts/publish-column.js'
+      - '.github/workflows/publish-column.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: publish-author-column
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - name: Publish exact approved manuscript and verify public feed
+        env:
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+        run: node scripts/publish-column.js

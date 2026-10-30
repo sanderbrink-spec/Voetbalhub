@@ -209,3 +209,12 @@ test('approved publication carries the reviewed image and public image URL respo
  assert.equal((await fetch(base+'/article-covers/not-approved.webp')).status,404);
 });
 
+
+test('author-column endpoint requires authentication and publishes the full approved manuscript without news truncation',async()=>{
+ const config=JSON.parse(fs.readFileSync(path.join(__dirname,'../redactie/columns/publish.json'),'utf8'));
+ const packet={...config,manuscript:fs.readFileSync(path.join(__dirname,'../redactie/columns/ajax-buijs.md'),'utf8')};delete packet.manuscriptPath;
+ const post=(body,auth=true)=>fetch(base+'/publish-column',{method:'POST',headers:{'Content-Type':'application/json',...(auth?{Authorization:'Bearer test-only'}:{})},body:JSON.stringify(body)});
+ const before=store.size;assert.equal((await post(packet,false)).status,401);assert.equal((await post({...packet,authorApproved:false})).status,400);assert.equal(store.size,before);
+ const response=await post(packet);assert.equal(response.status,200);const result=await response.json();assert.equal(result.article.author,'Sander Brink');assert.equal(result.article.type,'column');assert.ok(result.article.body.length>40);assert.equal((await (await post(packet)).json()).alreadyPublished,true);
+ const feed=await (await fetch(base+'/articles')).json(),article=feed.articles.find(a=>a.id===result.article.id);assert.equal(article.manuscript,packet.manuscript.trim());assert.equal(store.size,before+1);
+});
