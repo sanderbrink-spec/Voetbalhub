@@ -46,4 +46,5 @@ jobs:
         with:
           name: eredivisie-mobile-preview
           path: .browser-output/*.png
+          include-hidden-files: true
           if-no-files-found: ignore
