@@ -47,6 +47,9 @@ public final class HomeFeatureView extends WebView {
         try{articles=new JSONObject(activity.getSharedPreferences(PREFS,0).getString("last_articles","{}"));}catch(Exception ignored){}
         try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot","{}"));}catch(Exception ignored){}
         try{videos=new JSONObject(activity.getSharedPreferences(PREFS,0).getString("youtube_videos","{}"));}catch(Exception ignored){}
+        if(videos.optJSONArray("videos")==null)try(InputStream in=activity.getAssets().open("youtube-seed.json")){
+            ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>200000)throw new Exception("Seed too large");}videos=new JSONObject(out.toString("UTF-8"));
+        }catch(Exception ignored){}
         loadUrl("file:///android_asset/home-features.html");
         fetch("https://voetbalhub-redactie.onrender.com/articles",0);
         fetch(MEDIA+"statistics/eredivisie.json?v="+System.currentTimeMillis()/60000,1);

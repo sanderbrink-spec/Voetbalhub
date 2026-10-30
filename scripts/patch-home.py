@@ -19,7 +19,7 @@ s=s[:start]+news+s[end:]
 s=s.replace('section.setPadding(0, dp(7), 0, dp(7));','section.setPadding(0, 0, 0, dp(7));')
 p.write_text(s)
 assets=Path('app/src/main/assets');assets.mkdir(parents=True,exist_ok=True)
-for name in ['home-features.html','home-model.js']:
+for name in ['home-features.html','home-model.js','youtube-seed.json']:
  shutil.copyfile('android-ui/assets/'+name,assets/name)
 shutil.copyfile('android-ui/drawable-nodpi/column_sander_brink_clean.webp',assets/'column-portrait.webp')
 shutil.copyfile('android-ui/java/HomeFeatureView.java',p.parent/'HomeFeatureView.java')
