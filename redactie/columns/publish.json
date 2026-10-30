@@ -1,0 +1,8 @@
+{
+  "intent": "publish_author_column",
+  "approved": true,
+  "authorApproved": true,
+  "author": "Sander Brink",
+  "manuscriptPath": "redactie/columns/ajax-buijs.md",
+  "expectedContentHash": "796c710695194f4ba68c435f35ba7066dd989c211a9e40ec1cc7879c6cdbfbd3"
+}

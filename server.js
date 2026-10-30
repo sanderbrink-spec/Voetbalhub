@@ -361,7 +361,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
+    return send(res, 200, { ok: true, service: "VoetbalHub Redactie API", manualAuthorColumns: true, storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const articles = await getArticles(); return send(res, 200, { count: articles.length, articles }); }
@@ -551,6 +551,11 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const record=await require("./editorial-drafts").saveDraft(client,{id:body.id,expectedRevision:body.expectedRevision,payload:body.payload,approve:body.approve===true});
       return send(res,200,{record,published:false});
     } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept kon niet worden opgeslagen."}); }
+  }
+  if (url.pathname === "/publish-column") {
+    if (!client?.isReady) return send(res,503,{error:"Artikelenopslag is nog niet verbonden."});
+    try {return send(res,200,await require("./column-publication").publishColumn(client,body));}
+    catch(error){return send(res,error.status||500,{error:error.status?error.message:"Column kon niet worden gepubliceerd."});}
   }
   if (url.pathname === "/auto-inbox") {
     if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden." });
