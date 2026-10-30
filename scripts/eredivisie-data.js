@@ -27,10 +27,15 @@ function roundCandidates(s,now){
  for(const f of s.fixtures){if(!groups.has(f.round))groups.set(f.round,[]);groups.get(f.round).push(f);}
  return [...groups].map(([round,fixtures])=>({round,fixtures,start:Math.min(...fixtures.map(f=>Date.parse(f.date)))})).filter(g=>g.start>now&&g.start-now<=48*3600000&&g.fixtures.every(f=>ACTIVE.has(f.status))).sort((a,b)=>a.start-b.start);
 }
+function selectionOnly(previous,fixture){return {season:previous.season,round:previous.round,fixtureId:previous.fixtureId,selectedAt:previous.selectedAt,publishAt:previous.publishAt,reason:previous.reason,fixture};}
 function chooseFeatured(s,now=Date.now(),previous=null){
+ if(previous?.season===s.league.season){
+  const round=s.fixtures.filter(f=>f.round===previous.round),selected=round.find(f=>f.id===previous.fixtureId);
+  if(selected&&Math.min(...round.map(f=>Date.parse(f.date)))<=now&&ACTIVE.has(selected.status)&&Date.parse(selected.date)>now)return selectionOnly(previous,selected);
+ }
  const groups=roundCandidates(s,now);if(!groups.length)return null;
  const g=groups[0];
- if(previous?.round===g.round&&previous.season===s.league.season){const f=g.fixtures.find(f=>f.id===previous.fixtureId);return f?{...previous,fixture:f}:null;}
+ if(previous?.round===g.round&&previous.season===s.league.season){const f=g.fixtures.find(f=>f.id===previous.fixtureId);return f?selectionOnly(previous,f):null;}
  const table=new Map(s.standings.map(t=>[t.team.id,t]));
  const derbies=[['Ajax','Feyenoord'],['PSV','Ajax'],['PSV','Feyenoord'],['FC Groningen','Heerenveen'],['Twente','Heracles']];
  const weight=f=>{

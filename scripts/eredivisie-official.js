@@ -37,9 +37,9 @@ async function collectOfficial({token,key,fetcher=fetch,now=Date.now(),save=true
  const fixtures=officialFixtures(raw,season);
  const standings=officialStandings(await get('https://eredivisie.nl/competitie/stand/',fetcher,false),fixtures);
  const players=officialPlayers(await get('https://eredivisie.nl/cache/site/EredivisieNL/json/stats/general-data.json',fetcher));
- const warnings=[];
+ const warnings=[];let venueEvents=[];
  // ESPN only supplies venue names, matched against the official home/away clubs and exact kickoff.
- try{const events=[];for(const y of [season,season+1])events.push(...(await get('https://site.api.espn.com/apis/site/v2/sports/soccer/ned.1/scoreboard?dates='+y+'&limit=1000',fetcher)).events||[]);
+ try{const events=venueEvents;for(const y of [season,season+1])events.push(...(await get('https://site.api.espn.com/apis/site/v2/sports/soccer/ned.1/scoreboard?dates='+y+'&limit=1000',fetcher)).events||[]);
   for(const f of fixtures){const e=events.find(e=>Math.abs(Date.parse(e.date)-Date.parse(f.date))<60000&&e.competitions?.[0]?.competitors?.some(c=>c.homeAway==='home'&&norm(c.team.shortDisplayName||c.team.displayName)===norm(f.home.name))&&e.competitions[0].competitors.some(c=>c.homeAway==='away'&&norm(c.team.shortDisplayName||c.team.displayName)===norm(f.away.name)));if(e){const v=e.competitions[0].venue;f.venue={name:v?.fullName||'',city:v?.address?.city||''};}}
  }catch(e){warnings.push('Stadionnamen niet beschikbaar.');}
  const s=validateSnapshot({schemaVersion:1,updatedAt:new Date(now).toISOString(),source:'Eredivisie.nl · officiële competitiegegevens',league:{id:88,name:'Eredivisie',season},fixtures,standings,players,warnings});
@@ -47,8 +47,14 @@ async function collectOfficial({token,key,fetcher=fetch,now=Date.now(),save=true
  const feature=chooseFeatured(s,now,previous);
  if(feature){
   s.headToHead=s.fixtures.filter(f=>DONE.has(f.status)&&[feature.fixture.home.id,feature.fixture.away.id].includes(f.home.id)&&[feature.fixture.home.id,feature.fixture.away.id].includes(f.away.id)).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date)).slice(0,5);
+  const pair=[feature.fixture.home,feature.fixture.away];
+  const history=venueEvents.filter(e=>Date.parse(e.date)<now&&e.competitions?.[0]?.status?.type?.completed&&pair.every(team=>e.competitions[0].competitors.some(c=>norm(c.team.shortDisplayName||c.team.displayName)===norm(team.name)))).map(e=>{
+   const c=e.competitions[0],h=c.competitors.find(x=>x.homeAway==='home'),a=c.competitors.find(x=>x.homeAway==='away');
+   return {id:Number(e.id),date:e.date,status:'FT',home:pair.find(t=>norm(t.name)===norm(h.team.shortDisplayName||h.team.displayName)),away:pair.find(t=>norm(t.name)===norm(a.team.shortDisplayName||a.team.displayName)),goals:{home:Number(h.score),away:Number(a.score)},venue:{name:c.venue?.fullName||''},round:'Eredivisie '+e.season?.year};
+  }).filter(f=>Number.isInteger(f.goals.home)&&Number.isInteger(f.goals.away));
+  s.headToHead=[...new Map([...s.headToHead,...history].map(f=>[f.date.slice(0,10)+f.home.id+f.away.id,f])).values()].sort((a,b)=>Date.parse(b.date)-Date.parse(a.date)).slice(0,5);
   s.featured={...feature,preview:buildPreview(s,feature)};
-  if(previous?.fixtureId===feature.fixtureId&&previous.imageUrl&&previous.imageVersion===3){s.featured.imageUrl=previous.imageUrl;s.featured.imageVersion=3;}
+  if(previous?.fixtureId===feature.fixtureId&&previous.imageUrl&&previous.imageVersion===3){s.featured.imageUrl=previous.imageUrl;s.featured.imageVersion=3;s.featured.imageCredit=previous.imageCredit;s.featured.imageReview=previous.imageReview;}
   if(!s.featured.imageUrl){try{const {stadiumFor,createCover}=require('./match-cover');const resolved=await require('./eredivisie-covers').resolveTeam(feature.fixture.home.name,key,fetcher);
  if(norm(resolved.venue.name)!==norm(feature.fixture.venue.name))throw Error('Stadion van de wedstrijd wijkt af van de clublocatie.');
  const stadium=await stadiumFor(resolved.venue,key,fetcher);const image=await createCover({kind:'preview',fixture:feature.fixture,...stadium,competition:'Eredivisie'},{token,fetcher});s.featured.imageUrl=image.imageUrl;s.featured.imageCredit=image.imageCredit;s.featured.imageVersion=3;s.featured.imageReview=image.imageReview;}catch(e){warnings.push('Beeldcontrole: '+e.message);}}
