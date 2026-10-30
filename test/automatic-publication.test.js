@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,run}=require('../scripts/automatic-publication');
+const {allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run}=require('../scripts/automatic-publication');
 const now=Date.parse('2026-10-30T12:00:00Z');
 function fixture(){
  const texts=['Ajax ontvangt AZ op zaterdag 31 oktober 2026 om 21:00 uur in Amsterdam. De club biedt bezoekers informatie over de toegangskaarten en de ontvangst rond het stadion.',
@@ -19,6 +19,7 @@ test('source extraction uses article content and removes menus and scripts',()=>
  assert.equal(d.title,'Clubnieuws');assert.equal(d.text,'Clubnieuws Actuele clubinformatie voor bezoekers.');
  assert.equal(extractPage('<div>Alleen menu en cookies</div>','https://ajax.nl').text,'');
  assert.equal(plain('<p>A &amp; B&nbsp;– test</p>'),'A & B – test');
+ assert.equal(extractPage('<main><h1>Clubnieuws</h1>AZ 1 ⎯ 30.10.2026<p>Feitelijke informatie.</p></main>','https://az.nl/inside-az/nieuws/a').publishedAt,'2026-10-30');
 });
 test('discovery cannot leave the exact configured official site or article path',()=>{
  const index={url:'https://www.ajax.nl/artikelen/',articlePath:'^/artikelen/[^/]+/?$'};
@@ -60,4 +61,10 @@ test('model discovery selects an available supported model and rejects unavailab
 test('all launch articles pass the same original-copy and factual preflight',()=>{
  const {generationIssues}=require('../editorial-ai');
  for(const p of require('../automatic-bootstrap.json'))assert.deepEqual(generationIssues(p.draft,p.candidate.facts.map(f=>f.text)),[],p.key);
+});
+test('selected evidence always resolves to exact source bytes and invented passage IDs fail closed',()=>{
+ const docs=fixture().docs,fragments=docs.map(evidenceFragments);
+ const c=hydrateEvidence({facts:[{text:'Feit',evidence:[{source:0,fragment:0}]}],sharedEventEvidence:[{source:0,fragment:0},{source:1,fragment:0}]},fragments);
+ assert.ok(docs[0].text.includes(c.facts[0].evidence[0].quote));
+ assert.throws(()=>hydrateEvidence({facts:[{evidence:[{source:0,fragment:500}]}],sharedEventEvidence:[]},fragments),/Ongeldige verwijzing/);
 });

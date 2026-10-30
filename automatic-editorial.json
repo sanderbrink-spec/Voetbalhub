@@ -9,10 +9,13 @@
   "officialDomains": ["ajax.nl", "az.nl", "psv.nl", "willem-ii.nl", "feyenoord.com", "fortunasittard.nl", "fcemmen.nl", "fcdenbosch.nl", "fcgroningen.nl", "knvb.nl", "eurojackpotknvbbeker.nl", "inter.it", "clubbrugge.be", "fctwente.nl", "eredivisie.nl", "fcm.dk", "peczwolle.nl"],
   "newsIndexes": [
     {"url":"https://fcemmen.nl/nieuws/","articlePath":"^/[^/]+/$"},
-    {"url":"https://www.ajax.nl/artikelen/","articlePath":"^/artikelen/[^/]+/?$"},
+    {"url":"https://www.ajax.nl/","articlePath":"^/artikelen/[^/]+/?$"},
     {"url":"https://www.feyenoord.com/nl/news/","articlePath":"^/nl/news/[^/]+/?$"},
     {"url":"https://www.fcgroningen.nl/nieuws/","articlePath":"^/nieuws/[^/]+/?$"},
-    {"url":"https://www.az.nl/inside-az/nieuws/","articlePath":"^/inside-az/nieuws/[0-9]{4}/[^/]+/[^/]+/?$"}
+    {"url":"https://www.az.nl/inside-az/nieuws/","articlePath":"^/inside-az/nieuws/[0-9]{4}/[^/]+/[^/]+/?$"},
+    {"url":"https://peczwolle.nl/nieuws","articlePath":"^/nieuws/[^/]+/?$"},
+    {"url":"https://www.psv.nl/media/nieuws","articlePath":"^/media/artikel/[^/]+/?$"},
+    {"url":"https://www.willem-ii.nl/nieuws","articlePath":"^/artikel/[^/]+/?$"}
   ],
   "sourceGroups": [
     ["https://www.ajax.nl/wedstrijden/", "https://www.fcm.dk/kampe/fc-midtjylland-afc-ajax-05-11-2026/"],
