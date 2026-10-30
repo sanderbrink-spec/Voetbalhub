@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'automatic-editorial.json'
+      - 'automatic-bootstrap.json'
       - 'scripts/automatic-publication.js'
       - 'scripts/render-editorial-cover.py'
       - '.github/workflows/automatic-publication.yml'

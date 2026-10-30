@@ -1,0 +1,311 @@
+[
+  {
+    "key": "ajax-az-2026-10-31",
+    "sourceUrls": [
+      "https://www.ajax.nl/wedstrijden/",
+      "https://www.az.nl/inside-az/nieuws/2026/oktober/de-az-connectie-ajax-az"
+    ],
+    "candidate": {
+      "kind": "preview",
+      "topic": "Ajax en AZ treffen elkaar zaterdagavond in Amsterdam",
+      "category": "Eredivisie",
+      "eventDate": "2026-10-31",
+      "teams": [
+        "Ajax",
+        "AZ"
+      ],
+      "facts": [
+        {
+          "text": "Ajax speelt op zaterdag 31 oktober 2026 om 21.00 uur thuis tegen AZ in de VriendenLoterij Eredivisie.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "VriendenLoterij Eredivisie za. 31 oktober 2026 21:00 Ajax - AZ UEFA Conference League do. 05 november 2026 18:45 FC Midtjylland - Ajax VriendenLoterij Eredivisie zo. 08 november 2026 14:30 FC Twente - Ajax Vrie"
+            }
+          ]
+        },
+        {
+          "text": "AZ bevestigt dat het uitduel in Amsterdam op zaterdagavond 31 oktober om 21:00 uur wordt gespeeld.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Het uitduel in Amsterdam wordt op zaterdagavond 31 oktober om 21:00 uur afgetrapt in de Johan Cruijf Arena. De wedstrijd staat onder leiding van scheidsrechter Allard Lindhout. Hij wordt geassisteerd door Johan"
+            }
+          ]
+        },
+        {
+          "text": "AZ meldt dat Allard Lindhout de scheidsrechter is, met Johan Balder en Roy de Nas als assistenten en Clay Ruperti als vierde official.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "De wedstrijd staat onder leiding van scheidsrechter Allard Lindhout. Hij wordt geassisteerd door Johan Balder en Roy de Nas. Clay Ruperti is de vierde official. Vanuit Zeist zijn Jeroen Manschot als VAR en Sjoe"
+            }
+          ]
+        },
+        {
+          "text": "AZ vermeldt ESPN 2 als zender voor de live-uitzending en biedt een liveblog op AZ.nl en updates via sociale media.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "De wedstrijd wordt live uitgezonden op ESPN 2. Daarnaast is het duel te volgen via ons liveblog op AZ.nl en onze sociale media-kanalen. Op zoek naar meer? Bekijk alle items Programma AZ Jeugdopleiding Jeugdople"
+            }
+          ]
+        }
+      ],
+      "sharedEventEvidence": [
+        {
+          "source": 0,
+          "quote": "VriendenLoterij Eredivisie za. 31 oktober 2026 21:00 Ajax - AZ UEFA Conference League do. 05 november 2026 18:45 FC Midtjylland - Ajax VriendenLoterij"
+        },
+        {
+          "source": 1,
+          "quote": "Het uitduel in Amsterdam wordt op zaterdagavond 31 oktober om 21:00 uur afgetrapt in de Johan Cruijf Arena. De wedstrijd staat onder leiding van schei"
+        }
+      ]
+    },
+    "draft": {
+      "headline": "Ajax en AZ treffen elkaar zaterdagavond in Amsterdam",
+      "standfirst": "Het competitieduel begint op 31 oktober om 21.00 uur. AZ heeft ook de arbitrage en de uitzendinformatie bekendgemaakt.",
+      "body": [
+        "Voor Ajax staat een thuiswedstrijd tegen AZ op het programma. Beide clubs vermelden zaterdag 31 oktober 2026 als speeldatum, met de aftrap om 21.00 uur in Amsterdam.",
+        "Volgens de informatie van AZ fluit Allard Lindhout het duel. Johan Balder en Roy de Nas assisteren hem; Clay Ruperti treedt op als vierde official.",
+        "AZ verwijst voor de live-uitzending naar ESPN 2. De club biedt daarnaast een liveblog via de eigen website en updates via de sociale kanalen."
+      ],
+      "why_it_matters": ""
+    }
+  },
+  {
+    "key": "psv-willem-ii-2026-10-31",
+    "sourceUrls": [
+      "https://www.psv.nl/ticketinfo/veelgestelde-vragen/informatie-psv-willem-ii-31102026",
+      "https://www.willem-ii.nl/artikel/verkoopinformatie-psv-willem-ii"
+    ],
+    "candidate": {
+      "kind": "preview",
+      "topic": "PSV en Willem II spelen zaterdagavond in Eindhoven",
+      "category": "Eredivisie",
+      "eventDate": "2026-10-31",
+      "teams": [
+        "PSV",
+        "Willem II"
+      ],
+      "facts": [
+        {
+          "text": "PSV ontvangt Willem II op zaterdag 31 oktober 2026 om 18.45 uur in de VriendenLoterij Eredivisie in Eindhoven.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "Competitie VriendenLoterij Eredivisie Datum en tijdstip Zaterdag 31 oktober 2026, 18.45 uur Beschikbare tickets Het aanbod van tickets kan van tijd tot tijd variëren doordat PSV Seizoen Club Cardhouders hun pla"
+            }
+          ]
+        },
+        {
+          "text": "Willem II bevestigt de uitwedstrijd bij PSV op zaterdag 31 oktober om 18:45 uur.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Willem II trapt op zaterdag 31 oktober af op bezoek bij PSV. Om 18:45 is de aftrap. Het betreft een verplichte bus- en autocombi en er zijn in totaal 1600 kaarten beschikbaar. Autocombi Een omwisselbiljet voor "
+            }
+          ]
+        },
+        {
+          "text": "PSV vermeldt een maximum van 2 kaarten per lidmaatschap of PSV (Seizoen) Club Card.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "Aantal kaarten? In totaal 2 kaarten per lidmaatschap of PSV (Seizoen) Club Card Club Card Nog niet in het bezit van een Club Card? Word via onderstaande knoppen lid van PSV of vraag een gratis PSV Club Card aan"
+            }
+          ]
+        },
+        {
+          "text": "PSV meldt dat het aanbod kan variëren doordat seizoenkaarthouders hun plaatsen vanaf zaterdag 17 oktober kunnen aanbieden voor resale.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "Het aanbod van tickets kan van tijd tot tijd variëren doordat PSV Seizoen Club Cardhouders hun plaats(en) vanaf zaterdag 17 oktober kunnen aanbieden voor resale. Aantal kaarten? In totaal 2 kaarten per lidmaats"
+            }
+          ]
+        },
+        {
+          "text": "Willem II meldt een verplichte bus- en autocombi en in totaal 1600 kaarten voor de uitwedstrijd bij PSV.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Het betreft een verplichte bus- en autocombi en er zijn in totaal 1600 kaarten beschikbaar. Autocombi Een omwisselbiljet voor de autocombi kost €12,25 en de verkoop is vanaf woensdag 14 oktober 20:00 via de Wil"
+            }
+          ]
+        }
+      ],
+      "sharedEventEvidence": [
+        {
+          "source": 0,
+          "quote": "Competitie VriendenLoterij Eredivisie Datum en tijdstip Zaterdag 31 oktober 2026, 18.45 uur Beschikbare tickets Het aanbod van tickets kan van tijd to"
+        },
+        {
+          "source": 1,
+          "quote": "Willem II trapt op zaterdag 31 oktober af op bezoek bij PSV. Om 18:45 is de aftrap. Het betreft een verplichte bus- en autocombi en er zijn in totaal "
+        }
+      ]
+    },
+    "draft": {
+      "headline": "PSV en Willem II spelen zaterdagavond in Eindhoven",
+      "standfirst": "Het competitieduel wordt op 31 oktober om 18.45 uur afgetrapt. Voor supporters gelden verschillende regelingen voor de thuisvakken en het bezoekersvak.",
+      "body": [
+        "PSV ontvangt zaterdag Willem II voor een thuiswedstrijd in de VriendenLoterij Eredivisie. Beide clubs bevestigen 31 oktober als speeldatum en 18.45 uur als aanvangstijd.",
+        "Op de informatiepagina van PSV staat een maximum van twee kaarten per lidmaatschap of Club Card. Het aanbod kan veranderen doordat seizoenkaarthouders hun plaats via resale aanbieden.",
+        "Willem II meldt voor de uitreis een verplichte bus- en autocombi. Willem II noemt in de eigen bezoekersinformatie een totaal van 1600 beschikbare kaarten voor de achterban."
+      ],
+      "why_it_matters": ""
+    }
+  },
+  {
+    "key": "midtjylland-ajax-2026-11-05",
+    "sourceUrls": [
+      "https://www.ajax.nl/wedstrijden/",
+      "https://www.fcm.dk/kampe/fc-midtjylland-afc-ajax-05-11-2026/"
+    ],
+    "candidate": {
+      "kind": "preview",
+      "topic": "Ajax speelt donderdag Europees uitduel bij FC Midtjylland",
+      "category": "Conference League",
+      "eventDate": "2026-11-05",
+      "teams": [
+        "FC Midtjylland",
+        "Ajax"
+      ],
+      "facts": [
+        {
+          "text": "Ajax speelt op donderdag 5 november 2026 om 18.45 uur uit tegen FC Midtjylland in de UEFA Conference League.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "UEFA Conference League do. 05 november 2026 18:45 FC Midtjylland - Ajax VriendenLoterij Eredivisie zo. 08 november 2026 14:30 FC Twente - Ajax VriendenLoterij Eredivisie zo. 22 november 2026 14:30 Ajax - ADO De"
+            }
+          ]
+        },
+        {
+          "text": "FC Midtjylland bevestigt de wedstrijd tegen AFC Ajax op donderdag 5 november om 18.45 uur in de Conference League in MCH Arena.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Torsdag den 5. november kl. 18.45 venter et europæisk brag mod AFC Ajax i Conference League på MCH Arena. Fanzonen åbner to timer før kampstart med hygge og underholdning for alle med billet til kampen. Fanzone"
+            }
+          ]
+        },
+        {
+          "text": "FC Midtjylland meldt dat de fanzone om 16.45 uur opengaat en toegankelijk is voor iedereen met een wedstrijdticket.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Fanzonen er åben for alle Fanzonen bag Faxe Kondi-tribunen åbner kl. 16.45. Alle med billet til kampen er velkommen i fanzonen. Musikalsk opvarmning Vi sørger for musik, der får dig i den helt rette kampdagsste"
+            }
+          ]
+        },
+        {
+          "text": "FC Midtjylland verwijst uitfans naar parkeren achter Jyske Bank Boxen via poort 20 of 21 aan Messevejen.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Udebanefans henvises til at parkere i området bag Jyske Bank Boxen via indkørsel ved Port 20 eller Port 21 på Messevejen. Se kort i fuld størrelse Form Se holdenes aktuelle form op til kampen Indbyrdes kampe Se"
+            }
+          ]
+        }
+      ],
+      "sharedEventEvidence": [
+        {
+          "source": 0,
+          "quote": "UEFA Conference League do. 05 november 2026 18:45 FC Midtjylland - Ajax VriendenLoterij Eredivisie zo. 08 november 2026 14:30 FC Twente - Ajax Vriende"
+        },
+        {
+          "source": 1,
+          "quote": "Torsdag den 5. november kl. 18.45 venter et europæisk brag mod AFC Ajax i Conference League på MCH Arena. Fanzonen åbner to timer før kampstart med hy"
+        }
+      ]
+    },
+    "draft": {
+      "headline": "Ajax speelt donderdag Europees uitduel bij FC Midtjylland",
+      "standfirst": "De ontmoeting in de Conference League begint op 5 november om 18.45 uur. De thuisclub heeft ook bezoekersinformatie gepubliceerd.",
+      "body": [
+        "Ajax reist voor de Conference League naar FC Midtjylland. De wedstrijd staat bij beide clubs op het programma voor donderdag 5 november 2026, met een aftrap om 18.45 uur.",
+        "De thuisclub noemt MCH Arena als locatie en laat de fanzone om 16.45 uur opengaan. Volgens FC Midtjylland zijn alle bezoekers met een wedstrijdticket daar welkom.",
+        "Voor supporters van de uitploeg geeft FC Midtjylland een afzonderlijke parkeerinstructie. Zij worden verwezen naar het gebied achter Jyske Bank Boxen, bereikbaar via poort 20 of 21 aan Messevejen."
+      ],
+      "why_it_matters": ""
+    }
+  },
+  {
+    "key": "willem-ii-pec-2026-11-06",
+    "sourceUrls": [
+      "https://www.willem-ii.nl/artikel/speelschema-tot-en-met-januari-bekend",
+      "https://peczwolle.nl/nieuws/kaartverkoopinformatie-willem-ii-pec-zwolle"
+    ],
+    "candidate": {
+      "kind": "preview",
+      "topic": "Willem II ontvangt PEC Zwolle volgende week vrijdag",
+      "category": "Eredivisie",
+      "eventDate": "2026-11-06",
+      "teams": [
+        "Willem II",
+        "PEC Zwolle"
+      ],
+      "facts": [
+        {
+          "text": "Willem II ontvangt PEC Zwolle op vrijdag 6 november 2026 om 20.00 uur volgens het vastgestelde programma van de VriendenLoterij Eredivisie.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "Vrijdag 6 november 2026 20.00 uur Willem II – PEC Zwolle Zondag 22 november 2026 12.15 uur FC Twente – Willem II Vrijdag 27 november 2026 20.00 uur FC Groningen – Willem II Zaterdag 5 december 2026 16.30 uur Wi"
+            }
+          ]
+        },
+        {
+          "text": "PEC Zwolle bevestigt een uitwedstrijd tegen Willem II op vrijdag 6 november om 20.00 uur.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Op vrijdag 6 november speelt PEC Zwolle om 20.00 uur de uitwedstrijd tegen Willem II. De kaartverkoop voor dat duel start op dinsdag 27 oktober (9.00 uur loyaliteit en 12.00 uur regulier). Voor dit duel geldt e"
+            }
+          ]
+        },
+        {
+          "text": "PEC Zwolle meldt dat voor deze wedstrijd een verplichte buscombi geldt en het gebruik van de PEC Zwolle App verplicht is.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Voor dit duel geldt een verplichte buscombi. Voor het bezoeken van deze wedstrijd is het gebruik van de PEC Zwolle App verplicht. Na identificatie en registratie in de PEC Zwolle App wordt jouw ticket in de loo"
+            }
+          ]
+        },
+        {
+          "text": "PEC Zwolle meldt dat het ticket na identificatie en registratie in de loop van de week automatisch zichtbaar wordt in de app en niet per e-mail wordt verstuurd.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Na identificatie en registratie in de PEC Zwolle App wordt jouw ticket in de loop van de week automatisch zichtbaar in de app. Je ontvangt dus geen ticket per e-mail. Na aankoop van een ticket ontvang je in de "
+            }
+          ]
+        }
+      ],
+      "sharedEventEvidence": [
+        {
+          "source": 0,
+          "quote": "Vrijdag 6 november 2026 20.00 uur Willem II – PEC Zwolle Zondag 22 november 2026 12.15 uur FC Twente – Willem II Vrijdag 27 november 2026 20.00 uur FC"
+        },
+        {
+          "source": 1,
+          "quote": "Op vrijdag 6 november speelt PEC Zwolle om 20.00 uur de uitwedstrijd tegen Willem II. De kaartverkoop voor dat duel start op dinsdag 27 oktober (9.00 "
+        }
+      ]
+    },
+    "draft": {
+      "headline": "Willem II ontvangt PEC Zwolle volgende week vrijdag",
+      "standfirst": "Het competitieduel begint op 6 november om 20.00 uur. PEC Zwolle heeft de regeling voor bezoekende supporters op de eigen website toegelicht.",
+      "body": [
+        "Willem II speelt vrijdag 6 november 2026 een thuiswedstrijd tegen PEC Zwolle. In het vastgestelde competitieprogramma staat een aanvangstijd van 20.00 uur; ook de bezoekers bevestigen dat tijdstip.",
+        "PEC Zwolle schrijft dat voor de uitreis een verplichte buscombi geldt. Supporters moeten daarnaast de clubapp gebruiken, zich identificeren en registreren om hun toegangsbewijs daarin te kunnen ontvangen.",
+        "PEC Zwolle vermeldt dat het ticket in de loop van de wedstrijdweek zichtbaar wordt in de app. Er wordt volgens die bezoekersinformatie geen afzonderlijk toegangsbewijs per e-mail verstuurd."
+      ],
+      "why_it_matters": ""
+    }
+  }
+]

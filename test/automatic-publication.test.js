@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,run}=require('../scripts/automatic-publication');
+const {allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,run}=require('../scripts/automatic-publication');
 const now=Date.parse('2026-10-30T12:00:00Z');
 function fixture(){
  const texts=['Ajax ontvangt AZ op zaterdag 31 oktober 2026 om 21:00 uur in Amsterdam. De club biedt bezoekers informatie over de toegangskaarten en de ontvangst rond het stadion.',
@@ -31,7 +31,7 @@ test('literal evidence from two official domains passes while invented quotes an
  const same=structuredClone(docs);same[1].url='https://ajax.nl/artikelen/ander';assert.ok(validateEvidence(candidate,same,now).some(x=>x.includes('twee onafhankelijke')));
 });
 test('past previews, far-future fixtures, undated announcements and unsupported report types stay blocked',()=>{
- for(const mutation of [c=>c.eventDate='2026-10-29',c=>c.eventDate='2027-01-01',c=>c.kind='match-report']){
+ for(const mutation of [c=>c.eventDate='2026-10-29',c=>c.eventDate='2026-10-30',c=>c.eventDate='2027-01-01',c=>c.kind='match-report']){
   const {docs,candidate}=fixture();mutation(candidate);assert.ok(validateEvidence(candidate,docs,now).length);
  }
  const {docs,candidate}=fixture();candidate.kind='announcement';for(const doc of docs)doc.publishedAt='';assert.ok(validateEvidence(candidate,docs,now).some(x=>x.includes('brondatum')));
@@ -51,4 +51,13 @@ test('request compaction keeps the decisive match information and rate limits ar
  const compact=compactSource({text});assert.ok(compact.length<4300);assert.ok(compact.includes('Wedstrijdinformatie'));
  let calls=0;const fetcher=pacedGroq(async()=>++calls===1?{status:429,headers:new Headers({'retry-after':'0'}),arrayBuffer:async()=>new ArrayBuffer(0)}:{status:200},0);
  assert.equal((await fetcher('https://api.groq.com/openai/v1/chat/completions',{})).status,200);assert.equal(calls,2);
+});
+test('model discovery selects an available supported model and rejects unavailable catalogs',()=>{
+ assert.equal(selectModel({data:[{id:'openai/gpt-oss-120b'}]}),'openai/gpt-oss-120b');
+ assert.equal(selectModel({data:[{id:'openai/gpt-oss-20b'}]}),'openai/gpt-oss-20b');
+ assert.throws(()=>selectModel({data:[{id:'llama-3.3-70b-versatile'}]}),/Geen beschikbaar/);
+});
+test('all launch articles pass the same original-copy and factual preflight',()=>{
+ const {generationIssues}=require('../editorial-ai');
+ for(const p of require('../automatic-bootstrap.json'))assert.deepEqual(generationIssues(p.draft,p.candidate.facts.map(f=>f.text)),[],p.key);
 });

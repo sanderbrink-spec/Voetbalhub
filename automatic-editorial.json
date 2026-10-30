@@ -4,7 +4,7 @@
   "maxPerDay": 20,
   "maxAgeHours": 72,
   "previewHorizonDays": 7,
-  "model": "llama-3.3-70b-versatile",
+  "model": "openai/gpt-oss-120b",
   "mediaBranch": "editorial-media",
   "officialDomains": ["ajax.nl", "az.nl", "psv.nl", "willem-ii.nl", "feyenoord.com", "fortunasittard.nl", "fcemmen.nl", "fcdenbosch.nl", "fcgroningen.nl", "knvb.nl", "eurojackpotknvbbeker.nl", "inter.it", "clubbrugge.be", "fctwente.nl", "eredivisie.nl", "fcm.dk", "peczwolle.nl"],
   "newsIndexes": [

@@ -13,3 +13,9 @@ test('a factual half-time story is allowed when that detail was actually supplie
 test('individual factual acknowledgements cannot be replaced by the old general checkbox',()=>{const p=packet();p.factChecks={};p.editorialChecks={claimsIndependentlyChecked:true};assert.equal(F.audit(p).filter(x=>x.includes('Feitencontrole ontbreekt')).length,4);});
 test('transfer language and clock times do not masquerade as a match result',()=>{assert.equal(F.needsMatch({headline:'Club wint strijd om een nieuwe speler',body:['De presentatie begint om 18:00 uur.']}),false);});
 test('names cannot be accidentally combined across a headline and intro boundary',()=>{const p=packet();p.draft.headline='FC Groningen wint van Ajax';p.draft.standfirst='Groningen won het duel.';assert.ok(!F.audit(p).some(x=>x.includes('Ajax Groningen')));});
+
+test('sentence starters before club names do not become invented people',()=>{
+ const {evidenceIssues}=require('../editorial-facts');
+ assert.deepEqual(evidenceIssues({headline:'Voor Ajax staat een Europese reis gepland',standfirst:'Volgens FC Midtjylland is de wedstrijd toegankelijk met een geldig kaartje.',body:[]},['Ajax speelt tegen FC Midtjylland in een Europese competitie. De wedstrijd is toegankelijk met een geldig kaartje.']),[]);
+ assert.ok(evidenceIssues({headline:'Ajax benoemt Piet Onbekend tot nieuwe trainer',standfirst:'',body:[]},['Ajax bespreekt plannen.']).some(x=>x.includes('Piet Onbekend')));
+});

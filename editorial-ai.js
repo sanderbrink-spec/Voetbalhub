@@ -29,7 +29,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,match=null}
     try{
       const response=await fetcher('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',signal,headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},
-        body:JSON.stringify({model,messages,response_format:{type:'json_object'},temperature:0.2,max_completion_tokens:1600})
+        body:JSON.stringify({model,messages,response_format:{type:'json_object'},temperature:0.2,max_completion_tokens:1600,...(model.startsWith("openai/gpt-oss-")?{reasoning_effort:"low"}:{})})
       });
       if(response.status===429){
         const seconds=Number(response.headers.get('retry-after'));
@@ -52,3 +52,4 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,match=null}
   }
 }
 module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues};
+
