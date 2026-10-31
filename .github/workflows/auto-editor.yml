@@ -1,4 +1,4 @@
-name: VoetbalHub automatische redactie
+name: Veldio automatische redactie
 
 on:
   workflow_dispatch:

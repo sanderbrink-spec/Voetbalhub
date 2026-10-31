@@ -13,8 +13,15 @@ def adb(*args):
 def capture(name):
     adb('shell','screencap','-p','/sdcard/veldio.png')
     adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
-    adb('shell','uiautomator','dump','/sdcard/veldio.xml')
-    adb('pull','/sdcard/veldio.xml',str(OUT/(name+'.xml')))
+    if name=='01-start': return None
+    for attempt in range(4):
+        try:
+            adb('shell','uiautomator','dump','--compressed','/sdcard/veldio.xml')
+            adb('pull','/sdcard/veldio.xml',str(OUT/(name+'.xml')))
+            break
+        except subprocess.CalledProcessError:
+            if attempt==3: raise
+            time.sleep(2)
     root=ET.parse(OUT/(name+'.xml')).getroot()
     visible=[n.get('text','')+' '+n.get('content-desc','') for n in root.iter('node')]
     assert not any(re.search(r'VoetbalHub',x,re.I) and 'https://' not in x for x in visible),visible

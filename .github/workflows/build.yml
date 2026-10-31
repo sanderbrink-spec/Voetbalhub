@@ -51,7 +51,7 @@ jobs:
           test -f app/build.gradle.kts -o -f app/build.gradle
           echo "Android project structure found."
 
-      - name: Separate VoetbalHub 1 from private app
+      - name: Separate Veldio 1 from private app
         shell: bash
         run: |
           set -euo pipefail
@@ -739,7 +739,7 @@ jobs:
               print('Verified published original articles with readable body.')
           PY
 
-      - name: VoetbalHub 2.0 visual design
+      - name: Veldio 2.0 visual design
         shell: bash
         run: |
           set -euo pipefail
@@ -780,7 +780,7 @@ jobs:
           print("VoetbalHub 2.0 design applied to real Android source.")
           PY
 
-      - name: Apply VoetbalHub 2.0 visual identity
+      - name: Apply Veldio 2.0 visual identity
         shell: bash
         run: |
           set -euo pipefail
@@ -831,7 +831,7 @@ jobs:
           print("VoetbalHub 2.0 theme, permanent column tab, nav highlights and branding applied.")
           PY
 
-      - name: VoetbalHub 3.0 homepage hierarchy and category layout
+      - name: Veldio 3.0 homepage hierarchy and category layout
         shell: bash
         run: |
           set -euo pipefail
