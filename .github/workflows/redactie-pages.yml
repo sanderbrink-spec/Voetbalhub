@@ -1,4 +1,4 @@
-name: VoetbalHub Redactie Dashboard Package
+name: Veldio Redactie Dashboard Package
 on:
   push:
     branches: [main]
@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir -p _site
           cp redactie/dashboard/index.html _site/index.html
-          printf 'VoetbalHub redactie dashboard\n' > _site/README.txt
+          printf 'Veldio redactie dashboard\n' > _site/README.txt
           touch _site/.nojekyll
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -32,7 +32,7 @@ jobs:
       - name: Publish dashboard package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: VoetbalHub-Redactie-Dashboard
+          name: Veldio-Redactie-Dashboard
           path: _site/
           if-no-files-found: error
           retention-days: 30

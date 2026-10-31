@@ -1,6 +1,6 @@
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const HUB_API_SECRET = process.env.HUB_API_SECRET || "";
-const API_URL = process.env.VOETBALHUB_API_URL || "https://voetbalhub-redactie.onrender.com";
+const API_URL = process.env.VELDIO_API_URL || "https://voetbalhub-redactie.onrender.com";
 const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 const FEEDS = []; // Externe RSS-bronnen uitgeschakeld conform redactioneel beleid.
 
@@ -26,7 +26,7 @@ async function fetchArticleText(articleUrl) {
     const allowedArticleHosts = new Set(["nos.nl", "www.nos.nl", "vi.nl", "www.vi.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);
     if (parsed.protocol !== "https:" || !allowedArticleHosts.has(parsed.hostname.toLowerCase())) return "";
     const response = await fetch(parsed.href, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; VoetbalHubEditorialBot/1.0)", "Accept": "text/html" },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; VeldioEditorialBot/1.0)", "Accept": "text/html" },
       signal: AbortSignal.timeout(12000)
     });
     if (!response.ok) { console.log("Artikeltekst niet beschikbaar:", response.status, parsed.hostname); return ""; }
@@ -95,7 +95,7 @@ async function main() {
     const feedHost = new URL(url).hostname.toLowerCase();
     if (!allowedHosts.has(feedHost)) { console.log("Niet-toegestane bron overgeslagen:", url); continue; }
     try {
-      const r = await fetch(url, { headers: { "User-Agent": "VoetbalHubEditorialBot/1.0" }, signal: AbortSignal.timeout(12000) });
+      const r = await fetch(url, { headers: { "User-Agent": "VeldioEditorialBot/1.0" }, signal: AbortSignal.timeout(12000) });
       if (!r.ok) { console.log("Feed overgeslagen:", url, r.status); continue; }
       for (const item of extractItems(await r.text()).slice(0, 10)) candidates.push({ ...item, feed: url });
     } catch (e) { console.log("Feedfout:", url, e.message); }
@@ -200,7 +200,7 @@ async function main() {
         facts: [
           "Bronkop: " + item.title,
           "Opgehaalde broninformatie (uitsluitend controleerbare feiten): " + articleText.slice(0, 4200),
-          "Huisstijl VoetbalHub: nuchter, helder, direct en compact Nederlands; actieve zinnen, geen sensatie en geen herhaling.",
+          "Huisstijl Veldio: nuchter, helder, direct en compact Nederlands; actieve zinnen, geen sensatie en geen herhaling.",
           "Auteursrechtelijke zorgvuldigheid: schrijf zelfstandig vanuit de noodzakelijke feiten; kopieer geen zinnen, herkenbare formuleringen, volgorde of structuur van de bron en vertaal niet zin voor zin. Gebruik geen onnodige citaten of creatieve bronpassages.",
           "Juridische zorgvuldigheid: voeg geen onbewezen claims toe, maak geen ongefundeerde beschuldigingen en wek niet de indruk dat feiten onafhankelijk zijn geverifieerd. Bronvermelding is geen juridische garantie.",
           "Bronbeschrijving (maximaal 800 tekens): " + (item.description || "De feed bevat geen beschrijving; schrijf voorzichtig en vermeld de beperkte broninformatie.").slice(0, 800)

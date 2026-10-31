@@ -45,14 +45,14 @@ function extractPage(html,url){
 }
 async function officialPage(url,fetcher=fetch){
  if(!allowedUrl(url))throw Error('Niet-toegestane primaire bron.');
- const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VoetbalHubEditorial/2.0','Accept':'text/html'},signal:AbortSignal.timeout(20000)});
+ const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0','Accept':'text/html'},signal:AbortSignal.timeout(20000)});
  if(r.status>=300&&r.status<400){const next=new URL(r.headers.get('location'),url).href;if(!allowedUrl(next)||host(next)!==host(url))throw Error('Onverwachte bronomleiding.');return officialPageOnce(next,fetcher);}
  if(!r.ok)throw Error('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);
  const html=await r.text();if(html.length>3_000_000)throw Error('Bronpagina te groot.');
  return {...extractPage(html,url),html};
 }
 async function officialPageOnce(url,fetcher){
- const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VoetbalHubEditorial/2.0'},signal:AbortSignal.timeout(20000)});
+ const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0'},signal:AbortSignal.timeout(20000)});
  if(!r.ok)throw Error('Primaire bron niet direct bereikbaar.');
  const html=await r.text();if(html.length>3_000_000)throw Error('Bronpagina te groot.');return {...extractPage(html,url),html};
 }
@@ -195,7 +195,7 @@ async function uploadCover(payload,{token,fetcher=fetch}){
  const imageUrl='https://raw.githubusercontent.com/'+REPO+'/'+config.mediaBranch+'/automatic-covers/'+identity+'.webp';
  const image=await fetcher(imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
  if(!image.ok||!/^image\/webp/i.test(image.headers.get('content-type')||'')||sha(Buffer.from(await image.arrayBuffer()))!==sha(bytes))throw Error('Openbare artikelafbeelding niet bevestigd.');
- return {imageUrl,imageSource:'VoetbalHub · eigen artikelillustratie',imageCredit:'VoetbalHub · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele wedstrijdillustratie. Alleen clubnamen uit de gecontroleerde kop. Geen foto, uitslag, thuis-uitclaim, spelers, clublogos of nagemaakte tenues. Geen ingebakken artikelkop.',assetSha256:sha(bytes)}};
+ return {imageUrl,imageSource:'Veldio · eigen artikelillustratie',imageCredit:'Veldio · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele wedstrijdillustratie. Alleen clubnamen uit de gecontroleerde kop. Geen foto, uitslag, thuis-uitclaim, spelers, clublogos of nagemaakte tenues. Geen ingebakken artikelkop.',assetSha256:sha(bytes)}};
 }
 async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={}){
  if(!config.enabled)return {status:'disabled',published:0};
@@ -266,7 +266,7 @@ async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={})
  }
  report.finishedAt=new Date().toISOString();
  fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
- if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Automatische VoetbalHub-publicatie\n\n'+report.published.length+' berichten met afbeelding gepubliceerd. '+report.skipped.length+' onderwerpen tegengehouden.\n\n'+report.published.map(a=>'- '+a.headline).join('\n')+'\n');
+ if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Automatische Veldio-publicatie\n\n'+report.published.length+' berichten met afbeelding gepubliceerd. '+report.skipped.length+' onderwerpen tegengehouden.\n\n'+report.published.map(a=>'- '+a.headline).join('\n')+'\n');
  return report;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>console.log(JSON.stringify({published:r.published?.length||0,skipped:r.skipped?.length||0,sourceErrors:r.sourceErrors?.length||0,status:r.status||'completed'}))).catch(e=>{console.error(e.message);process.exitCode=1;});

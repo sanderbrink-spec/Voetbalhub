@@ -1,4 +1,4 @@
-name: VoetbalHub Redactie prototype check
+name: Veldio Redactie prototype check
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
           test -s redactie/dashboard/index.html
           test -s redactie/worker/index.js
           test -s redactie/README.md
-          grep -q 'VoetbalHub' redactie/dashboard/index.html
+          grep -q 'Veldio' redactie/dashboard/index.html
           grep -q 'editorialReviewRequired' redactie/worker/index.js
           echo 'Required editorial prototype files are present.'
       - name: Check JavaScript syntax
@@ -47,10 +47,10 @@ jobs:
       - name: Run editorial API tests
         run: node --test redactie/worker/index.test.js
       - name: Package redactie dashboard and Worker source
-        run: zip -qr VoetbalHub-Redactie-prototype.zip redactie
+        run: zip -qr Veldio-Redactie-prototype.zip redactie
       - name: Upload prototype package
         uses: actions/upload-artifact@v4
         with:
-          name: VoetbalHub-Redactie-prototype
-          path: VoetbalHub-Redactie-prototype.zip
+          name: Veldio-Redactie-prototype
+          path: Veldio-Redactie-prototype.zip
           if-no-files-found: error

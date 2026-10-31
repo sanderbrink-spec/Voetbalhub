@@ -66,7 +66,7 @@ public final class HomeFeatureView extends FrameLayout {
         fetch(MEDIA+"videos/eredivisie.json?v="+System.currentTimeMillis()/60000,2);
     }
     private void deliver(){if(!ready||disposed||videoPlayer!=null||activity.isFinishing())return;try{
-        JSONObject payload=new JSONObject();payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
+        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);
     }catch(Exception ignored){}}
     private void fetch(String address,int kind){NETWORK.execute(()->{HttpURLConnection conn=null;JSONObject result=null;try{

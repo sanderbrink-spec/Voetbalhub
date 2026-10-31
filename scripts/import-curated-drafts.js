@@ -32,7 +32,7 @@ async function importPackets({packets,apiUrl,secret,fetcher=fetch}){
 }
 if(require.main===module){
  const packets=JSON.parse(fs.readFileSync('redactie/curated/articles.json','utf8'));
- importPackets({packets,apiUrl:(process.env.VOETBALHUB_API_URL||'https://voetbalhub-redactie.onrender.com').replace(/\/$/,''),secret:process.env.HUB_API_SECRET||''})
+ importPackets({packets,apiUrl:(process.env.VELDIO_API_URL||'https://voetbalhub-redactie.onrender.com').replace(/\/$/,''),secret:process.env.HUB_API_SECRET||''})
  .then(result=>{console.log(JSON.stringify(result));if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,`## Eigen artikelen\\n${result.saved} nieuwe volledige concepten privé opgeslagen; ${result.skipped} bestaande overgeslagen. Geen publicatie.\\n`);})
  .catch(error=>{console.error(error.message);process.exitCode=1;});
 }

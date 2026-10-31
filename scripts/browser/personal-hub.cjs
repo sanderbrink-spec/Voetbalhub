@@ -12,7 +12,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
  const saved=article('s','Bewaarde analyse',['Onafhankelijke terugblik.']);
  let state={mode:'favorites',articles:[original,article('2','Ajax treft AZ'),article('3','Een bazaar in Spanje'),{...article('private','FC Groningen concept'),status:'draft'}],saved:[saved],clubs:['FC Groningen'],stats:{standings:[{team:groningen,rank:7,points:13},{team:ajax,rank:2,points:20},{team:az,rank:4,points:17}],fixtures:[{id:'future',date:new Date(Date.now()+86400000).toISOString(),status:'NS',home:groningen,away:ajax}]},loading:false,offline:false};
  await page.evaluate(x=>setData(JSON.stringify(x)),state);
- assert.equal(await page.getByRole('heading',{name:'Mijn VoetbalHub',exact:true}).count(),1);
+ assert.equal(await page.getByRole('heading',{name:'Mijn Veldio',exact:true}).count(),1);
  assert.equal(await page.locator('[data-article="1"]').count(),1);assert.equal(await page.locator('[data-article="2"]').count(),0);
  await page.getByRole('heading',{name:'Eerstvolgende wedstrijden'}).waitFor();assert.equal(await page.locator('.fixture').count(),1);
  await page.getByRole('button',{name:'Bewerken',exact:true}).click();await page.locator('[data-club="AZ"]').click();assert.equal(await page.locator('[data-club="AZ"]').getAttribute('aria-pressed'),'true');assert.equal(await page.locator('[data-article="2"]').count(),1);assert.equal(await page.locator('[data-article="3"]').count(),0);

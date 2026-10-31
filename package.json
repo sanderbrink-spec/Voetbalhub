@@ -2,14 +2,14 @@
   "name": "voetbalhub-redactie-api",
   "version": "1.0.0",
   "private": true,
-  "description": "VoetbalHub editorial API hosted on Render",
+  "description": "Veldio editorial API hosted on Render",
   "scripts": {
     "start": "node server.js",
     "test": "node --check server.js && node --check editorial-quality.js && node --test"
   },
   "dependencies": {
-    "redis": "^4.7.0",
     "@resvg/resvg-js": "^2.6.2",
-    "sharp": "^0.34.3"
+    "redis": "^4.7.0",
+    "sharp": "0.35.5"
   }
 }

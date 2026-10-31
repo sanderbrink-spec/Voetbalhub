@@ -1,4 +1,4 @@
-name: VoetbalHub Editorial Feed Scheduler
+name: Veldio Editorial Feed Scheduler
 
 on:
   workflow_dispatch:

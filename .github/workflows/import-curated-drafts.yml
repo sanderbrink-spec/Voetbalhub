@@ -22,5 +22,5 @@ jobs:
       - name: Store complete drafts privately for human review
         env:
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
-          VOETBALHUB_API_URL: https://voetbalhub-redactie.onrender.com
+          VELDIO_API_URL: https://voetbalhub-redactie.onrender.com
         run: node scripts/import-curated-drafts.js

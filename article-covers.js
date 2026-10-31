@@ -27,8 +27,8 @@ function withArticleCover(article) {
   return {
     ...article,
     imageUrl: entry.imageUrl || ORIGIN + '/article-covers/' + entry.file,
-    imageSource: 'VoetbalHub · AI-illustratie',
-    imageCredit: 'VoetbalHub · AI-illustratie',
+    imageSource: 'Veldio · AI-illustratie',
+    imageCredit: 'Veldio · AI-illustratie',
     imageRights: 'cleared',
     imageReview: {
       kitVerified: true,

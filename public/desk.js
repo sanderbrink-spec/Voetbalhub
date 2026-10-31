@@ -165,7 +165,7 @@ $('publish').onclick=async()=>{
   if(!approvalCurrent()){$('publishStatus').textContent='Keur eerst de huidige versie inhoudelijk goed met Goedkeuren voor de app.';return;}
   if(!key){$('publishStatus').textContent='Vul eerst de redactiesleutel in.';return;}
   if(issues.length){$('publishStatus').textContent='Publicatie geblokkeerd. Rond de bovenstaande punten af.';updatePreflight();return;}
-  if(!confirm('Publiceer dit gecontroleerde artikel in de VoetbalHub-app?'))return;
+  if(!confirm('Publiceer dit gecontroleerde artikel in de Veldio-app?'))return;
   publishing=true;updatePreflight();
   // Freeze the form while the exact reviewed payload is submitted.
   const controls=[...$('editor').querySelectorAll('input,textarea,select,button')];controls.forEach(e=>e.disabled=true);
