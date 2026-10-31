@@ -951,6 +951,18 @@ jobs:
       - name: Build debug APK
         run: gradle :app:assembleDebug --no-daemon
 
+      - name: Verify APK signature and privacy assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
+          "$TOOLS/apksigner" verify --verbose "$APK"
+          "$TOOLS/aapt" dump permissions "$APK" > /tmp/apk-permissions.txt
+          cat /tmp/apk-permissions.txt
+          if rg 'AD_ID|ACCESS_FINE_LOCATION|READ_CONTACTS|READ_PHONE_STATE|CAMERA|RECORD_AUDIO' /tmp/apk-permissions.txt; then exit 1; fi
+          test "$(unzip -l "$APK" | awk '$4=="assets/privacy.html"{print $1}')" -gt 100
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

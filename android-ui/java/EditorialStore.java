@@ -7,7 +7,7 @@ import org.json.JSONObject;
 /** Saved originals keep their complete text, independent of the current news window. */
 public final class EditorialStore {
     private static String key(JSONObject article){return article.optString("id","").trim();}
-    public static JSONArray saved(Context context){try{return new JSONArray(context.getSharedPreferences("voetbalhub_editorial",0).getString("saved_originals","[]"));}catch(Exception ignored){return new JSONArray();}}
+    public static JSONArray saved(Context context){try{return ContentSafety.rows(new JSONArray(context.getSharedPreferences("voetbalhub_editorial",0).getString("saved_originals","[]")));}catch(Exception ignored){return new JSONArray();}}
     public static boolean contains(Context context,JSONObject article){String id=key(article);if(id.isEmpty())return false;JSONArray rows=saved(context);for(int i=0;i<rows.length();i++)if(id.equals(rows.optJSONObject(i)==null?"":key(rows.optJSONObject(i))))return true;return false;}
     public static synchronized boolean toggle(Context context,JSONObject article){
         String id=key(article);if(id.isEmpty()||!"published".equals(article.optString("status")))return false;

@@ -31,11 +31,11 @@ test('the same stadium photograph cannot be reused under another venue name even
  assert.doesNotThrow(()=>assertStadiumIdentity(arena,'Johan Cruijff Arena'));
  assert.throws(()=>assertStadiumIdentity(arena,'Philips Stadion'),/Verkeerd stadionbeeld/);
 });
-test('the PSV override is bound to the exact reviewed file and source stadium',async()=>{
+test('the PSV identity metadata does not grant rights and the unlicensed file is not distributed',async()=>{
  const fs=require('node:fs'),path=require('node:path'),{hash}=require('../scripts/eredivisie-data');
  const {stadiumFor}=require('../scripts/match-cover');
  const entry=require('../stadium-assets.json').reviewed.find(e=>e.venue==='Philips Stadion');
- assert.equal(hash(fs.readFileSync(path.join(__dirname,'../public/stadiums',entry.file))),entry.sha256);
+ assert.equal(entry.commercialReuseApproved,false);assert.equal(fs.existsSync(path.join(__dirname,'../public/stadiums',entry.file)),false);
  const choice=await stadiumFor({name:'Philips Stadion',provider:'API-SPORTS',id:1143},'',()=>{throw Error('Wrong provider image must not be requested');});
  assert.equal(choice.stadiumAsset,entry.file);assert.match(choice.stadiumSourceUrl,/www\.psv\.nl/);
 });

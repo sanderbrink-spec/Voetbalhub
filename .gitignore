@@ -14,3 +14,5 @@ extracted/
 build.gradle.kts
 settings.gradle.kts
 gradle.properties
+
+__pycache__/

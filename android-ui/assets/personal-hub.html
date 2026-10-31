@@ -17,7 +17,7 @@ function allArticles(){return unique([...(state.articles||[]),...(state.saved||[
 function aliases(name){const n=normalize(name);const map={'psv':['psv','psv eindhoven'],'psv eindhoven':['psv','psv eindhoven'],'nec':['nec','n e c'],'n e c':['nec','n e c'],'sc heerenveen':['sc heerenveen','heerenveen'],'fc groningen':['fc groningen','groningen'],'az':['az','az alkmaar'],'az alkmaar':['az','az alkmaar'],'fc twente':['fc twente','twente'],'fc utrecht':['fc utrecht','utrecht']};return map[n]||[n];}
 function mentions(article,club){const hay=' '+normalize([article.headline,article.standfirst,(article.tags||[]).join?.(' ')||''].join(' '))+' ';return aliases(club).some(a=>hay.includes(' '+a+' '));}
 function sameClub(a,b){return aliases(a).some(x=>aliases(b).includes(x));}
-function clubRows(){return(state.stats.standings||[]).map(x=>x.team).filter(Boolean);}
+function clubRows(){return state.stats.clubOptions||(state.stats.standings||[]).map(x=>x.team).filter(Boolean);}
 function isSelected(name){return[...selected].some(x=>sameClub(x,name));}
 function date(value,options){try{return new Intl.DateTimeFormat('nl-NL',{timeZone:'Europe/Amsterdam',...options}).format(new Date(value));}catch{return '';}}
 function stamp(a){return date(a.publishedAt,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}

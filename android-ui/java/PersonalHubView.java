@@ -43,7 +43,7 @@ public final class PersonalHubView extends LinearLayout {
             @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return true;}
         });addView(web,new LayoutParams(-1,-1));
         try{articles=new JSONObject(activity.getSharedPreferences("voetbalhub_editorial",0).getString("last_articles","{}"));}catch(Exception ignored){}
-        stats=new JSONObject();
+        stats=ContentSafety.clubCatalogue();
         web.loadUrl("file:///android_asset/personal-hub.html");
         fetch("https://voetbalhub-redactie.onrender.com/articles",true);
         // Competition data disabled pending rights review.
@@ -52,7 +52,7 @@ public final class PersonalHubView extends LinearLayout {
     public boolean handleBack(){return pageHistory.back();}
     public String navigationState(){return pageHistory.snapshot();}
     private void deliver(){if(!ready||activity.isFinishing())return;try{
-        JSONObject payload=new JSONObject();payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
+        JSONObject payload=new JSONObject();ContentSafety.response(articles);payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);
     }catch(Exception ignored){}}
     private void fetch(String address,boolean news){NETWORK.execute(()->{HttpURLConnection connection=null;JSONObject result=null;try{
@@ -67,7 +67,8 @@ public final class PersonalHubView extends LinearLayout {
         @JavascriptInterface public void back(String unused){activity.runOnUiThread(back);}
         @JavascriptInterface public void openArticle(String id){activity.runOnUiThread(()->{JSONObject row=find(id);if(row!=null&&!activity.isFinishing())open.open(row);});}
         @JavascriptInterface public void saveClubs(String raw){activity.runOnUiThread(()->{try{
-            JSONArray requested=new JSONArray(raw),standings=stats.optJSONArray("standings");if(requested.length()>40)return;
+            JSONArray requested=new JSONArray(raw),options=stats.optJSONArray("clubOptions"),standings=stats.optJSONArray("standings");
+            if(options!=null){standings=new JSONArray();for(int i=0;i<options.length();i++){JSONObject row=new JSONObject();row.put("team",options.optJSONObject(i));standings.put(row);}}if(requested.length()>40)return;
             Set<String> valid=new HashSet<>(),existing=activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>()),selected=new HashSet<>();
             valid.addAll(existing);if(standings!=null)for(int i=0;i<standings.length();i++)valid.add(standings.getJSONObject(i).getJSONObject("team").getString("name"));
             for(int i=0;i<requested.length();i++){String name=requested.getString(i);if(valid.contains(name))selected.add(name);}

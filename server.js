@@ -779,6 +779,8 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (body.imageUrl && !require("./rights-policy").permitted("thirdPartyVisuals") &&
         !["reviewed-match-cover","original-editorial-artwork"].includes(body.imageReview?.method))
       preflightIssues.push("Beeldrechten niet aangetoond; gebruik een eigen illustratie zonder externe beelden of logo’s.");
+    if (sources.some(source => sourcePolicyForUrl(source.url).status === "link_only"))
+      preflightIssues.push("Nieuwsuitgever alleen als link toegestaan; schrijf op basis van zelfstandig gecontroleerde primaire feiten.");
     if (headlineContradictions(d)) preflightIssues.push("Tegenstrijdige kop: controleer de uitslag en herschrijf de kop.");
     if (preflightIssues.length) return send(res, 400, {error: "Publicatie geblokkeerd: " + preflightIssues.join(" "), issues: preflightIssues});
     const review = body.editorialChecks || {};
