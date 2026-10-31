@@ -49,24 +49,30 @@ public final class HomeFeatureView extends FrameLayout {
         web.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);web.getSettings().setSupportMultipleWindows(false);
         web.addJavascriptInterface(new Bridge(),"HomeHub");
         web.setWebViewClient(new WebViewClient(){
+            @Override public android.webkit.WebResourceResponse shouldInterceptRequest(WebView view,WebResourceRequest request){
+                String url=request.getUrl().toString();
+                if (url.startsWith("https://") && !url.startsWith("https://voetbalhub-redactie.onrender.com/article-covers/") && !url.startsWith("https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/"))
+                    return new android.webkit.WebResourceResponse("text/plain","UTF-8",new java.io.ByteArrayInputStream(new byte[0]));
+                return null;
+            }
             @Override public void onPageFinished(WebView view,String url){if("file:///android_asset/home-features.html".equals(url)){ready=true;deliver();}}
             @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return true;}
             @Override public boolean shouldOverrideUrlLoading(WebView view,String url){return true;}
         });
         addView(web,new FrameLayout.LayoutParams(-1,-1));
         try{articles=new JSONObject(activity.getSharedPreferences(PREFS,0).getString("last_articles","{}"));}catch(Exception ignored){}
-        try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot","{}"));}catch(Exception ignored){}
+        activity.getSharedPreferences("eredivisie-statistics",0).edit().remove("snapshot").apply();
         try{videos=new JSONObject(activity.getSharedPreferences(PREFS,0).getString("youtube_videos","{}"));}catch(Exception ignored){}
         if(videos.optJSONArray("videos")==null)try(InputStream in=activity.getAssets().open("youtube-seed.json")){
             ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>200000)throw new Exception("Seed too large");}videos=new JSONObject(out.toString("UTF-8"));
         }catch(Exception ignored){}
         web.loadUrl("file:///android_asset/home-features.html");
         fetch("https://voetbalhub-redactie.onrender.com/articles",0);
-        fetch(MEDIA+"statistics/eredivisie.json?v="+System.currentTimeMillis()/60000,1);
-        fetch(MEDIA+"videos/eredivisie.json?v="+System.currentTimeMillis()/60000,2);
+        // Competition reuse awaits documented rights; never load old snapshots.
+        videoLoading=false; // Curated local links only until automatic selection is approved.
     }
     private void deliver(){if(!ready||disposed||videoPlayer!=null||activity.isFinishing())return;try{
-        JSONObject payload=new JSONObject();payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
+        JSONObject payload=new JSONObject();ContentSafety.response(articles);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);
     }catch(Exception ignored){}}
     private void fetch(String address,int kind){NETWORK.execute(()->{HttpURLConnection conn=null;JSONObject result=null;try{
@@ -103,9 +109,16 @@ public final class HomeFeatureView extends FrameLayout {
                 if(chosen==null)return;long age=System.currentTimeMillis()-java.time.Instant.parse(chosen.getString("publishedAt")).toEpochMilli();if(age<0||age>7L*86400000)return;
                 float top=(float)request.optDouble("top",-1),height=(float)request.optDouble("height",0);
                 if(!Float.isFinite(top)||!Float.isFinite(height)||top<0||height<244||top+height>getHeight()/getResources().getDisplayMetrics().density+3)return;
-                closeVideo();videoPlayer=new YoutubePlayerView(activity,id,chosen.optString("title"),()->closeVideo());
+                final String videoTitle=chosen.optString("title");
+                new android.app.AlertDialog.Builder(activity).setTitle("YouTube-video laden?")
+                    .setMessage("Google ontvangt uw IP-adres en technische apparaatgegevens als u de speler laadt. Bij afspelen kan Google aanvullende gegevens verwerken. Nieuws blijft beschikbaar als u weigert. Zie Privacy en gegevens onder Meer.")
+                    .setNegativeButton("Weigeren",(d,w)->{})
+                    .setPositiveButton("Speler laden",(d,w)->{
+                if(disposed||activity.isFinishing())return;
+                closeVideo();videoPlayer=new YoutubePlayerView(activity,id,videoTitle,()->closeVideo());
                 FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(-1,dp(height));lp.topMargin=dp(top);addView(videoPlayer,lp);
                 web.evaluateJavascript("window.setVideoPlaying(true)",null);
+                }).show();
             }catch(Exception ignored){}
         });}
 

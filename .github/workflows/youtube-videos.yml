@@ -1,10 +1,5 @@
 name: Actuele Eredivisie YouTube-video’s
 on:
-  push:
-    branches: [main]
-    paths: ['scripts/youtube-videos.js', '.github/workflows/youtube-videos.yml']
-  schedule:
-    - cron: '19 * * * *'
   workflow_dispatch:
 permissions:
   contents: write

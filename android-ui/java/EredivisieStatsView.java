@@ -42,25 +42,14 @@ public final class EredivisieStatsView extends LinearLayout {
             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest req){if("app".equals(req.getUrl().getScheme())&&"retry".equals(req.getUrl().getHost()))load();return true;}
         });
         addView(web,new LayoutParams(-1,0,1));
-        json=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot",null);
+        json=null;activity.getSharedPreferences("eredivisie-statistics",0).edit().remove("snapshot").apply();
         web.loadUrl("file:///android_asset/eredivisie.html"); load();
     }
     public boolean handleBack(){return pageHistory.back();}
     public String navigationState(){return pageHistory.snapshot();}
     private void deliver(){if(!ready)return; if(json!=null)web.evaluateJavascript("window.setData("+JSONObject.quote(json)+")",null);}
-    private void load(){new Thread(()->{
-        HttpURLConnection conn=null;
-        try{
-            conn=(HttpURLConnection)new URL(FEED+"?v="+System.currentTimeMillis()/60000).openConnection();
-            conn.setConnectTimeout(15000);conn.setReadTimeout(20000);conn.setInstanceFollowRedirects(false);
-            if(conn.getResponseCode()!=200)throw new Exception("Geen statistieken beschikbaar");
-            ByteArrayOutputStream out=new ByteArrayOutputStream();
-            try(InputStream in=conn.getInputStream()){byte[] buffer=new byte[8192];int n;while((n=in.read(buffer))!=-1){out.write(buffer,0,n);if(out.size()>3000000)throw new Exception("Gegevens te groot");}}
-            String text=out.toString("UTF-8");JSONObject data=new JSONObject(text);
-            if(data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Onvolledige gegevens");
-            activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",text).apply();
-            activity.runOnUiThread(()->{json=text;deliver();});
-        }catch(Exception e){activity.runOnUiThread(()->{if(ready)web.evaluateJavascript("window.loadFailed&&window.loadFailed()",null);});}
-        finally{if(conn!=null)conn.disconnect();}
-    },"eredivisie-statistics").start();}
+    private void load(){
+        json=null;
+        activity.runOnUiThread(()->{if(ready)web.loadDataWithBaseURL(null,"<html lang='nl'><meta name='viewport' content='width=device-width,initial-scale=1'><body style='background:#070d0b;color:#eef5ef;font:16px system-ui;padding:24px'><h2 style='color:#25f06b'>Eredivisie</h2><p>Competitiegegevens en clublogo’s zijn tijdelijk niet beschikbaar. De gebruiksrechten worden gecontroleerd.</p></body></html>","text/html","UTF-8",null);});
+    }
 }

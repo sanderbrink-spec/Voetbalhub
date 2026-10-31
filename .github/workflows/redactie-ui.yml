@@ -27,13 +27,15 @@ jobs:
         with:
           node-version: '22'
       - name: Install service dependencies
-        run: npm install --ignore-scripts --package-lock=false
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Unit and API tests
         run: npm test
       - name: Install browser test tools
         run: npm install --no-save --package-lock=false playwright@1.56.1
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
+      - name: Check homepage and privacy-safe video rail
+        run: node scripts/browser/home.cjs
       - name: Check mobile and desktop editorial flow
         run: node scripts/browser/editorial-desk.cjs
       - name: Check internal Eredivisie statistics on mobile

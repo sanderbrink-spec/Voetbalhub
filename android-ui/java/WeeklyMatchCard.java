@@ -49,12 +49,12 @@ public final class WeeklyMatchCard extends LinearLayout {
         awayLogo=new ImageView(activity);awayLogo.setScaleType(ImageView.ScaleType.FIT_CENTER);matchRow.addView(awayLogo,new LayoutParams(dp(52),dp(60)));
         LayoutParams match=new LayoutParams(-1,-2);match.topMargin=dp(12);addView(matchRow,match);
         details=text("Stand, uitslagen en programma",12,muted,false);details.setLineSpacing(dp(3),1f);LayoutParams meta=new LayoutParams(-1,-2);meta.topMargin=dp(8);addView(details,meta);
-        summary=text("Alle club- en spelersstatistieken op één plek.",13,muted,false);summary.setLineSpacing(dp(3),1f);LayoutParams sub=new LayoutParams(-1,-2);sub.topMargin=dp(8);addView(summary,sub);
+        summary=text("Gegevens volgen na controle van de gebruiksrechten.",13,muted,false);summary.setLineSpacing(dp(3),1f);LayoutParams sub=new LayoutParams(-1,-2);sub.topMargin=dp(8);addView(summary,sub);
         LinearLayout cta=new LinearLayout(activity);cta.setGravity(Gravity.CENTER_VERTICAL);
         action=text("Bekijk de statistieken",13,green,true);cta.addView(action,new LayoutParams(0,-2,1));
         TextView arrow=text("→",24,green,false);cta.addView(arrow);LayoutParams ctaParams=new LayoutParams(-1,dp(28));ctaParams.topMargin=dp(6);addView(cta,ctaParams);
         setFocusable(true);setOnClickListener(v->openStatistics.run());
-        String cached=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot",null);if(cached!=null)try{show(new JSONObject(cached));}catch(Exception ignored){}
+        activity.getSharedPreferences("eredivisie-statistics",0).edit().remove("snapshot").apply();
         new Thread(this::load,"weekly-match-card").start();
     }
     private void show(JSONObject data)throws Exception{
@@ -88,7 +88,8 @@ public final class WeeklyMatchCard extends LinearLayout {
             activity.runOnUiThread(()->{if(!activity.isFinishing()&&address.equals(view.getTag()))view.setImageBitmap(bitmap);});
         }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}});
     }
-    private void load(){HttpURLConnection conn=null;try{
+    private void load(){ /* Competition rights not yet documented. */ }
+    private void loadAfterRightsReview(){HttpURLConnection conn=null;try{
         conn=(HttpURLConnection)new URL("https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json?v="+System.currentTimeMillis()/60000).openConnection();
         conn.setConnectTimeout(12000);conn.setReadTimeout(15000);conn.setInstanceFollowRedirects(false);if(conn.getResponseCode()!=200)return;
         ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=conn.getInputStream()){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>3000000)return;}}

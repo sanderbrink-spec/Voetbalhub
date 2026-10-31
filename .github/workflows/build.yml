@@ -45,7 +45,8 @@ jobs:
               exit 1
             fi
             ROOT="$(dirname "$SETTINGS")"
-            cp -a "$ROOT"/. .
+            cp -a "$ROOT"/app .
+          cp "$ROOT"/build.gradle.kts "$ROOT"/settings.gradle.kts "$ROOT"/gradle.properties .
           fi
           test -f app/build.gradle.kts -o -f app/build.gradle
           echo "Android project structure found."
@@ -709,17 +710,6 @@ jobs:
           print("Patched ESPN feeds, home screen and back navigation.")
           PY
 
-      - name: Check public football score feeds
-        shell: bash
-        run: |
-          set -u
-          for league in uefa.champions uefa.europa uefa.europa.conf eng.1 esp.1 ita.1 ger.1 fra.1; do
-            url="https://site.api.espn.com/apis/site/v2/sports/soccer/$league/scoreboard"
-            echo "Checking $league"
-            curl -L --max-time 15 -sS -o /tmp/scoreboard.json -w 'HTTP %{http_code} | %{content_type}\n' "$url" || true
-            if python3 -c 'import json; d=json.load(open("/tmp/scoreboard.json")); print("events:",len(d.get("events",[])),"keys:",list(d.keys())[:8])' 2>/dev/null; then :; else echo "Response is not valid ESPN scoreboard JSON"; fi
-          done
-
       - name: Verify live editorial API
         shell: bash
         run: |
@@ -950,15 +940,28 @@ jobs:
       - name: Install previous-screen navigation and contact page
         run: python3 scripts/patch-navigation-contact.py
 
+      - name: Install privacy and rights safeguards
+        run: python3 scripts/patch-privacy.py
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
       - name: Build debug APK
-        env:
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         run: gradle :app:assembleDebug --no-daemon
+
+      - name: Verify APK signature and privacy assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
+          "$TOOLS/apksigner" verify --verbose "$APK"
+          "$TOOLS/aapt" dump permissions "$APK" > /tmp/apk-permissions.txt
+          cat /tmp/apk-permissions.txt
+          if rg 'AD_ID|ACCESS_FINE_LOCATION|READ_CONTACTS|READ_PHONE_STATE|CAMERA|RECORD_AUDIO' /tmp/apk-permissions.txt; then exit 1; fi
+          test "$(unzip -l "$APK" | awk '$4=="assets/privacy.html"{print $1}')" -gt 100
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

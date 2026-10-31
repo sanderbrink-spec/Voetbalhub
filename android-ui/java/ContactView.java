@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import org.json.JSONObject;
 /** Session-only form. The user reviews and sends the message in their own mail app. */
 public final class ContactView extends LinearLayout {
- private static final String EMAIL="voetbalhub@gmail.com";private final Activity activity;private final WebView web;private volatile String draft;private final Runnable back;
+ private static final String EMAIL="redactie.veldio@gmail.com";private final Activity activity;private final WebView web;private volatile String draft;private final Runnable back;
  public ContactView(Activity activity,String draft,Runnable back){super(activity);this.activity=activity;this.draft=draft==null?"{}":draft;this.back=back;setOrientation(VERTICAL);setBackgroundColor(0xFF050C08);web=new WebView(activity);web.setBackgroundColor(0xFF050C08);web.getSettings().setJavaScriptEnabled(true);web.getSettings().setAllowContentAccess(false);web.getSettings().setDomStorageEnabled(false);web.addJavascriptInterface(new Bridge(),"ContactHub");web.setWebViewClient(new WebViewClient(){@Override public void onPageFinished(WebView v,String url){if(url.equals("file:///android_asset/contact.html"))web.evaluateJavascript("restoreForm("+JSONObject.quote(ContactView.this.draft)+")",null);}@Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){return true;}});addView(web,new LayoutParams(-1,-1));web.loadUrl("file:///android_asset/contact.html");}
  public String draft(){return draft;}
  private void result(boolean ok,String message){web.evaluateJavascript("showResult("+ok+","+JSONObject.quote(message)+")",null);}

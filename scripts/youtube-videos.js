@@ -30,6 +30,7 @@ function selectVideos(rows,{now=Date.now(),clubs=[]}={}){
  }).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,18).map(({description,...v})=>v);
 }
 async function collect({now=Date.now(),fetcher=fetch,token,save=true}={}){
+ if(save)require('../rights-policy').requirePermission('youtubeSelection');
  const results=await Promise.allSettled(CHANNELS.map(async c=>{
   const r=await fetcher('https://www.youtube.com/feeds/videos.xml?channel_id='+c.id,{signal:AbortSignal.timeout(25000)});
   if(!r.ok)throw Error(c.name+': HTTP '+r.status);return parseFeed(await r.text(),c);
