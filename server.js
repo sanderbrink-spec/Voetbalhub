@@ -20,7 +20,7 @@ function send(res, status, body) {
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
-    "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGINS || "null",
+    ...(res.allowedOrigin ? {"Access-Control-Allow-Origin": res.allowedOrigin} : {}),
     "Vary": "Origin",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Authorization, Content-Type"
@@ -41,7 +41,7 @@ function readBody(req) {
   });
 }
 function authorized(req) {
-  return !!API_SECRET && req.headers.authorization === "Bearer " + API_SECRET;
+  return require("./request-security").tokenMatches(req.headers.authorization, API_SECRET);
 }
 function cleanExtractedSourceText(value) {
   if (typeof value !== "string") return "";
@@ -279,13 +279,22 @@ async function getArticles() {
   for (const key of keys.slice(0, 200)) {
     const raw = await client.get(key);
     if (!raw) continue;
-    try { const article = JSON.parse(raw); if (article.status === "published") articles.push(withArticleCover(article)); } catch {}
+    try { const article = JSON.parse(raw); if (article.status === "published") articles.push(require("./rights-policy").safePublicArticle(withArticleCover(article))); } catch {}
   }
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return articles;
 }
 async function handle(req, res) {
   const url = new URL(req.url, "http://localhost");
+  res.allowedOrigin = require("./request-security").allowedOrigin(req.headers.origin, process.env.ALLOWED_ORIGINS);
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  if (req.method === "GET" && url.pathname === "/privacy") {
+    res.writeHead(200, {"Content-Type":"text/html; charset=utf-8", "Cache-Control":"no-store"});
+    return res.end(require("node:fs").readFileSync(require("node:path").join(__dirname,"public/privacy.html"),"utf8"));
+  }
   if (req.method === "GET" && url.pathname.startsWith("/article-covers/")) {
     const bytes = readCover(url.pathname.slice("/article-covers/".length));
     if (!bytes) return send(res, 404, {error:"Afbeelding niet gevonden."});
@@ -767,6 +776,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => s && typeof s.url === "string" && s.url.startsWith("https://")) : [];
     if (body.approved !== true) return send(res, 400, { error: "Expliciete goedkeuring vereist: approved moet true zijn." });
     const preflightIssues = require("./editorial-desk-model").publicationIssues(body);
+    if (body.imageUrl && !require("./rights-policy").permitted("thirdPartyVisuals") &&
+        !["reviewed-match-cover","original-editorial-artwork"].includes(body.imageReview?.method))
+      preflightIssues.push("Beeldrechten niet aangetoond; gebruik een eigen illustratie zonder externe beelden of logo’s.");
     if (headlineContradictions(d)) preflightIssues.push("Tegenstrijdige kop: controleer de uitslag en herschrijf de kop.");
     if (preflightIssues.length) return send(res, 400, {error: "Publicatie geblokkeerd: " + preflightIssues.join(" "), issues: preflightIssues});
     const review = body.editorialChecks || {};

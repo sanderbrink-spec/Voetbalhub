@@ -1,0 +1,16 @@
+node_modules/
+.browser-output/
+.automatic-output/
+.android-build/
+*.log
+local.properties
+keystore.properties
+*.jks
+*.keystore
+
+# Android build is generated from the embedded source by the CI workflow.
+app/
+extracted/
+build.gradle.kts
+settings.gradle.kts
+gradle.properties

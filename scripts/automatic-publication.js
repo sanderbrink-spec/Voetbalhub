@@ -195,11 +195,12 @@ async function uploadCover(payload,{token,fetcher=fetch}){
  const imageUrl='https://raw.githubusercontent.com/'+REPO+'/'+config.mediaBranch+'/automatic-covers/'+identity+'.webp';
  const image=await fetcher(imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
  if(!image.ok||!/^image\/webp/i.test(image.headers.get('content-type')||'')||sha(Buffer.from(await image.arrayBuffer()))!==sha(bytes))throw Error('Openbare artikelafbeelding niet bevestigd.');
- return {imageUrl,imageSource:'VoetbalHub · eigen artikelillustratie',imageCredit:'VoetbalHub · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele wedstrijdillustratie. Alleen clubnamen uit de gecontroleerde kop. Geen foto, uitslag, thuis-uitclaim, spelers, clublogos of nagemaakte tenues. Geen ingebakken artikelkop.',assetSha256:sha(bytes)}};
+ return {imageUrl,imageSource:'VoetbalHub · eigen artikelillustratie',imageCredit:'VoetbalHub · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele wedstrijdillustratie. Alleen clubnamen uit de gecontroleerde kop. Geen foto, uitslag, thuis-uitclaim, spelers, clublogos of nagemaakte tenues. Geen ingebakken artikelkop.',assetSha256:sha(bytes),method:'original-editorial-artwork'}};
 }
 async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={}){
  if(!config.enabled)return {status:'disabled',published:0};
  if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
+ if(!require('../rights-policy').permitted('automaticPublication')||!require('../rights-policy').permitted('externalCollection'))return {status:'rights_review_required',published:0};
  const report={startedAt:new Date(now).toISOString(),published:[],skipped:[],sourceErrors:[]};
  const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(20000)});
  if(!models.ok)throw Error('Beschikbare taalmodellen konden niet worden gecontroleerd.');

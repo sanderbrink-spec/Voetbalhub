@@ -30,7 +30,7 @@ public final class PersonalHubView extends LinearLayout {
     private final String restoredState;
     private JSONObject articles=new JSONObject(),stats=new JSONObject();
     private boolean ready,offline;
-    private int pending=2;
+    private int pending=1;
     public PersonalHubView(Activity activity,String mode,String query,OpenArticle open,Runnable back){
         this(activity,mode,query,open,back,"");
     }
@@ -43,10 +43,10 @@ public final class PersonalHubView extends LinearLayout {
             @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return true;}
         });addView(web,new LayoutParams(-1,-1));
         try{articles=new JSONObject(activity.getSharedPreferences("voetbalhub_editorial",0).getString("last_articles","{}"));}catch(Exception ignored){}
-        try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot","{}"));}catch(Exception ignored){}
+        stats=new JSONObject();
         web.loadUrl("file:///android_asset/personal-hub.html");
         fetch("https://voetbalhub-redactie.onrender.com/articles",true);
-        fetch("https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json",false);
+        // Competition data disabled pending rights review.
     }
     public void refreshSaved(){deliver();}
     public boolean handleBack(){return pageHistory.back();}

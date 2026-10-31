@@ -26,6 +26,7 @@ async function resolveTeam(name,key,fetcher){
 }
 
 async function sync({key,secret,token,fetcher=fetch}={}){
+ require('../rights-policy').requirePermission('thirdPartyVisuals');
  if(!secret||!token)throw Error('Publicatie-instellingen ontbreken.');
  const r=await fetcher(API+'/articles',{signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Artikeloverzicht ontbreekt.');
  const before=(await r.json()).articles,updates=[],skipped=[];

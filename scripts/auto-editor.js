@@ -21,6 +21,7 @@ function tag(chunk, name) {
 }
 
 async function fetchArticleText(articleUrl) {
+  if (!require("../rights-policy").permitted("externalCollection")) return "";
   try {
     const parsed = new URL(articleUrl);
     const allowedArticleHosts = new Set(["nos.nl", "www.nos.nl", "vi.nl", "www.vi.nl", "voetbalprimeur.nl", "www.voetbalprimeur.nl"]);

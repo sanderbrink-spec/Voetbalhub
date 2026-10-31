@@ -91,6 +91,8 @@ async function githubFile(file,content,{token,fetcher=fetch}){
 }
 async function collect({key,token,fetcher=fetch,now=Date.now()}={}){
  const season=seasonFor(now),params={league:88,season};
+ if(!key)throw Error('API_FOOTBALL_KEY ontbreekt.');
+ require('../rights-policy').requirePermission('competitionData');
  const fixtures=(await apiRequest('fixtures',params,key,fetcher)).map(fixtureRow);
  const standings=(await apiRequest('standings',params,key,fetcher))[0]?.league?.standings?.flat()||[];
  if(!fixtures.length||!standings.length)throw Error('Geen actuele Eredivisiegegevens. Bestaande cijfers blijven behouden.');

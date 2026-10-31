@@ -8,7 +8,12 @@ test('fixture content and type determine a unique image, uncontrolled image host
 test('a WebP stadium served with a PNG header is normalized and actually visible in the rendered cover',async()=>{
  const sharp=require('sharp'),{asset}=require('../scripts/match-cover'),{Resvg}=require('@resvg/resvg-js');
  const bytes=await sharp({create:{width:400,height:200,channels:3,background:{r:0,g:20,b:220}}}).webp().toBuffer();
- const normalized=await asset('https://media.api-sports.io/stadium.png',async()=>({ok:true,headers:new Headers({'content-type':'image/png'}),arrayBuffer:async()=>bytes}));
+ const policy=require('../rights-policy.json');
+ const before=structuredClone(policy);
+ policy.thirdPartyVisuals=true;
+ policy.evidence.thirdPartyVisuals={commercialUse:true,reference:'Unit test: locally generated blue image only',expiresAt:'2099-01-01T00:00:00Z'};
+ let normalized;
+ try { normalized=await asset('https://media.api-sports.io/stadium.png',async()=>({ok:true,headers:new Headers({'content-type':'image/png'}),arrayBuffer:async()=>bytes})); } finally { Object.assign(policy,before); }
  assert.ok(normalized.startsWith('data:image/png;base64,'));
  const m={kind:'preview',fixture,venueVerified:true,stadiumImage:'https://media.api-sports.io/stadium.png'};
  const png=new Resvg(svg(m,{home:normalized,away:normalized,stadium:normalized})).render().asPng();

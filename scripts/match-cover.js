@@ -13,6 +13,7 @@ function assertStadiumIdentity(sourceHash,venueName){
 }
 function reviewedStadium(venue){return stadiumAssets.reviewed.find(e=>e.aliases.some(a=>norm(a)===norm(venue.name)));}
 async function stadiumAsset(m,fetcher){
+ require('../rights-policy').requirePermission('thirdPartyVisuals');
  if(m.stadiumAsset){
   const entry=reviewedStadium(m.fixture.venue);
   if(!entry||entry.file!==m.stadiumAsset)throw Error('Stadionbestand hoort niet bij de wedstrijdlocatie.');
@@ -38,6 +39,7 @@ function svg(m,assets){
 }
 function safeAsset(url){try{const u=new URL(url);return u.protocol==='https:'&&['media.api-sports.io','a.espncdn.com','eredivisie.b-cdn.net'].includes(u.hostname)&&!u.username&&!u.password;}catch{return false;}}
 async function asset(url,fetcher=fetch,{stadiumName}={}){
+ require('../rights-policy').requirePermission('thirdPartyVisuals');
  if(!safeAsset(url))throw Error('Niet-toegestane afbeeldingbron.');
  const r=await fetcher(url,{redirect:'error',signal:AbortSignal.timeout(25000)});
  if(!r.ok||!/^image\/(png|jpeg|webp)/i.test(r.headers.get('content-type')||''))throw Error('Afbeelding niet beschikbaar.');

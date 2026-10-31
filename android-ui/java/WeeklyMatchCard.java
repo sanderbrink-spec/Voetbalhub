@@ -88,7 +88,8 @@ public final class WeeklyMatchCard extends LinearLayout {
             activity.runOnUiThread(()->{if(!activity.isFinishing()&&address.equals(view.getTag()))view.setImageBitmap(bitmap);});
         }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}});
     }
-    private void load(){HttpURLConnection conn=null;try{
+    private void load(){ /* Competition rights not yet documented. */ }
+    private void loadAfterRightsReview(){HttpURLConnection conn=null;try{
         conn=(HttpURLConnection)new URL("https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json?v="+System.currentTimeMillis()/60000).openConnection();
         conn.setConnectTimeout(12000);conn.setReadTimeout(15000);conn.setInstanceFollowRedirects(false);if(conn.getResponseCode()!=200)return;
         ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=conn.getInputStream()){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>3000000)return;}}

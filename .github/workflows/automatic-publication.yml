@@ -1,16 +1,5 @@
 name: Automatic verified news and images
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'automatic-editorial.json'
-      - 'automatic-bootstrap.json'
-      - 'scripts/automatic-publication.js'
-      - 'scripts/render-editorial-cover.py'
-      - 'scripts/refresh-automatic-covers.js'
-      - '.github/workflows/automatic-publication.yml'
-  schedule:
-    - cron: '23 * * * *'
   workflow_dispatch:
 permissions:
   contents: write

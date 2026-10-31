@@ -1,15 +1,5 @@
 name: Eredivisie statistics and match of the round
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/eredivisie-*.js'
-      - 'scripts/match-cover*'
-      - 'stadium-assets.json'
-      - 'public/stadiums/**'
-      - '.github/workflows/eredivisie.yml'
-  schedule:
-    - cron: '7 */3 * * *'
   workflow_dispatch:
 permissions:
   contents: write
