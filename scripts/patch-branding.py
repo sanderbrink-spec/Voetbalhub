@@ -25,6 +25,7 @@ for f in root.rglob('*.xml'):
  if f.name=='AndroidManifest.xml':
   value=re.sub(r'android:(icon|roundIcon)="[^"]+"',lambda m:'android:'+m[1]+'="@drawable/veldio_logo"',value)
  value=value.replace('Alles voetbal. Eén hub.','Alles voetbal. Eén plek.')
+ value=value.replace('\"@drawable/ic_launcher\"','\"@drawable/veldio_logo\"')
  f.write_text(value)
 resources=root/'res/drawable-nodpi';resources.mkdir(parents=True,exist_ok=True)
 shutil.copyfile('android-ui/drawable-nodpi/veldio_logo.png',resources/'veldio_logo.png')
