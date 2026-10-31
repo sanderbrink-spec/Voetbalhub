@@ -173,7 +173,7 @@ more="""private void showMore() {
         addActionRow(list, "Favorieten", "Mijn clubs", this::showFavorites);
         TextView about = tv("Over VoetbalHub", 19, C.TEXT, true); about.setPadding(dp(2), dp(20), 0, dp(12)); list.addView(about);
         addActionRow(list, "Info", "Onze missie", () -> new AlertDialog.Builder(this).setTitle("Alles voetbal. Eén hub.").setMessage("VoetbalHub brengt eigen voetbalnieuws, wedstrijdinformatie en de column van Sander Brink samen.").setPositiveButton("Sluiten", null).show());
-        addActionRow(list, "Contact", "Contact", () -> { try { startActivity(new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:voetbalhub.app@gmail.com?subject=VoetbalHub%20feedback"))); } catch(Exception ignored) {} });
+        addActionRow(list, "Contact", "Contact", () -> { try { startActivity(new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:redactie.veldio@gmail.com?subject=VoetbalHub%20feedback"))); } catch(Exception ignored) {} });
         addActionRow(list, "Column", "De Derde Helft · Sander Brink", this::showColumn);
         addActionRow(list, "Info", "Bronnen en beeldgebruik", this::showLegalInfo);
         TextView brand = tv("VOETBALHUB", 25, C.TEXT, true); brand.setGravity(Gravity.CENTER); brand.setPadding(0, dp(30), 0, dp(5)); list.addView(brand);

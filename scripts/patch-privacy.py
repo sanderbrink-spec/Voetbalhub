@@ -36,6 +36,8 @@ shutil.copyfile('android-ui/java/PrivacyInfo.java', p.parent / 'PrivacyInfo.java
 shutil.copyfile('public/privacy.html', root / 'assets/privacy.html')
 gradle = Path('app/build.gradle.kts')
 g = gradle.read_text()
+g = g.replace('compileSdk = 35', 'compileSdk = 36').replace('targetSdk = 35', 'targetSdk = 36')
+g = g.replace('versionCode = 54', 'versionCode = 55').replace('versionName = "4.22"', 'versionName = "4.23-phase4"')
 g = re.sub(r'^.*implementation\("com.google.android.gms:play-services-ads:[^\n]+\n', '', g, flags=re.M)
 g = re.sub(r'^.*buildConfigField\("String", "API_FOOTBALL_KEY"[^\n]+\n', '        buildConfigField("String", "API_FOOTBALL_KEY", "\\\"\\\"")\n', g, flags=re.M)
 assert 'System.getenv("API_FOOTBALL_KEY")' not in g
