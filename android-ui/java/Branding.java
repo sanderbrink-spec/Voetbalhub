@@ -17,7 +17,7 @@ public final class Branding {
             for(String key:names){Object item=value.opt(key);if(item instanceof JSONObject)response((JSONObject)item);else if(item instanceof JSONArray)rows((JSONArray)item);else if(item instanceof String)value.put(key,text((String)item));}
             String url=value.optString("imageUrl");
             for(String file:new String[]{"groningen-emmen-2026-10-29.webp","emmen-den-bosch-2026-11-01.webp"})
-                if(url.contains("/"+file))value.put("imageUrl",MEDIA+"fix/veldio-rebrand/public/article-covers/"+file);
+                if(url.contains("/"+file))value.put("imageUrl",MEDIA+"43490d29c0c4a10347e237a07deafcc960f8e648/public/article-covers/"+file);
             JSONObject review=value.optJSONObject("imageReview");
             if(review!=null&&"fixture-specific-stadium-and-logos-v4".equals(review.optString("method"))&&url.startsWith(MEDIA))
                 value.put("imageUrl",ORIGIN+"/brand/fixture-image?source="+android.net.Uri.encode(url));
