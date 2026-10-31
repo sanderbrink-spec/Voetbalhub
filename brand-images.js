@@ -1,22 +1,30 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),sharp=require('sharp');
 const {ownMedia}=require('./brand');
-function badge(){
+const cache=new Map();
+const escape=value=>String(value||'').slice(0,50).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+function badge({kind='',label=''}={}){
  const logo=fs.readFileSync(path.join(__dirname,'public/brand/veldio-logo.png')).toString('base64');
- return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="480" height="130"><rect width="480" height="130" rx="12" fill="#04110a"/><image href="data:image/png;base64,${logo}" x="4" y="3" width="124" height="124"/><text x="146" y="64" fill="#f6f8f5" font-family="DejaVu Sans,Arial" font-weight="bold" font-size="46">Veldio</text><text x="147" y="96" fill="#aaff26" font-family="DejaVu Sans,Arial" font-size="18">Alles voetbal. Eén plek.</text></svg>`);
+ const section=kind==='preview'?'VOORBESCHOUWING':kind==='report'?'NABESCHOUWING':'WEDSTRIJD';
+ return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"><defs><linearGradient id="paper" x2="1" y2="1"><stop stop-color="#132d1e"/><stop offset="1" stop-color="#040a06"/></linearGradient><linearGradient id="rule"><stop stop-color="#b7ff31"/><stop offset="1" stop-color="#1adf72"/></linearGradient></defs><rect width="1600" height="900" fill="url(#paper)"/><path d="M1120 0h90l110 130L1430 0h105l-170 190h-77z" fill="#96ed31" opacity=".075"/><image href="data:image/png;base64,${logo}" x="32" y="14" width="116" height="116"/><g font-family="DejaVu Sans,Arial,sans-serif"><text x="170" y="77" fill="#f0f6f1" font-size="48" font-weight="700">Veldio</text><text x="173" y="111" fill="#a9ff35" font-size="21">Alles voetbal. Eén plek.</text><text x="1540" y="64" text-anchor="end" fill="#a9ff35" font-size="23" font-weight="700">${section}</text><text x="1540" y="104" text-anchor="end" fill="#cadbd0" font-size="22">${escape(label)}</text></g><rect x="30" y="145" width="1540" height="3" rx="1" fill="url(#rule)"/><rect x="29" y="154" width="1542" height="714" rx="15" fill="#06100a" stroke="#416147"/><rect x="728" y="883" width="144" height="3" rx="1" fill="#a9ff35"/></svg>`);
 }
-async function brandImage(bytes){
+async function brandImage(bytes,context={}){
  const image=sharp(bytes,{limitInputPixels:4000000});const metadata=await image.metadata();
  if(!metadata.width||metadata.width<600||!metadata.height||metadata.height<300)throw Error('Unsupported editorial image');
- const width=Math.round(metadata.width*0.29),overlay=await sharp(badge()).resize({width}).png().toBuffer();
- return image.composite([{input:overlay,left:0,top:0}]).webp({quality:92}).toBuffer();
+ // Legacy fixture graphics reserve their top 18% for the old masthead. Replace
+ // that chrome; the teams, fixture facts, stadium and bottom photo credit remain.
+ const top=Math.round(metadata.height*160/900);
+ const content=await image.extract({left:0,top,width:metadata.width,height:metadata.height-top}).resize({width:1540,height:712,fit:'contain',background:'#06100a'}).png().toBuffer();
+ return sharp(badge(context)).composite([{input:content,left:30,top:155}]).webp({quality:94}).toBuffer();
 }
-async function remoteImage(source,fetcher=fetch){
+async function remoteImage(source,fetcher=fetch,context={}){
  if(!ownMedia(source))throw Error('Only existing images from the project repository are supported');
+ const key=source+'\n'+String(context.kind||'')+'\n'+String(context.label||'').slice(0,50);
+ const hit=cache.get(key);if(hit&&Date.now()-hit.at<3600000)return hit.bytes;
  const response=await fetcher(source,{redirect:'error',signal:AbortSignal.timeout(15000)});
  if(!response.ok||!/^image\/(?:png|jpeg|webp)(?:;|$)/i.test(response.headers.get('content-type')||'')||Number(response.headers.get('content-length'))>8000000)throw Error('Image unavailable');
  const reader=response.body.getReader();const chunks=[];let size=0;
- try {while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>8000000)throw Error('Image too large');chunks.push(value);}}finally{reader.releaseLock();}
- return brandImage(Buffer.concat(chunks));
+ try {while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>8000000){await reader.cancel();throw Error('Image too large');}chunks.push(value);}}finally{reader.releaseLock();}
+ const bytes=await brandImage(Buffer.concat(chunks),context);if(cache.size>=16)cache.delete(cache.keys().next().value);cache.set(key,{at:Date.now(),bytes});return bytes;
 }
 module.exports={badge,brandImage,remoteImage};

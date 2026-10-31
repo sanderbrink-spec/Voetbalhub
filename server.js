@@ -293,7 +293,7 @@ async function handle(req, res) {
   if(req.method==="GET"&&url.pathname==="/brand/fixture-image") {
     const source=url.searchParams.get("source")||"";
     if(!require("./brand").ownMedia(source))return send(res,400,{error:"Niet-toegestane beeldbron."});
-    try{const bytes=await require("./brand-images").remoteImage(source);res.writeHead(200,{"Content-Type":"image/webp","Cache-Control":"public,max-age=86400","X-Content-Type-Options":"nosniff"});return res.end(bytes);}
+    try{const bytes=await require("./brand-images").remoteImage(source,fetch,{kind:url.searchParams.get("kind"),label:url.searchParams.get("label")});res.writeHead(200,{"Content-Type":"image/webp","Cache-Control":"public,max-age=86400","X-Content-Type-Options":"nosniff"});return res.end(bytes);}
     catch{return send(res,502,{error:"Afbeelding tijdelijk niet beschikbaar."});}
   }
 
