@@ -88,7 +88,27 @@ assert any('Terug' in n.get('text','') for n in root.iter('node'))
 tap_node(root,lambda n:'Terug' in n.get('text',''))
 time.sleep(1);root=capture('08-back-to-column')
 assert any(n.get('text')=='Nieuwste columns' for n in root.iter('node')),'Reader back did not restore column'
+# Inspect a regular news reader as well as the column-specific reader.
+tap_node(root,lambda n:n.get('text')=='Nieuws')
+time.sleep(4)
+headlines={a['headline'] for a in feed['articles'] if a not in columns}
+for attempt in range(5):
+    root=capture('09-news-list')
+    target=next((n for n in root.iter('node') if n.get('text') in headlines),None)
+    if target is not None:break
+    adb('shell','input','swipe','450','1550','450','700','400');time.sleep(1)
+assert target is not None,'Cached news card missing'
+tap_node(root,lambda n:n is target)
+time.sleep(2);root=capture('10-news-reader')
+assert any(n.get('text')=='VOETBALNIEUWS' for n in root.iter('node')),'News reader identity missing'
+tap_node(root,lambda n:n.get('text')=='A+')
+tap_node(root,lambda n:'Bewaren' in n.get('text',''))
+time.sleep(1);root=capture('11-news-saved')
+assert any('Bewaard' in n.get('text','') for n in root.iter('node')),'Save callback missing'
+tap_node(root,lambda n:'Bewaard' in n.get('text',''))
+tap_node(root,lambda n:'Terug' in n.get('text',''))
+time.sleep(1);capture('12-back-to-news')
 adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 with (OUT/'result.txt').open('a') as result:
-    result.write('PASS: public-feed cache, local column portrait thumbnail, column reader Veldio header and back navigation. Cached/offline UI scenario; does not verify Android live networking.\n')
+    result.write('PASS: public-feed cache, local column portrait thumbnail, column and news readers, save toggle, font control and back navigation. Cached/offline UI scenario; does not verify Android live networking.\n')
 print((OUT/'result.txt').read_text())

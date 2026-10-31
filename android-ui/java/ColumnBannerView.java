@@ -17,7 +17,7 @@ public final class ColumnBannerView extends FrameLayout {
   BitmapFactory.Options options=new BitmapFactory.Options();options.inSampleSize=1;Bitmap portrait=BitmapFactory.decodeResource(getResources(),R.drawable.column_sander_brink_clean,options);
   View photo=new View(activity){final Paint paint=new Paint(3);@Override protected void onDraw(Canvas c){super.onDraw(c);float w=getWidth(),h=getHeight();
    paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(1));paint.setColor(0x163AFF7E);c.drawCircle(w*.79f,h*.5f,h*.69f,paint);paint.setStyle(Paint.Style.FILL);
-   if(portrait!=null){float scale=h*1.25f/portrait.getHeight();float pw=portrait.getWidth()*scale,ph=portrait.getHeight()*scale;float right=w+pw*.20f;c.drawBitmap(portrait,null,new RectF(right-pw,dp(2),right,dp(2)+ph),paint);}
+   if(portrait!=null){paint.setColor(Color.WHITE);float scale=h*1.25f/portrait.getHeight();float pw=portrait.getWidth()*scale,ph=portrait.getHeight()*scale;float right=w+pw*.20f;c.drawBitmap(portrait,null,new RectF(right-pw,dp(2),right,dp(2)+ph),paint);}
    paint.setShader(new LinearGradient(w*.18f,0,w*.71f,0,new int[]{0xFF10271A,0xE610271A,0x0010271A},new float[]{0,.46f,1},Shader.TileMode.CLAMP));c.drawRect(0,0,w,h,paint);paint.setShader(null);
    paint.setColor(0xFFA9FF35);c.drawRect(dp(16),dp(15),dp(37),dp(17),paint);
   }};addView(photo,new LayoutParams(-1,-1));
