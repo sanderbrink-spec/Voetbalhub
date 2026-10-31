@@ -284,8 +284,16 @@ async function getArticles() {
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return articles;
 }
+const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 async function handle(req, res) {
   const url = new URL(req.url, "http://localhost");
+  if(url.pathname==="/contact") {
+    if(req.method==="GET") {
+      res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store"});
+      return res.end(require("node:fs").readFileSync(require("node:path").join(__dirname,"android-ui/assets/contact.html")));
+    }
+    return contactHandler(req,res);
+  }
   if(req.method==="GET"&&url.pathname==="/brand/veldio-logo.png") {
     const bytes=require("node:fs").readFileSync(require("node:path").join(__dirname,"public/brand/veldio-logo.png"));
     res.writeHead(200,{"Content-Type":"image/png","Cache-Control":"public,max-age=3600","X-Content-Type-Options":"nosniff"});return res.end(bytes);
@@ -372,7 +380,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "Veldio Redactie API", manualAuthorColumns: true, storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
+    return send(res, 200, { ok: true, service: "Veldio Redactie API", manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const articles = await getArticles(); return send(res, 200, { count: articles.length, articles }); }
