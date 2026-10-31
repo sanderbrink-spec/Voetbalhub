@@ -22,7 +22,7 @@ public final class VeldioChrome {
   LinearLayout identity=(LinearLayout)((TextView)a.findViewById(R.id.title)).getParent();identity.setPadding(dp(a,8),0,dp(a,3),0);
   TextView title=a.findViewById(R.id.title);title.setTextSize(23);title.setLetterSpacing(.035f);title.setTextColor(0xFFF4FAF6);
   TextView subtitle=a.findViewById(R.id.subtitle);subtitle.setTextSize(11);subtitle.setTextColor(0xFFCAD7CE);subtitle.setPadding(0,dp(a,3),0,0);
-  for(int id:new int[]{R.id.search,R.id.settings}){ImageButton button=a.findViewById(id);button.getLayoutParams().width=dp(a,36);button.getLayoutParams().height=dp(a,40);button.setPadding(dp(a,7),dp(a,8),dp(a,7),dp(a,8));button.setBackground(panel(0xC408130C,0xFF41664C,dp(a,18)));button.setImageTintList(null);button.setImageDrawable(new Icon(id==R.id.search?"search":"settings",0xFFE7F3EB));}
+  for(int id:new int[]{R.id.search,R.id.settings}){ImageButton button=a.findViewById(id);button.getLayoutParams().width=dp(a,44);button.getLayoutParams().height=dp(a,44);button.setPadding(dp(a,9),dp(a,9),dp(a,9),dp(a,9));button.setBackground(panel(0xC408130C,0xFF41664C,dp(a,18)));button.setImageTintList(null);button.setImageDrawable(new Icon(id==R.id.search?"search":"settings",0xFFE7F3EB));}
   View chips=a.findViewById(R.id.chipsScroll);chips.getLayoutParams().height=dp(a,46);chips.setBackgroundColor(0xFF050D08);
   LinearLayout nav=a.findViewById(R.id.nav);GradientDrawable bg=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{0xFF12271B,0xFF060E09});bg.setCornerRadii(new float[]{dp(a,18),dp(a,18),dp(a,18),dp(a,18),0,0,0,0});bg.setStroke(1,0xFF31523D);nav.setBackground(bg);nav.setPadding(dp(a,3),dp(a,5),dp(a,3),dp(a,4));nav.getLayoutParams().height=dp(a,65);
  }

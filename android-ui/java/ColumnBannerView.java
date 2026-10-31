@@ -17,7 +17,7 @@ public final class ColumnBannerView extends FrameLayout {
   BitmapFactory.Options options=new BitmapFactory.Options();options.inSampleSize=1;Bitmap portrait=BitmapFactory.decodeResource(getResources(),R.drawable.column_sander_brink_clean,options);
   View photo=new View(activity){final Paint paint=new Paint(3);@Override protected void onDraw(Canvas c){super.onDraw(c);float w=getWidth(),h=getHeight();
    paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(1));paint.setColor(0x163AFF7E);c.drawCircle(w*.79f,h*.5f,h*.69f,paint);paint.setStyle(Paint.Style.FILL);
-   if(portrait!=null){paint.setColor(Color.WHITE);float ph=h,pw=ph*portrait.getWidth()/portrait.getHeight();float left=w*.46f;c.drawBitmap(portrait,null,new RectF(left,0,left+pw,ph),paint);}
+   if(portrait!=null){paint.setColor(Color.WHITE);float ph=Math.min(h,w*.64f),pw=ph*portrait.getWidth()/portrait.getHeight();float left=w*.46f;c.drawBitmap(portrait,null,new RectF(left,0,left+pw,ph),paint);}
    paint.setColor(0xFFA9FF35);c.drawRect(dp(16),dp(15),dp(37),dp(17),paint);
   }};addView(photo,new LayoutParams(-1,-1));
   LinearLayout copy=new LinearLayout(activity);copy.setOrientation(LinearLayout.VERTICAL);copy.setGravity(Gravity.CENTER_VERTICAL);copy.setPadding(dp(17),dp(25),0,dp(16));LayoutParams copyLp=new LayoutParams(-1,-1);copyLp.rightMargin=Math.round(activity.getResources().getDisplayMetrics().widthPixels*.54f);addView(copy,copyLp);
