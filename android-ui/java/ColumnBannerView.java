@@ -17,11 +17,10 @@ public final class ColumnBannerView extends FrameLayout {
   BitmapFactory.Options options=new BitmapFactory.Options();options.inSampleSize=1;Bitmap portrait=BitmapFactory.decodeResource(getResources(),R.drawable.column_sander_brink_clean,options);
   View photo=new View(activity){final Paint paint=new Paint(3);@Override protected void onDraw(Canvas c){super.onDraw(c);float w=getWidth(),h=getHeight();
    paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(1));paint.setColor(0x163AFF7E);c.drawCircle(w*.79f,h*.5f,h*.69f,paint);paint.setStyle(Paint.Style.FILL);
-   if(portrait!=null){paint.setColor(Color.WHITE);float scale=h*1.25f/portrait.getHeight();float pw=portrait.getWidth()*scale,ph=portrait.getHeight()*scale;float right=w+pw*.20f;c.drawBitmap(portrait,null,new RectF(right-pw,dp(2),right,dp(2)+ph),paint);}
-   paint.setShader(new LinearGradient(w*.18f,0,w*.71f,0,new int[]{0xFF10271A,0xE610271A,0x0010271A},new float[]{0,.46f,1},Shader.TileMode.CLAMP));c.drawRect(0,0,w,h,paint);paint.setShader(null);
+   if(portrait!=null){paint.setColor(Color.WHITE);float ph=h,pw=ph*portrait.getWidth()/portrait.getHeight();float left=w*.46f;c.drawBitmap(portrait,null,new RectF(left,0,left+pw,ph),paint);}
    paint.setColor(0xFFA9FF35);c.drawRect(dp(16),dp(15),dp(37),dp(17),paint);
   }};addView(photo,new LayoutParams(-1,-1));
-  LinearLayout copy=new LinearLayout(activity);copy.setOrientation(LinearLayout.VERTICAL);copy.setGravity(Gravity.CENTER_VERTICAL);copy.setPadding(dp(17),dp(25),0,dp(16));LayoutParams copyLp=new LayoutParams(-1,-1);copyLp.rightMargin=dp(138);addView(copy,copyLp);
+  LinearLayout copy=new LinearLayout(activity);copy.setOrientation(LinearLayout.VERTICAL);copy.setGravity(Gravity.CENTER_VERTICAL);copy.setPadding(dp(17),dp(25),0,dp(16));LayoutParams copyLp=new LayoutParams(-1,-1);copyLp.rightMargin=Math.round(activity.getResources().getDisplayMetrics().widthPixels*.54f);addView(copy,copyLp);
   TextView label=text("VELDIO / COLUMN",9,0xFFA9FF35);label.setLetterSpacing(.13f);copy.addView(label);LinearLayout.LayoutParams titleLp=new LinearLayout.LayoutParams(-1,-2);titleLp.topMargin=dp(9);copy.addView(text("DE DERDE",21,0xFFEEF6F0),titleLp);copy.addView(text("HELFT",36,0xFFA9FF35));
   TextView author=text("Sander Brink",12,0xFFE0EBE3);LinearLayout.LayoutParams authorLp=new LinearLayout.LayoutParams(-1,-2);authorLp.topMargin=dp(5);copy.addView(author,authorLp);
   TextView line=text("Een eigen kijk op voetbal.",10,0xFFACBEB1);line.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL));LinearLayout.LayoutParams lineLp=new LinearLayout.LayoutParams(-1,-2);lineLp.topMargin=dp(6);copy.addView(line,lineLp);

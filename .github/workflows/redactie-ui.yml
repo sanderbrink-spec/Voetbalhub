@@ -42,6 +42,8 @@ jobs:
         run: node scripts/browser/match-preview.cjs
       - name: Check personal clubs, saved originals and search
         run: node scripts/browser/personal-hub.cjs
+      - name: Check Veldio homepage portrait and responsive layout
+        run: node scripts/browser/veldio-home.cjs
       - name: Check professional contact form on mobile
         run: node scripts/browser/contact.cjs
       - name: Keep statistics screen for visual inspection

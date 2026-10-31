@@ -1,0 +1,20 @@
+{
+  "sourceFile": "1000082744.png",
+  "sourceSha256": "eba83d6b32f072e39f666ab45bfbbcc284efaa666fcfc23d06b4df200f348293",
+  "sourceDimensions": [
+    1536,
+    864
+  ],
+  "crop": [
+    824,
+    112,
+    1524,
+    678
+  ],
+  "outputDimensions": [
+    700,
+    566
+  ],
+  "outputSha256": "c9bdb426e3b7e6f34cd4a33c916205d1d128ae39bdbf5cdda42bf67b26f7d4c3",
+  "method": "Exact rectangular crop of the right photograph, lossless RGB WebP. No AI generation, retouching, rotation, recoloring, background removal or face editing."
+}
