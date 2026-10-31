@@ -33,6 +33,14 @@ assert 'Error:' not in result,result
 capture('01-start')
 time.sleep(6)
 root=capture('02-home')
+def bounds(node):return list(map(int,re.findall(r'\d+',node.get('bounds',''))))
+logo=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/logo'))
+title=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/title'))
+search=next(n for n in root.iter('node') if n.get('content-desc')=='Zoeken')
+assert bounds(logo)[2]<=bounds(title)[0], 'Logo overlaps title'
+assert bounds(title)[2]<=bounds(search)[0], 'Title overlaps search'
+assert bounds(logo)[3]-bounds(logo)[1]>bounds(search)[3]-bounds(search)[1], 'Official logo is not prominent'
+
 assert adb('shell','pidof',PACKAGE).strip(),'Veldio is no longer running'
 more=next((n for n in root.iter('node') if n.get('text')=='Meer'),None)
 assert more is not None,'Bottom navigation Meer is missing'

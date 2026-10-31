@@ -946,6 +946,9 @@ jobs:
       - name: Apply Veldio column and reader design
         run: python3 scripts/patch-veldio-reader.py
 
+      - name: Apply Veldio premium presentation
+        run: python3 scripts/patch-veldio-premium.py
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
