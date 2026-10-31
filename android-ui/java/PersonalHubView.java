@@ -52,7 +52,7 @@ public final class PersonalHubView extends LinearLayout {
     public boolean handleBack(){return pageHistory.back();}
     public String navigationState(){return pageHistory.snapshot();}
     private void deliver(){if(!ready||activity.isFinishing())return;try{
-        JSONObject payload=new JSONObject();payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
+        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);
     }catch(Exception ignored){}}
     private void fetch(String address,boolean news){NETWORK.execute(()->{HttpURLConnection connection=null;JSONObject result=null;try{
