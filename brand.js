@@ -11,7 +11,10 @@ function article(value){
  if(Array.isArray(row.blocks))row.blocks=row.blocks.map(block=>({...block,text:text(block.text)}));
  const known=require('./article-covers.json').find(x=>x.reviewed&&x.contentHash===require('./article-covers').contentHash(value));
  if(known&&(!row.imageUrl||row.imageUrl.includes('/'+known.file)))row.imageUrl=known.imageUrl;
- else if(row.imageReview?.method==='fixture-specific-stadium-and-logos-v4'&&ownMedia(row.imageUrl))row.imageUrl=ORIGIN+'/brand/fixture-image?source='+encodeURIComponent(row.imageUrl);
+ else if(row.imageReview?.method==='fixture-specific-stadium-and-logos-v4'&&ownMedia(row.imageUrl)) {
+  const kind=(String(row.imageReview.notes||'').match(/beeldafspraak:\s*(preview|report)\./)||[])[1]||'';
+  row.imageUrl=ORIGIN+'/brand/fixture-image?style=2&kind='+kind+'&label='+encodeURIComponent(row.category||'Voetbal')+'&source='+encodeURIComponent(row.imageUrl);
+ }
  return row;
 }
 module.exports={NAME,TAGLINE,ORIGIN,MEDIA,text,article,ownMedia};
