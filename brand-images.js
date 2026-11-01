@@ -1,5 +1,5 @@
 'use strict';
-const path=require('node:path'),sharp=require('sharp');
+const path=require('node:path'),sharp=require('sharp'),{createHash}=require('node:crypto');
 const {ownMedia}=require('./brand');
 const cache=new Map();
 const escape=value=>String(value||'').slice(0,50).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
@@ -17,14 +17,15 @@ async function brandImage(bytes,context={}){
  const logo=await sharp(path.join(__dirname,'public/brand/veldio-logo.png')).resize(116,116).png().toBuffer();
  return sharp(badge(context)).composite([{input:content,left:30,top:155},{input:logo,left:32,top:14}]).webp({quality:94}).toBuffer();
 }
-async function remoteImage(source,fetcher=fetch,context={}){
+async function remoteImage(source,fetcher=fetch,context={},authorize=()=>true){
  if(!ownMedia(source))throw Error('Only existing images from the project repository are supported');
  const key=source+'\n'+String(context.kind||'')+'\n'+String(context.label||'').slice(0,50);
- const hit=cache.get(key);if(hit&&Date.now()-hit.at<3600000)return hit.bytes;
+ const hit=cache.get(key);if(hit&&Date.now()-hit.at<3600000){if(!authorize(hit.sourceHash))throw Error("Image rights missing");return hit.bytes;}
  const response=await fetcher(source,{redirect:'error',signal:AbortSignal.timeout(15000)});
  if(!response.ok||!/^image\/(?:png|jpeg|webp)(?:;|$)/i.test(response.headers.get('content-type')||'')||Number(response.headers.get('content-length'))>8000000)throw Error('Image unavailable');
  const reader=response.body.getReader();const chunks=[];let size=0;
  try {while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>8000000){await reader.cancel();throw Error('Image too large');}chunks.push(value);}}finally{reader.releaseLock();}
- const bytes=await brandImage(Buffer.concat(chunks),context);if(cache.size>=16)cache.delete(cache.keys().next().value);cache.set(key,{at:Date.now(),bytes});return bytes;
+ const raw=Buffer.concat(chunks),sourceHash=createHash("sha256").update(raw).digest("hex");if(!authorize(sourceHash))throw Error("Image rights missing");
+ const bytes=await brandImage(raw,context);if(cache.size>=16)cache.delete(cache.keys().next().value);cache.set(key,{at:Date.now(),bytes,sourceHash});return bytes;
 }
 module.exports={badge,brandImage,remoteImage};

@@ -1,0 +1,21 @@
+{
+  "phase": 25,
+  "inputSha256": "5e5e934ad333a334cd50e7b164dabb2a2cd732b1c85059e69d44c2bee905d400",
+  "nodeTests": {
+    "passed": 201,
+    "failed": 0,
+    "skipped": 0,
+    "redis": true,
+    "browserChain": true
+  },
+  "android": {
+    "debugBuilt": true,
+    "releaseBundleBuilt": true,
+    "productionSigned": false,
+    "versionCode": 59,
+    "targetSdk": 36,
+    "apkSha256": "923e5df84acd8365cbf9333cece515ea87ca1c301365feb759259d80f5a27aa3"
+  },
+  "productionDeployed": false,
+  "advice": "NO-GO"
+}

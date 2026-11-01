@@ -2,6 +2,11 @@ name: Veldio API test and APK build
 
 on:
   workflow_dispatch:
+    inputs:
+      release:
+        description: 'Build signed release bundle after configuring the existing production signing identity'
+        type: boolean
+        default: false
   pull_request:
     branches: [main]
     paths:
@@ -9,8 +14,10 @@ on:
       - "scripts/patch-*.py"
       - ".github/workflows/build.yml"
   push:
-    branches: [main, master]
+    branches: [main, master, "fix/veldio-29b"]
 
+permissions:
+  contents: read
 jobs:
   api-test-and-build:
     runs-on: ubuntu-24.04
@@ -937,6 +944,21 @@ jobs:
           java com.sun.tools.javac.Main -d /tmp/voetbalhub-navigation android-ui/java/ScreenHistory.java test/ScreenHistoryTest.java
           java -cp /tmp/voetbalhub-navigation nl.voetbalhub.app.ScreenHistoryTest
 
+      - name: Verify advertising privacy gate
+        run: |
+          mkdir -p /tmp/veldio-ad-policy
+          java com.sun.tools.javac.Main -d /tmp/veldio-ad-policy android-ui/java/AdRequestGate.java android-ui/java/AdSettings.java test/AdRequestGateTest.java
+          java -cp /tmp/veldio-ad-policy nl.voetbalhub.app.AdRequestGateTest
+
+      - name: Verify release configuration gate
+        run: python3 -m unittest discover -s test -p '*_test.py'
+
+      - name: Verify bounded image downloads
+        run: |
+          mkdir -p /tmp/veldio-image-test
+          javac -d /tmp/veldio-image-test android-ui/java/BoundedInput.java test/BoundedInputTest.java
+          java -cp /tmp/veldio-image-test nl.voetbalhub.app.BoundedInputTest
+
       - name: Install previous-screen navigation and contact page
         run: python3 scripts/patch-navigation-contact.py
 
@@ -949,15 +971,91 @@ jobs:
       - name: Apply Veldio premium presentation
         run: python3 scripts/patch-veldio-premium.py
 
+      - name: Apply launch safety and current Play target
+        run: python3 scripts/patch-launch-safety.py
+
+      - name: Prepare two consent-gated test ad positions
+        run: python3 scripts/patch-ads27.py
+
+      - name: Install Android 16 SDK
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.9'
+          gradle-version: '8.13'
 
-      - name: Build debug APK
+      - name: Compile APK without replacing the existing signing identity
+        run: gradle :app:assembleRelease --no-daemon
+
+      - name: Keep unsigned compilation result
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-29B-unsigned-not-installable
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
+          if-no-files-found: error
+
+      - name: Sign update using the existing installation key
         env:
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
-        run: gradle :app:assembleDebug --no-daemon
+          ANDROID_UPDATE_KEYSTORE_BASE64: ${{ secrets.ANDROID_UPDATE_KEYSTORE_BASE64 }}
+          ANDROID_UPDATE_STORE_PASSWORD: ${{ secrets.ANDROID_UPDATE_STORE_PASSWORD }}
+          ANDROID_UPDATE_KEY_ALIAS: ${{ secrets.ANDROID_UPDATE_KEY_ALIAS }}
+          ANDROID_UPDATE_KEY_PASSWORD: ${{ secrets.ANDROID_UPDATE_KEY_PASSWORD }}
+          ANDROID_UPDATE_CERT_SHA256: ${{ secrets.ANDROID_UPDATE_CERT_SHA256 }}
+        run: python3 scripts/sign-existing-update.py
+
+      - name: Verify production backend before release
+        if: github.event_name == 'workflow_dispatch' && inputs.release
+        env:
+          EDITORIAL_API_URL: ${{ vars.EDITORIAL_API_URL }}
+        run: node scripts/release-backend-check.js
+
+      - name: Build signed release bundle
+        if: github.event_name == 'workflow_dispatch' && inputs.release
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          RELEASE_CERT_SHA256: ${{ secrets.RELEASE_CERT_SHA256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/release-preflight.py
+          trap 'rm -f release-signing.jks keystore.properties' EXIT
+          python3 - <<'PY'
+          from pathlib import Path
+          import os,base64
+          names=['RELEASE_KEYSTORE_BASE64','RELEASE_STORE_PASSWORD','RELEASE_KEY_ALIAS','RELEASE_KEY_PASSWORD','RELEASE_CERT_SHA256']
+          if any(not os.environ.get(n) for n in names):raise SystemExit('Productiesleutel ontbreekt. Geen debug-signing als vervanging toegestaan.')
+          def prop(value):
+              return value.replace('\\','\\\\').replace('\n','\\n').replace('\r','\\r').replace('=','\\=').replace(':','\\:').replace(' ','\\ ')
+          Path('release-signing.jks').write_bytes(base64.b64decode(os.environ[names[0]],validate=True))
+          import subprocess,hashlib,re
+          expected=re.sub('[^a-fA-F0-9]','',os.environ['RELEASE_CERT_SHA256']).lower()
+          command=['keytool','-exportcert','-alias',os.environ['RELEASE_KEY_ALIAS'],'-keystore','release-signing.jks','-storepass:env','RELEASE_STORE_PASSWORD']
+          result=subprocess.run(command,capture_output=True)
+          if result.returncode or len(expected)!=64 or hashlib.sha256(result.stdout).hexdigest()!=expected:raise SystemExit('Releasecertificaat komt niet overeen met de bevestigde upload-identiteit.')
+          details=subprocess.run(['keytool','-list','-v','-alias',os.environ['RELEASE_KEY_ALIAS'],'-keystore','release-signing.jks','-storepass:env','RELEASE_STORE_PASSWORD'],capture_output=True,text=True)
+          if details.returncode or 'Android Debug' in details.stdout:raise SystemExit('Geen geldig productie-uploadcertificaat; debug-identiteit geweigerd.')
+          Path('keystore.properties').write_text('storeFile=release-signing.jks\n'+''.join(k+'='+prop(os.environ[n])+'\n' for k,n in [('storePassword',names[1]),('keyAlias',names[2]),('keyPassword',names[3])]))
+          PY
+          gradle :app:bundleRelease --no-daemon
+          python3 - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('app/build/outputs/bundle/release/app-release.aab') as z:
+              names=z.namelist()
+              if not any(n.startswith('META-INF/') and n.endswith(('.RSA','.DSA','.EC')) for n in names):raise SystemExit('Releasebundle is niet ondertekend.')
+          PY
+          jarsigner -verify app/build/outputs/bundle/release/app-release.aab
+
+      - name: Upload signed release bundle
+        if: github.event_name == 'workflow_dispatch' && inputs.release
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-Android-release
+          path: app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

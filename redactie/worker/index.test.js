@@ -62,7 +62,8 @@ test("articles endpoint returns only published entries sorted newest first",asyn
   "article:new":JSON.stringify({id:"new",status:"published",publishedAt:"2026-10-23T12:00:00Z"})
  };
  const kv={list:async({prefix})=>({keys:Object.keys(values).filter(k=>k.startsWith(prefix)).map(name=>({name}))}),get:async k=>values[k]||null};
- const res=await worker.fetch(req("/articles"),{...env,EDITORIAL_KV:kv});
+ const approval={scope:"publication",contentHash:"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",status:"approved",evidenceRef:"private:fictional-fixture",basis:"Fictieve lege testartikelen",reviewer:"Test",reviewedAt:"2026-01-01",validUntil:"2099-01-01"};
+ const res=await worker.fetch(req("/articles"),{...env,EDITORIAL_KV:kv,CONTENT_RIGHTS_JSON:JSON.stringify({version:1,approvals:[approval]})});
  assert.equal(res.status,200);
  const data=await res.json();
  assert.deepEqual(data.articles.map(a=>a.id),["new","old"]);
@@ -89,4 +90,15 @@ test("stored inbox returns saved feed leads in reverse date order",async()=>{
  assert.equal(data.count,2);
  assert.equal(data.items[0].title,"Nieuw nieuws");
  assert.equal(data.autoPublish,false);
+});
+
+test("configured feed URL does not authorize external collection",async()=>{
+ const res=await worker.fetch(req("/inbox","POST",{},"test-secret"),{...env,ALLOWED_FEED_URLS:"https://news.example/feed.xml"});
+ assert.equal(res.status,403);assert.match((await res.json()).error,/Feedrechten/);
+});
+
+test("worker blocks AI and legacy public content without server evidence",async()=>{
+ const ai=await worker.fetch(req("/draft","POST",{topic:"Test",facts:["Een feit","Tweede feit"],rightsCleared:true},"test-secret"),{...env,OPENAI_API_KEY:"test-only"});assert.equal(ai.status,403);
+ const kv={list:async()=>({keys:[{name:"article:old"}]}),get:async()=>JSON.stringify({status:"published",headline:"Niet vrijgegeven",imageRights:"cleared"})};
+ const feed=await worker.fetch(req("/articles"),{...env,EDITORIAL_KV:kv});assert.deepEqual((await feed.json()).articles,[]);
 });

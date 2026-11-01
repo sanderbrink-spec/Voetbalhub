@@ -31,6 +31,7 @@ public final class HomeFeatureView extends FrameLayout {
     private final Runnable columnAction;
     private JSONObject articles=new JSONObject(),stats=new JSONObject(),videos=new JSONObject();
     private boolean ready,disposed,loading=true,videoLoading=true;
+    private final Runnable weeklyRefresh=new Runnable(){public void run(){if(disposed)return;fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);postDelayed(this,60000);}};
     private float startX,startY;
     private int dp(float n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
     public HomeFeatureView(Activity activity,OpenArticle article,OpenMatch match,Runnable column){
@@ -49,6 +50,12 @@ public final class HomeFeatureView extends FrameLayout {
         web.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);web.getSettings().setSupportMultipleWindows(false);
         web.addJavascriptInterface(new Bridge(),"HomeHub");
         web.setWebViewClient(new WebViewClient(){
+            @Override public android.webkit.WebResourceResponse shouldInterceptRequest(WebView view,WebResourceRequest request){
+                String host=request.getUrl().getHost();
+                if(host!=null&&(host.equals("i.ytimg.com")||host.endsWith(".ytimg.com")))
+                    return new android.webkit.WebResourceResponse("image/svg+xml","UTF-8",new java.io.ByteArrayInputStream("<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180'><rect width='320' height='180' fill='#12251a'/></svg>".getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+                return super.shouldInterceptRequest(view,request);
+            }
             @Override public void onPageFinished(WebView view,String url){if("file:///android_asset/home-features.html".equals(url)){ready=true;deliver();}}
             @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return true;}
             @Override public boolean shouldOverrideUrlLoading(WebView view,String url){return true;}
@@ -60,10 +67,14 @@ public final class HomeFeatureView extends FrameLayout {
         if(videos.optJSONArray("videos")==null)try(InputStream in=activity.getAssets().open("youtube-seed.json")){
             ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>200000)throw new Exception("Seed too large");}videos=new JSONObject(out.toString("UTF-8"));
         }catch(Exception ignored){}
+        if(!PublicationPolicy.allows(articles))articles=new JSONObject();
+        if(!PublicationPolicy.allows(stats))stats=new JSONObject();
+        if(!PublicationPolicy.allows(videos))videos=new JSONObject();
         web.loadUrl("file:///android_asset/home-features.html");
         fetch("https://voetbalhub-redactie.onrender.com/articles",0);
-        fetch(MEDIA+"statistics/eredivisie.json?v="+System.currentTimeMillis()/60000,1);
-        fetch(MEDIA+"videos/eredivisie.json?v="+System.currentTimeMillis()/60000,2);
+        fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);
+        fetch("https://voetbalhub-redactie.onrender.com/integrations/videos?v="+System.currentTimeMillis()/60000,2);
+        postDelayed(weeklyRefresh,60000);
     }
     private void deliver(){if(!ready||disposed||videoPlayer!=null||activity.isFinishing())return;try{
         JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
@@ -72,7 +83,11 @@ public final class HomeFeatureView extends FrameLayout {
     private void fetch(String address,int kind){NETWORK.execute(()->{HttpURLConnection conn=null;JSONObject result=null;try{
         conn=(HttpURLConnection)new URL(address).openConnection();conn.setInstanceFollowRedirects(false);conn.setConnectTimeout(15000);conn.setReadTimeout(kind==0?75000:20000);if(conn.getResponseCode()!=200)throw new Exception("Unavailable");
         ByteArrayOutputStream bytes=new ByteArrayOutputStream();try(InputStream in=conn.getInputStream()){byte[] block=new byte[8192];int n;while((n=in.read(block))!=-1){bytes.write(block,0,n);if(bytes.size()>3000000)throw new Exception("Too large");}}
-        JSONObject data=new JSONObject(bytes.toString("UTF-8"));
+        JSONObject data=new JSONObject(bytes.toString("UTF-8"));if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");
+        if(kind==1){
+            JSONObject feature=data.optJSONObject("featured");if(feature==null)feature=data.optJSONObject("nextFeatured");JSONObject text=feature==null?null:feature.optJSONObject("report".equals(feature.optString("phase"))?"report":"preview");
+            if(text==null||text.optJSONObject("fixture")==null||text.optJSONArray("body")==null||text.getJSONArray("body").length()<3||!feature.optString("imageUrl").startsWith("https://"))throw new Exception("Keep last published weekly feature");
+        }
         if(kind==0&&data.optJSONArray("articles")==null||kind==1&&(data.optInt("schemaVersion")!=1||data.optJSONObject("league")==null||data.getJSONObject("league").optInt("id")!=88)||kind==2&&(data.optInt("schemaVersion")!=1||data.optJSONArray("videos")==null))throw new Exception("Invalid snapshot");result=data;
     }catch(Exception ignored){}finally{if(conn!=null)conn.disconnect();}
         final JSONObject data=result;activity.runOnUiThread(()->{if(disposed||activity.isFinishing())return;
@@ -88,12 +103,33 @@ public final class HomeFeatureView extends FrameLayout {
         if(!disposed&&ready){web.evaluateJavascript("window.setVideoPlaying(false)",null);deliver();}
         return true;
     }
-    @Override protected void onDetachedFromWindow(){disposed=true;ready=false;closeVideo();web.stopLoading();web.removeJavascriptInterface("HomeHub");web.loadUrl("about:blank");super.onDetachedFromWindow();}
+    @Override protected void onDetachedFromWindow(){disposed=true;ready=false;removeCallbacks(weeklyRefresh);closeVideo();web.stopLoading();web.removeJavascriptInterface("HomeHub");web.loadUrl("about:blank");super.onDetachedFromWindow();}
     private final class Bridge {
         @JavascriptInterface public void resize(String raw){activity.runOnUiThread(()->{if(disposed)return;try{int height=dp(Math.max(300,Math.min(1800,Float.parseFloat(raw))));if(getLayoutParams()!=null&&Math.abs(getLayoutParams().height-height)>2){getLayoutParams().height=height;requestLayout();}}catch(Exception ignored){}});}
         @JavascriptInterface public void openArticle(String id){activity.runOnUiThread(()->{JSONObject a=findArticle(id);if(a!=null&&!disposed)articleAction.open(a);});}
         @JavascriptInterface public void openColumn(String ignored){activity.runOnUiThread(()->{if(disposed)return;JSONObject latest=null;JSONArray rows=articles.optJSONArray("articles");if(rows!=null)for(int i=0;i<rows.length();i++){JSONObject a=rows.optJSONObject(i);if(a!=null&&"published".equals(a.optString("status"))&&isColumn(a)&&(latest==null||a.optString("publishedAt").compareTo(latest.optString("publishedAt"))>0))latest=a;}if(latest!=null)articleAction.open(latest);else columnAction.run();});}
-        @JavascriptInterface public void openMatch(String unused){activity.runOnUiThread(()->{if(disposed)return;try{JSONObject f=stats.getJSONObject("featured").getJSONObject("preview").getJSONObject("fixture");if(stats.getJSONObject("league").optInt("id")==88&&java.time.Instant.parse(f.getString("date")).toEpochMilli()>System.currentTimeMillis()&&("NS".equals(f.optString("status"))||"TBD".equals(f.optString("status"))))matchAction.open(stats.toString());}catch(Exception ignored){}});}
+        @JavascriptInterface public void openMatch(String requested){activity.runOnUiThread(()->{if(disposed)return;try{
+            if(!PublicationPolicy.allows(stats))return;
+            JSONObject chosen=null;long now=System.currentTimeMillis();
+            for(String key:new String[]{"featured","nextFeatured"}){
+                JSONObject candidate=stats.optJSONObject(key);if(candidate==null)continue;
+                String id=candidate.optString("publicationId",String.valueOf(candidate.opt("fixtureId")));
+                if(!requested.isEmpty()&&!requested.equals(id))continue;
+                if("nextFeatured".equals(key)){
+                    long publishAt=java.time.Instant.parse(candidate.getString("publishAt")).toEpochMilli();
+                    JSONObject nextFixture=candidate.getJSONObject("preview").getJSONObject("fixture");
+                    long kickoff=java.time.Instant.parse(nextFixture.getString("date")).toEpochMilli();
+                    if(publishAt>now||publishAt!=kickoff-72L*3600000||kickoff<=now||!"NS".equals(nextFixture.optString("status")))continue;
+                }
+                boolean report="report".equals(candidate.optString("phase"));JSONObject text=candidate.optJSONObject(report?"report":"preview");
+                if(text==null||text.optJSONObject("fixture")==null||text.optJSONArray("body")==null||text.getJSONArray("body").length()<3)continue;
+                JSONObject f=text.getJSONObject("fixture");
+                if(report&&!("FT".equals(f.optString("status"))||"AET".equals(f.optString("status"))||"PEN".equals(f.optString("status"))))continue;
+                chosen=candidate;break;
+            }
+            if(chosen!=null){JSONObject snapshot=new JSONObject(stats.toString());snapshot.put("featured",chosen);matchAction.open(snapshot.toString());}
+        }catch(Exception ignored){}});}
+
         @JavascriptInterface public void openVideo(String raw){activity.runOnUiThread(()->{
             if(disposed||activity.isFinishing())return;
             try{

@@ -82,7 +82,7 @@ $('load').onclick = async () => {
     const serverTime=Date.parse(d.serverTime||'');
     serverClockOffset=Number.isFinite(serverTime)?serverTime-Date.now():0;
     recoveryNotice='';renderQueue(!loadedOnce);loadedOnce=true;
-    $('status').textContent=`${items.length} concepten geladen om ${new Date().toLocaleTimeString('nl-NL')}. Publicatie blijft handmatig.`;
+    $('status').textContent=`${items.length} concepten geladen om ${new Date().toLocaleTimeString('nl-NL')}. Handmatige publicatie vereist inhoudelijke goedkeuring.`;
   } catch(e) { $('status').textContent=e.message; }
   finally { $('load').disabled=false; }
 };
@@ -119,6 +119,7 @@ function updatePreflight() {
   $('publish').disabled=published||publishing||saving||issues.length>0||!approvalCurrent();
   $('approveServerDraft').disabled=published||publishing||saving;
   $('saveServerDraft').disabled=published||publishing||saving;
+  $('rejectServerDraft').disabled=published||publishing||saving;
   $('generateDraft').disabled=published||publishing||saving||generating;
   for(const id of [...fields,...textChecks,...imageChecks,'generationFactCheck'])$(id).disabled=published||publishing||saving||generating;
   if(savedRecord?.status==='approved'&&!approvalCurrent())$('reviewStatus').textContent='De tekst of controles zijn gewijzigd. Keur deze versie opnieuw goed.';
@@ -178,7 +179,10 @@ $('publish').onclick=async()=>{
     $('publishStatus').textContent='Gepubliceerd. Artikel-ID: '+d.article.id;
     $('draftSaveStatus').textContent='Artikel gepubliceerd; tijdelijke bewerking verwijderd.';
     $('status').textContent='Publicatie geslaagd. Het artikel is beschikbaar voor de app.';
-  }catch(e){$('publishStatus').textContent=e.message;}
+  }catch(e){
+    $('publishStatus').textContent=e.message;
+    try{const failed=await request('/editorial-drafts',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify({id:savedRecord.id,expectedRevision:savedRecord.revision,payload:payload(),state:'publication_failed',issues:[e.message]})});savedRecord=failed.record;upsertOwnRecord(savedRecord);}catch{}
+  }
   finally{publishing=false;controls.forEach(e=>e.disabled=false);updatePreflight();}
 };
 
@@ -193,7 +197,7 @@ async function refreshService() {
   $('refreshService').disabled=true;
   try {
     const d=await request('/health');
-    $('serviceStatus').textContent=(d.storage==='connected'?'Opslag verbonden. ':'Opslag tijdelijk niet bereikbaar; laden en publiceren zijn niet beschikbaar. ')+(d.aiConfigured?'AI-dienst ingesteld. ':'AI-dienst nog niet ingesteld. ')+(d.automaticSourceIngestion===false?'Automatische broninname staat uit. Maak een eigen concept uit gecontroleerde feiten.':'');
+    $('serviceStatus').textContent=(d.storage==='connected'?'Opslag verbonden. ':'Opslag tijdelijk niet bereikbaar; laden en publiceren zijn niet beschikbaar. ')+(d.aiConfigured?'AI-dienst ingesteld. ':'AI-dienst nog niet ingesteld. ')+(d.automaticSourceIngestion===false?'RSS-broninname staat uit. Maak een eigen concept uit gecontroleerde feiten.':'')+(d.automaticEditorial?.enabled?' Automatische redactie ingesteld op maximaal '+d.automaticEditorial.maxPerDay+' onderwerpen per dag. Onvoldoende bevestigde onderwerpen blijven ter controle.':'');
   } catch(e) { $('serviceStatus').textContent='Status niet beschikbaar. '+e.message; }
   finally { $('refreshService').disabled=false; }
 }
@@ -231,8 +235,9 @@ function renderOwnDrafts(){
  $('ownDraftStatus').textContent=ownRecords.length?`${ownRecords.length} eigen artikelen opgeslagen. Volledige tekst, feiten en bronnen blijven bij ieder concept bewaard.`:'Nog geen volledige eigen artikelen opgeslagen. Maak een eigen artikel of herstel een bestaande bewerking en kies Concept opslaan.';
  $('ownDraftQueue').innerHTML=ownRecords.map((r,i)=>{
   const p=r.payload||{},d=p.draft||{};
-  const label=r.status==='published'?'Gepubliceerd':r.status==='approved'?(M.factAuditIssues(p).length?'Aanvullende feitencontrole nodig':'Goedgekeurd voor de app'):'Inhoudelijk beoordelen';
-  return `<article class="card"><span class="badge">${esc(label)}</span><h3>${esc(d.headline)}</h3><p>${esc(d.standfirst)}</p><details><summary>Volledige tekst lezen</summary><div class="article-text">${(d.body||[]).map(t=>'<p>'+esc(t)+'</p>').join('')}</div></details>${r.status==='published'?'<p class="muted">Dit artikel is beschikbaar voor de app.</p>':`<button data-own-open="${i}">Lees en beoordeel</button>`}</article>`;
+  const stateLabels={draft:'Concept',needs_review:'Controleren',rejected:'Afgekeurd',publication_failed:'Publicatie mislukt'};
+  const label=r.status==='published'?'Gepubliceerd':r.status==='approved'?(M.factAuditIssues(p).length?'Aanvullende feitencontrole nodig':'Goedgekeurd voor de app'):(stateLabels[r.status]||'Inhoudelijk beoordelen');
+  return `<article class="card"><span class="badge">${esc(label)}</span><h3>${esc(d.headline)}</h3><p>${esc(d.standfirst)}</p>${safeLink(p.imageUrl)?`<img src="${esc(p.imageUrl)}" alt="Bijbehorende artikelillustratie" loading="lazy" referrerpolicy="no-referrer" style="max-width:100%;height:auto">`:''}${r.issues?.length?'<ul>'+r.issues.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':''}${r.verification?`<details><summary>Automatische feitencontrole</summary>${r.verification.current===false?'<p class="warn">Deze controle bevestigt de huidige tekstversie niet. Controleer de bewerking opnieuw.</p>':''}<p>${esc(r.verification.method)} · ${esc(r.verification.checkedAt)}</p><ul>${(r.verification.checks||[]).map(x=>'<li>'+esc(x)+'</li>').join('')}</ul>${(r.verification.claims||[]).map(f=>'<p><strong>'+esc(f.text)+'</strong></p>'+f.evidence.map(e=>'<blockquote>'+esc(e.quote)+'</blockquote>').join('')).join('')}<p>Automatische controles zijn geen garantie op feitelijke juistheid. Controleer bron en context.</p></details>`:''}<details><summary>Volledige tekst lezen</summary><div class="article-text">${(d.body||[]).map(t=>'<p>'+esc(t)+'</p>').join('')}</div></details>${r.status==='published'?'<p class="muted">Dit artikel is beschikbaar voor de app.</p>':`<button data-own-open="${i}">Lees en beoordeel</button>`}</article>`;
  }).join('');
  document.querySelectorAll('[data-own-open]').forEach(b=>b.onclick=()=>openOwnRecord(ownRecords[Number(b.dataset.ownOpen)]));
 }
@@ -256,7 +261,7 @@ function openOwnRecord(record){
  $('reviewStatus').textContent=record.status==='approved'?'Deze opgeslagen versie is inhoudelijk goedgekeurd. Je kunt haar publiceren.':'Lees de volledige tekst, open de bronnen en voer de controles uit. Kies daarna Goedkeuren voor de app.';
  updatePreflight();$('articlePreview').hidden=false;saveDraft();
 }
-async function persistReviewedDraft(approve){
+async function persistReviewedDraft(approve,state='draft'){
  if(saving||publishing||generating||published)return;
  const key=$('secret').value.trim(),p=payload();
  if(!key){$('reviewStatus').textContent='Vul eerst de redactiesleutel in.';return;}
@@ -265,11 +270,13 @@ async function persistReviewedDraft(approve){
  if(approve&&!confirm('Heb je de volledige tekst en feiten gecontroleerd en keur je deze versie goed voor publicatie in de app?'))return;
  saving=true;const controls=[...$('editor').querySelectorAll('input,textarea,select,button')];controls.forEach(e=>e.disabled=true);
  try{
-  const d=await request('/editorial-drafts',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify({id:savedRecord?.id,expectedRevision:savedRecord?.revision,payload:p,approve})});
+  const d=await request('/editorial-drafts',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify({id:savedRecord?.id,expectedRevision:savedRecord?.revision,payload:p,approve,state})});
   savedRecord=d.record;lastSavedSnapshot=JSON.stringify(payload());upsertOwnRecord(savedRecord);saveDraft();
-  $('reviewStatus').textContent=approve?'Deze versie is inhoudelijk goedgekeurd en op de server bewaard. Kies Publiceer in de app om haar live te zetten.':'Concept op de server opgeslagen. Je kunt dit artikel later opnieuw openen en beoordelen.';
+  $('reviewStatus').textContent=state==='rejected'?'Dit concept is afgekeurd en blijft bewaard voor controle.':approve?'Deze versie is inhoudelijk goedgekeurd en op de server bewaard. Kies Publiceer in de app om haar live te zetten.':'Concept op de server opgeslagen. Je kunt dit artikel later opnieuw openen en beoordelen.';
  }catch(e){$('reviewStatus').textContent=e.message;}
  finally{saving=false;controls.forEach(e=>e.disabled=false);updatePreflight();}
 }
 $('saveServerDraft').onclick=()=>persistReviewedDraft(false);
 $('approveServerDraft').onclick=()=>persistReviewedDraft(true);
+
+$('rejectServerDraft').onclick=()=>{if(confirm('Dit concept afkeuren en bewaren zonder publicatie?'))persistReviewedDraft(false,'rejected');};
