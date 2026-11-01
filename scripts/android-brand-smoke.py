@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 import time
+import atexit
 import xml.etree.ElementTree as ET
 
 OUT=Path('.android-smoke');OUT.mkdir(exist_ok=True)
@@ -37,6 +38,10 @@ def capture(name):
     adb('shell','screencap','-p','/sdcard/veldio.png')
     adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
     return root
+def save_logcat():
+    try:(OUT/'logcat.txt').write_text(adb('logcat','-d','-t','1200'))
+    except Exception:pass
+atexit.register(save_logcat)
 adb('install','-r',sys.argv[1])
 adb('shell','am','force-stop',PACKAGE)
 result=adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
@@ -44,6 +49,12 @@ assert 'Error:' not in result,result
 capture('01-start')
 time.sleep(6)
 root=capture('02-home')
+# Recover only the known emulator Pixel Launcher system ANR, never an app ANR.
+launcher_dialog=next((n for n in root.iter('node') if n.get('text')=="Pixel Launcher isn't responding"),None)
+if launcher_dialog is not None:
+    close=next(n for n in root.iter('node') if n.get('resource-id')=='android:id/aerr_close')
+    b=list(map(int,re.findall(r'\d+',close.get('bounds',''))));adb('shell','input','tap',str((b[0]+b[2])//2),str((b[1]+b[3])//2))
+    adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');time.sleep(5);root=capture('02-home')
 def bounds(node):return list(map(int,re.findall(r'\d+',node.get('bounds',''))))
 logo=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/logo'))
 title=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/title'))
@@ -211,6 +222,10 @@ time.sleep(16);root=capture('19-phase33-offline-home')
 assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')), 'Loading exceeded hard deadline'
 assert not any('video’s laden' in n.get('text','') for n in root.iter('node')), 'Orphan video loader'
 assert any('VOETBAL IN CIJFERS' in n.get('text','') for n in root.iter('node')), 'Original football quiz absent'
+adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.35)),'500');time.sleep(1)
+root=capture('19b-phase33-offline-feed')
+assert any(n.get('text')=='Opnieuw proberen' for n in root.iter('node')), 'Retry button absent after offline deadline'
+assert not any(n.get('class')=='android.widget.ProgressBar' for n in root.iter('node')), 'Offline feed spinner never stopped'
 tap_node(root,lambda n:n.get('text')=='Meer');time.sleep(1);root=capture('20-phase33-more')
 tap_node(root,lambda n:n.get('text')=='Stadion van de week');time.sleep(2);root=capture('21-phase33-stadium-archive')
 assert any('De Kuip' in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')), 'Offline stadium archive missing'
@@ -220,3 +235,14 @@ assert any('1' in n.get('text','') and 'woorden' in n.get('text','') for n in ro
 adb('shell','input','keyevent','4');time.sleep(1);capture('23-phase33-stadium-back')
 adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 33 offline timeout, retained homepage, no video loader, original quiz, permanent stadium archive, long De Kuip reader and Android Back. Emulator only.\n')
+
+# Real emulator cellular-only and throttled-network conditions, with existing news retained.
+adb('shell','svc','wifi','disable');adb('shell','svc','data','enable')
+adb('emu','network','speed','gsm');adb('emu','network','delay','gprs')
+root=capture('24-before-slow-data');tap_node(root,lambda n:n.get('text')=='Nieuws');time.sleep(16)
+root=capture('25-slow-cellular-home')
+assert adb('shell','pidof',PACKAGE).strip()
+assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')), 'Slow network did not respect deadline'
+adb('emu','network','speed','full');adb('emu','network','delay','none')
+adb('shell','svc','wifi','enable');adb('shell','svc','data','disable')
+with (OUT/'result.txt').open('a') as result:result.write('PASS: cellular-only emulator with GSM speed/GPRS latency does not block UI beyond the bounded refresh; Wi-Fi-only restored. No physical radio or physical S23 test.\n')

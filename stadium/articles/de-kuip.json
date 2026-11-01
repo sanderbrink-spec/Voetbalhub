@@ -27,7 +27,7 @@
     },
     {
       "heading": "Een opening met vertraging",
-      "text": "Het stadion werd op 23 juli 1936 opgeleverd, maar de toegangswegen waren nog niet klaar. De opening volgde pas op 27 maart 1937: Feyenoord versloeg Beerschot met 5-2. Vóór die eerste wedstrijd had het gebouw al een ongebruikelijke proef doorstaan. In het najaar van 1936 moesten 1.500 mariniers en werklozen juichend en springend de tribunes testen. Die bouwkundige controle klinkt nu als een vooruitwijzing naar het stadionleven dat zou volgen. De bekende beweging op de tribunes hoorde, nog vóór de eerste aftrap, al bij het verhaal.",
+      "text": "Het stadion werd op 23 juli 1936 opgeleverd, maar de toegangswegen waren nog niet klaar. De opening volgde pas op 27 maart 1937: Feyenoord versloeg Beerschot met 5-2. Vóór die eerste wedstrijd had het gebouw al een ongebruikelijke proef doorstaan. In het najaar van 1936 moesten 1.500 mariniers en werklozen juichend en springend de tribunes testen. De bekende beweging op de tribunes hoorde, nog vóór de eerste aftrap, al bij het verhaal.",
       "sources": [
         1
       ]
@@ -268,12 +268,12 @@
       }
     }
   ],
-  "wordCount": 1076,
-  "contentHash": "5e3581fce3790e81333878eaba908d0dd55667727d2ca0b4c9f08c3a6f7bc292",
+  "wordCount": 1062,
+  "contentHash": "aca3307c44d926177c51344242298cc8698e8da35eb900c1d74f5b4c0f685f7b",
   "review": {
     "approved": true,
     "reviewedBy": "Veldio fase 33 broncontrole",
-    "contentHash": "5e3581fce3790e81333878eaba908d0dd55667727d2ca0b4c9f08c3a6f7bc292",
+    "contentHash": "aca3307c44d926177c51344242298cc8698e8da35eb900c1d74f5b4c0f685f7b",
     "checks": [
       "sources",
       "claims",
@@ -282,6 +282,6 @@
       "mobileReadability"
     ],
     "note": "Bronnen vergeleken op 1 november 2026; capaciteitsverschil expliciet gemeld. Toekomstambities niet als gerealiseerd project beschreven.",
-    "bodyHash": "766dfbf91ba49f8a96a0b4a0149b016ca95a8cdb7fbf61f951ea1563c2e15a6a"
+    "bodyHash": "0133ff637cdea71237df8ec6bb4ececa53f4c4b18ce21357ce623bc343c61a15"
   }
 }

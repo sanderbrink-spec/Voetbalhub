@@ -24,7 +24,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "published"
+      "publicationStatus": "published",
+      "researchRoots": [
+        "https://www.dekuip.com/nl/stadion-feijenoord/Historie"
+      ]
     },
     {
       "venueId": "johan-cruijff-arena",
@@ -36,7 +39,14 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.johancruijffarena.nl/ontdek-de-arena/spreekbeurt/",
+        "https://www.johancruijffarena.nl/ontdek-de-arena/",
+        "https://www.ajax.nl/artikelen/special-25-jaar-arena-hoe-het-stadion-een-thuis-werd",
+        "https://www.ajax.nl/artikelen/30-jaar-ons-thuis-30-jaar-verbonden-met-ajax/",
+        "https://www.johancruijffarena.nl/nieuws/25-jaar-arena/zilveren-amsterdammertje-voor-25-jarige-arena/"
+      ]
     },
     {
       "venueId": "philips-stadion",
@@ -48,7 +58,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.psv.nl/club/philips-stadion"
+      ]
     },
     {
       "venueId": "werktalent-stadion",
@@ -60,7 +73,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://adodenhaag.nl/"
+      ]
     },
     {
       "venueId": "afas-stadion",
@@ -72,7 +88,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.az.nl/"
+      ]
     },
     {
       "venueId": "woudestein",
@@ -84,7 +103,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://excelsiorrotterdam.nl/"
+      ]
     },
     {
       "venueId": "euroborg",
@@ -96,7 +118,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.fcgroningen.nl/"
+      ]
     },
     {
       "venueId": "grolsch-veste",
@@ -108,7 +133,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://fctwente.nl/"
+      ]
     },
     {
       "venueId": "galgenwaard",
@@ -120,7 +148,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.fcutrecht.nl/"
+      ]
     },
     {
       "venueId": "fortuna-sittard-stadion",
@@ -132,7 +163,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://fortunasittard.nl/"
+      ]
     },
     {
       "venueId": "adelaarshorst",
@@ -144,7 +178,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.ga-eagles.nl/"
+      ]
     },
     {
       "venueId": "goffertstadion",
@@ -156,7 +193,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.nec-nijmegen.nl/"
+      ]
     },
     {
       "venueId": "mac3park-stadion",
@@ -168,7 +208,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://peczwolle.nl/"
+      ]
     },
     {
       "venueId": "kooi-stadion",
@@ -180,7 +223,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://cambuur.nl/"
+      ]
     },
     {
       "venueId": "abe-lenstra-stadion",
@@ -192,7 +238,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.sc-heerenveen.nl/"
+      ]
     },
     {
       "venueId": "het-kasteel",
@@ -204,7 +253,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.sparta-rotterdam.nl/"
+      ]
     },
     {
       "venueId": "buko-stadion",
@@ -216,7 +268,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://sctelstar.nl/"
+      ]
     },
     {
       "venueId": "koning-willem-ii-stadion",
@@ -228,7 +283,10 @@
       "sources": [
         "https://eredivisie.nl/competitie/tickets/"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.willem-ii.nl/"
+      ]
     },
     {
       "venueId": "almere-city-fc",
@@ -240,7 +298,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/almere-city-fc"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://almerecity.nl/"
+      ]
     },
     {
       "venueId": "de-graafschap",
@@ -252,7 +313,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/de-graafschap"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.degraafschap.nl/"
+      ]
     },
     {
       "venueId": "fc-den-bosch",
@@ -264,7 +328,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/fc-den-bosch"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.fcdenbosch.nl/"
+      ]
     },
     {
       "venueId": "fc-dordrecht",
@@ -276,7 +343,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/fc-dordrecht"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.fcdordrecht.nl/"
+      ]
     },
     {
       "venueId": "fc-eindhoven",
@@ -288,7 +358,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/fc-eindhoven"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.fc-eindhoven.nl/"
+      ]
     },
     {
       "venueId": "fc-emmen",
@@ -300,7 +373,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/fc-emmen"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://fcemmen.nl/"
+      ]
     },
     {
       "venueId": "fc-volendam",
@@ -312,7 +388,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/fc-volendam"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://fcvolendam.nl"
+      ]
     },
     {
       "venueId": "helmond-sport",
@@ -324,7 +403,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/helmond-sport"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.helmondsport.nl/"
+      ]
     },
     {
       "venueId": "heracles-almelo",
@@ -336,7 +418,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/heracles-almelo"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.heracles.nl/"
+      ]
     },
     {
       "venueId": "jong-ajax",
@@ -348,7 +433,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/jong-ajax"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.ajax.nl/teams/jong-ajax/"
+      ]
     },
     {
       "venueId": "afas-trainingscomplex",
@@ -361,7 +449,10 @@
         "https://www.az.nl/wedstrijden/jong-az",
         "https://www.az.nl/inside-az/nieuws/2026/juni/jong-az-begint-seizoen-tegen-fc-eindhoven"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.az.nl/nl/teams/jong-az/teamoverzicht?category=teaminformatie"
+      ]
     },
     {
       "venueId": "jong-fc-utrecht",
@@ -373,7 +464,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/jong-fc-utrecht"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.fcutrecht.nl/teams/jong-fc-utrecht/"
+      ]
     },
     {
       "venueId": "jong-psv",
@@ -385,7 +479,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/jong-psv"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.psv.nl/jong-psv/home.htm"
+      ]
     },
     {
       "venueId": "mvv-maastricht",
@@ -397,7 +494,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/mvv-maastricht"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.mvv.nl/"
+      ]
     },
     {
       "venueId": "nac-breda",
@@ -409,7 +509,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/nac-breda"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.nac.nl/"
+      ]
     },
     {
       "venueId": "rkc-waalwijk",
@@ -421,7 +524,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/rkc-waalwijk"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.rkcwaalwijk.nl"
+      ]
     },
     {
       "venueId": "roda-jc-kerkrade",
@@ -433,7 +539,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/roda-jc-kerkrade"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.rodajckerkrade.nl/"
+      ]
     },
     {
       "venueId": "top-oss",
@@ -445,7 +554,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/top-oss"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.toposs.nl/"
+      ]
     },
     {
       "venueId": "vitesse",
@@ -457,7 +569,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/vitesse"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.vitesse.nl/"
+      ]
     },
     {
       "venueId": "vvv-venlo",
@@ -469,7 +584,10 @@
       "sources": [
         "https://keukenkampioendivisie.nl/teams/vvv-venlo"
       ],
-      "publicationStatus": "awaiting_fact_pack"
+      "publicationStatus": "awaiting_fact_pack",
+      "researchRoots": [
+        "https://www.vvv-venlo.nl/"
+      ]
     }
   ]
 }

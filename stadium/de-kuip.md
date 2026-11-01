@@ -12,7 +12,7 @@ Het Streekarchief Eiland IJsselmonde beschrijft hoe voorzitter Leen van Zandvlie
 
 ## Een opening met vertraging
 
-Het stadion werd op 23 juli 1936 opgeleverd, maar de toegangswegen waren nog niet klaar. De opening volgde pas op 27 maart 1937: Feyenoord versloeg Beerschot met 5-2. Vóór die eerste wedstrijd had het gebouw al een ongebruikelijke proef doorstaan. In het najaar van 1936 moesten 1.500 mariniers en werklozen juichend en springend de tribunes testen. Die bouwkundige controle klinkt nu als een vooruitwijzing naar het stadionleven dat zou volgen. De bekende beweging op de tribunes hoorde, nog vóór de eerste aftrap, al bij het verhaal. [1]
+Het stadion werd op 23 juli 1936 opgeleverd, maar de toegangswegen waren nog niet klaar. De opening volgde pas op 27 maart 1937: Feyenoord versloeg Beerschot met 5-2. Vóór die eerste wedstrijd had het gebouw al een ongebruikelijke proef doorstaan. In het najaar van 1936 moesten 1.500 mariniers en werklozen juichend en springend de tribunes testen. De bekende beweging op de tribunes hoorde, nog vóór de eerste aftrap, al bij het verhaal. [1]
 
 ## Een Europese beker op eigen grond
 
