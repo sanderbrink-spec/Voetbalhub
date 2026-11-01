@@ -951,8 +951,15 @@ jobs:
           java com.sun.tools.javac.Main -d /tmp/veldio-ad-policy android-ui/java/AdRequestGate.java android-ui/java/AdSettings.java test/AdRequestGateTest.java
           java -cp /tmp/veldio-ad-policy nl.voetbalhub.app.AdRequestGateTest
 
-      - name: Install image validation dependency
-        run: python3 -m pip install Pillow
+      - name: Node runtime for photographic image validation
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install image validation dependencies
+        run: |
+          python3 -m pip install Pillow
+          npm ci --ignore-scripts
 
       - name: Verify personal column approval contract
         run: |
