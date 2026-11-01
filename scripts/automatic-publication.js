@@ -184,7 +184,7 @@ async function verifyDraft(payload,candidate,docs,options){
  return review;
 }
 async function uploadCover(payload,{token,fetcher=fetch}){
- const identity=sha(JSON.stringify(['fixture-graphic-v2',payload.draft.headline,payload.draft.standfirst,payload.draft.body]));
+ const identity=sha(JSON.stringify(['veldio-editorial-v4',payload.draft.headline,payload.draft.standfirst,payload.draft.body,payload.match||null]));
  const file=path.join(process.cwd(),'.automatic-output',identity+'.webp');
  const rendered=spawnSync('python3',['scripts/render-editorial-cover.py',file],{input:JSON.stringify(payload),encoding:'utf8'});
  if(rendered.status!==0)throw Error('Artikelafbeelding kon niet worden opgebouwd.');
@@ -200,7 +200,7 @@ async function uploadCover(payload,{token,fetcher=fetch}){
  const imageUrl='https://raw.githubusercontent.com/'+REPO+'/'+config.mediaBranch+'/automatic-covers/'+identity+'.webp';
  const image=await fetcher(imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
  if(!image.ok||!/^image\/webp/i.test(image.headers.get('content-type')||'')||sha(Buffer.from(await image.arrayBuffer()))!==sha(bytes))throw Error('Openbare artikelafbeelding niet bevestigd.');
- return {imageUrl,imageSource:'Veldio · eigen artikelillustratie',imageCredit:'Veldio · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele wedstrijdillustratie. Alleen clubnamen uit de gecontroleerde kop. Geen foto, uitslag, thuis-uitclaim, spelers, clublogos of nagemaakte tenues. Geen ingebakken artikelkop.',assetSha256:sha(bytes)}};
+ return {imageUrl,imageSource:'Veldio · eigen artikelillustratie',imageCredit:'Veldio · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele illustratie met onderwerpselectie. Namen uit de gecontroleerde kop; uitslagen uitsluitend uit afzonderlijk gecontroleerde matchvelden en vier redactiechecks. Geen foto, spelers, clublogos of nagemaakte tenues. Veilige beeldmarges en leesbare typografie.',assetSha256:sha(bytes)}};
 }
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),aiIntervalMs=35000,report}={}){
  if(!config.enabled)return {status:'disabled',published:0};
@@ -220,7 +220,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(20000)});
  if(!models.ok)throw Error('Beschikbare taalmodellen konden niet worden gecontroleerd.');
  const model=selectModel(await models.json());report.model=model;console.log('Beschikbaar redactiemodel:',model);
- const publicFeed=await api('/articles');let published=publicFeed.articles;
+ const publicFeed=await api('/articles?view=all');let published=publicFeed.articles;
  if(!Array.isArray(published))throw Error('Openbare feed niet controleerbaar.');
  const limit=config.maxPerRun;
  const existing=(await api('/editorial-drafts')).items||[];
@@ -282,7 +282,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    Object.assign(payload,await uploadCover(payload,{token:githubToken,fetcher}));
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
    // Refresh before the only publication write to avoid a concurrent/manual duplicate.
-   published=(await api('/articles')).articles;
+   published=(await api('/articles?view=all')).articles;
    if(duplicate(payload,published)){await persist('rejected',['Onderwerp inmiddels gepubliceerd.']);report.skipped.push({topic,reason:'Onderwerp inmiddels gepubliceerd.'});continue;}
    verification.checks.push('Eigen afbeelding opgehaald en SHA-256 bevestigd: '+payload.imageReview.assetSha256);
    verification.contentHash=fingerprint(payload);
@@ -291,7 +291,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(saved.record?.status!=='approved'||saved.record.contentHash!==fingerprint(payload))throw Error('Gecontroleerde tekstversie niet bevestigd.');
    const result=await api('/publish',{...payload,approved:true,editorialDraftId:saved.record.id,expectedRevision:saved.record.revision});
    if(result.status!=='published'||result.article?.imageUrl!==payload.imageUrl)throw Error('Publicatie inclusief afbeelding niet bevestigd.');
-   const visible=(await api('/articles')).articles.find(a=>a.id===result.article.id);
+   const visible=(await api('/articles?view=all')).articles.find(a=>a.id===result.article.id);
    if(!visible||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(draft.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
    report.published.push({id:visible.id,headline:visible.headline,imageUrl:visible.imageUrl});published.push(visible);
    console.log('Gepubliceerd met afbeelding:',visible.headline);

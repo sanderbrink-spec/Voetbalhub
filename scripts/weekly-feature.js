@@ -31,8 +31,8 @@ async function ownReportImage(f,{token,fetcher=fetch}={}){
  const score=f.goals.home+' – '+f.goals.away;
  const esc=s=>String(s).slice(0,60).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
  // Explicit home/away order; the general renderer's club lookup order is irrelevant.
- const panels=[f.home,f.away].map((team,i)=>{const x=i?1130:470;return '<rect x="'+(x-235)+'" y="286" width="470" height="310" rx="30" fill="#07190e" stroke="#25f06b" stroke-width="2"/><text x="'+x+'" y="420" text-anchor="middle" font-family="DejaVu Sans" font-size="24" fill="#a3b4a8">'+(i?'UIT':'THUIS')+'</text><text x="'+x+'" y="490" text-anchor="middle" font-family="DejaVu Sans" font-size="'+(team.name.length>22?22:32)+'" fill="#f4f8f5">'+esc(team.name)+'</text>';}).join('');
- const overlay=Buffer.from('<svg width="1600" height="900"><rect x="225" y="260" width="1150" height="360" fill="#07190e"/>'+panels+'<text x="800" y="465" text-anchor="middle" font-family="DejaVu Sans" font-size="57" fill="#25f06b">'+score+'</text></svg>');
+ const label=(team,y)=>{const name=esc(team.name);if(name.length>60)throw Error('Clubnaam te lang voor veilige beeldmarges.');return '<text x="800" y="'+y+'" text-anchor="middle" font-family="DejaVu Sans" font-size="'+(team.name.length>24?46:72)+'" fill="#f4f8f5">'+name+'</text>';};
+ const overlay=Buffer.from('<svg width="1600" height="900"><rect x="80" y="210" width="1440" height="520" rx="30" fill="#07190e"/>'+label(f.home,310)+'<text x="800" y="535" text-anchor="middle" font-family="DejaVu Sans" font-size="180" font-weight="700" fill="#25f06b">'+score+'</text>'+label(f.away,655)+'</svg>');
  const bytes=await require('sharp')(base).composite([{input:overlay}]).webp({quality:90}).toBuffer(),digest=hash(bytes),file='weekly/'+f.id+'-report-'+digest+'.webp';
  await githubFile(file,bytes,{token,fetcher});
  return {imageUrl:`https://raw.githubusercontent.com/${REPO}/${BRANCH}/${file}`,imageCredit:'Veldio · eigen resultaatillustratie, geen wedstrijdfoto',imageReview:{method:'own-weekly-score-v1',fixtureId:f.id,goals:structuredClone(f.goals),sha256:digest}};

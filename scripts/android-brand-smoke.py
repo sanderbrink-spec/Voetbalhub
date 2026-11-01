@@ -134,3 +134,44 @@ adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 with (OUT/'result.txt').open('a') as result:
     result.write('PASS: synthetic isolated cache, local column portrait thumbnail, column and news readers, save toggle, font control and back navigation. Synthetic cached/offline UI scenario; does not verify live content, permissions or Android live networking.\n')
 print((OUT/'result.txt').read_text())
+
+# Read-only production fetch plus real native pull gesture. No test data is published.
+import urllib.request
+with urllib.request.urlopen('https://voetbalhub-redactie.onrender.com/articles',timeout=80) as response:
+    live=json.load(response)
+assert live.get('articles'),'Production feed unavailable'
+latest=live['articles'][0]['headline']
+adb('shell','am','force-stop',PACKAGE)
+adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
+def pref_timestamp():
+    try:
+        raw=adb('shell','run-as',PACKAGE,'cat','shared_prefs/voetbalhub_editorial.xml')
+        root=ET.fromstring(raw)
+        return next((int(n.get('value')) for n in root if n.get('name')=='last_fetch_at'),0)
+    except Exception:return 0
+before=pref_timestamp()
+for attempt in range(28):
+    time.sleep(3)
+    if pref_timestamp()>before:break
+assert pref_timestamp()>before,'Production feed fetch not persisted'
+root=capture('13-live-home')
+assert any(latest in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')),'Newest live article absent from home carousel'
+# Start at the top of the ScrollView, below the fixed category chips.
+size=list(map(int,re.findall(r'\d+',adb('shell','wm','size'))))[-2:];width,height=size
+before=pref_timestamp()
+adb('shell','input','swipe',str(width//2),str(int(height*.32)),str(width//2),str(int(height*.72)),'650')
+for attempt in range(28):
+    time.sleep(3)
+    if pref_timestamp()>before:break
+assert pref_timestamp()>before,'Pull gesture did not complete a new API fetch'
+capture('14-live-refreshed')
+# Home retains its cached articles during loss of connectivity.
+adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
+adb('shell','input','swipe',str(width//2),str(int(height*.32)),str(width//2),str(int(height*.72)),'650')
+time.sleep(4);root=capture('15-live-offline')
+assert any(latest in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')),'Offline refresh removed the visible headline'
+adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
+assert adb('shell','pidof',PACKAGE).strip()
+with (OUT/'result.txt').open('a') as result:
+    result.write('PASS: read-only live production feed, newest published headline in home, native pull-to-refresh completes another API fetch, offline pull preserves cached headline. Android emulator, no physical S23 or publication claim.\n')
+print((OUT/'result.txt').read_text())

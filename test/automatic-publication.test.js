@@ -86,7 +86,7 @@ test('a source outage creates no concepts, no AI completion and an explicit repo
   if(options.method==='POST')writes++;
   if(url.endsWith('/health'))return Response.json({editorialAutomationVersion:24,storage:'connected'});
   if(url.endsWith('/models'))return Response.json({data:[{id:'openai/gpt-oss-120b'}]});
-  if(url.endsWith('/articles'))return Response.json({articles:[]});
+  if(url.includes('/articles'))return Response.json({articles:[]});
   if(url.endsWith('/editorial-drafts'))return Response.json({items:[]});
   return new Response('',{status:503});
  }});

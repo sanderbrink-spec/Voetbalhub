@@ -14,12 +14,13 @@ on:
       - "scripts/patch-*.py"
       - ".github/workflows/build.yml"
   push:
-    branches: [main, master, "fix/veldio-29b"]
+    branches: [main, master, "fix/veldio-29b", "fix/veldio-31"]
 
 permissions:
   contents: read
 jobs:
   api-test-and-build:
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[backend-only]')
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -950,6 +951,9 @@ jobs:
           java com.sun.tools.javac.Main -d /tmp/veldio-ad-policy android-ui/java/AdRequestGate.java android-ui/java/AdSettings.java test/AdRequestGateTest.java
           java -cp /tmp/veldio-ad-policy nl.voetbalhub.app.AdRequestGateTest
 
+      - name: Install image validation dependency
+        run: python3 -m pip install Pillow
+
       - name: Verify release configuration gate
         run: python3 -m unittest discover -s test -p '*_test.py'
 
@@ -977,6 +981,9 @@ jobs:
       - name: Prepare two consent-gated test ad positions
         run: python3 scripts/patch-ads27.py
 
+      - name: Install shared home and news refresh
+        run: python3 scripts/patch-feed31.py
+
       - name: Set up Android SDK tools
         uses: android-actions/setup-android@v3
         with:
@@ -994,7 +1001,7 @@ jobs:
       - name: Keep unsigned compilation result
         uses: actions/upload-artifact@v4
         with:
-          name: Veldio-29C-unsigned-not-installable
+          name: Veldio-31-unsigned-not-installable
           path: app/build/outputs/apk/release/app-release-unsigned.apk
           if-no-files-found: error
 

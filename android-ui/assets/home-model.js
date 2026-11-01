@@ -8,7 +8,8 @@ function currentMatch(stats,now=Date.now()){
   if(report&&(!['FT','AET','PEN'].includes(fixture.status)||!Number.isFinite(Date.parse(fixture.date))||Date.parse(fixture.date)>now||![fixture.goals?.home,fixture.goals?.away].every(n=>Number.isInteger(n)&&n>=0)))return null;
   const body=Array.isArray(article.body)&&article.body.length>=3&&article.body.every(p=>typeof p==='string'&&p.trim());
   if(!body&&(report||!['NS','TBD'].includes(fixture.status)||!(Date.parse(fixture.date)>now)))return null;
-  return {...feature,phase:report?'report':'preview',fixture,article};
+  const observed=feature.observedFixture;const live=!report&&observed&&String(observed.id)===String(fixture.id)&&['1H','HT','2H','ET','BT','P','LIVE'].includes(observed.status)&&now-Date.parse(stats.updatedAt)<10*60000&&Date.parse(stats.updatedAt)<=now;
+  return {...feature,phase:report?'report':live?'live':'preview',fixture:live?observed:fixture,article};
  }
  const next=read(stats.nextFeatured);
  if(next&&next.phase==='preview'&&next.fixture.status==='NS'&&Date.parse(next.fixture.date)>now&&Date.parse(next.publishAt)===Date.parse(next.fixture.date)-72*3600000&&now>=Date.parse(next.publishAt)&&(!stats.rightsPolicyVersion||stats.rightsExpiresAt>now))return next;
@@ -20,5 +21,6 @@ function playbackRequest(data,id,top,bottom,now=Date.now()){
  if(!videos(data,now).some(v=>v.id===id)||!Number.isFinite(top)||!Number.isFinite(bottom)||top<0||bottom-top<244||bottom>1800)return null;
  return {id,top,height:Math.ceil(bottom-top)};
 }
-const model={isColumn,published,currentMatch,videos,stadiumImage,playbackRequest};if(typeof module==='object'&&module.exports)module.exports=model;else root.HomeModel=model;
+function recentArticles(rows){return published(rows).filter(a=>!isColumn(a)).slice(0,3);}
+const model={recentArticles,isColumn,published,currentMatch,videos,stadiumImage,playbackRequest};if(typeof module==='object'&&module.exports)module.exports=model;else root.HomeModel=model;
 })(typeof window==='undefined'?globalThis:window);

@@ -3,7 +3,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
 (async()=>{
  const browser=await chromium.launch({headless:true});
  try{
-  const {articles,stats,now}=require('./fixtures.cjs');
+  const fixture=require('./fixtures.cjs'),{stats,now}=fixture; const articles={articles:Array.from({length:3},(_,i)=>({...fixture.articles.articles[0],id:'home-test-'+i,headline:'Gecontroleerd testartikel '+i,publishedAt:new Date(now-i*60000).toISOString()}))};
   const html=fs.readFileSync('android-ui/assets/home-features.html','utf8').replace('<script src="home-model.js"></script>','<script>'+fs.readFileSync('android-ui/assets/home-model.js','utf8')+'</script>');
   const photo='data:image/webp;base64,'+fs.readFileSync('android-ui/drawable-nodpi/column_sander_brink_clean.webp').toString('base64');
   const errors=[];fs.mkdirSync('.browser-output',{recursive:true});
@@ -24,8 +24,8 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
    assert.ok(geometry.faceRight<=geometry.cardRight+2,'Face cropped at '+width);
    assert.ok(geometry.text.every(r=>r.right<=geometry.faceLeft+2),'Text covers the face at '+width+': '+JSON.stringify(geometry));
    assert.equal(await page.locator('.slide').count(),3);
-   const headline=await page.locator('.news-slide h1').innerText();assert.ok(articles.articles.some(a=>a.headline===headline));
-   await page.locator('.column-card').click();assert.deepEqual(await page.evaluate(()=>calls),['column']);
+   const headline=await page.locator('.news-slide h1').first().innerText();assert.ok(articles.articles.some(a=>a.headline===headline));
+   for(let i=0;i<3;i++){await page.evaluate(i=>move(i),i);await page.locator('.slide.active .slide-link').click();assert.equal(await page.evaluate(()=>calls.at(-1)),articles.articles[i].id);} await page.evaluate(()=>{calls=[];}); await page.locator('.column-card').click();assert.deepEqual(await page.evaluate(()=>calls),['column']);
    await page.getByRole('button',{name:'Vorig onderwerp'}).click();await page.getByRole('button',{name:'Volgend onderwerp'}).click();
    if(width===393)await page.screenshot({path:'.browser-output/veldio-home-mobile.png',fullPage:true});
    await page.close();

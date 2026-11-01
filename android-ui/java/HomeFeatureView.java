@@ -32,6 +32,7 @@ public final class HomeFeatureView extends FrameLayout {
     private JSONObject articles=new JSONObject(),stats=new JSONObject(),videos=new JSONObject();
     private boolean ready,disposed,loading=true,videoLoading=true;
     private final Runnable weeklyRefresh=new Runnable(){public void run(){if(disposed)return;fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);postDelayed(this,60000);}};
+    private final FeedRepository.Listener feedListener=(data,busy,failed)->{if(disposed)return;loading=busy;if(data!=null)articles=data;deliver();};
     private float startX,startY;
     private int dp(float n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
     public HomeFeatureView(Activity activity,OpenArticle article,OpenMatch match,Runnable column){
@@ -70,8 +71,10 @@ public final class HomeFeatureView extends FrameLayout {
         if(!PublicationPolicy.allows(articles))articles=new JSONObject();
         if(!PublicationPolicy.allows(stats))stats=new JSONObject();
         if(!PublicationPolicy.allows(videos))videos=new JSONObject();
+        if(!PublicationPolicy.allows(stats))stats=new JSONObject();
         web.loadUrl("file:///android_asset/home-features.html");
-        fetch("https://voetbalhub-redactie.onrender.com/articles",0);
+        FeedRepository.subscribe(activity,feedListener);
+        FeedRepository.refresh(false);
         fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);
         fetch("https://voetbalhub-redactie.onrender.com/integrations/videos?v="+System.currentTimeMillis()/60000,2);
         postDelayed(weeklyRefresh,60000);
@@ -103,8 +106,9 @@ public final class HomeFeatureView extends FrameLayout {
         if(!disposed&&ready){web.evaluateJavascript("window.setVideoPlaying(false)",null);deliver();}
         return true;
     }
-    @Override protected void onDetachedFromWindow(){disposed=true;ready=false;removeCallbacks(weeklyRefresh);closeVideo();web.stopLoading();web.removeJavascriptInterface("HomeHub");web.loadUrl("about:blank");super.onDetachedFromWindow();}
+    @Override protected void onDetachedFromWindow(){disposed=true;ready=false;FeedRepository.unsubscribe(feedListener);removeCallbacks(weeklyRefresh);closeVideo();web.stopLoading();web.removeJavascriptInterface("HomeHub");web.loadUrl("about:blank");super.onDetachedFromWindow();}
     private final class Bridge {
+        @JavascriptInterface public void openMatchUnavailable(){activity.runOnUiThread(()->{if(!disposed)new android.app.AlertDialog.Builder(activity).setTitle("Wedstrijd van de week").setMessage("Er zijn nog geen gecontroleerde wedstrijdgegevens beschikbaar. De laatst gepubliceerde artikelen blijven in het nieuwsoverzicht staan.").setPositiveButton("Opnieuw proberen",(d,w)->{FeedRepository.refresh(true);removeCallbacks(weeklyRefresh);weeklyRefresh.run();}).setNegativeButton("Sluiten",null).show();});}
         @JavascriptInterface public void resize(String raw){activity.runOnUiThread(()->{if(disposed)return;try{int height=dp(Math.max(300,Math.min(1800,Float.parseFloat(raw))));if(getLayoutParams()!=null&&Math.abs(getLayoutParams().height-height)>2){getLayoutParams().height=height;requestLayout();}}catch(Exception ignored){}});}
         @JavascriptInterface public void openArticle(String id){activity.runOnUiThread(()->{JSONObject a=findArticle(id);if(a!=null&&!disposed)articleAction.open(a);});}
         @JavascriptInterface public void openColumn(String ignored){activity.runOnUiThread(()->{if(disposed)return;JSONObject latest=null;JSONArray rows=articles.optJSONArray("articles");if(rows!=null)for(int i=0;i<rows.length();i++){JSONObject a=rows.optJSONObject(i);if(a!=null&&"published".equals(a.optString("status"))&&isColumn(a)&&(latest==null||a.optString("publishedAt").compareTo(latest.optString("publishedAt"))>0))latest=a;}if(latest!=null)articleAction.open(latest);else columnAction.run();});}
