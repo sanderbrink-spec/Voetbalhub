@@ -99,12 +99,14 @@ feed = {'rightsPolicyVersion': 26, 'rightsExpiresAt': stamp + 1800000,
                                'headline': 'Synthetisch testartikel'}]}
 (OUT/'synthetic-articles.json').write_text(json.dumps(feed))
 adb('shell','am','force-stop',PACKAGE)
+adb('shell','pm','clear',PACKAGE)  # Isolate this disposable fixture from an interrupted SharedPreferences backup.
 preferences='<map><string name="last_articles">'+escape(json.dumps(feed,ensure_ascii=False))+'</string></map>'
 (OUT/'editorial-cache.xml').write_text(preferences)
 adb('push',str(OUT/'editorial-cache.xml'),'/data/local/tmp/veldio-cache.xml')
 adb('shell','run-as',PACKAGE,'mkdir','-p','shared_prefs')
 adb('shell','run-as',PACKAGE,'cp','/data/local/tmp/veldio-cache.xml','shared_prefs/voetbalhub_editorial.xml')
 adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
+time.sleep(5)  # Android radio teardown is asynchronous; this fixture must be truly offline.
 adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
 time.sleep(4)
 def tap_node(root,predicate):

@@ -40,10 +40,10 @@ async function collect(venue,fetcher=fetch){
  if(sources.length<6)throw Error('Insufficient primary source coverage');return sources;
 }
 async function chat(messages,{apiKey=process.env.GROQ_API_KEY,fetcher=fetch,maxTokens=5000}={}){
- if(!apiKey)throw Error('GROQ_API_KEY missing');
+ if(!apiKey)throw Error('GROQ_API_KEY missing');let model='openai/gpt-oss-120b';
  for(let attempt=0;attempt<3;attempt++){
- const r=await fetcher('https://api.groq.com/openai/v1/chat/completions',{method:'POST',redirect:'error',signal:AbortSignal.timeout(55000),headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify({model:'openai/gpt-oss-120b',temperature:0.1,max_completion_tokens:maxTokens,response_format:{type:'json_object'},messages})});
- if(!r.ok){const failure=await r.json().catch(()=>({}));const detail=String(failure.error?.message||'').replace(/gsk_[a-zA-Z0-9]+/g,'[redacted]').slice(0,350);if(r.status===429&&attempt<2&&!/request too large|daily|billing|deactivated/i.test(detail)){await new Promise(resolve=>setTimeout(resolve,30000));continue;}throw Error('Editorial model unavailable: HTTP '+r.status+' '+detail);}const j=await r.json();return {data:JSON.parse(j.choices[0].message.content),usage:j.usage};
+ const r=await fetcher('https://api.groq.com/openai/v1/chat/completions',{method:'POST',redirect:'error',signal:AbortSignal.timeout(55000),headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify({model,temperature:0.1,max_completion_tokens:maxTokens,response_format:{type:'json_object'},messages})});
+ if(!r.ok){const failure=await r.json().catch(()=>({}));const detail=String(failure.error?.message||'').replace(/gsk_[a-zA-Z0-9]+/g,'[redacted]').slice(0,350);if(r.status===429&&attempt<2&&model==='openai/gpt-oss-120b'&&/tokens per day|TPD|request too large/i.test(detail)){model='openai/gpt-oss-20b';continue;}if(r.status===429&&attempt<2&&!/request too large|tokens per day|TPD|daily|billing|deactivated/i.test(detail)){await new Promise(resolve=>setTimeout(resolve,30000));continue;}throw Error('Editorial model unavailable: HTTP '+r.status+' '+detail);}const j=await r.json();return {data:JSON.parse(j.choices[0].message.content),usage:{...j.usage,model}};
  }throw Error('Editorial model rate limit');
 }
 async function research(venue,catalog,{fetcher=fetch,complete=chat,now=Date.now()}={}){

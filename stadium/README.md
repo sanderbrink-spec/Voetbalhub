@@ -16,7 +16,7 @@ Only De Kuip is fully researched and approved. The next queued venue is the Joha
 
 ## Costs
 
-No new image generation, YouTube API or paid sports data. A successful autonomous portrait uses up to three bounded Groq GPT-OSS-120B calls; only attempted for the next due weekly candidate. Bundled CC photography is reused with attribution. The publisher uses ordinary GitHub Actions minutes and GitHub storage/bandwidth. Existing backend and GitHub plan charges depend on the account and are not inspected by this workflow. No additional fixed monthly service is provisioned. At the Groq rates checked 1 November 2026 ($0.15/M input, $0.60/M output), a conservative 70k input + 27k output token budget is about $0.027 per attempted portrait; an occasional extra attempt can increase this. Currency conversion and account-specific billing are not verified.
+No new image generation, YouTube API or paid sports data. A successful autonomous portrait uses up to three bounded Groq GPT-OSS calls (120B, with the cheaper 20B fallback when the primary daily quota is exhausted); only attempted for the next due weekly candidate. Bundled CC photography is reused with attribution. The publisher uses ordinary GitHub Actions minutes and GitHub storage/bandwidth. Existing backend and GitHub plan charges depend on the account and are not inspected by this workflow. No additional fixed monthly service is provisioned. At the Groq rates checked 1 November 2026 ($0.15/M input, $0.60/M output), a conservative 70k input + 27k output token budget is about $0.027 per attempted portrait; an occasional extra attempt can increase this. Currency conversion and account-specific billing are not verified.
 
 ## Checks
 
