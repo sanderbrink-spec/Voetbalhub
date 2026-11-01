@@ -1,13 +1,20 @@
 """Read-only Android presentation smoke test. Never submits or publishes content."""
 from pathlib import Path
 import re
+import os
 import subprocess
 import sys
 import time
 import xml.etree.ElementTree as ET
 
 OUT=Path('.android-smoke');OUT.mkdir(exist_ok=True)
-PACKAGE='nl.voetbalhub.app1'
+sdk = Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
+aapt = sorted(sdk.glob('build-tools/*/aapt'))[-1]
+badging = subprocess.check_output([str(aapt), 'dump', 'badging', sys.argv[1]], text=True)
+match = re.search(r"package: name='([^']+)'", badging)
+assert match, 'APK package identity missing'
+PACKAGE = match.group(1)
+assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test'), PACKAGE
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
