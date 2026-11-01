@@ -977,8 +977,11 @@ jobs:
       - name: Prepare two consent-gated test ad positions
         run: python3 scripts/patch-ads27.py
 
-      - name: Install Android 16 SDK
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - name: Set up Android SDK tools
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+          log-accepted-android-sdk-licenses: false
 
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
@@ -991,18 +994,37 @@ jobs:
       - name: Keep unsigned compilation result
         uses: actions/upload-artifact@v4
         with:
-          name: Veldio-29B-unsigned-not-installable
+          name: Veldio-29C-unsigned-not-installable
           path: app/build/outputs/apk/release/app-release-unsigned.apk
           if-no-files-found: error
 
-      - name: Sign update using the existing installation key
+      - name: Sign existing update or build separate installable test app
         env:
           ANDROID_UPDATE_KEYSTORE_BASE64: ${{ secrets.ANDROID_UPDATE_KEYSTORE_BASE64 }}
           ANDROID_UPDATE_STORE_PASSWORD: ${{ secrets.ANDROID_UPDATE_STORE_PASSWORD }}
           ANDROID_UPDATE_KEY_ALIAS: ${{ secrets.ANDROID_UPDATE_KEY_ALIAS }}
           ANDROID_UPDATE_KEY_PASSWORD: ${{ secrets.ANDROID_UPDATE_KEY_PASSWORD }}
           ANDROID_UPDATE_CERT_SHA256: ${{ secrets.ANDROID_UPDATE_CERT_SHA256 }}
-        run: python3 scripts/sign-existing-update.py
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$ANDROID_UPDATE_KEYSTORE_BASE64" ] && [ -n "$ANDROID_UPDATE_STORE_PASSWORD" ] && [ -n "$ANDROID_UPDATE_KEY_ALIAS" ] && [ -n "$ANDROID_UPDATE_KEY_PASSWORD" ] && [ -n "$ANDROID_UPDATE_CERT_SHA256" ]; then
+            python3 scripts/sign-existing-update.py
+            echo "APK signed with the verified existing installation identity." >> "$GITHUB_STEP_SUMMARY"
+          else
+            python3 - <<'PY'
+          from pathlib import Path
+          p = Path('app/build.gradle.kts')
+          s = p.read_text()
+          old = 'applicationId = "nl.voetbalhub.app1"'
+          assert s.count(old) == 1, 'Expected applicationId missing or ambiguous'
+          p.write_text(s.replace(old, 'applicationId = "nl.voetbalhub.app1.test"', 1))
+          PY
+            gradle :app:assembleDebug --no-daemon
+            echo "Separate test APK: nl.voetbalhub.app1.test. Existing update signing identity unavailable; this APK installs alongside the existing app." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs app/build/outputs/apk/debug/app-debug.apk
+          sha256sum app/build/outputs/apk/debug/app-debug.apk >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify production backend before release
         if: github.event_name == 'workflow_dispatch' && inputs.release
