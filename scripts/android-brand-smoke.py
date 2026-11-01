@@ -1,13 +1,20 @@
 """Read-only Android presentation smoke test. Never submits or publishes content."""
 from pathlib import Path
 import re
+import os
 import subprocess
 import sys
 import time
 import xml.etree.ElementTree as ET
 
 OUT=Path('.android-smoke');OUT.mkdir(exist_ok=True)
-PACKAGE='nl.voetbalhub.app1'
+sdk = Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
+aapt = sorted(sdk.glob('build-tools/*/aapt'))[-1]
+badging = subprocess.check_output([str(aapt), 'dump', 'badging', sys.argv[1]], text=True)
+match = re.search(r"package: name='([^']+)'", badging)
+assert match, 'APK package identity missing'
+PACKAGE = match.group(1)
+assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test'), PACKAGE
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
@@ -59,16 +66,23 @@ assert adb('shell','pidof',PACKAGE).strip()
 (OUT/'result.txt').write_text('PASS: install, launch, active process, home and Meer navigation; Veldio branding and slogan; no old visible brand. Android API 35 emulator. No content published.\n')
 print((OUT/'result.txt').read_text())
 
-# Seed a disposable emulator with the public feed to test cached article views.
-# No API writes, generated editorial content or production preferences are involved.
+# Synthetic cached UI data exists only in this disposable emulator.
+# No production feed, rights register or API is modified by this scenario.
 import json
-import urllib.request
 from xml.sax.saxutils import escape
-with urllib.request.urlopen('https://voetbalhub-redactie.onrender.com/articles',timeout=90) as response:
-    feed=json.load(response)
-columns=[a for a in feed['articles'] if a.get('type')=='column' or a.get('category','').lower() in ('column','de derde helft')]
-assert columns,'Public column missing from feed'
-(OUT/'public-articles.json').write_text(json.dumps(feed))
+stamp = int(time.time() * 1000)
+common = {'status': 'published', 'author': 'Veldio Test',
+          'publishedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+          'standfirst': 'Fictieve inhoud voor een afzonderlijke Android-test.',
+          'body': ['Eerste fictieve testalinea.', 'Tweede fictieve testalinea.', 'Derde fictieve testalinea.']}
+columns = [{**common, 'id': 'android-test-column', 'type': 'column',
+            'category': 'De Derde Helft', 'author': 'Sander Brink',
+            'headline': 'Synthetische testcolumn'}]
+feed = {'rightsPolicyVersion': 26, 'rightsExpiresAt': stamp + 1800000,
+        'articles': [*columns, {**common, 'id': 'android-test-news',
+                               'type': 'news', 'category': 'Eredivisie',
+                               'headline': 'Synthetisch testartikel'}]}
+(OUT/'synthetic-articles.json').write_text(json.dumps(feed))
 adb('shell','am','force-stop',PACKAGE)
 preferences='<map><string name="last_articles">'+escape(json.dumps(feed,ensure_ascii=False))+'</string></map>'
 (OUT/'editorial-cache.xml').write_text(preferences)
@@ -118,5 +132,5 @@ tap_node(root,lambda n:'Terug' in n.get('text',''))
 time.sleep(1);capture('12-back-to-news')
 adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 with (OUT/'result.txt').open('a') as result:
-    result.write('PASS: public-feed cache, local column portrait thumbnail, column and news readers, save toggle, font control and back navigation. Cached/offline UI scenario; does not verify Android live networking.\n')
+    result.write('PASS: synthetic isolated cache, local column portrait thumbnail, column and news readers, save toggle, font control and back navigation. Synthetic cached/offline UI scenario; does not verify live content, permissions or Android live networking.\n')
 print((OUT/'result.txt').read_text())

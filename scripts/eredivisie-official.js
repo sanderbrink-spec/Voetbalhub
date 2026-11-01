@@ -1,3 +1,5 @@
+// Phase 25: stop before any external request or publication until rights are documented.
+if(require.main===module&&require('../launch-policy').stopCli('officialStats'))process.exit(0);
 'use strict';
 const {seasonFor,validateSnapshot,chooseFeatured,buildPreview,githubFile,DONE}=require('./eredivisie-data');
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/rotterdam|eindhoven|alkmaar|sc|fc/g,'');
@@ -43,9 +45,8 @@ async function collectOfficial({token,key,fetcher=fetch,now=Date.now(),save=true
   for(const f of fixtures){const e=events.find(e=>Math.abs(Date.parse(e.date)-Date.parse(f.date))<60000&&e.competitions?.[0]?.competitors?.some(c=>c.homeAway==='home'&&norm(c.team.shortDisplayName||c.team.displayName)===norm(f.home.name))&&e.competitions[0].competitors.some(c=>c.homeAway==='away'&&norm(c.team.shortDisplayName||c.team.displayName)===norm(f.away.name)));if(e){const v=e.competitions[0].venue;f.venue={name:v?.fullName||'',city:v?.address?.city||''};}}
  }catch(e){warnings.push('Stadionnamen niet beschikbaar.');}
  const s=validateSnapshot({schemaVersion:1,updatedAt:new Date(now).toISOString(),source:'Eredivisie.nl · officiële competitiegegevens',league:{id:88,name:'Eredivisie',season},fixtures,standings,players,warnings});
- let previous=null;try{previous=(await get(require('./eredivisie-data').DATA_URL,fetcher)).featured;}catch{}
- const feature=chooseFeatured(s,now,previous);
- if(feature){
+ const weekly=require('./weekly-feature'),previousSnapshot=await weekly.readPrevious(fetcher),previous=previousSnapshot?.featured;
+ await weekly.update(s,previousSnapshot,{now,token,fetcher,previewImage:async(feature)=>{
   s.headToHead=s.fixtures.filter(f=>DONE.has(f.status)&&[feature.fixture.home.id,feature.fixture.away.id].includes(f.home.id)&&[feature.fixture.home.id,feature.fixture.away.id].includes(f.away.id)).sort((a,b)=>Date.parse(b.date)-Date.parse(a.date)).slice(0,5);
   const pair=[feature.fixture.home,feature.fixture.away];
   const history=venueEvents.filter(e=>Date.parse(e.date)<now&&e.competitions?.[0]?.status?.type?.completed&&pair.every(team=>e.competitions[0].competitors.some(c=>norm(c.team.shortDisplayName||c.team.displayName)===norm(team.name)))).map(e=>{
@@ -53,12 +54,13 @@ async function collectOfficial({token,key,fetcher=fetch,now=Date.now(),save=true
    return {id:Number(e.id),date:e.date,status:'FT',home:pair.find(t=>norm(t.name)===norm(h.team.shortDisplayName||h.team.displayName)),away:pair.find(t=>norm(t.name)===norm(a.team.shortDisplayName||a.team.displayName)),goals:{home:Number(h.score),away:Number(a.score)},venue:{name:c.venue?.fullName||''},round:'Eredivisie '+e.season?.year};
   }).filter(f=>Number.isInteger(f.goals.home)&&Number.isInteger(f.goals.away));
   s.headToHead=[...new Map([...s.headToHead,...history].map(f=>[f.date.slice(0,10)+f.home.id+f.away.id,f])).values()].sort((a,b)=>Date.parse(b.date)-Date.parse(a.date)).slice(0,5);
-  s.featured={...feature,preview:buildPreview(s,feature)};
-  if(previous?.fixtureId===feature.fixtureId&&previous.imageUrl&&previous.imageVersion===4){s.featured.imageUrl=previous.imageUrl;s.featured.imageVersion=4;s.featured.imageCredit=previous.imageCredit;s.featured.imageReview=previous.imageReview;}
-  if(!s.featured.imageUrl){try{const {stadiumFor,createCover}=require('./match-cover');const resolved=await require('./eredivisie-covers').resolveTeam(feature.fixture.home.name,key,fetcher);
+  const candidate={...feature,preview:buildPreview(s,feature)};
+  if(previous?.fixtureId===feature.fixtureId&&previous.preview?.fixture?.date===feature.fixture.date&&JSON.stringify(previous.preview?.fixture?.venue)===JSON.stringify(feature.fixture.venue)&&previous.imageUrl&&previous.imageVersion===4){candidate.imageUrl=previous.imageUrl;candidate.imageVersion=4;candidate.imageCredit=previous.imageCredit;candidate.imageReview=previous.imageReview;}
+  if(!candidate.imageUrl){try{const {stadiumFor,createCover}=require('./match-cover');const resolved=await require('./eredivisie-covers').resolveTeam(feature.fixture.home.name,key,fetcher);
  if(norm(resolved.venue.name)!==norm(feature.fixture.venue.name))throw Error('Stadion van de wedstrijd wijkt af van de clublocatie.');
- const stadium=await stadiumFor(resolved.venue,key,fetcher);const image=await createCover({kind:'preview',fixture:feature.fixture,...stadium,competition:'Eredivisie'},{token,fetcher});s.featured.imageUrl=image.imageUrl;s.featured.imageCredit=image.imageCredit;s.featured.imageVersion=4;s.featured.imageReview=image.imageReview;}catch(e){warnings.push('Beeldcontrole: '+e.message);}}
- }
+ const stadium=await stadiumFor(resolved.venue,key,fetcher);const image=await createCover({kind:'preview',fixture:feature.fixture,...stadium,competition:'Eredivisie'},{token,fetcher});candidate.imageUrl=image.imageUrl;candidate.imageCredit=image.imageCredit;candidate.imageVersion=4;candidate.imageReview=image.imageReview;}catch(e){warnings.push('Beeldcontrole: '+e.message);}}
+ return candidate;
+ }});
  if(save)await githubFile('statistics/eredivisie.json',JSON.stringify(s),{token,fetcher});
  return s;
 }

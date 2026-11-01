@@ -1,8 +1,9 @@
 'use strict';
 const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('node:assert/strict');
 (async()=>{const browser=await chromium.launch({headless:true});try{
- const response=await fetch('https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json');if(!response.ok)throw Error('No preview data');const data=await response.json();if(!data.featured?.preview)throw Error('No selected weekly preview');const f=data.featured.preview.fixture;
+ const {stats:data,now}=require('./fixtures.cjs');const f=data.featured.preview.fixture;
  const page=await browser.newPage({viewport:{width:393,height:852}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.clock.setFixedTime(new Date(now));
  await page.setContent(fs.readFileSync('android-ui/assets/match-preview.html','utf8'));
  // Data arrives after the document, as it does in the Android WebView.
  await page.evaluate(x=>window.setData(JSON.stringify(x)),data);
@@ -17,6 +18,6 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
  // Preserve the exact clicked fixture, even if the global weekly feed changes later.
  const saved=structuredClone(data);saved.featured.preview.fixture.home.name='Geselecteerde thuisclub';await page.evaluate(x=>window.setData(JSON.stringify(x)),saved);await page.getByRole('heading',{name:'Geselecteerde thuisclub – '+f.away.name,exact:true}).waitFor();
  // Regression for the old lexical-global flag that opened standings on a late response.
- const legacy=await browser.newPage({viewport:{width:393,height:852}});legacy.on('pageerror',e=>errors.push(e.message));await legacy.setContent(fs.readFileSync('android-ui/assets/eredivisie.html','utf8').replace('<script src="page-history.js"></script>','<script>'+fs.readFileSync('android-ui/assets/page-history.js','utf8')+'</script>'));await legacy.evaluate(()=>window.showFeatured());await legacy.evaluate(x=>window.setData(JSON.stringify(x)),data);await legacy.getByRole('heading',{name:f.home.name+' – '+f.away.name,exact:true}).waitFor();assert.deepEqual(errors,[]);
+ const legacy=await browser.newPage({viewport:{width:393,height:852}});legacy.on('pageerror',e=>errors.push(e.message));await legacy.clock.setFixedTime(new Date(now));await legacy.setContent(fs.readFileSync('android-ui/assets/eredivisie.html','utf8').replace('<script src="page-history.js"></script>','<script>'+fs.readFileSync('android-ui/assets/page-history.js','utf8')+'</script>'));await legacy.evaluate(()=>window.showFeatured());await legacy.evaluate(x=>window.setData(JSON.stringify(x)),data);await legacy.getByRole('heading',{name:f.home.name+' – '+f.away.name,exact:true}).waitFor();assert.deepEqual(errors,[]);
  console.log('Dedicated preview, delayed data delivery, clicked fixture and legacy feature navigation passed.');
  }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

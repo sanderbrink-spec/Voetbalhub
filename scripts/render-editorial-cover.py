@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-STYLE_VERSION = 'fixture-graphic-v2'
+STYLE_VERSION = 'fixture-graphic-v3-veldio'
 CLUBS = ['FC Midtjylland', 'PEC Zwolle', 'FC Groningen', 'FC Den Bosch', 'Willem II',
          'Feyenoord', 'FC Twente', 'FC Utrecht', 'SC Heerenveen', 'Go Ahead Eagles',
          'Fortuna Sittard', 'Heracles Almelo', 'NAC Breda', 'Sparta Rotterdam',
@@ -20,17 +20,20 @@ def teams_for(packet):
 def render(packet, output):
     headline = packet.get('draft', packet).get('headline', '')
     seed = hashlib.sha256((STYLE_VERSION + headline).encode()).digest()
-    base = (8 + seed[0] % 14, 22 + seed[1] % 16, 24 + seed[2] % 25)
+    base = (5, 12, 8)
     im = Image.new('RGB', (1600, 900), base)
     d = ImageDraw.Draw(im)
     # Topic-specific geometry and colour, with safe margins for feed thumbnails.
-    accent = (100 + seed[3] % 100, 180 + seed[4] % 76, 65 + seed[5] % 120)
+    accent = (37, 240, 107)
     for x in range(-900, 1800, 180):
         d.polygon([(x, 900), (x + 45, 900), (x + 945, 0), (x + 900, 0)], fill=tuple(v + 7 for v in base))
     d.ellipse((520, 170, 1080, 730), outline=tuple(v + 22 for v in base), width=3)
     d.line((800, 0, 800, 900), fill=tuple(v + 22 for v in base), width=3)
     fonts = Path('/usr/share/fonts/truetype/dejavu')
     def font(size): return ImageFont.truetype(str(fonts / 'DejaVuSans-Bold.ttf'), size)
+    d.text((86, 76), 'Veldio', font=font(48), fill='white')
+    d.text((88, 137), 'Alles voetbal. Eén plek.', font=font(20), fill=accent)
+    d.line((86, 188, 1514, 188), fill=accent, width=2)
     clubs = teams_for(packet)
     labels = clubs or [packet.get('category', 'Voetbal')]
     centers = [470, 1130] if len(labels) == 2 else [800]

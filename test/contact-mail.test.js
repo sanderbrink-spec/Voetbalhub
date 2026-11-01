@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),http=require('node:http');
 const {validate,createContactHandler}=require('../contact-mail');
-const env={RESEND_API_KEY:'test-only-key',CONTACT_FROM:'Veldio <contact@example.com>',CONTACT_PUBLIC_ORIGIN:'https://veldio.example'};
+const env={CONTACT_PRIVACY_READY:'1',RESEND_API_KEY:'test-only-key',CONTACT_FROM:'Veldio <contact@example.com>',CONTACT_PUBLIC_ORIGIN:'https://veldio.example'};
 const valid=()=>({name:'Sander & Co',email:'test@example.com',subject:'Vraag é & <test>',topic:'Vraag over de app',message:'Dit is een geldig bericht.\nTweede regel met é & < >.',website:'',requestId:require('node:crypto').randomUUID()});
 async function withServer(handler,run){const server=http.createServer(handler);await new Promise(r=>server.listen(0,'127.0.0.1',r));try{await run((body,headers={})=>fetch('http://127.0.0.1:'+server.address().port,{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)}));}finally{await new Promise(r=>server.close(r));}}
 test('contact rejects missing fields, injection, honeypot, invalid email, lengths and unknown categories',()=>{
@@ -14,7 +14,7 @@ test('provider acceptance, reply-to, fixed recipient, preserved Unicode/newlines
  await withServer(handler,async post=>{const data=valid(),responses=await Promise.all([post(data),post(data),post(data)]);for(const r of responses){assert.equal(r.status,200);assert.equal((await r.json()).accepted,true);}assert.equal(calls,1);const payload=JSON.parse(request.body);assert.deepEqual(payload.to,['redactie.veldio@gmail.com']);assert.equal(payload.reply_to,data.email);assert.ok(payload.text.endsWith(data.message));assert.equal(request.headers['Idempotency-Key'],'veldio-contact-'+data.requestId);assert.equal((await post({...data,message:data.message+' extra'})).status,409);});
 });
 test('no false success when unconfigured, provider rejects, malformed acknowledgement or network fails',async()=>{
- for(const config of [{env:{}},{env,fetchImpl:async()=>({ok:false,json:async()=>({message:'secret error'})})},{env,fetchImpl:async()=>({ok:true,json:async()=>({})})},{env,fetchImpl:async()=>{throw Error('offline');}}])await withServer(createContactHandler(config),async post=>{const r=await post(valid()),body=await r.json();assert.ok(r.status>=500);assert.equal(body.accepted,undefined);assert.equal(body.message,'Verzenden is niet gelukt. Probeer het opnieuw.');});
+ for(const config of [{env:{CONTACT_PRIVACY_READY:'1'}},{env,fetchImpl:async()=>({ok:false,json:async()=>({message:'secret error'})})},{env,fetchImpl:async()=>({ok:true,json:async()=>({})})},{env,fetchImpl:async()=>{throw Error('offline');}}])await withServer(createContactHandler(config),async post=>{const r=await post(valid()),body=await r.json();assert.ok(r.status>=500);assert.equal(body.accepted,undefined);assert.equal(body.message,'Verzenden is niet gelukt. Probeer het opnieuw.');});
 });
 test('rate limit and explicit origin rejection block abuse without trusting forged forwarding headers',async()=>{
  let count=0;const handler=createContactHandler({env,fetchImpl:async()=>{count++;return {ok:true,json:async()=>({id:'ok'})};}});

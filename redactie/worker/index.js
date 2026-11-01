@@ -1,7 +1,7 @@
 export default {
  async scheduled(controller, env, ctx) {
   // Configure a Cloudflare Cron Trigger (for example every 15 minutes) after deployment.
-  ctx.waitUntil(inbox(env));
+  if(env.FEED_RIGHTS_REVIEWED==="1")ctx.waitUntil(inbox(env));
  },
  async fetch(request, env) {
   const origin = request.headers.get("Origin");
@@ -34,6 +34,7 @@ async function handle(request, env) {
   let x; try { x=await request.json(); } catch { return reply({error:"Ongeldige JSON."},400); }
   const topic=str(x.topic,300),category=str(x.category||"Voetbal",80),facts=Array.isArray(x.facts)?x.facts.map(v=>str(v,500)).filter(Boolean).slice(0,20):[],sourceUrls=Array.isArray(x.sourceUrls)?x.sourceUrls.map(v=>str(v,500)).filter(v=>/^https:\/\//i.test(v)).slice(0,10):[],format=["nieuws","analyse","achtergrond","transfer","wedstrijdverslag"].includes(x.format)?x.format:"nieuws";
   if(!topic||facts.length<2)return reply({error:"Onderwerp en minimaal twee gecontroleerde feiten vereist."},400);
+  if(!await rightsAllowed("ai-input",x,env))return reply({error:"Rechten voor deze AI-invoer ontbreken."},403);
   if(!env.OPENAI_API_KEY)return reply({error:"OPENAI_API_KEY ontbreekt."},500);
   const instructions="Je schrijft originele Nederlandstalige voetbaljournalistiek voor Veldio. Gebruik een eigen, energieke en feitelijke toon; imiteer geen bestaand medium of journalist. Kopieer geen bronzinnen. Gebruik uitsluitend de aangeleverde feiten. Verzin geen citaten, namen, cijfers, datums of gebeurtenissen. Maak onzekerheid expliciet en presenteer geruchten niet als feiten. Retourneer JSON met headline, standfirst, body (array van 3-5 inhoudelijke alinea's, elk minimaal 70 tekens), why_it_matters, verification_notes en sources. Als de aangeleverde feiten onvoldoende zijn, verzin of herhaal niets om de lengte te halen. Auteur: Veldio Redactie. Dit is altijd een concept voor menselijke controle, nooit een definitieve publicatie.";
   let response,data;
@@ -60,7 +61,7 @@ async function listArticles(env) {
  try {
   const listed=await env.EDITORIAL_KV.list({prefix:"article:",limit:100});
   const articles=[];
-  for(const key of listed.keys){const raw=await env.EDITORIAL_KV.get(key.name);if(raw){try{const a=JSON.parse(raw);if(a.status==="published")articles.push(a);}catch{}}}
+  for(const key of listed.keys){const raw=await env.EDITORIAL_KV.get(key.name);if(raw){try{const a=JSON.parse(raw);if(a.status==="published"&&await rightsAllowed("publication",articleContent(a),env))articles.push(a);}catch{}}}
   articles.sort((a,b)=>(b.publishedAt||"").localeCompare(a.publishedAt||""));
   return reply({count:articles.length,articles});
  } catch {return reply({error:"Artikelen konden niet worden opgehaald."},503);}
@@ -78,13 +79,15 @@ async function publish(request,env) {
  if(!imageUrl && imageRights && !["not_needed","pending","rejected"].includes(imageRights)) return reply({error:"Beeldrechtenstatus zonder foto is ongeldig."},400);
  const id=crypto.randomUUID(),now=new Date().toISOString();
  const article={id,status:"published",author:"Veldio Redactie",headline:str(d.headline,200),standfirst:str(d.standfirst,500),body:articleBody,why_it_matters:str(d.why_it_matters,1000),category:str(x.category||"Voetbal",80),publishedAt:now,updatedAt:now,verifiedFacts:facts,sources:sources.map(s=>({name:str(s.name,120),url:str(s.url,500)})),...(imageUrl?{imageUrl,imageSource,imageCredit,imageRights}:{imageRights:imageRights||"not_needed"})};
+ if(!await rightsAllowed("publication",articleContent(article),env))return reply({error:"Serverzijdig rechtenbewijs voor publicatie ontbreekt."},403);
  try{await env.EDITORIAL_KV.put("article:"+id,JSON.stringify(article));return reply({status:"published",article});}
  catch{return reply({error:"Artikel kon niet worden opgeslagen."},503);}
 }
 async function inbox(env) {
  if(!env.ALLOWED_FEED_URLS)return reply({error:"ALLOWED_FEED_URLS ontbreekt. Voeg alleen feeds toe waarvan gebruik is toegestaan."},400);
+ if(env.FEED_RIGHTS_REVIEWED!=="1")return reply({error:"Feedrechten zijn niet vrijgegeven; geen externe verwerking."},403);
  const urls=env.ALLOWED_FEED_URLS.split(",").map(s=>s.trim()).filter(Boolean).slice(0,10),items=[];
- for(const raw of urls){let u;try{u=new URL(raw)}catch{continue;}if(u.protocol!=="https:")continue;
+ for(const raw of urls){let u;try{u=new URL(raw)}catch{continue;}if(u.protocol!=="https:"||!await rightsAllowed("feed-access",{url:u.toString()},env))continue;
   try{const r=await fetch(u.toString(),{headers:{"User-Agent":"VeldioEditorialBot/0.2"},"redirect":"manual",signal:AbortSignal.timeout(8000)});if(!r.ok||r.status>=300)continue;
    const xml=(await r.text()).slice(0,1000000),blocks=[...xml.matchAll(/<(item|entry)\b[\s\S]*?<\/\1\s*>/gi)].slice(0,30);
    for(const m of blocks){const b=m[0],title=tag(b,"title"),link=tag(b,"link")||attr(b,"link","href"),description=strip(tag(b,"description")||tag(b,"summary")||tag(b,"content"));if(!title)continue;items.push({title,link:validUrl(link,u.origin),summary:description.slice(0,500),feedHost:u.hostname,status:"needs_editor_review",note:"Alleen redactionele aanwijzing; geen automatische feitelijke bevestiging."});}
@@ -115,4 +118,16 @@ function corsHeaders(origin) {
   "Access-Control-Allow-Headers":"Authorization, Content-Type",
   "Access-Control-Max-Age":"86400"
  };
+}
+
+// Worker permissions use server-only evidence, never incoming review booleans.
+function articleContent(a){return Object.fromEntries(['author','headline','standfirst','body','why_it_matters','category','type','blocks','manuscript','match','verifiedFacts','sources','imageUrl','imageSource','imageCredit','imageRights','imageReview'].filter(k=>a[k]!==undefined).map(k=>[k,a[k]]));}
+function canonical(v){if(Array.isArray(v))return v.map(canonical);if(v&&typeof v==='object')return Object.fromEntries(Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>[k,canonical(v[k])]));return v;}
+async function rightsAllowed(scope,value,env){
+ try{
+  const registry=JSON.parse(env.CONTENT_RIGHTS_JSON||'{}');if(registry.version!==1||!Array.isArray(registry.approvals))return false;
+  const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(canonical(value))));
+  const hash=Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join(''),now=Date.now();
+  return registry.approvals.some(a=>a.scope===scope&&a.contentHash===hash&&a.status==='approved'&&typeof a.evidenceRef==='string'&&a.evidenceRef.trim().length>=8&&typeof a.basis==='string'&&a.basis.trim().length>=8&&typeof a.reviewer==='string'&&a.reviewer.trim()&&Date.parse(a.reviewedAt)<=now&&Date.parse(a.validUntil)>now);
+ }catch{return false;}
 }

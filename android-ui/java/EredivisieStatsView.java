@@ -15,7 +15,7 @@ import java.io.InputStream;
 
 /** Native subpage with an internal statistical view. No API keys or external match links. */
 public final class EredivisieStatsView extends LinearLayout {
-    private static final String FEED = "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json";
+    private static final String FEED = "https://voetbalhub-redactie.onrender.com/integrations/statistics";
     private final Activity activity;
     private final WebView web;
     private final WebPageHistory pageHistory;
@@ -43,6 +43,7 @@ public final class EredivisieStatsView extends LinearLayout {
         });
         addView(web,new LayoutParams(-1,0,1));
         json=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot",null);
+        try{if(!PublicationPolicy.allows(new JSONObject(json==null?"{}":json)))json=null;}catch(Exception ignored){json=null;}
         web.loadUrl("file:///android_asset/eredivisie.html"); load();
     }
     public boolean handleBack(){return pageHistory.back();}
@@ -56,7 +57,7 @@ public final class EredivisieStatsView extends LinearLayout {
             if(conn.getResponseCode()!=200)throw new Exception("Geen statistieken beschikbaar");
             ByteArrayOutputStream out=new ByteArrayOutputStream();
             try(InputStream in=conn.getInputStream()){byte[] buffer=new byte[8192];int n;while((n=in.read(buffer))!=-1){out.write(buffer,0,n);if(out.size()>3000000)throw new Exception("Gegevens te groot");}}
-            String text=out.toString("UTF-8");JSONObject data=new JSONObject(text);
+            String text=out.toString("UTF-8");JSONObject data=new JSONObject(text);if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");
             if(data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Onvolledige gegevens");
             activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",text).apply();
             activity.runOnUiThread(()->{json=text;deliver();});
