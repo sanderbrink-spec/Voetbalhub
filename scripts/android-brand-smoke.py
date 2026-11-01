@@ -15,6 +15,7 @@ match = re.search(r"package: name='([^']+)'", badging)
 assert match, 'APK package identity missing'
 PACKAGE = match.group(1)
 assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test32'), PACKAGE
+if PACKAGE=='nl.voetbalhub.app1.test32':assert "application-label:'Veldio 32 test'" in badging, 'Distinct test launcher label absent'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
