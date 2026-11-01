@@ -954,6 +954,12 @@ jobs:
       - name: Install image validation dependency
         run: python3 -m pip install Pillow
 
+      - name: Verify personal column approval contract
+        run: |
+          mkdir -p /tmp/veldio-column-policy
+          javac -d /tmp/veldio-column-policy android-ui/java/AuthorColumnPolicy.java test/AuthorColumnPolicyTest.java
+          java -cp /tmp/veldio-column-policy nl.voetbalhub.app.AuthorColumnPolicyTest
+
       - name: Verify release configuration gate
         run: python3 -m unittest discover -s test -p '*_test.py'
 

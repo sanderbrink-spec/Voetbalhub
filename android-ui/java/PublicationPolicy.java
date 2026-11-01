@@ -14,7 +14,9 @@ public final class PublicationPolicy {
             JSONObject a=rows.optJSONObject(i);if(a==null||!"published".equals(a.optString("status"))||a.optString("id").isEmpty()||a.optString("headline").isEmpty()||a.optJSONArray("body")==null||a.optJSONArray("body").length()<3)continue;
             JSONObject checks=a.optJSONObject("editorialChecks");boolean reviewed=checks!=null;
             for(String key:new String[]{"originalSourceReviewed","claimsIndependentlyChecked","duplicateChecked","languageChecked"})reviewed=reviewed&&checks.optBoolean(key);
-            if(reviewed)accepted.put(a);
+            JSONObject approval=a.optJSONObject("authorApproval");
+            boolean column=approval!=null&&AuthorColumnPolicy.approved(a.optString("type"),a.optString("author"),approval.optBoolean("explicit"),approval.optString("method"),a.optString("contentHash"),approval.optString("contentHash"));
+            if(reviewed||column)accepted.put(a);
         }
         if(rows.length()>0&&accepted.length()==0)return null;
         return new JSONObject().put("articles",accepted).put("count",accepted.length());
