@@ -25,7 +25,7 @@ public final class FeedRepository {
  public static void configure(Context c,String address){context=c.getApplicationContext();endpoint=address;}
  public static void subscribe(Context c,Listener listener){
   if(context==null)context=c.getApplicationContext();
-  if(snapshot==null)try{snapshot=FeedVisibility.filter(PublicationPolicy.articleFeed(new JSONObject(context.getSharedPreferences("voetbalhub_editorial",0).getString("last_articles","{}"))));}catch(Exception ignored){}
+  if(snapshot==null)try{snapshot=Branding.response(FeedVisibility.filter(PublicationPolicy.articleFeed(new JSONObject(context.getSharedPreferences("voetbalhub_editorial",0).getString("last_articles","{}")))));}catch(Exception ignored){}
   if(!listeners.contains(listener))listeners.add(listener);listener.changed(snapshot,loading,failed);
  }
  public static void unsubscribe(Listener listener){listeners.remove(listener);}
