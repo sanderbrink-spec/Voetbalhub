@@ -150,21 +150,23 @@ with (OUT/'result.txt').open('a') as result:
     result.write('PASS: synthetic isolated cache, local column portrait thumbnail, column and news readers, save toggle, font control and back navigation. Synthetic cached/offline UI scenario; does not verify live content, permissions or Android live networking.\n')
 print((OUT/'result.txt').read_text())
 
-# Read-only production fetch plus real native pull gesture. No test data is published.
-import urllib.request
-with urllib.request.urlopen('https://voetbalhub-redactie.onrender.com/articles',timeout=80) as response:
-    live=json.load(response)
-assert live.get('articles'),'Production feed unavailable'
-latest=live['articles'][0]['headline']
-adb('shell','am','force-stop',PACKAGE)
-adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
 def pref_timestamp():
     try:
         raw=adb('shell','run-as',PACKAGE,'cat','shared_prefs/voetbalhub_editorial.xml')
         root=ET.fromstring(raw)
         return next((int(n.get('value')) for n in root if n.get('name')=='last_fetch_at'),0)
     except Exception:return 0
+
+# Read-only production fetch plus real native pull gesture. No test data is published.
+import urllib.request
+with urllib.request.urlopen('https://voetbalhub-redactie.onrender.com/articles',timeout=80) as response:
+    live=json.load(response)
+assert live.get('articles'),'Production feed unavailable'
+latest=live['articles'][0]['headline']
 before=pref_timestamp()
+adb('shell','am','force-stop',PACKAGE)
+adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
+time.sleep(5)
 for attempt in range(28):
     time.sleep(3)
     if pref_timestamp()>before:break
@@ -218,7 +220,7 @@ with (OUT/'result.txt').open('a') as result:
 # Phase 33: wait past the hard feed deadline, then navigate to the offline stadium archive.
 adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
-time.sleep(16);root=capture('19-phase33-offline-home')
+time.sleep(22);root=capture('19-phase33-offline-home')
 assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')), 'Loading exceeded hard deadline'
 assert not any('video’s laden' in n.get('text','') for n in root.iter('node')), 'Orphan video loader'
 assert any('VOETBAL IN CIJFERS' in n.get('text','') for n in root.iter('node')), 'Original football quiz absent'
@@ -239,7 +241,7 @@ with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 33 offline
 # Real emulator cellular-only and throttled-network conditions, with existing news retained.
 adb('shell','svc','wifi','disable');adb('shell','svc','data','enable')
 adb('emu','network','speed','gsm');adb('emu','network','delay','gprs')
-root=capture('24-before-slow-data');tap_node(root,lambda n:n.get('text')=='Nieuws');time.sleep(16)
+root=capture('24-before-slow-data');tap_node(root,lambda n:n.get('text')=='Nieuws');time.sleep(22)
 root=capture('25-slow-cellular-home')
 assert adb('shell','pidof',PACKAGE).strip()
 assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')), 'Slow network did not respect deadline'

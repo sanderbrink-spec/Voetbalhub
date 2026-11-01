@@ -39,12 +39,12 @@ public final class FeedRepository {
   lastAttempt=android.os.SystemClock.elapsedRealtime();loading=true;failed=false;notifyListeners();
   final int request=++generation;final String address=endpoint;
   final Runnable expired=()->{if(request!=generation||!loading)return;generation++;loading=false;failed=true;if(pending!=null)pending.cancel(true);notifyListeners();};
-  UI.postDelayed(expired,14000);
+  UI.postDelayed(expired,20000);
   pending=NETWORK.submit(()->{
    JSONObject result=null;
    for(String url:new String[]{address,MIRROR}){
     if(Thread.currentThread().isInterrupted())break;
-    try{result=FeedVisibility.filter(PublicationPolicy.articleFeed(new JSONObject(DeadlineHttp.get(url,url.equals(address)?8500:3500,3000000))));if(result!=null)break;}catch(Exception ignored){}
+    try{result=FeedVisibility.filter(PublicationPolicy.articleFeed(new JSONObject(DeadlineHttp.get(url,url.equals(address)?11000:7000,3000000))));if(result!=null)break;}catch(Exception error){android.util.Log.w("VeldioFeed",(url.equals(address)?"API":"Mirror")+": "+error.getClass().getSimpleName()+" "+error.getMessage());}
    }
    final JSONObject data=result;UI.post(()->{if(request!=generation)return;UI.removeCallbacks(expired);loading=false;failed=data==null;if(data!=null){snapshot=Branding.response(data);context.getSharedPreferences("voetbalhub_editorial",0).edit().putString("last_articles",snapshot.toString()).putLong("last_fetch_at",System.currentTimeMillis()).apply();}notifyListeners();});
   });

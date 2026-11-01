@@ -11,7 +11,7 @@ public final class DeadlineHttp {
  private DeadlineHttp(){}
  public static String get(String address,int timeoutMs,int limit) throws IOException {
   HttpURLConnection c=(HttpURLConnection)new URL(address).openConnection();
-  c.setInstanceFollowRedirects(false);c.setUseCaches(false);c.setConnectTimeout(Math.min(timeoutMs,4000));c.setReadTimeout(Math.min(timeoutMs,4000));
+  c.setInstanceFollowRedirects(false);c.setUseCaches(false);c.setConnectTimeout(Math.min(timeoutMs,7000));c.setReadTimeout(Math.min(timeoutMs,7000));
   c.setRequestProperty("Accept","application/json");c.setRequestProperty("Cache-Control","no-cache");
   long deadline=System.nanoTime()+TimeUnit.MILLISECONDS.toNanos(timeoutMs);
   ScheduledFuture<?> alarm=CLOCK.schedule(c::disconnect,timeoutMs,TimeUnit.MILLISECONDS);
