@@ -8,7 +8,7 @@ class Covers(unittest.TestCase):
    outputs=[]
    for name in ['PSV wint van Willem II','FC Groningen organiseert beweegplein','Ajax verlengt contract']:
     p=Path(tmp)/(str(len(outputs))+'.webp');cover.render({'headline':name},p)
-    with Image.open(p) as im:self.assertEqual(im.size,(1600,900));self.assertEqual(im.format,'WEBP')
+    with Image.open(p) as im:self.assertEqual(im.size,(1280,720));self.assertEqual(im.format,'WEBP')
     outputs.append(p.read_bytes())
    self.assertEqual(len(set(outputs)),3)
  def test_unreviewed_score_is_never_rendered(self):

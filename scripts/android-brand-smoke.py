@@ -14,13 +14,15 @@ badging = subprocess.check_output([str(aapt), 'dump', 'badging', sys.argv[1]], t
 match = re.search(r"package: name='([^']+)'", badging)
 assert match, 'APK package identity missing'
 PACKAGE = match.group(1)
-assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test'), PACKAGE
+assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test32'), PACKAGE
+if PACKAGE=='nl.voetbalhub.app1.test32':assert "application-label:'Veldio 32 test'" in badging, 'Distinct test launcher label absent'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
-    adb('shell','screencap','-p','/sdcard/veldio.png')
-    adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
-    if name=='01-start': return None
+    if name=='01-start':
+        adb('shell','screencap','-p','/sdcard/veldio.png')
+        adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
+        return None
     for attempt in range(4):
         try:
             adb('shell','uiautomator','dump','--compressed','/sdcard/veldio.xml')
@@ -32,6 +34,8 @@ def capture(name):
     root=ET.parse(OUT/(name+'.xml')).getroot()
     visible=[n.get('text','')+' '+n.get('content-desc','') for n in root.iter('node')]
     assert not any(re.search(r'VoetbalHub',x,re.I) and 'https://' not in x for x in visible),visible
+    adb('shell','screencap','-p','/sdcard/veldio.png')
+    adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
     return root
 adb('install','-r',sys.argv[1])
 adb('shell','am','force-stop',PACKAGE)
@@ -154,8 +158,13 @@ for attempt in range(28):
     time.sleep(3)
     if pref_timestamp()>before:break
 assert pref_timestamp()>before,'Production feed fetch not persisted'
-root=capture('13-live-home')
-assert any(latest in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')),'Newest live article absent from home carousel'
+for attempt in range(8):
+    root=capture('13-live-home')
+    hero_ready=any('NIEUWSTE ARTIKEL' in n.get('text','') and latest in n.get('text','') for n in root.iter('node'))
+    spotlight_ready=any('CLUB IN DE SPOTLIGHT' in n.get('text','') or 'WEDSTRIJD VAN DE WEEK' in n.get('text','') for n in root.iter('node'))
+    if hero_ready and spotlight_ready:break
+    time.sleep(.6)
+assert hero_ready and spotlight_ready,'Published home carousel or dynamic paired card did not render'
 # Start at the top of the ScrollView, below the fixed category chips.
 size=list(map(int,re.findall(r'\d+',adb('shell','wm','size'))))[-2:];width,height=size
 before=pref_timestamp()
@@ -175,3 +184,22 @@ assert adb('shell','pidof',PACKAGE).strip()
 with (OUT/'result.txt').open('a') as result:
     result.write('PASS: read-only live production feed, newest published headline in home, native pull-to-refresh completes another API fetch, offline pull preserves cached headline. Android emulator, no physical S23 or publication claim.\n')
 print((OUT/'result.txt').read_text())
+
+# Phase 32: emulator viewport matches the S23 display geometry, not a physical device.
+# Inspect the read-only live news rows and actual bundled photography in the reader.
+for attempt in range(5):
+    root=capture('16-phase32-feed')
+    target=next((n for n in root.iter('node') if n.get('text')==latest and n.get('class')=='android.widget.TextView'),None)
+    if target is not None:break
+    adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.3)),'500');time.sleep(1)
+assert target is not None,'Phase 32 native photo-led news row absent'
+tap_node(root,lambda n:n is target)
+time.sleep(2);root=capture('17-phase32-photo-reader')
+assert any('Archiefbeeld' in n.get('text','') for n in root.iter('node')),'Archival context caption absent'
+assert any('CC BY' in n.get('text','') for n in root.iter('node')),'Photograph licence attribution absent'
+assert any(n.get('class')=='android.widget.ImageView' and n.get('content-desc')=='Afbeelding bij artikel' for n in root.iter('node')),'Bundled photograph not visible in reader'
+tap_node(root,lambda n:'Terug' in n.get('text',''))
+time.sleep(1);capture('18-phase32-back-to-feed')
+assert adb('shell','pidof',PACKAGE).strip()
+with (OUT/'result.txt').open('a') as result:
+    result.write('PASS: Phase 32 native photo-led live feed, actual bundled image in reader, archival context, photographer/licence credit and back navigation. Emulator display geometry only, no physical S23 claim.\n')

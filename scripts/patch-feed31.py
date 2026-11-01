@@ -26,7 +26,7 @@ a=s.index('private void refreshNews()');b=s.index('private String newestArticleD
 s=s[:a]+'''private void refreshNews() { FeedRepository.configure(this,EDITORIAL_API_URL);FeedRepository.refresh(true); }
     '''+s[b:]
 p.write_text(s)
-for name in ['FeedRepository','FeedPanel','RefreshScrollView','PublicationPolicy','PresentationCovers','Branding','AuthorColumnPolicy']:
+for name in ['FeedRepository','FeedPanel','RefreshScrollView','PublicationPolicy','PresentationCovers','Branding','AuthorColumnPolicy','EditorialPhotos']:
  shutil.copyfile('android-ui/java/'+name+'.java',p.parent/(name+'.java'))
 shutil.copyfile('android-ui/assets/editorial-fallback.svg','app/src/main/assets/editorial-fallback.svg')
 print('Shared reviewed feed, in-place refresh, offline retry and top pull installed.')

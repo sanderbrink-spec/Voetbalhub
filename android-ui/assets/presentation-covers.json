@@ -3,40 +3,211 @@
     "id": "f43dc560-a720-4ea7-ac3d-29dcc9e553d3",
     "contentHash": "b5582a47fa6333ae60ed681f4cc67e8c64278ed71c89969e7493a9eec711fb87",
     "originalUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/groningen-maatschappij.webp",
-    "file": "phase31-f43dc560-a720-4ea7-ac3d-29dcc9e553d3.webp",
-    "sha256": "79a36a8f275c2680f7a5f520051c6034b5f98ba12b65ee68b9422cb0c4489cb2",
-    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-f43dc560-a720-4ea7-ac3d-29dcc9e553d3.webp"
+    "file": "groningen-f8e0fe75598e.webp",
+    "sha256": "f8e0fe75598eaf1817663ddb088fe7753db7d9396bd59cbd36d6830bdca9f03a",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/groningen-f8e0fe75598e.webp",
+    "previousUrls": [
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/groningen-maatschappij.webp",
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-f43dc560-a720-4ea7-ac3d-29dcc9e553d3.webp"
+    ],
+    "imageAsset": "news-photos/groningen-f8e0fe75598e.webp",
+    "imageCredit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+    "imageCaption": "Euroborg · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "assetSha256": "f8e0fe75598eaf1817663ddb088fe7753db7d9396bd59cbd36d6830bdca9f03a",
+      "subject": "FC Groningen",
+      "venue": "Euroborg",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+    }
   },
   {
     "id": "7609658d-10fa-40fa-99cd-f5fd78350f6a",
     "contentHash": "71696fb86eb9d95c367dc761c36ef50f6869eefbcc2bcd5e99a1dc9bf7a00f62",
     "originalUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/heerenveen-nec.webp",
-    "file": "phase31-7609658d-10fa-40fa-99cd-f5fd78350f6a.webp",
-    "sha256": "f299a73e2d76ceaab44864d6133e523d3e3fba6ceb78c106949e871a27f9042c",
-    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-7609658d-10fa-40fa-99cd-f5fd78350f6a.webp"
+    "file": "heerenveen-433f38970b69.webp",
+    "sha256": "433f38970b692dab87ac9ff27d64755d9946db912b2b3ec5dacdb2b886a8d87e",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/heerenveen-433f38970b69.webp",
+    "previousUrls": [
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/heerenveen-nec.webp",
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-7609658d-10fa-40fa-99cd-f5fd78350f6a.webp"
+    ],
+    "imageAsset": "news-photos/heerenveen-433f38970b69.webp",
+    "imageCredit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+    "imageCaption": "Abe Lenstra Stadion · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "assetSha256": "433f38970b692dab87ac9ff27d64755d9946db912b2b3ec5dacdb2b886a8d87e",
+      "subject": "sc Heerenveen",
+      "venue": "Abe Lenstra Stadion",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+    }
   },
   {
     "id": "7c1be307-7bdf-4e90-b2b0-392d047d941a",
     "contentHash": "ee3bae09fe18add0b76afa8a8119991dd3883545e535d0185b320d745ff51be4",
     "originalUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/feyenoord-fortuna.webp",
-    "file": "phase31-7c1be307-7bdf-4e90-b2b0-392d047d941a.webp",
-    "sha256": "ad847e6cd18cf3d009c5e7c67a12c254dec2f8d5294da7547e965228661914d7",
-    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-7c1be307-7bdf-4e90-b2b0-392d047d941a.webp"
+    "file": "feyenoord-d71e48ea2e5b.webp",
+    "sha256": "d71e48ea2e5bc201e61daf5d2e2622fc6f91fa2ec210f9a266692abcbad84f21",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/feyenoord-d71e48ea2e5b.webp",
+    "previousUrls": [
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/feyenoord-fortuna.webp",
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-7c1be307-7bdf-4e90-b2b0-392d047d941a.webp",
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=report&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F6fd18daa1161a16046b25126c55fb49421a6b86a42d6835f590ec34c42cc5f7e.png"
+    ],
+    "imageAsset": "news-photos/feyenoord-d71e48ea2e5b.webp",
+    "imageCredit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+    "imageCaption": "De Kuip · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "assetSha256": "d71e48ea2e5bc201e61daf5d2e2622fc6f91fa2ec210f9a266692abcbad84f21",
+      "subject": "Feyenoord",
+      "venue": "De Kuip",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+    }
   },
   {
     "id": "a89b6005-6433-482d-a33b-7710b3f72170",
     "contentHash": "c582a73e6e42a6ceb696b5e7cdd862a4e9f8dfe4deb73da308be64e1897d47fa",
     "originalUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/ajax-az.webp",
-    "file": "phase31-a89b6005-6433-482d-a33b-7710b3f72170.webp",
-    "sha256": "b899f2856d607bb3d92d5f3fa30708e5ff56572c261e6c816ed29ae89a83659a",
-    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-a89b6005-6433-482d-a33b-7710b3f72170.webp"
+    "file": "ajax-4c77b7ad3973.webp",
+    "sha256": "4c77b7ad3973e5e92f797879c48cdca9482296410c6b9a4554330e3c9c51036b",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/ajax-4c77b7ad3973.webp",
+    "previousUrls": [
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/ajax-az.webp",
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-a89b6005-6433-482d-a33b-7710b3f72170.webp",
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=report&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F894fe82f48cfd0c3da5df5be93fa0496113163b5fa2c1cb7cfdcc6b5d6ecdc84.png"
+    ],
+    "imageAsset": "news-photos/ajax-4c77b7ad3973.webp",
+    "imageCredit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+    "imageCaption": "Johan Cruijff ArenA · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "assetSha256": "4c77b7ad3973e5e92f797879c48cdca9482296410c6b9a4554330e3c9c51036b",
+      "subject": "Ajax",
+      "venue": "Johan Cruijff ArenA",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
   },
   {
     "id": "a3fae7b9-f58f-4ee8-afee-025f48e3dea3",
     "contentHash": "8aa6f892b286f9247b1491bf212dd5acf4e7a05118f804448cd6a4e0db632e4c",
     "originalUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/psv-willem-ii.webp",
-    "file": "phase31-a3fae7b9-f58f-4ee8-afee-025f48e3dea3.webp",
-    "sha256": "0af48acb111139acaad52e8420df9f05c8006e64070c27ee85ea4060a9cec1c8",
-    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-a3fae7b9-f58f-4ee8-afee-025f48e3dea3.webp"
+    "file": "psv-bbbb1cfe5eae.webp",
+    "sha256": "bbbb1cfe5eae448c66f98432ddb4ee99b17efdea5555872dc1e8bb86a8fcddc8",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/psv-bbbb1cfe5eae.webp",
+    "previousUrls": [
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/psv-willem-ii.webp",
+      "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/e90134d343459478fdd11cbc9eb23943904bb9aa/phase31-covers/phase31-a3fae7b9-f58f-4ee8-afee-025f48e3dea3.webp",
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=report&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F5747170992d51e127fd3150eae8a5a40d9c49758b6e4cc4c278fcbb33b3f7f99.png"
+    ],
+    "imageAsset": "news-photos/psv-bbbb1cfe5eae.webp",
+    "imageCredit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+    "imageCaption": "Philips Stadion · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "assetSha256": "bbbb1cfe5eae448c66f98432ddb4ee99b17efdea5555872dc1e8bb86a8fcddc8",
+      "subject": "PSV",
+      "venue": "Philips Stadion",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+    }
+  },
+  {
+    "id": "7c536565-5ef1-43fb-9a34-7bf775d9af48",
+    "contentHash": "f2ed7257817de8621879dcb2579c68ea1b5121bed9a15c0802dc03c7e2aefa8f",
+    "originalUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Conference%20League&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2Fe4a744c63784df8275b3734c05bc7c55b4a0fec18332cad57f1ac2067734a64b.png",
+    "previousUrls": [
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Conference%20League&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2Fe4a744c63784df8275b3734c05bc7c55b4a0fec18332cad57f1ac2067734a64b.png"
+    ],
+    "file": "midtjylland-87f7f7803cb2.webp",
+    "sha256": "87f7f7803cb2a3326c7200963f7e0c1132f1c55578e8f072de5bdb72f407c6d4",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/midtjylland-87f7f7803cb2.webp",
+    "imageAsset": "news-photos/midtjylland-87f7f7803cb2.webp",
+    "imageCredit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+    "imageCaption": "MCH Arena · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "generated": false,
+      "assetSha256": "87f7f7803cb2a3326c7200963f7e0c1132f1c55578e8f072de5bdb72f407c6d4",
+      "subject": "FC Midtjylland",
+      "venue": "MCH Arena",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+    }
+  },
+  {
+    "id": "fca0bd67-45a0-4891-8415-b8f62e64eb34",
+    "contentHash": "47b04a0ab03f9849f5e299015c53cc518a91701f02658b80d11ff5dba67c38a0",
+    "originalUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Keuken%20Kampioen%20Divisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F87244394df562000558dbe6a8fdeca0a5f01a06a0a6e3678e55c8d9f1d89bd1c.png",
+    "previousUrls": [
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Keuken%20Kampioen%20Divisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F87244394df562000558dbe6a8fdeca0a5f01a06a0a6e3678e55c8d9f1d89bd1c.png"
+    ],
+    "file": "emmen-35c70437dac5.webp",
+    "sha256": "35c70437dac546da297d1f38be1aae1e0e3d8b1364d65e15681064adfe0b30a4",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/emmen-35c70437dac5.webp",
+    "imageAsset": "news-photos/emmen-35c70437dac5.webp",
+    "imageCredit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+    "imageCaption": "De Oude Meerdijk · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "generated": false,
+      "assetSha256": "35c70437dac546da297d1f38be1aae1e0e3d8b1364d65e15681064adfe0b30a4",
+      "subject": "FC Emmen",
+      "venue": "De Oude Meerdijk",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "id": "79ef5b4d-cb4f-4575-98a6-d13e0ca6544f",
+    "contentHash": "479b26d96b83804680ca9dde6aae096a4b9a58e982efa2814108d1b097aa7dd6",
+    "originalUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F753963c773aa5fa71aa021483580682e53eb4b91b3ec360ac2926711aaae42a0.png",
+    "previousUrls": [
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F753963c773aa5fa71aa021483580682e53eb4b91b3ec360ac2926711aaae42a0.png"
+    ],
+    "file": "willem-ii-preview-f882e853fe7b.webp",
+    "sha256": "f882e853fe7bf0e06f95d96b10934458007a328316ae5d9c5ef902897b70e39c",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/willem-ii-preview-f882e853fe7b.webp",
+    "imageAsset": "news-photos/willem-ii-preview-f882e853fe7b.webp",
+    "imageCredit": "Veldio · AI-illustratie, geen wedstrijdfoto",
+    "imageSource": "https://github.com/sanderbrink-spec/Voetbalhub/blob/fix/veldio-32/news-photo-ai-provenance.json",
+    "imageCaption": "AI-illustratie voor de voorbeschouwing. Geen echt stadion, speler of wedstrijdmoment afgebeeld.",
+    "imageLicenseUrl": "https://openai.com/policies/eu-terms-of-use/",
+    "imageRights": "cleared",
+    "imageReview": {
+      "method": "ai-editorial-still-life-v1",
+      "contextOnly": true,
+      "generated": true,
+      "assetSha256": "f882e853fe7bf0e06f95d96b10934458007a328316ae5d9c5ef902897b70e39c",
+      "subject": "Willem II",
+      "venue": "Illustratief voetbalbeeld",
+      "licenseUrl": "https://openai.com/policies/eu-terms-of-use/"
+    }
   }
 ]

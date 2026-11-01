@@ -184,23 +184,20 @@ async function verifyDraft(payload,candidate,docs,options){
  return review;
 }
 async function uploadCover(payload,{token,fetcher=fetch}){
- const identity=sha(JSON.stringify(['veldio-editorial-v4',payload.draft.headline,payload.draft.standfirst,payload.draft.body,payload.match||null]));
- const file=path.join(process.cwd(),'.automatic-output',identity+'.webp');
- const rendered=spawnSync('python3',['scripts/render-editorial-cover.py',file],{input:JSON.stringify(payload),encoding:'utf8'});
- if(rendered.status!==0)throw Error('Artikelafbeelding kon niet worden opgebouwd.');
- const bytes=fs.readFileSync(file);
+ const media=await require('../newsroom-images').prepare(payload,{usedHashes:payload.usedImageHashes||[]});
+ const bytes=media.bytes,identity=sha(JSON.stringify(['licensed-editorial-photo-v1',payload.draft.headline,payload.draft.standfirst,payload.draft.body,media.photo.sha256]));
  async function github(endpoint,method='GET',body){const r=await fetcher('https://api.github.com/repos/'+REPO+endpoint,{method,headers:{Authorization:'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(25000)});let data={};try{data=await r.json();}catch{}return {ok:r.ok,status:r.status,data};}
  const branch=await github('/git/ref/heads/'+config.mediaBranch);
  if(branch.status===404){const main=await github('/git/ref/heads/main');if(!main.ok)throw Error('Mediabron ontbreekt.');const made=await github('/git/refs','POST',{ref:'refs/heads/'+config.mediaBranch,sha:main.data.object.sha});if(!made.ok&&made.status!==422)throw Error('Mediatak kon niet worden gemaakt.');}
  else if(!branch.ok)throw Error('Mediatak niet beschikbaar.');
  const target='/contents/automatic-covers/'+identity+'.webp';
  const existing=await github(target+'?ref='+config.mediaBranch);
- if(existing.status===404){const created=await github(target,'PUT',{message:'Add automatically checked article illustration',branch:config.mediaBranch,content:bytes.toString('base64')});if(!created.ok)throw Error('Artikelafbeelding kon niet worden opgeslagen.');}
+ if(existing.status===404){const created=await github(target,'PUT',{message:'Add rights-registered editorial photograph',branch:config.mediaBranch,content:bytes.toString('base64')});if(!created.ok)throw Error('Artikelafbeelding kon niet worden opgeslagen.');}
  else if(!existing.ok)throw Error('Bestaande artikelafbeelding niet controleerbaar.');
  const imageUrl='https://raw.githubusercontent.com/'+REPO+'/'+config.mediaBranch+'/automatic-covers/'+identity+'.webp';
  const image=await fetcher(imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
  if(!image.ok||!/^image\/webp/i.test(image.headers.get('content-type')||'')||sha(Buffer.from(await image.arrayBuffer()))!==sha(bytes))throw Error('Openbare artikelafbeelding niet bevestigd.');
- return {imageUrl,imageSource:'Veldio · eigen artikelillustratie',imageCredit:'Veldio · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele illustratie met onderwerpselectie. Namen uit de gecontroleerde kop; uitslagen uitsluitend uit afzonderlijk gecontroleerde matchvelden en vier redactiechecks. Geen foto, spelers, clublogos of nagemaakte tenues. Veilige beeldmarges en leesbare typografie.',assetSha256:sha(bytes)}};
+ return {imageUrl,imageSource:media.imageSource,imageCredit:media.imageCredit,imageCaption:media.imageCaption,imageLicenseUrl:media.imageLicenseUrl,imageRights:media.imageRights,imageReview:media.imageReview};
 }
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),aiIntervalMs=35000,report}={}){
  if(!config.enabled)return {status:'disabled',published:0};
@@ -279,12 +276,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    stage='review';await persist('needs_review');
    await verifyDraft(payload,candidate,group,ai);verification.checks.push('Tweede AI-feitenredacteur akkoord; geen menselijke feitencontrole.');
    stage='image';
-   Object.assign(payload,await uploadCover(payload,{token:githubToken,fetcher}));
+   Object.assign(payload,await uploadCover({...payload,usedImageHashes:require('../newsroom-images').usedHashes(published)},{token:githubToken,fetcher}));
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
    // Refresh before the only publication write to avoid a concurrent/manual duplicate.
    published=(await api('/articles?view=all')).articles;
    if(duplicate(payload,published)){await persist('rejected',['Onderwerp inmiddels gepubliceerd.']);report.skipped.push({topic,reason:'Onderwerp inmiddels gepubliceerd.'});continue;}
-   verification.checks.push('Eigen afbeelding opgehaald en SHA-256 bevestigd: '+payload.imageReview.assetSha256);
+   verification.checks.push('Rechtmatig nieuwsbeeld opgehaald en SHA-256 bevestigd: '+payload.imageReview.assetSha256);
    verification.contentHash=fingerprint(payload);
    const saved={record:await persist('draft',[],true)};
    stage='publication';

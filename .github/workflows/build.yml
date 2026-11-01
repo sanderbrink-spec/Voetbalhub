@@ -14,7 +14,7 @@ on:
       - "scripts/patch-*.py"
       - ".github/workflows/build.yml"
   push:
-    branches: [main, master, "fix/veldio-29b", "fix/veldio-31"]
+    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32"]
 
 permissions:
   contents: read
@@ -951,8 +951,15 @@ jobs:
           java com.sun.tools.javac.Main -d /tmp/veldio-ad-policy android-ui/java/AdRequestGate.java android-ui/java/AdSettings.java test/AdRequestGateTest.java
           java -cp /tmp/veldio-ad-policy nl.voetbalhub.app.AdRequestGateTest
 
-      - name: Install image validation dependency
-        run: python3 -m pip install Pillow
+      - name: Node runtime for photographic image validation
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install image validation dependencies
+        run: |
+          python3 -m pip install Pillow
+          npm ci --ignore-scripts
 
       - name: Verify personal column approval contract
         run: |
@@ -1007,7 +1014,7 @@ jobs:
       - name: Keep unsigned compilation result
         uses: actions/upload-artifact@v4
         with:
-          name: Veldio-31-unsigned-not-installable
+          name: Veldio-32-unsigned-not-installable
           path: app/build/outputs/apk/release/app-release-unsigned.apk
           if-no-files-found: error
 
@@ -1031,10 +1038,14 @@ jobs:
           s = p.read_text()
           old = 'applicationId = "nl.voetbalhub.app1"'
           assert s.count(old) == 1, 'Expected applicationId missing or ambiguous'
-          p.write_text(s.replace(old, 'applicationId = "nl.voetbalhub.app1.test"', 1))
+          p.write_text(s.replace(old, 'applicationId = "nl.voetbalhub.app1.test32"', 1))
+          manifest = Path('app/src/main/AndroidManifest.xml')
+          labels = manifest.read_text()
+          assert labels.count('android:label="Veldio"') == 1, 'Test launcher label anchor changed'
+          manifest.write_text(labels.replace('android:label="Veldio"', 'android:label="Veldio 32 test"', 1))
           PY
             gradle :app:assembleDebug --no-daemon
-            echo "Separate test APK: nl.voetbalhub.app1.test. Existing update signing identity unavailable; this APK installs alongside the existing app." >> "$GITHUB_STEP_SUMMARY"
+            echo "Separate test APK: nl.voetbalhub.app1.test32. Existing update signing identity unavailable; this APK installs alongside the existing app." >> "$GITHUB_STEP_SUMMARY"
           fi
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs app/build/outputs/apk/debug/app-debug.apk
           sha256sum app/build/outputs/apk/debug/app-debug.apk >> "$GITHUB_STEP_SUMMARY"
