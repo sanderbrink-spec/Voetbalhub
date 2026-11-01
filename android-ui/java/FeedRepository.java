@@ -33,6 +33,7 @@ public final class FeedRepository {
   if(!listeners.contains(listener))listeners.add(listener);listener.changed(snapshot,loading,failed);
  }
  public static void unsubscribe(Listener listener){listeners.remove(listener);}
+ private static long newest(JSONObject data){long newest=0;try{org.json.JSONArray rows=data.optJSONArray("articles");if(rows!=null)for(int i=0;i<rows.length();i++)try{newest=Math.max(newest,java.time.Instant.parse(rows.getJSONObject(i).optString("publishedAt")).toEpochMilli());}catch(Exception ignored){}}catch(Exception ignored){}return newest;}
  private static void notifyListeners(){for(Listener listener:new ArrayList<>(listeners))listener.changed(snapshot,loading,failed);}
  public static void refresh(boolean force){
   if(loading||context==null||!force&&lastAttempt>0&&android.os.SystemClock.elapsedRealtime()-lastAttempt<30000)return;
@@ -44,7 +45,9 @@ public final class FeedRepository {
    JSONObject result=null;
    for(String url:new String[]{address,MIRROR}){
     if(Thread.currentThread().isInterrupted())break;
-    try{result=FeedVisibility.filter(PublicationPolicy.articleFeed(new JSONObject(DeadlineHttp.get(url,url.equals(address)?11000:7000,3000000))));if(result!=null)break;}catch(Exception error){android.util.Log.w("VeldioFeed",(url.equals(address)?"API":"Mirror")+": "+error.getClass().getSimpleName()+" "+error.getMessage());}
+    try{JSONObject raw=new JSONObject(DeadlineHttp.get(url,url.equals(address)?11000:7000,3000000));JSONObject checked=FeedVisibility.filter(PublicationPolicy.articleFeed(raw));
+     if(!url.equals(address)&&snapshot!=null&&snapshot.optJSONArray("articles")!=null&&snapshot.optJSONArray("articles").length()>0){long mirrored=java.time.Instant.parse(raw.getString("mirroredAt")).toEpochMilli(),fetched=context.getSharedPreferences("voetbalhub_editorial",0).getLong("last_fetch_at",0);if(mirrored<fetched||newest(checked)<newest(snapshot))throw new Exception("Fallback predates cached news");}
+     result=checked;if(result!=null)break;}catch(Exception error){android.util.Log.w("VeldioFeed",(url.equals(address)?"API":"Mirror")+": "+error.getClass().getSimpleName()+" "+error.getMessage());}
    }
    final JSONObject data=result;UI.post(()->{if(request!=generation)return;UI.removeCallbacks(expired);loading=false;failed=data==null;if(data!=null){snapshot=Branding.response(data);context.getSharedPreferences("voetbalhub_editorial",0).edit().putString("last_articles",snapshot.toString()).putLong("last_fetch_at",System.currentTimeMillis()).apply();}notifyListeners();});
   });
