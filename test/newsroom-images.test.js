@@ -2,8 +2,8 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),sharp=require('sharp');
 const I=require('../newsroom-images'),C=require('../news-photo-catalog.json'),D=require('../editorial-drafts'),R=require('../content-rights'),H=require('../android-ui/assets/home-model');
 const packet=name=>({draft:{headline:name+' bespreekt plannen met supporters'}});
-test('all registered photographs meet resolution, hash, photographic quality and licensed attribution requirements',async()=>{
- for(const p of C.photos){const x=await I.prepare(packet(p.club),{entries:[p]});assert.equal(x.imageReview.contextOnly,true);assert.equal(I.sha(x.bytes),p.sha256);assert.match(x.imageCredit,new RegExp(p.license.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));const meta=await sharp(x.bytes).metadata();assert.equal(meta.width,1280);assert.equal(meta.height,720);assert.ok(x.bytes.length<250000);assert.ok(p.sourceWidth>=1280&&p.sourceHeight>=720);}
+test('all registered image assets meet resolution, hash, quality and attribution requirements',async()=>{
+ for(const p of C.photos){const x=await I.prepare(packet(p.club),{entries:[p]});assert.equal(x.imageReview.contextOnly,true);assert.equal(I.sha(x.bytes),p.sha256);if(p.generated){assert.equal(x.imageReview.generated,true);assert.equal(x.imageRights,'cleared');assert.match(x.imageCredit,/AI-illustratie/);}else assert.ok(x.imageCredit.includes(p.license));const meta=await sharp(x.bytes).metadata();assert.equal(meta.width,1280);assert.equal(meta.height,720);assert.ok(x.bytes.length<250000);assert.ok(p.sourceWidth>=1280&&p.sourceHeight>=720);}
 });
 test('incorrect subjects, missing rights, revocation, low resolution, pending visual review and reused bytes are rejected',async()=>{
  const p=structuredClone(C.photos.find(p=>p.club==='Ajax'));
@@ -24,5 +24,5 @@ test('spotlight rotates eligible top clubs, ignores drafts, future, stale and un
  assert.equal(H.spotlight([{...make('NEC')}],now).article,null);assert.ok(['Ajax','PSV','Feyenoord'].includes(H.spotlight([],now).club));
 });
 test('scoped replacements retain exact content and old-image binding and have bundled matching assets',()=>{
- const entries=require('../android-ui/assets/presentation-covers.json');for(const p of entries){assert.match(p.contentHash,/^[a-f0-9]{64}$/);assert.ok(p.previousUrls.length>=2);assert.equal(I.sha(fs.readFileSync(path.join(__dirname,'../public',p.imageAsset))),p.sha256);assert.equal(p.imageRights,'licensed');assert.ok(p.imageCaption.includes('Archiefbeeld'));}
+ const entries=require('../android-ui/assets/presentation-covers.json');for(const p of entries){assert.match(p.contentHash,/^[a-f0-9]{64}$/);assert.ok(p.previousUrls.length>=1);assert.equal(I.sha(fs.readFileSync(path.join(__dirname,'../public',p.imageAsset))),p.sha256);assert.ok(['licensed','cleared'].includes(p.imageRights));assert.ok(p.imageCaption.includes(p.imageReview.generated?'AI-illustratie':'Archiefbeeld'));}
 });

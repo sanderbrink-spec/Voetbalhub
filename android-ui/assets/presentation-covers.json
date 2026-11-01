@@ -131,5 +131,83 @@
       "venue": "Philips Stadion",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
     }
+  },
+  {
+    "id": "7c536565-5ef1-43fb-9a34-7bf775d9af48",
+    "contentHash": "f2ed7257817de8621879dcb2579c68ea1b5121bed9a15c0802dc03c7e2aefa8f",
+    "originalUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Conference%20League&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2Fe4a744c63784df8275b3734c05bc7c55b4a0fec18332cad57f1ac2067734a64b.png",
+    "previousUrls": [
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Conference%20League&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2Fe4a744c63784df8275b3734c05bc7c55b4a0fec18332cad57f1ac2067734a64b.png"
+    ],
+    "file": "midtjylland-87f7f7803cb2.webp",
+    "sha256": "87f7f7803cb2a3326c7200963f7e0c1132f1c55578e8f072de5bdb72f407c6d4",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/midtjylland-87f7f7803cb2.webp",
+    "imageAsset": "news-photos/midtjylland-87f7f7803cb2.webp",
+    "imageCredit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+    "imageCaption": "MCH Arena · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "generated": false,
+      "assetSha256": "87f7f7803cb2a3326c7200963f7e0c1132f1c55578e8f072de5bdb72f407c6d4",
+      "subject": "FC Midtjylland",
+      "venue": "MCH Arena",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+    }
+  },
+  {
+    "id": "fca0bd67-45a0-4891-8415-b8f62e64eb34",
+    "contentHash": "47b04a0ab03f9849f5e299015c53cc518a91701f02658b80d11ff5dba67c38a0",
+    "originalUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Keuken%20Kampioen%20Divisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F87244394df562000558dbe6a8fdeca0a5f01a06a0a6e3678e55c8d9f1d89bd1c.png",
+    "previousUrls": [
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Keuken%20Kampioen%20Divisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F87244394df562000558dbe6a8fdeca0a5f01a06a0a6e3678e55c8d9f1d89bd1c.png"
+    ],
+    "file": "emmen-35c70437dac5.webp",
+    "sha256": "35c70437dac546da297d1f38be1aae1e0e3d8b1364d65e15681064adfe0b30a4",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/emmen-35c70437dac5.webp",
+    "imageAsset": "news-photos/emmen-35c70437dac5.webp",
+    "imageCredit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+    "imageCaption": "De Oude Meerdijk · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+    "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "imageRights": "licensed",
+    "imageReview": {
+      "method": "licensed-editorial-photo-v1",
+      "contextOnly": true,
+      "generated": false,
+      "assetSha256": "35c70437dac546da297d1f38be1aae1e0e3d8b1364d65e15681064adfe0b30a4",
+      "subject": "FC Emmen",
+      "venue": "De Oude Meerdijk",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  {
+    "id": "79ef5b4d-cb4f-4575-98a6-d13e0ca6544f",
+    "contentHash": "479b26d96b83804680ca9dde6aae096a4b9a58e982efa2814108d1b097aa7dd6",
+    "originalUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F753963c773aa5fa71aa021483580682e53eb4b91b3ec360ac2926711aaae42a0.png",
+    "previousUrls": [
+      "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F753963c773aa5fa71aa021483580682e53eb4b91b3ec360ac2926711aaae42a0.png"
+    ],
+    "file": "willem-ii-preview-f882e853fe7b.webp",
+    "sha256": "f882e853fe7bf0e06f95d96b10934458007a328316ae5d9c5ef902897b70e39c",
+    "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/willem-ii-preview-f882e853fe7b.webp",
+    "imageAsset": "news-photos/willem-ii-preview-f882e853fe7b.webp",
+    "imageCredit": "Veldio · AI-illustratie, geen wedstrijdfoto",
+    "imageSource": "https://github.com/sanderbrink-spec/Voetbalhub/blob/fix/veldio-32/news-photo-ai-provenance.json",
+    "imageCaption": "AI-illustratie voor de voorbeschouwing. Geen echt stadion, speler of wedstrijdmoment afgebeeld.",
+    "imageLicenseUrl": "https://openai.com/policies/eu-terms-of-use/",
+    "imageRights": "cleared",
+    "imageReview": {
+      "method": "ai-editorial-still-life-v1",
+      "contextOnly": true,
+      "generated": true,
+      "assetSha256": "f882e853fe7bf0e06f95d96b10934458007a328316ae5d9c5ef902897b70e39c",
+      "subject": "Willem II",
+      "venue": "Illustratief voetbalbeeld",
+      "licenseUrl": "https://openai.com/policies/eu-terms-of-use/"
+    }
   }
 ]

@@ -735,6 +735,188 @@
           }
         }
       ]
+    },
+    {
+      "pageid": 15122367,
+      "ns": 6,
+      "title": "File:MCH Arena.jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 428988,
+          "width": 2272,
+          "height": 1278,
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/MCH_Arena.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=15122367",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2025-07-22 07:14:42",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "MCH Arena",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "GFDL|MCH Arena|CC-BY-SA-3.0,2.5,2.0,1.0|License migration redundant|Sports in Herning|Self-published work|Images with extracted images",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "MCH Arena, the stadium near Messecenter Herning",
+              "source": "commons-desc-page"
+            },
+            "DateTimeOriginal": {
+              "value": "2011-05-04",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "Eget værk",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:T-Stone&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:T-Stone (page does not exist)\">T-Stone</a>",
+              "source": "commons-desc-page"
+            },
+            "LicenseShortName": {
+              "value": "CC BY-SA 3.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution-Share Alike 3.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "https://creativecommons.org/licenses/by-sa/3.0",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-sa-3.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pageid": 67441479,
+      "ns": 6,
+      "title": "File:De Oude Meerdijk - Emmen - 2018 01.jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 2431785,
+          "width": 4000,
+          "height": 2667,
+          "url": "https://upload.wikimedia.org/wikipedia/commons/1/13/De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=67441479",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2018-03-17 21:52:50",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "De Oude Meerdijk - Emmen - 2018 01",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "De Oude Meerdijk|Self-published work|Photographs by Richard Broekhuijzen",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "Stadion De Oude Meerdijk in Emmen",
+              "source": "commons-desc-page"
+            },
+            "DateTimeOriginal": {
+              "value": "2018-03-12 17:43:41",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "<a href=\"//commons.wikimedia.org/wiki/User:CrazyPhunk\" title=\"User:CrazyPhunk\">Richard Broekhuijzen</a>",
+              "source": "commons-desc-page"
+            },
+            "LicenseShortName": {
+              "value": "CC BY-SA 4.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution-Share Alike 4.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "https://creativecommons.org/licenses/by-sa/4.0",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-sa-4.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
     }
   ]
 }

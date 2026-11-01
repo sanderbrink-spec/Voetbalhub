@@ -95,7 +95,16 @@
         "reviewedAt": "2026-11-01",
         "notes": "Bronmetadata en foto visueel vergeleken. Stadionidentiteit overeenkomstig de bron; geen individuele speleridentiteit geclaimd. Uitsnede gecontroleerd."
       },
-      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/feyenoord-d71e48ea2e5b.webp"
+      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/feyenoord-d71e48ea2e5b.webp",
+      "profile": {
+        "source": "https://www.feyenoord.com/nl/de-club/organisatie/historie",
+        "body": [
+          "De geschiedenis van Feyenoord begon op 19 juli 1908 in Rotterdam.",
+          "De club droeg eerst de naam Wilhelmina. In 1912 werd de naam Feijenoord gekozen.",
+          "Bij dit clubportret staat een archieffoto van De Kuip. Het beeld documenteert geen actuele wedstrijd."
+        ],
+        "checkedAt": "2026-11-01"
+      }
     },
     {
       "id": "ajax",
@@ -126,7 +135,16 @@
         "reviewedAt": "2026-11-01",
         "notes": "Bronmetadata en foto visueel vergeleken. Stadionidentiteit overeenkomstig de bron; geen individuele speleridentiteit geclaimd. Uitsnede gecontroleerd."
       },
-      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/ajax-4c77b7ad3973.webp"
+      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/ajax-4c77b7ad3973.webp",
+      "profile": {
+        "source": "https://www.ajax.nl/club/historie",
+        "body": [
+          "Ajax werd op 18 maart 1900 opgericht in Amsterdam.",
+          "De oprichting vond plaats in café Oost-Indië, in het centrum van de stad.",
+          "Bij dit clubportret staat een archieffoto van de Johan Cruijff ArenA. Het beeld documenteert geen actuele wedstrijd."
+        ],
+        "checkedAt": "2026-11-01"
+      }
     },
     {
       "id": "psv",
@@ -157,7 +175,16 @@
         "reviewedAt": "2026-11-01",
         "notes": "Bronmetadata en foto visueel vergeleken. Stadionidentiteit overeenkomstig de bron; geen individuele speleridentiteit geclaimd. Uitsnede gecontroleerd."
       },
-      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/psv-bbbb1cfe5eae.webp"
+      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/psv-bbbb1cfe5eae.webp",
+      "profile": {
+        "source": "https://www.psv.nl/club/historie/geschiedenis-2",
+        "body": [
+          "PSV werd op 31 augustus 1913 opgericht als sportvereniging voor medewerkers van Philips.",
+          "De afkorting PSV staat voor Philips Sport Vereniging.",
+          "Bij dit clubportret staat een archieffoto van het Philips Stadion in Eindhoven. Het beeld documenteert geen actuele wedstrijd."
+        ],
+        "checkedAt": "2026-11-01"
+      }
     },
     {
       "id": "heerenveen-exterior",
@@ -221,7 +248,108 @@
         "reviewedAt": "2026-11-01",
         "notes": "Bronmetadata en foto visueel vergeleken. Stadionidentiteit overeenkomstig de bron; geen individuele speleridentiteit geclaimd. Uitsnede gecontroleerd."
       },
-      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/feyenoord-exterior-39afd408de58.webp"
+      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/b9b014b8dee94c62d98e3b3755a4d62fe5cd8961/news-photos/feyenoord-exterior-39afd408de58.webp",
+      "profile": {
+        "source": "https://www.feyenoord.com/nl/de-club/organisatie/historie",
+        "body": [
+          "De geschiedenis van Feyenoord begon op 19 juli 1908 in Rotterdam.",
+          "De club droeg eerst de naam Wilhelmina. In 1912 werd de naam Feijenoord gekozen.",
+          "Bij dit clubportret staat een archieffoto van De Kuip. Het beeld documenteert geen actuele wedstrijd."
+        ],
+        "checkedAt": "2026-11-01"
+      }
+    },
+    {
+      "id": "midtjylland",
+      "club": "FC Midtjylland",
+      "aliases": [],
+      "venue": "MCH Arena",
+      "file": "midtjylland-87f7f7803cb2.webp",
+      "sha256": "87f7f7803cb2a3326c7200963f7e0c1132f1c55578e8f072de5bdb72f407c6d4",
+      "width": 1280,
+      "height": 720,
+      "sourceWidth": 2272,
+      "sourceHeight": 1278,
+      "sourceSha256": "092380df85cf52939ce8a67de3cc22f75d9296bb52157f2d64bf9664754c0341",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+      "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/9/9c/MCH_Arena.jpg",
+      "author": "T-Stone",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "capturedAt": "2011-05-04",
+      "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+      "caption": "MCH Arena · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+      "contextOnly": true,
+      "approved": true,
+      "visualReview": {
+        "approved": true,
+        "subjectVerified": true,
+        "noAddedText": true,
+        "reviewedAt": "2026-11-01",
+        "notes": "Visuele vergelijking met primaire beschrijving; juiste stadionidentiteit. Geen actuele wedstrijd gedocumenteerd."
+      },
+      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/midtjylland-87f7f7803cb2.webp"
+    },
+    {
+      "id": "emmen",
+      "club": "FC Emmen",
+      "aliases": [],
+      "venue": "De Oude Meerdijk",
+      "file": "emmen-35c70437dac5.webp",
+      "sha256": "35c70437dac546da297d1f38be1aae1e0e3d8b1364d65e15681064adfe0b30a4",
+      "width": 1280,
+      "height": 720,
+      "sourceWidth": 4000,
+      "sourceHeight": 2667,
+      "sourceSha256": "f2b4a5f00126c65f64d0aab63ef4a67d63178d306985136efa4a6fc5fc0d74a1",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+      "sourceImage": "https://upload.wikimedia.org/wikipedia/commons/1/13/De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+      "author": "Richard Broekhuijzen",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "capturedAt": "2018-03-12 17:43:41",
+      "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+      "caption": "De Oude Meerdijk · Archiefbeeld, geen foto van de beschreven wedstrijd of gebeurtenis.",
+      "contextOnly": true,
+      "approved": true,
+      "visualReview": {
+        "approved": true,
+        "subjectVerified": true,
+        "noAddedText": true,
+        "reviewedAt": "2026-11-01",
+        "notes": "Visuele vergelijking met primaire beschrijving; juiste stadionidentiteit. Geen actuele wedstrijd gedocumenteerd."
+      },
+      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/emmen-35c70437dac5.webp"
+    },
+    {
+      "id": "willem-ii-preview",
+      "club": "Willem II",
+      "aliases": [],
+      "venue": "Illustratief voetbalbeeld",
+      "file": "willem-ii-preview-f882e853fe7b.webp",
+      "sha256": "f882e853fe7bf0e06f95d96b10934458007a328316ae5d9c5ef902897b70e39c",
+      "width": 1280,
+      "height": 720,
+      "sourceWidth": 1672,
+      "sourceHeight": 941,
+      "sourceSha256": "ead03a9f4ccd747506c89b7f4530459c28580fc4e98e38dfa3300b0a7d4c58c2",
+      "sourcePage": "https://github.com/sanderbrink-spec/Voetbalhub/blob/fix/veldio-32/news-photo-ai-provenance.json",
+      "author": "Veldio · imagegen",
+      "license": "Veldio eigen AI-illustratie",
+      "licenseUrl": "https://openai.com/policies/eu-terms-of-use/",
+      "credit": "Veldio · AI-illustratie, geen wedstrijdfoto",
+      "caption": "AI-illustratie voor de voorbeschouwing. Geen echt stadion, speler of wedstrijdmoment afgebeeld.",
+      "contextOnly": true,
+      "generated": true,
+      "approved": true,
+      "visualReview": {
+        "approved": true,
+        "subjectVerified": true,
+        "noAddedText": true,
+        "reviewedAt": "2026-11-01",
+        "notes": "Scherpe fotografische stillevenillustratie met voetbal en zijlijn. Geen gezichten, tenues, clublogo’s, score of tekst; geen echte gebeurtenis gesuggereerd."
+      },
+      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/1b6ec1209e1fa10bd15f2985e7d37aa635efcb7f/news-photos/willem-ii-preview-f882e853fe7b.webp"
     }
   ]
 }

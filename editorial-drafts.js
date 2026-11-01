@@ -25,7 +25,7 @@ function cleanPayload(value={}){
   sources:Array.isArray(value.sources)?value.sources.filter(x=>x&&typeof x.url==='string').map(x=>({url:x.url.trim().slice(0,1500)})).slice(0,10):[],
   editorialChecks:Object.fromEntries(['originalSourceReviewed','claimsIndependentlyChecked','duplicateChecked','languageChecked'].map(k=>[k,value.editorialChecks?.[k]===true])),
   imageUrl:String(value.imageUrl||'').slice(0,1000),imageSource:String(value.imageSource||'').slice(0,300),imageCredit:String(value.imageCredit||'').slice(0,200),imageRights:String(value.imageRights||'not_needed'),imageCaption:String(value.imageCaption||'').slice(0,500),imageLicenseUrl:String(value.imageLicenseUrl||'').slice(0,300),
-  imageReview:{...Object.fromEntries(['kitVerified','playerIdentityVerified','aiDisclosureVerified'].map(k=>[k,value.imageReview?.[k]===true])),...Object.fromEntries(['method','assetSha256','subject','venue','kind','rightsEvidence','licenseUrl','reviewedAt','width','height','contextOnly','notes'].filter(k=>value.imageReview?.[k]!==undefined).map(k=>[k,typeof value.imageReview[k]==='string'?value.imageReview[k].slice(0,1000):value.imageReview[k]]))}
+  imageReview:{...Object.fromEntries(['kitVerified','playerIdentityVerified','aiDisclosureVerified'].map(k=>[k,value.imageReview?.[k]===true])),...Object.fromEntries(['method','assetSha256','subject','venue','kind','rightsEvidence','licenseUrl','reviewedAt','width','height','contextOnly','generated','notes'].filter(k=>value.imageReview?.[k]!==undefined).map(k=>[k,typeof value.imageReview[k]==='string'?value.imageReview[k].slice(0,1000):value.imageReview[k]]))}
  };
 }
 const fingerprint=value=>crypto.createHash('sha256').update(JSON.stringify(cleanPayload(value))).digest('hex');
