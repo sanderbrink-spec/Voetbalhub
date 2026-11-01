@@ -1,0 +1,43 @@
+name: Veldio checked stadium publication and feed mirror
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/stadium-publisher.yml']
+  schedule:
+    # Amsterdam 09:00 in summer (07 UTC) and winter (08 UTC). Publisher checks local time.
+    - cron: '0 7,8 * * 1'
+    # Bounded news fallback, six source calls per day rather than per reader.
+    - cron: '17 */4 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: veldio-checked-stadium-and-feed
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/veldio-33
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test stadium approval and DST gates
+        run: node --test test/stadium-editorial.test.js test/stadium-research.test.js
+      - name: Update bounded feed mirror and publish only a checked next portrait
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          STADIUM_PREPARE: ${{ github.event_name == 'push' && '1' || '0' }}
+        run: node scripts/stadium-publisher.js
+      - name: Keep editorial decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stadium-publication-report
+          path: .stadium-output/*.json
+          include-hidden-files: true

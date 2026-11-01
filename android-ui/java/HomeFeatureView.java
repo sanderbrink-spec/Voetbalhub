@@ -20,6 +20,7 @@ import org.json.JSONObject;
 public final class HomeFeatureView extends FrameLayout {
     public interface OpenArticle {void open(JSONObject article);}
     public interface OpenMatch {void open(String snapshot);}
+    public interface OpenStadium {void open(String id);}
     private static final ExecutorService NETWORK=Executors.newFixedThreadPool(3);
     private static final String MEDIA="https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/";
     private static final String PREFS="voetbalhub_editorial";
@@ -29,14 +30,17 @@ public final class HomeFeatureView extends FrameLayout {
     private final OpenArticle articleAction;
     private final OpenMatch matchAction;
     private final Runnable columnAction;
+    private final OpenStadium stadiumAction;
+    private JSONObject stadiums=new JSONObject();
+    private final StadiumRepository.Listener stadiumListener=data->{stadiums=data;deliver();};
     private JSONObject articles=new JSONObject(),stats=new JSONObject(),videos=new JSONObject();
     private boolean ready,disposed,loading=true,videoLoading=true;
     private final Runnable weeklyRefresh=new Runnable(){public void run(){if(disposed)return;fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);postDelayed(this,60000);}};
     private final FeedRepository.Listener feedListener=(data,busy,failed)->{if(disposed)return;loading=busy;if(data!=null)articles=data;deliver();};
     private float startX,startY;
     private int dp(float n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
-    public HomeFeatureView(Activity activity,OpenArticle article,OpenMatch match,Runnable column){
-        super(activity);this.activity=activity;articleAction=article;matchAction=match;columnAction=column;
+    public HomeFeatureView(Activity activity,OpenArticle article,OpenMatch match,Runnable column,OpenStadium stadium){
+        super(activity);this.activity=activity;articleAction=article;matchAction=match;columnAction=column;stadiumAction=stadium;
         setBackgroundColor(0xFF050C08);
         web=new WebView(activity){
             @Override public boolean onTouchEvent(MotionEvent e){
@@ -76,17 +80,15 @@ public final class HomeFeatureView extends FrameLayout {
         FeedRepository.subscribe(activity,feedListener);
         FeedRepository.refresh(false);
         fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);
-        fetch("https://voetbalhub-redactie.onrender.com/integrations/videos?v="+System.currentTimeMillis()/60000,2);
+        StadiumRepository.subscribe(activity,stadiumListener);
         postDelayed(weeklyRefresh,60000);
     }
     private void deliver(){if(!ready||disposed||videoPlayer!=null||activity.isFinishing())return;try{
-        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);JSONArray display=new JSONArray(articles.optJSONArray("articles")==null?"[]":articles.getJSONArray("articles").toString());for(int i=0;i<display.length();i++){JSONObject a=display.getJSONObject(i);String asset=a.optString("imageAsset");if(EditorialPhotos.safeAsset(asset))a.put("imageUrl",asset);}payload.put("articles",display);payload.put("clubs",EditorialPhotos.clubs(activity));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
+        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);JSONArray display=new JSONArray(articles.optJSONArray("articles")==null?"[]":articles.getJSONArray("articles").toString());for(int i=0;i<display.length();i++){JSONObject a=display.getJSONObject(i);String asset=a.optString("imageAsset");if(EditorialPhotos.safeAsset(asset))a.put("imageUrl",asset);}payload.put("stadiums",stadiums);payload.put("articles",display);payload.put("clubs",EditorialPhotos.clubs(activity));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);
     }catch(Exception ignored){}}
     private void fetch(String address,int kind){NETWORK.execute(()->{HttpURLConnection conn=null;JSONObject result=null;try{
-        conn=(HttpURLConnection)new URL(address).openConnection();conn.setInstanceFollowRedirects(false);conn.setConnectTimeout(15000);conn.setReadTimeout(kind==0?75000:20000);if(conn.getResponseCode()!=200)throw new Exception("Unavailable");
-        ByteArrayOutputStream bytes=new ByteArrayOutputStream();try(InputStream in=conn.getInputStream()){byte[] block=new byte[8192];int n;while((n=in.read(block))!=-1){bytes.write(block,0,n);if(bytes.size()>3000000)throw new Exception("Too large");}}
-        JSONObject data=new JSONObject(bytes.toString("UTF-8"));if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");
+        JSONObject data=new JSONObject(DeadlineHttp.get(address,7000,3000000));if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");
         if(kind==1){
             JSONObject feature=data.optJSONObject("featured");if(feature==null)feature=data.optJSONObject("nextFeatured");JSONObject text=feature==null?null:feature.optJSONObject("report".equals(feature.optString("phase"))?"report":"preview");
             if(text==null||text.optJSONObject("fixture")==null||text.optJSONArray("body")==null||text.getJSONArray("body").length()<3||!feature.optString("imageUrl").startsWith("https://"))throw new Exception("Keep last published weekly feature");
@@ -106,8 +108,10 @@ public final class HomeFeatureView extends FrameLayout {
         if(!disposed&&ready){web.evaluateJavascript("window.setVideoPlaying(false)",null);deliver();}
         return true;
     }
-    @Override protected void onDetachedFromWindow(){disposed=true;ready=false;FeedRepository.unsubscribe(feedListener);removeCallbacks(weeklyRefresh);closeVideo();web.stopLoading();web.removeJavascriptInterface("HomeHub");web.loadUrl("about:blank");super.onDetachedFromWindow();}
+    @Override protected void onDetachedFromWindow(){disposed=true;ready=false;FeedRepository.unsubscribe(feedListener);StadiumRepository.unsubscribe(stadiumListener);removeCallbacks(weeklyRefresh);closeVideo();web.stopLoading();web.removeJavascriptInterface("HomeHub");web.loadUrl("about:blank");super.onDetachedFromWindow();}
     private final class Bridge {
+        @JavascriptInterface public void openStadium(String id){activity.runOnUiThread(()->{if(!disposed)stadiumAction.open(id);});}
+        @JavascriptInterface public void openStadiumArchive(String ignored){activity.runOnUiThread(()->{if(!disposed)stadiumAction.open("");});}
         @JavascriptInterface public void openClub(String name){activity.runOnUiThread(()->{if(disposed)return;JSONObject club=EditorialPhotos.clubArticle(activity,name);if(club!=null)articleAction.open(club);});}
         @JavascriptInterface public void openMatchUnavailable(){activity.runOnUiThread(()->{if(!disposed)new android.app.AlertDialog.Builder(activity).setTitle("Wedstrijd van de week").setMessage("Er zijn nog geen gecontroleerde wedstrijdgegevens beschikbaar. De laatst gepubliceerde artikelen blijven in het nieuwsoverzicht staan.").setPositiveButton("Opnieuw proberen",(d,w)->{FeedRepository.refresh(true);removeCallbacks(weeklyRefresh);weeklyRefresh.run();}).setNegativeButton("Sluiten",null).show();});}
         @JavascriptInterface public void resize(String raw){activity.runOnUiThread(()->{if(disposed)return;try{int height=dp(Math.max(300,Math.min(1800,Float.parseFloat(raw))));if(getLayoutParams()!=null&&Math.abs(getLayoutParams().height-height)>2){getLayoutParams().height=height;requestLayout();}}catch(Exception ignored){}});}
