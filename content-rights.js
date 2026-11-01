@@ -5,7 +5,7 @@ function canonical(value){
  if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().filter(k=>value[k]!==undefined).map(k=>[k,canonical(value[k])]));
  return value;
 }
-function articleContent(a){a={...a};if(a.imageReview){a.imageReview={...a.imageReview};delete a.imageReview.reviewedAt;}return Object.fromEntries(['author','headline','standfirst','body','why_it_matters','category','type','blocks','manuscript','match','verifiedFacts','sources','imageUrl','imageSource','imageCredit','imageRights','imageReview','aiDisclosure'].filter(k=>a[k]!==undefined).map(k=>[k,a[k]]));}
+function articleContent(a){a={...a};if(a.imageReview){a.imageReview={...a.imageReview};delete a.imageReview.reviewedAt;}return Object.fromEntries(['author','headline','standfirst','body','why_it_matters','category','type','blocks','manuscript','match','verifiedFacts','sources','imageUrl','imageSource','imageCredit','imageCaption','imageLicenseUrl','imageRights','imageReview','aiDisclosure'].filter(k=>a[k]!==undefined).map(k=>[k,a[k]]));}
 function digest(value){return createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex');}
 function createRights({file=process.env.CONTENT_RIGHTS_FILE||path.join(__dirname,'content-rights.json'),now=Date.now,log=event=>console.info(JSON.stringify(event))}={}){
  function decision(scope,value,{audit=true}={}){

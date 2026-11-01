@@ -175,3 +175,22 @@ assert adb('shell','pidof',PACKAGE).strip()
 with (OUT/'result.txt').open('a') as result:
     result.write('PASS: read-only live production feed, newest published headline in home, native pull-to-refresh completes another API fetch, offline pull preserves cached headline. Android emulator, no physical S23 or publication claim.\n')
 print((OUT/'result.txt').read_text())
+
+# Phase 32: emulator viewport matches the S23 display geometry, not a physical device.
+# Inspect the read-only live news rows and actual bundled photography in the reader.
+for attempt in range(5):
+    root=capture('16-phase32-feed')
+    target=next((n for n in root.iter('node') if n.get('text')==latest and n.get('class')=='android.widget.TextView'),None)
+    if target is not None:break
+    adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.3)),'500');time.sleep(1)
+assert target is not None,'Phase 32 native photo-led news row absent'
+tap_node(root,lambda n:n is target)
+time.sleep(2);root=capture('17-phase32-photo-reader')
+assert any('Archiefbeeld' in n.get('text','') for n in root.iter('node')),'Archival context caption absent'
+assert any('CC BY' in n.get('text','') for n in root.iter('node')),'Photograph licence attribution absent'
+assert any(n.get('class')=='android.widget.ImageView' and n.get('content-desc')=='Afbeelding bij artikel' for n in root.iter('node')),'Bundled photograph not visible in reader'
+tap_node(root,lambda n:'Terug' in n.get('text',''))
+time.sleep(1);capture('18-phase32-back-to-feed')
+assert adb('shell','pidof',PACKAGE).strip()
+with (OUT/'result.txt').open('a') as result:
+    result.write('PASS: Phase 32 native photo-led live feed, actual bundled image in reader, archival context, photographer/licence credit and back navigation. Emulator display geometry only, no physical S23 claim.\n')

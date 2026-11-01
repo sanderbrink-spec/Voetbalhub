@@ -80,7 +80,7 @@ public final class HomeFeatureView extends FrameLayout {
         postDelayed(weeklyRefresh,60000);
     }
     private void deliver(){if(!ready||disposed||videoPlayer!=null||activity.isFinishing())return;try{
-        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
+        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);JSONArray display=new JSONArray(articles.optJSONArray("articles")==null?"[]":articles.getJSONArray("articles").toString());for(int i=0;i<display.length();i++){JSONObject a=display.getJSONObject(i);String asset=a.optString("imageAsset");if(EditorialPhotos.safeAsset(asset))a.put("imageUrl",asset);}payload.put("articles",display);payload.put("clubs",EditorialPhotos.clubs(activity));payload.put("stats",stats);payload.put("videos",videos);payload.put("loading",loading);payload.put("videoLoading",videoLoading);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);
     }catch(Exception ignored){}}
     private void fetch(String address,int kind){NETWORK.execute(()->{HttpURLConnection conn=null;JSONObject result=null;try{
@@ -108,6 +108,7 @@ public final class HomeFeatureView extends FrameLayout {
     }
     @Override protected void onDetachedFromWindow(){disposed=true;ready=false;FeedRepository.unsubscribe(feedListener);removeCallbacks(weeklyRefresh);closeVideo();web.stopLoading();web.removeJavascriptInterface("HomeHub");web.loadUrl("about:blank");super.onDetachedFromWindow();}
     private final class Bridge {
+        @JavascriptInterface public void openClub(String name){activity.runOnUiThread(()->{if(disposed)return;JSONObject club=EditorialPhotos.clubArticle(activity,name);if(club!=null)articleAction.open(club);});}
         @JavascriptInterface public void openMatchUnavailable(){activity.runOnUiThread(()->{if(!disposed)new android.app.AlertDialog.Builder(activity).setTitle("Wedstrijd van de week").setMessage("Er zijn nog geen gecontroleerde wedstrijdgegevens beschikbaar. De laatst gepubliceerde artikelen blijven in het nieuwsoverzicht staan.").setPositiveButton("Opnieuw proberen",(d,w)->{FeedRepository.refresh(true);removeCallbacks(weeklyRefresh);weeklyRefresh.run();}).setNegativeButton("Sluiten",null).show();});}
         @JavascriptInterface public void resize(String raw){activity.runOnUiThread(()->{if(disposed)return;try{int height=dp(Math.max(300,Math.min(1800,Float.parseFloat(raw))));if(getLayoutParams()!=null&&Math.abs(getLayoutParams().height-height)>2){getLayoutParams().height=height;requestLayout();}}catch(Exception ignored){}});}
         @JavascriptInterface public void openArticle(String id){activity.runOnUiThread(()->{JSONObject a=findArticle(id);if(a!=null&&!disposed)articleAction.open(a);});}

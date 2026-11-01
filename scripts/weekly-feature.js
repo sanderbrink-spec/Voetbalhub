@@ -27,15 +27,10 @@ function buildReport(f,now){
 }
 async function ownReportImage(f,{token,fetcher=fetch}={}){
  if(!DONE.has(f?.status)||![f.goals?.home,f.goals?.away].every(n=>Number.isInteger(n)&&n>=0&&n<=99))throw Error('Onbevestigde uitslag voor resultaatbeeld.');
- const base=await require('../own-editorial-art').render({draft:{headline:f.home.name+' tegen '+f.away.name},category:'Eredivisie'});
- const score=f.goals.home+' – '+f.goals.away;
- const esc=s=>String(s).slice(0,60).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
- // Explicit home/away order; the general renderer's club lookup order is irrelevant.
- const label=(team,y)=>{const name=esc(team.name);if(name.length>60)throw Error('Clubnaam te lang voor veilige beeldmarges.');return '<text x="800" y="'+y+'" text-anchor="middle" font-family="DejaVu Sans" font-size="'+(team.name.length>24?46:72)+'" fill="#f4f8f5">'+name+'</text>';};
- const overlay=Buffer.from('<svg width="1600" height="900"><rect x="80" y="210" width="1440" height="520" rx="30" fill="#07190e"/>'+label(f.home,310)+'<text x="800" y="535" text-anchor="middle" font-family="DejaVu Sans" font-size="180" font-weight="700" fill="#25f06b">'+score+'</text>'+label(f.away,655)+'</svg>');
- const bytes=await require('sharp')(base).composite([{input:overlay}]).webp({quality:90}).toBuffer(),digest=hash(bytes),file='weekly/'+f.id+'-report-'+digest+'.webp';
+ const media=await require('../newsroom-images').prepare({draft:{headline:f.home.name},match:f});
+ const bytes=media.bytes,digest=hash(bytes),file='weekly/'+f.id+'-report-'+digest+'.webp';
  await githubFile(file,bytes,{token,fetcher});
- return {imageUrl:`https://raw.githubusercontent.com/${REPO}/${BRANCH}/${file}`,imageCredit:'Veldio · eigen resultaatillustratie, geen wedstrijdfoto',imageReview:{method:'own-weekly-score-v1',fixtureId:f.id,goals:structuredClone(f.goals),sha256:digest}};
+ return {imageUrl:`https://raw.githubusercontent.com/${REPO}/${BRANCH}/${file}`,imageCredit:media.imageCredit,imageCaption:media.imageCaption,imageLicenseUrl:media.imageLicenseUrl,imageReview:{...media.imageReview,method:'licensed-weekly-photo-v1',fixtureId:f.id,goals:structuredClone(f.goals),sha256:digest}};
 }
 async function readPrevious(fetcher=fetch){const r=await fetcher(DATA_URL,{signal:AbortSignal.timeout(25000),redirect:'error'});if(r.status===404)return null;if(!r.ok)throw Error('Vorig wedstrijdblok niet leesbaar; publicatie afgebroken.');const data=await r.json();if(data.schemaVersion!==1||data.league?.id!==88)throw Error('Vorig wedstrijdblok ongeldig; publicatie afgebroken.');return data;}
 async function update(s,previous,{now=Date.now(),previewImage,reportImage=ownReportImage,token,fetcher=fetch}={}){

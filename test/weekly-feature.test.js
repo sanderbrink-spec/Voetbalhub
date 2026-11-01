@@ -60,13 +60,13 @@ test('out-of-order snapshots cannot replace current publication, and stale NS do
  const repeated=await update(snapshot(),prev,options(kickoff+7200001));assert.equal(repeated.featured.phase,'report');assert.equal(repeated.featured.fixtureId,1);
  const expiry=nextKickoff-W.HOURS;assert.equal(Home.currentMatch({...prev,rightsPolicyVersion:26,rightsExpiresAt:expiry-1},expiry).phase,'report');
 });
-test('own report cover is genuinely rendered with the checked score and uploaded using existing storage',async()=>{
+test('weekly report uses a licensed photo without baked-in score and preserves the checked score metadata',async()=>{
  const f={...fixture(1,kickoff),status:'FT',goals:{home:2,away:1}};let bytes;
  const result=await W.ownReportImage(f,{token:'synthetic-test-only',fetcher:async(url,opts)=>{
   assert.ok(String(url).startsWith('https://api.github.com/repos/sanderbrink-spec/Voetbalhub/contents/weekly/'));
   if(opts.method==='PUT'){bytes=Buffer.from(JSON.parse(opts.body).content,'base64');return {ok:true};}return {ok:false,status:404};
  }});
- const meta=await require('sharp')(bytes).metadata();assert.equal(meta.width,1600);assert.equal(meta.height,900);assert.equal(meta.format,'webp');assert.deepEqual(result.imageReview.goals,f.goals);assert.match(result.imageUrl,/1-report-[a-f0-9]{64}\.webp$/);
+ const meta=await require('sharp')(bytes).metadata();assert.equal(meta.width,1280);assert.equal(meta.height,720);assert.equal(meta.format,'webp');assert.deepEqual(result.imageReview.goals,f.goals);assert.match(result.imageUrl,/1-report-[a-f0-9]{64}\.webp$/);
 });
 test('existing collector publishes report and media together; failed snapshot publication keeps previous feature',async()=>{
  const {collect,DATA_URL}=require('../scripts/eredivisie-data');let remote=await initial(),fail=true,mediaWrites=0;const original=JSON.stringify(remote),media=new Map();

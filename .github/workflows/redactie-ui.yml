@@ -53,6 +53,8 @@ jobs:
         run: node scripts/browser/personal-hub.cjs
       - name: Check Veldio homepage portrait and responsive layout
         run: node scripts/browser/veldio-home.cjs
+      - name: Check photographic home, safe text and all three club spotlights
+        run: node scripts/browser/phase32.cjs
       - name: Check weekly match report, fallback and exact preview transition
         run: node scripts/browser/weekly-feature.cjs
       - name: Check professional contact form on mobile

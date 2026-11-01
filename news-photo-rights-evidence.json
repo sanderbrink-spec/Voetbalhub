@@ -1,0 +1,740 @@
+{
+  "reviewedAt": "2026-11-01",
+  "files": [
+    {
+      "pageid": 1797183,
+      "ns": 6,
+      "title": "File:Euroborg.jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 1216075,
+          "width": 2592,
+          "height": 1944,
+          "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Euroborg.jpg/1920px-Euroborg.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "thumbwidth": 1600,
+          "thumbheight": 1200,
+          "responsiveUrls": {
+            "2": "https://upload.wikimedia.org/wikipedia/commons/9/95/Euroborg.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+          },
+          "thumbattribs": {
+            "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Euroborg.jpg/1920px-Euroborg.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "decoding": "async",
+            "loading": "lazy",
+            "width": 1600,
+            "height": 1200,
+            "srcset": "https://upload.wikimedia.org/wikipedia/commons/9/95/Euroborg.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled 2x"
+          },
+          "url": "https://upload.wikimedia.org/wikipedia/commons/9/95/Euroborg.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=1797183",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2007-03-17 09:06:28",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "Euroborg",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "GFDL|Taken with Canon PowerShot A530|User-created GFDL images|Euroborg|License migration redundant|License migration completed|Self-published work",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "<div class=\"hproduct commons-file-information-table\">\n<table class=\"fileinfotpl-type-information vevent\" dir=\"ltr\">\n\n<tbody><tr>\n<td id=\"fileinfotpl_desc\" class=\"fileinfo-paramfield\" lang=\"en\">Description<span class=\"summary fn\" style=\"display:none\">Euroborg.jpg</span></td>\n<td class=\"description\">\nDe Euroborg, het stadion van FC Groningen.</td>\n</tr>\n\n<tr>\n<td id=\"fileinfotpl_date\" class=\"fileinfo-paramfield\" lang=\"en\">Date</td>\n<td lang=\"en\">\n<time class=\"dtstart\" datetime=\"2006-10-18\" lang=\"en\" dir=\"ltr\" style=\"white-space:nowrap\">18 October 2006</time></td>\n</tr>\n\n<tr>\n<td id=\"fileinfotpl_src\" class=\"fileinfo-paramfield\" lang=\"en\">Source</td>\n<td>\n<span class=\"int-own-work\" lang=\"en\">Own work</span></td>\n</tr>\n\n<tr>\n<td id=\"fileinfotpl_aut\" class=\"fileinfo-paramfield\" lang=\"en\">Author</td>\n<td>\n<a href=\"https://nl.wikipedia.org/wiki/Gebruiker:Kevster\" class=\"extiw\" title=\"nl:Gebruiker:Kevster\">Kevster</a></td>\n</tr>\n\n<tr>\n<td id=\"fileinfotpl_perm\" class=\"fileinfo-paramfield\" lang=\"en\">Permission<br><small>(<a href=\"//commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia\" title=\"Commons:Reusing content outside Wikimedia\">Reusing this file</a>)</small></td>\n<td>\nVrijgegeven onder GFDL.</td>\n</tr>\n\n\n</tbody></table>\n</div>",
+              "source": "commons-desc-page"
+            },
+            "DateTimeOriginal": {
+              "value": "18 October 2006 (original upload date)",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "<bdi lang=\"en\" dir=\"ltr\">Transferred from <span class=\"plainlinks\"><a class=\"external text\" data-mw-original-href=\"//nl.wikipedia.org\" href=\"https://nl.wikipedia.org\">nl.wikipedia</a></span> to Commons.</bdi>",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "<a href=\"https://en.wikipedia.org/wiki/nl:User:Kevster\" class=\"extiw\" title=\"w:nl:User:Kevster\">Kevster</a> at <a href=\"https://en.wikipedia.org/wiki/nl:\" class=\"extiw\" title=\"w:nl:\">Dutch Wikipedia</a>",
+              "source": "commons-desc-page"
+            },
+            "AuthorCount": {
+              "value": 2,
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseShortName": {
+              "value": "CC BY-SA 3.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution-Share Alike 3.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Attribution": {
+              "value": "<a href=\"https://nl.wikipedia.org/wiki/User:Kevster\" class=\"extiw\" title=\"nl:User:Kevster\">Kevster</a>",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "http://creativecommons.org/licenses/by-sa/3.0/",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-sa-3.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pageid": 2904114,
+      "ns": 6,
+      "title": "File:Abe Lenstra Stadion pano 03m.jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 292013,
+          "width": 3009,
+          "height": 768,
+          "url": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Abe_Lenstra_Stadion_pano_03m.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=2904114",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2007-10-12 16:09:04",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "Abe Lenstra Stadion pano 03m",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "GFDL|Abe Lenstra Stadion|Created with Autostitch|License migration redundant|Self-published work",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "Abe Lenstra Stadion in Heerenveen (panorama)",
+              "source": "commons-desc-page"
+            },
+            "DateTimeOriginal": {
+              "value": "2007-08-11",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "Udo Ockema",
+              "source": "commons-desc-page"
+            },
+            "LicenseShortName": {
+              "value": "CC BY 3.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution 3.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Attribution": {
+              "value": "Udo Ockema",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "https://creativecommons.org/licenses/by/3.0",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-3.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pageid": 54491267,
+      "ns": 6,
+      "title": "File:Rotterdam De Kuip 1.jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 1057810,
+          "width": 1280,
+          "height": 852,
+          "url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Rotterdam_De_Kuip_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=54491267",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2016-12-26 23:02:41",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "Rotterdam De Kuip 1",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "Files from V&A Dudush Panoramio stream|Panoramio images reviewed by Panoramio Review Bot|Interior of Feijenoord Stadion",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "GPSLatitude": {
+              "value": "51.894695",
+              "source": "commons-desc-page"
+            },
+            "GPSLongitude": {
+              "value": "4.523181",
+              "source": "commons-desc-page"
+            },
+            "GPSMapDatum": {
+              "value": "WGS-84",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "<a href=\"https://en.wikipedia.org/wiki/Stadion_Feijenoord\" class=\"extiw\" title=\"en:Stadion Feijenoord\">Stadion Feijenoord (De Kuip)</a> in <a href=\"https://en.wikipedia.org/wiki/Rotterdam\" class=\"extiw\" title=\"en:Rotterdam\">Rotterdam</a>, the Netherlands",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.panoramio.com/photo/112135505\">De Kuip Inside the stadium.</a>",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.panoramio.com/user/2333416\">Валерий Дед</a>",
+              "source": "commons-desc-page"
+            },
+            "LicenseShortName": {
+              "value": "CC BY 3.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution 3.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "https://creativecommons.org/licenses/by/3.0",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-3.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pageid": 68061957,
+      "ns": 6,
+      "title": "File:Amsterdam Arena, Netherlands.jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 4311871,
+          "width": 4160,
+          "height": 2340,
+          "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Amsterdam_Arena%2C_Netherlands.jpg/1920px-Amsterdam_Arena%2C_Netherlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "thumbwidth": 1600,
+          "thumbheight": 900,
+          "responsiveUrls": {
+            "2": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Amsterdam_Arena%2C_Netherlands.jpg/3840px-Amsterdam_Arena%2C_Netherlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+          },
+          "thumbattribs": {
+            "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Amsterdam_Arena%2C_Netherlands.jpg/1920px-Amsterdam_Arena%2C_Netherlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "decoding": "async",
+            "loading": "lazy",
+            "width": 1600,
+            "height": 900,
+            "srcset": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Amsterdam_Arena%2C_Netherlands.jpg/3840px-Amsterdam_Arena%2C_Netherlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail 2x"
+          },
+          "url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Amsterdam_Arena%2C_Netherlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=68061957",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2018-04-05 22:33:29",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "Amsterdam Arena, Netherlands",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "Johan Cruijff ArenA|Self-published work|Netherlands v England, 23 March 2018",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "Photo of Amsterdam Arena, Netherlands",
+              "source": "commons-desc-page"
+            },
+            "DateTimeOriginal": {
+              "value": "2018-03-23 20:19:42",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Goutam&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:Goutam (page does not exist)\">Goutam</a>",
+              "source": "commons-desc-page"
+            },
+            "LicenseShortName": {
+              "value": "CC BY-SA 4.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution-Share Alike 4.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "https://creativecommons.org/licenses/by-sa/4.0",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-sa-4.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pageid": 2938750,
+      "ns": 6,
+      "title": "File:Philips Stadion center side.jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 1606992,
+          "width": 3072,
+          "height": 2304,
+          "url": "https://upload.wikimedia.org/wikipedia/commons/8/85/Philips_Stadion_center_side.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=2938750",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2007-10-18 17:08:29",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "Philips Stadion center side",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "Taken with Canon PowerShot S70|Philips Stadion|Self-published work",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "Philips Stadion seen from the side of the center of Eindhoven",
+              "source": "commons-desc-page"
+            },
+            "DateTimeOriginal": {
+              "value": "2007-09-27",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "Gidi Kroon (<a href=\"//commons.wikimedia.org/wiki/User:Gidi70\" title=\"User:Gidi70\">Gidi70</a> 17:02, 18 October 2007 (UTC))",
+              "source": "commons-desc-page"
+            },
+            "LicenseShortName": {
+              "value": "CC BY-SA 3.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution-Share Alike 3.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "https://creativecommons.org/licenses/by-sa/3.0",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-sa-3.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pageid": 15770065,
+      "ns": 6,
+      "title": "File:Abe Lenstra Stadion (2010).jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 1174240,
+          "width": 2048,
+          "height": 1536,
+          "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Abe_Lenstra_Stadion_%282010%29.jpg/1920px-Abe_Lenstra_Stadion_%282010%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "thumbwidth": 1600,
+          "thumbheight": 1200,
+          "responsiveUrls": {
+            "2": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Abe_Lenstra_Stadion_%282010%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+          },
+          "thumbattribs": {
+            "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Abe_Lenstra_Stadion_%282010%29.jpg/1920px-Abe_Lenstra_Stadion_%282010%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "decoding": "async",
+            "loading": "lazy",
+            "width": 1600,
+            "height": 1200,
+            "srcset": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Abe_Lenstra_Stadion_%282010%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled 2x"
+          },
+          "url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Abe_Lenstra_Stadion_%282010%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=15770065",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2011-07-11 22:15:19",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "Abe Lenstra Stadion (2010)",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "Taken with iPhone 3GS|Abe Lenstra Stadion|Self-published work|Photographs by Lars Curfs",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "GPSLatitude": {
+              "value": "52.965000",
+              "source": "commons-desc-page"
+            },
+            "GPSLongitude": {
+              "value": "5.932000",
+              "source": "commons-desc-page"
+            },
+            "GPSMapDatum": {
+              "value": "WGS-84",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "Front of the Abe Lenstra Stadion in Heerenveen.",
+              "source": "commons-desc-page"
+            },
+            "DateTimeOriginal": {
+              "value": "2010-07-16",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "Lars Curfs <small>(<a href=\"https://nl.wikipedia.org/wiki/User:Grashoofd\" class=\"extiw\" title=\"nl:User:Grashoofd\">Grashoofd</a>)</small>",
+              "source": "commons-desc-page"
+            },
+            "LicenseShortName": {
+              "value": "CC BY-SA 3.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution-Share Alike 3.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Attribution": {
+              "value": "Lars Curfs",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "https://creativecommons.org/licenses/by-sa/3.0",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-sa-3.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "pageid": 113986148,
+      "ns": 6,
+      "title": "File:De Kuip bij zonnig daglicht.jpg",
+      "imagerepository": "local",
+      "imageinfo": [
+        {
+          "size": 6108283,
+          "width": 3940,
+          "height": 2210,
+          "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/De_Kuip_bij_zonnig_daglicht.jpg/1920px-De_Kuip_bij_zonnig_daglicht.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "thumbwidth": 1600,
+          "thumbheight": 897,
+          "responsiveUrls": {
+            "2": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/De_Kuip_bij_zonnig_daglicht.jpg/3840px-De_Kuip_bij_zonnig_daglicht.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+          },
+          "thumbattribs": {
+            "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/De_Kuip_bij_zonnig_daglicht.jpg/1920px-De_Kuip_bij_zonnig_daglicht.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "decoding": "async",
+            "loading": "lazy",
+            "width": 1600,
+            "height": 897,
+            "srcset": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/De_Kuip_bij_zonnig_daglicht.jpg/3840px-De_Kuip_bij_zonnig_daglicht.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail 2x"
+          },
+          "url": "https://upload.wikimedia.org/wikipedia/commons/e/ee/De_Kuip_bij_zonnig_daglicht.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+          "descriptionurl": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+          "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=113986148",
+          "extmetadata": {
+            "DateTime": {
+              "value": "2022-01-04 15:57:46",
+              "source": "mediawiki-metadata",
+              "hidden": ""
+            },
+            "ObjectName": {
+              "value": "De Kuip bij zonnig daglicht",
+              "source": "mediawiki-metadata"
+            },
+            "CommonsMetadataExtension": {
+              "value": 1.2,
+              "source": "extension",
+              "hidden": ""
+            },
+            "Categories": {
+              "value": "Taken with Samsung Galaxy A52s 5G|Exterior of Feijenoord Stadion|Self-published work|Netherlands photographs taken on 2021-12-22|2021 in IJsselmonde",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "Assessments": {
+              "value": "",
+              "source": "commons-categories",
+              "hidden": ""
+            },
+            "ImageDescription": {
+              "value": "Stadion Feijenoord",
+              "source": "commons-desc-page"
+            },
+            "DateTimeOriginal": {
+              "value": "2021-12-22 11:28:00",
+              "source": "commons-desc-page"
+            },
+            "Credit": {
+              "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+              "source": "commons-desc-page"
+            },
+            "Artist": {
+              "value": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:FeyenoordR%27dam1908&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:FeyenoordR'dam1908 (page does not exist)\">FeyenoordR'dam1908</a>",
+              "source": "commons-desc-page"
+            },
+            "LicenseShortName": {
+              "value": "CC BY-SA 4.0",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "UsageTerms": {
+              "value": "Creative Commons Attribution-Share Alike 4.0",
+              "source": "commons-desc-page"
+            },
+            "AttributionRequired": {
+              "value": "true",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "LicenseUrl": {
+              "value": "https://creativecommons.org/licenses/by-sa/4.0",
+              "source": "commons-desc-page"
+            },
+            "Copyrighted": {
+              "value": "True",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "Restrictions": {
+              "value": "",
+              "source": "commons-desc-page",
+              "hidden": ""
+            },
+            "License": {
+              "value": "cc-by-sa-4.0",
+              "source": "commons-templates",
+              "hidden": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
