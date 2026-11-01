@@ -14,8 +14,8 @@ badging = subprocess.check_output([str(aapt), 'dump', 'badging', sys.argv[1]], t
 match = re.search(r"package: name='([^']+)'", badging)
 assert match, 'APK package identity missing'
 PACKAGE = match.group(1)
-assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test32'), PACKAGE
-if PACKAGE=='nl.voetbalhub.app1.test32':assert "application-label:'Veldio 32 test'" in badging, 'Distinct test launcher label absent'
+assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test33'), PACKAGE
+if PACKAGE=='nl.voetbalhub.app1.test33':assert "application-label:'Veldio 33 test'" in badging, 'Distinct test launcher label absent'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
@@ -161,7 +161,7 @@ assert pref_timestamp()>before,'Production feed fetch not persisted'
 for attempt in range(8):
     root=capture('13-live-home')
     hero_ready=any('NIEUWSTE ARTIKEL' in n.get('text','') and latest in n.get('text','') for n in root.iter('node'))
-    spotlight_ready=any('CLUB IN DE SPOTLIGHT' in n.get('text','') or 'WEDSTRIJD VAN DE WEEK' in n.get('text','') for n in root.iter('node'))
+    spotlight_ready=any('STADION VAN DE WEEK' in n.get('text','') or 'WEDSTRIJD VAN DE WEEK' in n.get('text','') for n in root.iter('node'))
     if hero_ready and spotlight_ready:break
     time.sleep(.6)
 assert hero_ready and spotlight_ready,'Published home carousel or dynamic paired card did not render'
@@ -203,3 +203,20 @@ time.sleep(1);capture('18-phase32-back-to-feed')
 assert adb('shell','pidof',PACKAGE).strip()
 with (OUT/'result.txt').open('a') as result:
     result.write('PASS: Phase 32 native photo-led live feed, actual bundled image in reader, archival context, photographer/licence credit and back navigation. Emulator display geometry only, no physical S23 claim.\n')
+
+# Phase 33: wait past the hard feed deadline, then navigate to the offline stadium archive.
+adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
+adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
+time.sleep(16);root=capture('19-phase33-offline-home')
+assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')), 'Loading exceeded hard deadline'
+assert not any('video’s laden' in n.get('text','') for n in root.iter('node')), 'Orphan video loader'
+assert any('VOETBAL IN CIJFERS' in n.get('text','') for n in root.iter('node')), 'Original football quiz absent'
+tap_node(root,lambda n:n.get('text')=='Meer');time.sleep(1);root=capture('20-phase33-more')
+tap_node(root,lambda n:n.get('text')=='Stadion van de week');time.sleep(2);root=capture('21-phase33-stadium-archive')
+assert any('De Kuip' in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')), 'Offline stadium archive missing'
+tap_node(root,lambda n:n.get('class')=='android.widget.Button' and 'De Kuip' in (n.get('text','')+' '+n.get('content-desc','')))
+time.sleep(2);root=capture('22-phase33-stadium-reader')
+assert any('1' in n.get('text','') and 'woorden' in n.get('text','') for n in root.iter('node')), 'Long stadium feature missing'
+adb('shell','input','keyevent','4');time.sleep(1);capture('23-phase33-stadium-back')
+adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
+with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 33 offline timeout, retained homepage, no video loader, original quiz, permanent stadium archive, long De Kuip reader and Android Back. Emulator only.\n')

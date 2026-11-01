@@ -1,0 +1,475 @@
+{
+  "schemaVersion": 1,
+  "season": "2026/27",
+  "verifiedAt": "2026-11-01",
+  "order": [
+    "eredivisie",
+    "kkd",
+    "international_top",
+    "historic_unusual"
+  ],
+  "policy": "Competition membership pinned to official 2026/27 lists. Sources must be revalidated before each publication; a league label alone is not enough for a historical feature. Unique physical venue IDs prevent repeated shared-stadium portraits.",
+  "membershipSources": [
+    "https://eredivisie.nl/competitie/clubs/",
+    "https://keukenkampioendivisie.nl/teams"
+  ],
+  "venues": [
+    {
+      "venueId": "de-kuip",
+      "club": "Feyenoord",
+      "name": "De Kuip",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "published"
+    },
+    {
+      "venueId": "johan-cruijff-arena",
+      "club": "Ajax",
+      "name": "Johan Cruijff ArenA",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "philips-stadion",
+      "club": "PSV",
+      "name": "Philips Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "werktalent-stadion",
+      "club": "ADO Den Haag",
+      "name": "WerkTalent Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "afas-stadion",
+      "club": "AZ",
+      "name": "AFAS Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "woudestein",
+      "club": "Excelsior Rotterdam",
+      "name": "Stadion Woudestein",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "euroborg",
+      "club": "FC Groningen",
+      "name": "Euroborg",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "grolsch-veste",
+      "club": "FC Twente",
+      "name": "De Grolsch Veste",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "galgenwaard",
+      "club": "FC Utrecht",
+      "name": "Stadion Galgenwaard",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "fortuna-sittard-stadion",
+      "club": "Fortuna Sittard",
+      "name": "Fortuna Sittard Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "adelaarshorst",
+      "club": "Go Ahead Eagles",
+      "name": "De Adelaarshorst",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "goffertstadion",
+      "club": "N.E.C. Nijmegen",
+      "name": "Goffertstadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "mac3park-stadion",
+      "club": "PEC Zwolle",
+      "name": "MAC³PARK Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "kooi-stadion",
+      "club": "SC Cambuur",
+      "name": "Kooi Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "abe-lenstra-stadion",
+      "club": "sc Heerenveen",
+      "name": "Abe Lenstra Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "het-kasteel",
+      "club": "Sparta Rotterdam",
+      "name": "Spartastadion Het Kasteel",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "buko-stadion",
+      "club": "Telstar",
+      "name": "BUKO Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "koning-willem-ii-stadion",
+      "club": "Willem II",
+      "name": "Koning Willem II Stadion",
+      "tier": "eredivisie",
+      "priority": 0,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://eredivisie.nl/competitie/tickets/"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "almere-city-fc",
+      "club": "Almere City FC",
+      "name": "Yanmar Hanasaka Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/almere-city-fc"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "de-graafschap",
+      "club": "De Graafschap",
+      "name": "Stadion De Vijverberg",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/de-graafschap"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "fc-den-bosch",
+      "club": "FC Den Bosch",
+      "name": "Stadion De Vliert",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/fc-den-bosch"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "fc-dordrecht",
+      "club": "FC Dordrecht",
+      "name": "M-Scores Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/fc-dordrecht"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "fc-eindhoven",
+      "club": "FC Eindhoven",
+      "name": "Jan Louwers Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/fc-eindhoven"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "fc-emmen",
+      "club": "FC Emmen",
+      "name": "De Oude Meerdijk",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/fc-emmen"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "fc-volendam",
+      "club": "FC Volendam",
+      "name": "Kras Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/fc-volendam"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "helmond-sport",
+      "club": "Helmond Sport",
+      "name": "MySteel Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/helmond-sport"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "heracles-almelo",
+      "club": "Heracles Almelo",
+      "name": "Asito Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/heracles-almelo"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "jong-ajax",
+      "club": "Jong Ajax",
+      "name": "Sportpark De Toekomst",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/jong-ajax"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "afas-trainingscomplex",
+      "club": "Jong AZ",
+      "name": "AFAS Trainingscomplex",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://www.az.nl/wedstrijden/jong-az",
+        "https://www.az.nl/inside-az/nieuws/2026/juni/jong-az-begint-seizoen-tegen-fc-eindhoven"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "jong-fc-utrecht",
+      "club": "Jong FC Utrecht",
+      "name": "Sportcomplex Zoudenbalch",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/jong-fc-utrecht"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "jong-psv",
+      "club": "Jong PSV",
+      "name": "TenCate Stadion De Herdgang",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/jong-psv"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "mvv-maastricht",
+      "club": "MVV Maastricht",
+      "name": "De Geusselt",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/mvv-maastricht"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "nac-breda",
+      "club": "NAC Breda",
+      "name": "Rat Verlegh Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/nac-breda"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "rkc-waalwijk",
+      "club": "RKC Waalwijk",
+      "name": "Mandemakers Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/rkc-waalwijk"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "roda-jc-kerkrade",
+      "club": "Roda JC Kerkrade",
+      "name": "Parkstad Limburg Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/roda-jc-kerkrade"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "top-oss",
+      "club": "TOP Oss",
+      "name": "Frans Heesen Stadion",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/top-oss"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "vitesse",
+      "club": "Vitesse",
+      "name": "GelreDome",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/vitesse"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    },
+    {
+      "venueId": "vvv-venlo",
+      "club": "VVV-Venlo",
+      "name": "Seacon Stadion – De Koel –",
+      "tier": "kkd",
+      "priority": 1,
+      "verifiedAt": "2026-11-01",
+      "sources": [
+        "https://keukenkampioendivisie.nl/teams/vvv-venlo"
+      ],
+      "publicationStatus": "awaiting_fact_pack"
+    }
+  ]
+}
