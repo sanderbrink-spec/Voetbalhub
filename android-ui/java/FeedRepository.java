@@ -31,7 +31,7 @@ public final class FeedRepository {
  public static void unsubscribe(Listener listener){listeners.remove(listener);}
  private static void notifyListeners(){for(Listener listener:new ArrayList<>(listeners))listener.changed(snapshot,loading,failed);}
  public static void refresh(boolean force){
-  if(loading||context==null||!force&&android.os.SystemClock.elapsedRealtime()-lastAttempt<30000)return;
+  if(loading||context==null||!force&&lastAttempt>0&&android.os.SystemClock.elapsedRealtime()-lastAttempt<30000)return;
   lastAttempt=android.os.SystemClock.elapsedRealtime();loading=true;failed=false;notifyListeners();
   final String address=endpoint;NETWORK.execute(()->{
    JSONObject result=null;HttpURLConnection conn=null;
