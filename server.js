@@ -272,7 +272,7 @@ async function polishIncomingDraft(item) {
     return { ...item, languagePolish: "failed" };
   }
 }
-async function getArticles() {
+async function getArticles(view = "current") {
   if (!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
   const articles = [];
@@ -282,7 +282,7 @@ async function getArticles() {
     try { const article = JSON.parse(raw); if (article.status === "published") articles.push(require("./brand").article(withArticleCover(article))); } catch {}
   }
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
-  return articles;
+  return require("./feed-policy").selectFeed(articles, {view});
 }
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 async function handle(req, res) {
@@ -383,7 +383,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     return send(res, 200, { ok: true, service: "Veldio Redactie API", manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
-    try { const articles = await getArticles(); return send(res, 200, { count: articles.length, articles }); }
+    try { const view = url.searchParams.get("view") || "current";
+      if (!["current","archive","all"].includes(view)) return send(res,400,{error:"Onbekende nieuwsweergave."});
+      const articles = await getArticles(view); return send(res, 200, { count: articles.length, articles }); }
     catch { return send(res, 503, { error: "Artikelenopslag is nog niet verbonden. Configureer REDIS_URL in Render." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
@@ -781,6 +783,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if(reviewedDraft)body={...reviewedDraft.payload,approved:body.approved};
     // Reviewed match artwork travels with automatic and manual publication alike.
     body=withArticleCover(body);
+    let feedLifecycle;
+    try { feedLifecycle = require("./feed-policy").publicationLifecycle(body.feedLifecycle); }
+    catch(error) { return send(res,400,{error:error.message}); }
     const d = body.draft || {};
     const facts = Array.isArray(body.verifiedFacts) ? body.verifiedFacts.filter(x => typeof x === "string" && x.trim()) : [];
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => s && typeof s.url === "string" && s.url.startsWith("https://")) : [];
@@ -825,7 +830,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       }
     }
     const now = new Date().toISOString();
-    const article = { id: reviewedDraft ? reviewedDraft.id.slice(14) : crypto.randomUUID(), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
+    const article = { ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? reviewedDraft.id.slice(14) : crypto.randomUUID(), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
     const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
     if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
     if(reviewedDraft) { try {await require("./editorial-drafts").markPublished(client,reviewedDraft,article.id);} catch {console.warn("Published article retained; draft status update deferred.");} }

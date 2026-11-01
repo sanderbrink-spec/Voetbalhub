@@ -10,9 +10,17 @@ on:
       - ".github/workflows/build.yml"
   push:
     branches: [main, master]
+    paths-ignore:
+      - "server.js"
+      - "feed-policy.js"
+      - "feed-policy.json"
+      - "test/feed-policy.test.js"
+      - "scripts/automatic-publication.js"
+      - "public/article-covers/phase30/**"
 
 jobs:
   api-test-and-build:
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[backend-only]')
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout

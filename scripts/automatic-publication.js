@@ -206,7 +206,7 @@ async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={})
  const model=selectModel(await models.json());report.model=model;console.log('Beschikbaar redactiemodel:',model);
  const headers={Authorization:'Bearer '+secret,'Content-Type':'application/json'};
  async function api(endpoint,body){const r=await fetcher(API+endpoint,{headers,signal:AbortSignal.timeout(60000),...(body?{method:'POST',body:JSON.stringify(body)}:{})});const d=await r.json();if(!r.ok)throw Error(endpoint+': HTTP '+r.status+' '+(d.error||''));return d;}
- const publicFeed=await api('/articles');let published=publicFeed.articles;
+ const publicFeed=await api('/articles?view=all');let published=publicFeed.articles;
  if(!Array.isArray(published))throw Error('Openbare feed niet controleerbaar.');
  const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(now));
  const todayCount=published.filter(a=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(a.publishedAt))===today).length;
@@ -252,13 +252,13 @@ async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={})
    Object.assign(payload,await uploadCover(payload,{token:githubToken,fetcher}));
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
    // Refresh before the only publication write to avoid a concurrent/manual duplicate.
-   published=(await api('/articles')).articles;
+   published=(await api('/articles?view=all')).articles;
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp inmiddels gepubliceerd.'});continue;}
    const saved=await api('/editorial-drafts',{payload,approve:true});
    if(saved.record?.status!=='approved'||saved.record.contentHash!==fingerprint(payload))throw Error('Gecontroleerde tekstversie niet bevestigd.');
    const result=await api('/publish',{...payload,approved:true,editorialDraftId:saved.record.id,expectedRevision:saved.record.revision});
    if(result.status!=='published'||result.article?.imageUrl!==payload.imageUrl)throw Error('Publicatie inclusief afbeelding niet bevestigd.');
-   const visible=(await api('/articles')).articles.find(a=>a.id===result.article.id);
+   const visible=(await api('/articles?view=all')).articles.find(a=>a.id===result.article.id);
    if(!visible||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(draft.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
    report.published.push({id:visible.id,headline:visible.headline,imageUrl:visible.imageUrl});published.push(visible);
    console.log('Gepubliceerd met afbeelding:',visible.headline);
