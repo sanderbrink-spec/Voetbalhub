@@ -1038,10 +1038,14 @@ jobs:
           s = p.read_text()
           old = 'applicationId = "nl.voetbalhub.app1"'
           assert s.count(old) == 1, 'Expected applicationId missing or ambiguous'
-          p.write_text(s.replace(old, 'applicationId = "nl.voetbalhub.app1.test"', 1))
+          p.write_text(s.replace(old, 'applicationId = "nl.voetbalhub.app1.test32"', 1))
+          import re
+          for label_file in Path('app/src/main/res').glob('values*/strings.xml'):
+              labels=label_file.read_text()
+              label_file.write_text(re.sub(r'(<string\s+name="app_name"[^>]*>).*?(</string>)',r'\1Veldio 32 test\2',labels,flags=re.S))
           PY
             gradle :app:assembleDebug --no-daemon
-            echo "Separate test APK: nl.voetbalhub.app1.test. Existing update signing identity unavailable; this APK installs alongside the existing app." >> "$GITHUB_STEP_SUMMARY"
+            echo "Separate test APK: nl.voetbalhub.app1.test32. Existing update signing identity unavailable; this APK installs alongside the existing app." >> "$GITHUB_STEP_SUMMARY"
           fi
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs app/build/outputs/apk/debug/app-debug.apk
           sha256sum app/build/outputs/apk/debug/app-debug.apk >> "$GITHUB_STEP_SUMMARY"

@@ -14,13 +14,14 @@ badging = subprocess.check_output([str(aapt), 'dump', 'badging', sys.argv[1]], t
 match = re.search(r"package: name='([^']+)'", badging)
 assert match, 'APK package identity missing'
 PACKAGE = match.group(1)
-assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test'), PACKAGE
+assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test32'), PACKAGE
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
-    adb('shell','screencap','-p','/sdcard/veldio.png')
-    adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
-    if name=='01-start': return None
+    if name=='01-start':
+        adb('shell','screencap','-p','/sdcard/veldio.png')
+        adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
+        return None
     for attempt in range(4):
         try:
             adb('shell','uiautomator','dump','--compressed','/sdcard/veldio.xml')
@@ -32,6 +33,8 @@ def capture(name):
     root=ET.parse(OUT/(name+'.xml')).getroot()
     visible=[n.get('text','')+' '+n.get('content-desc','') for n in root.iter('node')]
     assert not any(re.search(r'VoetbalHub',x,re.I) and 'https://' not in x for x in visible),visible
+    adb('shell','screencap','-p','/sdcard/veldio.png')
+    adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
     return root
 adb('install','-r',sys.argv[1])
 adb('shell','am','force-stop',PACKAGE)
@@ -154,8 +157,13 @@ for attempt in range(28):
     time.sleep(3)
     if pref_timestamp()>before:break
 assert pref_timestamp()>before,'Production feed fetch not persisted'
-root=capture('13-live-home')
-assert any(latest in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')),'Newest live article absent from home carousel'
+for attempt in range(8):
+    root=capture('13-live-home')
+    hero_ready=any('NIEUWSTE ARTIKEL' in n.get('text','') and latest in n.get('text','') for n in root.iter('node'))
+    spotlight_ready=any('CLUB IN DE SPOTLIGHT' in n.get('text','') or 'WEDSTRIJD VAN DE WEEK' in n.get('text','') for n in root.iter('node'))
+    if hero_ready and spotlight_ready:break
+    time.sleep(.6)
+assert hero_ready and spotlight_ready,'Published home carousel or dynamic paired card did not render'
 # Start at the top of the ScrollView, below the fixed category chips.
 size=list(map(int,re.findall(r'\d+',adb('shell','wm','size'))))[-2:];width,height=size
 before=pref_timestamp()
