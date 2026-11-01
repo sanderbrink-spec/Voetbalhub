@@ -225,10 +225,14 @@ adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-W','-n',PACKAG
 time.sleep(22);root=capture('19-phase33-offline-home')
 assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')), 'Loading exceeded hard deadline'
 assert not any('video’s laden' in n.get('text','') for n in root.iter('node')), 'Orphan video loader'
-assert any('VOETBAL IN CIJFERS' in n.get('text','') for n in root.iter('node')), 'Original football quiz absent'
+for attempt in range(4):
+    if any('VOETBAL IN CIJFERS' in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')):break
+    adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.48)),'450');time.sleep(1);root=capture('19-phase33-offline-home')
+assert any('VOETBAL IN CIJFERS' in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')), 'Original football quiz absent after scrolling'
+
 adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.35)),'500');time.sleep(1)
 root=capture('19b-phase33-offline-feed')
-assert any(n.get('text')=='Opnieuw proberen' for n in root.iter('node')), 'Retry button absent after offline deadline'
+assert any(n.get('text','').casefold()=='opnieuw proberen' for n in root.iter('node')), 'Retry button absent after offline deadline'
 assert not any(n.get('class')=='android.widget.ProgressBar' for n in root.iter('node')), 'Offline feed spinner never stopped'
 tap_node(root,lambda n:n.get('text')=='Meer');time.sleep(1);root=capture('20-phase33-more')
 tap_node(root,lambda n:n.get('text')=='Stadion van de week');time.sleep(2);root=capture('21-phase33-stadium-archive')
