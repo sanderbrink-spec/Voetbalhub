@@ -1,0 +1,48 @@
+name: Verify immutable Veldio 37 APK
+on:
+  push:
+    branches: [work/veldio-37]
+    paths:
+      - 'scripts/android-brand-smoke.py'
+      - '.github/workflows/android-verification37.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  android-verification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Veldio-Android-test
+          path: apk
+          run-id: 41474499377
+          repository: sanderbrink-spec/Voetbalhub
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify exact already built APK
+        run: echo 'a7c621c6c30ee70a773426c635d3ab044df990b0b75c5d399af30e3aa5d3ab74  apk/app-debug.apk' | sha256sum -c -
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Inspect existing APK on Android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: python3 scripts/android-brand-smoke.py apk/app-debug.apk
+      - name: Keep Android verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-37-Android-verificatie
+          path: .android-smoke/
+          include-hidden-files: true
+          if-no-files-found: error

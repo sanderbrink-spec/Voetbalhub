@@ -1,0 +1,3 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict'),M=require('../quiz39/model'),fs=require('node:fs');
+test('quiz39 server bank and offline bank remain identical and forbidden-term policy is not an Android asset',()=>{const vm=require('node:vm'),c={window:{}};vm.runInNewContext(fs.readFileSync('android-ui/assets/clubquiz-bank.js','utf8'),c);assert.equal(JSON.stringify(c.window.CLUBQUIZ_BANK),JSON.stringify(M.bank));assert.equal(fs.readFileSync('quiz39/selection.js','utf8'),fs.readFileSync('android-ui/assets/clubquiz-engine.js','utf8'));assert.equal(fs.existsSync('android-ui/assets/name-policy.json'),false);});

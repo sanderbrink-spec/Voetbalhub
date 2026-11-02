@@ -47,13 +47,13 @@ test('publication workflow distinguishes policy/provider failures from a quiet e
  assert.equal(runExitCode({...base,status:'no_new_verified_articles',sourceErrors:[{error:'offline'}]}),1);
  assert.equal(runExitCode({...base,status:'provider_daily_limit',published:[{id:'one'}]}),1);
 });
-test('unconfigured real CLI exits unsuccessfully and leaves a complete machine-readable report',()=>{
+test('blocked real CLI exits unsuccessfully and leaves a complete machine-readable report',()=>{
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'veldio-policy-'));
  try{
   const result=spawnSync(process.execPath,[path.resolve(__dirname,'../scripts/automatic-publication.js')],{cwd:directory,env:{...process.env,HUB_API_SECRET:'',GROQ_API_KEY:'',GITHUB_TOKEN:''},encoding:'utf8'});
   assert.equal(result.status,1);
   const report=JSON.parse(fs.readFileSync(path.join(directory,'.automatic-output/report.json'),'utf8'));
-  assert.equal(report.status,'failed');assert.deepEqual(report.published,[]);
-  assert.ok(Number.isFinite(Date.parse(report.finishedAt)));assert.match(result.stderr,/zijn vereist/);
+  assert.equal(report.status,'rights_blocked');assert.deepEqual(report.published,[]);
+  assert.ok(Number.isFinite(Date.parse(report.finishedAt)));assert.match(result.stdout,/rights_blocked/);
  }finally{fs.rmSync(directory,{recursive:true,force:true});}
 });

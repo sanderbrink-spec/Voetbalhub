@@ -16,6 +16,9 @@ public final class NavIconView extends View {
   else if("Nieuws".equals(name)){s.moveTo(3,10);s.lineTo(12,3);s.lineTo(21,10);s.moveTo(5,9);s.lineTo(5,21);s.lineTo(19,21);s.lineTo(19,9);s.moveTo(10,21);s.lineTo(10,15);s.lineTo(14,15);s.lineTo(14,21);c.drawPath(s,p);}
   else if("Column".equals(name)){c.drawRoundRect(4,3,20,21,2,2,p);c.drawLine(8,7,16,7,p);c.drawLine(8,11,16,11,p);c.drawLine(8,15,14,15,p);}
   else if("Competities".equals(name)){c.drawCircle(12,12,9,p);for(int i=0;i<5;i++){double a=(-90+i*72)*Math.PI/180;float x=12+(float)Math.cos(a)*4,y=12+(float)Math.sin(a)*4;if(i==0)s.moveTo(x,y);else s.lineTo(x,y);c.drawLine(x,y,12+(float)Math.cos(a)*8.5f,12+(float)Math.sin(a)*8.5f,p);}s.close();c.drawPath(s,p);}
+  else if("Clubquiz".equals(name)){c.drawRoundRect(7,3,17,13,2,2,p);c.drawLine(12,14,12,20,p);c.drawLine(7,21,17,21,p);s.moveTo(7,5);s.lineTo(3,5);s.lineTo(3,9);s.lineTo(8,12);s.moveTo(17,5);s.lineTo(21,5);s.lineTo(21,9);s.lineTo(16,12);c.drawPath(s,p);}
+  else if("Stadions".equals(name)){c.drawOval(2,5,22,13,p);c.drawArc(2,10,22,21,0,180,false,p);c.drawLine(2,9,2,16,p);c.drawLine(22,9,22,16,p);c.drawLine(7,12,7,20,p);c.drawLine(17,12,17,20,p);}
+  else if("Video's".equals(name)||"Video’s".equals(name)){c.drawCircle(12,12,10,p);s.moveTo(10,7);s.lineTo(17,12);s.lineTo(10,17);s.close();c.drawPath(s,p);}
   else if("Favorieten".equals(name)){for(int i=0;i<10;i++){double a=(-90+i*36)*Math.PI/180;float r=i%2==0?9:4,x=12+(float)Math.cos(a)*r,y=12+(float)Math.sin(a)*r;if(i==0)s.moveTo(x,y);else s.lineTo(x,y);}s.close();c.drawPath(s,p);}
   else {c.drawLine(4,6,20,6,p);c.drawLine(4,12,20,12,p);c.drawLine(4,18,20,18,p);}c.restore();
  }

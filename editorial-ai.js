@@ -15,6 +15,7 @@ function normalizeDraft(text) {
 function generationIssues(draft,facts,match=null) {
   if(!draft)return ['Geef uitsluitend een geldig JSON-object met kop, intro en body.'];
   const issues=draftIssues(draft);
+  if(draft.why_it_matters!==undefined&&typeof draft.why_it_matters!=='string')issues.push('De contexttoelichting moet tekst zijn.');
   if(headlineContradictions(draft))issues.push('De kop noemt tegenstrijdige wedstrijdresultaten. Gebruik alleen het aangeleverde resultaat.');
   issues.push(...require('./editorial-facts').evidenceIssues(draft,facts,match));
   return [...new Set(issues)];

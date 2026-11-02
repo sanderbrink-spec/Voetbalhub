@@ -16,3 +16,12 @@ test('frame metadata uses the recorded article kind and escapes supplied labels'
  assert.match(badge({kind:'report'}).toString(),/NABESCHOUWING/);
  assert.ok(!badge().toString().includes('VOORBESCHOUWING'));
 });
+test('remote image permission binds original bytes and is rechecked on cache hits',async()=>{
+ const {remoteImage}=require('../brand-images'),{createHash}=require('node:crypto');
+ const bytes=await sharp({create:{width:800,height:450,channels:3,background:'#123456'}}).png().toBuffer(),sha=createHash('sha256').update(bytes).digest('hex');let calls=0,permitted=true,checks=0;
+ const fetcher=async()=>{calls++;return new Response(bytes,{headers:{'Content-Type':'image/png'}});};
+ const authorize=hash=>{checks++;assert.equal(hash,sha);return permitted;};
+ const url='https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/fixture-permission-test.png';
+ await remoteImage(url,fetcher,{},authorize);assert.equal(calls,1);
+ permitted=false;await assert.rejects(remoteImage(url,fetcher,{},authorize),/rights missing/);assert.equal(calls,1);assert.equal(checks,2);
+});
