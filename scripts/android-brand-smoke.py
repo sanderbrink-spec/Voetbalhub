@@ -272,10 +272,16 @@ if not answers:
     answers=[n for n in root.iter('node') if n.get('class')=='android.widget.Button' and re.match(r'^[A-D](Eredivisie|Keuken|Premier|Bundesliga)',n.get('text',''))]
 assert len(answers)==4, 'Four quiz answers not exposed'
 tap_node(root,lambda n:n is answers[0]);time.sleep(1);root=capture('30-phase35-quiz-answer')
-for attempt in range(3):
-    if any('Volgende vraag' in n.get('text','') for n in root.iter('node')):break
+def visible_quiz_next(n):
+    b=bounds(n)
+    return 'Volgende vraag' in n.get('text','') and len(b)==4 and b[0]>=0 and b[1]>0 and b[2]>b[0] and b[3]>b[1]
+# WebView accessibility also reports offscreen nodes with zero/inverted bounds.
+# Finding the text alone is not evidence that the button can be tapped.
+for attempt in range(5):
+    if any(visible_quiz_next(n) for n in root.iter('node')):break
     adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.4)),'400');time.sleep(1);root=capture('30-phase35-quiz-answer')
-tap_node(root,lambda n:'Volgende vraag' in n.get('text',''));time.sleep(1);root=capture('31-phase35-quiz-next')
+assert any(visible_quiz_next(n) for n in root.iter('node')), 'Next quiz button not visible after scrolling'
+tap_node(root,visible_quiz_next);time.sleep(1);root=capture('31-phase35-quiz-next')
 assert any('Vraag 2 / 10' in n.get('text','') for n in root.iter('node')), 'Quiz progress not advanced'
 adb('shell','input','keyevent','4');time.sleep(1);capture('32-phase35-quiz-back')
 adb('shell','svc','wifi','enable')
