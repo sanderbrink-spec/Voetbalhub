@@ -33,6 +33,13 @@ assert 'Error:' not in result,result
 capture('01-start')
 time.sleep(6)
 root=capture('02-home')
+# Recover the observed Pixel Launcher emulator ANR only. An app ANR remains a failure.
+launcher_dialog=next((n for n in root.iter('node') if n.get('text')=="Pixel Launcher isn't responding"),None)
+if launcher_dialog is not None:
+    close=next(n for n in root.iter('node') if n.get('resource-id')=='android:id/aerr_close')
+    box=list(map(int,re.findall(r'\d+',close.get('bounds',''))))
+    adb('shell','input','tap',str((box[0]+box[2])//2),str((box[1]+box[3])//2))
+    adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');time.sleep(5);root=capture('02-home')
 def bounds(node):return list(map(int,re.findall(r'\d+',node.get('bounds',''))))
 logo=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/logo'))
 title=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/title'))
