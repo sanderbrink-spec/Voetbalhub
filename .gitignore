@@ -14,3 +14,17 @@ keystore.properties
 *.jks
 *.keystore
 .android-smoke/
+
+.media-sources/
+.*-research.json
+.phase32-*/
+
+.phase32-*
+
+.phase33/
+
+.stadium-output/
+
+.phase35/
+
+.phase37/

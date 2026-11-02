@@ -1,6 +1,6 @@
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.DeskFacts=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){
  const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,' ');
- const blocks=d=>[d?.headline,d?.standfirst,...(Array.isArray(d?.body)?d.body:[])].filter(Boolean);
+ const blocks=d=>[d?.headline,d?.standfirst,...(Array.isArray(d?.body)?d.body:[]),d?.why_it_matters].filter(Boolean);
  const text=d=>blocks(d).join(' ');
  const scores=value=>[...String(value||'').matchAll(/\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b/g)].map(m=>Number(m[1])+'-'+Number(m[2]));
  const needsMatch=d=>scores(text(d)).length>0||/\b(?:verslaat|versloeg|gelijkspel|puntendeling|eindstand|ruststand)\b/i.test(text(d))||(/\b(?:wint|won|overwinning)\b/i.test(text(d))&&/\b(?:wedstrijd|duel|speelronde|slotfase|eredivisie|competitie)\b/i.test(text(d)));

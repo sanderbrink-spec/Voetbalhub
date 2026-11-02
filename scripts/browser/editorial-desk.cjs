@@ -11,7 +11,7 @@ let privateRecords=[];
 await page.route('**/editorial-drafts',route=>{
  if(route.request().method()==='GET')return route.fulfill({json:{items:privateRecords}});
  const b=route.request().postDataJSON(),old=privateRecords.find(r=>r.id===b.id);
- const record={id:old?.id||Date.now()+'-'+require('node:crypto').randomUUID(),revision:(old?.revision||0)+1,status:b.approve?'approved':'draft',payload:b.payload};
+ const record={id:old?.id||Date.now()+'-'+require('node:crypto').randomUUID(),revision:(old?.revision||0)+1,status:b.approve?'approved':b.state||'draft',payload:b.payload};
  privateRecords=[record,...privateRecords.filter(r=>r.id!==record.id)];return route.fulfill({json:{record,published:false}});
 });
 await page.route('**/publish',route=>{const p=route.request().postDataJSON();posted.push(p);assert.ok(p.editorialDraftId);assert.equal(p.sources.length,3);assert.match(p.reviewNotes,/oorspronkelijke bronnen/);assert.ok(privateRecords.some(r=>r.id===p.editorialDraftId&&r.status==='approved'));privateRecords=privateRecords.map(r=>r.id===p.editorialDraftId?{...r,status:'published'}:r);return route.fulfill({json:{article:{id:'test-published'}}});});
@@ -61,7 +61,7 @@ assert.equal(posted.length,0);
 const generatedText=await page.locator('#body').inputValue();draftMode='error';await page.locator('#generationFactCheck').check();await page.locator('#generateDraft').click();
 await page.waitForFunction(()=>document.getElementById('generationStatus').textContent.includes('AI-limiet'));
 assert.equal(await page.locator('#body').inputValue(),generatedText);assert.equal(draftCalls,2);
-assert.ok((await page.locator('#serviceStatus').textContent()).includes('Automatische broninname staat uit'));
+assert.ok((await page.locator('#serviceStatus').textContent()).includes('RSS-broninname staat uit'));
 await page.locator('#matchFields summary').click();
 await page.locator('#homeTeam').fill('FC Groningen');await page.locator('#awayTeam').fill('Ajax');await page.locator('#homeScore').fill('2');await page.locator('#awayScore').fill('0');await page.locator('#playedAt').fill('2026-10-29');
 for(const id of ['resultVerified','namesVerified','dateVerified','timelineVerified'])await page.locator('#'+id).check();
@@ -87,6 +87,20 @@ assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>document.docume
 await page.setViewportSize({width:1280,height:800});
 await page.reload();
 assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
+// Status, evidence escaping, matching image and rejection all use the existing private queue.
+privateRecords.unshift({id:'needs-review',revision:1,status:'needs_review',payload:{draft:{headline:'Ajax bespreekt nieuwe plannen voor ontvangst van supporters',standfirst:'Controleer de aangeleverde informatie.',body:['Een bestaande conceptalinea.']},imageUrl:'https://example.org/checked.webp',imageRights:'cleared'},issues:['Controleer de brondatum.'],verification:{method:'automatic_primary_sources',checkedAt:'2026-10-31',current:false,checks:['Bron gecontroleerd.'],claims:[{text:'Een te controleren claim.',evidence:[{quote:'<img src=x onerror=alert(1)> Letterlijke bronpassage.'}]}]}});
+await page.route('https://example.org/checked.webp',route=>route.fulfill({status:404,body:''}));
+await page.locator('#secret').fill('not-a-real-secret');await page.locator('#load').click();
+await page.locator('#ownDraftQueue').getByText('Controleren',{exact:true}).waitFor();
+assert.equal(await page.locator('#ownDraftQueue img').count(),1);
+assert.equal(await page.locator('#ownDraftQueue img[onerror]').count(),0);
+await page.locator('#ownDraftQueue summary').filter({hasText:'Automatische feitencontrole'}).click();
+assert.ok((await page.locator('#ownDraftQueue').textContent()).includes('Deze controle bevestigt de huidige tekstversie niet'));
+assert.ok((await page.locator('#ownDraftQueue blockquote').textContent()).includes('<img src=x'));
+await page.locator('[data-own-open="0"]').click();await page.locator('#rejectServerDraft').click();
+await page.waitForFunction(()=>document.querySelector('#reviewStatus').textContent.includes('afgekeurd'));
+assert.equal(privateRecords[0].status,'rejected');assert.equal(await page.locator('#publish').isDisabled(),true);assert.equal(posted.length,1);
+console.log('Desk statuses, escaped fact evidence, image association and persistent rejection passed.');
 // Reproduce the reported 0-visible / 49-loaded queue using legacy saved filters.
 await page.setViewportSize({width:393,height:851});
 fixture=Array.from({length:49},(_,i)=>({id:'archive-'+i,headline:'Opgeslagen nieuwsaanleiding '+i,source:{publishedAt:new Date(Date.now()-6*24*3600000).toISOString(),url:'https://fcgroningen.nl/archive/'+i},body:[],sourceEvidence:{evidenceLevel:'publisher_link_only'}}));
