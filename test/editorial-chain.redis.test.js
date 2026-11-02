@@ -54,12 +54,14 @@ test('complete manual chain: generated draft, facts, real rendered cover, approv
 }));
 async function automaticScenario(refuse=false,scenario='lost-ack'){return usingApi(async({api,base,client})=>{
  const p=payload(),now=Date.parse('2026-10-31T12:00:00Z');p.sources[1].url='https://www.az.nl/inside-az/nieuws/2026/oktober/veldio-test-overleg';
- const m=media(),text=p.verifiedFacts.join(' '),docUrls=p.sources.map(s=>s.url),fragments=A.evidenceFragments({text});let completions=0,lost=false;
+ const m=media(),text=p.verifiedFacts.join(' '),docUrls=p.sources.map(s=>s.url),fragments=A.evidenceFragments({text});let completions=0,lost=false,injected=false;
  if(scenario==='reversed-sources'){docUrls.reverse();}
  const candidate={kind:'announcement',topic:p.draft.headline,category:'Eredivisie',eventDate:'',teams:['Ajax'],facts:p.verifiedFacts.map(t=>({text:t,evidence:[{source:0,fragment:Math.max(0,fragments.findIndex(f=>f.includes(t.slice(0,25))))}]})),sharedEventEvidence:[{source:0,fragment:0},{source:1,fragment:0}]};
  const fetcher=async(url,options={})=>{
   const u=new URL(url);
   if(u.hostname==='voetbalhub-redactie.onrender.com'){
+   const target={'health-retry':'/health','feed-retry':'/articles','publish-retry':'/publish'}[scenario];
+   if(target&&u.pathname===target&&!injected){injected=true;return Response.json({error:'Temporary isolated test failure'},{status:503});}
    const r=await fetch(base+u.pathname,options);
    if(scenario==='lost-ack'&&u.pathname==='/publish'&&!lost&&r.ok){lost=true;await r.text();throw Error('Simulated lost acknowledgement after commit');}return r;
   }
@@ -70,14 +72,14 @@ async function automaticScenario(refuse=false,scenario='lost-ack'){return usingA
    return Response.json({choices:[{message:{content:JSON.stringify(result)}}]});
   }
   if(u.hostname==='api.github.com'||u.hostname==='raw.githubusercontent.com')return m.fetch(url,options);
-  if(docUrls.includes(url))return new Response((scenario==='source-navigation'?'<nav>Transfergeruchten zonder bron.</nav><script>irrelevant()</script>':'')+'<script type="application/ld+json">'+JSON.stringify({datePublished:new Date(now-3600000).toISOString()})+'</script><main><h1>'+p.draft.headline+'</h1><p>'+text+'</p></main>');
+  if(docUrls.includes(url)){if(scenario==='source-time')return new Response('<time datetime="'+new Date(now-3600000).toISOString()+'"></time><main><h1>'+p.draft.headline+'</h1><p>'+text+'</p></main>');if(scenario==='source-article')return new Response('<script type="application/ld+json">'+JSON.stringify({datePublished:new Date(now-3600000).toISOString()})+'</script><article><h1>'+p.draft.headline+'</h1><p>'+text+'</p></article>');return new Response((scenario==='source-navigation'?'<nav>Transfergeruchten zonder bron.</nav><script>irrelevant()</script>':'')+'<script type="application/ld+json">'+JSON.stringify({datePublished:new Date(now-3600000).toISOString()})+'</script><main><h1>'+p.draft.headline+'</h1><p>'+text+'</p></main>');}
   if(url==='https://www.ajax.nl/')return new Response('<a href="'+new URL(p.sources[0].url).pathname+'">Onderwerp</a>'+(scenario==='duplicate-links'?'<a href="'+new URL(p.sources[0].url).pathname+'#extra">Nogmaals</a>':'' ));
   if(url==='https://www.az.nl/inside-az/nieuws/')return new Response('<a href="'+new URL(p.sources[1].url).pathname+'">Onderwerp</a>');
   return new Response('',{status:404});
  };
  let report=await A.run({secret:'chain-test-only',groqKey:'test-only',githubToken:'test-only',fetcher,now,aiIntervalMs:0});
  if(refuse){assert.equal(report.published.length,0);const records=(await api('/editorial-drafts')).items;assert.equal(records[0].status,'needs_review');assert.match(records[0].issues.join(' '),/Tweede feitencontrole/);assert.equal(records[0].payload.draft.body.length,3);assert.equal((await api('/articles')).articles.length,0);assert.equal(m.puts,0);return;}
- assert.equal(report.published.length,1,JSON.stringify(report.skipped));assert.equal(lost,scenario==='lost-ack');assert.equal(m.puts,1);
+ assert.equal(report.published.length,1,JSON.stringify(report.skipped));assert.equal(lost,scenario==='lost-ack');if(scenario.endsWith('-retry'))assert.equal(injected,true);assert.equal(m.puts,1);
  const visible=(await api('/articles')).articles;assert.equal(visible.length,1);assert.equal(visible[0].category,'Eredivisie');assert.ok(visible[0].imageUrl.includes('automatic-covers/'));
  const records=(await api('/editorial-drafts')).items;assert.equal(records[0].status,'published');assert.equal(records[0].verification.claims.length,4);
  const oldCalls=completions;await A.run({secret:'chain-test-only',groqKey:'test-only',githubToken:'test-only',fetcher,now,aiIntervalMs:0});assert.equal(completions,oldCalls);assert.equal((await api('/articles')).articles.length,1);
@@ -85,4 +87,4 @@ async function automaticScenario(refuse=false,scenario='lost-ack'){return usingA
 test('automatic discovery, fact check, real cover, approval, public feed, lost response retry and repeated-run cost guard',{skip:!process.env.REDIS_TEST_URL},()=>automaticScenario());
 test('negative automatic fact check preserves needs_review draft and never uploads or publishes',{skip:!process.env.REDIS_TEST_URL},()=>automaticScenario(true));
 
-for(const scenario of ['normal','duplicate-links','reversed-sources','source-navigation'])test('isolated full editorial chain: '+scenario,{skip:!process.env.REDIS_TEST_URL},()=>automaticScenario(false,scenario));
+for(const scenario of ['normal','duplicate-links','reversed-sources','source-navigation','health-retry','feed-retry','publish-retry','source-time','source-article'])test('isolated full editorial chain: '+scenario,{skip:!process.env.REDIS_TEST_URL},()=>automaticScenario(false,scenario));

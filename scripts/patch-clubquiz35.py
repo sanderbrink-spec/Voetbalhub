@@ -21,6 +21,6 @@ s=s.replace(anchor,anchor+'\n        addActionRow(list, "Clubquiz", "Speel de cl
 s=s.replace('public void onBackPressed() {','public void onBackPressed() {\n        if(clubQuizView!=null&&clubQuizView.back())return;',1)
 p.write_text(s)
 shutil.copyfile('android-ui/java/ClubQuizView.java',p.parent/'ClubQuizView.java')
-for name in ['clubquiz.html','clubquiz-engine.js','clubquiz-bank.js','clubquiz-ui.js']:
+for name in ['clubquiz.html','clubquiz-engine.js','clubquiz-bank.js','clubquiz-ui.js','quiz-player.svg']:
  shutil.copyfile('android-ui/assets/'+name,Path('app/src/main/assets')/name)
 print('Separate offline Clubquiz installed under Meer')

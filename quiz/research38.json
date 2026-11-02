@@ -1,0 +1,1271 @@
+{
+  "method": "Finite editorial research of public official historical summaries. Original questions only; no text, logos, API or photos copied. Review of reuse terms still required for release.",
+  "receipts": [
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1972,
+      "winner": "Liverpool",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1972/",
+      "sha256": "56bb9fa771c24cf19b214dbf09b46f4e0fd07de0e42f066c19c47238f9c1f7f2",
+      "checkedAt": "2026-11-02",
+      "date": "1973-05-23",
+      "teams": [
+        "M\\u00F6nchengladbach",
+        "Liverpool"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/64297--monchengladbach-vs-liverpool/",
+      "canonicalWinner": "Liverpool",
+      "canonicalTeams": [
+        "M\\u00F6nchengladbach",
+        "Liverpool"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1973,
+      "winner": "Feyenoord",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1973/",
+      "sha256": "7bd3882213649a69dda1390fe0d13daa05c42acf4ece5b71ceee3e43ecaf8d77",
+      "checkedAt": "2026-11-02",
+      "date": "1974-05-29",
+      "teams": [
+        "Feyenoord",
+        "Tottenham"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/64430--feyenoord-vs-tottenham/",
+      "canonicalWinner": "Feyenoord",
+      "canonicalTeams": [
+        "Feyenoord",
+        "Tottenham"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1975,
+      "winner": "Liverpool",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1975/",
+      "sha256": "30c3a20faf825e0bd94c3df37136a16eabe00b11d7f6a122cdfc8c28686193a5",
+      "checkedAt": "2026-11-02",
+      "date": "1976-05-19",
+      "teams": [
+        "Club Brugge",
+        "Liverpool"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/64684--club-brugge-vs-liverpool/",
+      "canonicalWinner": "Liverpool",
+      "canonicalTeams": [
+        "Club Brugge",
+        "Liverpool"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1976,
+      "winner": "Juventus",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1976/",
+      "sha256": "05ce3f4d3d131b6294cc955f49080f27e25d5db04ffd8384e8d041f8416758c0",
+      "checkedAt": "2026-11-02",
+      "date": "1977-05-18",
+      "teams": [
+        "Athletic Club",
+        "Juventus"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/64810--athletic-club-vs-juventus/",
+      "canonicalWinner": "Juventus",
+      "canonicalTeams": [
+        "Athletic Club",
+        "Juventus"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1977,
+      "winner": "PSV",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1977/",
+      "sha256": "fb053b30cb4bd52cdf0dbc64a2c00731533593e0f31d2bd34cd3972f4e8b2b73",
+      "checkedAt": "2026-11-02",
+      "date": "1978-05-09",
+      "teams": [
+        "PSV",
+        "Bastia"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/65088--psv-vs-bastia/",
+      "canonicalWinner": "PSV",
+      "canonicalTeams": [
+        "PSV",
+        "Bastia"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1979,
+      "winner": "Frankfurt",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1979/",
+      "sha256": "643f827b87f644ac848dee34fd10f8a80ea3e23397eb729770bd5d3d9c1bece7",
+      "checkedAt": "2026-11-02",
+      "date": "1980-05-21",
+      "teams": [
+        "Frankfurt",
+        "M\\u00F6nchengladbach"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/66511--frankfurt-vs-monchengladbach/",
+      "canonicalWinner": "Eintracht Frankfurt",
+      "canonicalTeams": [
+        "Eintracht Frankfurt",
+        "M\\u00F6nchengladbach"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1980,
+      "winner": "Ipswich",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1980/",
+      "sha256": "24b9e3622265ddfe3d890bf3ffdb0a51664ce209920e4d3bb38424f69780d063",
+      "checkedAt": "2026-11-02",
+      "date": "1981-05-20",
+      "teams": [
+        "AZ Alkmaar",
+        "Ipswich"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/66638--az-alkmaar-vs-ipswich/",
+      "canonicalWinner": "Ipswich",
+      "canonicalTeams": [
+        "AZ Alkmaar",
+        "Ipswich"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1982,
+      "winner": "Anderlecht",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1982/",
+      "sha256": "6512bb37c32754f706e64da107623b04b24cde7922b572cf2d058078b68518d8",
+      "checkedAt": "2026-11-02",
+      "date": "1983-05-18",
+      "teams": [
+        "Benfica",
+        "Anderlecht"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/67317--benfica-vs-anderlecht/",
+      "canonicalWinner": "Anderlecht",
+      "canonicalTeams": [
+        "Benfica",
+        "Anderlecht"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1983,
+      "winner": "Tottenham",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1983/",
+      "sha256": "5961eb618088fdd5b7a7c4e344e56ed19198dc7c561bee85f7b5e7540c693d0c",
+      "checkedAt": "2026-11-02",
+      "date": "1984-05-23",
+      "teams": [
+        "Tottenham",
+        "Anderlecht"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/1117--tottenham-vs-anderlecht/",
+      "canonicalWinner": "Tottenham",
+      "canonicalTeams": [
+        "Tottenham",
+        "Anderlecht"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1984,
+      "winner": "Real Madrid",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1984/",
+      "sha256": "ae045a90febf28b678cdf7afdef7f8458504aac07d654661e2e6e46c4fa556a7",
+      "checkedAt": "2026-11-02",
+      "date": "1985-05-22",
+      "teams": [
+        "Real Madrid",
+        "Feh\\u00E9rv\\u00E1r"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/67445--real-madrid-vs-fehervar/",
+      "canonicalWinner": "Real Madrid",
+      "canonicalTeams": [
+        "Real Madrid",
+        "Feh\\u00E9rv\\u00E1r"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1985,
+      "winner": "Real Madrid",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1985/",
+      "sha256": "42b40ba6aea9f6d644b7dace3a9f3023a11be8c39739ebe52ce668128fb3286b",
+      "checkedAt": "2026-11-02",
+      "date": "1986-05-06",
+      "teams": [
+        "K\\u00F6ln",
+        "Real Madrid"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/67602--koln-vs-real-madrid/",
+      "canonicalWinner": "Real Madrid",
+      "canonicalTeams": [
+        "K\\u00F6ln",
+        "Real Madrid"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1987,
+      "winner": "Leverkusen",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1987/",
+      "sha256": "50745bc26fe21893f9bbe7e1b87ab687295f9dd8f2252f1bc03ff68d879a040f",
+      "checkedAt": "2026-11-02",
+      "date": "1988-05-18",
+      "teams": [
+        "Leverkusen",
+        "Espanyol"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/4925--leverkusen-vs-espanyol/",
+      "canonicalWinner": "Leverkusen",
+      "canonicalTeams": [
+        "Leverkusen",
+        "Espanyol"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1988,
+      "winner": "Napoli",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1988/",
+      "sha256": "8f033716b83ab38a588c1c163a8fd4a531f51d0279ef41f02b33001a8ff4448a",
+      "checkedAt": "2026-11-02",
+      "date": "1989-05-17",
+      "teams": [
+        "Stuttgart",
+        "Napoli"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/927--stuttgart-vs-napoli/",
+      "canonicalWinner": "Napoli",
+      "canonicalTeams": [
+        "Stuttgart",
+        "Napoli"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1989,
+      "winner": "Juventus",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1989/",
+      "sha256": "8dfa8f8f7220a70d52dd4ba23378c02ea682dfdd96645d59b2e1e5cd4fc35e93",
+      "checkedAt": "2026-11-02",
+      "date": "1990-05-16",
+      "teams": [
+        "Fiorentina",
+        "Juventus"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2757--fiorentina-vs-juventus/",
+      "canonicalWinner": "Juventus",
+      "canonicalTeams": [
+        "Fiorentina",
+        "Juventus"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1990,
+      "winner": "Inter",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1990/",
+      "sha256": "db41ad58cbe5dc07b0f6821aa2fed05e6a0da5d7875f58951747a53f906ed14f",
+      "checkedAt": "2026-11-02",
+      "date": "1991-05-22",
+      "teams": [
+        "Roma",
+        "Inter"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/4376--roma-vs-inter/",
+      "canonicalWinner": "Inter",
+      "canonicalTeams": [
+        "Roma",
+        "Inter"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1991,
+      "winner": "Ajax",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1991/",
+      "sha256": "61d69f6fd8124f710bda7bd25ad77a5ef400747178b13adbfee3abe058d642cc",
+      "checkedAt": "2026-11-02",
+      "date": "1992-05-13",
+      "teams": [
+        "Ajax",
+        "Torino"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/5866--ajax-vs-torino/",
+      "canonicalWinner": "Ajax",
+      "canonicalTeams": [
+        "Ajax",
+        "Torino"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1992,
+      "winner": "Juventus",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1992/",
+      "sha256": "90b9b84867b684e292f22e0b42961fab06f523780630c3efe817b51bcc4be524",
+      "checkedAt": "2026-11-02",
+      "date": "1993-05-19",
+      "teams": [
+        "Juventus",
+        "B. Dortmund"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/50046--juventus-vs-b-dortmund/",
+      "canonicalWinner": "Juventus",
+      "canonicalTeams": [
+        "Juventus",
+        "B. Dortmund"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1993,
+      "winner": "Inter",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1993/",
+      "sha256": "570493f200efc13ef8a3354aa16634eb4b37bcc5c71cf2a7ef4a74133698caa9",
+      "checkedAt": "2026-11-02",
+      "date": "1994-05-11",
+      "teams": [
+        "Inter",
+        "Salzburg"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/51005--inter-vs-salzburg/",
+      "canonicalWinner": "Inter",
+      "canonicalTeams": [
+        "Inter",
+        "Salzburg"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1994,
+      "winner": "Parma",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1994/",
+      "sha256": "0147e87a370fdeb243baef8c9f228daae6c961ecf40494cf32dff539545ba9f3",
+      "checkedAt": "2026-11-02",
+      "date": "1995-05-17",
+      "teams": [
+        "Juventus",
+        "Parma"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/51667--juventus-vs-parma/",
+      "canonicalWinner": "Parma",
+      "canonicalTeams": [
+        "Juventus",
+        "Parma"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1996,
+      "winner": "Schalke",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1996/",
+      "sha256": "c94291f730f70790561ed861b0b1fb6c046389ddb2f4da4dc42a8dd3f7856fca",
+      "checkedAt": "2026-11-02",
+      "date": "1997-05-21",
+      "teams": [
+        "Inter",
+        "Schalke"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/53914--inter-vs-schalke/",
+      "canonicalWinner": "Schalke",
+      "canonicalTeams": [
+        "Inter",
+        "Schalke"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1997,
+      "winner": "Inter",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1997/",
+      "sha256": "30f99f3f8cf3abb6ae6f074835b02ff6cd30047ef0a1feae0d8f89f727470ae5",
+      "checkedAt": "2026-11-02",
+      "date": "1998-05-06",
+      "teams": [
+        "Lazio",
+        "Inter"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/54858--lazio-vs-inter/",
+      "canonicalWinner": "Inter",
+      "canonicalTeams": [
+        "Lazio",
+        "Inter"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1998,
+      "winner": "Parma",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1998/",
+      "sha256": "bc50080421cd6620d4c1f125ae38d06f7bb94ff5f2df45a3222361da0afb9c9f",
+      "checkedAt": "2026-11-02",
+      "date": "1999-05-12",
+      "teams": [
+        "Parma",
+        "Marseille"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/56371--parma-vs-marseille/",
+      "canonicalWinner": "Parma",
+      "canonicalTeams": [
+        "Parma",
+        "Marseille"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1999,
+      "winner": "Galatasaray",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1999/",
+      "sha256": "e829981de8959ff9f194017f81de93ee534afd32572350063b36f5a281298df5",
+      "checkedAt": "2026-11-02",
+      "date": "2000-05-17",
+      "teams": [
+        "Galatasaray",
+        "Arsenal"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/64414--galatasaray-vs-arsenal/",
+      "canonicalWinner": "Galatasaray",
+      "canonicalTeams": [
+        "Galatasaray",
+        "Arsenal"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2000,
+      "winner": "Liverpool",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2000/",
+      "sha256": "311f9661795d232c46912f44ca4cac05b278785f8135aa2e28714bd46e4ae3f6",
+      "checkedAt": "2026-11-02",
+      "date": "2001-05-16",
+      "teams": [
+        "Liverpool",
+        "Alav\\u00E9s"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/67741--liverpool-vs-alaves/",
+      "canonicalWinner": "Liverpool",
+      "canonicalTeams": [
+        "Liverpool",
+        "Alav\\u00E9s"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2001,
+      "winner": "Feyenoord",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2001/",
+      "sha256": "fe8fb9a017d22bd4630175c46ee23e20fb8144335b5b8f2bf84ac9bf6f6a4955",
+      "checkedAt": "2026-11-02",
+      "date": "2002-05-08",
+      "teams": [
+        "Feyenoord",
+        "B. Dortmund"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/69455--feyenoord-vs-b-dortmund/",
+      "canonicalWinner": "Feyenoord",
+      "canonicalTeams": [
+        "Feyenoord",
+        "B. Dortmund"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2002,
+      "winner": "Porto",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2002/",
+      "sha256": "8c88dc5c6351d743e2451969eb589198340c2166671af5acab7e0cc4365b7919",
+      "checkedAt": "2026-11-02",
+      "date": "2003-05-21",
+      "teams": [
+        "Celtic",
+        "Porto"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/71041--celtic-vs-porto/",
+      "canonicalWinner": "Porto",
+      "canonicalTeams": [
+        "Celtic",
+        "Porto"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2003,
+      "winner": "Valencia",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2003/",
+      "sha256": "ad73cac06c8480c4f66bf57a840daec23be899b98c0fd25bc7ba94a8daee3db5",
+      "checkedAt": "2026-11-02",
+      "date": "2004-05-19",
+      "teams": [
+        "Valencia",
+        "Marseille"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/75432--valencia-vs-marseille/",
+      "canonicalWinner": "Valencia",
+      "canonicalTeams": [
+        "Valencia",
+        "Marseille"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2004,
+      "winner": "CSKA Moskva",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2004/",
+      "sha256": "67eac4c7d20d0b7c001b9fdfba218585b3bc7707e9ecee1895e5f921dc82b050",
+      "checkedAt": "2026-11-02",
+      "date": "2005-05-18",
+      "teams": [
+        "Sporting CP",
+        "CSKA Moskva"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/80814--sporting-cp-vs-cska-moskva/",
+      "canonicalWinner": "CSKA Moskva",
+      "canonicalTeams": [
+        "Sporting CP",
+        "CSKA Moskva"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2005,
+      "winner": "Sevilla",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2005/",
+      "sha256": "41c06316cf835d32f6d8cc2315fd81bff02fe911a12bd91fb023a9b7ca186d59",
+      "checkedAt": "2026-11-02",
+      "date": "2006-05-10",
+      "teams": [
+        "Middlesbrough",
+        "Sevilla"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/84102--middlesbrough-vs-sevilla/",
+      "canonicalWinner": "Sevilla",
+      "canonicalTeams": [
+        "Middlesbrough",
+        "Sevilla"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2006,
+      "winner": "Sevilla",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2006/",
+      "sha256": "28d9a043b953a8aa5d1201372fbbf2439c8160661e9909a68f534623d7533c5d",
+      "checkedAt": "2026-11-02",
+      "date": "2007-05-16",
+      "teams": [
+        "Espanyol",
+        "Sevilla"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/300100--espanyol-vs-sevilla/",
+      "canonicalWinner": "Sevilla",
+      "canonicalTeams": [
+        "Espanyol",
+        "Sevilla"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2008,
+      "winner": "Zenit",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2008/",
+      "sha256": "6c74f2a84492da1ff8a9d2809baa12ffe71b7869baedf9319af1513dc7e6b61a",
+      "checkedAt": "2026-11-02",
+      "date": "2008-05-14",
+      "teams": [
+        "Zenit",
+        "Rangers"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/301605--zenit-vs-rangers/",
+      "canonicalWinner": "Zenit",
+      "canonicalTeams": [
+        "Zenit",
+        "Rangers"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2009,
+      "winner": "Shakhtar",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2009/",
+      "sha256": "6b8b4bc0c7504bbdbc8d86ab29aca521e02a6a67b28cda8b2a003fcf9d950934",
+      "checkedAt": "2026-11-02",
+      "date": "2009-05-20",
+      "teams": [
+        "Shakhtar",
+        "Bremen"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/302827--shakhtar-vs-bremen/",
+      "canonicalWinner": "Shakhtar",
+      "canonicalTeams": [
+        "Shakhtar",
+        "Bremen"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2010,
+      "winner": "Atleti",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2010/",
+      "sha256": "7b130409d46af4c11495f79364ab9e384bd8271be10fb8799dcc300fe65ea2da",
+      "checkedAt": "2026-11-02",
+      "date": "2010-05-12",
+      "teams": [
+        "Atleti",
+        "Fulham"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2000967--atleti-vs-fulham/",
+      "canonicalWinner": "Atlético Madrid",
+      "canonicalTeams": [
+        "Atlético Madrid",
+        "Fulham"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2011,
+      "winner": "Porto",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2011/",
+      "sha256": "78bd509b1473adb10efcc196797c97d986ddfe224a043495cb7965ae5f2ea77c",
+      "checkedAt": "2026-11-02",
+      "date": "2011-05-18",
+      "teams": [
+        "Porto",
+        "Braga"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2006268--porto-vs-braga/",
+      "canonicalWinner": "Porto",
+      "canonicalTeams": [
+        "Porto",
+        "Braga"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2012,
+      "winner": "Atleti",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2012/",
+      "sha256": "66768465474a970870aca9bfffef5222a1c09c885c993ae1c3abdaf8ac79e018",
+      "checkedAt": "2026-11-02",
+      "date": "2012-05-09",
+      "teams": [
+        "Atleti",
+        "Athletic Club"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2007480--atleti-vs-athletic-club/",
+      "canonicalWinner": "Atlético Madrid",
+      "canonicalTeams": [
+        "Atlético Madrid",
+        "Athletic Club"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2013,
+      "winner": "Chelsea",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2013/",
+      "sha256": "c80fbf95ab41a9119238c7679418c9db11c5a4a661d54989db463affcf7276ad",
+      "checkedAt": "2026-11-02",
+      "date": "2013-05-15",
+      "teams": [
+        "Benfica",
+        "Chelsea"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2010095--benfica-vs-chelsea/",
+      "canonicalWinner": "Chelsea",
+      "canonicalTeams": [
+        "Benfica",
+        "Chelsea"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2014,
+      "winner": "Sevilla",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2014/",
+      "sha256": "a93f7c3922da2a00bf66f131dbc78a947013eb1c150c1b06fa3357dd6a688d73",
+      "checkedAt": "2026-11-02",
+      "date": "2014-05-14",
+      "teams": [
+        "Sevilla",
+        "Benfica"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2012680--sevilla-vs-benfica/",
+      "canonicalWinner": "Sevilla",
+      "canonicalTeams": [
+        "Sevilla",
+        "Benfica"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2015,
+      "winner": "Sevilla",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2015/",
+      "sha256": "5b9cde94ac649640bae4b5a07a24d3f0a179c5259ebfcd7bc0182135e0e453bd",
+      "checkedAt": "2026-11-02",
+      "date": "2015-05-27",
+      "teams": [
+        "Dnipro",
+        "Sevilla"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2015228--dnipro-vs-sevilla/",
+      "canonicalWinner": "Sevilla",
+      "canonicalTeams": [
+        "Dnipro",
+        "Sevilla"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2016,
+      "winner": "Sevilla",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2016/",
+      "sha256": "7b2453692ed2066c1c5522c658cdff56e0a25e24e961ee9fd67d9857668c7508",
+      "checkedAt": "2026-11-02",
+      "date": "2016-05-18",
+      "teams": [
+        "Liverpool",
+        "Sevilla"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2017222--liverpool-vs-sevilla/",
+      "canonicalWinner": "Sevilla",
+      "canonicalTeams": [
+        "Liverpool",
+        "Sevilla"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2017,
+      "winner": "Man Utd",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2017/",
+      "sha256": "3a9805b7de1168a699ef8e747590c690b6dbb33eb94c0bb8a0f4423e6897638d",
+      "checkedAt": "2026-11-02",
+      "date": "2017-05-24",
+      "teams": [
+        "Ajax",
+        "Man Utd"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2019702--ajax-vs-man-utd/",
+      "canonicalWinner": "Manchester United",
+      "canonicalTeams": [
+        "Ajax",
+        "Manchester United"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2018,
+      "winner": "Atleti",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2018/",
+      "sha256": "5c6bd20b5b7d447926f49f23f80163f0d354d1cf04e75021219712468384b74a",
+      "checkedAt": "2026-11-02",
+      "date": "2018-05-16",
+      "teams": [
+        "Marseille",
+        "Atleti"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2022218--marseille-vs-atleti/",
+      "canonicalWinner": "Atlético Madrid",
+      "canonicalTeams": [
+        "Marseille",
+        "Atlético Madrid"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2019,
+      "winner": "Chelsea",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2019/",
+      "sha256": "47ca506c526c63c42dd547a84a657a3a8c35e76a342876771ca7c8a51b8e13a4",
+      "checkedAt": "2026-11-02",
+      "date": "2019-05-29",
+      "teams": [
+        "Chelsea",
+        "Arsenal"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2025487--chelsea-vs-arsenal/",
+      "canonicalWinner": "Chelsea",
+      "canonicalTeams": [
+        "Chelsea",
+        "Arsenal"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2020,
+      "winner": "Sevilla",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2020/",
+      "sha256": "a8c9fca5dbe50c721ff616ba221df90e1899ce8080d7e96377afcb4e891dc5c6",
+      "checkedAt": "2026-11-02",
+      "date": "2020-08-21",
+      "teams": [
+        "Sevilla",
+        "Inter"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2030143--sevilla-vs-inter/",
+      "canonicalWinner": "Sevilla",
+      "canonicalTeams": [
+        "Sevilla",
+        "Inter"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2021,
+      "winner": "Villarreal",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2021/",
+      "sha256": "5f81bd53d972b46604717b5d82323cfaefadbdc9e8a0905c06506851e3626b0e",
+      "checkedAt": "2026-11-02",
+      "date": "2021-05-26",
+      "teams": [
+        "Villarreal",
+        "Man Utd"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2029909--villarreal-vs-man-utd/",
+      "canonicalWinner": "Villarreal",
+      "canonicalTeams": [
+        "Villarreal",
+        "Manchester United"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2022,
+      "winner": "Frankfurt",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2022/",
+      "sha256": "3fd8647a7dafea4b21355149ad0d6f1c189b36a716e034666cb4c78dbbb2eb55",
+      "checkedAt": "2026-11-02",
+      "date": "2022-05-18",
+      "teams": [
+        "Frankfurt",
+        "Rangers"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2033450--frankfurt-vs-rangers/",
+      "canonicalWinner": "Eintracht Frankfurt",
+      "canonicalTeams": [
+        "Eintracht Frankfurt",
+        "Rangers"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2023,
+      "winner": "Sevilla",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2023/",
+      "sha256": "6846fc1016a51c03f7859e6bcda1af35446829c68c7e2dc18a76cc8ad1678439",
+      "checkedAt": "2026-11-02",
+      "date": "2023-05-31",
+      "teams": [
+        "Sevilla",
+        "Roma"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2037767--sevilla-vs-roma/",
+      "canonicalWinner": "Sevilla",
+      "canonicalTeams": [
+        "Sevilla",
+        "Roma"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2024,
+      "winner": "Atalanta",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2024/",
+      "sha256": "c43df008961f4cc7c775f12fde260b221b353a3a4b9a0ab541cf4b893b896c85",
+      "checkedAt": "2026-11-02",
+      "date": "2024-05-22",
+      "teams": [
+        "Atalanta",
+        "Leverkusen"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2039971--atalanta-vs-leverkusen/",
+      "canonicalWinner": "Atalanta",
+      "canonicalTeams": [
+        "Atalanta",
+        "Leverkusen"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2025,
+      "winner": "Tottenham",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2025/",
+      "sha256": "0d6bbeec771bd914aa816e13f8da6546c1dff957dd75d056b40183dd7b921b84",
+      "checkedAt": "2026-11-02",
+      "date": "2025-05-21",
+      "teams": [
+        "Tottenham",
+        "Man Utd"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/2044465--tottenham-vs-man-utd/",
+      "canonicalWinner": "Tottenham",
+      "canonicalTeams": [
+        "Tottenham",
+        "Manchester United"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 1984,
+      "winner": "Sweden",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/1984/",
+      "sha256": "009b0d1d096ac8161f5f7a50f5808ef0e36f3be1474ed6cf15c6e1f5299d0636",
+      "checkedAt": "2026-11-02",
+      "date": "1984-05-27",
+      "teams": [
+        "England",
+        "Sweden"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/54674--england-vs-sweden/",
+      "canonicalWinner": "Zweden",
+      "canonicalTeams": [
+        "Engeland",
+        "Zweden"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 1987,
+      "winner": "Norway",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/1987/",
+      "sha256": "2e2bbabfa4052d607f9866a096d0cc009d6ce13f38e5105f2134035f1293f887",
+      "checkedAt": "2026-11-02",
+      "date": "1987-06-14",
+      "teams": [
+        "Norway",
+        "Sweden"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/54735--norway-vs-sweden/",
+      "canonicalWinner": "Noorwegen",
+      "canonicalTeams": [
+        "Noorwegen",
+        "Zweden"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 1989,
+      "winner": "Germany",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/1989/",
+      "sha256": "d1d4ca1a8b762c10793d3088fa38ad6f857e0d8c9a7d176712b42325d9dc484e",
+      "checkedAt": "2026-11-02",
+      "date": "1989-07-02",
+      "teams": [
+        "Germany",
+        "Norway"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/1128--germany-vs-norway/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Noorwegen"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 1991,
+      "winner": "Germany",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/1991/",
+      "sha256": "a1f69e3a98053e96638ecc2fef4ff114f99389a3156162c4b7e7f9ca282342de",
+      "checkedAt": "2026-11-02",
+      "date": "1991-07-14",
+      "teams": [
+        "Germany",
+        "Norway"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/4519--germany-vs-norway/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Noorwegen"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 1993,
+      "winner": "Norway",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/1993/",
+      "sha256": "c6a237ac80352fc7aaf8b34f135a79bac514e6aa7ffe7caa6da4ab26cc71292a",
+      "checkedAt": "2026-11-02",
+      "date": "1993-07-04",
+      "teams": [
+        "Italy",
+        "Norway"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/50113--italy-vs-norway/",
+      "canonicalWinner": "Noorwegen",
+      "canonicalTeams": [
+        "Italië",
+        "Noorwegen"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 1995,
+      "winner": "Germany",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/1995/",
+      "sha256": "b8d474f6c6a550fdc2a9cb9ab734957c259eaa0c35bac6b4bad0af7456cfde29",
+      "checkedAt": "2026-11-02",
+      "date": "1995-03-26",
+      "teams": [
+        "Germany",
+        "Sweden"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/51555--germany-vs-sweden/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Zweden"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 1997,
+      "winner": "Germany",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/1997/",
+      "sha256": "b95d37f0b11d94d7a36bb1a303b9f652d10ccda7714f20e27eac3a510e955da4",
+      "checkedAt": "2026-11-02",
+      "date": "1997-07-12",
+      "teams": [
+        "Germany",
+        "Italy"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/54186--germany-vs-italy/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Italië"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 2001,
+      "winner": "Germany",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/2001/",
+      "sha256": "041f68f1f04b0f427ef2da33b0ae1addf929feae6188c33a474dffbf5e9499ea",
+      "checkedAt": "2026-11-02",
+      "date": "2001-07-07",
+      "teams": [
+        "Germany",
+        "Sweden"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/67997--germany-vs-sweden/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Zweden"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 2005,
+      "winner": "Germany",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/2005/",
+      "sha256": "aefc3fc13088f15cdc502e8b912d02590e792a61ae602d0f77baf7230c7d0e62",
+      "checkedAt": "2026-11-02",
+      "date": "2005-06-19",
+      "teams": [
+        "Germany",
+        "Norway"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/81146--germany-vs-norway/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Noorwegen"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 2009,
+      "winner": "Germany",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/2009/",
+      "sha256": "1cc739b08b1c42e4d12fddc89213c8873891be3b56143a9c755b7b266305a0cf",
+      "checkedAt": "2026-11-02",
+      "date": "2009-09-10",
+      "teams": [
+        "England",
+        "Germany"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/2001423--england-vs-germany/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Engeland",
+        "Duitsland"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 2013,
+      "winner": "Germany",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/2013/",
+      "sha256": "6c1d336fc0ebf45c3b609db6aa9ef565d05f7c57e8468e23738e53001c9cb77c",
+      "checkedAt": "2026-11-02",
+      "date": "2013-07-28",
+      "teams": [
+        "Germany",
+        "Norway"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/2011602--germany-vs-norway/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Noorwegen"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 2017,
+      "winner": "Netherlands",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/2017/",
+      "sha256": "50442b57955f4b3ef1ddedab8f81e87db3e1947c890b7bb97d457cdae28252bb",
+      "checkedAt": "2026-11-02",
+      "date": "2017-08-06",
+      "teams": [
+        "Netherlands",
+        "Denmark"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/2020924--netherlands-vs-denmark/",
+      "canonicalWinner": "Nederland",
+      "canonicalTeams": [
+        "Nederland",
+        "Denemarken"
+      ]
+    },
+    {
+      "competition": "womenseuro",
+      "year": 2025,
+      "winner": "England",
+      "source": "https://www.uefa.com/womenseuro/history/seasons/2025/",
+      "sha256": "225311f4a2ec07b70299977bf9157943519c019f03ebc65fd6ef619cf5dd8069",
+      "checkedAt": "2026-11-02",
+      "date": "2025-07-27",
+      "teams": [
+        "England",
+        "Spain"
+      ],
+      "matchSource": "https://www.uefa.com/womenseuro/match/2044383--england-vs-spain/",
+      "canonicalWinner": "Engeland",
+      "canonicalTeams": [
+        "Engeland",
+        "Spain"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1974,
+      "winner": "Mönchengladbach",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1974/",
+      "sha256": "57d738bef376256b1d0cd4e3f8489920db207bb63eb7f4932fda4c9c3393f2c4",
+      "checkedAt": "2026-11-02",
+      "date": "1975-05-21",
+      "teams": [
+        "Twente",
+        "Mönchengladbach"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/64558--twente-vs-monchengladbach/",
+      "canonicalWinner": "Borussia Mönchengladbach",
+      "canonicalTeams": [
+        "Twente",
+        "Borussia Mönchengladbach"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1978,
+      "winner": "Mönchengladbach",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1978/",
+      "sha256": "0dc842aef230049b9736352bf4b830ddf52b95404497c2ea905132b13faa5d40",
+      "checkedAt": "2026-11-02",
+      "date": "1979-05-23",
+      "teams": [
+        "Mönchengladbach",
+        "Crvena Zvezda"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/66305--monchengladbach-vs-crvena-zvezda/",
+      "canonicalWinner": "Borussia Mönchengladbach",
+      "canonicalTeams": [
+        "Borussia Mönchengladbach",
+        "Crvena Zvezda"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1981,
+      "winner": "IFK Göteborg",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1981/",
+      "sha256": "355be837c03f8a7fcd6b8da7f97005a18bd3c67fd71db14c08a7f4e49f7aedfb",
+      "checkedAt": "2026-11-02",
+      "date": "1982-05-19",
+      "teams": [
+        "Hamburg",
+        "IFK Göteborg"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/66785--hamburg-vs-ifk-goteborg/",
+      "canonicalWinner": "IFK Göteborg",
+      "canonicalTeams": [
+        "Hamburg",
+        "IFK Göteborg"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1986,
+      "winner": "IFK Göteborg",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1986/",
+      "sha256": "ee7aea48fbbb1738bb5b6bf0a67c3286c1690983ac5a3f8451ceba16be50aa30",
+      "checkedAt": "2026-11-02",
+      "date": "1987-05-20",
+      "teams": [
+        "Dundee United",
+        "IFK Göteborg"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/4987--dundee-united-vs-ifk-goteborg/",
+      "canonicalWinner": "IFK Göteborg",
+      "canonicalTeams": [
+        "Dundee United",
+        "IFK Göteborg"
+      ]
+    },
+    {
+      "competition": "uefaeuropaleague",
+      "year": 1995,
+      "winner": "Bayern München",
+      "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1995/",
+      "sha256": "7b5dacf38fb833191d289ef5b13de1b0a72c6781f745b975db403ed27aeb5561",
+      "checkedAt": "2026-11-02",
+      "date": "1996-05-15",
+      "teams": [
+        "Bordeaux",
+        "Bayern München"
+      ],
+      "matchSource": "https://www.uefa.com/uefaeuropaleague/match/52533--bordeaux-vs-bayern-munchen/",
+      "canonicalWinner": "Bayern München",
+      "canonicalTeams": [
+        "Bordeaux",
+        "Bayern München"
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "competition": "uefaeuropaleague",
+      "year": 2007,
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womenseuro",
+      "year": 2022,
+      "error": "HTTP Error 404: Not Found"
+    }
+  ]
+}

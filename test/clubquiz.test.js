@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const E=require('../android-ui/assets/clubquiz-engine');const context={window:{}};vm.runInNewContext(fs.readFileSync('android-ui/assets/clubquiz-bank.js','utf8'),context);const bank=JSON.parse(JSON.stringify(context.window.CLUBQUIZ_BANK));
 test('quiz bank: unique reviewed questions, four unique answers, local approved photos with matching provenance',()=>{
- assert.equal(bank.length,307);assert.equal(new Set(bank.map(q=>q.id)).size,bank.length);
+ assert.ok(bank.length>=500);assert.equal(new Set(bank.map(q=>q.id)).size,bank.length);
  const catalog=require('../news-photo-catalog.json').photos;
  for(const q of bank){assert.ok(E.valid(q),q.id);const photo=catalog.find(p=>p.file===q.image.file);assert.ok(photo?.approved);assert.equal(photo.credit,q.image.credit);assert.equal(photo.sourcePage,q.image.sourcePage);assert.ok(fs.existsSync('public/news-photos/'+q.image.file));}
 });

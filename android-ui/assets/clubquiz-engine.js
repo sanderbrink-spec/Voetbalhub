@@ -1,6 +1,6 @@
 (function(root){
 'use strict';
-const MODES=Object.freeze({quick:10,club:20,expert:25,daily:10}),VERSION='37.1';
+const MODES=Object.freeze({quick:10,club:20,expert:25,daily:10,stadium:10,player:10}),VERSION='38.1';
 function shuffle(values,rng=Math.random){const a=values.slice();for(let i=a.length-1;i>0;i--){const j=Math.min(i,Math.floor(rng()*(i+1)));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function valid(q){return q&&typeof q.id==='string'&&['easy','normal','hard'].includes(q.level)&&typeof q.question==='string'&&Array.isArray(q.answers)&&q.answers.length===4&&new Set(q.answers).size===4&&q.answers.every(a=>typeof a==='string'&&a.length>0)&&q.answers.includes(q.correct)&&/^https:\/\//.test(q.source)&&/^\d{4}-\d{2}-\d{2}$/.test(q.reviewedAt||'');}
 function dayKey(now=Date.now()){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);}
@@ -13,12 +13,16 @@ function select(bank,{level='easy',count=10,recent=[],rng=Math.random,now=Date.n
  const seen=pool.filter(q=>history.includes(q.id)).sort((a,b)=>history.lastIndexOf(a.id)-history.lastIndexOf(b.id));
  return [...fresh,...seen].slice(0,Math.max(1,Math.min(25,Math.floor(count)||10))).map(q=>({...q,answers:shuffle(q.answers,rng)}));
 }
-function createRound(bank,{mode='quick',level='easy',recent=[],now=Date.now(),rng=Math.random}={}){
+function clubs(bank){const counts=new Map();for(const q of bank.filter(valid))for(const club of new Set(q.clubs||[]))counts.set(club,(counts.get(club)||0)+1);return [...counts].filter(([,n])=>n>=MODES.club).map(([name,count])=>({name,count})).sort((a,b)=>a.name.localeCompare(b.name,'nl'));}
+function createRound(bank,{mode='quick',level='easy',club='',recent=[],now=Date.now(),rng=Math.random}={}){
  if(!Object.hasOwn(MODES,mode))throw Error('Onbekende spelvorm');
  const day=dayKey(now),daily=mode==='daily';
- const questions=select(bank,{level:daily?'mixed':level,count:MODES[mode],recent:daily?[]:recent,now:daily?Date.parse(day+'T00:00:00Z'):now,rng:daily?seeded(VERSION+':'+day):rng});
+ if(mode==='club'&&!clubs(bank).some(c=>c.name===club))throw Error('Kies een club met ten minste 20 gecontroleerde vragen.');
+ const pool=mode==='club'?bank.filter(q=>q.clubs?.includes(club)):mode==='stadium'?bank.filter(q=>q.topic==='stadium'):mode==='player'?bank.filter(q=>q.topic==='player'):bank;
+ const roundLevel=daily||['club','stadium','player'].includes(mode)?'mixed':mode==='expert'?'hard':level;
+ const questions=select(pool,{level:roundLevel,count:MODES[mode],recent:daily?[]:recent,now:daily?Date.parse(day+'T00:00:00Z'):now,rng:daily?seeded(VERSION+':'+day):rng});
  if(questions.length!==MODES[mode])throw Error('Voor dit niveau zijn onvoldoende actuele vragen beschikbaar. Kies een ander niveau.');
- return new Round(questions,{mode,level:daily?'mixed':level,day});
+ return new Round(questions,{mode,level:roundLevel,day,...(mode==='club'?{club}: {})});
 }
 class Round{
  constructor(questions,meta={}){if(!questions.length)throw Error('Geen gecontroleerde vragen beschikbaar');this.questions=questions;this.index=0;this.score=0;this.answered=false;this.done=false;this.meta=meta;}
@@ -36,5 +40,5 @@ function state(value){
  for(const r of result.history){const key=r.mode+':'+r.level;result.records[key]=Math.max(result.records[key]||0,r.score);if(r.mode==='daily'&&!result.daily[r.day])result.daily[r.day]=r;}return result;
 }
 function record(previous,r){const data=state(previous);if(!validResult(r))throw Error('Ongeldige score');if(r.mode==='daily'&&data.daily[r.day])return data;data.history=saveResult(data.history,r);const key=r.mode+':'+r.level;data.records[key]=Math.max(data.records[key]||0,r.score);if(r.mode==='daily')data.daily[r.day]=r;return state(data);}
-const api={MODES,VERSION,shuffle,valid,select,Round,dayKey,seeded,createRound,validResult,history,saveResult,best,state,record};if(typeof module==='object'&&module.exports)module.exports=api;else root.ClubQuiz=api;
+const api={MODES,VERSION,shuffle,valid,select,Round,dayKey,seeded,clubs,createRound,validResult,history,saveResult,best,state,record};if(typeof module==='object'&&module.exports)module.exports=api;else root.ClubQuiz=api;
 })(typeof window==='object'?window:globalThis);

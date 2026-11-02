@@ -1,4 +1,4 @@
-/* Original Veldio questions; historical fact receipts in quiz/research37.json. */
+/* Original Veldio questions. Historical receipts: quiz/research37.json and research38.json. */
 window.CLUBQUIZ_BANK=[
  {
   "id": "league-de-kuip",
@@ -21,7 +21,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "Feyenoord"
+  ],
+  "topic": "history"
  },
  {
   "id": "venue-de-kuip",
@@ -44,7 +48,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "Feyenoord"
+  ],
+  "topic": "stadium"
  },
  {
   "id": "league-johan-cruijff-arena",
@@ -67,7 +75,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "venue-johan-cruijff-arena",
@@ -90,7 +102,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "stadium"
  },
  {
   "id": "league-philips-stadion",
@@ -113,7 +129,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "PSV"
+  ],
+  "topic": "history"
  },
  {
   "id": "venue-philips-stadion",
@@ -136,7 +156,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "PSV"
+  ],
+  "topic": "stadium"
  },
  {
   "id": "league-werktalent-stadion",
@@ -159,7 +183,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-werktalent-stadion",
@@ -182,7 +208,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-afas-stadion",
@@ -205,7 +233,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-afas-stadion",
@@ -228,7 +258,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-woudestein",
@@ -251,7 +283,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-woudestein",
@@ -274,7 +308,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-euroborg",
@@ -297,7 +333,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-euroborg",
@@ -320,7 +358,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-grolsch-veste",
@@ -343,7 +383,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "Twente"
+  ],
+  "topic": "history"
  },
  {
   "id": "venue-grolsch-veste",
@@ -366,7 +410,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "Twente"
+  ],
+  "topic": "stadium"
  },
  {
   "id": "league-galgenwaard",
@@ -389,7 +437,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-galgenwaard",
@@ -412,7 +462,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-fortuna-sittard-stadion",
@@ -435,7 +487,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-fortuna-sittard-stadion",
@@ -458,7 +512,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-adelaarshorst",
@@ -481,7 +537,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-adelaarshorst",
@@ -504,7 +562,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-goffertstadion",
@@ -527,7 +587,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-goffertstadion",
@@ -550,7 +612,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-mac3park-stadion",
@@ -573,7 +637,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-mac3park-stadion",
@@ -596,7 +662,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-kooi-stadion",
@@ -619,7 +687,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-kooi-stadion",
@@ -642,7 +712,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-abe-lenstra-stadion",
@@ -665,7 +737,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-abe-lenstra-stadion",
@@ -688,7 +762,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-het-kasteel",
@@ -711,7 +787,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-het-kasteel",
@@ -734,7 +812,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-buko-stadion",
@@ -757,7 +837,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-buko-stadion",
@@ -780,7 +862,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-koning-willem-ii-stadion",
@@ -803,7 +887,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "venue-koning-willem-ii-stadion",
@@ -826,7 +912,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "league-almere-city-fc",
@@ -849,7 +937,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-de-graafschap",
@@ -872,7 +962,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-fc-den-bosch",
@@ -895,7 +987,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-fc-dordrecht",
@@ -918,7 +1012,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-fc-eindhoven",
@@ -941,7 +1037,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-fc-emmen",
@@ -964,7 +1062,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-fc-volendam",
@@ -987,7 +1087,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-helmond-sport",
@@ -1010,7 +1112,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-heracles-almelo",
@@ -1033,7 +1137,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-jong-ajax",
@@ -1056,7 +1162,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "league-afas-trainingscomplex",
@@ -1079,7 +1189,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-jong-fc-utrecht",
@@ -1102,7 +1214,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-jong-psv",
@@ -1125,7 +1239,11 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [
+   "PSV"
+  ],
+  "topic": "history"
  },
  {
   "id": "league-mvv-maastricht",
@@ -1148,7 +1266,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-nac-breda",
@@ -1171,7 +1291,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-rkc-waalwijk",
@@ -1194,7 +1316,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-roda-jc-kerkrade",
@@ -1217,7 +1341,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-top-oss",
@@ -1240,7 +1366,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-vitesse",
@@ -1263,7 +1391,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "league-vvv-venlo",
@@ -1286,7 +1416,9 @@ window.CLUBQUIZ_BANK=[
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
-  "validUntil": "2027-07-01T00:00:00Z"
+  "validUntil": "2027-07-01T00:00:00Z",
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-opening",
@@ -1308,7 +1440,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-delivery",
@@ -1330,7 +1464,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-opponent",
@@ -1352,7 +1488,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-score",
@@ -1374,7 +1512,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-architects",
@@ -1396,7 +1536,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-chairman",
@@ -1418,7 +1560,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "kuip-firstpile",
@@ -1440,7 +1584,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-renovation",
@@ -1462,7 +1608,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-concert",
@@ -1484,7 +1632,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-concertyear",
@@ -1506,7 +1656,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-building",
@@ -1528,7 +1680,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "kuip-inspiration",
@@ -1550,7 +1704,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "stadium"
  },
  {
   "id": "history-uefachampionsleague-1955-winner",
@@ -1572,7 +1728,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1955-runner-up",
@@ -1594,7 +1752,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1955-date",
@@ -1616,7 +1776,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1956-winner",
@@ -1638,7 +1800,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Fiorentina"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1956-runner-up",
@@ -1660,7 +1826,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Fiorentina"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1956-date",
@@ -1682,7 +1852,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Fiorentina"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1957-winner",
@@ -1704,7 +1878,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1957-runner-up",
@@ -1726,7 +1904,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1957-date",
@@ -1748,7 +1930,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1958-winner",
@@ -1770,7 +1956,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1958-runner-up",
@@ -1792,7 +1980,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1958-date",
@@ -1814,7 +2004,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1959-winner",
@@ -1836,7 +2028,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Eintracht Frankfurt"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1959-runner-up",
@@ -1858,7 +2054,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Eintracht Frankfurt"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1959-date",
@@ -1880,7 +2080,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Eintracht Frankfurt"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1960-winner",
@@ -1902,7 +2106,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1960-runner-up",
@@ -1924,7 +2133,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1960-date",
@@ -1946,7 +2160,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1961-winner",
@@ -1968,7 +2187,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1961-runner-up",
@@ -1990,7 +2213,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1961-date",
@@ -2012,7 +2239,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1962-winner",
@@ -2034,7 +2265,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1962-runner-up",
@@ -2056,7 +2292,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1962-date",
@@ -2078,7 +2319,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1963-winner",
@@ -2100,7 +2346,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1963-runner-up",
@@ -2122,7 +2370,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1963-date",
@@ -2144,7 +2394,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1964-winner",
@@ -2166,7 +2418,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1964-runner-up",
@@ -2188,7 +2444,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1964-date",
@@ -2210,7 +2470,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1965-winner",
@@ -2232,7 +2496,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1965-runner-up",
@@ -2254,7 +2520,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1965-date",
@@ -2276,7 +2544,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1966-winner",
@@ -2298,7 +2568,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Celtic"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1966-runner-up",
@@ -2320,7 +2594,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Celtic"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1966-date",
@@ -2342,7 +2620,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Celtic"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1967-winner",
@@ -2364,7 +2646,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Benfica",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1967-runner-up",
@@ -2386,7 +2673,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Benfica",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1967-date",
@@ -2408,7 +2700,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Benfica",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1968-winner",
@@ -2430,7 +2727,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1968-runner-up",
@@ -2452,7 +2754,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1968-date",
@@ -2474,7 +2781,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1969-winner",
@@ -2496,7 +2808,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Celtic",
+   "Feyenoord"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1969-runner-up",
@@ -2518,7 +2835,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Celtic",
+   "Feyenoord"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1969-date",
@@ -2540,7 +2862,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Celtic",
+   "Feyenoord"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1970-winner",
@@ -2562,7 +2889,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1970-runner-up",
@@ -2584,7 +2915,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1970-date",
@@ -2606,7 +2941,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1971-winner",
@@ -2628,7 +2967,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1971-runner-up",
@@ -2650,7 +2993,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1971-date",
@@ -2672,7 +3019,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1972-winner",
@@ -2694,7 +3045,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Ajax",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1972-runner-up",
@@ -2716,7 +3072,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Ajax",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1972-date",
@@ -2738,7 +3099,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Ajax",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1973-winner",
@@ -2760,7 +3126,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1973-runner-up",
@@ -2782,7 +3153,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1973-date",
@@ -2804,7 +3180,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1974-winner",
@@ -2826,7 +3207,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1974-runner-up",
@@ -2848,7 +3233,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1974-date",
@@ -2870,7 +3259,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1975-winner",
@@ -2892,7 +3285,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1975-runner-up",
@@ -2914,7 +3311,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1975-date",
@@ -2936,7 +3337,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1976-winner",
@@ -2958,7 +3363,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Borussia Mönchengladbach",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1976-runner-up",
@@ -2980,7 +3390,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Borussia Mönchengladbach",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1976-date",
@@ -3002,7 +3417,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Borussia Mönchengladbach",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1977-winner",
@@ -3024,7 +3444,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Club Brugge",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1977-runner-up",
@@ -3046,7 +3471,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Club Brugge",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1977-date",
@@ -3068,7 +3498,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Club Brugge",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1978-winner",
@@ -3090,7 +3525,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1978-runner-up",
@@ -3112,7 +3549,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1978-date",
@@ -3134,7 +3573,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1979-winner",
@@ -3156,7 +3597,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1979-runner-up",
@@ -3178,7 +3621,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1979-date",
@@ -3200,7 +3645,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1980-winner",
@@ -3222,7 +3669,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1980-runner-up",
@@ -3244,7 +3695,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1980-date",
@@ -3266,7 +3721,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1981-winner",
@@ -3288,7 +3747,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1981-runner-up",
@@ -3310,7 +3773,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1981-date",
@@ -3332,7 +3799,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1982-winner",
@@ -3354,7 +3825,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1982-runner-up",
@@ -3376,7 +3851,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1982-date",
@@ -3398,7 +3877,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1983-winner",
@@ -3420,7 +3903,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool",
+   "Roma"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1983-runner-up",
@@ -3442,7 +3930,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool",
+   "Roma"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1983-date",
@@ -3464,7 +3957,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool",
+   "Roma"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1984-winner",
@@ -3486,7 +3984,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1984-runner-up",
@@ -3508,7 +4011,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Juventus",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1984-date",
@@ -3530,7 +4038,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1985-winner",
@@ -3552,7 +4065,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1985-runner-up",
@@ -3574,7 +4091,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1985-date",
@@ -3596,7 +4117,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1986-winner",
@@ -3618,7 +4143,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Porto"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1986-runner-up",
@@ -3640,7 +4170,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Porto"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1986-date",
@@ -3662,7 +4197,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Porto"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1987-winner",
@@ -3684,7 +4224,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Benfica",
+   "PSV"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1987-runner-up",
@@ -3706,7 +4251,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Benfica",
+   "PSV"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1987-date",
@@ -3728,7 +4278,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Benfica",
+   "PSV"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1988-winner",
@@ -3750,7 +4305,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1988-runner-up",
@@ -3772,7 +4331,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1988-date",
@@ -3794,7 +4357,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1989-winner",
@@ -3816,7 +4383,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1989-runner-up",
@@ -3838,7 +4410,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1989-date",
@@ -3860,7 +4437,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Benfica"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1990-winner",
@@ -3882,7 +4464,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Marseille"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1990-runner-up",
@@ -3904,7 +4490,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Marseille"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1990-date",
@@ -3926,7 +4516,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Marseille"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1991-winner",
@@ -3948,7 +4542,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1991-runner-up",
@@ -3970,7 +4568,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1991-date",
@@ -3992,7 +4594,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1992-winner",
@@ -4014,7 +4620,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Marseille"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1992-runner-up",
@@ -4036,7 +4647,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Marseille"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1992-date",
@@ -4058,7 +4674,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Marseille"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1993-winner",
@@ -4080,7 +4701,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1993-runner-up",
@@ -4102,7 +4728,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1993-date",
@@ -4124,7 +4755,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1994-winner",
@@ -4146,7 +4782,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1994-runner-up",
@@ -4168,7 +4809,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1994-date",
@@ -4190,7 +4836,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Ajax"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1995-winner",
@@ -4212,7 +4863,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Ajax",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1995-runner-up",
@@ -4234,7 +4890,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Ajax",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1995-date",
@@ -4256,7 +4917,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Ajax",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1996-winner",
@@ -4278,7 +4944,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1996-runner-up",
@@ -4300,7 +4970,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1996-date",
@@ -4322,7 +4996,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1997-winner",
@@ -4344,7 +5022,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1997-runner-up",
@@ -4366,7 +5048,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1997-date",
@@ -4388,7 +5074,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1998-winner",
@@ -4410,7 +5100,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1998-runner-up",
@@ -4432,7 +5127,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1998-date",
@@ -4454,7 +5154,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1999-winner",
@@ -4476,7 +5181,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Valencia"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1999-runner-up",
@@ -4498,7 +5207,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Valencia"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-1999-date",
@@ -4520,7 +5233,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Valencia"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2000-winner",
@@ -4542,7 +5259,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Valencia"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2000-runner-up",
@@ -4564,7 +5286,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Valencia"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2000-date",
@@ -4586,7 +5313,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Valencia"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2001-winner",
@@ -4608,7 +5340,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Leverkusen"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2001-runner-up",
@@ -4630,7 +5366,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Leverkusen"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2001-date",
@@ -4652,7 +5392,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Leverkusen"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2002-winner",
@@ -4674,7 +5418,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2002-runner-up",
@@ -4696,7 +5445,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2002-date",
@@ -4718,7 +5472,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2003-winner",
@@ -4740,7 +5499,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Porto"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2003-runner-up",
@@ -4762,7 +5525,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Porto"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2003-date",
@@ -4784,7 +5551,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Porto"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2004-winner",
@@ -4806,7 +5577,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2004-runner-up",
@@ -4828,7 +5604,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2004-date",
@@ -4850,7 +5631,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2005-winner",
@@ -4872,7 +5658,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Arsenal",
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2005-runner-up",
@@ -4894,7 +5685,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Arsenal",
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2005-date",
@@ -4916,7 +5712,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Arsenal",
+   "Barcelona"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2006-winner",
@@ -4938,7 +5739,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2006-runner-up",
@@ -4960,7 +5766,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2006-date",
@@ -4982,7 +5793,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "AC Milan",
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2008-winner",
@@ -5004,7 +5820,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Chelsea",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2008-runner-up",
@@ -5026,7 +5847,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Chelsea",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2008-date",
@@ -5048,7 +5874,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Chelsea",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2009-winner",
@@ -5070,7 +5901,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2009-runner-up",
@@ -5092,7 +5928,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2009-date",
@@ -5114,7 +5955,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2010-winner",
@@ -5136,7 +5982,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2010-runner-up",
@@ -5158,7 +6008,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2010-date",
@@ -5180,7 +6034,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2011-winner",
@@ -5202,7 +6060,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2011-runner-up",
@@ -5224,7 +6087,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2011-date",
@@ -5246,7 +6114,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Manchester United"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2012-winner",
@@ -5268,7 +6141,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Chelsea"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2012-runner-up",
@@ -5290,7 +6168,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Chelsea"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2012-date",
@@ -5312,7 +6195,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München",
+   "Chelsea"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2013-winner",
@@ -5334,7 +6222,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2013-runner-up",
@@ -5356,7 +6248,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2013-date",
@@ -5378,7 +6274,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2014-winner",
@@ -5400,7 +6300,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2014-runner-up",
@@ -5422,7 +6326,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2014-date",
@@ -5444,7 +6352,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2015-winner",
@@ -5466,7 +6378,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2015-runner-up",
@@ -5488,7 +6405,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2015-date",
@@ -5510,7 +6432,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Barcelona",
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2016-winner",
@@ -5532,7 +6459,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2016-runner-up",
@@ -5554,7 +6485,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2016-date",
@@ -5576,7 +6511,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Atlético Madrid"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2017-winner",
@@ -5598,7 +6537,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2017-runner-up",
@@ -5620,7 +6563,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2017-date",
@@ -5642,7 +6589,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Juventus"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2018-winner",
@@ -5664,7 +6615,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2018-runner-up",
@@ -5686,7 +6641,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2018-date",
@@ -5708,7 +6667,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2019-winner",
@@ -5730,7 +6693,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool",
+   "Tottenham"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2019-runner-up",
@@ -5752,7 +6720,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool",
+   "Tottenham"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2019-date",
@@ -5774,7 +6747,12 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool",
+   "Tottenham"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2020-winner",
@@ -5796,7 +6774,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2020-runner-up",
@@ -5818,7 +6800,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2020-date",
@@ -5840,7 +6826,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Bayern München"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2021-winner",
@@ -5862,7 +6852,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Chelsea"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2021-runner-up",
@@ -5884,7 +6878,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Chelsea"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2021-date",
@@ -5906,7 +6904,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Chelsea"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2022-winner",
@@ -5928,7 +6930,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2022-runner-up",
@@ -5950,7 +6956,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2022-date",
@@ -5972,7 +6982,11 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [
+   "Liverpool"
+  ],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2023-winner",
@@ -5994,7 +7008,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2023-runner-up",
@@ -6016,7 +7032,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2023-date",
@@ -6038,7 +7056,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2024-winner",
@@ -6060,7 +7080,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2024-runner-up",
@@ -6082,7 +7104,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefachampionsleague-2024-date",
@@ -6104,7 +7128,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1960-winner",
@@ -6126,7 +7152,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1960-runner-up",
@@ -6148,7 +7176,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1964-winner",
@@ -6170,7 +7200,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1964-runner-up",
@@ -6192,7 +7224,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1968-winner",
@@ -6214,7 +7248,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1968-runner-up",
@@ -6236,7 +7272,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1972-winner",
@@ -6258,7 +7296,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1972-runner-up",
@@ -6280,7 +7320,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1980-winner",
@@ -6302,7 +7344,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1980-runner-up",
@@ -6324,7 +7368,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1984-winner",
@@ -6346,7 +7392,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1984-runner-up",
@@ -6368,7 +7416,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1988-winner",
@@ -6390,7 +7440,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1988-runner-up",
@@ -6412,7 +7464,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1992-winner",
@@ -6434,7 +7488,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1992-runner-up",
@@ -6456,7 +7512,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1996-winner",
@@ -6478,7 +7536,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-1996-runner-up",
@@ -6500,7 +7560,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2000-winner",
@@ -6522,7 +7584,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2000-runner-up",
@@ -6544,7 +7608,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2004-winner",
@@ -6566,7 +7632,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2004-runner-up",
@@ -6588,7 +7656,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2008-winner",
@@ -6610,7 +7680,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2008-runner-up",
@@ -6632,7 +7704,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2012-winner",
@@ -6654,7 +7728,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2012-runner-up",
@@ -6676,7 +7752,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2016-winner",
@@ -6698,7 +7776,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2016-runner-up",
@@ -6720,7 +7800,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2020-winner",
@@ -6742,7 +7824,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2020-runner-up",
@@ -6764,7 +7848,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2024-winner",
@@ -6786,7 +7872,9 @@ window.CLUBQUIZ_BANK=[
    "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
  },
  {
   "id": "history-uefaeuro-2024-runner-up",
@@ -6808,6 +7896,5525 @@ window.CLUBQUIZ_BANK=[
    "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
    "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
-  }
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1972-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1973?",
+  "answers": [
+   "Liverpool",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Liverpool",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1972/",
+  "explanation": "Liverpool pakte de titel tegen M\\u00F6nchengladbach.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "M\\u00F6nchengladbach",
+   "Liverpool"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1972-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Liverpool in de beslissende finale van de UEFA Cup in 1973?",
+  "answers": [
+   "M\\u00F6nchengladbach",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "M\\u00F6nchengladbach",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1972/",
+  "explanation": "De finalisten waren M\\u00F6nchengladbach en Liverpool. Liverpool won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "M\\u00F6nchengladbach",
+   "Liverpool"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1972-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1973?",
+  "answers": [
+   "23 mei 1973",
+   "16 mei 1973",
+   "30 mei 1973",
+   "6 juni 1973"
+  ],
+  "correct": "23 mei 1973",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1972/",
+  "explanation": "De beslissende finale tussen M\\u00F6nchengladbach en Liverpool vond plaats op 23 mei 1973.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "M\\u00F6nchengladbach",
+   "Liverpool"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1973-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1974?",
+  "answers": [
+   "Feyenoord",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Feyenoord",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1973/",
+  "explanation": "Feyenoord pakte de titel tegen Tottenham.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Feyenoord",
+   "Tottenham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1973-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Feyenoord in de beslissende finale van de UEFA Cup in 1974?",
+  "answers": [
+   "Tottenham",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Tottenham",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1973/",
+  "explanation": "De finalisten waren Feyenoord en Tottenham. Feyenoord won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Feyenoord",
+   "Tottenham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1973-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1974?",
+  "answers": [
+   "29 mei 1974",
+   "22 mei 1974",
+   "5 juni 1974",
+   "12 juni 1974"
+  ],
+  "correct": "29 mei 1974",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1973/",
+  "explanation": "De beslissende finale tussen Feyenoord en Tottenham vond plaats op 29 mei 1974.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Feyenoord",
+   "Tottenham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1975-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1976?",
+  "answers": [
+   "Liverpool",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Liverpool",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1975/",
+  "explanation": "Liverpool pakte de titel tegen Club Brugge.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Club Brugge",
+   "Liverpool"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1975-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Liverpool in de beslissende finale van de UEFA Cup in 1976?",
+  "answers": [
+   "Club Brugge",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Club Brugge",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1975/",
+  "explanation": "De finalisten waren Club Brugge en Liverpool. Liverpool won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Club Brugge",
+   "Liverpool"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1975-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1976?",
+  "answers": [
+   "19 mei 1976",
+   "12 mei 1976",
+   "26 mei 1976",
+   "2 juni 1976"
+  ],
+  "correct": "19 mei 1976",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1975/",
+  "explanation": "De beslissende finale tussen Club Brugge en Liverpool vond plaats op 19 mei 1976.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Club Brugge",
+   "Liverpool"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1976-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1977?",
+  "answers": [
+   "Juventus",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Juventus",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1976/",
+  "explanation": "Juventus pakte de titel tegen Athletic Club.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Athletic Club",
+   "Juventus"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1976-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Juventus in de beslissende finale van de UEFA Cup in 1977?",
+  "answers": [
+   "Athletic Club",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Athletic Club",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1976/",
+  "explanation": "De finalisten waren Athletic Club en Juventus. Juventus won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Athletic Club",
+   "Juventus"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1976-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1977?",
+  "answers": [
+   "18 mei 1977",
+   "11 mei 1977",
+   "25 mei 1977",
+   "1 juni 1977"
+  ],
+  "correct": "18 mei 1977",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1976/",
+  "explanation": "De beslissende finale tussen Athletic Club en Juventus vond plaats op 18 mei 1977.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Athletic Club",
+   "Juventus"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1977-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1978?",
+  "answers": [
+   "PSV",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "PSV",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1977/",
+  "explanation": "PSV pakte de titel tegen Bastia.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "PSV",
+   "Bastia"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1977-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van PSV in de beslissende finale van de UEFA Cup in 1978?",
+  "answers": [
+   "Bastia",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Bastia",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1977/",
+  "explanation": "De finalisten waren PSV en Bastia. PSV won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "PSV",
+   "Bastia"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1977-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1978?",
+  "answers": [
+   "9 mei 1978",
+   "2 mei 1978",
+   "16 mei 1978",
+   "23 mei 1978"
+  ],
+  "correct": "9 mei 1978",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1977/",
+  "explanation": "De beslissende finale tussen PSV en Bastia vond plaats op 9 mei 1978.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "PSV",
+   "Bastia"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1979-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1980?",
+  "answers": [
+   "Eintracht Frankfurt",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Eintracht Frankfurt",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1979/",
+  "explanation": "Eintracht Frankfurt pakte de titel tegen M\\u00F6nchengladbach.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Eintracht Frankfurt",
+   "M\\u00F6nchengladbach"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1979-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Eintracht Frankfurt in de beslissende finale van de UEFA Cup in 1980?",
+  "answers": [
+   "M\\u00F6nchengladbach",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "M\\u00F6nchengladbach",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1979/",
+  "explanation": "De finalisten waren Eintracht Frankfurt en M\\u00F6nchengladbach. Eintracht Frankfurt won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Eintracht Frankfurt",
+   "M\\u00F6nchengladbach"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1979-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1980?",
+  "answers": [
+   "21 mei 1980",
+   "14 mei 1980",
+   "28 mei 1980",
+   "4 juni 1980"
+  ],
+  "correct": "21 mei 1980",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1979/",
+  "explanation": "De beslissende finale tussen Eintracht Frankfurt en M\\u00F6nchengladbach vond plaats op 21 mei 1980.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Eintracht Frankfurt",
+   "M\\u00F6nchengladbach"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1980-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1981?",
+  "answers": [
+   "Ipswich",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Ipswich",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1980/",
+  "explanation": "Ipswich pakte de titel tegen AZ Alkmaar.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "AZ Alkmaar",
+   "Ipswich"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1980-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Ipswich in de beslissende finale van de UEFA Cup in 1981?",
+  "answers": [
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s",
+   "Anderlecht"
+  ],
+  "correct": "AZ Alkmaar",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1980/",
+  "explanation": "De finalisten waren AZ Alkmaar en Ipswich. Ipswich won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "AZ Alkmaar",
+   "Ipswich"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1980-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1981?",
+  "answers": [
+   "20 mei 1981",
+   "13 mei 1981",
+   "27 mei 1981",
+   "3 juni 1981"
+  ],
+  "correct": "20 mei 1981",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1980/",
+  "explanation": "De beslissende finale tussen AZ Alkmaar en Ipswich vond plaats op 20 mei 1981.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "AZ Alkmaar",
+   "Ipswich"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1982-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1983?",
+  "answers": [
+   "Anderlecht",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Anderlecht",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1982/",
+  "explanation": "Anderlecht pakte de titel tegen Benfica.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Benfica",
+   "Anderlecht"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1982-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Anderlecht in de beslissende finale van de UEFA Cup in 1983?",
+  "answers": [
+   "Benfica",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Benfica",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1982/",
+  "explanation": "De finalisten waren Benfica en Anderlecht. Anderlecht won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Benfica",
+   "Anderlecht"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1982-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1983?",
+  "answers": [
+   "18 mei 1983",
+   "11 mei 1983",
+   "25 mei 1983",
+   "1 juni 1983"
+  ],
+  "correct": "18 mei 1983",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1982/",
+  "explanation": "De beslissende finale tussen Benfica en Anderlecht vond plaats op 18 mei 1983.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Benfica",
+   "Anderlecht"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1983-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1984?",
+  "answers": [
+   "Tottenham",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Tottenham",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1983/",
+  "explanation": "Tottenham pakte de titel tegen Anderlecht.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Tottenham",
+   "Anderlecht"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1983-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Tottenham in de beslissende finale van de UEFA Cup in 1984?",
+  "answers": [
+   "Anderlecht",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Anderlecht",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1983/",
+  "explanation": "De finalisten waren Tottenham en Anderlecht. Tottenham won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Tottenham",
+   "Anderlecht"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1983-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1984?",
+  "answers": [
+   "23 mei 1984",
+   "16 mei 1984",
+   "30 mei 1984",
+   "6 juni 1984"
+  ],
+  "correct": "23 mei 1984",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1983/",
+  "explanation": "De beslissende finale tussen Tottenham en Anderlecht vond plaats op 23 mei 1984.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Tottenham",
+   "Anderlecht"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1984-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1985?",
+  "answers": [
+   "Real Madrid",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Real Madrid",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1984/",
+  "explanation": "Real Madrid pakte de titel tegen Feh\\u00E9rv\\u00E1r.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Real Madrid",
+   "Feh\\u00E9rv\\u00E1r"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1984-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Real Madrid in de beslissende finale van de UEFA Cup in 1985?",
+  "answers": [
+   "Feh\\u00E9rv\\u00E1r",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Feh\\u00E9rv\\u00E1r",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1984/",
+  "explanation": "De finalisten waren Real Madrid en Feh\\u00E9rv\\u00E1r. Real Madrid won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Real Madrid",
+   "Feh\\u00E9rv\\u00E1r"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1984-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1985?",
+  "answers": [
+   "22 mei 1985",
+   "15 mei 1985",
+   "29 mei 1985",
+   "5 juni 1985"
+  ],
+  "correct": "22 mei 1985",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1984/",
+  "explanation": "De beslissende finale tussen Real Madrid en Feh\\u00E9rv\\u00E1r vond plaats op 22 mei 1985.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Real Madrid",
+   "Feh\\u00E9rv\\u00E1r"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1985-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1986?",
+  "answers": [
+   "Real Madrid",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Real Madrid",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1985/",
+  "explanation": "Real Madrid pakte de titel tegen K\\u00F6ln.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "K\\u00F6ln",
+   "Real Madrid"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1985-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Real Madrid in de beslissende finale van de UEFA Cup in 1986?",
+  "answers": [
+   "K\\u00F6ln",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "K\\u00F6ln",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1985/",
+  "explanation": "De finalisten waren K\\u00F6ln en Real Madrid. Real Madrid won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "K\\u00F6ln",
+   "Real Madrid"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1985-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1986?",
+  "answers": [
+   "6 mei 1986",
+   "29 april 1986",
+   "13 mei 1986",
+   "20 mei 1986"
+  ],
+  "correct": "6 mei 1986",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1985/",
+  "explanation": "De beslissende finale tussen K\\u00F6ln en Real Madrid vond plaats op 6 mei 1986.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "K\\u00F6ln",
+   "Real Madrid"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1987-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1988?",
+  "answers": [
+   "Leverkusen",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Leverkusen",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1987/",
+  "explanation": "Leverkusen pakte de titel tegen Espanyol.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Leverkusen",
+   "Espanyol"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1987-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Leverkusen in de beslissende finale van de UEFA Cup in 1988?",
+  "answers": [
+   "Espanyol",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Espanyol",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1987/",
+  "explanation": "De finalisten waren Leverkusen en Espanyol. Leverkusen won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Leverkusen",
+   "Espanyol"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1987-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1988?",
+  "answers": [
+   "18 mei 1988",
+   "11 mei 1988",
+   "25 mei 1988",
+   "1 juni 1988"
+  ],
+  "correct": "18 mei 1988",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1987/",
+  "explanation": "De beslissende finale tussen Leverkusen en Espanyol vond plaats op 18 mei 1988.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Leverkusen",
+   "Espanyol"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1988-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1989?",
+  "answers": [
+   "Napoli",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Napoli",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1988/",
+  "explanation": "Napoli pakte de titel tegen Stuttgart.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Stuttgart",
+   "Napoli"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1988-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Napoli in de beslissende finale van de UEFA Cup in 1989?",
+  "answers": [
+   "Stuttgart",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Stuttgart",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1988/",
+  "explanation": "De finalisten waren Stuttgart en Napoli. Napoli won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Stuttgart",
+   "Napoli"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1988-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1989?",
+  "answers": [
+   "17 mei 1989",
+   "10 mei 1989",
+   "24 mei 1989",
+   "31 mei 1989"
+  ],
+  "correct": "17 mei 1989",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1988/",
+  "explanation": "De beslissende finale tussen Stuttgart en Napoli vond plaats op 17 mei 1989.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Stuttgart",
+   "Napoli"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1989-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1990?",
+  "answers": [
+   "Juventus",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Juventus",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1989/",
+  "explanation": "Juventus pakte de titel tegen Fiorentina.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Fiorentina",
+   "Juventus"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1989-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Juventus in de beslissende finale van de UEFA Cup in 1990?",
+  "answers": [
+   "Fiorentina",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Fiorentina",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1989/",
+  "explanation": "De finalisten waren Fiorentina en Juventus. Juventus won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Fiorentina",
+   "Juventus"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1989-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1990?",
+  "answers": [
+   "16 mei 1990",
+   "9 mei 1990",
+   "23 mei 1990",
+   "30 mei 1990"
+  ],
+  "correct": "16 mei 1990",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1989/",
+  "explanation": "De beslissende finale tussen Fiorentina en Juventus vond plaats op 16 mei 1990.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Fiorentina",
+   "Juventus"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1990-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1991?",
+  "answers": [
+   "Inter",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Inter",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1990/",
+  "explanation": "Inter pakte de titel tegen Roma.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Roma",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1990-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Inter in de beslissende finale van de UEFA Cup in 1991?",
+  "answers": [
+   "Roma",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Roma",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1990/",
+  "explanation": "De finalisten waren Roma en Inter. Inter won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Roma",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1990-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1991?",
+  "answers": [
+   "22 mei 1991",
+   "15 mei 1991",
+   "29 mei 1991",
+   "5 juni 1991"
+  ],
+  "correct": "22 mei 1991",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1990/",
+  "explanation": "De beslissende finale tussen Roma en Inter vond plaats op 22 mei 1991.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Roma",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1991-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1992?",
+  "answers": [
+   "Ajax",
+   "AZ Alkmaar",
+   "Alav\\u00E9s",
+   "Anderlecht"
+  ],
+  "correct": "Ajax",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1991/",
+  "explanation": "Ajax pakte de titel tegen Torino.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Ajax",
+   "Torino"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1991-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Ajax in de beslissende finale van de UEFA Cup in 1992?",
+  "answers": [
+   "Torino",
+   "AZ Alkmaar",
+   "Alav\\u00E9s",
+   "Anderlecht"
+  ],
+  "correct": "Torino",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1991/",
+  "explanation": "De finalisten waren Ajax en Torino. Ajax won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Ajax",
+   "Torino"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1991-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1992?",
+  "answers": [
+   "13 mei 1992",
+   "6 mei 1992",
+   "20 mei 1992",
+   "27 mei 1992"
+  ],
+  "correct": "13 mei 1992",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1991/",
+  "explanation": "De beslissende finale tussen Ajax en Torino vond plaats op 13 mei 1992.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Ajax",
+   "Torino"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1992-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1993?",
+  "answers": [
+   "Juventus",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Juventus",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1992/",
+  "explanation": "Juventus pakte de titel tegen B. Dortmund.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Juventus",
+   "B. Dortmund"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1992-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Juventus in de beslissende finale van de UEFA Cup in 1993?",
+  "answers": [
+   "B. Dortmund",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "B. Dortmund",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1992/",
+  "explanation": "De finalisten waren Juventus en B. Dortmund. Juventus won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Juventus",
+   "B. Dortmund"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1992-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1993?",
+  "answers": [
+   "19 mei 1993",
+   "12 mei 1993",
+   "26 mei 1993",
+   "2 juni 1993"
+  ],
+  "correct": "19 mei 1993",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1992/",
+  "explanation": "De beslissende finale tussen Juventus en B. Dortmund vond plaats op 19 mei 1993.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Juventus",
+   "B. Dortmund"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1993-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1994?",
+  "answers": [
+   "Inter",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Inter",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1993/",
+  "explanation": "Inter pakte de titel tegen Salzburg.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Inter",
+   "Salzburg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1993-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Inter in de beslissende finale van de UEFA Cup in 1994?",
+  "answers": [
+   "Salzburg",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Salzburg",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1993/",
+  "explanation": "De finalisten waren Inter en Salzburg. Inter won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Inter",
+   "Salzburg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1993-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1994?",
+  "answers": [
+   "11 mei 1994",
+   "4 mei 1994",
+   "18 mei 1994",
+   "25 mei 1994"
+  ],
+  "correct": "11 mei 1994",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1993/",
+  "explanation": "De beslissende finale tussen Inter en Salzburg vond plaats op 11 mei 1994.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Inter",
+   "Salzburg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1994-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1995?",
+  "answers": [
+   "Parma",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Parma",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1994/",
+  "explanation": "Parma pakte de titel tegen Juventus.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Juventus",
+   "Parma"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1994-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Parma in de beslissende finale van de UEFA Cup in 1995?",
+  "answers": [
+   "Juventus",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Juventus",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1994/",
+  "explanation": "De finalisten waren Juventus en Parma. Parma won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Juventus",
+   "Parma"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1994-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1995?",
+  "answers": [
+   "17 mei 1995",
+   "10 mei 1995",
+   "24 mei 1995",
+   "31 mei 1995"
+  ],
+  "correct": "17 mei 1995",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1994/",
+  "explanation": "De beslissende finale tussen Juventus en Parma vond plaats op 17 mei 1995.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Juventus",
+   "Parma"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1996-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1997?",
+  "answers": [
+   "Schalke",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Schalke",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1996/",
+  "explanation": "Schalke pakte de titel tegen Inter.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Inter",
+   "Schalke"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1996-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Schalke in de beslissende finale van de UEFA Cup in 1997?",
+  "answers": [
+   "Inter",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Inter",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1996/",
+  "explanation": "De finalisten waren Inter en Schalke. Schalke won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Inter",
+   "Schalke"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1996-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1997?",
+  "answers": [
+   "21 mei 1997",
+   "14 mei 1997",
+   "28 mei 1997",
+   "4 juni 1997"
+  ],
+  "correct": "21 mei 1997",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1996/",
+  "explanation": "De beslissende finale tussen Inter en Schalke vond plaats op 21 mei 1997.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Inter",
+   "Schalke"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1997-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1998?",
+  "answers": [
+   "Inter",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Inter",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1997/",
+  "explanation": "Inter pakte de titel tegen Lazio.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Lazio",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1997-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Inter in de beslissende finale van de UEFA Cup in 1998?",
+  "answers": [
+   "Lazio",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Lazio",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1997/",
+  "explanation": "De finalisten waren Lazio en Inter. Inter won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Lazio",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1997-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1998?",
+  "answers": [
+   "6 mei 1998",
+   "29 april 1998",
+   "13 mei 1998",
+   "20 mei 1998"
+  ],
+  "correct": "6 mei 1998",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1997/",
+  "explanation": "De beslissende finale tussen Lazio en Inter vond plaats op 6 mei 1998.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Lazio",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1998-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1999?",
+  "answers": [
+   "Parma",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Parma",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1998/",
+  "explanation": "Parma pakte de titel tegen Marseille.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Parma",
+   "Marseille"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1998-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Parma in de beslissende finale van de UEFA Cup in 1999?",
+  "answers": [
+   "Marseille",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Marseille",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1998/",
+  "explanation": "De finalisten waren Parma en Marseille. Parma won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Parma",
+   "Marseille"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1998-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1999?",
+  "answers": [
+   "12 mei 1999",
+   "5 mei 1999",
+   "19 mei 1999",
+   "26 mei 1999"
+  ],
+  "correct": "12 mei 1999",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1998/",
+  "explanation": "De beslissende finale tussen Parma en Marseille vond plaats op 12 mei 1999.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Parma",
+   "Marseille"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1999-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2000?",
+  "answers": [
+   "Galatasaray",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Galatasaray",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1999/",
+  "explanation": "Galatasaray pakte de titel tegen Arsenal.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Galatasaray",
+   "Arsenal"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1999-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Galatasaray in de beslissende finale van de UEFA Cup in 2000?",
+  "answers": [
+   "Arsenal",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Arsenal",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1999/",
+  "explanation": "De finalisten waren Galatasaray en Arsenal. Galatasaray won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Galatasaray",
+   "Arsenal"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1999-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2000?",
+  "answers": [
+   "17 mei 2000",
+   "10 mei 2000",
+   "24 mei 2000",
+   "31 mei 2000"
+  ],
+  "correct": "17 mei 2000",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1999/",
+  "explanation": "De beslissende finale tussen Galatasaray en Arsenal vond plaats op 17 mei 2000.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Galatasaray",
+   "Arsenal"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2000-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2001?",
+  "answers": [
+   "Liverpool",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Liverpool",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2000/",
+  "explanation": "Liverpool pakte de titel tegen Alav\\u00E9s.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Liverpool",
+   "Alav\\u00E9s"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2000-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Liverpool in de beslissende finale van de UEFA Cup in 2001?",
+  "answers": [
+   "Alav\\u00E9s",
+   "AZ Alkmaar",
+   "Ajax",
+   "Anderlecht"
+  ],
+  "correct": "Alav\\u00E9s",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2000/",
+  "explanation": "De finalisten waren Liverpool en Alav\\u00E9s. Liverpool won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Liverpool",
+   "Alav\\u00E9s"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2000-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2001?",
+  "answers": [
+   "16 mei 2001",
+   "9 mei 2001",
+   "23 mei 2001",
+   "30 mei 2001"
+  ],
+  "correct": "16 mei 2001",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2000/",
+  "explanation": "De beslissende finale tussen Liverpool en Alav\\u00E9s vond plaats op 16 mei 2001.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Liverpool",
+   "Alav\\u00E9s"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2001-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2002?",
+  "answers": [
+   "Feyenoord",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Feyenoord",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2001/",
+  "explanation": "Feyenoord pakte de titel tegen B. Dortmund.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Feyenoord",
+   "B. Dortmund"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2001-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Feyenoord in de beslissende finale van de UEFA Cup in 2002?",
+  "answers": [
+   "B. Dortmund",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "B. Dortmund",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2001/",
+  "explanation": "De finalisten waren Feyenoord en B. Dortmund. Feyenoord won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Feyenoord",
+   "B. Dortmund"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2001-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2002?",
+  "answers": [
+   "8 mei 2002",
+   "1 mei 2002",
+   "15 mei 2002",
+   "22 mei 2002"
+  ],
+  "correct": "8 mei 2002",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2001/",
+  "explanation": "De beslissende finale tussen Feyenoord en B. Dortmund vond plaats op 8 mei 2002.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Feyenoord",
+   "B. Dortmund"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2002-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2003?",
+  "answers": [
+   "Porto",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Porto",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2002/",
+  "explanation": "Porto pakte de titel tegen Celtic.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Celtic",
+   "Porto"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2002-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Porto in de beslissende finale van de UEFA Cup in 2003?",
+  "answers": [
+   "Celtic",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Celtic",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2002/",
+  "explanation": "De finalisten waren Celtic en Porto. Porto won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Celtic",
+   "Porto"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2002-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2003?",
+  "answers": [
+   "21 mei 2003",
+   "14 mei 2003",
+   "28 mei 2003",
+   "4 juni 2003"
+  ],
+  "correct": "21 mei 2003",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2002/",
+  "explanation": "De beslissende finale tussen Celtic en Porto vond plaats op 21 mei 2003.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Celtic",
+   "Porto"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2003-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2004?",
+  "answers": [
+   "Valencia",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Valencia",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2003/",
+  "explanation": "Valencia pakte de titel tegen Marseille.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Valencia",
+   "Marseille"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2003-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Valencia in de beslissende finale van de UEFA Cup in 2004?",
+  "answers": [
+   "Marseille",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Marseille",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2003/",
+  "explanation": "De finalisten waren Valencia en Marseille. Valencia won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Valencia",
+   "Marseille"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2003-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2004?",
+  "answers": [
+   "19 mei 2004",
+   "12 mei 2004",
+   "26 mei 2004",
+   "2 juni 2004"
+  ],
+  "correct": "19 mei 2004",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2003/",
+  "explanation": "De beslissende finale tussen Valencia en Marseille vond plaats op 19 mei 2004.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Valencia",
+   "Marseille"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2004-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2005?",
+  "answers": [
+   "CSKA Moskva",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "CSKA Moskva",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2004/",
+  "explanation": "CSKA Moskva pakte de titel tegen Sporting CP.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Sporting CP",
+   "CSKA Moskva"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2004-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van CSKA Moskva in de beslissende finale van de UEFA Cup in 2005?",
+  "answers": [
+   "Sporting CP",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Sporting CP",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2004/",
+  "explanation": "De finalisten waren Sporting CP en CSKA Moskva. CSKA Moskva won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Sporting CP",
+   "CSKA Moskva"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2004-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2005?",
+  "answers": [
+   "18 mei 2005",
+   "11 mei 2005",
+   "25 mei 2005",
+   "1 juni 2005"
+  ],
+  "correct": "18 mei 2005",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2004/",
+  "explanation": "De beslissende finale tussen Sporting CP en CSKA Moskva vond plaats op 18 mei 2005.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Sporting CP",
+   "CSKA Moskva"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2005-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2006?",
+  "answers": [
+   "Sevilla",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Sevilla",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2005/",
+  "explanation": "Sevilla pakte de titel tegen Middlesbrough.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Middlesbrough",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2005-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Sevilla in de beslissende finale van de UEFA Cup in 2006?",
+  "answers": [
+   "Middlesbrough",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Middlesbrough",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2005/",
+  "explanation": "De finalisten waren Middlesbrough en Sevilla. Sevilla won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Middlesbrough",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2005-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2006?",
+  "answers": [
+   "10 mei 2006",
+   "3 mei 2006",
+   "17 mei 2006",
+   "24 mei 2006"
+  ],
+  "correct": "10 mei 2006",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2005/",
+  "explanation": "De beslissende finale tussen Middlesbrough en Sevilla vond plaats op 10 mei 2006.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Middlesbrough",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2006-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2007?",
+  "answers": [
+   "Sevilla",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Sevilla",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2006/",
+  "explanation": "Sevilla pakte de titel tegen Espanyol.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Espanyol",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2006-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Sevilla in de beslissende finale van de UEFA Cup in 2007?",
+  "answers": [
+   "Espanyol",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Espanyol",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2006/",
+  "explanation": "De finalisten waren Espanyol en Sevilla. Sevilla won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Espanyol",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2006-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2007?",
+  "answers": [
+   "16 mei 2007",
+   "9 mei 2007",
+   "23 mei 2007",
+   "30 mei 2007"
+  ],
+  "correct": "16 mei 2007",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2006/",
+  "explanation": "De beslissende finale tussen Espanyol en Sevilla vond plaats op 16 mei 2007.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Espanyol",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2008-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2008?",
+  "answers": [
+   "Zenit",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Zenit",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2008/",
+  "explanation": "Zenit pakte de titel tegen Rangers.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Zenit",
+   "Rangers"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2008-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Zenit in de beslissende finale van de UEFA Cup in 2008?",
+  "answers": [
+   "Rangers",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Rangers",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2008/",
+  "explanation": "De finalisten waren Zenit en Rangers. Zenit won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Zenit",
+   "Rangers"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2008-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2008?",
+  "answers": [
+   "14 mei 2008",
+   "7 mei 2008",
+   "21 mei 2008",
+   "28 mei 2008"
+  ],
+  "correct": "14 mei 2008",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2008/",
+  "explanation": "De beslissende finale tussen Zenit en Rangers vond plaats op 14 mei 2008.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Zenit",
+   "Rangers"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2009-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 2009?",
+  "answers": [
+   "Shakhtar",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Shakhtar",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2009/",
+  "explanation": "Shakhtar pakte de titel tegen Bremen.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Shakhtar",
+   "Bremen"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2009-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Shakhtar in de beslissende finale van de UEFA Cup in 2009?",
+  "answers": [
+   "Bremen",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Bremen",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2009/",
+  "explanation": "De finalisten waren Shakhtar en Bremen. Shakhtar won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Shakhtar",
+   "Bremen"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2009-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 2009?",
+  "answers": [
+   "20 mei 2009",
+   "13 mei 2009",
+   "27 mei 2009",
+   "3 juni 2009"
+  ],
+  "correct": "20 mei 2009",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2009/",
+  "explanation": "De beslissende finale tussen Shakhtar en Bremen vond plaats op 20 mei 2009.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Shakhtar",
+   "Bremen"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2010-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2010?",
+  "answers": [
+   "Atlético Madrid",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Atlético Madrid",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2010/",
+  "explanation": "Atlético Madrid pakte de titel tegen Fulham.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Fulham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2010-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Atlético Madrid in de beslissende finale van de Europa League in 2010?",
+  "answers": [
+   "Fulham",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Fulham",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2010/",
+  "explanation": "De finalisten waren Atlético Madrid en Fulham. Atlético Madrid won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Fulham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2010-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2010?",
+  "answers": [
+   "12 mei 2010",
+   "5 mei 2010",
+   "19 mei 2010",
+   "26 mei 2010"
+  ],
+  "correct": "12 mei 2010",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2010/",
+  "explanation": "De beslissende finale tussen Atlético Madrid en Fulham vond plaats op 12 mei 2010.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Fulham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2011-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2011?",
+  "answers": [
+   "Porto",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Porto",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2011/",
+  "explanation": "Porto pakte de titel tegen Braga.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Porto",
+   "Braga"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2011-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Porto in de beslissende finale van de Europa League in 2011?",
+  "answers": [
+   "Braga",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Braga",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2011/",
+  "explanation": "De finalisten waren Porto en Braga. Porto won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Porto",
+   "Braga"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2011-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2011?",
+  "answers": [
+   "18 mei 2011",
+   "11 mei 2011",
+   "25 mei 2011",
+   "1 juni 2011"
+  ],
+  "correct": "18 mei 2011",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2011/",
+  "explanation": "De beslissende finale tussen Porto en Braga vond plaats op 18 mei 2011.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Porto",
+   "Braga"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2012-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2012?",
+  "answers": [
+   "Atlético Madrid",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Atlético Madrid",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2012/",
+  "explanation": "Atlético Madrid pakte de titel tegen Athletic Club.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Athletic Club"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2012-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Atlético Madrid in de beslissende finale van de Europa League in 2012?",
+  "answers": [
+   "Athletic Club",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Athletic Club",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2012/",
+  "explanation": "De finalisten waren Atlético Madrid en Athletic Club. Atlético Madrid won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Athletic Club"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2012-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2012?",
+  "answers": [
+   "9 mei 2012",
+   "2 mei 2012",
+   "16 mei 2012",
+   "23 mei 2012"
+  ],
+  "correct": "9 mei 2012",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2012/",
+  "explanation": "De beslissende finale tussen Atlético Madrid en Athletic Club vond plaats op 9 mei 2012.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Atlético Madrid",
+   "Athletic Club"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2013-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2013?",
+  "answers": [
+   "Chelsea",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Chelsea",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2013/",
+  "explanation": "Chelsea pakte de titel tegen Benfica.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Benfica",
+   "Chelsea"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2013-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Chelsea in de beslissende finale van de Europa League in 2013?",
+  "answers": [
+   "Benfica",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Benfica",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2013/",
+  "explanation": "De finalisten waren Benfica en Chelsea. Chelsea won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Benfica",
+   "Chelsea"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2013-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2013?",
+  "answers": [
+   "15 mei 2013",
+   "8 mei 2013",
+   "22 mei 2013",
+   "29 mei 2013"
+  ],
+  "correct": "15 mei 2013",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2013/",
+  "explanation": "De beslissende finale tussen Benfica en Chelsea vond plaats op 15 mei 2013.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Benfica",
+   "Chelsea"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2014-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2014?",
+  "answers": [
+   "Sevilla",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Sevilla",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2014/",
+  "explanation": "Sevilla pakte de titel tegen Benfica.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Benfica"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2014-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Sevilla in de beslissende finale van de Europa League in 2014?",
+  "answers": [
+   "Benfica",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Benfica",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2014/",
+  "explanation": "De finalisten waren Sevilla en Benfica. Sevilla won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Benfica"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2014-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2014?",
+  "answers": [
+   "14 mei 2014",
+   "7 mei 2014",
+   "21 mei 2014",
+   "28 mei 2014"
+  ],
+  "correct": "14 mei 2014",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2014/",
+  "explanation": "De beslissende finale tussen Sevilla en Benfica vond plaats op 14 mei 2014.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Benfica"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2015-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2015?",
+  "answers": [
+   "Sevilla",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Sevilla",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2015/",
+  "explanation": "Sevilla pakte de titel tegen Dnipro.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Dnipro",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2015-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Sevilla in de beslissende finale van de Europa League in 2015?",
+  "answers": [
+   "Dnipro",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Dnipro",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2015/",
+  "explanation": "De finalisten waren Dnipro en Sevilla. Sevilla won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Dnipro",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2015-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2015?",
+  "answers": [
+   "27 mei 2015",
+   "20 mei 2015",
+   "3 juni 2015",
+   "10 juni 2015"
+  ],
+  "correct": "27 mei 2015",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2015/",
+  "explanation": "De beslissende finale tussen Dnipro en Sevilla vond plaats op 27 mei 2015.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Dnipro",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2016-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2016?",
+  "answers": [
+   "Sevilla",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Sevilla",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2016/",
+  "explanation": "Sevilla pakte de titel tegen Liverpool.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Liverpool",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2016-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Sevilla in de beslissende finale van de Europa League in 2016?",
+  "answers": [
+   "Liverpool",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Liverpool",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2016/",
+  "explanation": "De finalisten waren Liverpool en Sevilla. Sevilla won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Liverpool",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2016-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2016?",
+  "answers": [
+   "18 mei 2016",
+   "11 mei 2016",
+   "25 mei 2016",
+   "1 juni 2016"
+  ],
+  "correct": "18 mei 2016",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2016/",
+  "explanation": "De beslissende finale tussen Liverpool en Sevilla vond plaats op 18 mei 2016.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Liverpool",
+   "Sevilla"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2017-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2017?",
+  "answers": [
+   "Manchester United",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Manchester United",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2017/",
+  "explanation": "Manchester United pakte de titel tegen Ajax.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Ajax",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2017-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Manchester United in de beslissende finale van de Europa League in 2017?",
+  "answers": [
+   "Ajax",
+   "AZ Alkmaar",
+   "Alav\\u00E9s",
+   "Anderlecht"
+  ],
+  "correct": "Ajax",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2017/",
+  "explanation": "De finalisten waren Ajax en Manchester United. Manchester United won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Ajax",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2017-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2017?",
+  "answers": [
+   "24 mei 2017",
+   "17 mei 2017",
+   "31 mei 2017",
+   "7 juni 2017"
+  ],
+  "correct": "24 mei 2017",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2017/",
+  "explanation": "De beslissende finale tussen Ajax en Manchester United vond plaats op 24 mei 2017.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Ajax",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2018-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2018?",
+  "answers": [
+   "Atlético Madrid",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Atlético Madrid",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2018/",
+  "explanation": "Atlético Madrid pakte de titel tegen Marseille.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Marseille",
+   "Atlético Madrid"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2018-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Atlético Madrid in de beslissende finale van de Europa League in 2018?",
+  "answers": [
+   "Marseille",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Marseille",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2018/",
+  "explanation": "De finalisten waren Marseille en Atlético Madrid. Atlético Madrid won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Marseille",
+   "Atlético Madrid"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2018-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2018?",
+  "answers": [
+   "16 mei 2018",
+   "9 mei 2018",
+   "23 mei 2018",
+   "30 mei 2018"
+  ],
+  "correct": "16 mei 2018",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2018/",
+  "explanation": "De beslissende finale tussen Marseille en Atlético Madrid vond plaats op 16 mei 2018.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Marseille",
+   "Atlético Madrid"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2019-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2019?",
+  "answers": [
+   "Chelsea",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Chelsea",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2019/",
+  "explanation": "Chelsea pakte de titel tegen Arsenal.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Chelsea",
+   "Arsenal"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2019-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Chelsea in de beslissende finale van de Europa League in 2019?",
+  "answers": [
+   "Arsenal",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Arsenal",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2019/",
+  "explanation": "De finalisten waren Chelsea en Arsenal. Chelsea won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Chelsea",
+   "Arsenal"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2019-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2019?",
+  "answers": [
+   "29 mei 2019",
+   "22 mei 2019",
+   "5 juni 2019",
+   "12 juni 2019"
+  ],
+  "correct": "29 mei 2019",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2019/",
+  "explanation": "De beslissende finale tussen Chelsea en Arsenal vond plaats op 29 mei 2019.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Chelsea",
+   "Arsenal"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2020-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2020?",
+  "answers": [
+   "Sevilla",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Sevilla",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2020/",
+  "explanation": "Sevilla pakte de titel tegen Inter.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2020-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Sevilla in de beslissende finale van de Europa League in 2020?",
+  "answers": [
+   "Inter",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Inter",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2020/",
+  "explanation": "De finalisten waren Sevilla en Inter. Sevilla won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2020-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2020?",
+  "answers": [
+   "21 augustus 2020",
+   "14 augustus 2020",
+   "28 augustus 2020",
+   "4 september 2020"
+  ],
+  "correct": "21 augustus 2020",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2020/",
+  "explanation": "De beslissende finale tussen Sevilla en Inter vond plaats op 21 augustus 2020.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Inter"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2021-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2021?",
+  "answers": [
+   "Villarreal",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Villarreal",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2021/",
+  "explanation": "Villarreal pakte de titel tegen Manchester United.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Villarreal",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2021-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Villarreal in de beslissende finale van de Europa League in 2021?",
+  "answers": [
+   "Manchester United",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Manchester United",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2021/",
+  "explanation": "De finalisten waren Villarreal en Manchester United. Villarreal won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Villarreal",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2021-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2021?",
+  "answers": [
+   "26 mei 2021",
+   "19 mei 2021",
+   "2 juni 2021",
+   "9 juni 2021"
+  ],
+  "correct": "26 mei 2021",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2021/",
+  "explanation": "De beslissende finale tussen Villarreal en Manchester United vond plaats op 26 mei 2021.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Villarreal",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2022-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2022?",
+  "answers": [
+   "Eintracht Frankfurt",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Eintracht Frankfurt",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2022/",
+  "explanation": "Eintracht Frankfurt pakte de titel tegen Rangers.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Eintracht Frankfurt",
+   "Rangers"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2022-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Eintracht Frankfurt in de beslissende finale van de Europa League in 2022?",
+  "answers": [
+   "Rangers",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Rangers",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2022/",
+  "explanation": "De finalisten waren Eintracht Frankfurt en Rangers. Eintracht Frankfurt won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Eintracht Frankfurt",
+   "Rangers"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2022-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2022?",
+  "answers": [
+   "18 mei 2022",
+   "11 mei 2022",
+   "25 mei 2022",
+   "1 juni 2022"
+  ],
+  "correct": "18 mei 2022",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2022/",
+  "explanation": "De beslissende finale tussen Eintracht Frankfurt en Rangers vond plaats op 18 mei 2022.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Eintracht Frankfurt",
+   "Rangers"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2023-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2023?",
+  "answers": [
+   "Sevilla",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Sevilla",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2023/",
+  "explanation": "Sevilla pakte de titel tegen Roma.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Roma"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2023-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Sevilla in de beslissende finale van de Europa League in 2023?",
+  "answers": [
+   "Roma",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Roma",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2023/",
+  "explanation": "De finalisten waren Sevilla en Roma. Sevilla won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Roma"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2023-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2023?",
+  "answers": [
+   "31 mei 2023",
+   "24 mei 2023",
+   "7 juni 2023",
+   "14 juni 2023"
+  ],
+  "correct": "31 mei 2023",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2023/",
+  "explanation": "De beslissende finale tussen Sevilla en Roma vond plaats op 31 mei 2023.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Sevilla",
+   "Roma"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2024-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2024?",
+  "answers": [
+   "Atalanta",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Atalanta",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2024/",
+  "explanation": "Atalanta pakte de titel tegen Leverkusen.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Atalanta",
+   "Leverkusen"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2024-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Atalanta in de beslissende finale van de Europa League in 2024?",
+  "answers": [
+   "Leverkusen",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Leverkusen",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2024/",
+  "explanation": "De finalisten waren Atalanta en Leverkusen. Atalanta won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Atalanta",
+   "Leverkusen"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2024-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2024?",
+  "answers": [
+   "22 mei 2024",
+   "15 mei 2024",
+   "29 mei 2024",
+   "5 juni 2024"
+  ],
+  "correct": "22 mei 2024",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2024/",
+  "explanation": "De beslissende finale tussen Atalanta en Leverkusen vond plaats op 22 mei 2024.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Atalanta",
+   "Leverkusen"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2025-winner",
+  "level": "easy",
+  "question": "Wie won de Europa League met de beslissende finale in 2025?",
+  "answers": [
+   "Tottenham",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Tottenham",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2025/",
+  "explanation": "Tottenham pakte de titel tegen Manchester United.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Tottenham",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2025-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Tottenham in de beslissende finale van de Europa League in 2025?",
+  "answers": [
+   "Manchester United",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Manchester United",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2025/",
+  "explanation": "De finalisten waren Tottenham en Manchester United. Tottenham won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Tottenham",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-2025-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Europa League in 2025?",
+  "answers": [
+   "21 mei 2025",
+   "14 mei 2025",
+   "28 mei 2025",
+   "4 juni 2025"
+  ],
+  "correct": "21 mei 2025",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2025/",
+  "explanation": "De beslissende finale tussen Tottenham en Manchester United vond plaats op 21 mei 2025.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Tottenham",
+   "Manchester United"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1984-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 1984?",
+  "answers": [
+   "Zweden",
+   "Denemarken",
+   "Duitsland",
+   "Engeland"
+  ],
+  "correct": "Zweden",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1984/",
+  "explanation": "Zweden pakte de titel tegen Engeland.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1984-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Zweden in de beslissende finale van het EK voor vrouwen in 1984?",
+  "answers": [
+   "Engeland",
+   "Denemarken",
+   "Duitsland",
+   "Italië"
+  ],
+  "correct": "Engeland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1984/",
+  "explanation": "De finalisten waren Engeland en Zweden. Zweden won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1984-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 1984?",
+  "answers": [
+   "27 mei 1984",
+   "20 mei 1984",
+   "3 juni 1984",
+   "10 juni 1984"
+  ],
+  "correct": "27 mei 1984",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1984/",
+  "explanation": "De beslissende finale tussen Engeland en Zweden vond plaats op 27 mei 1984.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1987-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 1987?",
+  "answers": [
+   "Noorwegen",
+   "Denemarken",
+   "Duitsland",
+   "Engeland"
+  ],
+  "correct": "Noorwegen",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1987/",
+  "explanation": "Noorwegen pakte de titel tegen Zweden.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1987-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Noorwegen in de beslissende finale van het EK voor vrouwen in 1987?",
+  "answers": [
+   "Zweden",
+   "Denemarken",
+   "Duitsland",
+   "Engeland"
+  ],
+  "correct": "Zweden",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1987/",
+  "explanation": "De finalisten waren Noorwegen en Zweden. Noorwegen won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1987-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 1987?",
+  "answers": [
+   "14 juni 1987",
+   "7 juni 1987",
+   "21 juni 1987",
+   "28 juni 1987"
+  ],
+  "correct": "14 juni 1987",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1987/",
+  "explanation": "De beslissende finale tussen Noorwegen en Zweden vond plaats op 14 juni 1987.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1989-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 1989?",
+  "answers": [
+   "Duitsland",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1989/",
+  "explanation": "Duitsland pakte de titel tegen Noorwegen.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1989-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK voor vrouwen in 1989?",
+  "answers": [
+   "Noorwegen",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Noorwegen",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1989/",
+  "explanation": "De finalisten waren Duitsland en Noorwegen. Duitsland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1989-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 1989?",
+  "answers": [
+   "2 juli 1989",
+   "25 juni 1989",
+   "9 juli 1989",
+   "16 juli 1989"
+  ],
+  "correct": "2 juli 1989",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1989/",
+  "explanation": "De beslissende finale tussen Duitsland en Noorwegen vond plaats op 2 juli 1989.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1991-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 1991?",
+  "answers": [
+   "Duitsland",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1991/",
+  "explanation": "Duitsland pakte de titel tegen Noorwegen.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1991-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK voor vrouwen in 1991?",
+  "answers": [
+   "Noorwegen",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Noorwegen",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1991/",
+  "explanation": "De finalisten waren Duitsland en Noorwegen. Duitsland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1991-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 1991?",
+  "answers": [
+   "14 juli 1991",
+   "7 juli 1991",
+   "21 juli 1991",
+   "28 juli 1991"
+  ],
+  "correct": "14 juli 1991",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1991/",
+  "explanation": "De beslissende finale tussen Duitsland en Noorwegen vond plaats op 14 juli 1991.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1993-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 1993?",
+  "answers": [
+   "Noorwegen",
+   "Denemarken",
+   "Duitsland",
+   "Engeland"
+  ],
+  "correct": "Noorwegen",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1993/",
+  "explanation": "Noorwegen pakte de titel tegen Italië.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1993-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Noorwegen in de beslissende finale van het EK voor vrouwen in 1993?",
+  "answers": [
+   "Italië",
+   "Denemarken",
+   "Duitsland",
+   "Engeland"
+  ],
+  "correct": "Italië",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1993/",
+  "explanation": "De finalisten waren Italië en Noorwegen. Noorwegen won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1993-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 1993?",
+  "answers": [
+   "4 juli 1993",
+   "27 juni 1993",
+   "11 juli 1993",
+   "18 juli 1993"
+  ],
+  "correct": "4 juli 1993",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1993/",
+  "explanation": "De beslissende finale tussen Italië en Noorwegen vond plaats op 4 juli 1993.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1995-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 1995?",
+  "answers": [
+   "Duitsland",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1995/",
+  "explanation": "Duitsland pakte de titel tegen Zweden.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1995-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK voor vrouwen in 1995?",
+  "answers": [
+   "Zweden",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Zweden",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1995/",
+  "explanation": "De finalisten waren Duitsland en Zweden. Duitsland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1995-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 1995?",
+  "answers": [
+   "26 maart 1995",
+   "19 maart 1995",
+   "2 april 1995",
+   "9 april 1995"
+  ],
+  "correct": "26 maart 1995",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1995/",
+  "explanation": "De beslissende finale tussen Duitsland en Zweden vond plaats op 26 maart 1995.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1997-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 1997?",
+  "answers": [
+   "Duitsland",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1997/",
+  "explanation": "Duitsland pakte de titel tegen Italië.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1997-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK voor vrouwen in 1997?",
+  "answers": [
+   "Italië",
+   "Denemarken",
+   "Engeland",
+   "Nederland"
+  ],
+  "correct": "Italië",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1997/",
+  "explanation": "De finalisten waren Duitsland en Italië. Duitsland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-1997-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 1997?",
+  "answers": [
+   "12 juli 1997",
+   "5 juli 1997",
+   "19 juli 1997",
+   "26 juli 1997"
+  ],
+  "correct": "12 juli 1997",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/1997/",
+  "explanation": "De beslissende finale tussen Duitsland en Italië vond plaats op 12 juli 1997.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2001-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 2001?",
+  "answers": [
+   "Duitsland",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2001/",
+  "explanation": "Duitsland pakte de titel tegen Zweden.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2001-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK voor vrouwen in 2001?",
+  "answers": [
+   "Zweden",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Zweden",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2001/",
+  "explanation": "De finalisten waren Duitsland en Zweden. Duitsland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2001-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 2001?",
+  "answers": [
+   "7 juli 2001",
+   "30 juni 2001",
+   "14 juli 2001",
+   "21 juli 2001"
+  ],
+  "correct": "7 juli 2001",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2001/",
+  "explanation": "De beslissende finale tussen Duitsland en Zweden vond plaats op 7 juli 2001.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2005-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 2005?",
+  "answers": [
+   "Duitsland",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2005/",
+  "explanation": "Duitsland pakte de titel tegen Noorwegen.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2005-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK voor vrouwen in 2005?",
+  "answers": [
+   "Noorwegen",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Noorwegen",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2005/",
+  "explanation": "De finalisten waren Duitsland en Noorwegen. Duitsland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2005-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 2005?",
+  "answers": [
+   "19 juni 2005",
+   "12 juni 2005",
+   "26 juni 2005",
+   "3 juli 2005"
+  ],
+  "correct": "19 juni 2005",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2005/",
+  "explanation": "De beslissende finale tussen Duitsland en Noorwegen vond plaats op 19 juni 2005.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2009-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 2009?",
+  "answers": [
+   "Duitsland",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2009/",
+  "explanation": "Duitsland pakte de titel tegen Engeland.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2009-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK voor vrouwen in 2009?",
+  "answers": [
+   "Engeland",
+   "Denemarken",
+   "Italië",
+   "Nederland"
+  ],
+  "correct": "Engeland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2009/",
+  "explanation": "De finalisten waren Engeland en Duitsland. Duitsland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2009-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 2009?",
+  "answers": [
+   "10 september 2009",
+   "3 september 2009",
+   "17 september 2009",
+   "24 september 2009"
+  ],
+  "correct": "10 september 2009",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2009/",
+  "explanation": "De beslissende finale tussen Engeland en Duitsland vond plaats op 10 september 2009.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2013-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 2013?",
+  "answers": [
+   "Duitsland",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2013/",
+  "explanation": "Duitsland pakte de titel tegen Noorwegen.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2013-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK voor vrouwen in 2013?",
+  "answers": [
+   "Noorwegen",
+   "Denemarken",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Noorwegen",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2013/",
+  "explanation": "De finalisten waren Duitsland en Noorwegen. Duitsland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2013-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 2013?",
+  "answers": [
+   "28 juli 2013",
+   "21 juli 2013",
+   "4 augustus 2013",
+   "11 augustus 2013"
+  ],
+  "correct": "28 juli 2013",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2013/",
+  "explanation": "De beslissende finale tussen Duitsland en Noorwegen vond plaats op 28 juli 2013.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2017-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 2017?",
+  "answers": [
+   "Nederland",
+   "Denemarken",
+   "Duitsland",
+   "Engeland"
+  ],
+  "correct": "Nederland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2017/",
+  "explanation": "Nederland pakte de titel tegen Denemarken.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2017-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Nederland in de beslissende finale van het EK voor vrouwen in 2017?",
+  "answers": [
+   "Denemarken",
+   "Duitsland",
+   "Engeland",
+   "Italië"
+  ],
+  "correct": "Denemarken",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2017/",
+  "explanation": "De finalisten waren Nederland en Denemarken. Nederland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2017-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 2017?",
+  "answers": [
+   "6 augustus 2017",
+   "30 juli 2017",
+   "13 augustus 2017",
+   "20 augustus 2017"
+  ],
+  "correct": "6 augustus 2017",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2017/",
+  "explanation": "De beslissende finale tussen Nederland en Denemarken vond plaats op 6 augustus 2017.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2025-winner",
+  "level": "easy",
+  "question": "Wie won het EK voor vrouwen met de beslissende finale in 2025?",
+  "answers": [
+   "Engeland",
+   "Denemarken",
+   "Duitsland",
+   "Italië"
+  ],
+  "correct": "Engeland",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2025/",
+  "explanation": "Engeland pakte de titel tegen Spain.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2025-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Engeland in de beslissende finale van het EK voor vrouwen in 2025?",
+  "answers": [
+   "Spain",
+   "Denemarken",
+   "Duitsland",
+   "Italië"
+  ],
+  "correct": "Spain",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2025/",
+  "explanation": "De finalisten waren Engeland en Spain. Engeland won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-womenseuro-2025-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK voor vrouwen in 2025?",
+  "answers": [
+   "27 juli 2025",
+   "20 juli 2025",
+   "3 augustus 2025",
+   "10 augustus 2025"
+  ],
+  "correct": "27 juli 2025",
+  "source": "https://www.uefa.com/womenseuro/history/seasons/2025/",
+  "explanation": "De beslissende finale tussen Engeland en Spain vond plaats op 27 juli 2025.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1974-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1975?",
+  "answers": [
+   "Borussia Mönchengladbach",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Borussia Mönchengladbach",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1974/",
+  "explanation": "Borussia Mönchengladbach pakte de titel tegen Twente.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Twente",
+   "Borussia Mönchengladbach"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1974-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Borussia Mönchengladbach in de beslissende finale van de UEFA Cup in 1975?",
+  "answers": [
+   "Twente",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Twente",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1974/",
+  "explanation": "De finalisten waren Twente en Borussia Mönchengladbach. Borussia Mönchengladbach won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Twente",
+   "Borussia Mönchengladbach"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1974-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1975?",
+  "answers": [
+   "21 mei 1975",
+   "14 mei 1975",
+   "28 mei 1975",
+   "4 juni 1975"
+  ],
+  "correct": "21 mei 1975",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1974/",
+  "explanation": "De beslissende finale tussen Twente en Borussia Mönchengladbach vond plaats op 21 mei 1975.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Twente",
+   "Borussia Mönchengladbach"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1978-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1979?",
+  "answers": [
+   "Borussia Mönchengladbach",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Borussia Mönchengladbach",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1978/",
+  "explanation": "Borussia Mönchengladbach pakte de titel tegen Crvena Zvezda.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Borussia Mönchengladbach",
+   "Crvena Zvezda"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1978-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Borussia Mönchengladbach in de beslissende finale van de UEFA Cup in 1979?",
+  "answers": [
+   "Crvena Zvezda",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Crvena Zvezda",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1978/",
+  "explanation": "De finalisten waren Borussia Mönchengladbach en Crvena Zvezda. Borussia Mönchengladbach won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Borussia Mönchengladbach",
+   "Crvena Zvezda"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1978-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1979?",
+  "answers": [
+   "23 mei 1979",
+   "16 mei 1979",
+   "30 mei 1979",
+   "6 juni 1979"
+  ],
+  "correct": "23 mei 1979",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1978/",
+  "explanation": "De beslissende finale tussen Borussia Mönchengladbach en Crvena Zvezda vond plaats op 23 mei 1979.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Borussia Mönchengladbach",
+   "Crvena Zvezda"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1981-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1982?",
+  "answers": [
+   "IFK Göteborg",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "IFK Göteborg",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1981/",
+  "explanation": "IFK Göteborg pakte de titel tegen Hamburg.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Hamburg",
+   "IFK Göteborg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1981-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van IFK Göteborg in de beslissende finale van de UEFA Cup in 1982?",
+  "answers": [
+   "Hamburg",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Hamburg",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1981/",
+  "explanation": "De finalisten waren Hamburg en IFK Göteborg. IFK Göteborg won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Hamburg",
+   "IFK Göteborg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1981-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1982?",
+  "answers": [
+   "19 mei 1982",
+   "12 mei 1982",
+   "26 mei 1982",
+   "2 juni 1982"
+  ],
+  "correct": "19 mei 1982",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1981/",
+  "explanation": "De beslissende finale tussen Hamburg en IFK Göteborg vond plaats op 19 mei 1982.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Hamburg",
+   "IFK Göteborg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1986-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1987?",
+  "answers": [
+   "IFK Göteborg",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "IFK Göteborg",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1986/",
+  "explanation": "IFK Göteborg pakte de titel tegen Dundee United.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Dundee United",
+   "IFK Göteborg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1986-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van IFK Göteborg in de beslissende finale van de UEFA Cup in 1987?",
+  "answers": [
+   "Dundee United",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Dundee United",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1986/",
+  "explanation": "De finalisten waren Dundee United en IFK Göteborg. IFK Göteborg won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Dundee United",
+   "IFK Göteborg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1986-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1987?",
+  "answers": [
+   "20 mei 1987",
+   "13 mei 1987",
+   "27 mei 1987",
+   "3 juni 1987"
+  ],
+  "correct": "20 mei 1987",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1986/",
+  "explanation": "De beslissende finale tussen Dundee United en IFK Göteborg vond plaats op 20 mei 1987.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Dundee United",
+   "IFK Göteborg"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1995-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup met de beslissende finale in 1996?",
+  "answers": [
+   "Bayern München",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Bayern München",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1995/",
+  "explanation": "Bayern München pakte de titel tegen Bordeaux.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Bordeaux",
+   "Bayern München"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1995-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Bayern München in de beslissende finale van de UEFA Cup in 1996?",
+  "answers": [
+   "Bordeaux",
+   "AZ Alkmaar",
+   "Ajax",
+   "Alav\\u00E9s"
+  ],
+  "correct": "Bordeaux",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1995/",
+  "explanation": "De finalisten waren Bordeaux en Bayern München. Bayern München won het toernooi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Bordeaux",
+   "Bayern München"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition38-uefaeuropaleague-1995-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup in 1996?",
+  "answers": [
+   "15 mei 1996",
+   "8 mei 1996",
+   "22 mei 1996",
+   "29 mei 1996"
+  ],
+  "correct": "15 mei 1996",
+  "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1995/",
+  "explanation": "De beslissende finale tussen Bordeaux en Bayern München vond plaats op 15 mei 1996.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Bordeaux",
+   "Bayern München"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "player38-0",
+  "level": "normal",
+  "question": "Welke Nederlander maakte de beroemde volley tegen de Sovjet-Unie in de EK-finale van 1988?",
+  "answers": [
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst",
+   "Wesley Sneijder"
+  ],
+  "correct": "Marco van Basten",
+  "source": "https://www.onsoranje.nl/toernooien/8038/wedstrijd/178",
+  "explanation": "Zijn volley leverde de tweede Nederlandse treffer op.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-1",
+  "level": "normal",
+  "question": "Welke aanvoerder opende de score voor Nederland in de EK-finale van 1988?",
+  "answers": [
+   "Ruud Gullit",
+   "Marco van Basten",
+   "Giovanni van Bronckhorst",
+   "Wesley Sneijder"
+  ],
+  "correct": "Ruud Gullit",
+  "source": "https://www.onsoranje.nl/toernooien/8038/wedstrijd/178",
+  "explanation": "Gullit maakte de openingstreffer.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-2",
+  "level": "normal",
+  "question": "Welke Nederlandse verdediger opende met een afstandsschot de score tegen Uruguay in de WK-halve finale van 2010?",
+  "answers": [
+   "Giovanni van Bronckhorst",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Wesley Sneijder"
+  ],
+  "correct": "Giovanni van Bronckhorst",
+  "source": "https://www.onsoranje.nl/teams/185184/uitslagen/wedstrijd/16474",
+  "explanation": "Van Bronckhorst maakte de 0-1.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-3",
+  "level": "normal",
+  "question": "Welke Nederlandse middenvelder maakte de tweede Oranje-treffer tegen Uruguay in de WK-halve finale van 2010?",
+  "answers": [
+   "Wesley Sneijder",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Wesley Sneijder",
+  "source": "https://www.onsoranje.nl/teams/185184/uitslagen/wedstrijd/16474",
+  "explanation": "Sneijder maakte de 1-2.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-4",
+  "level": "normal",
+  "question": "Welke Nederlandse aanvaller kopte de derde Oranje-treffer binnen tegen Uruguay in de WK-halve finale van 2010?",
+  "answers": [
+   "Arjen Robben",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Arjen Robben",
+  "source": "https://www.onsoranje.nl/teams/185184/uitslagen/wedstrijd/16474",
+  "explanation": "Robben maakte de 1-3.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-5",
+  "level": "normal",
+  "question": "Welke Oranje-aanvoerder scoorde met een zweefduikkopbal tegen Spanje op het WK van 2014?",
+  "answers": [
+   "Robin van Persie",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Robin van Persie",
+  "source": "https://www.onsoranje.nl/teams/185184/programma/wedstrijd/19594",
+  "explanation": "Van Persie kopte de gelijkmaker binnen.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-6",
+  "level": "normal",
+  "question": "Welke Nederlandse verdediger maakte de derde Oranje-treffer in de 5-1-zege op Spanje tijdens het WK van 2014?",
+  "answers": [
+   "Stefan de Vrij",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Stefan de Vrij",
+  "source": "https://www.onsoranje.nl/teams/185184/programma/wedstrijd/19594",
+  "explanation": "De Vrij maakte de 1-3.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-7",
+  "level": "normal",
+  "question": "Wie stond bij Nederland in het doel bij de 5-1-zege op Spanje op het WK van 2014?",
+  "answers": [
+   "Jasper Cillessen",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Jasper Cillessen",
+  "source": "https://inside.fifa.com/en/tournaments/mens/worldcup/2014brazil/news/worldcupathome-revenge-tastes-sweet-for-five-star-oranje",
+  "explanation": "Cillessen was de Nederlandse doelman.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-8",
+  "level": "normal",
+  "question": "Welke Nederlander opende de score in de 4-1-zege op Frankrijk op het EK van 2008?",
+  "answers": [
+   "Dirk Kuyt",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Dirk Kuyt",
+  "source": "https://www.fff.fr/article/2812-le-parcours-des-bleus-a-l-euro-2008.html",
+  "explanation": "Kuyt kopte de 1-0 binnen.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-9",
+  "level": "normal",
+  "question": "Welke Nederlander deelde met Savo Milošević de topscorerstitel van het EK van 2000?",
+  "answers": [
+   "Patrick Kluivert",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Patrick Kluivert",
+  "source": "https://www.uefa.com/uefaeuro/history/news/025a-0ebed8faf1b4-a5df5bcea199-1000--euro-2000-all-you-need-to-know/",
+  "explanation": "Kluivert eindigde op vijf doelpunten.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-10",
+  "level": "normal",
+  "question": "Welke Nederlandse spits stond in de basis tegen Frankrijk op het EK van 2008 en scoorde zelf niet in de 4-1-zege?",
+  "answers": [
+   "Ruud van Nistelrooij",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Ruud van Nistelrooij",
+  "source": "https://www.fff.fr/article/2812-le-parcours-des-bleus-a-l-euro-2008.html",
+  "explanation": "Van Nistelrooij was de basisspits.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "player"
+ },
+ {
+  "id": "player38-11",
+  "level": "normal",
+  "question": "Welke Nederlandse doelman droeg de aanvoerdersband tegen Frankrijk tijdens de 4-1-zege op het EK van 2008?",
+  "answers": [
+   "Edwin van der Sar",
+   "Marco van Basten",
+   "Ruud Gullit",
+   "Giovanni van Bronckhorst"
+  ],
+  "correct": "Edwin van der Sar",
+  "source": "https://www.fff.fr/article/2812-le-parcours-des-bleus-a-l-euro-2008.html",
+  "explanation": "Van der Sar stond als aanvoerder onder de lat.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "player"
  }
 ];

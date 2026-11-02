@@ -3,7 +3,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const ctx={window:{}};vm.runInNewContext(fs.readFileSync('android-ui/assets/clubquiz-bank.js','utf8'),ctx);const bank=JSON.parse(JSON.stringify(ctx.window.CLUBQUIZ_BANK));
 test('every mode and level completes with exact requested count and immutable scoring after duplicate taps',()=>{
  for(const mode of Object.keys(E.MODES))for(const level of ['easy','normal','hard']){
-  const r=E.createRound(bank,{mode,level,now:Date.parse('2026-11-02')});assert.equal(r.questions.length,E.MODES[mode]);assert.equal(new Set(r.questions.map(q=>q.id)).size,r.questions.length);
+  const r=E.createRound(bank,{mode,level,club:E.clubs(bank)[0]?.name,now:Date.parse('2026-11-02')});assert.equal(r.questions.length,E.MODES[mode]);assert.equal(new Set(r.questions.map(q=>q.id)).size,r.questions.length);
   for(const q of r.questions){assert.equal(r.next(),false);assert.equal(r.answer(q.correct).correct,true);assert.equal(r.answer(q.correct),null);assert.equal(r.next(),true);}assert.equal(r.done,true);assert.equal(r.score,E.MODES[mode]);assert.equal(r.answer(r.questions[0].correct),null);
  }
 });
@@ -17,7 +17,7 @@ test('records and first daily score survive 100 ordinary rounds and storage relo
  assert.equal(E.state({records:{'expert:hard':999},daily:{a:{}}}).records['expert:hard'],undefined);assert.throws(()=>E.record(data,{...daily,score:999}));
 });
 test('missing or expired pools cannot silently shorten a mode; historical bank remains available after season ends',()=>{
- assert.throws(()=>E.createRound(bank.slice(0,5),{mode:'expert'}),/onvoldoende/);for(const mode of Object.keys(E.MODES))for(const level of ['easy','normal','hard'])assert.equal(E.createRound(bank,{mode,level,now:Date.parse('2028-01-01')}).questions.length,E.MODES[mode]);assert.throws(()=>E.createRound(bank,{mode:'invalid'}));
+ assert.throws(()=>E.createRound(bank.slice(0,5),{mode:'expert'}),/onvoldoende/);for(const mode of Object.keys(E.MODES).filter(m=>m!=='stadium'))for(const level of ['easy','normal','hard'])assert.equal(E.createRound(bank,{mode,level,club:E.clubs(bank)[0]?.name,now:Date.parse('2028-01-01')}).questions.length,E.MODES[mode]);assert.throws(()=>E.createRound(bank,{mode:'stadium',now:Date.parse('2028-01-01')}),/onvoldoende/);assert.throws(()=>E.createRound(bank,{mode:'invalid'}));
 });
 test('historical questions bind to individually fetched primary-source receipts without empty winner or source',()=>{
  const receipts=require('../quiz/research37.json').receipts;for(const q of bank.filter(q=>q.id.startsWith('history-'))){assert.ok(receipts.some(r=>r.source===q.source&&r.winner&&r.matchSlug&&r.sha256.length===64),q.id);assert.ok(q.question.includes('finale')||q.question.includes('won'));}
