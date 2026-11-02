@@ -1,4 +1,4 @@
-"""Read-only Android presentation smoke test. Never submits or publishes content."""
+"""Android presentation and isolated quiz smoke test. Never publishes editorial content."""
 from pathlib import Path
 import re
 import os
@@ -294,3 +294,46 @@ adb('shell','input','keyevent','4');time.sleep(1);capture('32-phase35-quiz-back'
 adb('shell','svc','wifi','enable')
 assert adb('shell','pidof',PACKAGE).strip()
 with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 35 separate Clubquiz under Meer, 655-question bank, four offline choices, answer feedback, progression and Android Back. Emulator only.\n')
+
+# Phase 39: actual WebView -> native HTTPS bridge -> production quiz, synthetic participant only.
+# The anonymous token is never printed or included in screenshots/log files.
+import urllib.request
+
+def find_quiz_text(text,name):
+    for attempt in range(9):
+        root=capture(name)
+        node=next((n for n in root.iter('node') if text in n.get('text','') and len(bounds(n))==4 and bounds(n)[1]>0 and bounds(n)[3]>bounds(n)[1]),None)
+        if node is not None:return root,node
+        adb('shell','input','swipe',str(width//2),str(int(height*.78)),str(width//2),str(int(height*.42)),'350');time.sleep(.4)
+    raise AssertionError('Quiz control not reachable: '+text)
+
+quiz_token=None
+try:
+    for _ in range(4):adb('shell','input','swipe',str(width//2),str(int(height*.28)),str(width//2),str(int(height*.83)),'200')
+    time.sleep(1)
+    root,node=find_quiz_text('Live klassement','33-quiz39-online');tap_node(root,lambda n:n is node)
+    root,node=find_quiz_text('Kies een groep','34-quiz39-age');tap_node(root,lambda n:n is node);time.sleep(.5)
+    root=capture('34b-quiz39-age-options');tap_node(root,lambda n:'16 jaar of ouder' in n.get('text',''));time.sleep(.4)
+    root,node=find_quiz_text('Ik wil aan het technische testklassement','35-quiz39-privacy');tap_node(root,lambda n:n is node)
+    root,node=find_quiz_text('Online profiel maken','36-quiz39-join');tap_node(root,lambda n:n is node);time.sleep(5)
+    prefs=adb('shell','run-as',PACKAGE,'cat','shared_prefs/veldio_quiz39_private.xml')
+    quiz_token=ET.fromstring(prefs).find("string[@name='token']").text
+    assert re.fullmatch(r'[a-f0-9-]{36}\.[A-Za-z0-9_-]{43}',quiz_token),'Native profile token not stored privately'
+    root,node=find_quiz_text('Start de quiz','37-quiz39-start');tap_node(root,lambda n:n is node);time.sleep(4)
+    root=capture('38-quiz39-question');assert any('Vraag 1 / 10' in n.get('text','') for n in root.iter('node')),'Online server round absent'
+    for attempt in range(5):
+        root=capture('38-quiz39-question');answer=next((n for n in root.iter('node') if n.get('class')=='android.widget.Button' and re.match(r'^[A-D]',n.get('text','')) and len(bounds(n))==4 and bounds(n)[1]>0 and bounds(n)[3]>bounds(n)[1]),None)
+        if answer is not None:break
+        adb('shell','input','swipe',str(width//2),str(int(height*.78)),str(width//2),str(int(height*.42)),'300');time.sleep(.3)
+    assert answer is not None,'Online answer not reachable';tap_node(root,lambda n:n is answer);time.sleep(3)
+    root,node=find_quiz_text('Punten en antwoordtijd zijn door de server bevestigd','39-quiz39-server-confirmed')
+    root,node=find_quiz_text('Live top 5','40-quiz39-live-board')
+    assert adb('shell','pidof',PACKAGE).strip()
+    with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 39 real Android WebView/native HTTPS bridge, explicit synthetic 16+ test opt-in, private token, production server round, server-confirmed answer and live leaderboard. No phone-clock score supplied.\n')
+finally:
+    if quiz_token:
+        req=urllib.request.Request('https://voetbalhub-redactie.onrender.com/quiz/v1/me',method='DELETE',headers={'Authorization':'Bearer '+quiz_token})
+        with urllib.request.urlopen(req,timeout=15) as response:assert json.load(response).get('deleted') is True
+        with (OUT/'result.txt').open('a') as result:result.write('PASS: synthetic online quiz profile and scores deleted after Android test.\n')
+        del quiz_token
+print((OUT/'result.txt').read_text())
