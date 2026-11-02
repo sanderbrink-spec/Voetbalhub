@@ -3,12 +3,22 @@
 </style></head><body><main id="article"><span class="eyebrow">WEDSTRIJD VAN DE WEEK</span><h1>Voorbeschouwing laden</h1></main><script>
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const format=(s,opts)=>new Intl.DateTimeFormat('nl-NL',{timeZone:'Europe/Amsterdam',...opts}).format(new Date(s));
+function imageCredit(feature){return '<p class="credit">'+esc(feature.imageCaption||'')+' '+esc(feature.imageCredit||'')+(/^https:\/\/commons\.wikimedia\.org\//.test(feature.imageReview?.rightsEvidence||'')?' · <a href="'+esc(feature.imageReview.rightsEvidence)+'">Bron</a>':'')+(/^https:\/\/creativecommons\.org\//.test(feature.imageLicenseUrl||'')?' · <a href="'+esc(feature.imageLicenseUrl)+'">Licentie</a>':'')+'</p>';}
 function match(f){return '<div class="match"><div>'+esc(f.home.name)+'</div><div class="score">'+esc(f.goals.home)+' – '+esc(f.goals.away)+'<small>'+esc(format(f.date,{day:'numeric',month:'short',year:'numeric'}))+'</small></div><div class="away">'+esc(f.away.name)+'</div></div>';}
 function setData(raw){try{
- const data=JSON.parse(raw),feature=data.featured,p=feature?.preview,f=p?.fixture;if(data.schemaVersion!==1||data.league?.id!==88||!f?.home?.name||!f.away?.name||!Array.isArray(p.body)||p.body.length<3)throw Error('Missing preview');
+ const data=JSON.parse(raw),feature=data.featured,report=feature?.phase==='report',p=report?feature.report:feature?.preview,f=p?.fixture;if(data.schemaVersion!==1||data.league?.id!==88||!f?.home?.name||!f.away?.name||!Array.isArray(p.body)||p.body.length<3)throw Error('Missing preview');
+ if(report){
+  if(!['FT','AET','PEN'].includes(f.status)||![f.goals?.home,f.goals?.away].every(n=>Number.isInteger(n)&&n>=0))throw Error('Unconfirmed final score');
+  document.title=f.home.name+' – '+f.away.name+' · Wedstrijdverslag';
+  let reportHtml='<span class="eyebrow">NA AFLOOP · '+esc(feature.round)+'</span><h1>'+esc(p.headline)+'</h1><p class="meta muted">'+esc(format(f.date,{day:'numeric',month:'long',year:'numeric'}))+'</p>';
+  if(/^https:\/\/raw\.githubusercontent\.com\/sanderbrink-spec\/Voetbalhub\//.test(feature.imageUrl||''))reportHtml+='<img class="cover" alt="Beeld bij '+esc(f.home.name)+' tegen '+esc(f.away.name)+'" src="'+esc(feature.imageUrl)+'">'+imageCredit(feature);
+  reportHtml+='<p class="lead">'+esc(p.standfirst)+'</p><h2>Het wedstrijdverslag</h2><article class="body">'+p.body.map(x=>'<p>'+esc(x)+'</p>').join('')+'</article><footer>Veldio Redactie · Oorspronkelijk resultaatverslag op basis van bevestigde wedstrijdgegevens.<br>'+esc(data.source||'')+'</footer>';
+  document.getElementById('article').innerHTML=reportHtml;return;
+ }
  document.title=f.home.name+' – '+f.away.name+' · Voorbeschouwing';
  let h='<span class="eyebrow">VOORAF · '+esc(feature.round)+'</span><h1>'+esc(f.home.name)+' – '+esc(f.away.name)+'</h1><p class="meta muted">'+esc(format(f.date,{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}))+(f.venue?.name?' · '+esc(f.venue.name):'')+'</p>';
- if(/^https:\/\/raw\.githubusercontent\.com\/sanderbrink-spec\/Voetbalhub\//.test(feature.imageUrl||'')){h+='<img class="cover" alt="Aankondiging '+esc(f.home.name)+' tegen '+esc(f.away.name)+'" src="'+esc(feature.imageUrl)+'">';if(feature.imageCredit)h+='<p class="credit">'+esc(feature.imageCredit)+'</p>';}
+ if(/^https:\/\/raw\.githubusercontent\.com\/sanderbrink-spec\/Voetbalhub\//.test(feature.imageUrl||'')){h+='<img class="cover" alt="Aankondiging '+esc(f.home.name)+' tegen '+esc(f.away.name)+'" src="'+esc(feature.imageUrl)+'">';if(feature.imageCredit)h+=imageCredit(feature);}
+ const observed=feature.observedFixture;if(observed&&(['PST','CANC','SUSP','ABD','INT'].includes(observed.status)||observed.date!==f.date||JSON.stringify(observed.venue)!==JSON.stringify(f.venue)))h+='<p class="meta muted">Let op: wedstrijdstatus of planning is gewijzigd. Status: '+esc(observed.status)+'. Dit is de laatst gepubliceerde voorbeschouwing.</p>';
  h+='<p class="lead">'+esc(p.standfirst)+'</p><div class="comparison">';
  for(const team of [f.home,f.away]){const t=data.standings.find(x=>x.team.id===team.id);if(t)h+='<div class="panel"><strong>'+esc(team.name)+'</strong><div class="points">'+t.points+' <span class="unit">PT</span></div><small>Plaats '+t.rank+' · '+t.all.played+' duels</small><div class="form">'+String(t.form||'').split('').map(x=>'<span class="'+esc(x)+'">'+esc(x)+'</span>').join('')+'</div></div>';}
  h+='</div><h2>De voorbeschouwing</h2><article class="body">'+p.body.map(x=>'<p>'+esc(x)+'</p>').join('')+'</article><h2>Recente vorm</h2>';

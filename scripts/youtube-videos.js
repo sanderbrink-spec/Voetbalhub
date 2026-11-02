@@ -1,3 +1,5 @@
+// Phase 25: stop before any external request or publication until rights are documented.
+if(require.main===module&&require('../launch-policy').stopCli('youtubeDiscovery'))process.exit(0);
 'use strict';
 const {githubFile}=require('./eredivisie-data');
 // Official channel identities verified from each channel's externalId.

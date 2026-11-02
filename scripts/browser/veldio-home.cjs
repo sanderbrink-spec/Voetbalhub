@@ -3,15 +3,13 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
 (async()=>{
  const browser=await chromium.launch({headless:true});
  try{
-  const [articles,stats]=await Promise.all([
-   fetch('https://voetbalhub-redactie.onrender.com/articles').then(r=>{assert.ok(r.ok);return r.json();}),
-   fetch('https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json').then(r=>{assert.ok(r.ok);return r.json();})
-  ]);
+  const fixture=require('./fixtures.cjs'),{stats,now}=fixture; const articles={articles:Array.from({length:3},(_,i)=>({...fixture.articles.articles[0],id:'home-test-'+i,headline:'Gecontroleerd testartikel '+i,publishedAt:new Date(now-i*60000).toISOString()}))};
   const html=fs.readFileSync('android-ui/assets/home-features.html','utf8').replace('<script src="home-model.js"></script>','<script>'+fs.readFileSync('android-ui/assets/home-model.js','utf8')+'</script>');
   const photo='data:image/webp;base64,'+fs.readFileSync('android-ui/drawable-nodpi/column_sander_brink_clean.webp').toString('base64');
   const errors=[];fs.mkdirSync('.browser-output',{recursive:true});
   for(const width of [320,360,393,412,550,768]){
    const page=await browser.newPage({viewport:{width,height:950}});page.on('pageerror',e=>errors.push(e.message));
+   await page.clock.setFixedTime(new Date(now));
    await page.setContent(html.replaceAll('column-portrait.webp',photo));
    await page.evaluate(x=>{window.calls=[];window.HomeHub={resize:()=>{},openColumn:()=>calls.push('column'),openMatch:()=>calls.push('match'),openArticle:id=>calls.push(id)};window.setData(JSON.stringify(x));},{articles:articles.articles,stats,videos:{videos:[]},loading:false});
    await page.locator('.column-card img').evaluate(i=>i.decode());
@@ -26,8 +24,8 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
    assert.ok(geometry.faceRight<=geometry.cardRight+2,'Face cropped at '+width);
    assert.ok(geometry.text.every(r=>r.right<=geometry.faceLeft+2),'Text covers the face at '+width+': '+JSON.stringify(geometry));
    assert.equal(await page.locator('.slide').count(),3);
-   const headline=await page.locator('.news-slide h1').innerText();assert.ok(articles.articles.some(a=>a.headline===headline));
-   await page.locator('.column-card').click();assert.deepEqual(await page.evaluate(()=>calls),['column']);
+   const headline=await page.locator('.news-slide h1').first().innerText();assert.ok(articles.articles.some(a=>a.headline===headline));
+   for(let i=0;i<3;i++){await page.evaluate(i=>move(i),i);await page.locator('.slide.active .slide-link').click();assert.equal(await page.evaluate(()=>calls.at(-1)),articles.articles[i].id);} await page.evaluate(()=>{calls=[];}); await page.locator('.column-card').click();assert.deepEqual(await page.evaluate(()=>calls),['column']);
    await page.getByRole('button',{name:'Vorig onderwerp'}).click();await page.getByRole('button',{name:'Volgend onderwerp'}).click();
    if(width===393)await page.screenshot({path:'.browser-output/veldio-home-mobile.png',fullPage:true});
    await page.close();

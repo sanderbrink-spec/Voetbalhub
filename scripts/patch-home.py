@@ -36,3 +36,6 @@ shutil.copyfile('android-ui/java/HomeFeatureView.java',p.parent/'HomeFeatureView
 print('Installed three-subject carousel, paired features and current YouTube rail')
 
 shutil.copyfile('android-ui/java/YoutubePlayerView.java',p.parent/'YoutubePlayerView.java')
+
+shutil.copytree('public/news-photos',assets/'news-photos',dirs_exist_ok=True)
+shutil.copyfile('news-photo-catalog.json',assets/'news-photo-catalog.json')

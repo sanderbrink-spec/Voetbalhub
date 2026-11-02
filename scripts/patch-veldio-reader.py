@@ -25,6 +25,13 @@ reader=reader.replace('cover.setContentDescription("Afbeelding bij artikel");','
 reader=reader.replace('TextView introText = tv(intro, 16, C.MUTED, false);','TextView introText = tv(intro, 16, 0xFFCDDDD2, false); introText.setLineSpacing(dp(4),1f);')
 reader=reader.replace('page.addView(tv("VELDIO ORIGINALS  ·  Onafhankelijke redactie", 11, C.GREEN, true));','page.addView(VeldioEditorial.footer(this));')
 reader=reader.replace('root.setOrientation(LinearLayout.VERTICAL);','root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(VeldioEditorial.INK);',1)
+# Bundled, rights-registered photos also render offline, with source and licence credits.
+anchor='HttpURLConnection imageConn = null;'
+assert reader.count(anchor)==1, 'Photographic reader anchor changed'
+reader=reader.replace(anchor,'android.graphics.Bitmap localPhoto=EditorialPhotos.bitmap(this,article,1600);if(localPhoto!=null){runOnUiThread(()->{cover.setImageBitmap(localPhoto);cover.setVisibility(android.view.View.VISIBLE);originalArt.setVisibility(android.view.View.GONE);});return;}\n                '+anchor,1)
+
+reader=reader.replace('cover.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);','cover.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);')
+reader=reader.replace('String coverRights = article.optString', 'page.addView(EditorialPhotos.credit(this,article));\n                  String coverRights = article.optString')
 s=s[:a]+reader+s[b:]
 a=s.index('private void showColumn()')
 b=s.index('private void showScores()',a)
