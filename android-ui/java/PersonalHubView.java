@@ -45,8 +45,10 @@ public final class PersonalHubView extends LinearLayout {
         try{articles=new JSONObject(activity.getSharedPreferences("voetbalhub_editorial",0).getString("last_articles","{}"));}catch(Exception ignored){}
         try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot","{}"));}catch(Exception ignored){}
         web.loadUrl("file:///android_asset/personal-hub.html");
+        if(!PublicationPolicy.allows(articles))articles=new JSONObject();
+        if(!PublicationPolicy.allows(stats))stats=new JSONObject();
         fetch("https://voetbalhub-redactie.onrender.com/articles",true);
-        fetch("https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json",false);
+        fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics",false);
     }
     public void refreshSaved(){deliver();}
     public boolean handleBack(){return pageHistory.back();}
@@ -58,7 +60,7 @@ public final class PersonalHubView extends LinearLayout {
     private void fetch(String address,boolean news){NETWORK.execute(()->{HttpURLConnection connection=null;JSONObject result=null;try{
         connection=(HttpURLConnection)new URL(address).openConnection();connection.setInstanceFollowRedirects(false);connection.setConnectTimeout(15000);connection.setReadTimeout(news?75000:20000);if(connection.getResponseCode()!=200)throw new Exception("No response");
         ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=connection.getInputStream()){byte[] block=new byte[8192];int n;while((n=in.read(block))!=-1){out.write(block,0,n);if(out.size()>3000000)throw new Exception("Too large");}}
-        JSONObject data=new JSONObject(out.toString("UTF-8"));if(news?data.optJSONArray("articles")==null:data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Invalid data");result=data;
+        JSONObject data=new JSONObject(out.toString("UTF-8"));if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");if(news?data.optJSONArray("articles")==null:data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Invalid data");result=data;
     }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}
         final JSONObject data=result;activity.runOnUiThread(()->{pending--;if(data!=null){if(news){articles=data;activity.getSharedPreferences("voetbalhub_editorial",0).edit().putString("last_articles",data.toString()).apply();}else{stats=data;activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",data.toString()).apply();}}else offline=true;deliver();});
     });}

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "generator": "imagegen",
+  "model": "Niet door de tool gerapporteerd",
+  "generatedAt": "2026-11-01",
+  "prompt": "Use case: photorealistic-natural. Asset type: premium editorial illustration for a Dutch football news match preview, landscape 16:9, 2048 x 1152. Create one exceptionally realistic, understated sports still-life photograph: a pristine unbranded modern white football with restrained navy blue and deep burgundy red geometric panels resting beside the crisp white touchline of a real-looking professionally maintained football pitch, very low sideline camera perspective, sharp detailed wet grass blades and tiny water droplets, subtle floodlight bokeh in a beautifully soft distant neutral background with no identifiable stadium architecture. The ball is prominent in the right-middle third, the upper left and lower edge have calm composition suitable for the app's own text overlay. Natural true-to-life evening light, high-end newspaper sports photography, sophisticated restrained colors, tactile detail, no neon green color cast, no digital illustration look, no excessive cinematic spectacle. This is an illustrative still-life and must not depict an actual game or suggest documentary evidence of any real event. NO people, players, faces, legs, shirts, logos, brand marks, team badges, numbers, captions, scoreboards, text, watermarks, fantasy stadium architecture. Do not add text anywhere.",
+  "review": {
+    "approved": true,
+    "reviewer": "Veldio fase 32 visual inspection",
+    "noIdentifiablePeople": true,
+    "noClubLogos": true,
+    "noMatchDocumentation": true,
+    "noText": true
+  },
+  "assetSha256": "f882e853fe7bf0e06f95d96b10934458007a328316ae5d9c5ef902897b70e39c",
+  "note": "Asset hash is verified against the exact generated-source and WebP derivative in the catalogue. Usage follows the applicable OpenAI terms; no exclusivity or statutory copyright guarantee is claimed.",
+  "terms": "https://openai.com/policies/eu-terms-of-use/",
+  "sourceSha256": "ead03a9f4ccd747506c89b7f4530459c28580fc4e98e38dfa3300b0a7d4c58c2"
+}

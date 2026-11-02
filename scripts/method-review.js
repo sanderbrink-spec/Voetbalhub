@@ -1,0 +1,2 @@
+"use strict";
+const M=require('../editorial-methods'),R=require('../content-rights');const method=M.load().find(m=>m.id===process.argv[2]);const issues=M.issues(method);if(issues.length)throw Error(issues.join(' '));const descriptor=M.descriptor(method);console.log(JSON.stringify({descriptor,approval:{scope:'production-method',contentHash:R.digest(descriptor),status:'pending',evidenceRef:'',basis:'',reviewer:'',reviewedAt:'',validUntil:''}},null,2));
