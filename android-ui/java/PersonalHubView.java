@@ -72,12 +72,13 @@ public final class PersonalHubView extends LinearLayout {
         @JavascriptInterface public void openArticle(String id){activity.runOnUiThread(()->{JSONObject row=find(id);if(row!=null&&!activity.isFinishing())open.open(row);});}
         @JavascriptInterface public void saveClubs(String raw){NETWORK.execute(()->{boolean saved=false;try{
             JSONArray requested=new JSONArray(raw);if(requested.length()>40)throw new Exception("Too many clubs");
-            Set<String> valid=new HashSet<>(),selected=new HashSet<>();
-            valid.addAll(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>()));
+            Set<String> valid=new HashSet<>(),selected=new HashSet<>(),previous=new HashSet<>(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>()));
+            valid.addAll(previous);
             for(int i=0;i<directory.length();i++)valid.add(directory.getJSONObject(i).getString("name"));
             JSONArray rows=stats.optJSONArray("standings");if(rows!=null)for(int i=0;i<rows.length();i++)valid.add(rows.getJSONObject(i).getJSONObject("team").getString("name"));
             for(int i=0;i<requested.length();i++){String name=requested.getString(i);if(!valid.contains(name))throw new Exception("Unknown club");selected.add(name);}
             saved=activity.getSharedPreferences("voethub",0).edit().putStringSet("clubs",selected).commit();
+            if(!saved)activity.getSharedPreferences("voethub",0).edit().putStringSet("clubs",previous).commit();
         }catch(Exception ignored){}final boolean ok=saved;activity.runOnUiThread(()->{if(!ready||activity.isFinishing())return;web.evaluateJavascript("window.clubsSaved("+ok+")",null);if(ok)deliver();});});}
         @JavascriptInterface public void removeSaved(String id){activity.runOnUiThread(()->{JSONObject row=find(id);if(row!=null&&EditorialStore.contains(activity,row))EditorialStore.toggle(activity,row);deliver();});}
     }
