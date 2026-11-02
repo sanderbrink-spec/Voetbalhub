@@ -471,10 +471,10 @@
         "German Democratic Republi"
       ],
       "matchSource": "https://www.uefa.com/under21/match/71916--serbia-vs-german-democratic-republi/",
-      "canonicalWinner": "Serbia",
+      "canonicalWinner": "Servië",
       "canonicalTeams": [
-        "Serbia",
-        "German Democratic Republi"
+        "Servië",
+        "Oost-Duitsland"
       ]
     },
     {
@@ -490,10 +490,10 @@
         "German Democratic Republi"
       ],
       "matchSource": "https://www.uefa.com/under21/match/71853--ussr-vs-german-democratic-republi/",
-      "canonicalWinner": "USSR",
+      "canonicalWinner": "Sovjet-Unie",
       "canonicalTeams": [
-        "USSR",
-        "German Democratic Republi"
+        "Sovjet-Unie",
+        "Oost-Duitsland"
       ]
     },
     {
@@ -569,7 +569,7 @@
       "canonicalWinner": "Frankrijk",
       "canonicalTeams": [
         "Frankrijk",
-        "Greece"
+        "Griekenland"
       ]
     },
     {
@@ -585,10 +585,10 @@
         "Serbia"
       ],
       "matchSource": "https://www.uefa.com/under21/match/3171--ussr-vs-serbia/",
-      "canonicalWinner": "USSR",
+      "canonicalWinner": "Sovjet-Unie",
       "canonicalTeams": [
-        "USSR",
-        "Serbia"
+        "Sovjet-Unie",
+        "Servië"
       ]
     },
     {
@@ -644,7 +644,7 @@
       "matchSource": "https://www.uefa.com/under21/match/55296--greece-vs-spain/",
       "canonicalWinner": "Spanje",
       "canonicalTeams": [
-        "Greece",
+        "Griekenland",
         "Spanje"
       ]
     },
@@ -683,7 +683,7 @@
       "canonicalWinner": "Italië",
       "canonicalTeams": [
         "Italië",
-        "Serbia"
+        "Servië"
       ]
     },
     {
@@ -702,7 +702,7 @@
       "canonicalWinner": "Nederland",
       "canonicalTeams": [
         "Nederland",
-        "Ukraine"
+        "Oekraïne"
       ]
     },
     {
@@ -721,7 +721,7 @@
       "canonicalWinner": "Nederland",
       "canonicalTeams": [
         "Nederland",
-        "Serbia"
+        "Servië"
       ]
     },
     {
@@ -758,7 +758,7 @@
       "matchSource": "https://www.uefa.com/under21/match/2003419--switzerland-vs-spain/",
       "canonicalWinner": "Spanje",
       "canonicalTeams": [
-        "Switzerland",
+        "Zwitserland",
         "Spanje"
       ]
     },
@@ -1802,5 +1802,6 @@
       "source": "https://www.uefa.com/futsaleuro/history/seasons/2022/",
       "error": "HTTP Error 404: Not Found"
     }
-  ]
+  ],
+  "nameNormalization": "Landnamen voor de Nederlandse vraagbank vertaald; ruwe bronwaarden en SHA-256-bewijzen behouden."
 }

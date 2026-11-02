@@ -15366,14 +15366,14 @@ window.CLUBQUIZ_BANK=[
   "level": "easy",
   "question": "Wie won het EK onder 21 met de beslissende finale in 1978?",
   "answers": [
-   "Serbia",
+   "Servië",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "Serbia",
+  "correct": "Servië",
   "source": "https://www.uefa.com/under21/history/seasons/1978/",
-  "explanation": "Serbia werd kampioen na de finale tegen German Democratic Republi.",
+  "explanation": "Servië werd kampioen na de finale tegen Oost-Duitsland.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "groningen-f8e0fe75598e.webp",
@@ -15390,14 +15390,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Serbia in de beslissende finale van het EK onder 21 in 1978?",
   "answers": [
-   "German Democratic Republi",
+   "Oost-Duitsland",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "German Democratic Republi",
+  "correct": "Oost-Duitsland",
   "source": "https://www.uefa.com/under21/history/seasons/1978/",
-  "explanation": "Serbia en German Democratic Republi waren de finalisten. Serbia pakte de titel.",
+  "explanation": "Servië en Oost-Duitsland waren de finalisten. Servië pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "heerenveen-exterior-98a8451bd868.webp",
@@ -15421,7 +15421,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "31 mei 1978",
   "source": "https://www.uefa.com/under21/history/seasons/1978/",
-  "explanation": "De beslissende finalewedstrijd tussen Serbia en German Democratic Republi was op 31 mei 1978.",
+  "explanation": "De beslissende finalewedstrijd tussen Servië en Oost-Duitsland was op 31 mei 1978.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-exterior-39afd408de58.webp",
@@ -15438,14 +15438,14 @@ window.CLUBQUIZ_BANK=[
   "level": "easy",
   "question": "Wie won het EK onder 21 met de beslissende finale in 1980?",
   "answers": [
-   "USSR",
+   "Sovjet-Unie",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "USSR",
+  "correct": "Sovjet-Unie",
   "source": "https://www.uefa.com/under21/history/seasons/1980/",
-  "explanation": "USSR werd kampioen na de finale tegen German Democratic Republi.",
+  "explanation": "Sovjet-Unie werd kampioen na de finale tegen Oost-Duitsland.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "midtjylland-87f7f7803cb2.webp",
@@ -15462,14 +15462,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van USSR in de beslissende finale van het EK onder 21 in 1980?",
   "answers": [
-   "German Democratic Republi",
+   "Oost-Duitsland",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "German Democratic Republi",
+  "correct": "Oost-Duitsland",
   "source": "https://www.uefa.com/under21/history/seasons/1980/",
-  "explanation": "USSR en German Democratic Republi waren de finalisten. USSR pakte de titel.",
+  "explanation": "Sovjet-Unie en Oost-Duitsland waren de finalisten. Sovjet-Unie pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "emmen-35c70437dac5.webp",
@@ -15493,7 +15493,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "21 mei 1980",
   "source": "https://www.uefa.com/under21/history/seasons/1980/",
-  "explanation": "De beslissende finalewedstrijd tussen USSR en German Democratic Republi was op 21 mei 1980.",
+  "explanation": "De beslissende finalewedstrijd tussen Sovjet-Unie en Oost-Duitsland was op 21 mei 1980.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-d71e48ea2e5b.webp",
@@ -15513,7 +15513,7 @@ window.CLUBQUIZ_BANK=[
    "Engeland",
    "Duitsland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Engeland",
   "source": "https://www.uefa.com/under21/history/seasons/1982/",
@@ -15536,8 +15536,8 @@ window.CLUBQUIZ_BANK=[
   "answers": [
    "Duitsland",
    "Frankrijk",
-   "German Democratic Republi",
-   "Greece"
+   "Oost-Duitsland",
+   "Griekenland"
   ],
   "correct": "Duitsland",
   "source": "https://www.uefa.com/under21/history/seasons/1982/",
@@ -15585,7 +15585,7 @@ window.CLUBQUIZ_BANK=[
    "Engeland",
    "Duitsland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Engeland",
   "source": "https://www.uefa.com/under21/history/seasons/1984/",
@@ -15609,7 +15609,7 @@ window.CLUBQUIZ_BANK=[
    "Spanje",
    "Duitsland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Spanje",
   "source": "https://www.uefa.com/under21/history/seasons/1984/",
@@ -15729,11 +15729,11 @@ window.CLUBQUIZ_BANK=[
    "Frankrijk",
    "Duitsland",
    "Engeland",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Frankrijk",
   "source": "https://www.uefa.com/under21/history/seasons/1988/",
-  "explanation": "Frankrijk werd kampioen na de finale tegen Greece.",
+  "explanation": "Frankrijk werd kampioen na de finale tegen Griekenland.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "heerenveen-433f38970b69.webp",
@@ -15750,14 +15750,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Frankrijk in de beslissende finale van het EK onder 21 in 1988?",
   "answers": [
-   "Greece",
+   "Griekenland",
    "Duitsland",
    "Engeland",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
-  "correct": "Greece",
+  "correct": "Griekenland",
   "source": "https://www.uefa.com/under21/history/seasons/1988/",
-  "explanation": "Frankrijk en Greece waren de finalisten. Frankrijk pakte de titel.",
+  "explanation": "Frankrijk en Griekenland waren de finalisten. Frankrijk pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-d71e48ea2e5b.webp",
@@ -15781,7 +15781,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "12 oktober 1988",
   "source": "https://www.uefa.com/under21/history/seasons/1988/",
-  "explanation": "De beslissende finalewedstrijd tussen Frankrijk en Greece was op 12 oktober 1988.",
+  "explanation": "De beslissende finalewedstrijd tussen Frankrijk en Griekenland was op 12 oktober 1988.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "groningen-f8e0fe75598e.webp",
@@ -15798,14 +15798,14 @@ window.CLUBQUIZ_BANK=[
   "level": "easy",
   "question": "Wie won het EK onder 21 met de beslissende finale in 1990?",
   "answers": [
-   "USSR",
+   "Sovjet-Unie",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "USSR",
+  "correct": "Sovjet-Unie",
   "source": "https://www.uefa.com/under21/history/seasons/1990/",
-  "explanation": "USSR werd kampioen na de finale tegen Serbia.",
+  "explanation": "Sovjet-Unie werd kampioen na de finale tegen Servië.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "groningen-f8e0fe75598e.webp",
@@ -15822,14 +15822,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van USSR in de beslissende finale van het EK onder 21 in 1990?",
   "answers": [
-   "Serbia",
+   "Servië",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "Serbia",
+  "correct": "Servië",
   "source": "https://www.uefa.com/under21/history/seasons/1990/",
-  "explanation": "USSR en Serbia waren de finalisten. USSR pakte de titel.",
+  "explanation": "Sovjet-Unie en Servië waren de finalisten. Sovjet-Unie pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "heerenveen-exterior-98a8451bd868.webp",
@@ -15853,7 +15853,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "17 oktober 1990",
   "source": "https://www.uefa.com/under21/history/seasons/1990/",
-  "explanation": "De beslissende finalewedstrijd tussen USSR en Serbia was op 17 oktober 1990.",
+  "explanation": "De beslissende finalewedstrijd tussen Sovjet-Unie en Servië was op 17 oktober 1990.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-exterior-39afd408de58.webp",
@@ -16021,7 +16021,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "Spanje",
   "source": "https://www.uefa.com/under21/history/seasons/1998/",
-  "explanation": "Spanje werd kampioen na de finale tegen Greece.",
+  "explanation": "Spanje werd kampioen na de finale tegen Griekenland.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "psv-bbbb1cfe5eae.webp",
@@ -16038,14 +16038,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Spanje in de beslissende finale van het EK onder 21 in 1998?",
   "answers": [
-   "Greece",
+   "Griekenland",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "Greece",
+  "correct": "Griekenland",
   "source": "https://www.uefa.com/under21/history/seasons/1998/",
-  "explanation": "Greece en Spanje waren de finalisten. Spanje pakte de titel.",
+  "explanation": "Griekenland en Spanje waren de finalisten. Spanje pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "psv-bbbb1cfe5eae.webp",
@@ -16069,7 +16069,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "31 mei 1998",
   "source": "https://www.uefa.com/under21/history/seasons/1998/",
-  "explanation": "De beslissende finalewedstrijd tussen Greece en Spanje was op 31 mei 1998.",
+  "explanation": "De beslissende finalewedstrijd tussen Griekenland en Spanje was op 31 mei 1998.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-exterior-39afd408de58.webp",
@@ -16165,7 +16165,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "Italië",
   "source": "https://www.uefa.com/under21/history/seasons/2004/",
-  "explanation": "Italië werd kampioen na de finale tegen Serbia.",
+  "explanation": "Italië werd kampioen na de finale tegen Servië.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "heerenveen-433f38970b69.webp",
@@ -16182,14 +16182,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Italië in de beslissende finale van het EK onder 21 in 2004?",
   "answers": [
-   "Serbia",
+   "Servië",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "Serbia",
+  "correct": "Servië",
   "source": "https://www.uefa.com/under21/history/seasons/2004/",
-  "explanation": "Italië en Serbia waren de finalisten. Italië pakte de titel.",
+  "explanation": "Italië en Servië waren de finalisten. Italië pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-d71e48ea2e5b.webp",
@@ -16213,7 +16213,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "8 juni 2004",
   "source": "https://www.uefa.com/under21/history/seasons/2004/",
-  "explanation": "De beslissende finalewedstrijd tussen Italië en Serbia was op 8 juni 2004.",
+  "explanation": "De beslissende finalewedstrijd tussen Italië en Servië was op 8 juni 2004.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "groningen-f8e0fe75598e.webp",
@@ -16237,7 +16237,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "Nederland",
   "source": "https://www.uefa.com/under21/history/seasons/2006/",
-  "explanation": "Nederland werd kampioen na de finale tegen Ukraine.",
+  "explanation": "Nederland werd kampioen na de finale tegen Oekraïne.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "groningen-f8e0fe75598e.webp",
@@ -16254,14 +16254,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Nederland in de beslissende finale van het EK onder 21 in 2006?",
   "answers": [
-   "Ukraine",
+   "Oekraïne",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "Ukraine",
+  "correct": "Oekraïne",
   "source": "https://www.uefa.com/under21/history/seasons/2006/",
-  "explanation": "Nederland en Ukraine waren de finalisten. Nederland pakte de titel.",
+  "explanation": "Nederland en Oekraïne waren de finalisten. Nederland pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "heerenveen-exterior-98a8451bd868.webp",
@@ -16285,7 +16285,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "4 juni 2006",
   "source": "https://www.uefa.com/under21/history/seasons/2006/",
-  "explanation": "De beslissende finalewedstrijd tussen Nederland en Ukraine was op 4 juni 2006.",
+  "explanation": "De beslissende finalewedstrijd tussen Nederland en Oekraïne was op 4 juni 2006.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-exterior-39afd408de58.webp",
@@ -16309,7 +16309,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "Nederland",
   "source": "https://www.uefa.com/under21/history/seasons/2007/",
-  "explanation": "Nederland werd kampioen na de finale tegen Serbia.",
+  "explanation": "Nederland werd kampioen na de finale tegen Servië.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "midtjylland-87f7f7803cb2.webp",
@@ -16326,14 +16326,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Nederland in de beslissende finale van het EK onder 21 in 2007?",
   "answers": [
-   "Serbia",
+   "Servië",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "Serbia",
+  "correct": "Servië",
   "source": "https://www.uefa.com/under21/history/seasons/2007/",
-  "explanation": "Nederland en Serbia waren de finalisten. Nederland pakte de titel.",
+  "explanation": "Nederland en Servië waren de finalisten. Nederland pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "emmen-35c70437dac5.webp",
@@ -16357,7 +16357,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "23 juni 2007",
   "source": "https://www.uefa.com/under21/history/seasons/2007/",
-  "explanation": "De beslissende finalewedstrijd tussen Nederland en Serbia was op 23 juni 2007.",
+  "explanation": "De beslissende finalewedstrijd tussen Nederland en Servië was op 23 juni 2007.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-d71e48ea2e5b.webp",
@@ -16377,7 +16377,7 @@ window.CLUBQUIZ_BANK=[
    "Duitsland",
    "Engeland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Duitsland",
   "source": "https://www.uefa.com/under21/history/seasons/2009/",
@@ -16400,8 +16400,8 @@ window.CLUBQUIZ_BANK=[
   "answers": [
    "Engeland",
    "Frankrijk",
-   "German Democratic Republi",
-   "Greece"
+   "Oost-Duitsland",
+   "Griekenland"
   ],
   "correct": "Engeland",
   "source": "https://www.uefa.com/under21/history/seasons/2009/",
@@ -16453,7 +16453,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "Spanje",
   "source": "https://www.uefa.com/under21/history/seasons/2011/",
-  "explanation": "Spanje werd kampioen na de finale tegen Switzerland.",
+  "explanation": "Spanje werd kampioen na de finale tegen Zwitserland.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "psv-bbbb1cfe5eae.webp",
@@ -16470,14 +16470,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Spanje in de beslissende finale van het EK onder 21 in 2011?",
   "answers": [
-   "Switzerland",
+   "Zwitserland",
    "Duitsland",
    "Engeland",
    "Frankrijk"
   ],
-  "correct": "Switzerland",
+  "correct": "Zwitserland",
   "source": "https://www.uefa.com/under21/history/seasons/2011/",
-  "explanation": "Switzerland en Spanje waren de finalisten. Spanje pakte de titel.",
+  "explanation": "Zwitserland en Spanje waren de finalisten. Spanje pakte de titel.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "psv-bbbb1cfe5eae.webp",
@@ -16501,7 +16501,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "25 juni 2011",
   "source": "https://www.uefa.com/under21/history/seasons/2011/",
-  "explanation": "De beslissende finalewedstrijd tussen Switzerland en Spanje was op 25 juni 2011.",
+  "explanation": "De beslissende finalewedstrijd tussen Zwitserland en Spanje was op 25 juni 2011.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-exterior-39afd408de58.webp",
@@ -16593,7 +16593,7 @@ window.CLUBQUIZ_BANK=[
    "Duitsland",
    "Engeland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Duitsland",
   "source": "https://www.uefa.com/under21/history/seasons/2017/",
@@ -16617,7 +16617,7 @@ window.CLUBQUIZ_BANK=[
    "Spanje",
    "Engeland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Spanje",
   "source": "https://www.uefa.com/under21/history/seasons/2017/",
@@ -16689,7 +16689,7 @@ window.CLUBQUIZ_BANK=[
    "Duitsland",
    "Engeland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Duitsland",
   "source": "https://www.uefa.com/under21/history/seasons/2019/",
@@ -16737,7 +16737,7 @@ window.CLUBQUIZ_BANK=[
    "Duitsland",
    "Engeland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Duitsland",
   "source": "https://www.uefa.com/under21/history/seasons/2021/",
@@ -16761,7 +16761,7 @@ window.CLUBQUIZ_BANK=[
    "Portugal",
    "Engeland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Portugal",
   "source": "https://www.uefa.com/under21/history/seasons/2021/",
@@ -16809,7 +16809,7 @@ window.CLUBQUIZ_BANK=[
    "Engeland",
    "Duitsland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Engeland",
   "source": "https://www.uefa.com/under21/history/seasons/2023/",
@@ -16833,7 +16833,7 @@ window.CLUBQUIZ_BANK=[
    "Spanje",
    "Duitsland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Spanje",
   "source": "https://www.uefa.com/under21/history/seasons/2023/",
@@ -16881,7 +16881,7 @@ window.CLUBQUIZ_BANK=[
    "Engeland",
    "Duitsland",
    "Frankrijk",
-   "German Democratic Republi"
+   "Oost-Duitsland"
   ],
   "correct": "Engeland",
   "source": "https://www.uefa.com/under21/history/seasons/2025/",
@@ -16904,8 +16904,8 @@ window.CLUBQUIZ_BANK=[
   "answers": [
    "Duitsland",
    "Frankrijk",
-   "German Democratic Republi",
-   "Greece"
+   "Oost-Duitsland",
+   "Griekenland"
   ],
   "correct": "Duitsland",
   "source": "https://www.uefa.com/under21/history/seasons/2025/",
