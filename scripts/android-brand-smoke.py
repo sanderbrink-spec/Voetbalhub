@@ -15,8 +15,8 @@ badging = subprocess.check_output([str(aapt), 'dump', 'badging', sys.argv[1]], t
 match = re.search(r"package: name='([^']+)'", badging)
 assert match, 'APK package identity missing'
 PACKAGE = match.group(1)
-assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test35'), PACKAGE
-if PACKAGE=='nl.voetbalhub.app1.test35':assert "application-label:'Veldio 35 test'" in badging, 'Distinct test launcher label absent'
+assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test37'), PACKAGE
+if PACKAGE=='nl.voetbalhub.app1.test37':assert "application-label:'Veldio 37 test'" in badging, 'Distinct test launcher label absent'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
@@ -263,11 +263,11 @@ for attempt in range(4):
     if any(n.get('text')=='Speel de clubquiz' for n in root.iter('node')):break
     adb('shell','input','swipe',str(width//2),str(int(height*.75)),str(width//2),str(int(height*.35)),'400');time.sleep(1);root=capture('27-phase35-menu')
 tap_node(root,lambda n:n.get('text')=='Speel de clubquiz');time.sleep(2);root=capture('28-phase35-quiz-setup')
-assert any('68' in n.get('text','') and 'vragen' in n.get('text','') for n in root.iter('node')), 'Quiz bank not loaded'
+assert any('307' in n.get('text','') and 'vragen' in n.get('text','') for n in root.iter('node')), 'Quiz bank not loaded'
 adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
 tap_node(root,lambda n:'Start de quiz' in n.get('text',''));time.sleep(1);root=capture('29-phase35-quiz-question')
 assert any('Vraag 1 / 10' in n.get('text','') for n in root.iter('node')), 'First quiz question absent offline'
-answers=[n for n in root.iter('node') if n.get('class')=='android.widget.Button' and re.match(r'^[A-D]\s',n.get('text',''))]
+answers=[n for n in root.iter('node') if n.get('class')=='android.widget.Button' and re.match(r'^[A-D]',n.get('text',''))]
 if not answers:
     answers=[n for n in root.iter('node') if n.get('class')=='android.widget.Button' and re.match(r'^[A-D](Eredivisie|Keuken|Premier|Bundesliga)',n.get('text',''))]
 assert len(answers)==4, 'Four quiz answers not exposed'
@@ -286,4 +286,4 @@ assert any('Vraag 2 / 10' in n.get('text','') for n in root.iter('node')), 'Quiz
 adb('shell','input','keyevent','4');time.sleep(1);capture('32-phase35-quiz-back')
 adb('shell','svc','wifi','enable')
 assert adb('shell','pidof',PACKAGE).strip()
-with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 35 separate Clubquiz under Meer, 68-question bank, four offline choices, answer feedback, progression and Android Back. Emulator only.\n')
+with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 35 separate Clubquiz under Meer, 307-question bank, four offline choices, answer feedback, progression and Android Back. Emulator only.\n')

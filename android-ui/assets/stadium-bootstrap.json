@@ -12,7 +12,7 @@
       "headline": "De Kuip: waar staal en herinneringen samenkomen",
       "standfirst": "Van de vrij hangende tweede ring tot de golden goal van 2000. Een portret van het Rotterdamse stadion, zijn supporters en zijn toekomst.",
       "author": "Veldio Redactie",
-      "reviewedAt": "2026-11-01",
+      "reviewedAt": "2026-11-02",
       "publishedAt": "2026-11-01T21:00:00Z",
       "status": "published",
       "sections": [
@@ -131,6 +131,30 @@
           "text": "Sinds juli 2026 heeft Feyenoord meer dan 95 procent van de stadionaandelen.",
           "sources": [
             8
+          ]
+        },
+        {
+          "text": "Het vernieuwde Feyenoord Museum opende op 18 januari 2017.",
+          "sources": [
+            11
+          ]
+        },
+        {
+          "text": "Het museum ligt aan de Olympiazijde van De Kuip.",
+          "sources": [
+            11
+          ]
+        },
+        {
+          "text": "Pierre van Hooijdonk scoorde tweemaal in de UEFA Cup-finale van 2002.",
+          "sources": [
+            3
+          ]
+        },
+        {
+          "text": "Jon Dahl Tomasson maakte Feyenoords derde doelpunt in die finale.",
+          "sources": [
+            3
           ]
         }
       ],
@@ -274,11 +298,11 @@
         }
       ],
       "wordCount": 1062,
-      "contentHash": "aca3307c44d926177c51344242298cc8698e8da35eb900c1d74f5b4c0f685f7b",
+      "contentHash": "992b3687f81be5e442bfef86b9dfa6d54fe249a0a523ff2b95264b2366dfee33",
       "review": {
         "approved": true,
         "reviewedBy": "Veldio fase 33 broncontrole",
-        "contentHash": "aca3307c44d926177c51344242298cc8698e8da35eb900c1d74f5b4c0f685f7b",
+        "contentHash": "992b3687f81be5e442bfef86b9dfa6d54fe249a0a523ff2b95264b2366dfee33",
         "checks": [
           "sources",
           "claims",

@@ -283,12 +283,7 @@ async function polishIncomingDraft(item) {
 async function getArticles(view = "current") {
   if (!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
-  if(keys.length>2000)throw new Error("ARTICLE_ARCHIVE_REVIEW_REQUIRED");
-  const candidates=[];
-  for(const key of keys){
-    const raw=await client.get(key);
-    try{if(raw){const article=JSON.parse(raw);if(article?.status==="published")candidates.push(article);}}catch{}
-  }
+  const candidates=await require("./article-storage").readPublished(client,keys);
   candidates.sort((a,b)=>String(b.publishedAt||"").localeCompare(String(a.publishedAt||""))||String(a.id||"").localeCompare(String(b.id||"")));
   const articles = [];
   for (const article of candidates) {
@@ -453,7 +448,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, editorialAutomationVersion:24, launchPolicyVersion:28, automaticEditorial:{enabled:require("./launch-policy").allowed("automaticNews")&&require("./automatic-editorial.json").enabled===true,maxPerDay:Math.max(0,Math.min(20,Number(require("./automatic-editorial.json").maxPerDay)||0)),mode:"verified_announcements"}, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
-    try { const view=url.searchParams.get("view")||"current"; if(!["current","archive","all"].includes(view))return send(res,400,{error:"Onbekende nieuwsweergave."}); const articles = await runtime.withDeadline(() => getArticles(view), 9000); return send(res, 200, { rightsPolicyVersion:26,rightsExpiresAt:Math.min(Date.now()+300000,...articles.map(a=>Date.parse(rights.decision("publication",a,{audit:false}).validUntil)||a.productionReceipt?.expiresAt||Date.now()+300000)),count: articles.length, articles }); }
+    try { const started=Date.now(); const view=url.searchParams.get("view")||"current"; if(!["current","archive","all"].includes(view))return send(res,400,{error:"Onbekende nieuwsweergave."}); const articles = await runtime.withDeadline(() => getArticles(view), 9000); res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, { rightsPolicyVersion:26,rightsExpiresAt:Math.min(Date.now()+300000,...articles.map(a=>Date.parse(rights.decision("publication",a,{audit:false}).validUntil)||a.productionReceipt?.expiresAt||Date.now()+300000)),count: articles.length, articles }); }
     catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {

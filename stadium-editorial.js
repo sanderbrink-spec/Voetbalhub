@@ -4,7 +4,7 @@ const sha=x=>crypto.createHash('sha256').update(x).digest('hex');
 const bodyHash=a=>sha(a.sections.map(s=>s.heading+'\n'+s.text+'\n').join(''));
 function validateArticle(a,catalog){
  if(!a||!/^[-a-z0-9]{1,80}$/.test(a.id||'')||a.venueId!==a.id||a.status!=='published')throw Error('Invalid stadium identity');
- if(!Array.isArray(a.sections)||a.sections.length<6||!Array.isArray(a.sources)||a.sources.length<3||!Array.isArray(a.trivia)||a.trivia.length<5)throw Error('Incomplete editorial feature');
+ if(!Array.isArray(a.sections)||a.sections.length<6||!Array.isArray(a.sources)||a.sources.length<3||!Array.isArray(a.trivia)||a.trivia.length<10)throw Error('Incomplete editorial feature');
  const words=(a.standfirst+' '+a.sections.map(s=>s.heading+' '+s.text).join(' ')).trim().split(/\s+/).length;
  if(words<800||words>1200||a.wordCount!==words)throw Error('Feature must have 800–1200 words');
  const ids=new Set(a.sources.map(s=>s.id));if(ids.size!==a.sources.length||a.sources.some(s=>!/^https:\/\//.test(s.url)))throw Error('Invalid sources');
