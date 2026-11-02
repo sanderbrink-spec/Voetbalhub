@@ -290,9 +290,11 @@ async function getArticles(view = "current") {
   return require("./feed-policy").selectFeed(articles, {view});
 }
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
+const quizHandler=require("./quiz39/service").create({redis:client});
 async function handle(req, res) {
   security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
+  if(await quizHandler(req,res))return;
   if(require("./policy-pages").serve(req,res,url.pathname))return;
   if(req.method==="GET"&&url.pathname==="/ready"){const ready=await runtime.readiness(client);return send(res,ready?200:503,{ready,backend:"node-redis",revision:runtime.revision(process.env)});}
   if(url.pathname==="/contact") {
