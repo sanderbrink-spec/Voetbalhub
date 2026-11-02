@@ -9,9 +9,10 @@ function compare(a,b){return b.points-a.points||b.correct-a.correct||a.correctMs
 function rank(rows){const sorted=rows.slice().sort((a,b)=>compare(a,b)||a.playerId.localeCompare(b.playerId));return sorted.map((r,i)=>({...r,position:i&&compare(r,sorted[i-1])===0?sorted.findIndex(x=>compare(r,x)===0)+1:i+1}));}
 function selection({mode='quick',level='easy',club='',day=E.dayKey()}={}){
  if(!Object.hasOwn(E.MODES,mode)||!['easy','normal','hard'].includes(level)||typeof club!=='string'||club.length>80)throw Error('Ongeldige spelvorm.');
- const seed=mode==='daily'?day:week(day),rng=E.seeded('39-ranked:'+mode+':'+level+':'+club+':'+seed);
- const round=E.createRound(bank,{mode,level,club,now:Date.parse(day+'T12:00:00Z'),rng});
+ const normalizedClub=mode==='club'?club:'',normalizedLevel=mode==='quick'?level:mode==='expert'?'hard':'easy';
+ const seed=mode==='daily'?day:week(day),rng=E.seeded('39-ranked:'+mode+':'+normalizedLevel+':'+normalizedClub+':'+seed);
+ const round=E.createRound(bank,{mode,level:normalizedLevel,club:normalizedClub,now:Date.parse(day+'T12:00:00Z'),rng});
  const ids=round.questions.map(q=>q.id);const setId=crypto.createHash('sha256').update(JSON.stringify({version:39,mode,ids,levels:round.questions.map(q=>q.level)})).digest('hex').slice(0,24);
- return {mode,level:round.meta.level,club,day,week:week(day),setId,questions:round.questions};
+ return {mode,level:round.meta.level,club:normalizedClub,day,week:week(day),setId,questions:round.questions};
 }
 module.exports={bank,E,LIMIT,FACTORS,points,week,compare,rank,selection};
