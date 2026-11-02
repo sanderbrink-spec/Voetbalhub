@@ -1015,16 +1015,27 @@ jobs:
       - name: Install visual phase 38 upgrade
         run: python3 scripts/patch-visual38.py
 
-      - name: Test phase 38 UI, server scores and replay protection
+      - name: Verify existing Node regression suite
+        timeout-minutes: 2
+        run: npm test
+      - name: Verify phase 38 Redis scores and replay protection
+        timeout-minutes: 2
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y redis-server
           redis-server --port 6380 --save "" --appendonly no --daemonize yes
-          REDIS_TEST_URL=redis://127.0.0.1:6380 npm test
+          REDIS_TEST_URL=redis://127.0.0.1:6380 node --test test/quiz39.redis.test.js test/quiz39.test.js test/quiz39-bank.test.js
+      - name: Install browser verification runtime
+        timeout-minutes: 3
+        run: |
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
-          NODE_PATH=./node_modules REDIS_TEST_URL=redis://127.0.0.1:6380 node scripts/browser/visual38.cjs
-          NODE_PATH=./node_modules REDIS_TEST_URL=redis://127.0.0.1:6380 node scripts/browser/quiz39.cjs
+      - name: Verify phase 38 small screens and favourite persistence
+        timeout-minutes: 2
+        run: NODE_PATH=./node_modules node scripts/browser/visual38.cjs
+      - name: Verify online quiz and leaderboards
+        timeout-minutes: 2
+        run: NODE_PATH=./node_modules REDIS_TEST_URL=redis://127.0.0.1:6380 node scripts/browser/quiz39.cjs
       - name: Keep phase 38 UI verification
         if: always()
         uses: actions/upload-artifact@v4
