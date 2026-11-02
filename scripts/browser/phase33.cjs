@@ -7,7 +7,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),http=require('node:
  try{for(const width of [320,360,393,412,768]){
   const page=await browser.newPage({viewport:{width,height:852},deviceScaleFactor:width===360?3:1}),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(base+'/stadium.html');await page.evaluate(d=>setStadiumData(JSON.stringify(d)),data);
-  await page.locator('.archive-card img').evaluate(i=>i.decode());await page.locator('.archive-card').click();assert.match(await page.locator('h1').innerText(),/De Kuip/);assert.equal(await page.locator('article h2').count(),13);assert.equal(await page.locator('article .facts li').count(),6);
+  await page.locator('.archive-card img').evaluate(i=>i.decode());await page.locator('.archive-card').click();assert.match(await page.locator('h1').innerText(),/De Kuip/);assert.equal(await page.locator('article h2').count(),13);assert.equal(await page.locator('article .facts li').count(),10);
   assert.equal(await page.locator('article figure').count(),2);for(const img of await page.locator('article figure img').all())assert.ok(await img.evaluate(async i=>{await i.decode();return i.naturalWidth>=1280;}));
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.match(await page.locator('article').innerText(),/CC BY 3.0/);assert.equal(await page.locator('.sources li').count(),11);
   if(width===393){await page.screenshot({path:'.browser-output/phase33-stadium-reader.png',fullPage:false});await page.screenshot({path:'.browser-output/phase33-de-kuip-full.png',fullPage:true});}
@@ -17,6 +17,6 @@ const {chromium}=require('playwright'),fs=require('node:fs'),http=require('node:
   assert.equal(await page.getByText(/video’s laden/).count(),0);assert.equal(await page.locator('[data-answer]').count(),3);const before=await page.locator('.number-question').innerText();await page.locator('[data-answer]').first().click();assert.ok((await page.locator('[role=status]').innerText()).length>25);await page.locator('#nextQuestion').click();assert.notEqual(await page.locator('.number-question').innerText(),before);await page.locator('#stadiumArchive').click();assert.equal(await page.evaluate(()=>calls.at(-1)),'archive');
   await page.context().setOffline(true);await page.locator('[data-answer]').first().click();assert.match(await page.locator('[role=status]').innerText(),/Goed|antwoord/);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   if(width===393)await page.screenshot({path:'.browser-output/phase33-home-stadium-quiz.png',fullPage:true});assert.deepEqual(errors,[]);await page.close();
- }console.log('PASS phase 33: 320–768px, licensed photographs, 1,062-word reader, 6 sourced facts, archive and back, full card link, interactive offline quiz and no video loader.');}
+ }console.log('PASS phase 33: 320–768px, licensed photographs, 1,062-word reader, 10 sourced facts, archive and back, full card link, interactive offline quiz and no video loader.');}
  finally{await browser.close();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});
