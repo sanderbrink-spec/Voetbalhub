@@ -285,6 +285,7 @@ async function getArticles(view = "current") {
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 async function handle(req, res) {
   const url = new URL(req.url, "http://localhost");
+  if(require("./policy-pages").serve(req,res,url.pathname))return;
   if(req.method==="GET"&&url.pathname==="/ready"){const ready=await runtime.readiness(client);return send(res,ready?200:503,{ready,backend:"node-redis",revision:runtime.revision(process.env)});}
   if(url.pathname==="/contact") {
     if(req.method==="GET") {
