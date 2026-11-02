@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/eredivisie-*.js'
+      - 'scripts/weekly-feature.js'
+      - 'test/weekly-feature.test.js'
       - 'scripts/match-cover*'
       - 'stadium-assets.json'
       - 'public/stadiums/**'
@@ -27,7 +29,7 @@ jobs:
         with:
           node-version: '24'
       - run: npm install --ignore-scripts --no-audit --no-fund
-      - run: node --test test/eredivisie*.test.js
+      - run: node --test test/eredivisie*.test.js test/weekly-feature.test.js
       - name: Update statistics and select one featured fixture per round
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}

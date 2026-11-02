@@ -48,13 +48,24 @@ let server,base,store,redisOptions;
 test.before(async()=>{
   store=new Map();const redis={isReady:true,on(){},get:async key=>store.get(key)||null,set:async(key,value,options)=>{if(options?.NX&&store.has(key))return null;store.set(key,value);return 'OK';},
   eval:async(script,options)=>{
+    if(script.includes("local existing=redis.call('GET',KEYS[1])")){
+      const [articleKey,indexKey,draftKey,bodyKey,versionKey]=options.keys,[raw,revision,hash,id,at,version]=options.arguments;
+      if(store.has(articleKey))return ['existing',store.get(articleKey)];
+      if(store.has(indexKey)||store.has(bodyKey))return ['duplicate',store.get(indexKey)||store.get(bodyKey)];
+      if(version!==''&&String(store.get(versionKey)||'0')!==version)return ['busy',''];
+      let draft=null;
+      if(revision){draft=JSON.parse(store.get(draftKey)||'null');if(!draft||draft.status!=='approved'||draft.revision!==Number(revision)||draft.contentHash!==hash)return ['stale',''];}
+      store.set(versionKey,String(Number(store.get(versionKey)||0)+1));store.set(articleKey,raw);store.set(indexKey,id);store.set(bodyKey,id);
+      if(draft)store.set(draftKey,JSON.stringify({...draft,status:'published',revision:draft.revision+1,articleId:id,publishedAt:at,updatedAt:at}));
+      return ['published',raw];
+    }
     assert.match(script,/record.revision/);
     const key=options.keys[0],current=store.get(key),expected=Number(options.arguments[0]);
     if(current?JSON.parse(current).revision!==expected:expected!==0)return 0;
     store.set(key,options.arguments[1]);return 1;
   },keys:async pattern=>[...store.keys()].filter(k=>k.startsWith(pattern.slice(0,-1)))};
   const serverPath=path.join(__dirname,'../server.js'),realRequire=createRequire(serverPath);
-  const context={require:id=>id==='redis'?{createClient:options=>{redisOptions=options;return redis;}}:realRequire(id),process:{env:{HUB_API_SECRET:'test-only',REDIS_URL:'test://mock'}},console,URL,Buffer,crypto:require('node:crypto'),__dirname:path.dirname(serverPath),module:{exports:{}},fetch};
+  const context={require:id=>id==='./content-rights'?{decision:()=>({allowed:true})}:id==='redis'?{createClient:options=>{redisOptions=options;return redis;}}:realRequire(id),process:{env:{HUB_API_SECRET:'test-only',REDIS_URL:'test://mock'}},console,URL,Buffer,crypto:require('node:crypto'),__dirname:path.dirname(serverPath),module:{exports:{}},fetch};
   const source=fs.readFileSync(serverPath,'utf8').replace(/start\(\);\s*$/,'module.exports={handle};');
   vm.runInNewContext(source,context,{filename:serverPath});
   server=http.createServer((req,res)=>context.module.exports.handle(req,res).catch(err=>{res.writeHead(500);res.end(String(err));}));
@@ -69,8 +80,8 @@ test('real server enforces Flashscore and does not write blocked submissions',as
 test('publication requires authorization and explicit approval; duplicate retry writes once',async()=>{
   let r=await fetch(base+'/publish',{method:'POST',body:JSON.stringify(valid())});assert.equal(r.status,401);
   r=await publish({...valid(),approved:false});assert.equal(r.status,400);
-  r=await publish(valid());assert.equal(r.status,200);assert.equal(store.size,1);
-  r=await publish(valid());assert.equal(r.status,409);assert.equal(store.size,1);
+  r=await publish(valid());assert.equal(r.status,200);assert.equal([...store.keys()].filter(k=>k.startsWith('article:')).length,1);
+  r=await publish(valid());assert.equal(r.status,409);assert.equal([...store.keys()].filter(k=>k.startsWith('article:')).length,1);
 });
 test('desk and both javascript assets served, old hardcoded story absent',async()=>{
   const r=await fetch(base+'/publish-desk'),html=await r.text();assert.equal(r.status,200);

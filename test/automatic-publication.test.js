@@ -68,3 +68,45 @@ test('selected evidence always resolves to exact source bytes and invented passa
  assert.ok(docs[0].text.includes(c.facts[0].evidence[0].quote));
  assert.throws(()=>hydrateEvidence({facts:[{evidence:[{source:0,fragment:500}]}],sharedEventEvidence:[]},fragments),/Ongeldige verwijzing/);
 });
+
+test('fact evidence rejects invented numbers and stale or future corroboration',()=>{
+ const {docs,candidate}=fixture();candidate.facts[0].text+=' Er waren 999 bezoekers.';
+ assert.ok(validateEvidence(candidate,docs,now).some(x=>x.includes('999')));
+ const f=fixture();f.candidate.kind='announcement';f.docs[1].publishedAt='2026-01-01';assert.ok(validateEvidence(f.candidate,f.docs,now).length);
+ f.docs[1].publishedAt='2026-11-01';assert.ok(validateEvidence(f.candidate,f.docs,now).length);
+});
+test('publication retains the verified category and rejects missing or malformed AI categories',()=>{
+ const {categoryFor}=require('../scripts/automatic-publication');
+ for(const category of ['Champions League','Ajax','Eredivisie','Transfers'])assert.equal(categoryFor({category,teams:['Ajax']}),category);
+ for(const category of [null,{},'', 'x'.repeat(81),'Ajax\nEuropa'])assert.throws(()=>categoryFor({category}));
+});
+test('a source outage creates no concepts, no AI completion and an explicit report',async()=>{
+ let writes=0;
+ const report=await run({secret:'test',groqKey:'test',githubToken:'test',fetcher:async(url,options={})=>{
+  if(options.method==='POST')writes++;
+  if(url.endsWith('/health'))return Response.json({editorialAutomationVersion:24,storage:'connected'});
+  if(url.endsWith('/models'))return Response.json({data:[{id:'openai/gpt-oss-120b'}]});
+  if(url.includes('/articles'))return Response.json({articles:[]});
+  if(url.endsWith('/editorial-drafts'))return Response.json({items:[]});
+  return new Response('',{status:503});
+ }});
+ assert.equal(report.status,'no_verified_sources');assert.equal(writes,0);assert.ok(report.sourceErrors.length);
+});
+test('rate-limit backoff obeys cancellation rather than retrying an expired request',async()=>{
+ const controller=new AbortController();controller.abort();let calls=0;
+ const paced=pacedGroq(async()=>{calls++;return {status:429,headers:new Headers({'retry-after':'1'}),arrayBuffer:async()=>new ArrayBuffer(0)};},100);
+ await assert.rejects(paced('https://api.groq.com/openai/v1/chat/completions',{signal:controller.signal}),e=>e.name==='AbortError');assert.equal(calls,0);
+});
+
+test('an older server blocks all generation and reservation writes before processing',async()=>{
+ let calls=0;
+ await assert.rejects(run({secret:'test',groqKey:'test',githubToken:'test',fetcher:async()=>{calls++;return Response.json({storage:'connected'});}}),/Serverfase 24/);
+ assert.equal(calls,1);
+});
+
+test('malformed AI facts and evidence references fail closed with readable diagnostics',()=>{
+ const f=fixture();f.candidate.facts[0]=null;f.candidate.facts[1].evidence=[null];f.candidate.sharedEventEvidence=[null];
+ const issues=validateEvidence(f.candidate,f.docs,now);assert.ok(issues.length>=2);assert.ok(issues.every(x=>typeof x==='string'));
+ assert.throws(()=>hydrateEvidence({facts:[null],sharedEventEvidence:[]},[]),/Gestructureerde feiten/);
+ assert.throws(()=>hydrateEvidence({facts:[{evidence:[null]}],sharedEventEvidence:[]},[]),/Ongeldige verwijzing/);
+});

@@ -58,11 +58,12 @@ public final class WeeklyMatchCard extends LinearLayout {
         new Thread(this::load,"weekly-match-card").start();
     }
     private void show(JSONObject data)throws Exception{
+        if(!PublicationPolicy.allows(data))return;
         if(data.optInt("schemaVersion")!=1||data.optJSONObject("league")==null||data.getJSONObject("league").optInt("id")!=88)return;
         JSONObject feature=data.optJSONObject("featured");if(feature==null)return;
-        JSONObject p=feature.optJSONObject("preview");if(p==null)return;
+        boolean report="report".equals(feature.optString("phase"));JSONObject p=feature.optJSONObject(report?"report":"preview");if(p==null)return;
         JSONObject fixture=p.optJSONObject("fixture");if(fixture==null)return;
-        Instant kickoff=Instant.parse(fixture.getString("date"));if(kickoff.toEpochMilli()<=System.currentTimeMillis())return;
+        Instant kickoff=Instant.parse(fixture.getString("date"));if(p.optJSONArray("body")==null||p.getJSONArray("body").length()<3)return;
         String home=fixture.getJSONObject("home").getString("name"),away=fixture.getJSONObject("away").getString("name");
         label.setText("WEDSTRIJD VAN DE WEEK");title.setVisibility(GONE);
         teams.setText(home+"  –  "+away);matchRow.setVisibility(VISIBLE);
@@ -70,8 +71,8 @@ public final class WeeklyMatchCard extends LinearLayout {
         loadLogo(awayLogo,fixture.getJSONObject("away").optString("logo",""),away);
         String when=DateTimeFormatter.ofPattern("EEEE d MMMM · HH:mm",new Locale("nl","NL")).withZone(ZoneId.of("Europe/Amsterdam")).format(kickoff);
         String round=feature.optString("round","");details.setText(when+(round.isEmpty()?"":"  ·  "+round));
-        summary.setVisibility(GONE);action.setText("Bekijk de voorbeschouwing");
-        setContentDescription("Wedstrijd van de week: "+home+" tegen "+away+". "+when+". Bekijk de voorbeschouwing.");setOnClickListener(v->openPreview.open(data.toString()));
+        summary.setVisibility(GONE);action.setText(report?"Lees het wedstrijdverslag":"Bekijk de voorbeschouwing");
+        setContentDescription("Wedstrijd van de week: "+home+" tegen "+away+". "+when+(report?". Lees het wedstrijdverslag.":". Bekijk de voorbeschouwing."));setOnClickListener(v->openPreview.open(data.toString()));
     }
     private void loadLogo(ImageView view,String address,String club){
         view.setTag(address);view.setImageDrawable(null);view.setContentDescription("Clublogo "+club);
@@ -89,7 +90,7 @@ public final class WeeklyMatchCard extends LinearLayout {
         }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}});
     }
     private void load(){HttpURLConnection conn=null;try{
-        conn=(HttpURLConnection)new URL("https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/statistics/eredivisie.json?v="+System.currentTimeMillis()/60000).openConnection();
+        conn=(HttpURLConnection)new URL("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000).openConnection();
         conn.setConnectTimeout(12000);conn.setReadTimeout(15000);conn.setInstanceFollowRedirects(false);if(conn.getResponseCode()!=200)return;
         ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=conn.getInputStream()){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>3000000)return;}}
         JSONObject data=new JSONObject(out.toString("UTF-8"));activity.runOnUiThread(()->{if(!activity.isFinishing())try{show(data);}catch(Exception ignored){}});
