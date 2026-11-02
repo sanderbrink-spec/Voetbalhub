@@ -16,10 +16,10 @@ jobs:
         with:
           name: Veldio-Android-test
           path: apk
-          run-id: 41501584101
+          run-id: 41508266769
           github-token: ${{ github.token }}
       - name: Verify exact previously built APK
-        run: echo 'e1e645a73f6b1e69ab71f79cf8d682c203463eed1c03d3e45d5c999223a81f8d  apk/app-debug.apk' | sha256sum -c -
+        run: echo '6f76df0eb9fd9c076133d50502df67b43f2192c06b750b555b22f92e10b92e9b  apk/app-debug.apk' | sha256sum -c -
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules

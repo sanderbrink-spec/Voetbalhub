@@ -2,7 +2,7 @@
 from pathlib import Path
 import subprocess,time,re,sys,xml.etree.ElementTree as ET,json,urllib.request,atexit
 OUT=Path('.android-smoke');OUT.mkdir(exist_ok=True)
-PACKAGE='nl.voetbalhub.app1.test39'
+PACKAGE='nl.voetbalhub.app1.test39b'
 def adb(*args):return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def bounds(n):return list(map(int,re.findall(r'\d+',n.get('bounds',''))))
 def capture(name):
@@ -26,7 +26,7 @@ if any(n.get('text')=="Pixel Launcher isn't responding" for n in root.iter('node
     tap_node(root,lambda n:n.get('resource-id')=='android:id/aerr_close');adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');time.sleep(5);root=capture('00-quiz39-home')
 tap_node(root,lambda n:n.get('text')=='Meer');time.sleep(1)
 root,node=find_quiz_text('Speel de clubquiz','01-quiz39-menu');tap_node(root,lambda n:n is node);time.sleep(2)
-(OUT/'result.txt').write_text('Exact existing APK SHA256 e1e645a73f6b1e69ab71f79cf8d682c203463eed1c03d3e45d5c999223a81f8d; focused native online test.\n')
+(OUT/'result.txt').write_text('Exact existing APK SHA256 6f76df0eb9fd9c076133d50502df67b43f2192c06b750b555b22f92e10b92e9b; focused native online test.\n')
 # Phase 39: actual WebView -> native HTTPS bridge -> production quiz, synthetic participant only.
 # The anonymous token is never printed or included in screenshots/log files.
 import urllib.request
@@ -64,6 +64,26 @@ try:
     root,node=find_quiz_text('Live top 5','40-quiz39-live-board')
     assert adb('shell','pidof',PACKAGE).strip()
     with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 39 real Android WebView/native HTTPS bridge, explicit synthetic 16+ test opt-in, private token, production server round, server-confirmed answer and live leaderboard. No phone-clock score supplied.\n')
+    adb('shell','input','keyevent','4');time.sleep(1)
+    root,node=find_quiz_text('Eigen naam aanvragen of profiel beheren','41-profile-manage');tap_node(root,lambda n:n is node)
+    root,node=find_quiz_text('Online profiel en scores verwijderen','42-profile-delete');tap_node(root,lambda n:n is node)
+    root,node=find_quiz_text('Annuleren','43-profile-cancel',clickable=True);tap_node(root,lambda n:n is node)
+    req=urllib.request.Request('https://voetbalhub-redactie.onrender.com/quiz/v1/me',headers={'Authorization':'Bearer '+quiz_token})
+    with urllib.request.urlopen(req,timeout=15) as response:assert json.load(response).get('profile'), 'Cancel unexpectedly removed profile'
+    root,node=find_quiz_text('Online profiel en scores verwijderen','44-profile-delete-again');tap_node(root,lambda n:n is node)
+    root,node=find_quiz_text('Definitief verwijderen','45-profile-confirm',clickable=True);tap_node(root,lambda n:n is node)
+    for attempt in range(12):
+        time.sleep(1)
+        prefs=ET.fromstring(adb('shell','run-as',PACKAGE,'cat','shared_prefs/veldio_quiz39_private.xml'))
+        if prefs.find("string[@name='token']") is None:break
+    assert prefs.find("string[@name='token']") is None, 'Native deletion did not clear private token'
+    try:
+        urllib.request.urlopen(req,timeout=15)
+        raise AssertionError('Deleted token still accepted')
+    except urllib.error.HTTPError as e:assert e.code==401
+    root,node=find_quiz_text('Online profiel verwijderd','46-profile-deleted')
+    quiz_token=None
+    with (OUT/'result.txt').open('a') as result:result.write('PASS: Android confirmation cancelled without deletion, final deletion through native DELETE, private token cleared and server token rejected.\n')
 finally:
     if quiz_token:
         req=urllib.request.Request('https://voetbalhub-redactie.onrender.com/quiz/v1/me',method='DELETE',headers={'Authorization':'Bearer '+quiz_token})
