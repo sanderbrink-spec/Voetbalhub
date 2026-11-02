@@ -1,4 +1,6 @@
 const http = require("node:http");
+const security=require("./production-security");
+const failedAuthorization=security.createLimiter();
 const runtime = require("./runtime-health");
 const { createClient } = require("redis");
 const { auditClaims, editorialQuality, headlineContradictions } = require("./editorial-quality");
@@ -15,13 +17,12 @@ const client = process.env.REDIS_URL ? createClient({
   disableOfflineQueue: true,
   socket: { connectTimeout: 5000, reconnectStrategy: retries => Math.min(250 * (2 ** Math.min(retries, 5)), 5000) }
 }) : null;
-if (client) client.on("error", (err) => console.error("Redis connection error:", err.message));
+if (client) client.on("error", () => console.error("Redis connection error; reconnect pending."));
 
 function send(res, status, body) {
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
-    "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGINS || "null",
     "Vary": "Origin",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Authorization, Content-Type"
@@ -42,7 +43,13 @@ function readBody(req) {
   });
 }
 function authorized(req) {
-  return !!API_SECRET && req.headers.authorization === "Bearer " + API_SECRET;
+  return security.authorized(req.headers.authorization,API_SECRET);
+}
+function authorizeRequest(req,res){
+  if(authorized(req))return true;
+  const allowed=failedAuthorization(req.socket?.remoteAddress||"unknown",30);
+  if(!allowed)res.setHeader("Retry-After","60");
+  send(res,allowed?401:429,{error:allowed?"Niet geautoriseerd.":"Te veel mislukte autorisatiepogingen. Probeer het later opnieuw."});return false;
 }
 function cleanExtractedSourceText(value) {
   if (typeof value !== "string") return "";
@@ -284,6 +291,7 @@ async function getArticles(view = "current") {
 }
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 async function handle(req, res) {
+  security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
   if(require("./policy-pages").serve(req,res,url.pathname))return;
   if(req.method==="GET"&&url.pathname==="/ready"){const ready=await runtime.readiness(client);return send(res,ready?200:503,{ready,backend:"node-redis",revision:runtime.revision(process.env)});}
@@ -389,13 +397,13 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
-    if (!authorized(req)) return send(res,401,{error:"Niet geautoriseerd."});
+    if (!authorizeRequest(req,res)) return;
     if (!client?.isReady) return send(res,503,{error:"Conceptenopslag tijdelijk niet beschikbaar."});
     const items=await require("./editorial-drafts").listDrafts(client);
     return send(res,200,{items,autoPublish:false});
   }
   if (req.method === "GET" && url.pathname === "/inbox") {
-    if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
+    if (!authorizeRequest(req,res)) return;
     if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden. Controleer REDIS_URL en de Redis-verbinding in Render." });
     const items = [];
     // Read the automatic inbox explicitly so the scheduled pipeline's records are always included.
@@ -563,7 +571,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     return res.end(Buffer.from(encoded, "base64"));
   }
   if (req.method !== "POST") return send(res, 404, { error: "Gebruik GET /health, GET /articles, GET /inbox of POST /draft en POST /publish." });
-  if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
+  if (!authorizeRequest(req,res)) return;
   let body;
   try { body = await readBody(req); } catch (e) { return send(res, 400, { error: e.message === "body_too_large" ? "Verzoek te groot." : "Ongeldige JSON." }); }
   if (url.pathname === "/editorial-drafts") {
@@ -847,6 +855,7 @@ async function start() {
     console.warn("REDIS_URL is not configured; storage endpoints will return 503 until configured.");
   }
   const server = http.createServer((req,res) => { handle(req,res).catch(() => send(res,500,{error:"Interne serverfout."})); });
+  server.requestTimeout=15000;server.headersTimeout=10000;server.keepAliveTimeout=5000;
   server.listen(PORT, "0.0.0.0", () => console.log("Veldio API listening on", PORT));
 }
 start();
