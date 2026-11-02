@@ -1,0 +1,9 @@
+{
+  "startedAt": "2026-11-01T12:59:12.848Z",
+  "published": [],
+  "skipped": [],
+  "sourceErrors": [],
+  "status": "failed",
+  "error": "Serverfase 24 met verbonden Redis is vereist voordat automatische verwerking kan starten.",
+  "finishedAt": "2026-11-01T12:59:12.848Z"
+}

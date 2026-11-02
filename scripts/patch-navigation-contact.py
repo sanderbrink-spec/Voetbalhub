@@ -58,7 +58,7 @@ helpers='''
         if(homeFeature!=null)homeFeature.closeVideo();
         personalHubVisible=false;weeklyPreviewVisible=false;eredivisieStatisticsVisible=false;scoresPageVisible=false;
         currentBottomTab="Meer";buildNav();findViewById(R.id.header).setVisibility(android.view.View.GONE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
-        content.removeAllViews();contactView=new ContactView(this,contactDraft,this::onBackPressed);content.addView(contactView,new android.widget.FrameLayout.LayoutParams(-1,-1));
+        content.removeAllViews();contactView=new ContactView(this,contactDraft,this::onBackPressed,EDITORIAL_API_URL);content.addView(contactView,new android.widget.FrameLayout.LayoutParams(-1,-1));
     }
 '''
 s=s.replace('private void showNews() {',helpers+'''\n    private void showNews() {

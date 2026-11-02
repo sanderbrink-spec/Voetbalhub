@@ -1,10 +1,16 @@
 const http = require("node:http");
 const runtime = require("./runtime-health");
+const crypto=require("node:crypto");
 const { createClient } = require("redis");
 const { auditClaims, editorialQuality, headlineContradictions } = require("./editorial-quality");
 const { normalizeEditorialResponse } = require("./editorial-response");
 const { readCover, withArticleCover } = require("./article-covers");
 
+const security=require("./production-security");
+const rateRequest=security.createLimiter();
+const rights=require("./content-rights");
+const autonomous=require("./autonomous-editor");
+const activeEditorialJobs=new Set();
 const PORT = Number(process.env.PORT || 10000);
 let imageGenerationInProgress = false;
 const API_SECRET = process.env.HUB_API_SECRET || "";
@@ -21,7 +27,6 @@ function send(res, status, body) {
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
-    "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGINS || "null",
     "Vary": "Origin",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Authorization, Content-Type"
@@ -30,19 +35,21 @@ function send(res, status, body) {
 }
 function readBody(req) {
   return new Promise((resolve, reject) => {
-    let data = "";
+    const chunks=[];let size=0,tooLarge=false;
     req.on("data", chunk => {
-      data += chunk;
-      if (data.length > 1_000_000) { reject(new Error("body_too_large")); req.destroy(); }
+      size+=chunk.length;
+      if(size>1_000_000){tooLarge=true;reject(new Error("body_too_large"));return;}
+      if(!tooLarge)chunks.push(Buffer.from(chunk));
     });
     req.on("end", () => {
-      try { resolve(JSON.parse(data || "{}")); } catch { reject(new Error("invalid_json")); }
+      if(tooLarge)return;
+      try { resolve(JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}")); } catch { reject(new Error("invalid_json")); }
     });
     req.on("error", reject);
   });
 }
 function authorized(req) {
-  return !!API_SECRET && req.headers.authorization === "Bearer " + API_SECRET;
+  return security.authorized(req.headers.authorization,API_SECRET);
 }
 function cleanExtractedSourceText(value) {
   if (typeof value !== "string") return "";
@@ -133,7 +140,7 @@ function editorialHardStops(item) {
   const source = [item?.sourceEvidence?.title, item?.sourceEvidence?.description, item?.sourceEvidence?.content,
     item?.sourceEvidence?.excerpt, item?.source?.title, item?.source?.description].filter(Boolean).join(" ");
   const policy = sourcePolicyForItem(item);
-  if (policy.status === "link_only") reasons.push("Bronbeleid: deze nieuwsuitgever staat uitsluitend doorlinken toe; publiceer geen vervangend artikel op basis van deze bron.");
+  if (policy.status === "link_only") reasons.push("Veldio-bronbeleid: hergebruik van deze nieuwsuitgever is niet vrijgegeven; publiceer geen vervangend artikel op basis van deze bron.");
   if (policy.status === "unapproved" || policy.status === "unknown") reasons.push("Bronrechten zijn niet goedgekeurd; publicatie geblokkeerd.");
   if (!headline) reasons.push("Lege kop: concept kan niet door naar publicatie.");
   if (!standfirst) reasons.push("Intro ontbreekt.");
@@ -276,19 +283,78 @@ async function polishIncomingDraft(item) {
 async function getArticles(view = "current") {
   if (!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
+  if(keys.length>2000)throw new Error("ARTICLE_ARCHIVE_REVIEW_REQUIRED");
+  const candidates=[];
+  for(const key of keys){
+    const raw=await client.get(key);
+    try{if(raw){const article=JSON.parse(raw);if(article?.status==="published")candidates.push(article);}}catch{}
+  }
+  candidates.sort((a,b)=>String(b.publishedAt||"").localeCompare(String(a.publishedAt||""))||String(a.id||"").localeCompare(String(b.id||"")));
   const articles = [];
-  for (const key of keys.slice(0, 200)) {
-    const raw = await client.get(key);
-    if (!raw) continue;
-    try { const article = JSON.parse(raw); if (article.status === "published") articles.push(require("./brand").article(withArticleCover(article))); } catch {}
+  for (const article of candidates) {
+    let display;
+    try { display=require("./brand").article(withArticleCover(article)); } catch { continue; }
+    // Storage failures during revocation/evidence checks must fail the whole feed.
+    // A partial HTTP 200 would hide an outage as missing editorial content.
+    if (!await client.get("editorial:revoked:"+autonomous.contentHash(display))&&(rights.decision("publication",display,{audit:false}).allowed||await autonomous.visible(client,display))) articles.push(display);
+    if(articles.length>=200)break;
   }
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return require("./feed-policy").selectFeed(articles, {view});
 }
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 async function handle(req, res) {
+  security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
-  if(req.method==="GET"&&url.pathname==="/ready"){const ready=await runtime.readiness(client);return send(res,ready?200:503,{ready,backend:"node-redis",revision:runtime.revision(process.env)});}
+  if(url.pathname!=="/contact"&&url.pathname!=="/health"){
+    const privileged=req.method==="POST"||(["/inbox","/editorial-drafts"].includes(url.pathname)||url.pathname.startsWith("/generated-image/"));
+    if(privileged&&!authorized(req)&&!(url.pathname.startsWith("/automation/")&&security.authorized(req.headers.authorization,process.env.HUB_AUTOMATION_SECRET||""))){
+      if(!rateRequest("auth:"+(req.socket?.remoteAddress||"unknown"),20))return send(res,429,{error:"Te veel verzoeken."});
+      return send(res,401,{error:"Niet geautoriseerd."});
+    }
+    if(privileged&&!rateRequest("editorial",120))return send(res,429,{error:"Te veel redactionele verzoeken."});
+    if(url.pathname==="/brand/fixture-image"&&!rateRequest("image",30))return send(res,429,{error:"Te veel beeldverzoeken."});
+  }
+  if(req.method==="GET"&&url.pathname==="/ready"){const ready=await runtime.readiness(client);return send(res,ready?200:503,{ready,backend:"node-redis",revision:runtime.revision(process.env),launchPolicyVersion:28});}
+  if(req.method==="GET"&&url.pathname.startsWith("/automation/")){
+    if(!authorized(req)&&!security.authorized(req.headers.authorization,process.env.HUB_AUTOMATION_SECRET||""))return send(res,401,{error:"Niet geautoriseerd."});
+    if(url.pathname==="/automation/status"){
+      const methods=require("./editorial-methods"),configured=!!(process.env.EDITORIAL_RECEIPT_SECRET?.length>=32&&GROQ_API_KEY&&client?.isReady);
+      const states=methods.load().map(m=>{const issues=methods.issues(m);return {id:m.id,issues,...(!issues.length?{approval:rights.decision("production-method",methods.descriptor(m)),descriptor:methods.descriptor(m)}:{})};});
+      return send(res,200,{methods:states,configured,publicationsEnabled:configured&&states.some(s=>!s.issues.length&&s.approval?.allowed===true),launchApproval:false});
+    }
+    const id=url.pathname.slice("/automation/runs/".length);if(!url.pathname.startsWith("/automation/runs/")||!/^[a-f0-9-]{36}$/.test(id))return send(res,404,{error:"Onbekende opdracht."});
+    if(!client?.isReady)return send(res,503,{error:"Opslag niet beschikbaar."});const job=await client.get("editorial:job:"+id);return job?send(res,200,JSON.parse(job)):send(res,404,{error:"Opdracht niet gevonden."});
+  }
+  if(req.method==="GET"&&/^\/editorial-media\/[a-f0-9]{64}\.webp$/.test(url.pathname)){
+    if(!client?.isReady)return send(res,503,{error:"Opslag niet beschikbaar."});const hash=url.pathname.split("/").pop().replace(".webp","");
+    const references=await client.get("editorial:media-article:"+hash);if(!references)return send(res,404,{error:"Beeld niet beschikbaar."});let ids;try{ids=JSON.parse(references);if(!Array.isArray(ids))ids=[references];}catch{ids=[references];}
+    let available=false;for(const id of ids.slice(-2000)){const raw=await client.get("article:"+id);if(!raw)continue;try{const article=JSON.parse(raw);if(article.status==="published"&&article.productionReceipt?.mediaSha256===hash&&await autonomous.visible(client,article)){available=true;break;}}catch{}}
+    if(!available)return send(res,403,{error:"Beeldvrijgave ontbreekt of is ingetrokken."});
+    const encoded=await client.get("editorial:media:"+hash);if(!encoded)return send(res,404,{error:"Beeld niet beschikbaar."});const bytes=Buffer.from(encoded,"base64");if(crypto.createHash("sha256").update(bytes).digest("hex")!==hash)return send(res,503,{error:"Beeldintegriteit niet bevestigd."});
+    res.writeHead(200,{"Content-Type":"image/webp","Cache-Control":"private,max-age=60"});return res.end(bytes);
+  }
+  if(req.method==="GET"&&["/integrations/statistics","/integrations/videos"].includes(url.pathname)){
+    if(!rateRequest("snapshots",30))return send(res,429,{error:"Te veel verzoeken."});
+    const source="https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/"+(url.pathname.endsWith("statistics")?"statistics/eredivisie.json":"videos/eredivisie.json");
+    const access=rights.decision("snapshot-access",{url:source});
+    if(!access.allowed)return send(res,403,{error:"Deze gegevensbron is nog niet vrijgegeven."});
+    try{
+      const upstream=await fetch(source,{redirect:"error",signal:AbortSignal.timeout(15000)});
+      if(!upstream.ok)throw Error("Unavailable");
+      const chunks=[];let size=0;
+      for await(const chunk of upstream.body){size+=chunk.length;if(size>3000000)throw Error("Too large");chunks.push(chunk);}
+      const data=JSON.parse(Buffer.concat(chunks).toString("utf8"));
+      const approval=rights.decision("snapshot-content",{url:source,data});
+      if(!approval.allowed)return send(res,403,{error:"Deze gegevensversie is niet beoordeeld."});
+      return send(res,200,{...data,rightsPolicyVersion:26,rightsExpiresAt:Math.min(Date.now()+300000,Date.parse(approval.validUntil),Date.parse(access.validUntil))});
+    }catch{return send(res,502,{error:"Gegevens tijdelijk niet beschikbaar."});}
+  }
+  if(req.method==="GET"&&["/privacy","/legal"].includes(url.pathname)) {
+    const file=url.pathname==="/privacy"?"privacy.html":"legal.html";
+    res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Content-Security-Policy":"default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"});
+    return res.end(require("node:fs").readFileSync(require("node:path").join(__dirname,"public",file)));
+  }
   if(url.pathname==="/contact") {
     if(req.method==="GET") {
       res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store"});
@@ -302,14 +368,16 @@ async function handle(req, res) {
   }
   if(req.method==="GET"&&url.pathname==="/brand/fixture-image") {
     const source=url.searchParams.get("source")||"";
+    if(!rights.decision("asset-access",{url:source}).allowed)return send(res,403,{error:"Beeldrechten niet bevestigd."});
     if(!require("./brand").ownMedia(source))return send(res,400,{error:"Niet-toegestane beeldbron."});
-    try{const bytes=await require("./brand-images").remoteImage(source,fetch,{kind:url.searchParams.get("kind"),label:url.searchParams.get("label")});res.writeHead(200,{"Content-Type":"image/webp","Cache-Control":"public,max-age=86400","X-Content-Type-Options":"nosniff"});return res.end(bytes);}
+    try{const bytes=await require("./brand-images").remoteImage(source,fetch,{kind:url.searchParams.get("kind"),label:url.searchParams.get("label")},sha256=>rights.decision("asset",{url:source,sha256}).allowed);res.writeHead(200,{"Content-Type":"image/webp","Cache-Control":"public,max-age=86400","X-Content-Type-Options":"nosniff"});return res.end(bytes);}
     catch{return send(res,502,{error:"Afbeelding tijdelijk niet beschikbaar."});}
   }
 
   if (req.method === "GET" && url.pathname.startsWith("/article-covers/")) {
     const bytes = readCover(url.pathname.slice("/article-covers/".length));
     if (!bytes) return send(res, 404, {error:"Afbeelding niet gevonden."});
+    if(!rights.decision("asset",{url:url.pathname,sha256:crypto.createHash("sha256").update(bytes).digest("hex")}).allowed)return send(res,403,{error:"Beeldrechten niet bevestigd voor dit bestand."});
     res.writeHead(200, {"Content-Type":"image/webp", "Content-Length":bytes.length,
       "Cache-Control":"public, max-age=86400", "X-Content-Type-Options":"nosniff"});
     return res.end(bytes);
@@ -333,7 +401,7 @@ async function handle(req, res) {
       Array.isArray(item.body) && item.body.length >= 3 &&
       String(item.headline || "").trim() && String(item.standfirst || "").trim());
     const escNews = v => String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-    const cards = originals.slice(0,30).map(item => '<article>'+(['cleared','licensed'].includes(item.imageRights) && /^https:\/\//i.test(item.imageUrl || '') ? '<img style="width:100%;height:auto;display:block" src="'+escNews(item.imageUrl)+'" alt="'+escNews(item.imageCredit || 'Afbeelding bij artikel')+'">' : '')+'<div class="source">Veldio · Eigen redactie</div><h2>'+escNews(item.headline)+'</h2><p>'+escNews(item.standfirst)+'</p><details><summary>Lees het artikel</summary>' + item.body.map(p=>'<p>'+escNews(p)+'</p>').join("") + '</details></article>').join("");
+    const cards = originals.slice(0,30).map(item => '<article>'+(['cleared','licensed'].includes(item.imageRights) && /^https:\/\//i.test(item.imageUrl || '') ? '<img style="width:100%;height:auto;display:block" src="'+escNews(item.imageUrl)+'" alt="'+escNews(item.imageCaption || item.imageCredit || 'Afbeelding bij artikel')+'"><p class="image-credit">'+escNews(item.imageCaption||'')+' '+escNews(item.imageCredit||'')+(/^https:\/\//i.test(item.imageSource||'')?' · <a href="'+escNews(item.imageSource)+'">Bron</a>':'')+(/^https:\/\/creativecommons.org\//i.test(item.imageLicenseUrl||'')?' · <a href="'+escNews(item.imageLicenseUrl)+'">Licentie</a>':'')+'</p>' : '')+'<div class="source">Veldio · Eigen redactie</div><h2>'+escNews(item.headline)+'</h2><p>'+escNews(item.standfirst)+'</p><details><summary>Lees het artikel</summary>' + item.body.map(p=>'<p>'+escNews(p)+'</p>').join("") + '</details></article>').join("");
     res.writeHead(200, {"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"});
     return res.end('<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Veldio · Nieuws</title><style>:root{color-scheme:dark}body{background:#090c0e;color:#f3f6f7;font:16px system-ui;margin:auto;max-width:860px;padding:24px}h1{color:#a6ff00}article{background:#151b1e;border:1px solid #303a3f;border-radius:14px;padding:18px;margin:15px 0}.source,summary{color:#a6ff00;font-size:13px;font-weight:700}h2{font-size:22px}p{color:#c5ced2;line-height:1.6}details{margin-top:12px}</style><h1>Veldio · Nieuws</h1><p>Hier verschijnen uitsluitend eigen, goedgekeurde Veldio-artikelen. Geen gekopieerde uitgeversteksten of automatisch gepubliceerde RSS-berichten.</p>'+(cards||'<p>Er zijn nog geen eigen artikelen goedgekeurd voor publicatie.</p>')+'</html>');
   }
@@ -382,12 +450,10 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
+    return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, editorialAutomationVersion:24, launchPolicyVersion:28, automaticEditorial:{enabled:require("./launch-policy").allowed("automaticNews")&&require("./automatic-editorial.json").enabled===true,maxPerDay:Math.max(0,Math.min(20,Number(require("./automatic-editorial.json").maxPerDay)||0)),mode:"verified_announcements"}, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
-    try { const view = url.searchParams.get("view") || "current";
-      if (!["current","archive","all"].includes(view)) return send(res,400,{error:"Onbekende nieuwsweergave."});
-      const articles = await runtime.withDeadline(() => getArticles(view), 9000); return send(res, 200, { count: articles.length, articles }); }
+    try { const view=url.searchParams.get("view")||"current"; if(!["current","archive","all"].includes(view))return send(res,400,{error:"Onbekende nieuwsweergave."}); const articles = await runtime.withDeadline(() => getArticles(view), 9000); return send(res, 200, { rightsPolicyVersion:26,rightsExpiresAt:Math.min(Date.now()+300000,...articles.map(a=>Date.parse(rights.decision("publication",a,{audit:false}).validUntil)||a.productionReceipt?.expiresAt||Date.now()+300000)),count: articles.length, articles }); }
     catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
@@ -557,6 +623,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     return send(res, 200, { count: unique.length, items: unique.slice(0, 200), serverTime: new Date().toISOString(), autoPublish: false, note: "Kwaliteitssignalen zijn waarschuwingen, geen onafhankelijke factcheck." });
   }
   if (req.method === "GET" && url.pathname.startsWith("/generated-image/") && /^[0-9a-f-]{36}$/i.test(url.pathname.slice("/generated-image/".length))) {
+    if (!authorized(req)) return send(res,401,{error:"Niet geautoriseerd."});
     if (!client?.isReady) return send(res, 503, { error: "Opslag niet beschikbaar." });
     const id = url.pathname.split("/").pop();
     const encoded = await client.get("generated-image:" + id);
@@ -565,20 +632,38 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     return res.end(Buffer.from(encoded, "base64"));
   }
   if (req.method !== "POST") return send(res, 404, { error: "Gebruik GET /health, GET /articles, GET /inbox of POST /draft en POST /publish." });
-  if (!authorized(req)) return send(res, 401, { error: "Niet geautoriseerd." });
+  if (!authorized(req)&&!(url.pathname==="/automation/run"&&security.authorized(req.headers.authorization,process.env.HUB_AUTOMATION_SECRET||""))) return send(res, 401, { error: "Niet geautoriseerd." });
+  if(!/^application\/json(?:\s*;|$)/i.test(req.headers["content-type"]||""))return send(res,415,{error:"JSON Content-Type is vereist."});
   let body;
-  try { body = await readBody(req); } catch (e) { return send(res, 400, { error: e.message === "body_too_large" ? "Verzoek te groot." : "Ongeldige JSON." }); }
+  try { body = await readBody(req); } catch (e) { return send(res, e.message === "body_too_large" ? 413 : 400, { error: e.message === "body_too_large" ? "Verzoek te groot." : "Ongeldige JSON." }); }
+  if(!body||typeof body!=="object"||Array.isArray(body))return send(res,400,{error:"Een JSON-object is vereist."});
+  if(url.pathname==="/editorial-revoke"){
+    if(!client?.isReady)return send(res,503,{error:"Opslag niet beschikbaar."});if(body.approved!==true||!/^[0-9a-f-]{36}$/.test(body.articleId||""))return send(res,400,{error:"Artikel-ID en expliciete intrekking zijn vereist."});
+    const raw=await client.get("article:"+body.articleId);if(!raw)return send(res,404,{error:"Artikel niet gevonden."});const article=JSON.parse(raw),hash=autonomous.contentHash(article);
+    await client.set("editorial:revoked:"+hash,JSON.stringify({revokedAt:new Date().toISOString(),reason:String(body.reason||"Redactionele intrekking").slice(0,300)}));return send(res,200,{revoked:true,articleId:article.id});
+  }
+  if(url.pathname==="/automation/run"){
+    if(!rateRequest("automation-run",3))return send(res,429,{error:"Te veel automatische opdrachten."});
+    if(!client?.isReady)return send(res,503,{error:"Opslag niet beschikbaar."});const methods=require("./editorial-methods"),method=methods.load().find(m=>m.id===body.methodId);
+    if(methods.issues(method).length||!rights.decision("production-method",methods.descriptor(method)).allowed)return send(res,403,{error:"Productiemethode en bronnen zijn niet vrijgegeven."});
+    if(!GROQ_API_KEY||!process.env.EDITORIAL_RECEIPT_SECRET||process.env.EDITORIAL_RECEIPT_SECRET.length<32)return send(res,503,{error:"AI-configuratie of afzonderlijke receipt-sleutel ontbreekt."});
+    const jobId=crypto.randomUUID();await client.set("editorial:job:"+jobId,JSON.stringify({id:jobId,status:"running"}),{EX:172800});
+    const job=autonomous.run({client,methodId:method.id,runId:jobId}).then(report=>client.set("editorial:job:"+jobId,JSON.stringify(report),{EX:172800})).catch(()=>client.set("editorial:job:"+jobId,JSON.stringify({id:jobId,status:"failed",error:"Opdracht niet bevestigd; controleer bewaarde concepten."}),{EX:172800}));
+    activeEditorialJobs.add(job);job.finally(()=>activeEditorialJobs.delete(job)).catch(()=>{});return send(res,202,{id:jobId,status:"accepted",published:false});
+  }
   if (url.pathname === "/editorial-drafts") {
     if (!client?.isReady) return send(res,503,{error:"Conceptenopslag tijdelijk niet beschikbaar."});
     try {
-      const record=await require("./editorial-drafts").saveDraft(client,{id:body.id,expectedRevision:body.expectedRevision,payload:body.payload,approve:body.approve===true});
+      if(body.operation==="reserve_automatic"&&!require("./launch-policy").allowed("automaticNews"))return send(res,403,{error:"Automatische verwerking uitgeschakeld: bronrechten moeten eerst worden bevestigd."});
+      if(body.operation==="reserve_automatic")return send(res,200,await require("./editorial-drafts").reserveAutomatic(client,{key:body.key,payload:body.payload}));
+      const record=await require("./editorial-drafts").saveDraft(client,{id:body.id,expectedRevision:body.expectedRevision,payload:body.payload,approve:body.approve===true,state:body.state||"draft",issues:body.issues,verification:body.verification});
       return send(res,200,{record,published:false});
     } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept kon niet worden opgeslagen."}); }
   }
   // Author columns expose a capability flag so publication can follow a completed rollout.
   if (url.pathname === "/publish-column") {
     if (!client?.isReady) return send(res,503,{error:"Artikelenopslag is nog niet verbonden."});
-    try {return send(res,200,await require("./column-publication").publishColumn(client,body));}
+    try {const candidate=require("./column-publication").prepareColumn(body);if(!rights.decision("publication",candidate).allowed)return send(res,403,{error:"Columnrechten niet gedocumenteerd voor deze versie."});return send(res,200,await require("./column-publication").publishColumn(client,body));}
     catch(error){return send(res,error.status||500,{error:error.status?error.message:"Column kon niet worden gepubliceerd."});}
   }
   if (url.pathname === "/auto-inbox") {
@@ -613,6 +698,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       languagePolish: "skipped_link_only_source",
       languagePolishNote: "AI-herschrijven uitgeschakeld voor nieuwsuitgevers en niet-goedgekeurde bronnen."
     } : { ...item, sourcePolicy };
+    if(!linkOnly&&!rights.decision("ai-input",preparedItem).allowed)return send(res,403,{error:"Rechten voor verwerking van deze broninhoud ontbreken."});
     const polishedItem = linkOnly ? preparedItem : await polishIncomingDraft(preparedItem);
     const auditedItem = auditClaims(polishedItem);
     const quality = editorialQuality(auditedItem);
@@ -624,6 +710,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const topic = typeof body.topic === "string" ? body.topic.trim().slice(0,300) : "";
     const facts = Array.isArray(body.facts) ? body.facts.filter(x => typeof x === "string" && x.trim()).slice(0,20) : [];
     if (!topic || facts.length < 2) return send(res, 400, { error: "Onderwerp en minimaal twee gecontroleerde feiten zijn vereist." });
+    if(!rights.decision("ai-input",{topic,facts,sourceUrls:body.sourceUrls||[]}).allowed)return send(res,403,{error:"Rechten voor deze AI-invoer moeten vooraf worden vastgelegd."});
     if (!GROQ_API_KEY) return send(res, 503, { error: "GROQ_API_KEY ontbreekt in Render environment variables." });
     const uniqueFacts = [...new Set(facts.map(f => f.trim()))];
     if (uniqueFacts.length < 2) return send(res, 400, { error: "Vul minimaal twee verschillende gecontroleerde feiten in." });
@@ -681,6 +768,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
   }
   if (url.pathname === "/generate-article-image") {
+    if(!rights.decision("image-input",body).allowed)return send(res,403,{error:"Beeldinvoer en generatiedienst zijn niet vrijgegeven."});
     if (body.approvedGeneration !== true) return send(res, 400, { error: "Expliciete toestemming voor betaalde beeldgeneratie vereist: approvedGeneration:true." });
     if (!process.env.OPENAI_API_KEY) return send(res, 503, { error: "OPENAI_API_KEY ontbreekt op de server. Beeldgeneratie is nog niet actief." });
     if (!client?.isReady) return send(res, 503, { error: "Redis-opslag niet beschikbaar." });
@@ -762,8 +850,11 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     article.imageUrl = imageUrl;
     article.imageSource = imageSource;
     article.imageCredit = imageCredit;
+    article.imageCaption = String(body.imageCaption||"").slice(0,500);
+    article.imageLicenseUrl = String(body.imageLicenseUrl||"").slice(0,300);
     article.imageRights = imageRights;
     article.imageReview = { ...review, reviewedAt: new Date().toISOString() };
+    if(!rights.decision("publication",article).allowed)return send(res,403,{error:"Rechten ontbreken voor deze gewijzigde beeldversie."});
     await client.set(key, JSON.stringify(article));
     return send(res, 200, { updated: true, article: { id: article.id, headline: article.headline, imageUrl: article.imageUrl } });
   }
@@ -773,6 +864,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (body.editorialDraftId) {
       try {
         reviewedDraft=await require("./editorial-drafts").getDraft(client,body.editorialDraftId);
+        if(reviewedDraft.automation&&!require("./launch-policy").allowed("automaticNews"))return send(res,403,{error:"Automatische publicatie juridisch geblokkeerd; beoordeel en sla een zelfstandig handmatig concept op."});
         const matchingContent=require("./editorial-drafts").fingerprint(body)===reviewedDraft.contentHash;
         if (reviewedDraft.status==="published" && matchingContent) {
           const existing=await client.get("article:"+reviewedDraft.id.slice(14));
@@ -814,6 +906,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       .replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     const incomingHeadline = canonical(d.headline);
     const incomingBody = canonical([d.standfirst, ...publishBody].join(" "));
+    const publicationVersion=await client.get("editorial:publication-version")||"0";
     const existingKeys = await client.keys("article:*");
     for (const key of existingKeys) {
       const raw = await client.get(key);
@@ -828,19 +921,20 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const shared = [...oldWords].filter(w => newWords.has(w)).length;
       const overlap = Math.min(oldWords.size, newWords.size) ? shared / Math.min(oldWords.size, newWords.size) : 0;
       if (incomingHeadline === oldHeadline || (oldWords.size >= 18 && newWords.size >= 18 && overlap >= 0.88)) {
+        if(reviewedDraft&&existing.id===reviewedDraft.id.slice(14))return send(res,200,{status:"published",article:existing});
         return send(res, 409, { error: "Dubbele publicatie geblokkeerd: een vrijwel identiek artikel bestaat al.", existingArticleId: existing.id });
       }
     }
     const now = new Date().toISOString();
-    const article = { ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? reviewedDraft.id.slice(14) : crypto.randomUUID(), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
-    const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
-    if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
-    if(reviewedDraft) { try {await require("./editorial-drafts").markPublished(client,reviewedDraft,article.id);} catch {console.warn("Published article retained; draft status update deferred.");} }
-    return send(res, 200, { status: "published", article });
+    const article = { ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? reviewedDraft.id.slice(14) : crypto.randomUUID(), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageCaption:String(body.imageCaption||"").slice(0,500),imageLicenseUrl:String(body.imageLicenseUrl||"").slice(0,300),imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
+    if(!rights.decision("publication",article).allowed)return send(res,403,{error:"Publicatie geblokkeerd: inhoud, bronnen en beeld vereisen een geldig serverzijdig rechtenbewijs."});
+    try {const stored=await require("./editorial-publication").publishOnce(client,article,reviewedDraft,publicationVersion);return send(res,200,{status:"published",article:stored});}
+    catch(error){return send(res,error.status||503,{error:error.status?error.message:"Publicatie kon niet worden bevestigd. Probeer dezelfde goedgekeurde versie opnieuw."});}
   }
   return send(res, 404, { error: "Onbekend endpoint." });
 }
 async function start() {
+  if(process.env.NODE_ENV==="production"&&API_SECRET.trim().length<32)throw Error("Productie vereist een sterke HUB_API_SECRET van minimaal 32 tekens.");
   if (client) {
     // Listen immediately; storage routes report 503 while Redis reconnects.
     client.connect().then(() => console.log("Redis connected"))
@@ -849,6 +943,9 @@ async function start() {
     console.warn("REDIS_URL is not configured; storage endpoints will return 503 until configured.");
   }
   const server = http.createServer((req,res) => { handle(req,res).catch(() => send(res,500,{error:"Interne serverfout."})); });
+  server.requestTimeout=30000;server.headersTimeout=15000;server.keepAliveTimeout=5000;server.maxRequestsPerSocket=1000;
+  const shutdown=()=>{server.close();const timer=setTimeout(()=>process.exit(1),25000);timer.unref();Promise.allSettled([...activeEditorialJobs]).then(async()=>{try{if(client?.isOpen)await client.quit();}finally{clearTimeout(timer);process.exit(0);}});};
+  process.once("SIGTERM",shutdown);process.once("SIGINT",shutdown);
   server.listen(PORT, "0.0.0.0", () => console.log("Veldio API listening on", PORT));
 }
 start();

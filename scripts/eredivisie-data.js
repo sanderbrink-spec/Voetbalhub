@@ -1,3 +1,5 @@
+// Phase 25: stop before any external request or publication until rights are documented.
+if(require.main===module&&require('../launch-policy').stopCli('officialStats'))process.exit(0);
 'use strict';
 const crypto=require('node:crypto');
 const REPO='sanderbrink-spec/Voetbalhub';
@@ -100,14 +102,13 @@ async function collect({key,token,fetcher=fetch,now=Date.now()}={}){
   try{players[kind]=playerRows(await apiRequest('players/'+endpoint,params,key,fetcher),kind);}catch(e){players[kind]=[];warnings.push(kind+': '+e.message);}
  }
  const s=validateSnapshot({schemaVersion:1,updatedAt:new Date(now).toISOString(),source:'API-FOOTBALL / API-SPORTS',league:{id:88,name:'Eredivisie',season},fixtures,standings,players,warnings});
- let previous=null;
- try{const r=await fetcher(DATA_URL,{signal:AbortSignal.timeout(25000)});if(r.ok)previous=(await r.json()).featured;}catch{}
- const feature=chooseFeatured(s,now,previous);
- if(feature){
+ const weekly=require('./weekly-feature'),previousSnapshot=await weekly.readPrevious(fetcher);
+ await weekly.update(s,previousSnapshot,{now,token,fetcher,previewImage:async(feature)=>{
   try{s.headToHead=(await apiRequest('fixtures/headtohead',{h2h:feature.fixture.home.id+'-'+feature.fixture.away.id,last:5},key,fetcher)).filter(f=>DONE.has(f.fixture?.status?.short)).map(f=>({...fixtureRow(f,{leagueOnly:false}),competition:f.league.name}));}catch(e){warnings.push('Onderlinge duels niet beschikbaar.');}
-  s.featured={...feature,preview:buildPreview(s,feature)};
-  if(previous?.fixtureId===feature.fixtureId&&previous.imageUrl)s.featured.imageUrl=previous.imageUrl;
- }
+  const {stadiumFor,createCover}=require('./match-cover');
+  const stadium=await stadiumFor(feature.fixture.venue,key,fetcher);
+  return createCover({kind:'preview',fixture:feature.fixture,...stadium,competition:'Eredivisie'},{token,fetcher});
+ }});
  await githubFile('statistics/eredivisie.json',JSON.stringify(s),{token,fetcher});
  return s;
 }

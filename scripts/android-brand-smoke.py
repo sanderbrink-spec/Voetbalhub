@@ -1,19 +1,29 @@
 """Read-only Android presentation smoke test. Never submits or publishes content."""
 from pathlib import Path
 import re
+import os
 import subprocess
 import sys
 import time
+import atexit
 import xml.etree.ElementTree as ET
 
 OUT=Path('.android-smoke');OUT.mkdir(exist_ok=True)
-PACKAGE='nl.voetbalhub.app1'
+sdk = Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
+aapt = sorted(sdk.glob('build-tools/*/aapt'))[-1]
+badging = subprocess.check_output([str(aapt), 'dump', 'badging', sys.argv[1]], text=True)
+match = re.search(r"package: name='([^']+)'", badging)
+assert match, 'APK package identity missing'
+PACKAGE = match.group(1)
+assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test33'), PACKAGE
+if PACKAGE=='nl.voetbalhub.app1.test33':assert "application-label:'Veldio 33 test'" in badging, 'Distinct test launcher label absent'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
-    adb('shell','screencap','-p','/sdcard/veldio.png')
-    adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
-    if name=='01-start': return None
+    if name=='01-start':
+        adb('shell','screencap','-p','/sdcard/veldio.png')
+        adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
+        return None
     for attempt in range(4):
         try:
             adb('shell','uiautomator','dump','--compressed','/sdcard/veldio.xml')
@@ -25,7 +35,13 @@ def capture(name):
     root=ET.parse(OUT/(name+'.xml')).getroot()
     visible=[n.get('text','')+' '+n.get('content-desc','') for n in root.iter('node')]
     assert not any(re.search(r'VoetbalHub',x,re.I) and 'https://' not in x for x in visible),visible
+    adb('shell','screencap','-p','/sdcard/veldio.png')
+    adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
     return root
+def save_logcat():
+    try:(OUT/'logcat.txt').write_text(adb('logcat','-d','-t','1200'))
+    except Exception:pass
+atexit.register(save_logcat)
 adb('install','-r',sys.argv[1])
 adb('shell','am','force-stop',PACKAGE)
 result=adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
@@ -33,6 +49,12 @@ assert 'Error:' not in result,result
 capture('01-start')
 time.sleep(6)
 root=capture('02-home')
+# Recover only the known emulator Pixel Launcher system ANR, never an app ANR.
+launcher_dialog=next((n for n in root.iter('node') if n.get('text')=="Pixel Launcher isn't responding"),None)
+if launcher_dialog is not None:
+    close=next(n for n in root.iter('node') if n.get('resource-id')=='android:id/aerr_close')
+    b=list(map(int,re.findall(r'\d+',close.get('bounds',''))));adb('shell','input','tap',str((b[0]+b[2])//2),str((b[1]+b[3])//2))
+    adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');time.sleep(5);root=capture('02-home')
 def bounds(node):return list(map(int,re.findall(r'\d+',node.get('bounds',''))))
 logo=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/logo'))
 title=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/title'))
@@ -59,23 +81,32 @@ assert adb('shell','pidof',PACKAGE).strip()
 (OUT/'result.txt').write_text('PASS: install, launch, active process, home and Meer navigation; Veldio branding and slogan; no old visible brand. Android API 35 emulator. No content published.\n')
 print((OUT/'result.txt').read_text())
 
-# Seed a disposable emulator with the public feed to test cached article views.
-# No API writes, generated editorial content or production preferences are involved.
+# Synthetic cached UI data exists only in this disposable emulator.
+# No production feed, rights register or API is modified by this scenario.
 import json
-import urllib.request
 from xml.sax.saxutils import escape
-with urllib.request.urlopen('https://voetbalhub-redactie.onrender.com/articles',timeout=90) as response:
-    feed=json.load(response)
-columns=[a for a in feed['articles'] if a.get('type')=='column' or a.get('category','').lower() in ('column','de derde helft')]
-assert columns,'Public column missing from feed'
-(OUT/'public-articles.json').write_text(json.dumps(feed))
+stamp = int(time.time() * 1000)
+common = {'status': 'published', 'author': 'Veldio Test',
+          'publishedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+          'standfirst': 'Fictieve inhoud voor een afzonderlijke Android-test.',
+          'body': ['Eerste fictieve testalinea.', 'Tweede fictieve testalinea.', 'Derde fictieve testalinea.']}
+columns = [{**common, 'id': 'android-test-column', 'type': 'column',
+            'category': 'De Derde Helft', 'author': 'Sander Brink',
+            'headline': 'Synthetische testcolumn'}]
+feed = {'rightsPolicyVersion': 26, 'rightsExpiresAt': stamp + 1800000,
+        'articles': [*columns, {**common, 'id': 'android-test-news',
+                               'type': 'news', 'category': 'Eredivisie',
+                               'headline': 'Synthetisch testartikel'}]}
+(OUT/'synthetic-articles.json').write_text(json.dumps(feed))
 adb('shell','am','force-stop',PACKAGE)
+adb('shell','pm','clear',PACKAGE)  # Isolate this disposable fixture from an interrupted SharedPreferences backup.
 preferences='<map><string name="last_articles">'+escape(json.dumps(feed,ensure_ascii=False))+'</string></map>'
 (OUT/'editorial-cache.xml').write_text(preferences)
 adb('push',str(OUT/'editorial-cache.xml'),'/data/local/tmp/veldio-cache.xml')
 adb('shell','run-as',PACKAGE,'mkdir','-p','shared_prefs')
 adb('shell','run-as',PACKAGE,'cp','/data/local/tmp/veldio-cache.xml','shared_prefs/voetbalhub_editorial.xml')
 adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
+time.sleep(5)  # Android radio teardown is asynchronous; this fixture must be truly offline.
 adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
 time.sleep(4)
 def tap_node(root,predicate):
@@ -118,5 +149,108 @@ tap_node(root,lambda n:'Terug' in n.get('text',''))
 time.sleep(1);capture('12-back-to-news')
 adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 with (OUT/'result.txt').open('a') as result:
-    result.write('PASS: public-feed cache, local column portrait thumbnail, column and news readers, save toggle, font control and back navigation. Cached/offline UI scenario; does not verify Android live networking.\n')
+    result.write('PASS: synthetic isolated cache, local column portrait thumbnail, column and news readers, save toggle, font control and back navigation. Synthetic cached/offline UI scenario; does not verify live content, permissions or Android live networking.\n')
 print((OUT/'result.txt').read_text())
+
+def pref_timestamp():
+    try:
+        raw=adb('shell','run-as',PACKAGE,'cat','shared_prefs/voetbalhub_editorial.xml')
+        root=ET.fromstring(raw)
+        return next((int(n.get('value')) for n in root if n.get('name')=='last_fetch_at'),0)
+    except Exception:return 0
+
+# Read-only production fetch plus real native pull gesture. No test data is published.
+import urllib.request
+with urllib.request.urlopen('https://voetbalhub-redactie.onrender.com/articles',timeout=80) as response:
+    live=json.load(response)
+assert live.get('articles'),'Production feed unavailable'
+latest=live['articles'][0]['headline']
+before=pref_timestamp()
+adb('shell','am','force-stop',PACKAGE)
+adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
+time.sleep(5)
+for attempt in range(28):
+    time.sleep(3)
+    if pref_timestamp()>before:break
+assert pref_timestamp()>before,'Production feed fetch not persisted'
+for attempt in range(8):
+    root=capture('13-live-home')
+    hero_ready=any('NIEUWSTE ARTIKEL' in n.get('text','') and latest in n.get('text','') for n in root.iter('node'))
+    spotlight_ready=any('STADION VAN DE WEEK' in n.get('text','') or 'WEDSTRIJD VAN DE WEEK' in n.get('text','') for n in root.iter('node'))
+    if hero_ready and spotlight_ready:break
+    time.sleep(.6)
+assert hero_ready and spotlight_ready,'Published home carousel or dynamic paired card did not render'
+# Start at the top of the ScrollView, below the fixed category chips.
+size=list(map(int,re.findall(r'\d+',adb('shell','wm','size'))))[-2:];width,height=size
+before=pref_timestamp()
+adb('shell','input','swipe',str(width//2),str(int(height*.32)),str(width//2),str(int(height*.72)),'650')
+for attempt in range(28):
+    time.sleep(3)
+    if pref_timestamp()>before:break
+assert pref_timestamp()>before,'Pull gesture did not complete a new API fetch'
+capture('14-live-refreshed')
+# Home retains its cached articles during loss of connectivity.
+adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
+adb('shell','input','swipe',str(width//2),str(int(height*.32)),str(width//2),str(int(height*.72)),'650')
+time.sleep(4);root=capture('15-live-offline')
+assert any(latest in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')),'Offline refresh removed the visible headline'
+adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
+assert adb('shell','pidof',PACKAGE).strip()
+with (OUT/'result.txt').open('a') as result:
+    result.write('PASS: read-only live production feed, newest published headline in home, native pull-to-refresh completes another API fetch, offline pull preserves cached headline. Android emulator, no physical S23 or publication claim.\n')
+print((OUT/'result.txt').read_text())
+
+# Phase 32: emulator viewport matches the S23 display geometry, not a physical device.
+# Inspect the read-only live news rows and actual bundled photography in the reader.
+for attempt in range(5):
+    root=capture('16-phase32-feed')
+    target=next((n for n in root.iter('node') if n.get('text')==latest and n.get('class')=='android.widget.TextView'),None)
+    if target is not None:break
+    adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.3)),'500');time.sleep(1)
+assert target is not None,'Phase 32 native photo-led news row absent'
+tap_node(root,lambda n:n is target)
+time.sleep(2);root=capture('17-phase32-photo-reader')
+assert any('Archiefbeeld' in n.get('text','') for n in root.iter('node')),'Archival context caption absent'
+assert any('CC BY' in n.get('text','') for n in root.iter('node')),'Photograph licence attribution absent'
+assert any(n.get('class')=='android.widget.ImageView' and n.get('content-desc')=='Afbeelding bij artikel' for n in root.iter('node')),'Bundled photograph not visible in reader'
+tap_node(root,lambda n:'Terug' in n.get('text',''))
+time.sleep(1);capture('18-phase32-back-to-feed')
+assert adb('shell','pidof',PACKAGE).strip()
+with (OUT/'result.txt').open('a') as result:
+    result.write('PASS: Phase 32 native photo-led live feed, actual bundled image in reader, archival context, photographer/licence credit and back navigation. Emulator display geometry only, no physical S23 claim.\n')
+
+# Phase 33: wait past the hard feed deadline, then navigate to the offline stadium archive.
+adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
+adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
+time.sleep(22);root=capture('19-phase33-offline-home')
+assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')), 'Loading exceeded hard deadline'
+assert not any('video’s laden' in n.get('text','') for n in root.iter('node')), 'Orphan video loader'
+for attempt in range(4):
+    if any('VOETBAL IN CIJFERS' in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')):break
+    adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.48)),'450');time.sleep(1);root=capture('19-phase33-offline-home')
+assert any('VOETBAL IN CIJFERS' in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')), 'Original football quiz absent after scrolling'
+
+adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.35)),'500');time.sleep(1)
+root=capture('19b-phase33-offline-feed')
+assert any(n.get('text','').casefold()=='opnieuw proberen' for n in root.iter('node')), 'Retry button absent after offline deadline'
+assert not any(n.get('class')=='android.widget.ProgressBar' for n in root.iter('node')), 'Offline feed spinner never stopped'
+tap_node(root,lambda n:n.get('text')=='Meer');time.sleep(1);root=capture('20-phase33-more')
+tap_node(root,lambda n:n.get('text')=='Stadion van de week');time.sleep(2);root=capture('21-phase33-stadium-archive')
+assert any('De Kuip' in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')), 'Offline stadium archive missing'
+tap_node(root,lambda n:n.get('class')=='android.widget.Button' and 'De Kuip' in (n.get('text','')+' '+n.get('content-desc','')))
+time.sleep(2);root=capture('22-phase33-stadium-reader')
+assert any('1' in n.get('text','') and 'woorden' in n.get('text','') for n in root.iter('node')), 'Long stadium feature missing'
+adb('shell','input','keyevent','4');time.sleep(1);capture('23-phase33-stadium-back')
+adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
+with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 33 offline timeout, retained homepage, no video loader, original quiz, permanent stadium archive, long De Kuip reader and Android Back. Emulator only.\n')
+
+# Real emulator cellular-only and throttled-network conditions, with existing news retained.
+adb('shell','svc','wifi','disable');adb('shell','svc','data','enable')
+adb('emu','network','speed','gsm');adb('emu','network','delay','gprs')
+root=capture('24-before-slow-data');tap_node(root,lambda n:n.get('text')=='Nieuws');time.sleep(22)
+root=capture('25-slow-cellular-home')
+assert adb('shell','pidof',PACKAGE).strip()
+assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')), 'Slow network did not respect deadline'
+adb('emu','network','speed','full');adb('emu','network','delay','none')
+adb('shell','svc','wifi','enable');adb('shell','svc','data','disable')
+with (OUT/'result.txt').open('a') as result:result.write('PASS: cellular-only emulator with GSM speed/GPRS latency does not block UI beyond the bounded refresh; Wi-Fi-only restored. No physical radio or physical S23 test.\n')
