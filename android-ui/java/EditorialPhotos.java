@@ -14,7 +14,7 @@ import java.io.InputStream;
 public final class EditorialPhotos {
  private EditorialPhotos(){}
  public static boolean safeAsset(String path){return path!=null&&path.matches("news-photos/[a-z0-9-]+\\.webp");}
- public static Bitmap bitmap(Activity activity,JSONObject article,int width){String path=article.optString("imageAsset");if(!safeAsset(path))return null;try(InputStream in=activity.getAssets().open(path)){return EditorialBitmap.read(in,width);}catch(Exception ignored){return null;}}
+ public static Bitmap bitmap(Activity activity,JSONObject article,int width){if(article.optBoolean("uniqueFallback39"))return TopicArtwork39.bitmap(article,width);String path=article.optString("imageAsset");if(!safeAsset(path))return null;try(InputStream in=activity.getAssets().open(path)){return EditorialBitmap.read(in,width);}catch(Exception ignored){return null;}}
  public static JSONArray clubs(Activity activity){try(InputStream in=activity.getAssets().open("news-photo-catalog.json")){
   JSONObject catalog=new JSONObject(new String(BoundedInput.read(in,200000),java.nio.charset.StandardCharsets.UTF_8));JSONArray out=new JSONArray(),photos=catalog.getJSONArray("photos");
   for(String name:new String[]{"Ajax","Feyenoord","PSV"})for(int i=0;i<photos.length();i++){JSONObject p=photos.getJSONObject(i);if(name.equals(p.optString("club"))&&p.optBoolean("approved")){JSONObject c=new JSONObject(p.toString());c.put("name",name).put("cover","news-photos/"+p.getString("file"));out.put(c);break;}}return out;

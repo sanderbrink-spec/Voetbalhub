@@ -14,7 +14,7 @@ on:
       - "scripts/patch-*.py"
       - ".github/workflows/build.yml"
   push:
-    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37", "work/veldio-38", "work/veldio-39", "work/veldio-visual-38"]
+    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37", "work/veldio-38", "work/veldio-39", "work/veldio-visual-38", "work/veldio-interface-39"]
 
 permissions:
   contents: read
@@ -1015,6 +1015,9 @@ jobs:
       - name: Install visual phase 38 upgrade
         run: python3 scripts/patch-visual38.py
 
+      - name: Install definitive interface39
+        run: python3 scripts/patch-interface39.py
+
       - name: Verify existing Node regression suite
         timeout-minutes: 2
         run: npm test
@@ -1036,6 +1039,9 @@ jobs:
       - name: Verify online quiz and leaderboards
         timeout-minutes: 2
         run: NODE_PATH=./node_modules REDIS_TEST_URL=redis://127.0.0.1:6380 node scripts/browser/quiz39.cjs
+      - name: Verify interface39 routes, layouts and local tools
+        timeout-minutes: 2
+        run: NODE_PATH=./node_modules node scripts/browser/interface39.cjs
       - name: Keep phase 38 UI verification
         if: always()
         uses: actions/upload-artifact@v4
@@ -1199,7 +1205,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: python3 scripts/android-brand-smoke.py apk/app-debug.apk
+          script: python3 scripts/android-interface39.py apk/app-debug.apk
       - name: Keep Android visual checks
         if: always()
         uses: actions/upload-artifact@v4

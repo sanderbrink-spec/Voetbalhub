@@ -1,0 +1,10 @@
+package nl.voetbalhub.app;
+import android.content.Context;import android.graphics.*;import android.graphics.drawable.Drawable;import org.json.JSONObject;
+/** Subject-bound local fallback. Never depicts a fictitious real match or stadium. */
+public final class TopicArtwork39 extends Drawable {
+ private final Paint p=new Paint(3);private final String title;private final int seed;
+ public TopicArtwork39(JSONObject a){title=a.optString("headline","Veldio voetbal");seed=a.optString("id",title).hashCode();}
+ public void draw(Canvas c){Rect b=getBounds();float w=b.width(),h=b.height();if(w<=0||h<=0)return;c.save();c.translate(b.left,b.top);int accent=Color.HSVToColor(new float[]{Math.floorMod(seed,360),.6f,.34f});p.setShader(new LinearGradient(0,0,w,h,new int[]{0xFF07120C,accent},null,Shader.TileMode.CLAMP));c.drawRect(0,0,w,h,p);p.setShader(null);p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(Math.max(1,w*.007f));p.setColor(0x778BFF63);float cx=w*(.55f+Math.floorMod(seed,30)/100f);c.drawCircle(cx,h*.47f,h*.43f,p);c.drawLine(cx,0,cx,h,p);c.drawRect(w*.6f,h*.12f,w*.94f,h*.8f,p);p.setStyle(Paint.Style.FILL);p.setColor(0xFFB7FF39);p.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));p.setTextSize(w*.065f);c.drawText("VELDIO",w*.07f,h*.2f,p);p.setColor(Color.WHITE);p.setTextSize(w*.066f);String[] words=title.split(" ");String line="";int row=0;for(String word:words){if(p.measureText(line+" "+word)>w*.85f&&!line.isEmpty()){c.drawText(line,w*.07f,h*.43f+row*h*.14f,p);row++;line=word;if(row>=3)break;}else line+=(line.isEmpty()?"":" ")+word;}if(row<3)c.drawText(line,w*.07f,h*.43f+row*h*.14f,p);c.restore();}
+ public void setAlpha(int a){p.setAlpha(a);}public void setColorFilter(ColorFilter f){p.setColorFilter(f);}public int getOpacity(){return PixelFormat.OPAQUE;}
+ public static Bitmap bitmap(JSONObject a,int width){Bitmap b=Bitmap.createBitmap(width,width*9/16,Bitmap.Config.ARGB_8888);TopicArtwork39 d=new TopicArtwork39(a);d.setBounds(0,0,b.getWidth(),b.getHeight());d.draw(new Canvas(b));return b;}
+}
