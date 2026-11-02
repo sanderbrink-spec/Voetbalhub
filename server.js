@@ -299,9 +299,11 @@ async function getArticles(view = "current") {
   return require("./feed-policy").selectFeed(articles, {view});
 }
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
+const quizHandler=require("./quiz39/service").create({redis:client});
 async function handle(req, res) {
   security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
+  if(await quizHandler(req,res))return;
   if(require("./policy-pages").serve(req,res,url.pathname))return;
   if(url.pathname!=="/contact"&&url.pathname!=="/health"){
     const privileged=req.method==="POST"||(["/inbox","/editorial-drafts"].includes(url.pathname)||url.pathname.startsWith("/generated-image/"));

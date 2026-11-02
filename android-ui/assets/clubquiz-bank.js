@@ -1,4 +1,4 @@
-/* Original Veldio questions. Historical receipts: quiz/research37.json and research38.json. */
+/* Original Veldio questions. Historical source receipts: quiz/research37.json, research38.json, research39.json. */
 window.CLUBQUIZ_BANK=[
  {
   "id": "league-de-kuip",
@@ -7908,11 +7908,11 @@ window.CLUBQUIZ_BANK=[
    "Liverpool",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Liverpool",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1972/",
-  "explanation": "Liverpool pakte de titel tegen M\\u00F6nchengladbach.",
+  "explanation": "Liverpool pakte de titel tegen Mönchengladbach.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-d71e48ea2e5b.webp",
@@ -7922,7 +7922,7 @@ window.CLUBQUIZ_BANK=[
    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
   },
   "clubs": [
-   "M\\u00F6nchengladbach",
+   "Mönchengladbach",
    "Liverpool"
   ],
   "topic": "history"
@@ -7932,14 +7932,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Liverpool in de beslissende finale van de UEFA Cup in 1973?",
   "answers": [
-   "M\\u00F6nchengladbach",
+   "Mönchengladbach",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
-  "correct": "M\\u00F6nchengladbach",
+  "correct": "Mönchengladbach",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1972/",
-  "explanation": "De finalisten waren M\\u00F6nchengladbach en Liverpool. Liverpool won het toernooi.",
+  "explanation": "De finalisten waren Mönchengladbach en Liverpool. Liverpool won het toernooi.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "ajax-4c77b7ad3973.webp",
@@ -7949,7 +7949,7 @@ window.CLUBQUIZ_BANK=[
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "clubs": [
-   "M\\u00F6nchengladbach",
+   "Mönchengladbach",
    "Liverpool"
   ],
   "topic": "history"
@@ -7966,7 +7966,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "23 mei 1973",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1972/",
-  "explanation": "De beslissende finale tussen M\\u00F6nchengladbach en Liverpool vond plaats op 23 mei 1973.",
+  "explanation": "De beslissende finale tussen Mönchengladbach en Liverpool vond plaats op 23 mei 1973.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "ajax-4c77b7ad3973.webp",
@@ -7976,7 +7976,7 @@ window.CLUBQUIZ_BANK=[
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "clubs": [
-   "M\\u00F6nchengladbach",
+   "Mönchengladbach",
    "Liverpool"
   ],
   "topic": "history"
@@ -7989,7 +7989,7 @@ window.CLUBQUIZ_BANK=[
    "Feyenoord",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Feyenoord",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1973/",
@@ -8016,7 +8016,7 @@ window.CLUBQUIZ_BANK=[
    "Tottenham",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Tottenham",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1973/",
@@ -8070,7 +8070,7 @@ window.CLUBQUIZ_BANK=[
    "Liverpool",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Liverpool",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1975/",
@@ -8097,7 +8097,7 @@ window.CLUBQUIZ_BANK=[
    "Club Brugge",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Club Brugge",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1975/",
@@ -8151,7 +8151,7 @@ window.CLUBQUIZ_BANK=[
    "Juventus",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Juventus",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1976/",
@@ -8178,7 +8178,7 @@ window.CLUBQUIZ_BANK=[
    "Athletic Club",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Athletic Club",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1976/",
@@ -8232,7 +8232,7 @@ window.CLUBQUIZ_BANK=[
    "PSV",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "PSV",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1977/",
@@ -8259,7 +8259,7 @@ window.CLUBQUIZ_BANK=[
    "Bastia",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Bastia",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1977/",
@@ -8313,11 +8313,11 @@ window.CLUBQUIZ_BANK=[
    "Eintracht Frankfurt",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Eintracht Frankfurt",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1979/",
-  "explanation": "Eintracht Frankfurt pakte de titel tegen M\\u00F6nchengladbach.",
+  "explanation": "Eintracht Frankfurt pakte de titel tegen Mönchengladbach.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "midtjylland-87f7f7803cb2.webp",
@@ -8328,7 +8328,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Eintracht Frankfurt",
-   "M\\u00F6nchengladbach"
+   "Mönchengladbach"
   ],
   "topic": "history"
  },
@@ -8337,14 +8337,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Eintracht Frankfurt in de beslissende finale van de UEFA Cup in 1980?",
   "answers": [
-   "M\\u00F6nchengladbach",
+   "Mönchengladbach",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
-  "correct": "M\\u00F6nchengladbach",
+  "correct": "Mönchengladbach",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1979/",
-  "explanation": "De finalisten waren Eintracht Frankfurt en M\\u00F6nchengladbach. Eintracht Frankfurt won het toernooi.",
+  "explanation": "De finalisten waren Eintracht Frankfurt en Mönchengladbach. Eintracht Frankfurt won het toernooi.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "emmen-35c70437dac5.webp",
@@ -8355,7 +8355,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Eintracht Frankfurt",
-   "M\\u00F6nchengladbach"
+   "Mönchengladbach"
   ],
   "topic": "history"
  },
@@ -8371,7 +8371,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "21 mei 1980",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1979/",
-  "explanation": "De beslissende finale tussen Eintracht Frankfurt en M\\u00F6nchengladbach vond plaats op 21 mei 1980.",
+  "explanation": "De beslissende finale tussen Eintracht Frankfurt en Mönchengladbach vond plaats op 21 mei 1980.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-d71e48ea2e5b.webp",
@@ -8382,7 +8382,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Eintracht Frankfurt",
-   "M\\u00F6nchengladbach"
+   "Mönchengladbach"
   ],
   "topic": "history"
  },
@@ -8394,7 +8394,7 @@ window.CLUBQUIZ_BANK=[
    "Ipswich",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Ipswich",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1980/",
@@ -8420,7 +8420,7 @@ window.CLUBQUIZ_BANK=[
   "answers": [
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s",
+   "Alavés",
    "Anderlecht"
   ],
   "correct": "AZ Alkmaar",
@@ -8475,7 +8475,7 @@ window.CLUBQUIZ_BANK=[
    "Anderlecht",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Anderlecht",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1982/",
@@ -8502,7 +8502,7 @@ window.CLUBQUIZ_BANK=[
    "Benfica",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Benfica",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1982/",
@@ -8556,7 +8556,7 @@ window.CLUBQUIZ_BANK=[
    "Tottenham",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Tottenham",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1983/",
@@ -8583,7 +8583,7 @@ window.CLUBQUIZ_BANK=[
    "Anderlecht",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Anderlecht",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1983/",
@@ -8637,11 +8637,11 @@ window.CLUBQUIZ_BANK=[
    "Real Madrid",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Real Madrid",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1984/",
-  "explanation": "Real Madrid pakte de titel tegen Feh\\u00E9rv\\u00E1r.",
+  "explanation": "Real Madrid pakte de titel tegen Fehérvár.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "heerenveen-433f38970b69.webp",
@@ -8652,7 +8652,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Real Madrid",
-   "Feh\\u00E9rv\\u00E1r"
+   "Fehérvár"
   ],
   "topic": "history"
  },
@@ -8661,14 +8661,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Real Madrid in de beslissende finale van de UEFA Cup in 1985?",
   "answers": [
-   "Feh\\u00E9rv\\u00E1r",
+   "Fehérvár",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
-  "correct": "Feh\\u00E9rv\\u00E1r",
+  "correct": "Fehérvár",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1984/",
-  "explanation": "De finalisten waren Real Madrid en Feh\\u00E9rv\\u00E1r. Real Madrid won het toernooi.",
+  "explanation": "De finalisten waren Real Madrid en Fehérvár. Real Madrid won het toernooi.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-d71e48ea2e5b.webp",
@@ -8679,7 +8679,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Real Madrid",
-   "Feh\\u00E9rv\\u00E1r"
+   "Fehérvár"
   ],
   "topic": "history"
  },
@@ -8695,7 +8695,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "22 mei 1985",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1984/",
-  "explanation": "De beslissende finale tussen Real Madrid en Feh\\u00E9rv\\u00E1r vond plaats op 22 mei 1985.",
+  "explanation": "De beslissende finale tussen Real Madrid en Fehérvár vond plaats op 22 mei 1985.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "groningen-f8e0fe75598e.webp",
@@ -8706,7 +8706,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Real Madrid",
-   "Feh\\u00E9rv\\u00E1r"
+   "Fehérvár"
   ],
   "topic": "history"
  },
@@ -8718,11 +8718,11 @@ window.CLUBQUIZ_BANK=[
    "Real Madrid",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Real Madrid",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1985/",
-  "explanation": "Real Madrid pakte de titel tegen K\\u00F6ln.",
+  "explanation": "Real Madrid pakte de titel tegen Köln.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "groningen-f8e0fe75598e.webp",
@@ -8732,7 +8732,7 @@ window.CLUBQUIZ_BANK=[
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
   "clubs": [
-   "K\\u00F6ln",
+   "Köln",
    "Real Madrid"
   ],
   "topic": "history"
@@ -8742,14 +8742,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Real Madrid in de beslissende finale van de UEFA Cup in 1986?",
   "answers": [
-   "K\\u00F6ln",
+   "Köln",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
-  "correct": "K\\u00F6ln",
+  "correct": "Köln",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1985/",
-  "explanation": "De finalisten waren K\\u00F6ln en Real Madrid. Real Madrid won het toernooi.",
+  "explanation": "De finalisten waren Köln en Real Madrid. Real Madrid won het toernooi.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "heerenveen-exterior-98a8451bd868.webp",
@@ -8759,7 +8759,7 @@ window.CLUBQUIZ_BANK=[
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
   },
   "clubs": [
-   "K\\u00F6ln",
+   "Köln",
    "Real Madrid"
   ],
   "topic": "history"
@@ -8776,7 +8776,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "6 mei 1986",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1985/",
-  "explanation": "De beslissende finale tussen K\\u00F6ln en Real Madrid vond plaats op 6 mei 1986.",
+  "explanation": "De beslissende finale tussen Köln en Real Madrid vond plaats op 6 mei 1986.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-exterior-39afd408de58.webp",
@@ -8786,7 +8786,7 @@ window.CLUBQUIZ_BANK=[
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "clubs": [
-   "K\\u00F6ln",
+   "Köln",
    "Real Madrid"
   ],
   "topic": "history"
@@ -8799,7 +8799,7 @@ window.CLUBQUIZ_BANK=[
    "Leverkusen",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Leverkusen",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1987/",
@@ -8826,7 +8826,7 @@ window.CLUBQUIZ_BANK=[
    "Espanyol",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Espanyol",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1987/",
@@ -8880,7 +8880,7 @@ window.CLUBQUIZ_BANK=[
    "Napoli",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Napoli",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1988/",
@@ -8907,7 +8907,7 @@ window.CLUBQUIZ_BANK=[
    "Stuttgart",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Stuttgart",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1988/",
@@ -8961,7 +8961,7 @@ window.CLUBQUIZ_BANK=[
    "Juventus",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Juventus",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1989/",
@@ -8988,7 +8988,7 @@ window.CLUBQUIZ_BANK=[
    "Fiorentina",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Fiorentina",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1989/",
@@ -9042,7 +9042,7 @@ window.CLUBQUIZ_BANK=[
    "Inter",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Inter",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1990/",
@@ -9069,7 +9069,7 @@ window.CLUBQUIZ_BANK=[
    "Roma",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Roma",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1990/",
@@ -9122,7 +9122,7 @@ window.CLUBQUIZ_BANK=[
   "answers": [
    "Ajax",
    "AZ Alkmaar",
-   "Alav\\u00E9s",
+   "Alavés",
    "Anderlecht"
   ],
   "correct": "Ajax",
@@ -9149,7 +9149,7 @@ window.CLUBQUIZ_BANK=[
   "answers": [
    "Torino",
    "AZ Alkmaar",
-   "Alav\\u00E9s",
+   "Alavés",
    "Anderlecht"
   ],
   "correct": "Torino",
@@ -9204,7 +9204,7 @@ window.CLUBQUIZ_BANK=[
    "Juventus",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Juventus",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1992/",
@@ -9231,7 +9231,7 @@ window.CLUBQUIZ_BANK=[
    "B. Dortmund",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "B. Dortmund",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1992/",
@@ -9285,7 +9285,7 @@ window.CLUBQUIZ_BANK=[
    "Inter",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Inter",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1993/",
@@ -9312,7 +9312,7 @@ window.CLUBQUIZ_BANK=[
    "Salzburg",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Salzburg",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1993/",
@@ -9366,7 +9366,7 @@ window.CLUBQUIZ_BANK=[
    "Parma",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Parma",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1994/",
@@ -9393,7 +9393,7 @@ window.CLUBQUIZ_BANK=[
    "Juventus",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Juventus",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1994/",
@@ -9447,7 +9447,7 @@ window.CLUBQUIZ_BANK=[
    "Schalke",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Schalke",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1996/",
@@ -9474,7 +9474,7 @@ window.CLUBQUIZ_BANK=[
    "Inter",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Inter",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1996/",
@@ -9528,7 +9528,7 @@ window.CLUBQUIZ_BANK=[
    "Inter",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Inter",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1997/",
@@ -9555,7 +9555,7 @@ window.CLUBQUIZ_BANK=[
    "Lazio",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Lazio",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1997/",
@@ -9609,7 +9609,7 @@ window.CLUBQUIZ_BANK=[
    "Parma",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Parma",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1998/",
@@ -9636,7 +9636,7 @@ window.CLUBQUIZ_BANK=[
    "Marseille",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Marseille",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1998/",
@@ -9690,7 +9690,7 @@ window.CLUBQUIZ_BANK=[
    "Galatasaray",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Galatasaray",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1999/",
@@ -9717,7 +9717,7 @@ window.CLUBQUIZ_BANK=[
    "Arsenal",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Arsenal",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1999/",
@@ -9771,11 +9771,11 @@ window.CLUBQUIZ_BANK=[
    "Liverpool",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Liverpool",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2000/",
-  "explanation": "Liverpool pakte de titel tegen Alav\\u00E9s.",
+  "explanation": "Liverpool pakte de titel tegen Alavés.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "midtjylland-87f7f7803cb2.webp",
@@ -9786,7 +9786,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Liverpool",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "topic": "history"
  },
@@ -9795,14 +9795,14 @@ window.CLUBQUIZ_BANK=[
   "level": "normal",
   "question": "Welke tegenstander verloor van Liverpool in de beslissende finale van de UEFA Cup in 2001?",
   "answers": [
-   "Alav\\u00E9s",
+   "Alavés",
    "AZ Alkmaar",
    "Ajax",
    "Anderlecht"
   ],
-  "correct": "Alav\\u00E9s",
+  "correct": "Alavés",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2000/",
-  "explanation": "De finalisten waren Liverpool en Alav\\u00E9s. Liverpool won het toernooi.",
+  "explanation": "De finalisten waren Liverpool en Alavés. Liverpool won het toernooi.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "emmen-35c70437dac5.webp",
@@ -9813,7 +9813,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Liverpool",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "topic": "history"
  },
@@ -9829,7 +9829,7 @@ window.CLUBQUIZ_BANK=[
   ],
   "correct": "16 mei 2001",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2000/",
-  "explanation": "De beslissende finale tussen Liverpool en Alav\\u00E9s vond plaats op 16 mei 2001.",
+  "explanation": "De beslissende finale tussen Liverpool en Alavés vond plaats op 16 mei 2001.",
   "reviewedAt": "2026-11-02",
   "image": {
    "file": "feyenoord-d71e48ea2e5b.webp",
@@ -9840,7 +9840,7 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [
    "Liverpool",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "topic": "history"
  },
@@ -9852,7 +9852,7 @@ window.CLUBQUIZ_BANK=[
    "Feyenoord",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Feyenoord",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2001/",
@@ -9879,7 +9879,7 @@ window.CLUBQUIZ_BANK=[
    "B. Dortmund",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "B. Dortmund",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2001/",
@@ -9933,7 +9933,7 @@ window.CLUBQUIZ_BANK=[
    "Porto",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Porto",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2002/",
@@ -9960,7 +9960,7 @@ window.CLUBQUIZ_BANK=[
    "Celtic",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Celtic",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2002/",
@@ -10014,7 +10014,7 @@ window.CLUBQUIZ_BANK=[
    "Valencia",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Valencia",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2003/",
@@ -10041,7 +10041,7 @@ window.CLUBQUIZ_BANK=[
    "Marseille",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Marseille",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2003/",
@@ -10095,7 +10095,7 @@ window.CLUBQUIZ_BANK=[
    "CSKA Moskva",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "CSKA Moskva",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2004/",
@@ -10122,7 +10122,7 @@ window.CLUBQUIZ_BANK=[
    "Sporting CP",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Sporting CP",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2004/",
@@ -10176,7 +10176,7 @@ window.CLUBQUIZ_BANK=[
    "Sevilla",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Sevilla",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2005/",
@@ -10203,7 +10203,7 @@ window.CLUBQUIZ_BANK=[
    "Middlesbrough",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Middlesbrough",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2005/",
@@ -10257,7 +10257,7 @@ window.CLUBQUIZ_BANK=[
    "Sevilla",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Sevilla",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2006/",
@@ -10284,7 +10284,7 @@ window.CLUBQUIZ_BANK=[
    "Espanyol",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Espanyol",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2006/",
@@ -10338,7 +10338,7 @@ window.CLUBQUIZ_BANK=[
    "Zenit",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Zenit",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2008/",
@@ -10365,7 +10365,7 @@ window.CLUBQUIZ_BANK=[
    "Rangers",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Rangers",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2008/",
@@ -10419,7 +10419,7 @@ window.CLUBQUIZ_BANK=[
    "Shakhtar",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Shakhtar",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2009/",
@@ -10446,7 +10446,7 @@ window.CLUBQUIZ_BANK=[
    "Bremen",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Bremen",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2009/",
@@ -10500,7 +10500,7 @@ window.CLUBQUIZ_BANK=[
    "Atlético Madrid",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Atlético Madrid",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2010/",
@@ -10527,7 +10527,7 @@ window.CLUBQUIZ_BANK=[
    "Fulham",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Fulham",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2010/",
@@ -10581,7 +10581,7 @@ window.CLUBQUIZ_BANK=[
    "Porto",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Porto",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2011/",
@@ -10608,7 +10608,7 @@ window.CLUBQUIZ_BANK=[
    "Braga",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Braga",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2011/",
@@ -10662,7 +10662,7 @@ window.CLUBQUIZ_BANK=[
    "Atlético Madrid",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Atlético Madrid",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2012/",
@@ -10689,7 +10689,7 @@ window.CLUBQUIZ_BANK=[
    "Athletic Club",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Athletic Club",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2012/",
@@ -10743,7 +10743,7 @@ window.CLUBQUIZ_BANK=[
    "Chelsea",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Chelsea",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2013/",
@@ -10770,7 +10770,7 @@ window.CLUBQUIZ_BANK=[
    "Benfica",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Benfica",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2013/",
@@ -10824,7 +10824,7 @@ window.CLUBQUIZ_BANK=[
    "Sevilla",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Sevilla",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2014/",
@@ -10851,7 +10851,7 @@ window.CLUBQUIZ_BANK=[
    "Benfica",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Benfica",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2014/",
@@ -10905,7 +10905,7 @@ window.CLUBQUIZ_BANK=[
    "Sevilla",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Sevilla",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2015/",
@@ -10932,7 +10932,7 @@ window.CLUBQUIZ_BANK=[
    "Dnipro",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Dnipro",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2015/",
@@ -10986,7 +10986,7 @@ window.CLUBQUIZ_BANK=[
    "Sevilla",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Sevilla",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2016/",
@@ -11013,7 +11013,7 @@ window.CLUBQUIZ_BANK=[
    "Liverpool",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Liverpool",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2016/",
@@ -11067,7 +11067,7 @@ window.CLUBQUIZ_BANK=[
    "Manchester United",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Manchester United",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2017/",
@@ -11093,7 +11093,7 @@ window.CLUBQUIZ_BANK=[
   "answers": [
    "Ajax",
    "AZ Alkmaar",
-   "Alav\\u00E9s",
+   "Alavés",
    "Anderlecht"
   ],
   "correct": "Ajax",
@@ -11148,7 +11148,7 @@ window.CLUBQUIZ_BANK=[
    "Atlético Madrid",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Atlético Madrid",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2018/",
@@ -11175,7 +11175,7 @@ window.CLUBQUIZ_BANK=[
    "Marseille",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Marseille",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2018/",
@@ -11229,7 +11229,7 @@ window.CLUBQUIZ_BANK=[
    "Chelsea",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Chelsea",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2019/",
@@ -11256,7 +11256,7 @@ window.CLUBQUIZ_BANK=[
    "Arsenal",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Arsenal",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2019/",
@@ -11310,7 +11310,7 @@ window.CLUBQUIZ_BANK=[
    "Sevilla",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Sevilla",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2020/",
@@ -11337,7 +11337,7 @@ window.CLUBQUIZ_BANK=[
    "Inter",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Inter",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2020/",
@@ -11391,7 +11391,7 @@ window.CLUBQUIZ_BANK=[
    "Villarreal",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Villarreal",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2021/",
@@ -11418,7 +11418,7 @@ window.CLUBQUIZ_BANK=[
    "Manchester United",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Manchester United",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2021/",
@@ -11472,7 +11472,7 @@ window.CLUBQUIZ_BANK=[
    "Eintracht Frankfurt",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Eintracht Frankfurt",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2022/",
@@ -11499,7 +11499,7 @@ window.CLUBQUIZ_BANK=[
    "Rangers",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Rangers",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2022/",
@@ -11553,7 +11553,7 @@ window.CLUBQUIZ_BANK=[
    "Sevilla",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Sevilla",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2023/",
@@ -11580,7 +11580,7 @@ window.CLUBQUIZ_BANK=[
    "Roma",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Roma",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2023/",
@@ -11634,7 +11634,7 @@ window.CLUBQUIZ_BANK=[
    "Atalanta",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Atalanta",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2024/",
@@ -11661,7 +11661,7 @@ window.CLUBQUIZ_BANK=[
    "Leverkusen",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Leverkusen",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2024/",
@@ -11715,7 +11715,7 @@ window.CLUBQUIZ_BANK=[
    "Tottenham",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Tottenham",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2025/",
@@ -11742,7 +11742,7 @@ window.CLUBQUIZ_BANK=[
    "Manchester United",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Manchester United",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/2025/",
@@ -12732,7 +12732,7 @@ window.CLUBQUIZ_BANK=[
    "Borussia Mönchengladbach",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Borussia Mönchengladbach",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1974/",
@@ -12759,7 +12759,7 @@ window.CLUBQUIZ_BANK=[
    "Twente",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Twente",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1974/",
@@ -12813,7 +12813,7 @@ window.CLUBQUIZ_BANK=[
    "Borussia Mönchengladbach",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Borussia Mönchengladbach",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1978/",
@@ -12840,7 +12840,7 @@ window.CLUBQUIZ_BANK=[
    "Crvena Zvezda",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Crvena Zvezda",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1978/",
@@ -12894,7 +12894,7 @@ window.CLUBQUIZ_BANK=[
    "IFK Göteborg",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "IFK Göteborg",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1981/",
@@ -12921,7 +12921,7 @@ window.CLUBQUIZ_BANK=[
    "Hamburg",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Hamburg",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1981/",
@@ -12975,7 +12975,7 @@ window.CLUBQUIZ_BANK=[
    "IFK Göteborg",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "IFK Göteborg",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1986/",
@@ -13002,7 +13002,7 @@ window.CLUBQUIZ_BANK=[
    "Dundee United",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Dundee United",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1986/",
@@ -13056,7 +13056,7 @@ window.CLUBQUIZ_BANK=[
    "Bayern München",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Bayern München",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1995/",
@@ -13083,7 +13083,7 @@ window.CLUBQUIZ_BANK=[
    "Bordeaux",
    "AZ Alkmaar",
    "Ajax",
-   "Alav\\u00E9s"
+   "Alavés"
   ],
   "correct": "Bordeaux",
   "source": "https://www.uefa.com/uefaeuropaleague/history/seasons/1995/",
@@ -13416,5 +13416,3533 @@ window.CLUBQUIZ_BANK=[
   },
   "clubs": [],
   "topic": "player"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2002-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup voor vrouwen met de beslissende finale in 2003?",
+  "answers": [
+   "Umeå",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Umeå",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2002/",
+  "explanation": "Umeå werd kampioen na de finale tegen Fortuna.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Fortuna (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2002-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Umeå in de beslissende finale van de UEFA Cup voor vrouwen in 2003?",
+  "answers": [
+   "Fortuna",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Fortuna",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2002/",
+  "explanation": "Fortuna en Umeå waren de finalisten. Umeå pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Fortuna (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2002-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup voor vrouwen in 2003?",
+  "answers": [
+   "21 juni 2003",
+   "14 juni 2003",
+   "28 juni 2003",
+   "5 juli 2003"
+  ],
+  "correct": "21 juni 2003",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2002/",
+  "explanation": "De beslissende finalewedstrijd tussen Fortuna en Umeå was op 21 juni 2003.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Fortuna (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2003-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup voor vrouwen met de beslissende finale in 2004?",
+  "answers": [
+   "Umeå",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Umeå",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2003/",
+  "explanation": "Umeå werd kampioen na de finale tegen Frankfurt.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2003-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Umeå in de beslissende finale van de UEFA Cup voor vrouwen in 2004?",
+  "answers": [
+   "Frankfurt",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Frankfurt",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2003/",
+  "explanation": "Frankfurt en Umeå waren de finalisten. Umeå pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2003-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup voor vrouwen in 2004?",
+  "answers": [
+   "5 juni 2004",
+   "29 mei 2004",
+   "12 juni 2004",
+   "19 juni 2004"
+  ],
+  "correct": "5 juni 2004",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2003/",
+  "explanation": "De beslissende finalewedstrijd tussen Frankfurt en Umeå was op 5 juni 2004.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2004-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup voor vrouwen met de beslissende finale in 2005?",
+  "answers": [
+   "Potsdam",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Potsdam",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2004/",
+  "explanation": "Potsdam werd kampioen na de finale tegen Djurgården.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Potsdam (vrouwen)",
+   "Djurgården (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2004-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Potsdam in de beslissende finale van de UEFA Cup voor vrouwen in 2005?",
+  "answers": [
+   "Djurgården",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Djurgården",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2004/",
+  "explanation": "Potsdam en Djurgården waren de finalisten. Potsdam pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Potsdam (vrouwen)",
+   "Djurgården (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2004-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup voor vrouwen in 2005?",
+  "answers": [
+   "21 mei 2005",
+   "14 mei 2005",
+   "28 mei 2005",
+   "4 juni 2005"
+  ],
+  "correct": "21 mei 2005",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2004/",
+  "explanation": "De beslissende finalewedstrijd tussen Potsdam en Djurgården was op 21 mei 2005.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Potsdam (vrouwen)",
+   "Djurgården (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2005-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup voor vrouwen met de beslissende finale in 2006?",
+  "answers": [
+   "Frankfurt",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Frankfurt",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2005/",
+  "explanation": "Frankfurt werd kampioen na de finale tegen Potsdam.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Potsdam (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2005-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Frankfurt in de beslissende finale van de UEFA Cup voor vrouwen in 2006?",
+  "answers": [
+   "Potsdam",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Potsdam",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2005/",
+  "explanation": "Frankfurt en Potsdam waren de finalisten. Frankfurt pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Potsdam (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2005-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup voor vrouwen in 2006?",
+  "answers": [
+   "27 mei 2006",
+   "20 mei 2006",
+   "3 juni 2006",
+   "10 juni 2006"
+  ],
+  "correct": "27 mei 2006",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2005/",
+  "explanation": "De beslissende finalewedstrijd tussen Frankfurt en Potsdam was op 27 mei 2006.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Potsdam (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2006-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup voor vrouwen met de beslissende finale in 2007?",
+  "answers": [
+   "Arsenal",
+   "Barcelona",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Arsenal",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2006/",
+  "explanation": "Arsenal werd kampioen na de finale tegen Umeå.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Arsenal (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2006-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Arsenal in de beslissende finale van de UEFA Cup voor vrouwen in 2007?",
+  "answers": [
+   "Umeå",
+   "Barcelona",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Umeå",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2006/",
+  "explanation": "Arsenal en Umeå waren de finalisten. Arsenal pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Arsenal (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2006-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup voor vrouwen in 2007?",
+  "answers": [
+   "29 april 2007",
+   "22 april 2007",
+   "6 mei 2007",
+   "13 mei 2007"
+  ],
+  "correct": "29 april 2007",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2006/",
+  "explanation": "De beslissende finalewedstrijd tussen Arsenal en Umeå was op 29 april 2007.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Arsenal (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2008-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup voor vrouwen met de beslissende finale in 2008?",
+  "answers": [
+   "Frankfurt",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Frankfurt",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2008/",
+  "explanation": "Frankfurt werd kampioen na de finale tegen Umeå.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2008-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Frankfurt in de beslissende finale van de UEFA Cup voor vrouwen in 2008?",
+  "answers": [
+   "Umeå",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Umeå",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2008/",
+  "explanation": "Frankfurt en Umeå waren de finalisten. Frankfurt pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2008-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup voor vrouwen in 2008?",
+  "answers": [
+   "24 mei 2008",
+   "17 mei 2008",
+   "31 mei 2008",
+   "7 juni 2008"
+  ],
+  "correct": "24 mei 2008",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2008/",
+  "explanation": "De beslissende finalewedstrijd tussen Frankfurt en Umeå was op 24 mei 2008.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Umeå (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2009-winner",
+  "level": "easy",
+  "question": "Wie won de UEFA Cup voor vrouwen met de beslissende finale in 2009?",
+  "answers": [
+   "Duisburg",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Duisburg",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2009/",
+  "explanation": "Duisburg werd kampioen na de finale tegen Zvezda-2005.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Duisburg (vrouwen)",
+   "Zvezda-2005 (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2009-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duisburg in de beslissende finale van de UEFA Cup voor vrouwen in 2009?",
+  "answers": [
+   "Zvezda-2005",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Zvezda-2005",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2009/",
+  "explanation": "Duisburg en Zvezda-2005 waren de finalisten. Duisburg pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Duisburg (vrouwen)",
+   "Zvezda-2005 (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2009-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de UEFA Cup voor vrouwen in 2009?",
+  "answers": [
+   "22 mei 2009",
+   "15 mei 2009",
+   "29 mei 2009",
+   "5 juni 2009"
+  ],
+  "correct": "22 mei 2009",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2009/",
+  "explanation": "De beslissende finalewedstrijd tussen Duisburg en Zvezda-2005 was op 22 mei 2009.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Duisburg (vrouwen)",
+   "Zvezda-2005 (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2011-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2011?",
+  "answers": [
+   "Olympique Lyon",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Olympique Lyon",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2011/",
+  "explanation": "Olympique Lyon werd kampioen na de finale tegen Potsdam.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Potsdam (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2011-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Olympique Lyon in de beslissende finale van de Champions League voor vrouwen in 2011?",
+  "answers": [
+   "Potsdam",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Potsdam",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2011/",
+  "explanation": "Olympique Lyon en Potsdam waren de finalisten. Olympique Lyon pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Potsdam (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2011-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2011?",
+  "answers": [
+   "26 mei 2011",
+   "19 mei 2011",
+   "2 juni 2011",
+   "9 juni 2011"
+  ],
+  "correct": "26 mei 2011",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2011/",
+  "explanation": "De beslissende finalewedstrijd tussen Olympique Lyon en Potsdam was op 26 mei 2011.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Potsdam (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2012-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2012?",
+  "answers": [
+   "Olympique Lyon",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Olympique Lyon",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2012/",
+  "explanation": "Olympique Lyon werd kampioen na de finale tegen Frankfurt.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Frankfurt (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2012-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Olympique Lyon in de beslissende finale van de Champions League voor vrouwen in 2012?",
+  "answers": [
+   "Frankfurt",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Frankfurt",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2012/",
+  "explanation": "Olympique Lyon en Frankfurt waren de finalisten. Olympique Lyon pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Frankfurt (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2012-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2012?",
+  "answers": [
+   "17 mei 2012",
+   "10 mei 2012",
+   "24 mei 2012",
+   "31 mei 2012"
+  ],
+  "correct": "17 mei 2012",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2012/",
+  "explanation": "De beslissende finalewedstrijd tussen Olympique Lyon en Frankfurt was op 17 mei 2012.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Frankfurt (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2013-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2013?",
+  "answers": [
+   "Wolfsburg",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Wolfsburg",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2013/",
+  "explanation": "Wolfsburg werd kampioen na de finale tegen Olympique Lyon.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2013-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Wolfsburg in de beslissende finale van de Champions League voor vrouwen in 2013?",
+  "answers": [
+   "Olympique Lyon",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Olympique Lyon",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2013/",
+  "explanation": "Wolfsburg en Olympique Lyon waren de finalisten. Wolfsburg pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2013-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2013?",
+  "answers": [
+   "23 mei 2013",
+   "16 mei 2013",
+   "30 mei 2013",
+   "6 juni 2013"
+  ],
+  "correct": "23 mei 2013",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2013/",
+  "explanation": "De beslissende finalewedstrijd tussen Wolfsburg en Olympique Lyon was op 23 mei 2013.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2014-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2014?",
+  "answers": [
+   "Wolfsburg",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Wolfsburg",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2014/",
+  "explanation": "Wolfsburg werd kampioen na de finale tegen Tyresö.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Tyresö (vrouwen)",
+   "Wolfsburg (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2014-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Wolfsburg in de beslissende finale van de Champions League voor vrouwen in 2014?",
+  "answers": [
+   "Tyresö",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Tyresö",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2014/",
+  "explanation": "Tyresö en Wolfsburg waren de finalisten. Wolfsburg pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Tyresö (vrouwen)",
+   "Wolfsburg (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2014-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2014?",
+  "answers": [
+   "22 mei 2014",
+   "15 mei 2014",
+   "29 mei 2014",
+   "5 juni 2014"
+  ],
+  "correct": "22 mei 2014",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2014/",
+  "explanation": "De beslissende finalewedstrijd tussen Tyresö en Wolfsburg was op 22 mei 2014.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Tyresö (vrouwen)",
+   "Wolfsburg (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2015-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2015?",
+  "answers": [
+   "Frankfurt",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Frankfurt",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2015/",
+  "explanation": "Frankfurt werd kampioen na de finale tegen Paris SG.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Paris SG (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2015-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Frankfurt in de beslissende finale van de Champions League voor vrouwen in 2015?",
+  "answers": [
+   "Paris SG",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Paris SG",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2015/",
+  "explanation": "Frankfurt en Paris SG waren de finalisten. Frankfurt pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Paris SG (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2015-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2015?",
+  "answers": [
+   "14 mei 2015",
+   "7 mei 2015",
+   "21 mei 2015",
+   "28 mei 2015"
+  ],
+  "correct": "14 mei 2015",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2015/",
+  "explanation": "De beslissende finalewedstrijd tussen Frankfurt en Paris SG was op 14 mei 2015.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Frankfurt (vrouwen)",
+   "Paris SG (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2018-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2018?",
+  "answers": [
+   "Olympique Lyon",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Olympique Lyon",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2018/",
+  "explanation": "Olympique Lyon werd kampioen na de finale tegen Wolfsburg.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2018-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Olympique Lyon in de beslissende finale van de Champions League voor vrouwen in 2018?",
+  "answers": [
+   "Wolfsburg",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Wolfsburg",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2018/",
+  "explanation": "Wolfsburg en Olympique Lyon waren de finalisten. Olympique Lyon pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2018-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2018?",
+  "answers": [
+   "24 mei 2018",
+   "17 mei 2018",
+   "31 mei 2018",
+   "7 juni 2018"
+  ],
+  "correct": "24 mei 2018",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2018/",
+  "explanation": "De beslissende finalewedstrijd tussen Wolfsburg en Olympique Lyon was op 24 mei 2018.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2019-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2019?",
+  "answers": [
+   "Olympique Lyon",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Olympique Lyon",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2019/",
+  "explanation": "Olympique Lyon werd kampioen na de finale tegen Barcelona.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2019-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Olympique Lyon in de beslissende finale van de Champions League voor vrouwen in 2019?",
+  "answers": [
+   "Barcelona",
+   "Arsenal",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Barcelona",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2019/",
+  "explanation": "Olympique Lyon en Barcelona waren de finalisten. Olympique Lyon pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2019-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2019?",
+  "answers": [
+   "18 mei 2019",
+   "11 mei 2019",
+   "25 mei 2019",
+   "1 juni 2019"
+  ],
+  "correct": "18 mei 2019",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2019/",
+  "explanation": "De beslissende finalewedstrijd tussen Olympique Lyon en Barcelona was op 18 mei 2019.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Olympique Lyon (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2020-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2020?",
+  "answers": [
+   "Olympique Lyon",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Olympique Lyon",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2020/",
+  "explanation": "Olympique Lyon werd kampioen na de finale tegen Wolfsburg.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2020-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Olympique Lyon in de beslissende finale van de Champions League voor vrouwen in 2020?",
+  "answers": [
+   "Wolfsburg",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Wolfsburg",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2020/",
+  "explanation": "Wolfsburg en Olympique Lyon waren de finalisten. Olympique Lyon pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2020-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2020?",
+  "answers": [
+   "30 augustus 2020",
+   "23 augustus 2020",
+   "6 september 2020",
+   "13 september 2020"
+  ],
+  "correct": "30 augustus 2020",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2020/",
+  "explanation": "De beslissende finalewedstrijd tussen Wolfsburg en Olympique Lyon was op 30 augustus 2020.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Wolfsburg (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2021-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2021?",
+  "answers": [
+   "Barcelona",
+   "Arsenal",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Barcelona",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2021/",
+  "explanation": "Barcelona werd kampioen na de finale tegen Chelsea.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Chelsea (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2021-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Barcelona in de beslissende finale van de Champions League voor vrouwen in 2021?",
+  "answers": [
+   "Chelsea",
+   "Arsenal",
+   "Djurgården",
+   "Duisburg"
+  ],
+  "correct": "Chelsea",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2021/",
+  "explanation": "Chelsea en Barcelona waren de finalisten. Barcelona pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Chelsea (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2021-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2021?",
+  "answers": [
+   "16 mei 2021",
+   "9 mei 2021",
+   "23 mei 2021",
+   "30 mei 2021"
+  ],
+  "correct": "16 mei 2021",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2021/",
+  "explanation": "De beslissende finalewedstrijd tussen Chelsea en Barcelona was op 16 mei 2021.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Chelsea (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2022-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2022?",
+  "answers": [
+   "Olympique Lyon",
+   "Arsenal",
+   "Barcelona",
+   "Chelsea"
+  ],
+  "correct": "Olympique Lyon",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2022/",
+  "explanation": "Olympique Lyon werd kampioen na de finale tegen Barcelona.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2022-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Olympique Lyon in de beslissende finale van de Champions League voor vrouwen in 2022?",
+  "answers": [
+   "Barcelona",
+   "Arsenal",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Barcelona",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2022/",
+  "explanation": "Barcelona en Olympique Lyon waren de finalisten. Olympique Lyon pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2022-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2022?",
+  "answers": [
+   "21 mei 2022",
+   "14 mei 2022",
+   "28 mei 2022",
+   "4 juni 2022"
+  ],
+  "correct": "21 mei 2022",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2022/",
+  "explanation": "De beslissende finalewedstrijd tussen Barcelona en Olympique Lyon was op 21 mei 2022.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2023-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2023?",
+  "answers": [
+   "Barcelona",
+   "Arsenal",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Barcelona",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2023/",
+  "explanation": "Barcelona werd kampioen na de finale tegen Wolfsburg.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Wolfsburg (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2023-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Barcelona in de beslissende finale van de Champions League voor vrouwen in 2023?",
+  "answers": [
+   "Wolfsburg",
+   "Arsenal",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Wolfsburg",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2023/",
+  "explanation": "Barcelona en Wolfsburg waren de finalisten. Barcelona pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Wolfsburg (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2023-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2023?",
+  "answers": [
+   "3 juni 2023",
+   "27 mei 2023",
+   "10 juni 2023",
+   "17 juni 2023"
+  ],
+  "correct": "3 juni 2023",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2023/",
+  "explanation": "De beslissende finalewedstrijd tussen Barcelona en Wolfsburg was op 3 juni 2023.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Wolfsburg (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2024-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2024?",
+  "answers": [
+   "Barcelona",
+   "Arsenal",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Barcelona",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2024/",
+  "explanation": "Barcelona werd kampioen na de finale tegen Olympique Lyon.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2024-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Barcelona in de beslissende finale van de Champions League voor vrouwen in 2024?",
+  "answers": [
+   "Olympique Lyon",
+   "Arsenal",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Olympique Lyon",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2024/",
+  "explanation": "Barcelona en Olympique Lyon waren de finalisten. Barcelona pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2024-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2024?",
+  "answers": [
+   "25 mei 2024",
+   "18 mei 2024",
+   "1 juni 2024",
+   "8 juni 2024"
+  ],
+  "correct": "25 mei 2024",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2024/",
+  "explanation": "De beslissende finalewedstrijd tussen Barcelona en Olympique Lyon was op 25 mei 2024.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Barcelona (vrouwen)",
+   "Olympique Lyon (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2025-winner",
+  "level": "easy",
+  "question": "Wie won de Champions League voor vrouwen met de beslissende finale in 2025?",
+  "answers": [
+   "Arsenal",
+   "Barcelona",
+   "Chelsea",
+   "Djurgården"
+  ],
+  "correct": "Arsenal",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2025/",
+  "explanation": "Arsenal werd kampioen na de finale tegen Barcelona.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Arsenal (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2025-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Arsenal in de beslissende finale van de Champions League voor vrouwen in 2025?",
+  "answers": [
+   "Barcelona",
+   "Chelsea",
+   "Djurgården",
+   "Duisburg"
+  ],
+  "correct": "Barcelona",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2025/",
+  "explanation": "Arsenal en Barcelona waren de finalisten. Arsenal pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Arsenal (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-womenschampionsleague-2025-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Champions League voor vrouwen in 2025?",
+  "answers": [
+   "24 mei 2025",
+   "17 mei 2025",
+   "31 mei 2025",
+   "7 juni 2025"
+  ],
+  "correct": "24 mei 2025",
+  "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2025/",
+  "explanation": "De beslissende finalewedstrijd tussen Arsenal en Barcelona was op 24 mei 2025.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Arsenal (vrouwen)",
+   "Barcelona (vrouwen)"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2022-winner",
+  "level": "easy",
+  "question": "Wie won de Conference League met de beslissende finale in 2022?",
+  "answers": [
+   "Roma",
+   "Chelsea",
+   "Feyenoord",
+   "Fiorentina"
+  ],
+  "correct": "Roma",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2022/",
+  "explanation": "Roma werd kampioen na de finale tegen Feyenoord.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Roma",
+   "Feyenoord"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2022-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Roma in de beslissende finale van de Conference League in 2022?",
+  "answers": [
+   "Feyenoord",
+   "Chelsea",
+   "Fiorentina",
+   "Olympiacos"
+  ],
+  "correct": "Feyenoord",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2022/",
+  "explanation": "Roma en Feyenoord waren de finalisten. Roma pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Roma",
+   "Feyenoord"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2022-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Conference League in 2022?",
+  "answers": [
+   "25 mei 2022",
+   "18 mei 2022",
+   "1 juni 2022",
+   "8 juni 2022"
+  ],
+  "correct": "25 mei 2022",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2022/",
+  "explanation": "De beslissende finalewedstrijd tussen Roma en Feyenoord was op 25 mei 2022.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Roma",
+   "Feyenoord"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2023-winner",
+  "level": "easy",
+  "question": "Wie won de Conference League met de beslissende finale in 2023?",
+  "answers": [
+   "West Ham",
+   "Chelsea",
+   "Feyenoord",
+   "Fiorentina"
+  ],
+  "correct": "West Ham",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2023/",
+  "explanation": "West Ham werd kampioen na de finale tegen Fiorentina.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Fiorentina",
+   "West Ham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2023-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van West Ham in de beslissende finale van de Conference League in 2023?",
+  "answers": [
+   "Fiorentina",
+   "Chelsea",
+   "Feyenoord",
+   "Olympiacos"
+  ],
+  "correct": "Fiorentina",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2023/",
+  "explanation": "Fiorentina en West Ham waren de finalisten. West Ham pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Fiorentina",
+   "West Ham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2023-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Conference League in 2023?",
+  "answers": [
+   "7 juni 2023",
+   "31 mei 2023",
+   "14 juni 2023",
+   "21 juni 2023"
+  ],
+  "correct": "7 juni 2023",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2023/",
+  "explanation": "De beslissende finalewedstrijd tussen Fiorentina en West Ham was op 7 juni 2023.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Fiorentina",
+   "West Ham"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2024-winner",
+  "level": "easy",
+  "question": "Wie won de Conference League met de beslissende finale in 2024?",
+  "answers": [
+   "Olympiacos",
+   "Chelsea",
+   "Feyenoord",
+   "Fiorentina"
+  ],
+  "correct": "Olympiacos",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2024/",
+  "explanation": "Olympiacos werd kampioen na de finale tegen Fiorentina.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Olympiacos",
+   "Fiorentina"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2024-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Olympiacos in de beslissende finale van de Conference League in 2024?",
+  "answers": [
+   "Fiorentina",
+   "Chelsea",
+   "Feyenoord",
+   "Real Betis"
+  ],
+  "correct": "Fiorentina",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2024/",
+  "explanation": "Olympiacos en Fiorentina waren de finalisten. Olympiacos pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [
+   "Olympiacos",
+   "Fiorentina"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2024-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Conference League in 2024?",
+  "answers": [
+   "29 mei 2024",
+   "22 mei 2024",
+   "5 juni 2024",
+   "12 juni 2024"
+  ],
+  "correct": "29 mei 2024",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2024/",
+  "explanation": "De beslissende finalewedstrijd tussen Olympiacos en Fiorentina was op 29 mei 2024.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Olympiacos",
+   "Fiorentina"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2025-winner",
+  "level": "easy",
+  "question": "Wie won de Conference League met de beslissende finale in 2025?",
+  "answers": [
+   "Chelsea",
+   "Feyenoord",
+   "Fiorentina",
+   "Olympiacos"
+  ],
+  "correct": "Chelsea",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2025/",
+  "explanation": "Chelsea werd kampioen na de finale tegen Real Betis.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Real Betis",
+   "Chelsea"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2025-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Chelsea in de beslissende finale van de Conference League in 2025?",
+  "answers": [
+   "Real Betis",
+   "Feyenoord",
+   "Fiorentina",
+   "Olympiacos"
+  ],
+  "correct": "Real Betis",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2025/",
+  "explanation": "Real Betis en Chelsea waren de finalisten. Chelsea pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [
+   "Real Betis",
+   "Chelsea"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-uefaconferenceleague-2025-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van de Conference League in 2025?",
+  "answers": [
+   "28 mei 2025",
+   "21 mei 2025",
+   "4 juni 2025",
+   "11 juni 2025"
+  ],
+  "correct": "28 mei 2025",
+  "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2025/",
+  "explanation": "De beslissende finalewedstrijd tussen Real Betis en Chelsea was op 28 mei 2025.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [
+   "Real Betis",
+   "Chelsea"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1978-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1978?",
+  "answers": [
+   "Serbia",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Serbia",
+  "source": "https://www.uefa.com/under21/history/seasons/1978/",
+  "explanation": "Serbia werd kampioen na de finale tegen German Democratic Republi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1978-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Serbia in de beslissende finale van het EK onder 21 in 1978?",
+  "answers": [
+   "German Democratic Republi",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "German Democratic Republi",
+  "source": "https://www.uefa.com/under21/history/seasons/1978/",
+  "explanation": "Serbia en German Democratic Republi waren de finalisten. Serbia pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1978-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1978?",
+  "answers": [
+   "31 mei 1978",
+   "24 mei 1978",
+   "7 juni 1978",
+   "14 juni 1978"
+  ],
+  "correct": "31 mei 1978",
+  "source": "https://www.uefa.com/under21/history/seasons/1978/",
+  "explanation": "De beslissende finalewedstrijd tussen Serbia en German Democratic Republi was op 31 mei 1978.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1980-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1980?",
+  "answers": [
+   "USSR",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "USSR",
+  "source": "https://www.uefa.com/under21/history/seasons/1980/",
+  "explanation": "USSR werd kampioen na de finale tegen German Democratic Republi.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1980-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van USSR in de beslissende finale van het EK onder 21 in 1980?",
+  "answers": [
+   "German Democratic Republi",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "German Democratic Republi",
+  "source": "https://www.uefa.com/under21/history/seasons/1980/",
+  "explanation": "USSR en German Democratic Republi waren de finalisten. USSR pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1980-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1980?",
+  "answers": [
+   "21 mei 1980",
+   "14 mei 1980",
+   "28 mei 1980",
+   "4 juni 1980"
+  ],
+  "correct": "21 mei 1980",
+  "source": "https://www.uefa.com/under21/history/seasons/1980/",
+  "explanation": "De beslissende finalewedstrijd tussen USSR en German Democratic Republi was op 21 mei 1980.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1982-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1982?",
+  "answers": [
+   "Engeland",
+   "Duitsland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Engeland",
+  "source": "https://www.uefa.com/under21/history/seasons/1982/",
+  "explanation": "Engeland werd kampioen na de finale tegen Duitsland.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1982-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Engeland in de beslissende finale van het EK onder 21 in 1982?",
+  "answers": [
+   "Duitsland",
+   "Frankrijk",
+   "German Democratic Republi",
+   "Greece"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/under21/history/seasons/1982/",
+  "explanation": "Duitsland en Engeland waren de finalisten. Engeland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1982-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1982?",
+  "answers": [
+   "12 oktober 1982",
+   "5 oktober 1982",
+   "19 oktober 1982",
+   "26 oktober 1982"
+  ],
+  "correct": "12 oktober 1982",
+  "source": "https://www.uefa.com/under21/history/seasons/1982/",
+  "explanation": "De beslissende finalewedstrijd tussen Duitsland en Engeland was op 12 oktober 1982.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1984-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1984?",
+  "answers": [
+   "Engeland",
+   "Duitsland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Engeland",
+  "source": "https://www.uefa.com/under21/history/seasons/1984/",
+  "explanation": "Engeland werd kampioen na de finale tegen Spanje.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1984-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Engeland in de beslissende finale van het EK onder 21 in 1984?",
+  "answers": [
+   "Spanje",
+   "Duitsland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Spanje",
+  "source": "https://www.uefa.com/under21/history/seasons/1984/",
+  "explanation": "Engeland en Spanje waren de finalisten. Engeland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1984-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1984?",
+  "answers": [
+   "24 mei 1984",
+   "17 mei 1984",
+   "31 mei 1984",
+   "7 juni 1984"
+  ],
+  "correct": "24 mei 1984",
+  "source": "https://www.uefa.com/under21/history/seasons/1984/",
+  "explanation": "De beslissende finalewedstrijd tussen Engeland en Spanje was op 24 mei 1984.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1986-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1986?",
+  "answers": [
+   "Spanje",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Spanje",
+  "source": "https://www.uefa.com/under21/history/seasons/1986/",
+  "explanation": "Spanje werd kampioen na de finale tegen Italië.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1986-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Spanje in de beslissende finale van het EK onder 21 in 1986?",
+  "answers": [
+   "Italië",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Italië",
+  "source": "https://www.uefa.com/under21/history/seasons/1986/",
+  "explanation": "Spanje en Italië waren de finalisten. Spanje pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1986-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1986?",
+  "answers": [
+   "29 oktober 1986",
+   "22 oktober 1986",
+   "5 november 1986",
+   "12 november 1986"
+  ],
+  "correct": "29 oktober 1986",
+  "source": "https://www.uefa.com/under21/history/seasons/1986/",
+  "explanation": "De beslissende finalewedstrijd tussen Spanje en Italië was op 29 oktober 1986.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1988-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1988?",
+  "answers": [
+   "Frankrijk",
+   "Duitsland",
+   "Engeland",
+   "German Democratic Republi"
+  ],
+  "correct": "Frankrijk",
+  "source": "https://www.uefa.com/under21/history/seasons/1988/",
+  "explanation": "Frankrijk werd kampioen na de finale tegen Greece.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1988-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Frankrijk in de beslissende finale van het EK onder 21 in 1988?",
+  "answers": [
+   "Greece",
+   "Duitsland",
+   "Engeland",
+   "German Democratic Republi"
+  ],
+  "correct": "Greece",
+  "source": "https://www.uefa.com/under21/history/seasons/1988/",
+  "explanation": "Frankrijk en Greece waren de finalisten. Frankrijk pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1988-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1988?",
+  "answers": [
+   "12 oktober 1988",
+   "5 oktober 1988",
+   "19 oktober 1988",
+   "26 oktober 1988"
+  ],
+  "correct": "12 oktober 1988",
+  "source": "https://www.uefa.com/under21/history/seasons/1988/",
+  "explanation": "De beslissende finalewedstrijd tussen Frankrijk en Greece was op 12 oktober 1988.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1990-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1990?",
+  "answers": [
+   "USSR",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "USSR",
+  "source": "https://www.uefa.com/under21/history/seasons/1990/",
+  "explanation": "USSR werd kampioen na de finale tegen Serbia.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1990-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van USSR in de beslissende finale van het EK onder 21 in 1990?",
+  "answers": [
+   "Serbia",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Serbia",
+  "source": "https://www.uefa.com/under21/history/seasons/1990/",
+  "explanation": "USSR en Serbia waren de finalisten. USSR pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1990-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1990?",
+  "answers": [
+   "17 oktober 1990",
+   "10 oktober 1990",
+   "24 oktober 1990",
+   "31 oktober 1990"
+  ],
+  "correct": "17 oktober 1990",
+  "source": "https://www.uefa.com/under21/history/seasons/1990/",
+  "explanation": "De beslissende finalewedstrijd tussen USSR en Serbia was op 17 oktober 1990.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1992-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1992?",
+  "answers": [
+   "Italië",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Italië",
+  "source": "https://www.uefa.com/under21/history/seasons/1992/",
+  "explanation": "Italië werd kampioen na de finale tegen Zweden.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1992-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Italië in de beslissende finale van het EK onder 21 in 1992?",
+  "answers": [
+   "Zweden",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Zweden",
+  "source": "https://www.uefa.com/under21/history/seasons/1992/",
+  "explanation": "Zweden en Italië waren de finalisten. Italië pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1992-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1992?",
+  "answers": [
+   "3 juni 1992",
+   "27 mei 1992",
+   "10 juni 1992",
+   "17 juni 1992"
+  ],
+  "correct": "3 juni 1992",
+  "source": "https://www.uefa.com/under21/history/seasons/1992/",
+  "explanation": "De beslissende finalewedstrijd tussen Zweden en Italië was op 3 juni 1992.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1994-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1994?",
+  "answers": [
+   "Italië",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Italië",
+  "source": "https://www.uefa.com/under21/history/seasons/1994/",
+  "explanation": "Italië werd kampioen na de finale tegen Portugal.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1994-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Italië in de beslissende finale van het EK onder 21 in 1994?",
+  "answers": [
+   "Portugal",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Portugal",
+  "source": "https://www.uefa.com/under21/history/seasons/1994/",
+  "explanation": "Italië en Portugal waren de finalisten. Italië pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1994-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1994?",
+  "answers": [
+   "20 april 1994",
+   "13 april 1994",
+   "27 april 1994",
+   "4 mei 1994"
+  ],
+  "correct": "20 april 1994",
+  "source": "https://www.uefa.com/under21/history/seasons/1994/",
+  "explanation": "De beslissende finalewedstrijd tussen Italië en Portugal was op 20 april 1994.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1998-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 1998?",
+  "answers": [
+   "Spanje",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Spanje",
+  "source": "https://www.uefa.com/under21/history/seasons/1998/",
+  "explanation": "Spanje werd kampioen na de finale tegen Greece.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1998-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Spanje in de beslissende finale van het EK onder 21 in 1998?",
+  "answers": [
+   "Greece",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Greece",
+  "source": "https://www.uefa.com/under21/history/seasons/1998/",
+  "explanation": "Greece en Spanje waren de finalisten. Spanje pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-1998-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 1998?",
+  "answers": [
+   "31 mei 1998",
+   "24 mei 1998",
+   "7 juni 1998",
+   "14 juni 1998"
+  ],
+  "correct": "31 mei 1998",
+  "source": "https://www.uefa.com/under21/history/seasons/1998/",
+  "explanation": "De beslissende finalewedstrijd tussen Greece en Spanje was op 31 mei 1998.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2000-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2000?",
+  "answers": [
+   "Italië",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Italië",
+  "source": "https://www.uefa.com/under21/history/seasons/2000/",
+  "explanation": "Italië werd kampioen na de finale tegen Tsjechië.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2000-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Italië in de beslissende finale van het EK onder 21 in 2000?",
+  "answers": [
+   "Tsjechië",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Tsjechië",
+  "source": "https://www.uefa.com/under21/history/seasons/2000/",
+  "explanation": "Tsjechië en Italië waren de finalisten. Italië pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2000-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2000?",
+  "answers": [
+   "4 juni 2000",
+   "28 mei 2000",
+   "11 juni 2000",
+   "18 juni 2000"
+  ],
+  "correct": "4 juni 2000",
+  "source": "https://www.uefa.com/under21/history/seasons/2000/",
+  "explanation": "De beslissende finalewedstrijd tussen Tsjechië en Italië was op 4 juni 2000.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2004-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2004?",
+  "answers": [
+   "Italië",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Italië",
+  "source": "https://www.uefa.com/under21/history/seasons/2004/",
+  "explanation": "Italië werd kampioen na de finale tegen Serbia.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2004-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Italië in de beslissende finale van het EK onder 21 in 2004?",
+  "answers": [
+   "Serbia",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Serbia",
+  "source": "https://www.uefa.com/under21/history/seasons/2004/",
+  "explanation": "Italië en Serbia waren de finalisten. Italië pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2004-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2004?",
+  "answers": [
+   "8 juni 2004",
+   "1 juni 2004",
+   "15 juni 2004",
+   "22 juni 2004"
+  ],
+  "correct": "8 juni 2004",
+  "source": "https://www.uefa.com/under21/history/seasons/2004/",
+  "explanation": "De beslissende finalewedstrijd tussen Italië en Serbia was op 8 juni 2004.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2006-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2006?",
+  "answers": [
+   "Nederland",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Nederland",
+  "source": "https://www.uefa.com/under21/history/seasons/2006/",
+  "explanation": "Nederland werd kampioen na de finale tegen Ukraine.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2006-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Nederland in de beslissende finale van het EK onder 21 in 2006?",
+  "answers": [
+   "Ukraine",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Ukraine",
+  "source": "https://www.uefa.com/under21/history/seasons/2006/",
+  "explanation": "Nederland en Ukraine waren de finalisten. Nederland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2006-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2006?",
+  "answers": [
+   "4 juni 2006",
+   "28 mei 2006",
+   "11 juni 2006",
+   "18 juni 2006"
+  ],
+  "correct": "4 juni 2006",
+  "source": "https://www.uefa.com/under21/history/seasons/2006/",
+  "explanation": "De beslissende finalewedstrijd tussen Nederland en Ukraine was op 4 juni 2006.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2007-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2007?",
+  "answers": [
+   "Nederland",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Nederland",
+  "source": "https://www.uefa.com/under21/history/seasons/2007/",
+  "explanation": "Nederland werd kampioen na de finale tegen Serbia.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2007-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Nederland in de beslissende finale van het EK onder 21 in 2007?",
+  "answers": [
+   "Serbia",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Serbia",
+  "source": "https://www.uefa.com/under21/history/seasons/2007/",
+  "explanation": "Nederland en Serbia waren de finalisten. Nederland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2007-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2007?",
+  "answers": [
+   "23 juni 2007",
+   "16 juni 2007",
+   "30 juni 2007",
+   "7 juli 2007"
+  ],
+  "correct": "23 juni 2007",
+  "source": "https://www.uefa.com/under21/history/seasons/2007/",
+  "explanation": "De beslissende finalewedstrijd tussen Nederland en Serbia was op 23 juni 2007.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2009-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2009?",
+  "answers": [
+   "Duitsland",
+   "Engeland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/under21/history/seasons/2009/",
+  "explanation": "Duitsland werd kampioen na de finale tegen Engeland.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2009-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK onder 21 in 2009?",
+  "answers": [
+   "Engeland",
+   "Frankrijk",
+   "German Democratic Republi",
+   "Greece"
+  ],
+  "correct": "Engeland",
+  "source": "https://www.uefa.com/under21/history/seasons/2009/",
+  "explanation": "Duitsland en Engeland waren de finalisten. Duitsland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2009-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2009?",
+  "answers": [
+   "29 juni 2009",
+   "22 juni 2009",
+   "6 juli 2009",
+   "13 juli 2009"
+  ],
+  "correct": "29 juni 2009",
+  "source": "https://www.uefa.com/under21/history/seasons/2009/",
+  "explanation": "De beslissende finalewedstrijd tussen Duitsland en Engeland was op 29 juni 2009.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2011-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2011?",
+  "answers": [
+   "Spanje",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Spanje",
+  "source": "https://www.uefa.com/under21/history/seasons/2011/",
+  "explanation": "Spanje werd kampioen na de finale tegen Switzerland.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2011-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Spanje in de beslissende finale van het EK onder 21 in 2011?",
+  "answers": [
+   "Switzerland",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Switzerland",
+  "source": "https://www.uefa.com/under21/history/seasons/2011/",
+  "explanation": "Switzerland en Spanje waren de finalisten. Spanje pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2011-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2011?",
+  "answers": [
+   "25 juni 2011",
+   "18 juni 2011",
+   "2 juli 2011",
+   "9 juli 2011"
+  ],
+  "correct": "25 juni 2011",
+  "source": "https://www.uefa.com/under21/history/seasons/2011/",
+  "explanation": "De beslissende finalewedstrijd tussen Switzerland en Spanje was op 25 juni 2011.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2013-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2013?",
+  "answers": [
+   "Spanje",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Spanje",
+  "source": "https://www.uefa.com/under21/history/seasons/2013/",
+  "explanation": "Spanje werd kampioen na de finale tegen Italië.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2013-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Spanje in de beslissende finale van het EK onder 21 in 2013?",
+  "answers": [
+   "Italië",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Italië",
+  "source": "https://www.uefa.com/under21/history/seasons/2013/",
+  "explanation": "Italië en Spanje waren de finalisten. Spanje pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2013-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2013?",
+  "answers": [
+   "18 juni 2013",
+   "11 juni 2013",
+   "25 juni 2013",
+   "2 juli 2013"
+  ],
+  "correct": "18 juni 2013",
+  "source": "https://www.uefa.com/under21/history/seasons/2013/",
+  "explanation": "De beslissende finalewedstrijd tussen Italië en Spanje was op 18 juni 2013.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2017-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2017?",
+  "answers": [
+   "Duitsland",
+   "Engeland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/under21/history/seasons/2017/",
+  "explanation": "Duitsland werd kampioen na de finale tegen Spanje.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-433f38970b69.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Udo Ockema · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_pano_03m.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2017-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK onder 21 in 2017?",
+  "answers": [
+   "Spanje",
+   "Engeland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Spanje",
+  "source": "https://www.uefa.com/under21/history/seasons/2017/",
+  "explanation": "Duitsland en Spanje waren de finalisten. Duitsland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2017-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2017?",
+  "answers": [
+   "30 juni 2017",
+   "23 juni 2017",
+   "7 juli 2017",
+   "14 juli 2017"
+  ],
+  "correct": "30 juni 2017",
+  "source": "https://www.uefa.com/under21/history/seasons/2017/",
+  "explanation": "De beslissende finalewedstrijd tussen Duitsland en Spanje was op 30 juni 2017.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2019-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2019?",
+  "answers": [
+   "Spanje",
+   "Duitsland",
+   "Engeland",
+   "Frankrijk"
+  ],
+  "correct": "Spanje",
+  "source": "https://www.uefa.com/under21/history/seasons/2019/",
+  "explanation": "Spanje werd kampioen na de finale tegen Duitsland.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "groningen-f8e0fe75598e.webp",
+   "venue": "Euroborg",
+   "credit": "Kevster · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Euroborg.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2019-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Spanje in de beslissende finale van het EK onder 21 in 2019?",
+  "answers": [
+   "Duitsland",
+   "Engeland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/under21/history/seasons/2019/",
+  "explanation": "Spanje en Duitsland waren de finalisten. Spanje pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "heerenveen-exterior-98a8451bd868.webp",
+   "venue": "Abe Lenstra Stadion",
+   "credit": "Lars Curfs (Grashoofd) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Abe_Lenstra_Stadion_(2010).jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2019-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2019?",
+  "answers": [
+   "30 juni 2019",
+   "23 juni 2019",
+   "7 juli 2019",
+   "14 juli 2019"
+  ],
+  "correct": "30 juni 2019",
+  "source": "https://www.uefa.com/under21/history/seasons/2019/",
+  "explanation": "De beslissende finalewedstrijd tussen Spanje en Duitsland was op 30 juni 2019.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2021-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2021?",
+  "answers": [
+   "Duitsland",
+   "Engeland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/under21/history/seasons/2021/",
+  "explanation": "Duitsland werd kampioen na de finale tegen Portugal.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "midtjylland-87f7f7803cb2.webp",
+   "venue": "MCH Arena",
+   "credit": "T-Stone · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:MCH_Arena.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2021-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Duitsland in de beslissende finale van het EK onder 21 in 2021?",
+  "answers": [
+   "Portugal",
+   "Engeland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Portugal",
+  "source": "https://www.uefa.com/under21/history/seasons/2021/",
+  "explanation": "Duitsland en Portugal waren de finalisten. Duitsland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "emmen-35c70437dac5.webp",
+   "venue": "De Oude Meerdijk",
+   "credit": "Richard Broekhuijzen · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Oude_Meerdijk_-_Emmen_-_2018_01.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2021-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2021?",
+  "answers": [
+   "6 juni 2021",
+   "30 mei 2021",
+   "13 juni 2021",
+   "20 juni 2021"
+  ],
+  "correct": "6 juni 2021",
+  "source": "https://www.uefa.com/under21/history/seasons/2021/",
+  "explanation": "De beslissende finalewedstrijd tussen Duitsland en Portugal was op 6 juni 2021.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2023-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2023?",
+  "answers": [
+   "Engeland",
+   "Duitsland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Engeland",
+  "source": "https://www.uefa.com/under21/history/seasons/2023/",
+  "explanation": "Engeland werd kampioen na de finale tegen Spanje.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-d71e48ea2e5b.webp",
+   "venue": "De Kuip",
+   "credit": "Валерий Дед · CC BY 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Rotterdam_De_Kuip_1.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2023-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Engeland in de beslissende finale van het EK onder 21 in 2023?",
+  "answers": [
+   "Spanje",
+   "Duitsland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Spanje",
+  "source": "https://www.uefa.com/under21/history/seasons/2023/",
+  "explanation": "Engeland en Spanje waren de finalisten. Engeland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2023-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2023?",
+  "answers": [
+   "8 juli 2023",
+   "1 juli 2023",
+   "15 juli 2023",
+   "22 juli 2023"
+  ],
+  "correct": "8 juli 2023",
+  "source": "https://www.uefa.com/under21/history/seasons/2023/",
+  "explanation": "De beslissende finalewedstrijd tussen Engeland en Spanje was op 8 juli 2023.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "ajax-4c77b7ad3973.webp",
+   "venue": "Johan Cruijff ArenA",
+   "credit": "Goutam · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Amsterdam_Arena,_Netherlands.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2025-winner",
+  "level": "easy",
+  "question": "Wie won het EK onder 21 met de beslissende finale in 2025?",
+  "answers": [
+   "Engeland",
+   "Duitsland",
+   "Frankrijk",
+   "German Democratic Republi"
+  ],
+  "correct": "Engeland",
+  "source": "https://www.uefa.com/under21/history/seasons/2025/",
+  "explanation": "Engeland werd kampioen na de finale tegen Duitsland.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2025-runner",
+  "level": "normal",
+  "question": "Welke tegenstander verloor van Engeland in de beslissende finale van het EK onder 21 in 2025?",
+  "answers": [
+   "Duitsland",
+   "Frankrijk",
+   "German Democratic Republi",
+   "Greece"
+  ],
+  "correct": "Duitsland",
+  "source": "https://www.uefa.com/under21/history/seasons/2025/",
+  "explanation": "Engeland en Duitsland waren de finalisten. Engeland pakte de titel.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "psv-bbbb1cfe5eae.webp",
+   "venue": "Philips Stadion",
+   "credit": "Gidi Kroon (Gidi70) · CC BY-SA 3.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:Philips_Stadion_center_side.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
+  "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "edition39-under21-2025-date",
+  "level": "hard",
+  "question": "Op welke datum viel de beslissing in de finale van het EK onder 21 in 2025?",
+  "answers": [
+   "28 juni 2025",
+   "21 juni 2025",
+   "5 juli 2025",
+   "12 juli 2025"
+  ],
+  "correct": "28 juni 2025",
+  "source": "https://www.uefa.com/under21/history/seasons/2025/",
+  "explanation": "De beslissende finalewedstrijd tussen Engeland en Duitsland was op 28 juni 2025.",
+  "reviewedAt": "2026-11-02",
+  "image": {
+   "file": "feyenoord-exterior-39afd408de58.webp",
+   "venue": "De Kuip",
+   "credit": "FeyenoordR'dam1908 · CC BY-SA 4.0 · uitsnede en WebP-conversie: Veldio",
+   "sourcePage": "https://commons.wikimedia.org/wiki/File:De_Kuip_bij_zonnig_daglicht.jpg",
+   "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "clubs": [],
+  "topic": "history"
  }
 ];

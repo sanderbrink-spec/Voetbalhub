@@ -30,6 +30,7 @@ public final class HomeFeatureView extends FrameLayout {
     private final OpenArticle articleAction;
     private final OpenMatch matchAction;
     private final Runnable columnAction;
+    private final Runnable quizAction;
     private final OpenStadium stadiumAction;
     private JSONObject stadiums=new JSONObject();
     private final StadiumRepository.Listener stadiumListener=data->{stadiums=data;deliver();};
@@ -39,8 +40,8 @@ public final class HomeFeatureView extends FrameLayout {
     private final FeedRepository.Listener feedListener=(data,busy,failed)->{if(disposed)return;loading=busy;if(data!=null)articles=data;deliver();};
     private float startX,startY;
     private int dp(float n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
-    public HomeFeatureView(Activity activity,OpenArticle article,OpenMatch match,Runnable column,OpenStadium stadium){
-        super(activity);this.activity=activity;articleAction=article;matchAction=match;columnAction=column;stadiumAction=stadium;
+    public HomeFeatureView(Activity activity,OpenArticle article,OpenMatch match,Runnable column,OpenStadium stadium,Runnable quiz){
+        super(activity);this.activity=activity;articleAction=article;matchAction=match;columnAction=column;stadiumAction=stadium;quizAction=quiz;
         setBackgroundColor(0xFF050C08);
         web=new WebView(activity){
             @Override public boolean onTouchEvent(MotionEvent e){
@@ -110,6 +111,7 @@ public final class HomeFeatureView extends FrameLayout {
     }
     @Override protected void onDetachedFromWindow(){disposed=true;ready=false;FeedRepository.unsubscribe(feedListener);StadiumRepository.unsubscribe(stadiumListener);removeCallbacks(weeklyRefresh);closeVideo();web.stopLoading();web.removeJavascriptInterface("HomeHub");web.loadUrl("about:blank");super.onDetachedFromWindow();}
     private final class Bridge {
+        @JavascriptInterface public void openQuiz(String ignored){activity.runOnUiThread(()->{if(!disposed)quizAction.run();});}
         @JavascriptInterface public void openStadium(String id){activity.runOnUiThread(()->{if(!disposed)stadiumAction.open(id);});}
         @JavascriptInterface public void openStadiumArchive(String ignored){activity.runOnUiThread(()->{if(!disposed)stadiumAction.open("");});}
         @JavascriptInterface public void openClub(String name){activity.runOnUiThread(()->{if(disposed)return;JSONObject club=EditorialPhotos.clubArticle(activity,name);if(club!=null)articleAction.open(club);});}

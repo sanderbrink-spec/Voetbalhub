@@ -1,6 +1,6 @@
 (function(root){
 'use strict';
-const MODES=Object.freeze({quick:10,club:20,expert:25,daily:10,stadium:10,player:10}),VERSION='38.1';
+const MODES=Object.freeze({quick:10,club:20,expert:25,daily:10,stadium:10,player:10,grand:25}),VERSION='39.1';
 function shuffle(values,rng=Math.random){const a=values.slice();for(let i=a.length-1;i>0;i--){const j=Math.min(i,Math.floor(rng()*(i+1)));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function valid(q){return q&&typeof q.id==='string'&&['easy','normal','hard'].includes(q.level)&&typeof q.question==='string'&&Array.isArray(q.answers)&&q.answers.length===4&&new Set(q.answers).size===4&&q.answers.every(a=>typeof a==='string'&&a.length>0)&&q.answers.includes(q.correct)&&/^https:\/\//.test(q.source)&&/^\d{4}-\d{2}-\d{2}$/.test(q.reviewedAt||'');}
 function dayKey(now=Date.now()){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);}
@@ -20,13 +20,15 @@ function createRound(bank,{mode='quick',level='easy',club='',recent=[],now=Date.
  if(mode==='club'&&!clubs(bank).some(c=>c.name===club))throw Error('Kies een club met ten minste 20 gecontroleerde vragen.');
  const pool=mode==='club'?bank.filter(q=>q.clubs?.includes(club)):mode==='stadium'?bank.filter(q=>q.topic==='stadium'):mode==='player'?bank.filter(q=>q.topic==='player'):bank;
  const roundLevel=daily||['club','stadium','player'].includes(mode)?'mixed':mode==='expert'?'hard':level;
- const questions=select(pool,{level:roundLevel,count:MODES[mode],recent:daily?[]:recent,now:daily?Date.parse(day+'T00:00:00Z'):now,rng:daily?seeded(VERSION+':'+day):rng});
+ let questions=select(pool,{level:roundLevel,count:MODES[mode],recent:daily?[]:recent,now:daily?Date.parse(day+'T00:00:00Z'):now,rng:daily?seeded(VERSION+':'+day):rng});
+ if(mode==='grand')questions=[...select(bank,{level:'easy',count:8,recent,rng,now}),...select(bank,{level:'normal',count:8,recent,rng,now}),...select(bank,{level:'hard',count:9,recent,rng,now})];
  if(questions.length!==MODES[mode])throw Error('Voor dit niveau zijn onvoldoende actuele vragen beschikbaar. Kies een ander niveau.');
- return new Round(questions,{mode,level:roundLevel,day,...(mode==='club'?{club}: {})});
+ return new Round(questions,{mode,level:mode==='grand'?'mixed':roundLevel,day,...(mode==='club'?{club}: {})});
 }
 class Round{
- constructor(questions,meta={}){if(!questions.length)throw Error('Geen gecontroleerde vragen beschikbaar');this.questions=questions;this.index=0;this.score=0;this.answered=false;this.done=false;this.meta=meta;}
- answer(value){if(this.done||this.answered||!this.questions[this.index].answers.includes(value))return null;this.answered=true;const correct=value===this.questions[this.index].correct;if(correct)this.score++;return {correct,answer:this.questions[this.index].correct};}
+ constructor(questions,meta={}){if(!questions.length)throw Error('Geen gecontroleerde vragen beschikbaar');this.questions=questions;this.index=0;this.score=0;this.points=0;this.correctMs=0;this.answered=false;this.done=false;this.meta=meta;}
+ answer(value,elapsedMs=0){if(this.done||this.answered||!this.questions[this.index].answers.includes(value))return null;this.answered=true;const q=this.questions[this.index],correct=value===q.correct&&elapsedMs<15000;const points=correct?Math.round((100+100*(15000-Math.max(0,elapsedMs))/15000)*({easy:1,normal:1.5,hard:2}[q.level])):0;if(correct){this.score++;this.correctMs+=Math.max(0,elapsedMs);}this.points+=points;return {correct,points,answer:q.correct};}
+ timeout(){if(this.done||this.answered)return null;this.answered=true;return {correct:false,points:0,answer:this.questions[this.index].correct};}
  next(){if(this.done||!this.answered)return false;if(this.index+1===this.questions.length)this.done=true;else{this.index++;this.answered=false;}return true;}
 }
 function validResult(r){return r&&Object.hasOwn(MODES,r.mode)&&['easy','normal','hard','mixed'].includes(r.level)&&r.total===MODES[r.mode]&&Number.isInteger(r.score)&&r.score>=0&&r.score<=r.total&&/^\d{4}-\d{2}-\d{2}$/.test(r.day||'');}

@@ -1,0 +1,1806 @@
+{
+  "checkedAt": "2026-11-02",
+  "method": "Finite research of public official season summaries. Explicit winner, dated final and finalist pair required; short original Dutch questions only. No API endpoints, source article text, logos or source images redistributed. Missing/unsupported pages excluded. No automatic live bank publication. Overall reuse terms remain part of launch review.",
+  "receipts": [
+    {
+      "competition": "womenschampionsleague",
+      "year": 2002,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2002/",
+      "winner": "Umeå",
+      "sha256": "dc407ca4c977f5bfda05fc7dfae65b60e063e8112659e7f8194ec24233d412e4",
+      "checkedAt": "2026-11-02",
+      "date": "2003-06-21",
+      "teams": [
+        "Fortuna",
+        "Umeå"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/71049--fortuna-vs-umea/",
+      "canonicalWinner": "Umeå",
+      "canonicalTeams": [
+        "Fortuna",
+        "Umeå"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2003,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2003/",
+      "winner": "Umeå",
+      "sha256": "e10ca79eb8f077589dd8cf7c449dfb7d835f5c206bb6e544eaf4283a44f5385c",
+      "checkedAt": "2026-11-02",
+      "date": "2004-06-05",
+      "teams": [
+        "Frankfurt",
+        "Umeå"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/75427--frankfurt-vs-umea/",
+      "canonicalWinner": "Umeå",
+      "canonicalTeams": [
+        "Frankfurt",
+        "Umeå"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2004,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2004/",
+      "winner": "Potsdam",
+      "sha256": "e1dec68c6386cd124bf152ee5f6371484624d65ebcd0bee70206c1e6d5f89f89",
+      "checkedAt": "2026-11-02",
+      "date": "2005-05-21",
+      "teams": [
+        "Potsdam",
+        "Djurgården"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/80800--potsdam-vs-djurgarden/",
+      "canonicalWinner": "Potsdam",
+      "canonicalTeams": [
+        "Potsdam",
+        "Djurgården"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2005,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2005/",
+      "winner": "Frankfurt",
+      "sha256": "9d284e615baf8f2f7ec02ccf206e1d6134a60140d43203fd50d8ed869c60599e",
+      "checkedAt": "2026-11-02",
+      "date": "2006-05-27",
+      "teams": [
+        "Frankfurt",
+        "Potsdam"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/83604--frankfurt-vs-potsdam/",
+      "canonicalWinner": "Frankfurt",
+      "canonicalTeams": [
+        "Frankfurt",
+        "Potsdam"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2006,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2006/",
+      "winner": "Arsenal",
+      "sha256": "1267162a813a73c177448abbee1a296a9172fc197e001ccaeeeab678d952557d",
+      "checkedAt": "2026-11-02",
+      "date": "2007-04-29",
+      "teams": [
+        "Arsenal",
+        "Umeå"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/85337--arsenal-vs-umea/",
+      "canonicalWinner": "Arsenal",
+      "canonicalTeams": [
+        "Arsenal",
+        "Umeå"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2008,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2008/",
+      "winner": "Frankfurt",
+      "sha256": "20133d8e2002dd7c2f2230eb044bc1b99d62a4c9d5274b2848f4e8072d1d3bb0",
+      "checkedAt": "2026-11-02",
+      "date": "2008-05-24",
+      "teams": [
+        "Frankfurt",
+        "Umeå"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/302688--frankfurt-vs-umea/",
+      "canonicalWinner": "Frankfurt",
+      "canonicalTeams": [
+        "Frankfurt",
+        "Umeå"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2009,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2009/",
+      "winner": "Duisburg",
+      "sha256": "1b5cfee8eb42edc42a75d0a3b069c90ec502ccb4d9bb84a3fab5d093f61a967c",
+      "checkedAt": "2026-11-02",
+      "date": "2009-05-22",
+      "teams": [
+        "Duisburg",
+        "Zvezda-2005"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2001170--duisburg-vs-zvezda-2005/",
+      "canonicalWinner": "Duisburg",
+      "canonicalTeams": [
+        "Duisburg",
+        "Zvezda-2005"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2011,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2011/",
+      "winner": "OL Lyonnes",
+      "sha256": "387db6f990b671a7a4157ecd8432d337d4d346ec043036a061fafcf065841473",
+      "checkedAt": "2026-11-02",
+      "date": "2011-05-26",
+      "teams": [
+        "OL Lyonnes",
+        "Potsdam"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2007921--ol-lyonnes-vs-potsdam/",
+      "canonicalWinner": "Olympique Lyon",
+      "canonicalTeams": [
+        "Olympique Lyon",
+        "Potsdam"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2012,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2012/",
+      "winner": "OL Lyonnes",
+      "sha256": "b05c309b32370945e1a424dbf4647de2df120e188c463ec3229f7d497705cc20",
+      "checkedAt": "2026-11-02",
+      "date": "2012-05-17",
+      "teams": [
+        "OL Lyonnes",
+        "Frankfurt"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2009097--ol-lyonnes-vs-frankfurt/",
+      "canonicalWinner": "Olympique Lyon",
+      "canonicalTeams": [
+        "Olympique Lyon",
+        "Frankfurt"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2013,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2013/",
+      "winner": "Wolfsburg",
+      "sha256": "325b7768766eb98de7ac975b8fac1c3401b6c526c3c63c1484082d3ed68f176b",
+      "checkedAt": "2026-11-02",
+      "date": "2013-05-23",
+      "teams": [
+        "Wolfsburg",
+        "OL Lyonnes"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2011593--wolfsburg-vs-ol-lyonnes/",
+      "canonicalWinner": "Wolfsburg",
+      "canonicalTeams": [
+        "Wolfsburg",
+        "Olympique Lyon"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2014,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2014/",
+      "winner": "Wolfsburg",
+      "sha256": "71ff692fb348bd4d1a2437d176277e4700e2cc4211412c193f42a03875d722a1",
+      "checkedAt": "2026-11-02",
+      "date": "2014-05-22",
+      "teams": [
+        "Tyresö",
+        "Wolfsburg"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2014107--tyreso-vs-wolfsburg/",
+      "canonicalWinner": "Wolfsburg",
+      "canonicalTeams": [
+        "Tyresö",
+        "Wolfsburg"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2015,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2015/",
+      "winner": "Frankfurt",
+      "sha256": "543630a4d2971342a74a31262b402756cdaff3e1081d91f1a10029ca78ff5d82",
+      "checkedAt": "2026-11-02",
+      "date": "2015-05-14",
+      "teams": [
+        "Frankfurt",
+        "Paris SG"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2015226--frankfurt-vs-paris-sg/",
+      "canonicalWinner": "Frankfurt",
+      "canonicalTeams": [
+        "Frankfurt",
+        "Paris SG"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2018,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2018/",
+      "winner": "OL Lyonnes",
+      "sha256": "882387621a51c18ce0c48d2e905a5fdabfd0964964843ce0f220be377d1aebf8",
+      "checkedAt": "2026-11-02",
+      "date": "2018-05-24",
+      "teams": [
+        "Wolfsburg",
+        "OL Lyonnes"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2023928--wolfsburg-vs-ol-lyonnes/",
+      "canonicalWinner": "Olympique Lyon",
+      "canonicalTeams": [
+        "Wolfsburg",
+        "Olympique Lyon"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2019,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2019/",
+      "winner": "OL Lyonnes",
+      "sha256": "e2a5ca771d4cb30c51d95cf5b840cad8d2ccff2a21a9beac678669837ba9f023",
+      "checkedAt": "2026-11-02",
+      "date": "2019-05-18",
+      "teams": [
+        "OL Lyonnes",
+        "Barcelona"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2025485--ol-lyonnes-vs-barcelona/",
+      "canonicalWinner": "Olympique Lyon",
+      "canonicalTeams": [
+        "Olympique Lyon",
+        "Barcelona"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2020,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2020/",
+      "winner": "OL Lyonnes",
+      "sha256": "d5733581a45768e1ddfa27547bae6a0b41708bf0bf1cbf2bca2eb2fb7b2f43cb",
+      "checkedAt": "2026-11-02",
+      "date": "2020-08-30",
+      "teams": [
+        "Wolfsburg",
+        "OL Lyonnes"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2030157--wolfsburg-vs-ol-lyonnes/",
+      "canonicalWinner": "Olympique Lyon",
+      "canonicalTeams": [
+        "Wolfsburg",
+        "Olympique Lyon"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2021,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2021/",
+      "winner": "Barcelona",
+      "sha256": "53041bc19486de35fbe7b31304fcde8beac9d01a33eb3278159d29e44ea86306",
+      "checkedAt": "2026-11-02",
+      "date": "2021-05-16",
+      "teams": [
+        "Chelsea",
+        "Barcelona"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2030666--chelsea-vs-barcelona/",
+      "canonicalWinner": "Barcelona",
+      "canonicalTeams": [
+        "Chelsea",
+        "Barcelona"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2022,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2022/",
+      "winner": "OL Lyonnes",
+      "sha256": "8138c1d2482023a3ae178c41aa90994c52217da9df36ea5ba8f6a0e573719ab1",
+      "checkedAt": "2026-11-02",
+      "date": "2022-05-21",
+      "teams": [
+        "Barcelona",
+        "OL Lyonnes"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2034585--barcelona-vs-ol-lyonnes/",
+      "canonicalWinner": "Olympique Lyon",
+      "canonicalTeams": [
+        "Barcelona",
+        "Olympique Lyon"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2023,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2023/",
+      "winner": "Barcelona",
+      "sha256": "fb27da942489ee819d26fd149a4bca7e7377ac9667cbd4cb9a00ff6839007327",
+      "checkedAt": "2026-11-02",
+      "date": "2023-06-03",
+      "teams": [
+        "Barcelona",
+        "Wolfsburg"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2037530--barcelona-vs-wolfsburg/",
+      "canonicalWinner": "Barcelona",
+      "canonicalTeams": [
+        "Barcelona",
+        "Wolfsburg"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2024,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2024/",
+      "winner": "Barcelona",
+      "sha256": "21b1cb5916204a0e1c38f644c6b463c94889b376f85f63ebee92b56a0dd6026d",
+      "checkedAt": "2026-11-02",
+      "date": "2024-05-25",
+      "teams": [
+        "Barcelona",
+        "OL Lyonnes"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2039913--barcelona-vs-ol-lyonnes/",
+      "canonicalWinner": "Barcelona",
+      "canonicalTeams": [
+        "Barcelona",
+        "Olympique Lyon"
+      ]
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2025,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2025/",
+      "winner": "Arsenal",
+      "sha256": "87a945e1ecf8c8c49212ff1eb90d81eaa02295a89ede24ed2ecce6ebdad713a3",
+      "checkedAt": "2026-11-02",
+      "date": "2025-05-24",
+      "teams": [
+        "Arsenal",
+        "Barcelona"
+      ],
+      "matchSource": "https://www.uefa.com/womenschampionsleague/match/2044467--arsenal-vs-barcelona/",
+      "canonicalWinner": "Arsenal",
+      "canonicalTeams": [
+        "Arsenal",
+        "Barcelona"
+      ]
+    },
+    {
+      "competition": "uefaconferenceleague",
+      "year": 2022,
+      "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2022/",
+      "winner": "Roma",
+      "sha256": "a88db25c4932a444b7455e39b17015cdee9fc39eb47448159f5a75876430f5f8",
+      "checkedAt": "2026-11-02",
+      "date": "2022-05-25",
+      "teams": [
+        "Roma",
+        "Feyenoord"
+      ],
+      "matchSource": "https://www.uefa.com/uefaconferenceleague/match/2033451--roma-vs-feyenoord/",
+      "canonicalWinner": "Roma",
+      "canonicalTeams": [
+        "Roma",
+        "Feyenoord"
+      ]
+    },
+    {
+      "competition": "uefaconferenceleague",
+      "year": 2023,
+      "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2023/",
+      "winner": "West Ham",
+      "sha256": "81a8723916bda350e5e456a146cbefce76816519566e117332b72b7b0a269ef7",
+      "checkedAt": "2026-11-02",
+      "date": "2023-06-07",
+      "teams": [
+        "Fiorentina",
+        "West Ham"
+      ],
+      "matchSource": "https://www.uefa.com/uefaconferenceleague/match/2037766--fiorentina-vs-west-ham/",
+      "canonicalWinner": "West Ham",
+      "canonicalTeams": [
+        "Fiorentina",
+        "West Ham"
+      ]
+    },
+    {
+      "competition": "uefaconferenceleague",
+      "year": 2024,
+      "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2024/",
+      "winner": "Olympiacos",
+      "sha256": "cff99d69ac04c01ded282c08cfca3cab024cce88244d2b6831f05cdcd296b08a",
+      "checkedAt": "2026-11-02",
+      "date": "2024-05-29",
+      "teams": [
+        "Olympiacos",
+        "Fiorentina"
+      ],
+      "matchSource": "https://www.uefa.com/uefaconferenceleague/match/2039972--olympiacos-vs-fiorentina/",
+      "canonicalWinner": "Olympiacos",
+      "canonicalTeams": [
+        "Olympiacos",
+        "Fiorentina"
+      ]
+    },
+    {
+      "competition": "uefaconferenceleague",
+      "year": 2025,
+      "source": "https://www.uefa.com/uefaconferenceleague/history/seasons/2025/",
+      "winner": "Chelsea",
+      "sha256": "9bad34aed151ab03a23966cbe0505525e13aa217a6a9eb0161a99c71e8620e63",
+      "checkedAt": "2026-11-02",
+      "date": "2025-05-28",
+      "teams": [
+        "Real Betis",
+        "Chelsea"
+      ],
+      "matchSource": "https://www.uefa.com/uefaconferenceleague/match/2044464--real-betis-vs-chelsea/",
+      "canonicalWinner": "Chelsea",
+      "canonicalTeams": [
+        "Real Betis",
+        "Chelsea"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1978,
+      "source": "https://www.uefa.com/under21/history/seasons/1978/",
+      "winner": "Serbia",
+      "sha256": "1962cea3d888509aa6893c1f1e1675023dc17373d36c2eff1e434ab45e8624c5",
+      "checkedAt": "2026-11-02",
+      "date": "1978-05-31",
+      "teams": [
+        "Serbia",
+        "German Democratic Republi"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/71916--serbia-vs-german-democratic-republi/",
+      "canonicalWinner": "Serbia",
+      "canonicalTeams": [
+        "Serbia",
+        "German Democratic Republi"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1980,
+      "source": "https://www.uefa.com/under21/history/seasons/1980/",
+      "winner": "USSR",
+      "sha256": "4a2e4ff658ee4a31d1cf8e1a6410be58f0a541444daa91aadafe072875a0b7ab",
+      "checkedAt": "2026-11-02",
+      "date": "1980-05-21",
+      "teams": [
+        "USSR",
+        "German Democratic Republi"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/71853--ussr-vs-german-democratic-republi/",
+      "canonicalWinner": "USSR",
+      "canonicalTeams": [
+        "USSR",
+        "German Democratic Republi"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1982,
+      "source": "https://www.uefa.com/under21/history/seasons/1982/",
+      "winner": "England",
+      "sha256": "29545dda438db8d09a40b3dff48a15ae61e0e624fd071d15effe8ca0c32b0d38",
+      "checkedAt": "2026-11-02",
+      "date": "1982-10-12",
+      "teams": [
+        "Germany",
+        "England"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/71783--germany-vs-england/",
+      "canonicalWinner": "Engeland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Engeland"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1984,
+      "source": "https://www.uefa.com/under21/history/seasons/1984/",
+      "winner": "England",
+      "sha256": "87db799df89f07749ba9d908a7303907b01ad564dc2c1e0b4030855f571bceb0",
+      "checkedAt": "2026-11-02",
+      "date": "1984-05-24",
+      "teams": [
+        "England",
+        "Spain"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/71709--england-vs-spain/",
+      "canonicalWinner": "Engeland",
+      "canonicalTeams": [
+        "Engeland",
+        "Spanje"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1986,
+      "source": "https://www.uefa.com/under21/history/seasons/1986/",
+      "winner": "Spain",
+      "sha256": "c4c4e4d545d92bdbce479e470f0b185b600ec7823714599ba43478f3827417df",
+      "checkedAt": "2026-11-02",
+      "date": "1986-10-29",
+      "teams": [
+        "Spain",
+        "Italy"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/71605--spain-vs-italy/",
+      "canonicalWinner": "Spanje",
+      "canonicalTeams": [
+        "Spanje",
+        "Italië"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1988,
+      "source": "https://www.uefa.com/under21/history/seasons/1988/",
+      "winner": "France",
+      "sha256": "5e977fbd5d6af525e1b845127cd2c177763d43eb97a8d6cdac4c2568923f6057",
+      "checkedAt": "2026-11-02",
+      "date": "1988-10-12",
+      "teams": [
+        "France",
+        "Greece"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/1126--france-vs-greece/",
+      "canonicalWinner": "Frankrijk",
+      "canonicalTeams": [
+        "Frankrijk",
+        "Greece"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1990,
+      "source": "https://www.uefa.com/under21/history/seasons/1990/",
+      "winner": "USSR",
+      "sha256": "0cc83cf8d188577bcc0353c9cbcbc10a13d16745a961d124f9ae952ad309d31c",
+      "checkedAt": "2026-11-02",
+      "date": "1990-10-17",
+      "teams": [
+        "USSR",
+        "Serbia"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/3171--ussr-vs-serbia/",
+      "canonicalWinner": "USSR",
+      "canonicalTeams": [
+        "USSR",
+        "Serbia"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1992,
+      "source": "https://www.uefa.com/under21/history/seasons/1992/",
+      "winner": "Italy",
+      "sha256": "24eadf66480c8a96c2ee7eab05c7e1c640de785f09f3b5c0952408dade3fe1e1",
+      "checkedAt": "2026-11-02",
+      "date": "1992-06-03",
+      "teams": [
+        "Sweden",
+        "Italy"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/5937--sweden-vs-italy/",
+      "canonicalWinner": "Italië",
+      "canonicalTeams": [
+        "Zweden",
+        "Italië"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1994,
+      "source": "https://www.uefa.com/under21/history/seasons/1994/",
+      "winner": "Italy",
+      "sha256": "5c8a8fe27ef86d6d6adc5ade17dcb8e4540c82fd35bc4b0b4e5992d5f26e505f",
+      "checkedAt": "2026-11-02",
+      "date": "1994-04-20",
+      "teams": [
+        "Italy",
+        "Portugal"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/51042--italy-vs-portugal/",
+      "canonicalWinner": "Italië",
+      "canonicalTeams": [
+        "Italië",
+        "Portugal"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 1998,
+      "source": "https://www.uefa.com/under21/history/seasons/1998/",
+      "winner": "Spain",
+      "sha256": "4d54614593ed694f7e1425a2665896d6d574fe4d90733f64268c42b1f9597b24",
+      "checkedAt": "2026-11-02",
+      "date": "1998-05-31",
+      "teams": [
+        "Greece",
+        "Spain"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/55296--greece-vs-spain/",
+      "canonicalWinner": "Spanje",
+      "canonicalTeams": [
+        "Greece",
+        "Spanje"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2000,
+      "source": "https://www.uefa.com/under21/history/seasons/2000/",
+      "winner": "Italy",
+      "sha256": "a041e132fd0bca7c0335e324c5dd53fd894ca5c8c1175230c8595d4a2ad9f41d",
+      "checkedAt": "2026-11-02",
+      "date": "2000-06-04",
+      "teams": [
+        "Czechia",
+        "Italy"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/64957--czechia-vs-italy/",
+      "canonicalWinner": "Italië",
+      "canonicalTeams": [
+        "Tsjechië",
+        "Italië"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2004,
+      "source": "https://www.uefa.com/under21/history/seasons/2004/",
+      "winner": "Italy",
+      "sha256": "b8eb765f669712f137a660b43dc731868dbc3d896296c14a2ff7f3e87274b18d",
+      "checkedAt": "2026-11-02",
+      "date": "2004-06-08",
+      "teams": [
+        "Italy",
+        "Serbia"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/75529--italy-vs-serbia/",
+      "canonicalWinner": "Italië",
+      "canonicalTeams": [
+        "Italië",
+        "Serbia"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2006,
+      "source": "https://www.uefa.com/under21/history/seasons/2006/",
+      "winner": "Netherlands",
+      "sha256": "933df25fe9d71fdf1d542127f8a91f24962581ae0591e8c247b9691ff26ddd60",
+      "checkedAt": "2026-11-02",
+      "date": "2006-06-04",
+      "teams": [
+        "Netherlands",
+        "Ukraine"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/84133--netherlands-vs-ukraine/",
+      "canonicalWinner": "Nederland",
+      "canonicalTeams": [
+        "Nederland",
+        "Ukraine"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2007,
+      "source": "https://www.uefa.com/under21/history/seasons/2007/",
+      "winner": "Netherlands",
+      "sha256": "2f3d2b09e4d1012145c3878890968c5cdd93778394fb4d40e3a4cad42c88e86c",
+      "checkedAt": "2026-11-02",
+      "date": "2007-06-23",
+      "teams": [
+        "Netherlands",
+        "Serbia"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/300172--netherlands-vs-serbia/",
+      "canonicalWinner": "Nederland",
+      "canonicalTeams": [
+        "Nederland",
+        "Serbia"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2009,
+      "source": "https://www.uefa.com/under21/history/seasons/2009/",
+      "winner": "Germany",
+      "sha256": "a35c7d0c40de03fcc459fe9f7d9688ba56d42c397a317ca8780bd5ad067ad092",
+      "checkedAt": "2026-11-02",
+      "date": "2009-06-29",
+      "teams": [
+        "Germany",
+        "England"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/2001198--germany-vs-england/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Engeland"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2011,
+      "source": "https://www.uefa.com/under21/history/seasons/2011/",
+      "winner": "Spain",
+      "sha256": "1919dbc3b6207714f5cbb31d490babd9ec725193311ab5a91456d6f094f25ba6",
+      "checkedAt": "2026-11-02",
+      "date": "2011-06-25",
+      "teams": [
+        "Switzerland",
+        "Spain"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/2003419--switzerland-vs-spain/",
+      "canonicalWinner": "Spanje",
+      "canonicalTeams": [
+        "Switzerland",
+        "Spanje"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2013,
+      "source": "https://www.uefa.com/under21/history/seasons/2013/",
+      "winner": "Spain",
+      "sha256": "f536693e65c56bd9d23885ae6eab275f4f2cf23b857435d23bae9bcf66600fec",
+      "checkedAt": "2026-11-02",
+      "date": "2013-06-18",
+      "teams": [
+        "Italy",
+        "Spain"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/2010959--italy-vs-spain/",
+      "canonicalWinner": "Spanje",
+      "canonicalTeams": [
+        "Italië",
+        "Spanje"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2017,
+      "source": "https://www.uefa.com/under21/history/seasons/2017/",
+      "winner": "Germany",
+      "sha256": "4b3329a4c0fe0d10ce404e34b8c4f26b0c87ef1fe0bcbc8899c6dcb7c9fa3aa1",
+      "checkedAt": "2026-11-02",
+      "date": "2017-06-30",
+      "teams": [
+        "Germany",
+        "Spain"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/2022542--germany-vs-spain/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Spanje"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2019,
+      "source": "https://www.uefa.com/under21/history/seasons/2019/",
+      "winner": "Spain",
+      "sha256": "a59077546b86b92706ca0923ef488e14134b14408b91f4d6e28380bce7bf4611",
+      "checkedAt": "2026-11-02",
+      "date": "2019-06-30",
+      "teams": [
+        "Spain",
+        "Germany"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/2027441--spain-vs-germany/",
+      "canonicalWinner": "Spanje",
+      "canonicalTeams": [
+        "Spanje",
+        "Duitsland"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2021,
+      "source": "https://www.uefa.com/under21/history/seasons/2021/",
+      "winner": "Germany",
+      "sha256": "3b3317d555eeefcc6495f431dbf3d5e6c0e1cd2b9f1d062b573bf8b48d3fa418",
+      "checkedAt": "2026-11-02",
+      "date": "2021-06-06",
+      "teams": [
+        "Germany",
+        "Portugal"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/2031981--germany-vs-portugal/",
+      "canonicalWinner": "Duitsland",
+      "canonicalTeams": [
+        "Duitsland",
+        "Portugal"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2023,
+      "source": "https://www.uefa.com/under21/history/seasons/2023/",
+      "winner": "England",
+      "sha256": "94170c474f2700c342200c672884cc11265301ea3c97b255a603b257597daf0c",
+      "checkedAt": "2026-11-02",
+      "date": "2023-07-08",
+      "teams": [
+        "England",
+        "Spain"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/2036152--england-vs-spain/",
+      "canonicalWinner": "Engeland",
+      "canonicalTeams": [
+        "Engeland",
+        "Spanje"
+      ]
+    },
+    {
+      "competition": "under21",
+      "year": 2025,
+      "source": "https://www.uefa.com/under21/history/seasons/2025/",
+      "winner": "England",
+      "sha256": "897c37d367d6b2aea751541d1aad46c9c698b75926da4c309fd7abd1651ca690",
+      "checkedAt": "2026-11-02",
+      "date": "2025-06-28",
+      "teams": [
+        "England",
+        "Germany"
+      ],
+      "matchSource": "https://www.uefa.com/under21/match/2043356--england-vs-germany/",
+      "canonicalWinner": "Engeland",
+      "canonicalTeams": [
+        "Engeland",
+        "Duitsland"
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "competition": "womenschampionsleague",
+      "year": 2007,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2007/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2010,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2010/",
+      "error": "No explicit winner"
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2016,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2016/",
+      "error": "No explicit winner"
+    },
+    {
+      "competition": "womenschampionsleague",
+      "year": 2017,
+      "source": "https://www.uefa.com/womenschampionsleague/history/seasons/2017/",
+      "error": "No explicit winner"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1973,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1973/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1974,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1974/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1975,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1975/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1976,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1976/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1977,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1977/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1978,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1978/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1979,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1979/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1980,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1980/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1981,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1981/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1982,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1982/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1983,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1983/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1984,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1984/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1985,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1985/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1986,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1986/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1987,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1987/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1988,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1988/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1989,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1989/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1990,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1990/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1991,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1991/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1992,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1992/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1993,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1993/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1994,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1994/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1995,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1995/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1996,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1996/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1997,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1997/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1998,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1998/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 1999,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/1999/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2000,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2000/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2001,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2001/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2002,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2002/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2003,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2003/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2004,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2004/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2005,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2005/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2006,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2006/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2007,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2007/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2008,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2008/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2009,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2009/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2010,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2010/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2011,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2011/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2012,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2012/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2013,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2013/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2014,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2014/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2015,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2015/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2016,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2016/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2017,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2017/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2018,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2018/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2019,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2019/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2020,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2020/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2021,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2021/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2022,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2022/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2023,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2023/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2024,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2024/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "uefasupercup",
+      "year": 2025,
+      "source": "https://www.uefa.com/uefasupercup/history/seasons/2025/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under21",
+      "year": 1996,
+      "source": "https://www.uefa.com/under21/history/seasons/1996/",
+      "error": "No explicit winner"
+    },
+    {
+      "competition": "under21",
+      "year": 2002,
+      "source": "https://www.uefa.com/under21/history/seasons/2002/",
+      "error": "No explicit winner"
+    },
+    {
+      "competition": "under21",
+      "year": 2015,
+      "source": "https://www.uefa.com/under21/history/seasons/2015/",
+      "error": "No explicit winner"
+    },
+    {
+      "competition": "under19",
+      "year": 2002,
+      "source": "https://www.uefa.com/under19/history/seasons/2002/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2003,
+      "source": "https://www.uefa.com/under19/history/seasons/2003/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2004,
+      "source": "https://www.uefa.com/under19/history/seasons/2004/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2005,
+      "source": "https://www.uefa.com/under19/history/seasons/2005/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2006,
+      "source": "https://www.uefa.com/under19/history/seasons/2006/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2007,
+      "source": "https://www.uefa.com/under19/history/seasons/2007/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2008,
+      "source": "https://www.uefa.com/under19/history/seasons/2008/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2009,
+      "source": "https://www.uefa.com/under19/history/seasons/2009/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2010,
+      "source": "https://www.uefa.com/under19/history/seasons/2010/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2011,
+      "source": "https://www.uefa.com/under19/history/seasons/2011/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2012,
+      "source": "https://www.uefa.com/under19/history/seasons/2012/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2013,
+      "source": "https://www.uefa.com/under19/history/seasons/2013/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2014,
+      "source": "https://www.uefa.com/under19/history/seasons/2014/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2015,
+      "source": "https://www.uefa.com/under19/history/seasons/2015/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2016,
+      "source": "https://www.uefa.com/under19/history/seasons/2016/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2017,
+      "source": "https://www.uefa.com/under19/history/seasons/2017/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2018,
+      "source": "https://www.uefa.com/under19/history/seasons/2018/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2019,
+      "source": "https://www.uefa.com/under19/history/seasons/2019/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2022,
+      "source": "https://www.uefa.com/under19/history/seasons/2022/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2023,
+      "source": "https://www.uefa.com/under19/history/seasons/2023/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2024,
+      "source": "https://www.uefa.com/under19/history/seasons/2024/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under19",
+      "year": 2025,
+      "source": "https://www.uefa.com/under19/history/seasons/2025/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2002,
+      "source": "https://www.uefa.com/under17/history/seasons/2002/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2003,
+      "source": "https://www.uefa.com/under17/history/seasons/2003/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2004,
+      "source": "https://www.uefa.com/under17/history/seasons/2004/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2005,
+      "source": "https://www.uefa.com/under17/history/seasons/2005/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2006,
+      "source": "https://www.uefa.com/under17/history/seasons/2006/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2007,
+      "source": "https://www.uefa.com/under17/history/seasons/2007/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2008,
+      "source": "https://www.uefa.com/under17/history/seasons/2008/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2009,
+      "source": "https://www.uefa.com/under17/history/seasons/2009/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2010,
+      "source": "https://www.uefa.com/under17/history/seasons/2010/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2011,
+      "source": "https://www.uefa.com/under17/history/seasons/2011/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2012,
+      "source": "https://www.uefa.com/under17/history/seasons/2012/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2013,
+      "source": "https://www.uefa.com/under17/history/seasons/2013/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2014,
+      "source": "https://www.uefa.com/under17/history/seasons/2014/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2015,
+      "source": "https://www.uefa.com/under17/history/seasons/2015/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2016,
+      "source": "https://www.uefa.com/under17/history/seasons/2016/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2017,
+      "source": "https://www.uefa.com/under17/history/seasons/2017/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2018,
+      "source": "https://www.uefa.com/under17/history/seasons/2018/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2019,
+      "source": "https://www.uefa.com/under17/history/seasons/2019/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2022,
+      "source": "https://www.uefa.com/under17/history/seasons/2022/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2023,
+      "source": "https://www.uefa.com/under17/history/seasons/2023/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2024,
+      "source": "https://www.uefa.com/under17/history/seasons/2024/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "under17",
+      "year": 2025,
+      "source": "https://www.uefa.com/under17/history/seasons/2025/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2002,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2002/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2003,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2003/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2004,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2004/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2005,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2005/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2006,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2006/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2007,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2007/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2008,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2008/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2009,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2009/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2010,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2010/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2011,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2011/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2012,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2012/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2013,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2013/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2014,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2014/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2015,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2015/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2016,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2016/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2017,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2017/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2018,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2018/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2019,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2019/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2022,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2022/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2023,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2023/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2024,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2024/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder19",
+      "year": 2025,
+      "source": "https://www.uefa.com/womensunder19/history/seasons/2025/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2008,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2008/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2009,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2009/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2010,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2010/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2011,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2011/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2012,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2012/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2013,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2013/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2014,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2014/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2015,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2015/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2016,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2016/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2017,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2017/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2018,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2018/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2019,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2019/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2022,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2022/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2023,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2023/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2024,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2024/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "womensunder17",
+      "year": 2025,
+      "source": "https://www.uefa.com/womensunder17/history/seasons/2025/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 1996,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/1996/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 1999,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/1999/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2001,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2001/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2003,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2003/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2005,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2005/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2007,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2007/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2010,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2010/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2012,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2012/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2014,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2014/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2016,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2016/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2018,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2018/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "competition": "futsaleuro",
+      "year": 2022,
+      "source": "https://www.uefa.com/futsaleuro/history/seasons/2022/",
+      "error": "HTTP Error 404: Not Found"
+    }
+  ]
+}
