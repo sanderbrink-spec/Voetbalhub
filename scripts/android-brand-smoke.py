@@ -265,8 +265,13 @@ time.sleep(1);root=capture('27-phase35-menu')
 for attempt in range(4):
     if any(n.get('text')=='Speel de clubquiz' for n in root.iter('node')):break
     adb('shell','input','swipe',str(width//2),str(int(height*.75)),str(width//2),str(int(height*.35)),'400');time.sleep(1);root=capture('27-phase35-menu')
-tap_node(root,lambda n:n.get('text')=='Speel de clubquiz');time.sleep(2);root=capture('28-phase35-quiz-setup')
-assert any('655' in n.get('text','') and 'vragen' in n.get('text','') for n in root.iter('node')), 'Quiz bank not loaded'
+tap_node(root,lambda n:n.get('text')=='Speel de clubquiz');time.sleep(2)
+# The screenshot can already contain the bank while WebView accessibility still has no children.
+for attempt in range(5):
+    root=capture('28-phase35-quiz-setup')
+    if any('655' in n.get('text','') and 'vragen' in n.get('text','') for n in root.iter('node')):break
+    time.sleep(1)
+assert any('655' in n.get('text','') and 'vragen' in n.get('text','') for n in root.iter('node')), 'Quiz bank not loaded after bounded accessibility wait'
 adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
 for attempt in range(5):
     startnodes=[n for n in root.iter('node') if 'Start de quiz' in n.get('text','') and len(bounds(n))==4 and bounds(n)[1]>0 and bounds(n)[3]>bounds(n)[1]]
