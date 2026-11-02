@@ -59,6 +59,8 @@ jobs:
         run: node scripts/browser/phase33.cjs
       - name: Check weekly match report, fallback and exact preview transition
         run: node scripts/browser/weekly-feature.cjs
+      - name: Check separate offline club quiz, scoring and repeat protection
+        run: node scripts/browser/clubquiz35.cjs
       - name: Check professional contact form on mobile
         run: node scripts/browser/contact.cjs
       - name: Keep statistics screen for visual inspection
