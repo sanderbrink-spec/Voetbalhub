@@ -142,12 +142,15 @@ function hydrateEvidence(candidate,fragments){
  return {...candidate,facts:candidate.facts.map(f=>({...f,evidence:(f.evidence||[]).map(hydrate)})),sharedEventEvidence:candidate.sharedEventEvidence.map(hydrate)};
 }
 function pacedGroq(fetcher=fetch,intervalMs=35000){
- let next=0;
+ let next=0,quotaBlocked=false;
  return async function(url,options){
   if(!String(url).startsWith('https://api.groq.com/'))return fetcher(url,options);
+  if(quotaBlocked)throw require('../groq-quota').quotaError();
   for(let attempt=0;attempt<3;attempt++){
-   const wait=Math.max(0,next-Date.now());if(wait)await new Promise(r=>setTimeout(r,wait));
+   options?.signal?.throwIfAborted();
+   const wait=Math.max(0,next-Date.now());if(wait)await require('node:timers/promises').setTimeout(wait,undefined,{signal:options?.signal});
    const response=await fetcher(url,options);next=Date.now()+intervalMs;
+   if(await require('../groq-quota').dailyQuota(response)){quotaBlocked=true;throw require('../groq-quota').quotaError();}
    if(response.status!==429||attempt===2)return response;
    const retry=Number(response.headers.get('retry-after'));
    next=Date.now()+Math.min(60000,Math.max(intervalMs,Number.isFinite(retry)?retry*1000:60000));
@@ -262,7 +265,7 @@ async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={})
    if(!visible||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(draft.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
    report.published.push({id:visible.id,headline:visible.headline,imageUrl:visible.imageUrl});published.push(visible);
    console.log('Gepubliceerd met afbeelding:',visible.headline);
-  }catch(e){report.skipped.push({topic,reason:e.message});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);}
+  }catch(e){report.skipped.push({topic,reason:e.message});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
  }
  report.finishedAt=new Date().toISOString();
  fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
