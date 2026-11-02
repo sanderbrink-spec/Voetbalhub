@@ -43,18 +43,39 @@ function extractPage(html,url){
  }
  return {url,title,publishedAt,text};
 }
+async function sourceText(response){
+ const limit=3_000_000;
+ if(Number(response.headers.get('content-length'))>limit){
+  await response.body?.cancel();throw Error('Bronpagina te groot.');
+ }
+ if(!response.body)return '';
+ const chunks=[];let size=0;
+ // Bound decompressed bytes while reading, before allocating a complete page.
+ for await(const chunk of response.body){
+  size+=chunk.byteLength;
+  if(size>limit)throw Error('Bronpagina te groot.');
+  chunks.push(Buffer.from(chunk));
+ }
+ return Buffer.concat(chunks,size).toString('utf8');
+}
 async function officialPage(url,fetcher=fetch){
  if(!allowedUrl(url))throw Error('Niet-toegestane primaire bron.');
- const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0','Accept':'text/html'},signal:AbortSignal.timeout(20000)});
- if(r.status>=300&&r.status<400){const next=new URL(r.headers.get('location'),url).href;if(!allowedUrl(next)||host(next)!==host(url))throw Error('Onverwachte bronomleiding.');return officialPageOnce(next,fetcher);}
- if(!r.ok)throw Error('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);
- const html=await r.text();if(html.length>3_000_000)throw Error('Bronpagina te groot.');
- return {...extractPage(html,url),html};
-}
-async function officialPageOnce(url,fetcher){
- const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0'},signal:AbortSignal.timeout(20000)});
- if(!r.ok)throw Error('Primaire bron niet direct bereikbaar.');
- const html=await r.text();if(html.length>3_000_000)throw Error('Bronpagina te groot.');return {...extractPage(html,url),html};
+ // One deadline covers both a possible redirect and its response body.
+ const signal=AbortSignal.timeout(20000);
+ for(let attempt=0;attempt<2;attempt++){
+  const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0','Accept':'text/html'},signal});
+  if(r.status>=300&&r.status<400){
+   await r.body?.cancel();
+   const location=r.headers.get('location');
+   if(!location)throw Error('Onverwachte bronomleiding.');
+   const next=new URL(location,url).href;
+   if(attempt||!allowedUrl(next)||host(next)!==host(url))throw Error('Onverwachte bronomleiding.');
+   url=next;continue;
+  }
+  if(!r.ok){await r.body?.cancel();throw Error('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);}
+  const html=await sourceText(r);
+  return {...extractPage(html,url),html};
+ }
 }
 function discoverLinks(html,index){
  const paths=new RegExp(index.articlePath);const urls=[];
@@ -200,10 +221,9 @@ async function uploadCover(payload,{token,fetcher=fetch}){
  if(!image.ok||!/^image\/webp/i.test(image.headers.get('content-type')||'')||sha(Buffer.from(await image.arrayBuffer()))!==sha(bytes))throw Error('Openbare artikelafbeelding niet bevestigd.');
  return {imageUrl,imageSource:'Veldio · eigen artikelillustratie',imageCredit:'Veldio · redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Eigen redactionele wedstrijdillustratie. Alleen clubnamen uit de gecontroleerde kop. Geen foto, uitslag, thuis-uitclaim, spelers, clublogos of nagemaakte tenues. Geen ingebakken artikelkop.',assetSha256:sha(bytes)}};
 }
-async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={}){
- if(!config.enabled)return {status:'disabled',published:0};
+async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),report}={}){
+ if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
- const report={startedAt:new Date(now).toISOString(),published:[],skipped:[],sourceErrors:[]};
  const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(20000)});
  if(!models.ok)throw Error('Beschikbare taalmodellen konden niet worden gecontroleerd.');
  const model=selectModel(await models.json());report.model=model;console.log('Beschikbaar redactiemodel:',model);
@@ -214,7 +234,7 @@ async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={})
  const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(now));
  const todayCount=published.filter(a=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(a.publishedAt))===today).length;
  const limit=Math.min(config.maxPerRun,Math.max(0,config.maxPerDay-todayCount));
- if(!limit)return {...report,status:'daily_limit'};
+ if(!limit){report.status='daily_limit';return report;}
  const docs=new Map();
  async function load(url){if(docs.has(url))return docs.get(url);try{const d=await officialPage(url,fetcher);if(d.text.length<300)throw Error('Te weinig leesbare broninhoud.');docs.set(url,d);return d;}catch(e){report.sourceErrors.push({url,error:e.message});return null;}}
  const groups=[];
@@ -267,10 +287,24 @@ async function run({secret,groqKey,githubToken,fetcher=fetch,now=Date.now()}={})
    console.log('Gepubliceerd met afbeelding:',visible.headline);
   }catch(e){report.skipped.push({topic,reason:e.message});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
  }
- report.finishedAt=new Date().toISOString();
- fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
- if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Automatische Veldio-publicatie\n\n'+report.published.length+' berichten met afbeelding gepubliceerd. '+report.skipped.length+' onderwerpen tegengehouden.\n\n'+report.published.map(a=>'- '+a.headline).join('\n')+'\n');
  return report;
 }
-if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>console.log(JSON.stringify({published:r.published?.length||0,skipped:r.skipped?.length||0,sourceErrors:r.sourceErrors?.length||0,status:r.status||'completed'}))).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
+async function run(options={}){
+ const report={startedAt:new Date(options.now||Date.now()).toISOString(),published:[],skipped:[],sourceErrors:[]};
+ try{
+  await execute({...options,report});
+  report.status ||= report.published.length?'completed':'no_new_verified_articles';
+  return report;
+ }catch(error){report.status='failed';report.error=error.message;throw error;}
+ finally{
+  report.finishedAt=new Date().toISOString();
+  fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
+  if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Automatische Veldio-redactie\n\n'+report.published.length+' gepubliceerd; '+report.skipped.length+' tegengehouden. Status: '+report.status+'.\n');
+ }
+}
+function runExitCode(report){
+ if(!['completed','no_new_verified_articles','daily_limit'].includes(report.status))return 1;
+ return report.published.length===0&&report.sourceErrors.length>0?1:0;
+}
+if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({published:r.published.length,skipped:r.skipped.length,sourceErrors:r.sourceErrors.length,status:r.status}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
+module.exports={officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
