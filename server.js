@@ -1,4 +1,5 @@
 const http = require("node:http");
+const runtime = require("./runtime-health");
 const { createClient } = require("redis");
 const { auditClaims, editorialQuality, headlineContradictions } = require("./editorial-quality");
 const { normalizeEditorialResponse } = require("./editorial-response");
@@ -287,6 +288,7 @@ async function getArticles(view = "current") {
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 async function handle(req, res) {
   const url = new URL(req.url, "http://localhost");
+  if(req.method==="GET"&&url.pathname==="/ready"){const ready=await runtime.readiness(client);return send(res,ready?200:503,{ready,backend:"node-redis",revision:runtime.revision(process.env)});}
   if(url.pathname==="/contact") {
     if(req.method==="GET") {
       res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store"});
@@ -380,13 +382,13 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "Veldio Redactie API", manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
+    return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const view = url.searchParams.get("view") || "current";
       if (!["current","archive","all"].includes(view)) return send(res,400,{error:"Onbekende nieuwsweergave."});
-      const articles = await getArticles(view); return send(res, 200, { count: articles.length, articles }); }
-    catch { return send(res, 503, { error: "Artikelenopslag is nog niet verbonden. Configureer REDIS_URL in Render." }); }
+      const articles = await runtime.withDeadline(() => getArticles(view), 9000); return send(res, 200, { count: articles.length, articles }); }
+    catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
     if (!authorized(req)) return send(res,401,{error:"Niet geautoriseerd."});
