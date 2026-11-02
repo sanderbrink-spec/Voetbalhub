@@ -24,3 +24,8 @@ test('an aborted provider request never starts a network call',async()=>{
  let calls=0;const fetcher=pacedGroq(async()=>{calls++;return new Response('{}');},0);
  await assert.rejects(fetcher(endpoint,{signal:AbortSignal.abort()}),e=>e.name==='AbortError');assert.equal(calls,0);
 });
+test('draft generation preserves the quota stop signal for the publication report',async()=>{
+ const {createEditorialDraft}=require('../editorial-ai');
+ const fetcher=pacedGroq(async()=>limited('tokens per day (TPD) exhausted'),0);
+ await assert.rejects(createEditorialDraft({topic:'Gecontroleerde clubplannen',category:'Voetbal',facts:['De club bespreekt nieuwe plannen.','De bijeenkomst vond maandag plaats.'],sourceUrls:['https://fcgroningen.nl/nieuws']},{apiKey:'test-only',model:'test-only',fetcher}),e=>e.code==='GROQ_DAILY_QUOTA');
+});

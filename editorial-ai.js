@@ -38,6 +38,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,match=null}
       if(!response.ok)throw new DraftError(502,'De AI-dienst is tijdelijk niet beschikbaar. Je invoer blijft bewaard.');
       data=await response.json();
     }catch(error){
+      if(error?.code==='GROQ_DAILY_QUOTA')throw error;
       if(error instanceof DraftError)throw error;
       if(signal.aborted||['TimeoutError','AbortError'].includes(error?.name))throw new DraftError(504,'De AI-dienst antwoordde niet binnen 25 seconden. Je invoer blijft bewaard.');
       throw new DraftError(502,'Geen bruikbaar antwoord van de AI-dienst. Je invoer blijft bewaard.');
