@@ -7,7 +7,8 @@ test('logo assets have PNG bytes matching their PNG filename and response type',
 test('all external automation CLI routes stop before credentials, HTTP or writes',()=>{
  for(const name of ['automatic-publication','auto-editor','eredivisie-official','eredivisie-data','eredivisie-covers','sync-article-covers','refresh-automatic-covers','youtube-videos','publish-one-trial','publish-column']){
   const r=spawnSync(process.execPath,[path.join(root,'scripts',name+'.js')],{cwd:root,encoding:'utf8',env:{PATH:process.env.PATH}});
-  assert.equal(r.status,0,name+': '+r.stderr);assert.match(r.stdout,/Veilig gestopt/,name);
+  if(name==='automatic-publication'){assert.equal(r.status,1,name+': '+r.stderr);assert.match(r.stdout,/rights_blocked/,name);}
+  else{assert.equal(r.status,0,name+': '+r.stderr);assert.match(r.stdout,/Veilig gestopt/,name);}
  }
  assert.equal(require('../launch-policy').allowed('not_a_scope'),false);
 });

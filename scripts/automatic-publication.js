@@ -1,5 +1,3 @@
-// Phase 25: stop before any external request or publication until rights are documented.
-if(require.main===module&&require('../launch-policy').stopCli('automaticNews'))process.exit(0);
 'use strict';
 const fs=require('node:fs');
 const path=require('node:path');
@@ -45,18 +43,39 @@ function extractPage(html,url){
  }
  return {url,title,publishedAt,text};
 }
+async function sourceText(response){
+ const limit=3_000_000;
+ if(Number(response.headers.get('content-length'))>limit){
+  await response.body?.cancel();throw Error('Bronpagina te groot.');
+ }
+ if(!response.body)return '';
+ const chunks=[];let size=0;
+ // Bound decompressed bytes while reading, before allocating a complete page.
+ for await(const chunk of response.body){
+  size+=chunk.byteLength;
+  if(size>limit)throw Error('Bronpagina te groot.');
+  chunks.push(Buffer.from(chunk));
+ }
+ return Buffer.concat(chunks,size).toString('utf8');
+}
 async function officialPage(url,fetcher=fetch){
  if(!allowedUrl(url))throw Error('Niet-toegestane primaire bron.');
- const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0','Accept':'text/html'},signal:AbortSignal.timeout(20000)});
- if(r.status>=300&&r.status<400){const next=new URL(r.headers.get('location'),url).href;if(!allowedUrl(next)||host(next)!==host(url))throw Error('Onverwachte bronomleiding.');return officialPageOnce(next,fetcher);}
- if(!r.ok)throw Error('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);
- const html=await r.text();if(html.length>3_000_000)throw Error('Bronpagina te groot.');
- return {...extractPage(html,url),html};
-}
-async function officialPageOnce(url,fetcher){
- const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0'},signal:AbortSignal.timeout(20000)});
- if(!r.ok)throw Error('Primaire bron niet direct bereikbaar.');
- const html=await r.text();if(html.length>3_000_000)throw Error('Bronpagina te groot.');return {...extractPage(html,url),html};
+ // One deadline covers both a possible redirect and its response body.
+ const signal=AbortSignal.timeout(20000);
+ for(let attempt=0;attempt<2;attempt++){
+  const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0','Accept':'text/html'},signal});
+  if(r.status>=300&&r.status<400){
+   await r.body?.cancel();
+   const location=r.headers.get('location');
+   if(!location)throw Error('Onverwachte bronomleiding.');
+   const next=new URL(location,url).href;
+   if(attempt||!allowedUrl(next)||host(next)!==host(url))throw Error('Onverwachte bronomleiding.');
+   url=next;continue;
+  }
+  if(!r.ok){await r.body?.cancel();throw Error('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);}
+  const html=await sourceText(r);
+  return {...extractPage(html,url),html};
+ }
 }
 function discoverLinks(html,index){
  const paths=new RegExp(index.articlePath);const urls=[];
@@ -202,7 +221,7 @@ async function uploadCover(payload,{token,fetcher=fetch}){
  return {imageUrl,imageSource:media.imageSource,imageCredit:media.imageCredit,imageCaption:media.imageCaption,imageLicenseUrl:media.imageLicenseUrl,imageRights:media.imageRights,imageReview:media.imageReview};
 }
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),aiIntervalMs=35000,report}={}){
- if(!config.enabled)return {status:'disabled',published:0};
+ if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
  const headers={Authorization:'Bearer '+secret,'Content-Type':'application/json'};
  async function api(endpoint,body){
@@ -311,12 +330,24 @@ function categoryFor(candidate){
 }
 async function run(options={}){
  const report={startedAt:new Date(options.now||Date.now()).toISOString(),published:[],skipped:[],sourceErrors:[]};
- try{return await execute({...options,report});}
+ try{
+  // CLI safety gate still runs before credentials, network calls or writes.
+  if(options.enforcePolicy&&!require('../launch-policy').allowed('automaticNews')){
+   report.status='rights_blocked';report.error='Juridische controle voor automaticNews ontbreekt.';return report;
+  }
+  await execute({...options,report});
+  report.status ||= report.published.length?'completed':'no_new_verified_articles';
+  return report;
+ }
  catch(error){report.status='failed';report.error=error.message;throw error;}
  finally{
   report.finishedAt=new Date().toISOString();fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
   if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Automatische Veldio-redactie\n\n'+report.published.length+' gepubliceerd; '+report.skipped.length+' tegengehouden. Status: '+(report.status||'completed')+'.\n');
  }
 }
-if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>console.log(JSON.stringify({published:r.published?.length||0,skipped:r.skipped?.length||0,sourceErrors:r.sourceErrors?.length||0,status:r.status||'completed'}))).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,categoryFor,run};
+function runExitCode(report){
+ if(!['completed','no_new_verified_articles','daily_limit'].includes(report.status))return 1;
+ return report.published.length===0&&report.sourceErrors.length>0?1:0;
+}
+if(require.main===module)run({enforcePolicy:true,secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({published:r.published.length,skipped:r.skipped.length,sourceErrors:r.sourceErrors.length,status:r.status}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
+module.exports={officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,categoryFor,run};
