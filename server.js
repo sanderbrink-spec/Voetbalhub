@@ -301,6 +301,7 @@ const contactHandler=require("./contact-mail").createContactHandler({redis:clien
 async function handle(req, res) {
   security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
+  if(require("./policy-pages").serve(req,res,url.pathname))return;
   if(url.pathname!=="/contact"&&url.pathname!=="/health"){
     const privileged=req.method==="POST"||(["/inbox","/editorial-drafts"].includes(url.pathname)||url.pathname.startsWith("/generated-image/"));
     if(privileged&&!authorized(req)&&!(url.pathname.startsWith("/automation/")&&security.authorized(req.headers.authorization,process.env.HUB_AUTOMATION_SECRET||""))){
