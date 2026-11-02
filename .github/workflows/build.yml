@@ -14,7 +14,7 @@ on:
       - "scripts/patch-*.py"
       - ".github/workflows/build.yml"
   push:
-    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37"]
+    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35"]
 
 permissions:
   contents: read

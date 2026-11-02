@@ -23,7 +23,7 @@ public final class StadiumRepository {
   HashSet<String> ids=new HashSet<>();boolean current=false;
   for(int i=0;i<rows.length();i++){
    JSONObject a=rows.getJSONObject(i);String id=a.getString("id");if(!id.matches("[a-z0-9-]{1,80}")||!ids.add(id)||!"published".equals(a.optString("status")))return null;
-   if(id.equals(data.optString("current")))current=true;JSONArray sections=a.getJSONArray("sections"),sources=a.getJSONArray("sources"),facts=a.getJSONArray("trivia");if(sections.length()<6||facts.length()<5||sources.length()<3)return null;
+   if(id.equals(data.optString("current")))current=true;JSONArray sections=a.getJSONArray("sections"),sources=a.getJSONArray("sources"),facts=a.getJSONArray("trivia");if(sections.length()<6||facts.length()<10||sources.length()<3)return null;
    StringBuilder body=new StringBuilder();for(int n=0;n<sections.length();n++){JSONObject s=sections.getJSONObject(n);body.append(s.getString("heading")).append('\n').append(s.getString("text")).append('\n');if(s.getJSONArray("sources").length()==0)return null;}
    JSONObject review=a.getJSONObject("review");byte[] hash=java.security.MessageDigest.getInstance("SHA-256").digest(body.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));StringBuilder hex=new StringBuilder();for(byte b:hash)hex.append(String.format(java.util.Locale.ROOT,"%02x",b));
    if(!review.optBoolean("approved")||!hex.toString().equals(review.optString("bodyHash"))||a.optInt("wordCount")<800||a.optInt("wordCount")>1200)return null;

@@ -265,6 +265,10 @@ for attempt in range(4):
 tap_node(root,lambda n:n.get('text')=='Speel de clubquiz');time.sleep(2);root=capture('28-phase35-quiz-setup')
 assert any('307' in n.get('text','') and 'vragen' in n.get('text','') for n in root.iter('node')), 'Quiz bank not loaded'
 adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
+for attempt in range(5):
+    startnodes=[n for n in root.iter('node') if 'Start de quiz' in n.get('text','') and len(bounds(n))==4 and bounds(n)[1]>0 and bounds(n)[3]>bounds(n)[1]]
+    if startnodes:break
+    adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.4)),'400');time.sleep(1);root=capture('28-phase37-quiz-setup-scroll')
 tap_node(root,lambda n:'Start de quiz' in n.get('text',''));time.sleep(1);root=capture('29-phase35-quiz-question')
 assert any('Vraag 1 / 10' in n.get('text','') for n in root.iter('node')), 'First quiz question absent offline'
 answers=[n for n in root.iter('node') if n.get('class')=='android.widget.Button' and re.match(r'^[A-D]',n.get('text',''))]

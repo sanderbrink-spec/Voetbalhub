@@ -16,7 +16,7 @@ function select(bank,{level='easy',count=10,recent=[],rng=Math.random,now=Date.n
 function createRound(bank,{mode='quick',level='easy',recent=[],now=Date.now(),rng=Math.random}={}){
  if(!Object.hasOwn(MODES,mode))throw Error('Onbekende spelvorm');
  const day=dayKey(now),daily=mode==='daily';
- const questions=select(bank,{level:daily?'mixed':level,count:MODES[mode],recent:daily?[]:recent,now,rng:daily?seeded(VERSION+':'+day):rng});
+ const questions=select(bank,{level:daily?'mixed':level,count:MODES[mode],recent:daily?[]:recent,now:daily?Date.parse(day+'T00:00:00Z'):now,rng:daily?seeded(VERSION+':'+day):rng});
  if(questions.length!==MODES[mode])throw Error('Voor dit niveau zijn onvoldoende actuele vragen beschikbaar. Kies een ander niveau.');
  return new Round(questions,{mode,level:daily?'mixed':level,day});
 }
