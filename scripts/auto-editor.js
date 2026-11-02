@@ -1,3 +1,5 @@
+// Phase 25: stop before any external request or publication until rights are documented.
+if(require.main===module&&require('../launch-policy').stopCli('automaticNews'))process.exit(0);
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const HUB_API_SECRET = process.env.HUB_API_SECRET || "";
 const API_URL = process.env.VELDIO_API_URL || "https://voetbalhub-redactie.onrender.com";

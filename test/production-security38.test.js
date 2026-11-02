@@ -8,7 +8,7 @@ test('production server hardens responses, rejects arbitrary browser origins and
  try{
   const good=await fetch(base+'/health',{headers:{Origin:'https://allowed.example'}});assert.equal(good.status,200);assert.equal(good.headers.get('access-control-allow-origin'),'https://allowed.example');assert.equal(good.headers.get('x-content-type-options'),'nosniff');assert.match(good.headers.get('strict-transport-security'),/31536000/);
   const evil=await fetch(base+'/health',{headers:{Origin:'https://evil.example'}});assert.equal(evil.headers.get('access-control-allow-origin'),null);
-  for(let i=0;i<30;i++)assert.equal((await fetch(base+'/inbox')).status,401);
+  for(let i=0;i<20;i++)assert.equal((await fetch(base+'/inbox')).status,401);
   const blocked=await fetch(base+'/inbox');assert.equal(blocked.status,429);assert.equal(blocked.headers.get('retry-after'),'60');
   assert.equal((await fetch(base+'/inbox',{headers:{Authorization:'Bearer test-secret'}})).status,200);
   assert.equal((await fetch(base+'/health')).status,200);

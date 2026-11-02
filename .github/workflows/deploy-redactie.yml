@@ -49,13 +49,14 @@ jobs:
           account_id = "$CLOUDFLARE_ACCOUNT_ID"
           [vars]
           OPENAI_MODEL = "gpt-4.1-mini"
+          FEED_RIGHTS_REVIEWED = "0"
           ALLOWED_FEED_URLS = "$ALLOWED_FEED_URLS"
           ALLOWED_ORIGINS = "$ALLOWED_ORIGINS"
           [[kv_namespaces]]
           binding = "EDITORIAL_KV"
           id = "$EDITORIAL_KV_NAMESPACE_ID"
           [triggers]
-          crons = ["*/15 * * * *"]
+          crons = []
           EOF
           wrangler deploy --config wrangler.deploy.toml
           printf '%s' "$HUB_API_SECRET" | wrangler secret put HUB_API_SECRET --config wrangler.deploy.toml

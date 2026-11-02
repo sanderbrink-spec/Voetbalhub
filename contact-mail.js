@@ -32,12 +32,14 @@ function createContactHandler({env=process.env,fetchImpl=fetch,redis=null,now=Da
   const allowed=(env.ALLOWED_ORIGINS||'').split(',').map(x=>x.trim()).filter(x=>x&&x!=='null');
   if(origin&&origin!==host&&!allowed.includes(origin))return reply(403,ERROR);
   if(!/^application\/json(?:\s*;|$)/i.test(req.headers['content-type']||''))return reply(415,ERROR);
+  if(env.NODE_ENV==='production'&&!redis)return reply(503,ERROR);
   let ip=req.socket.remoteAddress||'unknown';
   if(env.CONTACT_TRUST_PROXY==='1'){const candidate=String(req.headers['x-forwarded-for']||'').split(',').pop().trim();if(isIP(candidate))ip=candidate;}
   try{if(!await rate(ip))return reply(429,ERROR);}catch{return reply(503,ERROR);}
   let raw='',size=0;const chunks=[];
   try{for await(const chunk of req){size+=Buffer.byteLength(chunk);if(size>24576)return reply(413,ERROR);chunks.push(Buffer.from(chunk));}raw=Buffer.concat(chunks).toString('utf8');}catch{return reply(400,ERROR);}
   let data,fields;try{data=JSON.parse(raw);fields=validate(data);}catch{return reply(400,ERROR);}
+  if(env.CONTACT_PRIVACY_READY!=='1')return reply(503,'Het contactformulier is tijdelijk niet beschikbaar.');
   if(!env.RESEND_API_KEY||!env.CONTACT_FROM||/[\r\n]/.test(env.CONTACT_FROM))return reply(503,ERROR);
   const key='veldio-contact-'+data.requestId,fingerprint=hash(JSON.stringify(fields)),storageKey='contact:request:'+hash(key);
   let entry;
@@ -69,5 +71,5 @@ function createContactHandler({env=process.env,fetchImpl=fetch,redis=null,now=Da
   }catch{return reply(503,ERROR);}
  };
 }
-function contactConfiguration(env=process.env){return {provider:'resend',configured:!!(env.RESEND_API_KEY&&env.CONTACT_FROM&&!/[\r\n]/.test(env.CONTACT_FROM)),missing:['RESEND_API_KEY','CONTACT_FROM','CONTACT_PUBLIC_ORIGIN'].filter(key=>!env[key])};}
+function contactConfiguration(env=process.env){return {provider:'resend',privacyReady:env.CONTACT_PRIVACY_READY==='1',configured:!!(env.CONTACT_PRIVACY_READY==='1'&&env.RESEND_API_KEY&&env.CONTACT_FROM&&!/[\r\n]/.test(env.CONTACT_FROM)),missing:['RESEND_API_KEY','CONTACT_FROM','CONTACT_PUBLIC_ORIGIN'].filter(key=>!env[key])};}
 module.exports={validate,createContactHandler,contactConfiguration};

@@ -1,3 +1,5 @@
+// Phase 25: stop before any external request or publication until rights are documented.
+if(require.main===module&&require('../launch-policy').stopCli('scheduledPublication'))process.exit(0);
 'use strict';
 const fs=require('node:fs');
 const crypto=require('node:crypto');
