@@ -1,6 +1,7 @@
 """Read-only Android presentation smoke test. Never submits or publishes content."""
 from pathlib import Path
 import re
+import atexit
 import subprocess
 import sys
 import time
@@ -10,6 +11,11 @@ OUT=Path('.android-smoke');OUT.mkdir(exist_ok=True)
 PACKAGE='nl.voetbalhub.app1'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
+def diagnostics():
+    for label,args in [('logcat',('logcat','-d','-t','1500')),('activity',('shell','dumpsys','activity','activities'))]:
+        try:(OUT/(label+'.txt')).write_text(adb(*args))
+        except Exception:pass
+atexit.register(diagnostics)
 def capture(name):
     adb('shell','screencap','-p','/sdcard/veldio.png')
     adb('pull','/sdcard/veldio.png',str(OUT/(name+'.png')))
@@ -39,6 +45,9 @@ if launcher_dialog is not None:
     close=next(n for n in root.iter('node') if n.get('resource-id')=='android:id/aerr_close')
     box=list(map(int,re.findall(r'\d+',close.get('bounds',''))))
     adb('shell','input','tap',str((box[0]+box[2])//2),str((box[1]+box[3])//2))
+    adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');time.sleep(5);root=capture('02-home')
+if not any(n.get('resource-id','').endswith('/logo') for n in root.iter('node')) and all(n.get('package') in (None,'com.google.android.apps.nexuslauncher') for n in root.iter('node')):
+    assert adb('shell','pidof',PACKAGE).strip(),'Veldio process exited; see logcat'
     adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');time.sleep(5);root=capture('02-home')
 def bounds(node):return list(map(int,re.findall(r'\d+',node.get('bounds',''))))
 logo=next(n for n in root.iter('node') if n.get('resource-id','').endswith('/logo'))
