@@ -230,8 +230,11 @@ for attempt in range(4):
     adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.48)),'450');time.sleep(1);root=capture('19-phase33-offline-home')
 assert any('VOETBAL IN CIJFERS' in (n.get('text','')+' '+n.get('content-desc','')) for n in root.iter('node')), 'Original football quiz absent after scrolling'
 
-adb('shell','input','swipe',str(width//2),str(int(height*.8)),str(width//2),str(int(height*.35)),'500');time.sleep(1)
-root=capture('19b-phase33-offline-feed')
+# Search in small increments: a full-screen fling can skip the short status bar.
+for attempt in range(12):
+    if any(n.get('text','').casefold()=='opnieuw proberen' for n in root.iter('node')):break
+    adb('shell','input','swipe',str(width//2),str(int(height*.76)),str(width//2),str(int(height*.64)),'500');time.sleep(.6)
+    root=capture('19b-phase33-offline-feed')
 assert any(n.get('text','').casefold()=='opnieuw proberen' for n in root.iter('node')), 'Retry button absent after offline deadline'
 assert not any(n.get('class')=='android.widget.ProgressBar' for n in root.iter('node')), 'Offline feed spinner never stopped'
 tap_node(root,lambda n:n.get('text')=='Meer');time.sleep(1);root=capture('20-phase33-more')
