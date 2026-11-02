@@ -299,10 +299,10 @@ with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase 35 separat
 # The anonymous token is never printed or included in screenshots/log files.
 import urllib.request
 
-def find_quiz_text(text,name):
+def find_quiz_text(text,name,clickable=False):
     for attempt in range(9):
         root=capture(name)
-        node=next((n for n in root.iter('node') if text in n.get('text','') and len(bounds(n))==4 and bounds(n)[1]>0 and bounds(n)[3]>bounds(n)[1]),None)
+        node=next((n for n in root.iter('node') if text in n.get('text','') and (not clickable or n.get('clickable')=='true') and len(bounds(n))==4 and bounds(n)[1]>0 and bounds(n)[3]>bounds(n)[1]),None)
         if node is not None:return root,node
         adb('shell','input','swipe',str(width//2),str(int(height*.78)),str(width//2),str(int(height*.42)),'350');time.sleep(.4)
     raise AssertionError('Quiz control not reachable: '+text)
@@ -312,7 +312,7 @@ try:
     for _ in range(4):adb('shell','input','swipe',str(width//2),str(int(height*.28)),str(width//2),str(int(height*.83)),'200')
     time.sleep(1)
     root,node=find_quiz_text('Live klassement','33-quiz39-online');tap_node(root,lambda n:n is node)
-    root,node=find_quiz_text('Kies een groep','34-quiz39-age');tap_node(root,lambda n:n is node);time.sleep(.5)
+    root,node=find_quiz_text('Leeftijdsgroep','34-quiz39-age',clickable=True);tap_node(root,lambda n:n is node);time.sleep(.5)
     root=capture('34b-quiz39-age-options');tap_node(root,lambda n:'16 jaar of ouder' in n.get('text',''));time.sleep(.4)
     root,node=find_quiz_text('Ik wil aan het technische testklassement','35-quiz39-privacy');tap_node(root,lambda n:n is node)
     root,node=find_quiz_text('Online profiel maken','36-quiz39-join');tap_node(root,lambda n:n is node);time.sleep(5)

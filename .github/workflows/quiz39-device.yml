@@ -1,0 +1,44 @@
+name: Veldio 39 existing APK online device test
+on:
+  push:
+    branches: [work/veldio-39]
+    paths: [scripts/android-quiz39.py, .github/workflows/quiz39-device.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  android-online:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Veldio-Android-test
+          path: apk
+          run-id: 41501584101
+          github-token: ${{ github.token }}
+      - name: Verify exact previously built APK
+        run: echo 'e1e645a73f6b1e69ab71f79cf8d682c203463eed1c03d3e45d5c999223a81f8d  apk/app-debug.apk' | sha256sum -c -
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Test native HTTPS quiz against production
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: python3 scripts/android-quiz39.py apk/app-debug.apk
+      - name: Preserve actual device results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-39-online-device-results
+          path: .android-smoke/
+          include-hidden-files: true
+          if-no-files-found: error

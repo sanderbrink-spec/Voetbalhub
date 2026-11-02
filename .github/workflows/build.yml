@@ -20,7 +20,7 @@ permissions:
   contents: read
 jobs:
   api-test-and-build:
-    if: (github.event_name != 'push' || !contains(github.event.head_commit.message, '[backend-only]')) && (github.event_name != 'pull_request' || github.head_ref != 'work/veldio-37' && github.head_ref != 'work/veldio-38' && github.head_ref != 'work/veldio-39')
+    if: (github.event_name != 'push' || !contains(github.event.head_commit.message, '[backend-only]') && !contains(github.event.head_commit.message, '[device-only]')) && (github.event_name != 'pull_request' || github.head_ref != 'work/veldio-37' && github.head_ref != 'work/veldio-38' && github.head_ref != 'work/veldio-39')
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
