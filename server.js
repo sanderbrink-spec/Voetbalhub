@@ -21,9 +21,10 @@ const client = process.env.REDIS_URL ? createClient({
   disableOfflineQueue: true,
   socket: { connectTimeout: 5000, reconnectStrategy: retries => Math.min(250 * (2 ** Math.min(retries, 5)), 5000) }
 }) : null;
-if (client) client.on("error", (err) => console.error("Redis connection error:", err.message));
+if (client) client.on("error", () => console.error("Redis connection error; reconnect pending."));
 
 function send(res, status, body) {
+  if(status===429)res.setHeader("Retry-After","60");
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
