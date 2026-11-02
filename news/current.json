@@ -1,6 +1,127 @@
 {
-  "count": 9,
+  "count": 10,
   "articles": [
+    {
+      "id": "f6ae76d3-5a0a-5847-888f-2a59738c6196",
+      "status": "published",
+      "type": "column",
+      "category": "De Derde Helft",
+      "author": "Sander Brink",
+      "headline": "Willem II degradeert. En Weghorst? Die verdient mijn respect.",
+      "standfirst": "",
+      "body": [
+        "Door Sander Brink | Veldio",
+        "Wat een voetbalweekend! We hebben genoten van prachtige doelpunten, ons verbaasd over bizarre uitslagen en ons vooral ook flink zitten ergeren. Ik in ieder geval wel. Drie wedstrijden sprongen er voor mij uit, ieder om een andere reden.",
+        "Te beginnen in De Kuip, waar Feyenoord tegen Fortuna Sittard niet verder kwam dan 1-1. Giovanni van Bronckhorst zag zijn ploeg het spel domineren, terwijl Danny Buijs zijn elftal stevig had ingegraven. Fortuna kwam een aantal keren bijzonder goed weg, maar Feyenoord verzuimde de wedstrijd te beslissen.",
+        "En dan gebeurt precies waar je op kunt wachten. Zolang die tweede treffer uitblijft, geef je de tegenstander hoop. Fortuna rook zijn kans, groeide in de slotfase en pakte uiteindelijk een punt. Sterker nog, de Limburgers hadden misschien wel meer kunnen meenemen uit Rotterdam. Feyenoord mag vooral naar zichzelf kijken.",
+        "Dan PSV tegen Willem II. Moet ik PSV complimenteren of Willem II volledig afbranden? Ik kies toch voor dat laatste.",
+        "Wat was dat droevig, zeg.",
+        "Bij de openingstreffer van Mauro Júnior zag je eigenlijk al hoe laat het was. Een ongelukkige situatie, een stuiterende bal en een Tilburgse verdediging die erbij stond te kijken. Daarna werd het alleen maar erger. De 7-0 was pijnlijk, maar volkomen terecht.",
+        "En ik durf hier een duidelijke uitspraak te doen: Willem II degradeert dit seizoen.",
+        "Met spelers als Tonny Vilhena zou je toch meer mogen verwachten? Er zit best kwaliteit in die selectie, maar als ploeg klopt er werkelijk niets van. Of het aan de trainer, de fitheid of een gebrek aan vertrouwen ligt, laat ik in het midden. Eén ding weet ik wel: op deze manier gaan ze het niet redden. Jammer voor Tilburg, maar zo simpel is het.",
+        "En dan Wout Weghorst.",
+        "Laat ik vooropstellen dat ik niet bepaald fan ben van zijn maniertjes. Dat voortdurende gedoe, dat trekken en die theatrale reacties. Het is niet mijn type voetballer.",
+        "Maar wat die man tegen Excelsior liet zien? Werkelijk waanzinnig.",
+        "FC Twente won met maar liefst 0-9. Excelsior moest al vroeg met tien man verder na een ongelukkige, maar terechte rode kaart voor Nesto Groen. Daarna was er geen houden meer aan.",
+        "Weghorst scoorde vier keer, werkte zich een slag in de rondte en liet bij vlagen dingen zien die ik nauwelijks van hem gewend ben. Wat heeft die jongen ontzettend veel uit zijn carrière gehaald! Ook nu blijft hij sleuren, zijn ploeggenoten op scherp zetten en doelpunten maken.",
+        "Zijn publiekswissel was meer dan verdiend.",
+        "Wout Weghorst is voor mij zonder enige twijfel de speler van de week.",
+        "En misschien zegt dat nog wel het meest. Je hoeft iemand niet sympathiek te vinden om zijn prestaties te waarderen. Respect moet je verdienen. Dat heeft Weghorst dit weekend absoluut gedaan.",
+        "Tot volgende week!",
+        "Sander Brink\nDe Derde Helft | Veldio"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Door Sander Brink | Veldio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Wat een voetbalweekend! We hebben genoten van prachtige doelpunten, ons verbaasd over bizarre uitslagen en ons vooral ook flink zitten ergeren. Ik in ieder geval wel. Drie wedstrijden sprongen er voor mij uit, ieder om een andere reden."
+        },
+        {
+          "type": "paragraph",
+          "text": "Te beginnen in De Kuip, waar Feyenoord tegen Fortuna Sittard niet verder kwam dan 1-1. Giovanni van Bronckhorst zag zijn ploeg het spel domineren, terwijl Danny Buijs zijn elftal stevig had ingegraven. Fortuna kwam een aantal keren bijzonder goed weg, maar Feyenoord verzuimde de wedstrijd te beslissen."
+        },
+        {
+          "type": "paragraph",
+          "text": "En dan gebeurt precies waar je op kunt wachten. Zolang die tweede treffer uitblijft, geef je de tegenstander hoop. Fortuna rook zijn kans, groeide in de slotfase en pakte uiteindelijk een punt. Sterker nog, de Limburgers hadden misschien wel meer kunnen meenemen uit Rotterdam. Feyenoord mag vooral naar zichzelf kijken."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dan PSV tegen Willem II. Moet ik PSV complimenteren of Willem II volledig afbranden? Ik kies toch voor dat laatste."
+        },
+        {
+          "type": "paragraph",
+          "text": "Wat was dat droevig, zeg."
+        },
+        {
+          "type": "paragraph",
+          "text": "Bij de openingstreffer van Mauro Júnior zag je eigenlijk al hoe laat het was. Een ongelukkige situatie, een stuiterende bal en een Tilburgse verdediging die erbij stond te kijken. Daarna werd het alleen maar erger. De 7-0 was pijnlijk, maar volkomen terecht."
+        },
+        {
+          "type": "paragraph",
+          "text": "En ik durf hier een duidelijke uitspraak te doen: Willem II degradeert dit seizoen."
+        },
+        {
+          "type": "paragraph",
+          "text": "Met spelers als Tonny Vilhena zou je toch meer mogen verwachten? Er zit best kwaliteit in die selectie, maar als ploeg klopt er werkelijk niets van. Of het aan de trainer, de fitheid of een gebrek aan vertrouwen ligt, laat ik in het midden. Eén ding weet ik wel: op deze manier gaan ze het niet redden. Jammer voor Tilburg, maar zo simpel is het."
+        },
+        {
+          "type": "paragraph",
+          "text": "En dan Wout Weghorst."
+        },
+        {
+          "type": "paragraph",
+          "text": "Laat ik vooropstellen dat ik niet bepaald fan ben van zijn maniertjes. Dat voortdurende gedoe, dat trekken en die theatrale reacties. Het is niet mijn type voetballer."
+        },
+        {
+          "type": "paragraph",
+          "text": "Maar wat die man tegen Excelsior liet zien? Werkelijk waanzinnig."
+        },
+        {
+          "type": "paragraph",
+          "text": "FC Twente won met maar liefst 0-9. Excelsior moest al vroeg met tien man verder na een ongelukkige, maar terechte rode kaart voor Nesto Groen. Daarna was er geen houden meer aan."
+        },
+        {
+          "type": "paragraph",
+          "text": "Weghorst scoorde vier keer, werkte zich een slag in de rondte en liet bij vlagen dingen zien die ik nauwelijks van hem gewend ben. Wat heeft die jongen ontzettend veel uit zijn carrière gehaald! Ook nu blijft hij sleuren, zijn ploeggenoten op scherp zetten en doelpunten maken."
+        },
+        {
+          "type": "paragraph",
+          "text": "Zijn publiekswissel was meer dan verdiend."
+        },
+        {
+          "type": "paragraph",
+          "text": "Wout Weghorst is voor mij zonder enige twijfel de speler van de week."
+        },
+        {
+          "type": "paragraph",
+          "text": "En misschien zegt dat nog wel het meest. Je hoeft iemand niet sympathiek te vinden om zijn prestaties te waarderen. Respect moet je verdienen. Dat heeft Weghorst dit weekend absoluut gedaan."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tot volgende week!"
+        },
+        {
+          "type": "paragraph",
+          "text": "Sander Brink\nDe Derde Helft | Veldio"
+        }
+      ],
+      "manuscript": "# Willem II degradeert. En Weghorst? Die verdient mijn respect.\n\n*Door Sander Brink | Veldio*\n\nWat een voetbalweekend! We hebben genoten van prachtige doelpunten, ons verbaasd over bizarre uitslagen en ons vooral ook flink zitten ergeren. Ik in ieder geval wel. Drie wedstrijden sprongen er voor mij uit, ieder om een andere reden.\n\nTe beginnen in De Kuip, waar Feyenoord tegen Fortuna Sittard niet verder kwam dan 1-1. Giovanni van Bronckhorst zag zijn ploeg het spel domineren, terwijl Danny Buijs zijn elftal stevig had ingegraven. Fortuna kwam een aantal keren bijzonder goed weg, maar Feyenoord verzuimde de wedstrijd te beslissen.\n\nEn dan gebeurt precies waar je op kunt wachten. Zolang die tweede treffer uitblijft, geef je de tegenstander hoop. Fortuna rook zijn kans, groeide in de slotfase en pakte uiteindelijk een punt. Sterker nog, de Limburgers hadden misschien wel meer kunnen meenemen uit Rotterdam. Feyenoord mag vooral naar zichzelf kijken.\n\nDan PSV tegen Willem II. Moet ik PSV complimenteren of Willem II volledig afbranden? Ik kies toch voor dat laatste.\n\nWat was dat droevig, zeg.\n\nBij de openingstreffer van Mauro Júnior zag je eigenlijk al hoe laat het was. Een ongelukkige situatie, een stuiterende bal en een Tilburgse verdediging die erbij stond te kijken. Daarna werd het alleen maar erger. De 7-0 was pijnlijk, maar volkomen terecht.\n\nEn ik durf hier een duidelijke uitspraak te doen: **Willem II degradeert dit seizoen.**\n\nMet spelers als Tonny Vilhena zou je toch meer mogen verwachten? Er zit best kwaliteit in die selectie, maar als ploeg klopt er werkelijk niets van. Of het aan de trainer, de fitheid of een gebrek aan vertrouwen ligt, laat ik in het midden. Eén ding weet ik wel: op deze manier gaan ze het niet redden. Jammer voor Tilburg, maar zo simpel is het.\n\nEn dan Wout Weghorst.\n\nLaat ik vooropstellen dat ik niet bepaald fan ben van zijn maniertjes. Dat voortdurende gedoe, dat trekken en die theatrale reacties. Het is niet mijn type voetballer.\n\nMaar wat die man tegen Excelsior liet zien? Werkelijk waanzinnig.\n\nFC Twente won met maar liefst 0-9. Excelsior moest al vroeg met tien man verder na een ongelukkige, maar terechte rode kaart voor Nesto Groen. Daarna was er geen houden meer aan.\n\nWeghorst scoorde vier keer, werkte zich een slag in de rondte en liet bij vlagen dingen zien die ik nauwelijks van hem gewend ben. Wat heeft die jongen ontzettend veel uit zijn carrière gehaald! Ook nu blijft hij sleuren, zijn ploeggenoten op scherp zetten en doelpunten maken.\n\nZijn publiekswissel was meer dan verdiend.\n\n**Wout Weghorst is voor mij zonder enige twijfel de speler van de week.**\n\nEn misschien zegt dat nog wel het meest. Je hoeft iemand niet sympathiek te vinden om zijn prestaties te waarderen. Respect moet je verdienen. Dat heeft Weghorst dit weekend absoluut gedaan.\n\nTot volgende week!\n\n*Sander Brink*\n*De Derde Helft | Veldio*",
+      "contentHash": "f6ae76d35a0a2847588f2a59738c61969f12465b63d771b31ad12681e570ce1e",
+      "publishedAt": "2026-11-02T19:46:31.560Z",
+      "imageRights": "not_needed",
+      "autoPublish": false,
+      "authorApproval": {
+        "explicit": true,
+        "method": "author_supplied_manuscript",
+        "approvedAt": "2026-11-02T19:46:31.560Z",
+        "contentHash": "f6ae76d35a0a2847588f2a59738c61969f12465b63d771b31ad12681e570ce1e"
+      },
+      "verificationStatus": "author_supplied_not_independently_audited",
+      "feedState": "current"
+    },
     {
       "id": "f43dc560-a720-4ea7-ac3d-29dcc9e553d3",
       "status": "published",
@@ -768,6 +889,6 @@
       "feedState": "current"
     }
   ],
-  "mirroredAt": "2026-11-02T09:22:29.079Z",
+  "mirroredAt": "2026-11-02T20:57:14.731Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
