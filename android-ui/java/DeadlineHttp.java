@@ -9,6 +9,15 @@ import java.util.concurrent.*;
 public final class DeadlineHttp {
  private static final ScheduledExecutorService CLOCK=Executors.newSingleThreadScheduledExecutor(r->{Thread t=new Thread(r,"veldio-deadlines");t.setDaemon(true);return t;});
  private DeadlineHttp(){}
+ /** Shared total deadline for authenticated GET/POST/DELETE requests, including slow-drip responses. */
+ public static final class Guard implements AutoCloseable {
+  private final HttpURLConnection connection;private final long deadline;private final ScheduledFuture<?> alarm;
+  private Guard(HttpURLConnection c,int timeoutMs){connection=c;deadline=System.nanoTime()+TimeUnit.MILLISECONDS.toNanos(timeoutMs);alarm=CLOCK.schedule(c::disconnect,timeoutMs,TimeUnit.MILLISECONDS);}
+  public void check() throws SocketTimeoutException {if(System.nanoTime()>=deadline||Thread.currentThread().isInterrupted())throw new SocketTimeoutException("Total deadline");}
+  @Override public void close(){alarm.cancel(false);connection.disconnect();}
+ }
+ public static Guard watch(HttpURLConnection c,int timeoutMs) throws SocketTimeoutException {if(timeoutMs<=0)throw new SocketTimeoutException("Total deadline");return new Guard(c,timeoutMs);}
+
  public static String get(String address,int timeoutMs,int limit) throws IOException {
   HttpURLConnection c=(HttpURLConnection)new URL(address).openConnection();
   c.setInstanceFollowRedirects(false);c.setUseCaches(false);c.setConnectTimeout(Math.min(timeoutMs,7000));c.setReadTimeout(Math.min(timeoutMs,7000));

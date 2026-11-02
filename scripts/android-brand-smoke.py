@@ -15,8 +15,8 @@ badging = subprocess.check_output([str(aapt), 'dump', 'badging', sys.argv[1]], t
 match = re.search(r"package: name='([^']+)'", badging)
 assert match, 'APK package identity missing'
 PACKAGE = match.group(1)
-assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test39'), PACKAGE
-if PACKAGE=='nl.voetbalhub.app1.test39':assert "application-label:'Veldio 39 test'" in badging, 'Distinct test launcher label absent'
+assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalhub.app1.test39', 'nl.voetbalhub.app1.test39b'), PACKAGE
+if PACKAGE=='nl.voetbalhub.app1.test39b':assert "application-label:'Veldio 39b test'" in badging, 'Distinct test launcher label absent'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def capture(name):
