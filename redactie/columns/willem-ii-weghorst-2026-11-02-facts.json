@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-11-02",
+  "authorApproval": "Explicit author-supplied complete manuscript and direct publication instruction in this conversation. No opinions changed.",
+  "editorialNote": "Willem II degradeert is de voorspelling van de auteur, niet een vaststaande degradatie.",
+  "checks": [
+    {
+      "claim": "Feyenoord-Fortuna 1-1; Danny Buijs; Feyenoord dominant",
+      "sources": [
+        "https://fortunasittard.nl/en/news/fortuna-pakt-punt-op-bezoek-bij-feyenoord",
+        "https://nos.nl/artikel/2637485-oppermachtig-feyenoord-krijgt-fortuna-sittard-er-niet-onder-1-1"
+      ]
+    },
+    {
+      "claim": "Giovanni van Bronckhorst is trainer Feyenoord bij deze wedstrijd",
+      "sources": [
+        "https://www.feyenoord.com/nl/news/feyenoord-zonder-st-juste-tegen-fortuna-sittard-301026"
+      ]
+    },
+    {
+      "claim": "PSV-Willem II 7-0; openingstreffer Mauro Júnior",
+      "sources": [
+        "https://www.psv.nl/en/match-center/match/psv-willem-ii-31-10-2026?toplevel=timeline"
+      ]
+    },
+    {
+      "claim": "Tonny Vilhena speelt voor Willem II",
+      "sources": [
+        "https://www.willem-ii.nl/artikel/tonny-vilhena-tekent-voor-een-seizoen-bij-willem-ii"
+      ]
+    },
+    {
+      "claim": "Excelsior-FC Twente 0-9; Weghorst vier goals; vroege rode kaart Nesto Groen",
+      "sources": [
+        "https://fctwente.nl/nieuws/samenvatting---recordwinst-in-rotterdam",
+        "https://nos.nl/artikel/2637612-weghorst-en-orjasaeter-schitteren-bij-recordzege-twente-op-excelsior-0-9"
+      ]
+    }
+  ],
+  "copyright": "Only the author-supplied manuscript is published. No source article prose, source photos or video is republished."
+}
