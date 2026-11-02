@@ -333,6 +333,11 @@ async function handle(req, res) {
     const encoded=await client.get("editorial:media:"+hash);if(!encoded)return send(res,404,{error:"Beeld niet beschikbaar."});const bytes=Buffer.from(encoded,"base64");if(crypto.createHash("sha256").update(bytes).digest("hex")!==hash)return send(res,503,{error:"Beeldintegriteit niet bevestigd."});
     res.writeHead(200,{"Content-Type":"image/webp","Cache-Control":"private,max-age=60"});return res.end(bytes);
   }
+  if(req.method==="GET"&&url.pathname==="/editorial/veldio-arena.webp"){
+    const fs=require("node:fs"),path=require("node:path"),manifest=JSON.parse(fs.readFileSync(path.join(__dirname,"public/editorial/visual-rights38.json"),"utf8")),bytes=fs.readFileSync(path.join(__dirname,"public/editorial/veldio-arena.webp"));
+    if(manifest.generated!==true||crypto.createHash("sha256").update(bytes).digest("hex")!==manifest.sha256)return send(res,503,{error:"Sfeerbeeld tijdelijk niet beschikbaar."});
+    res.writeHead(200,{"Content-Type":"image/webp","Cache-Control":"public,max-age=86400","X-Content-Type-Options":"nosniff"});return res.end(bytes);
+  }
   if(req.method==="GET"&&["/integrations/statistics","/integrations/videos"].includes(url.pathname)){
     if(!rateRequest("snapshots",30))return send(res,429,{error:"Te veel verzoeken."});
     const source="https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/"+(url.pathname.endsWith("statistics")?"statistics/eredivisie.json":"videos/eredivisie.json");

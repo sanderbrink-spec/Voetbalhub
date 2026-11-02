@@ -29,6 +29,7 @@ public final class PersonalHubView extends LinearLayout {
     private final WebPageHistory pageHistory;
     private final String restoredState;
     private JSONObject articles=new JSONObject(),stats=new JSONObject();
+    private JSONArray directory=new JSONArray();
     private boolean ready,offline;
     private int pending=2;
     public PersonalHubView(Activity activity,String mode,String query,OpenArticle open,Runnable back){
@@ -44,8 +45,9 @@ public final class PersonalHubView extends LinearLayout {
         });addView(web,new LayoutParams(-1,-1));
         try{articles=new JSONObject(activity.getSharedPreferences("voetbalhub_editorial",0).getString("last_articles","{}"));}catch(Exception ignored){}
         try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot","{}"));}catch(Exception ignored){}
+        try(InputStream in=activity.getAssets().open("club-directory.json")){directory=new JSONObject(new String(BoundedInput.read(in,100000),java.nio.charset.StandardCharsets.UTF_8)).getJSONArray("clubs");}catch(Exception ignored){}
         web.loadUrl("file:///android_asset/personal-hub.html");
-        if(!PublicationPolicy.allows(articles))articles=new JSONObject();
+        try{JSONObject feed=PublicationPolicy.articleFeed(articles);articles=feed==null?new JSONObject():feed;}catch(Exception ignored){articles=new JSONObject();}
         if(!PublicationPolicy.allows(stats))stats=new JSONObject();
         fetch("https://voetbalhub-redactie.onrender.com/articles",true);
         fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics",false);
@@ -54,13 +56,13 @@ public final class PersonalHubView extends LinearLayout {
     public boolean handleBack(){return pageHistory.back();}
     public String navigationState(){return pageHistory.snapshot();}
     private void deliver(){if(!ready||activity.isFinishing())return;try{
-        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
+        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);payload.put("directory",directory);payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);
     }catch(Exception ignored){}}
     private void fetch(String address,boolean news){NETWORK.execute(()->{HttpURLConnection connection=null;JSONObject result=null;try{
         connection=(HttpURLConnection)new URL(address).openConnection();connection.setInstanceFollowRedirects(false);connection.setConnectTimeout(15000);connection.setReadTimeout(news?75000:20000);if(connection.getResponseCode()!=200)throw new Exception("No response");
         ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=connection.getInputStream()){byte[] block=new byte[8192];int n;while((n=in.read(block))!=-1){out.write(block,0,n);if(out.size()>3000000)throw new Exception("Too large");}}
-        JSONObject data=new JSONObject(out.toString("UTF-8"));if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");if(news?data.optJSONArray("articles")==null:data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Invalid data");result=data;
+        JSONObject data=new JSONObject(out.toString("UTF-8"));if(news){data=PublicationPolicy.articleFeed(data);if(data==null)throw new Exception("Feed unavailable");}else if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");if(news?data.optJSONArray("articles")==null:data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Invalid data");result=data;
     }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}
         final JSONObject data=result;activity.runOnUiThread(()->{pending--;if(data!=null){if(news){articles=data;activity.getSharedPreferences("voetbalhub_editorial",0).edit().putString("last_articles",data.toString()).apply();}else{stats=data;activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",data.toString()).apply();}}else offline=true;deliver();});
     });}
@@ -68,13 +70,15 @@ public final class PersonalHubView extends LinearLayout {
     private final class Bridge {
         @JavascriptInterface public void back(String unused){activity.runOnUiThread(back);}
         @JavascriptInterface public void openArticle(String id){activity.runOnUiThread(()->{JSONObject row=find(id);if(row!=null&&!activity.isFinishing())open.open(row);});}
-        @JavascriptInterface public void saveClubs(String raw){activity.runOnUiThread(()->{try{
-            JSONArray requested=new JSONArray(raw),standings=stats.optJSONArray("standings");if(requested.length()>40)return;
-            Set<String> valid=new HashSet<>(),existing=activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>()),selected=new HashSet<>();
-            valid.addAll(existing);if(standings!=null)for(int i=0;i<standings.length();i++)valid.add(standings.getJSONObject(i).getJSONObject("team").getString("name"));
-            for(int i=0;i<requested.length();i++){String name=requested.getString(i);if(valid.contains(name))selected.add(name);}
-            activity.getSharedPreferences("voethub",0).edit().putStringSet("clubs",selected).apply();
-        }catch(Exception ignored){}});}
+        @JavascriptInterface public void saveClubs(String raw){NETWORK.execute(()->{boolean saved=false;try{
+            JSONArray requested=new JSONArray(raw);if(requested.length()>40)throw new Exception("Too many clubs");
+            Set<String> valid=new HashSet<>(),selected=new HashSet<>();
+            valid.addAll(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>()));
+            for(int i=0;i<directory.length();i++)valid.add(directory.getJSONObject(i).getString("name"));
+            JSONArray rows=stats.optJSONArray("standings");if(rows!=null)for(int i=0;i<rows.length();i++)valid.add(rows.getJSONObject(i).getJSONObject("team").getString("name"));
+            for(int i=0;i<requested.length();i++){String name=requested.getString(i);if(!valid.contains(name))throw new Exception("Unknown club");selected.add(name);}
+            saved=activity.getSharedPreferences("voethub",0).edit().putStringSet("clubs",selected).commit();
+        }catch(Exception ignored){}final boolean ok=saved;activity.runOnUiThread(()->{if(!ready||activity.isFinishing())return;web.evaluateJavascript("window.clubsSaved("+ok+")",null);if(ok)deliver();});});}
         @JavascriptInterface public void removeSaved(String id){activity.runOnUiThread(()->{JSONObject row=find(id);if(row!=null&&EditorialStore.contains(activity,row))EditorialStore.toggle(activity,row);deliver();});}
     }
 }

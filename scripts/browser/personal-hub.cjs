@@ -5,7 +5,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
  page.on('pageerror',e=>errors.push(e.message));await page.exposeFunction('record',(method,value)=>calls.push({method,value}));
  await page.route('https://**/*',route=>route.abort());
  await page.setContent(fs.readFileSync('android-ui/assets/personal-hub.html','utf8').replace('<script src="page-history.js"></script>','<script>'+fs.readFileSync('android-ui/assets/page-history.js','utf8')+'</script>'));
- await page.evaluate(()=>{window.PersonalHub={saveClubs:x=>window.record('clubs',x),openArticle:x=>window.record('open',x),removeSaved:x=>window.record('remove',x),back:()=>window.record('back','')};});
+ await page.evaluate(()=>{window.PersonalHub={saveClubs:x=>{window.record('clubs',x);window.clubsSaved(true);},openArticle:x=>window.record('open',x),removeSaved:x=>window.record('remove',x),back:()=>window.record('back','')};});
  const team=(id,name)=>({id,name,logo:'https://eredivisie.b-cdn.net/'+id+'.png'}),groningen=team('gro','FC Groningen'),ajax=team('aja','Ajax'),az=team('az','AZ');
  const article=(id,headline,body=[])=>({id,headline,body,status:'published',publishedAt:'2026-10-30T15:00:00Z',category:'Eredivisie',standfirst:''});
  const original=article('1','FC Groningen bereidt zich voor',['Een opvallende verdedigingslinie met drie centrale spelers.']);
@@ -15,7 +15,7 @@ const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('nod
  assert.equal(await page.getByRole('heading',{name:'Mijn Veldio',exact:true}).count(),1);
  assert.equal(await page.locator('[data-article="1"]').count(),1);assert.equal(await page.locator('[data-article="2"]').count(),0);
  await page.getByRole('heading',{name:'Eerstvolgende wedstrijden'}).waitFor();assert.equal(await page.locator('.fixture').count(),1);
- await page.getByRole('button',{name:'Bewerken',exact:true}).click();await page.locator('[data-club="AZ"]').click();assert.equal(await page.locator('[data-club="AZ"]').getAttribute('aria-pressed'),'true');assert.equal(await page.locator('[data-article="2"]').count(),1);assert.equal(await page.locator('[data-article="3"]').count(),0);
+ await page.getByRole('button',{name:'Club toevoegen +',exact:true}).click();await page.locator('[data-club="AZ"]').click();assert.equal(await page.locator('[data-club="AZ"]').getAttribute('aria-pressed'),'true');assert.equal(await page.locator('[data-article="2"]').count(),1);assert.equal(await page.locator('[data-article="3"]').count(),0);
  assert.ok(calls.some(x=>x.method==='clubs'&&JSON.parse(x.value).includes('AZ')));
  await page.getByRole('button',{name:'Gereed',exact:true}).click();
  fs.mkdirSync('.browser-output',{recursive:true});await page.screenshot({path:'.browser-output/personal-hub-mobile.png',fullPage:true});

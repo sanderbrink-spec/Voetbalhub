@@ -19,6 +19,11 @@ assert PACKAGE in ('nl.voetbalhub.app1', 'nl.voetbalhub.app1.test', 'nl.voetbalh
 if PACKAGE=='nl.voetbalhub.app1.test39b':assert "application-label:'Veldio 39b test'" in badging, 'Distinct test launcher label absent'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
+def diagnostics():
+    for label,args in [('logcat',('logcat','-d','-t','1500')),('activity',('shell','dumpsys','activity','activities'))]:
+        try:(OUT/(label+'.txt')).write_text(adb(*args))
+        except Exception:pass
+atexit.register(diagnostics)
 def capture(name):
     if name=='01-start':
         adb('shell','screencap','-p','/sdcard/veldio.png')
@@ -210,8 +215,9 @@ for attempt in range(5):
 assert target is not None,'Phase 32 native photo-led news row absent'
 tap_node(root,lambda n:n is target)
 time.sleep(2);root=capture('17-phase32-photo-reader')
-assert any('Archiefbeeld' in n.get('text','') for n in root.iter('node')),'Archival context caption absent'
-assert any('CC BY' in n.get('text','') for n in root.iter('node')),'Photograph licence attribution absent'
+generated=any('AI-illustratie' in n.get('text','') for n in root.iter('node'))
+assert generated or any('Archiefbeeld' in n.get('text','') for n in root.iter('node')),'Image context caption absent'
+assert generated or any('CC BY' in n.get('text','') for n in root.iter('node')),'Photograph licence attribution absent'
 assert any(n.get('class')=='android.widget.ImageView' and n.get('content-desc')=='Afbeelding bij artikel' for n in root.iter('node')),'Bundled photograph not visible in reader'
 tap_node(root,lambda n:'Terug' in n.get('text',''))
 time.sleep(1);capture('18-phase32-back-to-feed')
@@ -257,6 +263,32 @@ assert not any('Nieuws bijwerken' in n.get('text','') for n in root.iter('node')
 adb('emu','network','speed','full');adb('emu','network','delay','none')
 adb('shell','svc','wifi','enable');adb('shell','svc','data','disable')
 with (OUT/'result.txt').open('a') as result:result.write('PASS: cellular-only emulator with GSM speed/GPRS latency does not block UI beyond the bounded refresh; Wi-Fi-only restored. No physical radio or physical S23 test.\n')
+
+# Phase 38: actual native two-column grid and offline favourites persistence.
+root=capture('38v-home')
+tap_node(root,lambda n:n.get('text')=='Competities');time.sleep(1);root=capture('38v-competitions')
+first=next(n for n in root.iter('node') if n.get('content-desc')=='Eredivisie, openen')
+second=next(n for n in root.iter('node') if n.get('content-desc')=='Keuken Kampioen Divisie, openen')
+a,b=bounds(first),bounds(second);assert a[0]<b[0] and abs(a[1]-b[1])<20,'Competition grid is not two columns'
+assert first.get('clickable')=='true' and second.get('clickable')=='true'
+tap_node(root,lambda n:n.get('text')=='Favorieten');time.sleep(2);root=capture('38v-favorites')
+def find_visual38(text,label):
+    for attempt in range(8):
+        root=capture(label)
+        node=next((n for n in root.iter('node') if text in n.get('text','') and n.get('clickable')=='true' and len(bounds(n))==4 and bounds(n)[3]>bounds(n)[1]>0),None)
+        if node is not None:return root,node
+        adb('shell','input','swipe',str(int(width*.97)),str(int(height*.77)),str(int(width*.97)),str(int(height*.4)),'300');time.sleep(.4)
+    raise AssertionError('Phase38 control absent: '+text)
+root,node=find_visual38('Club toevoegen +','38v-picker-open');tap_node(root,lambda n:n is node);time.sleep(.5)
+root,node=find_visual38('FC Groningen','38v-picker');tap_node(root,lambda n:n is node);time.sleep(1)
+prefs38=ET.fromstring(adb('shell','run-as',PACKAGE,'cat','shared_prefs/voethub.xml'))
+clubs38=prefs38.find("set[@name='clubs']");assert clubs38 is not None and any(n.text=='FC Groningen' for n in clubs38),'Favourite was not committed to disk'
+# Recreate the screen while the network remains unavailable.
+tap_node(root,lambda n:n.get('text')=='Nieuws');time.sleep(.5);root=capture('38v-news-return')
+tap_node(root,lambda n:n.get('text')=='Favorieten');time.sleep(1);root=capture('38v-persisted')
+assert any('FC Groningen' in n.get('text','') for n in root.iter('node')),'Offline favourite did not survive screen recreation'
+with (OUT/'result.txt').open('a') as result:result.write('PASS: Phase38 actual Android two-column competition tiles and SharedPreferences-committed favourite survive screen recreation offline.\n')
+tap_node(root,lambda n:n.get('text')=='Nieuws');time.sleep(.5)
 
 # Phase 35: separate club quiz is reachable without altering the homepage.
 adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')

@@ -14,7 +14,7 @@ on:
       - "scripts/patch-*.py"
       - ".github/workflows/build.yml"
   push:
-    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37", "work/veldio-38", "work/veldio-39"]
+    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37", "work/veldio-38", "work/veldio-39", "work/veldio-visual-38"]
 
 permissions:
   contents: read
@@ -1011,6 +1011,28 @@ jobs:
 
       - name: Install premium layout and server-clock quiz bridge
         run: python3 scripts/patch-premium39.py
+
+      - name: Install visual phase 38 upgrade
+        run: python3 scripts/patch-visual38.py
+
+      - name: Test phase 38 UI, server scores and replay protection
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y redis-server
+          redis-server --port 6380 --save "" --appendonly no --daemonize yes
+          REDIS_TEST_URL=redis://127.0.0.1:6380 npm test
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+          NODE_PATH=./node_modules REDIS_TEST_URL=redis://127.0.0.1:6380 node scripts/browser/visual38.cjs
+          NODE_PATH=./node_modules REDIS_TEST_URL=redis://127.0.0.1:6380 node scripts/browser/quiz39.cjs
+      - name: Keep phase 38 UI verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-38-visual-verification
+          path: .browser-output/
+          include-hidden-files: true
+          if-no-files-found: ignore
 
       - name: Set up Android SDK tools
         uses: android-actions/setup-android@v3

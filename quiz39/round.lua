@@ -31,7 +31,7 @@ elseif op=='answer' then
  if not found then return cjson.encode({error='invalid_option',status=400}) end
  local correct=elapsed<15000 and option==q.correctId;local score=0
  if correct then
-  score=math.floor(((100+100*(15000-elapsed)/15000)*q.factor)+0.5);r.correct=r.correct+1;r.correctMs=r.correctMs+elapsed
+  if r.scoreVersion==40 then score=math.floor(100+150*(15000-elapsed)/15000+0.5) else score=math.floor(((100+100*(15000-elapsed)/15000)*q.factor)+0.5) end;r.correct=r.correct+1;r.correctMs=r.correctMs+elapsed
   if elapsed<250 then r.fastCount=r.fastCount+1 end
  end
  r.points=r.points+score;r.totalMs=r.totalMs+math.min(15000,elapsed);r.answered=true
@@ -41,8 +41,8 @@ elseif op=='answer' then
  local summary={playerId=r.playerId,roundId=r.id,points=r.points,correct=r.correct,correctMs=r.correctMs,totalMs=r.totalMs,answered=r.index+1,total=#r.questions,completed=r.done,flagged=r.flagged,at=now,day=r.day,week=r.week,setId=r.setId,mode=r.mode}
  redis.call('HSET',KEYS[3],r.playerId,cjson.encode(summary));redis.call('EXPIRE',KEYS[3],172800)
  if r.done and not r.flagged then
-  profile.records=profile.records or {};local best=profile.records[r.mode]
-  if not best or summary.points>best.points then profile.records[r.mode]={points=summary.points,correct=summary.correct,total=summary.total,setId=r.setId,at=now} end
+  local recordKey=r.scoreVersion==40 and "records40" or "records";profile[recordKey]=profile[recordKey] or {};local best=profile[recordKey][r.mode]
+  if not best or summary.points>best.points then profile[recordKey][r.mode]={points=summary.points,correct=summary.correct,total=summary.total,setId=r.setId,at=now} end
   profile.version=profile.version+1;redis.call('SET',KEYS[7],cjson.encode(profile),'EX',7776000)
   for k=4,6 do
    local old=redis.call('HGET',KEYS[k],r.playerId);local replace=true

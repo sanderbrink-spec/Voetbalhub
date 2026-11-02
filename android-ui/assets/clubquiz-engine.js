@@ -1,6 +1,6 @@
 (function(root){
 'use strict';
-const MODES=Object.freeze({quick:10,club:20,expert:25,daily:10,stadium:10,player:10,grand:25}),VERSION='39.1';
+const MODES=Object.freeze({quick:10,club:20,expert:25,daily:10,stadium:10,player:10,grand:25}),VERSION='40.0';
 function shuffle(values,rng=Math.random){const a=values.slice();for(let i=a.length-1;i>0;i--){const j=Math.min(i,Math.floor(rng()*(i+1)));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function valid(q){return q&&typeof q.id==='string'&&['easy','normal','hard'].includes(q.level)&&typeof q.question==='string'&&Array.isArray(q.answers)&&q.answers.length===4&&new Set(q.answers).size===4&&q.answers.every(a=>typeof a==='string'&&a.length>0)&&q.answers.includes(q.correct)&&/^https:\/\//.test(q.source)&&/^\d{4}-\d{2}-\d{2}$/.test(q.reviewedAt||'');}
 function dayKey(now=Date.now()){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);}
@@ -27,7 +27,7 @@ function createRound(bank,{mode='quick',level='easy',club='',recent=[],now=Date.
 }
 class Round{
  constructor(questions,meta={}){if(!questions.length)throw Error('Geen gecontroleerde vragen beschikbaar');this.questions=questions;this.index=0;this.score=0;this.points=0;this.correctMs=0;this.answered=false;this.done=false;this.meta=meta;}
- answer(value,elapsedMs=0){if(this.done||this.answered||!this.questions[this.index].answers.includes(value))return null;this.answered=true;const q=this.questions[this.index],correct=value===q.correct&&elapsedMs<15000;const points=correct?Math.round((100+100*(15000-Math.max(0,elapsedMs))/15000)*({easy:1,normal:1.5,hard:2}[q.level])):0;if(correct){this.score++;this.correctMs+=Math.max(0,elapsedMs);}this.points+=points;return {correct,points,answer:q.correct};}
+ answer(value,elapsedMs=0){if(this.done||this.answered||!this.questions[this.index].answers.includes(value))return null;this.answered=true;const q=this.questions[this.index],correct=value===q.correct&&elapsedMs<15000;const points=correct?Math.round(100+150*(15000-Math.max(0,elapsedMs))/15000):0;if(correct){this.score++;this.correctMs+=Math.max(0,elapsedMs);}this.points+=points;return {correct,points,answer:q.correct};}
  timeout(){if(this.done||this.answered)return null;this.answered=true;return {correct:false,points:0,answer:this.questions[this.index].correct};}
  next(){if(this.done||!this.answered)return false;if(this.index+1===this.questions.length)this.done=true;else{this.index++;this.answered=false;}return true;}
 }

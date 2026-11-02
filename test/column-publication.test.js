@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto');
 const {prepareColumn,publishColumn}=require('../column-publication'),{publish}=require('../scripts/publish-column');
-const request=()=>{const p=JSON.parse(fs.readFileSync('redactie/columns/publish.json','utf8'));delete p.manuscriptPath;return {...p,manuscript:fs.readFileSync('redactie/columns/ajax-buijs.md','utf8')};};
+const request=()=>{const manuscript=fs.readFileSync('redactie/columns/ajax-buijs.md','utf8');return {intent:'publish_author_column',approved:true,authorApproved:true,author:'Sander Brink',manuscript,expectedContentHash:crypto.createHash('sha256').update('Sander Brink\n'+manuscript.trim()).digest('hex')};};
 function memory(){const records=new Map();return {records,async get(k){return records.get(k)||null;},async keys(){return [...records.keys()];},async set(k,v,o){if(o?.NX&&records.has(k))return null;records.set(k,v);return 'OK';}};}
 test('Full personally approved column retains every paragraph, short sentence, section and closing line',()=>{
  const r=request(),a=prepareColumn(r,'2026-10-30T22:00:00Z');assert.equal(a.headline,'Ajax pakt de punten, maar Danny Buijs steelt mijn bewondering');assert.equal(a.author,'Sander Brink');assert.equal(a.type,'column');assert.equal(a.manuscript,r.manuscript.trim());assert.ok(a.body.length>40);assert.ok(a.body.includes('Danny Buijs.'));assert.ok(a.body.includes('Dat is trainerswerk.'));assert.equal(a.blocks.filter(x=>x.type==='heading').length,5);assert.equal(a.body.at(-1),'Een mening hoeft niet iedereen te bevallen. Als hij maar ergens op gebaseerd is.');assert.equal(a.verificationStatus,'author_supplied_not_independently_audited');assert.equal(a.autoPublish,false);assert.match(a.id,/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/);
@@ -19,3 +19,5 @@ test('Publication runner requires the deployed capability and verifies exact pub
 });
 
 test('A first deployment can defer publication without blocking the API rollout or claiming publication',async()=>{const result=await publish({packet:request(),secret:'test-only',attempts:1,deferIfUnavailable:true,fetcher:async()=>({ok:true,json:async()=>({storage:'connected'})})});assert.equal(result.status,'awaiting_server');assert.equal(result.published,false);});
+
+test('Current publication manifest points to an unchanged author-approved manuscript',()=>{const c=JSON.parse(fs.readFileSync('redactie/columns/publish.json','utf8'));assert.match(c.manuscriptPath,/^redactie\/columns\/[a-z0-9-]+\.md$/);const manuscript=fs.readFileSync(c.manuscriptPath,'utf8');assert.equal(prepareColumn({...c,manuscript}).manuscript,manuscript.trim());});
