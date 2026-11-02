@@ -1,0 +1,9 @@
+from pathlib import Path
+import json
+icons=json.loads(Path('android-ui/assets/icons/manifest.json').read_text())['icons']
+icons['players']='M12 3A4 4 0 1 0 12 11A4 4 0 1 0 12 3 M4 22V18Q4 13 12 13Q20 13 20 18V22 M8 15L12 18L16 15'
+for topic,label,icon in [('players','SPELERS','players'),('stadiums','STADIONS','stadium'),('honours','PRIJZEN','competitions'),('clubs','CLUBS','clubs'),('history','VOETBALHISTORIE','fixtures')]:
+ for v in range(4):
+  positions=[(650,70,16),(40,100,14),(650,140,12),(260,65,18)];x,y,scale=positions[v];stroke=['#a8f34a','#7ad7ad','#f2d681','#bfdbff'][v]
+  svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500"><defs><linearGradient id="b" x2="1" y2="1"><stop stop-color="#081b10"/><stop offset="1" stop-color="#142b28"/></linearGradient></defs><rect width="1000" height="500" fill="url(#b)"/><path d="M0 {400-v*75}L1000 {80+v*75}" stroke="{stroke}" stroke-width="60" opacity=".06"/><circle cx="{850-v*200}" cy="250" r="200" fill="none" stroke="{stroke}" opacity=".12" stroke-width="3"/><g transform="translate({x} {y}) scale({scale})" fill="none" stroke="{stroke}" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round" opacity=".65"><path d="{icons[icon]}"/></g><rect x="35" y="35" width="5" height="42" rx="2" fill="#b7ff39"/><text x="58" y="64" font-family="sans-serif" font-size="22" font-weight="700" fill="#b7ff39" letter-spacing="4">VELDIO CLUBQUIZ</text><rect x="0" y="410" width="1000" height="90" fill="#06110be0"/><text x="40" y="465" font-family="sans-serif" font-size="32" font-weight="700" fill="#e7f2e8">{label}</text><text x="960" y="463" text-anchor="end" font-family="sans-serif" font-size="16" fill="#b3c8bb">EIGEN SYMBOLISCHE ILLUSTRATIE</text></svg>'''
+  Path(f'android-ui/assets/quiz-art39/{topic}-{v}.svg').write_text(svg)
