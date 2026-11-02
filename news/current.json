@@ -1,5 +1,5 @@
 {
-  "count": 16,
+  "count": 9,
   "articles": [
     {
       "id": "f43dc560-a720-4ea7-ac3d-29dcc9e553d3",
@@ -51,7 +51,8 @@
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true
       },
-      "autoPublish": false
+      "autoPublish": false,
+      "feedState": "current"
     },
     {
       "id": "7609658d-10fa-40fa-99cd-f5fd78350f6a",
@@ -116,7 +117,8 @@
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true
       },
-      "autoPublish": false
+      "autoPublish": false,
+      "feedState": "current"
     },
     {
       "id": "7c1be307-7bdf-4e90-b2b0-392d047d941a",
@@ -181,7 +183,8 @@
         "method": "fixture-specific-stadium-and-logos-v4",
         "reviewedAt": "2026-11-01T18:39:02.375Z"
       },
-      "autoPublish": false
+      "autoPublish": false,
+      "feedState": "current"
     },
     {
       "id": "a89b6005-6433-482d-a33b-7710b3f72170",
@@ -245,7 +248,8 @@
         "method": "fixture-specific-stadium-and-logos-v4",
         "reviewedAt": "2026-11-01T18:39:15.028Z"
       },
-      "autoPublish": false
+      "autoPublish": false,
+      "feedState": "current"
     },
     {
       "id": "a3fae7b9-f58f-4ee8-afee-025f48e3dea3",
@@ -308,7 +312,8 @@
         "method": "fixture-specific-stadium-and-logos-v4",
         "reviewedAt": "2026-11-01T18:39:27.926Z"
       },
-      "autoPublish": false
+      "autoPublish": false,
+      "feedState": "current"
     },
     {
       "id": "796c7106-9519-5f4b-868c-435f35ba7066",
@@ -598,112 +603,8 @@
         "approvedAt": "2026-10-30T21:28:21.267Z",
         "contentHash": "796c710695194f4ba68c435f35ba7066dd989c211a9e40ec1cc7879c6cdbfbd3"
       },
-      "verificationStatus": "author_supplied_not_independently_audited"
-    },
-    {
-      "id": "eec60ce3-7054-470d-bd22-71910f58dde5",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "PSV ontvangt Willem II zaterdagavond voor een competitieduel",
-      "standfirst": "Het competitieduel wordt op 31 oktober om 18.45 uur afgetrapt. Voor supporters gelden verschillende regelingen voor de thuisvakken en het bezoekersvak.",
-      "body": [
-        "PSV ontvangt zaterdag Willem II voor een thuiswedstrijd in de VriendenLoterij Eredivisie. Beide clubs bevestigen 31 oktober als speeldatum en 18.45 uur als aanvangstijd.",
-        "Op de informatiepagina van PSV staat een maximum van twee kaarten per lidmaatschap of Club Card. Het aanbod kan veranderen doordat seizoenkaarthouders hun plaats via resale aanbieden.",
-        "Willem II meldt voor de uitreis een verplichte bus- en autocombi. Willem II noemt in de eigen bezoekersinformatie een totaal van 1600 beschikbare kaarten voor de achterban."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-10-30T11:33:52.716Z",
-      "verifiedFacts": [
-        "PSV ontvangt Willem II op zaterdag 31 oktober 2026 om 18.45 uur in de VriendenLoterij Eredivisie.",
-        "Willem II bevestigt de uitwedstrijd bij PSV op zaterdag 31 oktober om 18:45 uur.",
-        "PSV vermeldt een maximum van 2 kaarten per lidmaatschap of PSV (Seizoen) Club Card.",
-        "PSV meldt dat het aanbod kan variëren doordat seizoenkaarthouders hun plaatsen vanaf zaterdag 17 oktober kunnen aanbieden voor resale.",
-        "Willem II meldt een verplichte bus- en autocombi en in totaal 1600 kaarten voor de uitwedstrijd bij PSV."
-      ],
-      "sources": [
-        {
-          "url": "https://www.psv.nl/ticketinfo/veelgestelde-vragen/informatie-psv-willem-ii-31102026"
-        },
-        {
-          "url": "https://www.willem-ii.nl/artikel/verkoopinformatie-psv-willem-ii"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F5a0d41e3593495a3a5632a3636ea6547d7a8ae0333d33e7102ecdd89b3386b84.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Foto: PSV · Philips Stadion · clublogos: gegevensleverancier · vormgeving: Veldio",
-      "imageRights": "cleared",
-      "autoPublish": false,
-      "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: preview. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "689346f8d3c6d2a700fb8b6b4c8ac287ced5f4393f6ff183572a4c47c034c18b",
-        "stadiumImageUrl": "https://www.psv.nl/upload/64d3d91d-9914-40c1-8c12-c3afb2fb882d_d00154a4-3a25-4f35-b681-c5472d0e6539_experience-philipsstadion-1470x720.jpg",
-        "stadiumVenueName": "Philips Stadion",
-        "stadiumSourceUrl": "https://www.psv.nl/museum-tours/museum-tours",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-10-30T16:21:58.005Z"
-      }
-    },
-    {
-      "id": "537721a2-3e83-4848-8710-53f7d6353f37",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Ajax en AZ treffen elkaar zaterdagavond in Amsterdam",
-      "standfirst": "Het competitieduel begint op 31 oktober om 21.00 uur. AZ heeft ook de arbitrage en de uitzendinformatie bekendgemaakt.",
-      "body": [
-        "Ajax speelt thuis tegen AZ in de competitie. Beide clubs vermelden zaterdag 31 oktober 2026 als speeldatum, met de aftrap om 21.00 uur in Amsterdam.",
-        "Volgens de informatie van AZ fluit Allard Lindhout het duel. Johan Balder en Roy de Nas assisteren hem; Clay Ruperti treedt op als vierde official.",
-        "AZ verwijst voor de live-uitzending naar ESPN 2. De club biedt daarnaast een liveblog via de eigen website en updates via de sociale kanalen."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-10-30T11:33:16.290Z",
-      "verifiedFacts": [
-        "Ajax speelt op zaterdag 31 oktober 2026 om 21.00 uur thuis tegen AZ in de VriendenLoterij Eredivisie.",
-        "AZ bevestigt dat het uitduel in Amsterdam op zaterdagavond 31 oktober om 21:00 uur wordt gespeeld.",
-        "AZ meldt dat Allard Lindhout de scheidsrechter is, met Johan Balder en Roy de Nas als assistenten en Clay Ruperti als vierde official.",
-        "AZ vermeldt ESPN 2 als zender voor de live-uitzending en biedt een liveblog op AZ.nl en updates via sociale media."
-      ],
-      "sources": [
-        {
-          "url": "https://www.ajax.nl/wedstrijden/"
-        },
-        {
-          "url": "https://www.az.nl/inside-az/nieuws/2026/oktober/de-az-connectie-ajax-az"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F2c1f720855cd2fd7652071533805e85d1fd43b9ea4eaaf31a36c9d0a5abed28b.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
-      "imageRights": "cleared",
-      "autoPublish": false,
-      "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: preview. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "249c1ba9f59f79d14dc108db5d5e61d5fd19b642cc26a364140a4020cfee26a7",
-        "stadiumImageUrl": "https://media.api-sports.io/football/venues/1117.png",
-        "stadiumVenueName": "Johan Cruijff Arena",
-        "stadiumSourceUrl": "https://media.api-sports.io/football/venues/1117.png",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-10-30T16:22:10.775Z"
-      }
+      "verificationStatus": "author_supplied_not_independently_audited",
+      "feedState": "current"
     },
     {
       "id": "7c536565-5ef1-43fb-9a34-7bf775d9af48",
@@ -755,7 +656,8 @@
         "stadiumSourceUrl": "https://media.api-sports.io/football/venues/453.png",
         "method": "fixture-specific-stadium-and-logos-v4",
         "reviewedAt": "2026-10-30T16:22:16.771Z"
-      }
+      },
+      "feedState": "current"
     },
     {
       "id": "79ef5b4d-cb4f-4575-98a6-d13e0ca6544f",
@@ -807,7 +709,8 @@
         "stadiumSourceUrl": "https://media.api-sports.io/football/venues/1159.png",
         "method": "fixture-specific-stadium-and-logos-v4",
         "reviewedAt": "2026-10-30T16:22:23.179Z"
-      }
+      },
+      "feedState": "current"
     },
     {
       "id": "fca0bd67-45a0-4891-8415-b8f62e64eb34",
@@ -861,209 +764,10 @@
         "stadiumSourceUrl": "https://media.api-sports.io/football/venues/10504.png",
         "method": "fixture-specific-stadium-and-logos-v4",
         "reviewedAt": "2026-10-30T16:22:34.726Z"
-      }
-    },
-    {
-      "id": "92c3f8b4-8a1e-4afc-9353-c136eb19a896",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Groningen uit de beker na dubbelslag van Cooper-Love",
-      "standfirst": "FC Groningen is in de eerste bekerronde uitgeschakeld door FC Emmen. Jack Cooper-Love maakte beide doelpunten in de Euroborg: 0-2.",
-      "body": [
-        "Het bekerduel van donderdag 29 oktober betekende voor Groningen meteen het einde van het toernooi. De thuisploeg kwam in de Euroborg niet tot scoren, terwijl de bezoekers in beide helften een doelpunt maakten. Emmen plaatste zich daarmee voor de volgende ronde.",
-        "Cooper-Love zette Emmen vóór de pauze op voorsprong en verdubbelde de marge na rust. Bij beide treffers verzorgde Sybrand Veldhuis de voorbereiding. Die samenwerking leverde de bezoekers uiteindelijk alle doelpunten op in de noordelijke ontmoeting; Groningen kon daar geen treffer tegenover zetten.",
-        "Ook doelman Kelle Roos had een aandeel in het resultaat. Hij hield zijn doel schoon en keerde onder meer pogingen van Thom van Bergen en Jacob Ondrejka. Zijn reddingen voorkwamen dat Groningen de achterstand kon verkleinen en hielden de thuisploeg op nul doelpunten."
-      ],
-      "why_it_matters": "",
-      "category": "FC Groningen",
-      "publishedAt": "2026-10-30T10:31:25.144Z",
-      "verifiedFacts": [
-        "FC Groningen speelde op donderdag 2026-10-29 thuis in de Euroborg tegen FC Emmen in de eerste ronde van de KNVB Beker. De eindstand thuis-uit was 0-2.",
-        "FC Groningen maakte geen doelpunten in dit bekerduel en is uitgeschakeld. FC Emmen plaatste zich voor de volgende ronde.",
-        "Jack Cooper-Love maakte beide doelpunten voor FC Emmen: één vóór de pauze in de eerste helft en één na rust in de tweede helft. Hij zette Emmen op voorsprong en vergrootte de marge. Groningen kwam hierdoor op achterstand en wist die niet te verkleinen.",
-        "Sybrand Veldhuis verzorgde bij allebei de doelpunten van Jack Cooper-Love de voorbereiding.",
-        "Kelle Roos was de doelman van FC Emmen. Hij hield zijn doel schoon in de Euroborg en verrichtte reddingen op pogingen van Thom van Bergen en Jacob Ondrejka.",
-        "Doelminuten en aanvullende statistieken zijn niet in het concept opgenomen. De opgehaalde bronnen geven verschillende notaties voor de doelminuten; die details zijn niet als definitief gecontroleerd aangemerkt."
-      ],
-      "sources": [
-        {
-          "url": "https://fcemmen.nl/fc-emmen-stunt-in-euroborg-en-bekert-verder/"
-        },
-        {
-          "url": "https://www.eurosport.nl/voetbal/eurojackpot-knvb-beker/2026-2027/live-fc-groningen-fc-emmen_mtc21934253/live.shtml"
-        },
-        {
-          "url": "https://www.flashscore.com/match/football/fc-emmen-Stafar0g/groningen-MBUGcjb9/"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
       },
-      "imageRights": "cleared",
-      "autoPublish": false,
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=report&label=FC%20Groningen&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F3d280496863ca2c8283716ec1de92b789bb3f8838d819762a1f9d915f102fc9d.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
-      "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: report. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "fc506d3dfb22711cbaf4dc3c7dea36307c642a4d58f4d4ac891e8b963122909f",
-        "stadiumImageUrl": "",
-        "stadiumVenueName": "Euroborg",
-        "stadiumSourceUrl": "",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-10-30T16:22:40.915Z"
-      }
-    },
-    {
-      "id": "1406b2e4-ce33-4372-9964-ea485bbadf61",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "FC Groningen ziet voorsprong verdwijnen bij N.E.C.",
-      "standfirst": "FC Groningen hield aan het bezoek aan Nijmegen een punt over. Na een sterke eerste helft kwamen de bezoekers op voorsprong, maar N.E.C. vocht zich na rust terug in de wedstrijd.",
-      "body": [
-        "FC Groningen leek zondag op weg naar een uitzege in Nijmegen. De ploeg nam voor de pauze het initiatief en wist dat om te zetten in een comfortabele voorsprong. Toch bleek die marge uiteindelijk niet voldoende om alle punten mee naar huis te nemen.",
-        "Na de onderbreking veranderde het verloop van de wedstrijd. N.E.C. kreeg weer aansluiting en zette de bezoekers onder druk. De thuisploeg wist het verschil vervolgens volledig weg te werken, waardoor het duel alsnog in evenwicht eindigde.",
-        "Voor Groningen zal vooral het verschil tussen beide helften aanleiding zijn om terug te kijken. De goede uitgangspositie leverde uiteindelijk geen overwinning op. N.E.C. kan juist tevreden zijn over de manier waarop het zich terugknokte."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-10-28T08:01:47.094Z",
-      "verifiedFacts": [
-        "Punt",
-        "Terug gekomen in de wedstrijd"
-      ],
-      "sources": [
-        {
-          "url": "https://www.nu.nl/voetbal/6414328/nec-redt-punt-tegen-groningen-na-twee-goals-brynjolfur-willumsson-tegen-broer.html"
-        },
-        {
-          "url": "https://www.flashscore.nl/r/?t=1&id=WOelitfE"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageRights": "not_needed",
-      "autoPublish": false
-    },
-    {
-      "id": "a911d7bc-6de0-40c1-b71e-dd516b274d1c",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "FC Groningen ziet voorsprong verdwijnen bij N.E.C.",
-      "standfirst": "FC Groningen hield aan het bezoek aan Nijmegen een punt over. Na een sterke eerste helft kwamen de bezoekers op voorsprong, maar N.E.C. vocht zich na rust terug in de wedstrijd.",
-      "body": [
-        "FC Groningen leek zondag op weg naar een uitzege in Nijmegen. De ploeg nam voor de pauze het initiatief en wist dat om te zetten in een comfortabele voorsprong. Toch bleek die marge uiteindelijk niet voldoende om alle punten mee naar huis te nemen.",
-        "Na de onderbreking veranderde het verloop van de wedstrijd. N.E.C. kreeg weer aansluiting en zette de bezoekers onder druk. De thuisploeg wist het verschil vervolgens volledig weg te werken, waardoor het duel alsnog in evenwicht eindigde.",
-        "Voor Groningen zal vooral het verschil tussen beide helften aanleiding zijn om terug te kijken. De goede uitgangspositie leverde uiteindelijk geen overwinning op. N.E.C. kan juist tevreden zijn over de manier waarop het zich terugknokte."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-10-28T07:55:22.101Z",
-      "verifiedFacts": [
-        "Punt gepakt.",
-        "NEC kwam terug in de wedstrijd."
-      ],
-      "sources": [
-        {
-          "url": "https://www.voetbalprimeur.nl/wedstrijden/2026-10-25/nec-vs-fc-groningen"
-        },
-        {
-          "url": "https://www.flashscore.nl/r/?t=1&id=WOelitfE"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageRights": "not_needed",
-      "autoPublish": false
-    },
-    {
-      "id": "0cc1e2c0-3484-4da3-aa72-663a4840bc4d",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "FC Groningen ziet voorsprong verdwijnen bij N.E.C.",
-      "standfirst": "FC Groningen hield aan het bezoek aan Nijmegen een punt over. Na een sterke eerste helft kwamen de bezoekers op voorsprong, maar N.E.C. vocht zich na rust terug in de wedstrijd.",
-      "body": [
-        "FC Groningen leek zondag op weg naar een uitzege in Nijmegen. De ploeg nam voor de pauze het initiatief en wist dat om te zetten in een comfortabele voorsprong. Toch bleek die marge uiteindelijk niet voldoende om alle punten mee naar huis te nemen.",
-        "Na de onderbreking veranderde het verloop van de wedstrijd. N.E.C. kreeg weer aansluiting en zette de bezoekers onder druk. De thuisploeg wist het verschil vervolgens volledig weg te werken, waardoor het duel alsnog in evenwicht eindigde.",
-        "Voor Groningen zal vooral het verschil tussen beide helften aanleiding zijn om terug te kijken. De goede uitgangspositie leverde uiteindelijk geen overwinning op. N.E.C. kan juist tevreden zijn over de manier waarop het zich terugknokte."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-10-26T23:39:58.748Z",
-      "verifiedFacts": [
-        "Punt fc",
-        "Groningen op voorsprong"
-      ],
-      "sources": [
-        {
-          "url": "https://share.google/dUHoHgzAMV9Ka1VCx"
-        },
-        {
-          "url": "https://www.flashscore.nl/r/?t=1&id=WOelitfE"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://share.google/dUHoHgzAMV9Ka1VCx",
-      "imageSource": "Nos",
-      "imageCredit": "Duel",
-      "imageRights": "licensed",
-      "autoPublish": false
-    },
-    {
-      "id": "85abcf58-379d-442f-8d1f-0faed548d9d3",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "FC Groningen ziet voorsprong verdwijnen bij N.E.C.",
-      "standfirst": "FC Groningen hield aan het bezoek aan Nijmegen een punt over. Na een sterke eerste helft kwamen de bezoekers op voorsprong, maar N.E.C. vocht zich na rust terug in de wedstrijd.",
-      "body": [
-        "FC Groningen leek zondag op weg naar een uitzege in Nijmegen. De ploeg nam voor de pauze het initiatief en wist dat om te zetten in een comfortabele voorsprong. Toch bleek die marge uiteindelijk niet voldoende om alle punten mee naar huis te nemen.",
-        "Na de onderbreking veranderde het verloop van de wedstrijd. N.E.C. kreeg weer aansluiting en zette de bezoekers onder druk. De thuisploeg wist het verschil vervolgens volledig weg te werken, waardoor het duel alsnog in evenwicht eindigde.",
-        "Voor Groningen zal vooral het verschil tussen beide helften aanleiding zijn om terug te kijken. De goede uitgangspositie leverde uiteindelijk geen overwinning op. N.E.C. kan juist tevreden zijn over de manier waarop het zich terugknokte."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-10-26T23:02:20.151Z",
-      "verifiedFacts": [
-        "Punt gepakt. 2-2",
-        "De ploeg nam voor rust het initiatief."
-      ],
-      "sources": [
-        {
-          "url": "https://www.flashscore.nl/r/?t=1&id=WOelitfE"
-        },
-        {
-          "url": "https://www.voetbalprimeur.nl/zoeken?q=Groningen%20&ts=1"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageRights": "not_needed",
-      "autoPublish": false
+      "feedState": "current"
     }
   ],
-  "mirroredAt": "2026-11-01T20:49:35.567Z",
+  "mirroredAt": "2026-11-02T09:22:29.079Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
