@@ -4,7 +4,8 @@ const {chromium}=require('playwright');const fs=require('node:fs');const assert=
  const browser=await chromium.launch({headless:true});
  try{
   const page=await browser.newPage({viewport:{width:393,height:852},deviceScaleFactor:1});const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  const {stats:data,now}=require('./fixtures.cjs');await page.clock.setFixedTime(new Date(now));
+  const {stats:data,now}=require('./fixtures.cjs');
+  await page.clock.setFixedTime(new Date(now));
   await page.setContent(fs.readFileSync('android-ui/assets/eredivisie.html','utf8').replace('<script src="page-history.js"></script>','<script>'+fs.readFileSync('android-ui/assets/page-history.js','utf8')+'</script>'));
   await page.evaluate(x=>window.setData(JSON.stringify(x)),data);
   await page.getByRole('heading',{name:'De stand',exact:true}).waitFor();

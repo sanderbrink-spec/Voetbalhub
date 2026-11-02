@@ -146,13 +146,15 @@ function hydrateEvidence(candidate,fragments){
  return {...candidate,facts:candidate.facts.map(f=>({...f,evidence:(f.evidence||[]).map(hydrate)})),sharedEventEvidence:candidate.sharedEventEvidence.map(hydrate)};
 }
 function pacedGroq(fetcher=fetch,intervalMs=35000){
- let next=0;
+ let next=0,quotaBlocked=false;
  return async function(url,options){
   if(!String(url).startsWith('https://api.groq.com/'))return fetcher(url,options);
+  if(quotaBlocked)throw require('../groq-quota').quotaError();
   for(let attempt=0;attempt<3;attempt++){
    options?.signal?.throwIfAborted();
    const wait=Math.max(0,next-Date.now());if(wait)await require('node:timers/promises').setTimeout(wait,undefined,{signal:options?.signal});
    const response=await fetcher(url,options);next=Date.now()+intervalMs;
+   if(await require('../groq-quota').dailyQuota(response)){quotaBlocked=true;throw require('../groq-quota').quotaError();}
    if(response.status!==429||attempt===2)return response;
    const retry=Number(response.headers.get('retry-after'));
    next=Date.now()+Math.min(60000,Math.max(intervalMs,Number.isFinite(retry)?retry*1000:60000));
@@ -295,6 +297,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }catch(e){
    if(record){try{await persist(stage==='publication'?'publication_failed':'needs_review',[e.message]);}catch{report.sourceErrors.push({error:'Conceptstatus kon niet worden bevestigd; opgeslagen versie handmatig controleren.',draftId:record.id});}}
    report.skipped.push({topic,stage,draftId:record?.id,reason:e.message});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);
+   if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}
   }
  }
  report.finishedAt=new Date().toISOString();
