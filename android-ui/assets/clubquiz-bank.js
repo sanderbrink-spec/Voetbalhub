@@ -6289,7 +6289,7 @@ window.CLUBQUIZ_BANK=[
   "correct": "West-Duitsland",
   "answers": [
    "West-Duitsland",
-   "Duitsland",
+   "Frankrijk",
    "Joegoslavië",
    "Denemarken"
   ],
@@ -6533,7 +6533,7 @@ window.CLUBQUIZ_BANK=[
    "Italië",
    "Sovjet-Unie",
    "Duitsland",
-   "West-Duitsland"
+   "Frankrijk"
   ],
   "source": "https://www.uefa.com/uefaeuro/history/seasons/2000/",
   "explanation": "Italië verloor de beslissende finale tegen Frankrijk.",

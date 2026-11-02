@@ -23,3 +23,5 @@ test('historical questions bind to individually fetched primary-source receipts 
  const receipts=require('../quiz/research37.json').receipts;for(const q of bank.filter(q=>q.id.startsWith('history-'))){assert.ok(receipts.some(r=>r.source===q.source&&r.winner&&r.matchSlug&&r.sha256.length===64),q.id);assert.ok(q.question.includes('finale')||q.question.includes('won'));}
  assert.equal(new Set(bank.map(q=>q.question.toLocaleLowerCase('nl'))).size,bank.length);assert.ok(bank.length>=300);
 });
+
+test('answer choices never present Germany and West Germany as two independent options',()=>{for(const q of bank)assert.equal(q.answers.includes('Duitsland')&&q.answers.includes('West-Duitsland'),false,q.id);});
