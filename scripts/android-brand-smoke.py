@@ -164,7 +164,7 @@ import urllib.request
 with urllib.request.urlopen('https://voetbalhub-redactie.onrender.com/articles',timeout=80) as response:
     live=json.load(response)
 assert live.get('articles'),'Production feed unavailable'
-latest=live['articles'][0]['headline']
+latest=next(a['headline'] for a in live['articles'] if a.get('type')!='column' and a.get('category','').casefold() not in ('column','de derde helft'))
 before=pref_timestamp()
 adb('shell','am','force-stop',PACKAGE)
 adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
@@ -318,8 +318,17 @@ try:
     root=capture('34b-quiz39-age-options');tap_node(root,lambda n:'16 jaar of ouder' in n.get('text',''));time.sleep(.4)
     root,node=find_quiz_text('Ik wil aan het technische testklassement','35-quiz39-privacy');tap_node(root,lambda n:n is node)
     root,node=find_quiz_text('Online profiel maken','36-quiz39-join');tap_node(root,lambda n:n is node);time.sleep(5)
-    prefs=adb('shell','run-as',PACKAGE,'cat','shared_prefs/veldio_quiz39_private.xml')
-    quiz_token=ET.fromstring(prefs).find("string[@name='token']").text
+    # Wi-Fi was deliberately disabled earlier. Wait for the two bounded native requests, not a fixed 5-second assumption.
+    for attempt in range(30):
+        try:
+            prefs=ET.fromstring(adb('shell','run-as',PACKAGE,'cat','shared_prefs/veldio_quiz39_private.xml'))
+            stored=prefs.find("string[@name='token']")
+            if stored is not None and stored.text:
+                quiz_token=stored.text;break
+        except (subprocess.CalledProcessError,ET.ParseError):pass
+        time.sleep(1)
+    if not quiz_token:
+        capture('36b-quiz39-join-failure');raise AssertionError('No native quiz token after bounded reconnect wait')
     assert re.fullmatch(r'[a-f0-9-]{36}\.[A-Za-z0-9_-]{43}',quiz_token),'Native profile token not stored privately'
     root,node=find_quiz_text('Start de quiz','37-quiz39-start');tap_node(root,lambda n:n is node);time.sleep(4)
     root=capture('38-quiz39-question');assert any('Vraag 1 / 10' in n.get('text','') for n in root.iter('node')),'Online server round absent'
