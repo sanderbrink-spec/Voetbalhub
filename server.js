@@ -276,12 +276,9 @@ async function polishIncomingDraft(item) {
 async function getArticles(view = "current") {
   if (!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
-  const articles = [];
-  for (const key of keys.slice(0, 200)) {
-    const raw = await client.get(key);
-    if (!raw) continue;
-    try { const article = JSON.parse(raw); if (article.status === "published") articles.push(require("./brand").article(withArticleCover(article))); } catch {}
-  }
+  const candidates=await require("./article-storage").readPublished(client,keys);
+  const articles=[];
+  for(const article of candidates)try{articles.push(require("./brand").article(withArticleCover(article)));}catch{}
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return require("./feed-policy").selectFeed(articles, {view});
 }
@@ -385,9 +382,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
-    try { const view = url.searchParams.get("view") || "current";
+    try { const started=Date.now(); const view = url.searchParams.get("view") || "current";
       if (!["current","archive","all"].includes(view)) return send(res,400,{error:"Onbekende nieuwsweergave."});
-      const articles = await runtime.withDeadline(() => getArticles(view), 9000); return send(res, 200, { count: articles.length, articles }); }
+      const articles = await runtime.withDeadline(() => getArticles(view), 9000); res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, { count: articles.length, articles }); }
     catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
