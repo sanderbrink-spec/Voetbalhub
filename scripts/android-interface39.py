@@ -2,6 +2,8 @@
 from pathlib import Path
 import subprocess,os,re,time,sys,xml.etree.ElementTree as ET,json,atexit
 import uiautomator2 as u2
+from importlib.machinery import SourceFileLoader
+webview_dom=SourceFileLoader("webview_dom39","scripts/android-webview-dom39.py").load_module()
 OUT=Path('.android-smoke');OUT.mkdir(exist_ok=True)
 sdk=Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
 aapt=sorted(sdk.glob('build-tools/*/aapt'))[-1]
@@ -21,7 +23,10 @@ def bounds(n):return list(map(int,re.findall(r'\d+',n.get('bounds',''))))
 def capture(name):
  for attempt in range(5):
   try:
-   xml=device.dump_hierarchy(compressed=False);(OUT/(name+'.xml')).write_text(xml);root=ET.fromstring(xml);break
+   xml=device.dump_hierarchy(compressed=False);root=ET.fromstring(xml)
+   try:webview_dom.augment(root,PACKAGE,OUT/(name+'-dom.json'))
+   except Exception as error:(OUT/(name+'-dom-error.txt')).write_text(type(error).__name__+': '+str(error))
+   ET.ElementTree(root).write(OUT/(name+'.xml'));break
   except Exception:
    if attempt==4:raise
    time.sleep(1)
