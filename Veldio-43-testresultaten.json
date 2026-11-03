@@ -98,8 +98,10 @@
     }
   ],
   "videoPlaybackAcceptance": false,
-  "apkSha256": "338e2bb5053d01bedd6e7cb0982172e6c7707dc0c107a8a3bf1425498c84a1ae",
-  "apkCommit": "65a2c9c1eedd2bf2357fef99783edf6e2523b6ec",
-  "workflowRun": 41695500870,
+  "size": 21025281,
+  "sha256": "bce258f0931f55f517aa4114bf3f54a896e1d53478a347fd40be5cbdd55e1243",
+  "artifact": 13272705387,
+  "workflow": 41719319572,
+  "commit": "29e2ebb7f64d29a6a01f41856599a4a16d453b2e",
   "observedYouTubeError": 150
 }
