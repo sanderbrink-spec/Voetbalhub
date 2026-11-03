@@ -6,17 +6,17 @@ source=source.replace("'Standen','Clubs','Favorieten','Meldingen'","'Standen','F
 a=source.index('positions=[]');b=source.index('checks=[]',a)
 source=source[:a]+'''# Every native tile must remain reachable above the fixed bottom navigation.
 for label in labels:
- root,node=find(label,'40-menu',clickable=True,scroll=True)
+ root,node=find('Menu: '+label,'40-menu',clickable=True,scroll=True)
  b=bounds(node)
  nav=[bounds(n) for n in root.iter('node') if n.get('text')=='Home']
  assert all(b[3]<=n[1] for n in nav if len(n)==4 and n[1]>b[1]),label+' covered by navigation'
 adb('shell','input','swipe','200','260','200','1600','500')
 ''' +source[b:]
-source=source.replace("find(label,'39-home',clickable=True)","find(label,'40-home',clickable=True,scroll=True)")
+source=source.replace("find(label,'39-home',clickable=True)","find('Menu: '+label,'40-home',clickable=True,scroll=True)")
 source=source.replace("if web is not None:\n    b=bounds(web)","if web is None:web=next((n for n in root.iter('node') if n.get('class')=='android.widget.ScrollView'),None)\n   if web is not None:\n    b=bounds(web)")
 for label in ['Favorieten','Club Quiz']:
  for suffix in ['39-home','39-offline-home']:
-  source=source.replace("find('"+label+"','"+suffix+"',clickable=True)","find('"+label+"','40-home',clickable=True,scroll=True)")
+  source=source.replace("find('"+label+"','"+suffix+"',clickable=True)","find('Menu: "+label+"','40-home',clickable=True,scroll=True)")
 # Home always reconstructs the launcher at the top after navigating back.
 a=source.index('def back_home():');b=source.index("adb('install'",a)
 source=source[:a]+'''def back_home():
