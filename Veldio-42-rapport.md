@@ -1,6 +1,6 @@
 # Veldio fase 42
 
-Datum: 3 november 2026. Status: implementatie en verificatie in uitvoering. Geen volledige productieafronding geclaimd.
+Datum: 3 november 2026. Status: ondertekende test-APK beschikbaar en Android16-emulatorverificatie geslaagd. De volledige fase42-acceptatie is nog niet bereikt: doorlopende unieke AI-generatie en het automatische NOS-speelrondeoverzicht zijn niet operationeel aangesloten. Geen volledige productieafronding geclaimd.
 
 ## Uitgangspunt en herstelpunt
 
@@ -65,4 +65,36 @@ Bronnen:
 
 ## Teststatus
 
-Lokaal: 329 Node-tests, 294 geslaagd, 35 Redis-afhankelijke tests overgeslagen; geen fouten. Zes nieuwe tests voor inhoudelijke beeldselectie, deterministische beeldidentiteit, gecontroleerde fallback, NOS-kanaal/ronde/seizoen en behouden vorige ronde. Volledige Android-projectvoorbereiding uit de bestaande ZIP en alle opeenvolgende productiepatches inclusief 41 en 42 geslaagd. De CI controleert aanvullend Redis, browser, Java, Android-build, ondertekening en API36-emulator. De uitkomst en APK-link worden na de workflow toegevoegd. Geen fysieke Galaxy S23-test uitgevoerd.
+Lokaal: 329 Node-tests, 294 geslaagd, 35 Redis-afhankelijke tests overgeslagen; geen fouten. Zes nieuwe tests voor inhoudelijke beeldselectie, deterministische beeldidentiteit, gecontroleerde fallback, NOS-kanaal/ronde/seizoen en behouden vorige ronde. Volledige Android-projectvoorbereiding uit de bestaande ZIP en alle opeenvolgende productiepatches inclusief 41 en 42 geslaagd. De CI controleert aanvullend Redis, browser, Java, Android-build, ondertekening en API36-emulator. De definitieve uitkomst en APK-link staan hieronder. Geen fysieke Galaxy S23-test uitgevoerd.
+
+## Gecontroleerde APK-build
+
+Broncommit: `1a575bbc196e425c8da05844a5b1d17eda8bff2f`. Buildjob `api-test-and-build` in workflow 41683320668 is succesvol. Alle 329 Node/Redis-tests zijn in CI geslaagd, nul fouten, nul overgeslagen. Browsercontroles voor contact, kleine schermen, favorieten, quiz, routes en samengestelde WebViews geslaagd.
+
+APK: **Veldio-42-install.apk**, 18.970.452 bytes, versie **4.50-phase42 (82)**, pakket **nl.voetbalhub.app1.test42**, minimum Android API24, doel API36. Dit is een afzonderlijke testapp die naast eerdere versies installeert; het is geen update met dezelfde installatie-identiteit of gedeelde lokale voorkeuren. APK Signature Scheme v2 is geldig; certificaat CN=Android Debug, 2048-bit RSA. Secret-scan geslaagd. Het artifact is onafhankelijk gedownload; ZIP-integriteit, exacte APK-bestandsnaam, APK-SHA256 en aanwezigheid van de twee nieuwe afbeeldingen en het originele logo zijn gecontroleerd.
+
+SHA-256 APK: `04f7a5664b9e8f13d064fa4ba6579f739248705382cdc264829c94bdd8de8d0e`.
+
+[APK-artifact](https://github.com/sanderbrink-spec/Voetbalhub/actions/runs/41683320668/artifacts/13255060883) · [Buildworkflow](https://github.com/sanderbrink-spec/Voetbalhub/actions/runs/41683320668) · [Ondertekening en manifest](https://github.com/sanderbrink-spec/Voetbalhub/actions/runs/41683320668/artifacts/13254956096).
+
+Vervolgcommit `98d59c05a3192619ecf3cced529920aa1dd1d123` wijzigt uitsluitend de apparaattest en verificatieworkflow. Deze test downloadt exact bovenstaande APK en houdt rekening met de hernoemde menuroute Samenvattingen. Geen nieuwe of afwijkende APK opgebouwd.
+
+Live controle na de build: `/health`, `/ready`, `/articles` geven HTTP200; Redis is verbonden; de feed bevat tien artikelen. De server blijft op de genoemde main-revisie. Automatische broninname en autopublicatie staan uit en de mailprovider is niet geconfigureerd. Deze bestaande blokkades zijn niet als opgelost gemeld.
+
+De eerste emulatorsmoke in workflow 41683320668 stopte op de verouderde testnaam `Menu: Video’s` (in het testscript gespeld met een rechte apostrof). De daadwerkelijke menutegel heet nu Samenvattingen. Dit betrof een testscriptfout; de volledige APK-build zelf slaagde. De nieuwe verificatieworkflow 41684106984 gebruikt het gecorrigeerde script en exact dezelfde APK.
+
+## Definitieve Android16-verificatie
+
+[Verificatieworkflow 41684106984](https://github.com/sanderbrink-spec/Voetbalhub/actions/runs/41684106984): **success**. Exact dezelfde APK geïnstalleerd op Android16/API36, scherm 1080×2340 bij dichtheid440. Appstart, alle twaalf menuroutes, terugnavigatie, opgeslagen meldingsvoorkeuren, favorieten na offline procesherstart en offline quiz met antwoorden/feedback geslaagd. Extra controles bevestigen de drie compacte Meer-secties, alle zeven regels, afwezigheid van dubbele quiz-/stadion-/columntegels en aanwezigheid van de officiële externe NOS-knop. Geen waargenomen appcrash tijdens deze controles. Dit is geen bewijs van correcte weergave van iedere toekomstige nieuwsafbeelding, actuele NOS-videoselectie of fysieke S23-prestaties.
+
+De werkelijke emulatorschermbeelden van Home, Competities, Meer en Samenvattingen zijn visueel gecontroleerd. Home toont het nieuwe Groningen–Sparta-beeld en geen lege wedstrijdstrip; de slideshow en het originele logo zijn aanwezig. Meer is volledig leesbaar zonder grote tegels. Competities toont eigen grafische emblemen zonder lettercirkels. Het NOS-scherm toont de externe kanaalknop ook tijdens het bijwerken.
+
+[APK na geslaagde apparaattest](https://github.com/sanderbrink-spec/Voetbalhub/actions/runs/41684106984/artifacts/13254472870) · [Installatie-, navigatie- en schermbewijzen](https://github.com/sanderbrink-spec/Voetbalhub/actions/runs/41684106984/artifacts/13254423052). De artifacts bevatten dezelfde APK-SHA256 als de oorspronkelijke build. Geen fysieke GalaxyS23-test uitgevoerd.
+
+### Openstaande acceptatiepunten
+
+1. Unieke automatische beeldgeneratie per toekomstig artikel vereist een operationele, goedgekeurde serverprovider. De huidige code selecteert gecontroleerde bestaande assets en een gelabelde fallback. Geen betaalde API of abonnement geactiveerd. De kostenraming hierboven is een concreet budgetvoorstel, geen bestaande aansluiting.
+2. Het automatische NOS-overzicht vereist een veilig ingestelde bestaande YouTube Data API-sleutel en activering van de periodieke workflow op de standaardbranch. De afzonderlijke pagina en de officiële externe NOS-link werken nu; geen actief speelrondenummer, videominiaturen of afspeelbare wedstrijdselectie geclaimd.
+3. De nieuwe redactiecode staat op de fase42-branch. De productiebackend op main is gecontroleerd maar niet gemigreerd; de bestaande blokkades voor autonome tekstpublicatie en mailbezorging blijven bestaan.
+
+Er zijn geen rechten verleend namens derden, licenties gekocht, betaalde diensten geactiveerd of kostenquota verhoogd.
