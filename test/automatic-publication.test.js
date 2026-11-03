@@ -25,6 +25,11 @@ test('discovery cannot leave the exact configured official site or article path'
  const index={url:'https://www.ajax.nl/artikelen/',articlePath:'^/artikelen/[^/]+/?$'};
  assert.deepEqual(discoverLinks('<a href="/artikelen/nieuws">A</a><a href="https://evil.example/artikelen/x">B</a><a href="/fans/test">C</a><a href="/artikelen/nieuws#x">D</a>',index),['https://www.ajax.nl/artikelen/nieuws']);
 });
+test('primary publication dates parse Dutch and PSV headers without using a future fixture date as publication time',()=>{
+ assert.equal(extractPage('<main><h1>Clubnieuws</h1>03-11-2026<p>Actuele mededeling.</p></main>','https://psv.nl/media/artikel/test').publishedAt,'2026-11-03');
+ assert.equal(extractPage('<main><h1>Clubnieuws</h1>Zondag 01 november 2026 om 19:10<p>Clubmededeling.</p></main>','https://fcgroningen.nl/nieuws/test/').publishedAt,'2026-11-01');
+ assert.equal(extractPage('<main><h1>Ajax speelt donderdag 5 november 2026</h1><p>Het duel staat gepland.</p></main>','https://ajax.nl/artikelen/test').publishedAt,'');
+});
 test('literal evidence from two official domains passes while invented quotes and single-domain confirmation fail',()=>{
  const {docs,candidate}=fixture();assert.deepEqual(validateEvidence(candidate,docs,now),[]);
  const invented=structuredClone(candidate);invented.facts[0].evidence[0].quote='Deze zin met een verzonnen uitslag staat nergens in de officiële bron.';

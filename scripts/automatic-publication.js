@@ -37,7 +37,15 @@ function extractPage(html,url){
  if(!publishedAt){
   const time=html.match(/<time[^>]*datetime=["']([^"']+)["']/i);
   if(time&&Number.isFinite(Date.parse(time[1])))publishedAt=time[1];
-  else {const date=text.slice(0,240).match(/\b([0-3]\d)\.([01]\d)\.(20\d\d)\b/);if(date)publishedAt=date[3]+'-'+date[2]+'-'+date[1];}
+  else {
+   const header=text.slice(0,400),date=header.match(/\b([0-3]\d)[.-]([01]\d)[.-](20\d\d)\b/);
+   if(date)publishedAt=date[3]+'-'+date[2]+'-'+date[1];
+   else {
+    // Explicit Dutch publication header, not an arbitrary fixture date in copy.
+    const nl=header.match(/\b(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\s+(\d{1,2})\s+(januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+(20\d\d)\s+om\s+\d{1,2}[.:]\d{2}\b/i);
+    if(nl){const month=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'].indexOf(nl[2].toLowerCase())+1;publishedAt=nl[3]+'-'+String(month).padStart(2,'0')+'-'+nl[1].padStart(2,'0');}
+   }
+  }
  }
  return {url,title,publishedAt,text};
 }

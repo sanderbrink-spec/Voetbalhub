@@ -397,7 +397,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
+    return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, imagePipeline: { version:44, providerConfigured:!!process.env.OPENAI_API_KEY }, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const started=Date.now(); const view = url.searchParams.get("view") || "current";

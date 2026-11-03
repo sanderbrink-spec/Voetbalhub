@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const I=require('../editorial-image44');
 const article={draft:{headline:'Voorbeschouwing FC Groningen tegen Sparta Rotterdam',standfirst:'De clubs treffen elkaar in de Eredivisie.',body:['Een eigen analyse.']},topicTeams:['FC Groningen','Sparta Rotterdam']};
-const accepted={relevant:true,coloursCorrect:true,highQuality:true,noLogos:true,noIdentifiablePeople:true,noMisleadingEvent:true,twoScarves:true,namesOnScarves:true,texts:['FC Groningen','Sparta Rotterdam']};
+const accepted={relevant:true,coloursCorrect:true,highQuality:true,noLogos:true,noIdentifiablePeople:true,noMisleadingEvent:true,twoScarves:true,namesOnScarves:true,texts:['FC Groningen','Sparta Rotterdam'],issues:[]};
 async function pixels(){return require('sharp')({create:{width:1536,height:1024,channels:3,background:'#234530'}}).webp().toBuffer();}
 test('match, transfer uncertainty and attributed club developments select distinct scenes',()=>{
  assert.equal(I.classify(article).category,'match');

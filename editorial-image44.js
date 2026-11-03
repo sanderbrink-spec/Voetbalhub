@@ -69,6 +69,7 @@ function promptFor(plan,correction=''){
 function qualityIssues(plan,r){
  const keys=['relevant','coloursCorrect','highQuality','noLogos','noIdentifiablePeople','noMisleadingEvent'];
  const issues=keys.filter(k=>r?.[k]!==true);
+ if(!Array.isArray(r?.issues)||r.issues.length)issues.push('review issues unresolved');
  if(plan.category==='match'){
   if(r?.twoScarves!==true||r?.namesOnScarves!==true)issues.push('two legible named scarves required');
   if(!Array.isArray(r?.texts)||JSON.stringify(r.texts.map(norm).sort())!==JSON.stringify(plan.clubs.map(c=>norm(c.name)).sort()))issues.push('exact club names required without other text');
