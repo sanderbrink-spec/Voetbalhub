@@ -30,3 +30,23 @@ test('quiz39 freezes the daily set in Redis and preserves identical question and
 test('quiz39 frozen legacy country labels are translated only for display without changing server option IDs or scoring',options,()=>using(async({api,identity,start,get,redis,prefix,answer})=>{const who=await identity(),r=await start(who.token),saved=await get(r);const q=saved.questions[0];q.options[0].text='USSR';q.correctText='USSR';q.correctId=q.options[0].id;q.explanation='USSR won een gecontroleerde testfinale.';await redis.set(prefix+'round:'+r.id,JSON.stringify(saved),{EX:172800});const shown=(await api('/round?id='+r.id,undefined,who.token)).data.round;assert.equal(shown.question.options[0].text,'Sovjet-Unie');assert.equal(shown.question.options[0].id,q.options[0].id);assert.equal((await get(r)).questions[0].options[0].text,'USSR');const result=await answer(r,who.token,{elapsed:1200});assert.equal(result.data.round.lastAnswer.correct,true);assert.equal(result.data.round.lastAnswer.answer,'Sovjet-Unie');assert.match(result.data.round.lastAnswer.explanation,/Sovjet-Unie/);assert.equal(result.data.round.points,M.points(true,result.data.round.lastAnswer.elapsedMs,q.level));}));
 
 test('quiz39 blocked owners can inspect only their own profile and erase all scores and rounds; ownership indexes follow active profile retention',options,()=>using(async({api,identity,start,answer,redis,prefix,admin})=>{const who=await identity(),observer=await identity();let r=await start(who.token);await answer(r,who.token,{elapsed:1200});const other=await start(observer.token);for(const suffix of ['player','ownedBoards','ownedKeys'])await redis.expire(prefix+suffix+':'+who.profile.id,2);assert.equal((await api('/me',undefined,who.token)).status,200);for(const suffix of ['player','ownedBoards','ownedKeys'])assert.ok(await redis.ttl(prefix+suffix+':'+who.profile.id)>89*86400);const ownKeys=await redis.sMembers(prefix+'ownedKeys:'+who.profile.id),boards=await redis.sMembers(prefix+'ownedBoards:'+who.profile.id);const player=(await api('/admin',undefined,admin)).data.players.find(p=>p.id===who.profile.id);assert.equal((await api('/admin',{playerId:player.id,version:player.version,action:'block'},admin)).status,200);const blocked=await api('/me',undefined,who.token);assert.equal(blocked.status,200);assert.equal(blocked.data.profile.blocked,true);assert.equal(blocked.data.profile.tokenHash,undefined);assert.equal((await api('/round/start',{mode:'quick',level:'easy'},who.token)).status,403);assert.equal((await api('/name',{name:'GroeneValk'},who.token)).status,403);assert.equal((await api('/me',undefined,observer.token)).data.profile.id,observer.profile.id);assert.equal((await api('/me',undefined,who.token,'DELETE')).status,200);for(const k of ownKeys)assert.equal(await redis.exists(k),0);for(const k of boards)assert.equal(await redis.hExists(k,who.profile.id),false);for(const suffix of ['player','ownedBoards','ownedKeys'])assert.equal(await redis.exists(prefix+suffix+':'+who.profile.id),0);assert.equal((await api('/me',undefined,who.token)).status,401);const board=(await api('/board?scope=live&roundId='+other.id,undefined,observer.token)).data;assert.ok(board.top.every(p=>p.playerId!==who.profile.id));}));
+
+// Isolated Redis prefix: no production profiles, scores or editorial content are modified.
+test('phase41 twenty simultaneous players keep separate rounds and atomic answer replays',options,()=>using(async({api,identity,start,get})=>{
+ const players=await Promise.all(Array.from({length:20},()=>identity()));
+ assert.equal(new Set(players.map(p=>p.profile.id)).size,20);
+ const rounds=await Promise.all(players.map(p=>start(p.token,'daily')));
+ assert.equal(new Set(rounds.map(r=>r.id)).size,20);
+ assert.equal(new Set(rounds.map(r=>r.setId)).size,1);
+ assert.equal(new Set(rounds.map(r=>r.question.text)).size,1);
+ const bodies=rounds.map(r=>({roundId:r.id,nonce:r.question.nonce,optionId:r.question.options[0].id,requestId:crypto.randomUUID()}));
+ const results=await Promise.all(players.flatMap((p,i)=>[api('/round/answer',bodies[i],p.token),api('/round/answer',bodies[i],p.token)]));
+ for(let i=0;i<players.length;i++){
+  assert.equal(results[2*i].status,200);assert.equal(results[2*i+1].status,200);
+  assert.deepEqual(results[2*i].data.round.lastAnswer,results[2*i+1].data.round.lastAnswer);
+  const saved=await get(rounds[i]);assert.equal(saved.playerId,players[i].profile.id);
+  assert.ok(saved.correct<=1);assert.ok(saved.points<=250);
+ }
+ const boards=await Promise.all(players.map((p,i)=>api('/board?scope=live&roundId='+rounds[i].id,undefined,p.token)));
+ assert.ok(boards.every(b=>b.status===200));
+}));
