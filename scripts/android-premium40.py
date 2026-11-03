@@ -17,6 +17,9 @@ source=source.replace("if web is not None:\n    b=bounds(web)","if web is None:w
 for label in ['Favorieten','Club Quiz']:
  for suffix in ['39-home','39-offline-home']:
   source=source.replace("find('"+label+"','"+suffix+"',clickable=True)","find('Menu: "+label+"','40-home',clickable=True,scroll=True)")
+source=source.replace(" if label=='Meldingen':",''' if label=='Meer':
+  root,node=find('Meldingen','40-notifications-entry',scroll=True);tap(node)
+ if label=='Meer':''')
 # Home always reconstructs the launcher at the top after navigating back.
 a=source.index('def back_home():');b=source.index("adb('install'",a)
 source=source[:a]+'''def back_home():
@@ -29,6 +32,6 @@ source=source[:a]+'''def back_home():
 # A search begins at the top, then scrolls down to controls below the fold.
 source=source.replace("if scroll and attempt in [1,3,5]:", "if scroll and attempt in [0,1,3,5]:")
 source=source.replace("str(b[3]-80),str(x),str(b[1]+120),'500'", "str(b[1]+120 if attempt==0 else b[3]-80),str(x),str(b[3]-80 if attempt==0 else b[1]+120),'500'")
-source=source.replace("'notification SharedPreferences write',",'')
+
 source=source.replace("'No physical S23'","'S23 viewport emulated; no physical device'")
 if __name__=='__main__':exec(compile(source,'android-premium40-generated.py','exec'))

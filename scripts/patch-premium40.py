@@ -42,6 +42,9 @@ helper='''    private void showCompetition40(String name,String source){
  }
 '''
 assert s.count(anchor)==1;s=s.replace(anchor,helper+anchor)
+marker='        addPremiumTile(tileGrid, "Instellingen", "Instellingen", this::showSettings);'
+assert s.count(marker)==1
+s=s.replace(marker,'        addPremiumTile(tileGrid,"Meldingen","Nieuws en columns",()->showDestination39("notifications"));\n'+marker)
 a=s.index('private void showClubQuiz()');b=s.index('\n    private ',a+10)
 quiz=s[a:b].replace('findViewById(R.id.header).setVisibility(android.view.View.VISIBLE)','findViewById(R.id.header).setVisibility(android.view.View.GONE)')
 s=s[:a]+quiz+s[b:]
