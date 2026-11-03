@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 42,
+  "generator": "ChatGPT imagegen",
+  "generatedAt": "2026-11-03",
+  "terms": "https://openai.com/policies/eu-terms-of-use/",
+  "sourceSha256": "62f4aa11cc867d50d021dfedff740adb18fd8c046e0fc8a24b1fb195834ca009",
+  "assets": [
+    {
+      "id": "groningen-sparta42",
+      "file": "groningen-sparta42.webp",
+      "sha256": "84be8ae1ac980cedd136c6283df24795862c279f1ea3a52f2533ca80d34fcf00",
+      "clubs": [
+        "FC Groningen",
+        "Sparta Rotterdam"
+      ],
+      "aliases": [
+        [
+          "groningen"
+        ],
+        [
+          "sparta"
+        ]
+      ],
+      "topics": [
+        "match",
+        "community",
+        "club"
+      ],
+      "width": 1920,
+      "height": 1080,
+      "review": {
+        "approved": true,
+        "noText": true,
+        "noLogos": true,
+        "noRecognizablePeople": true,
+        "fictionalVenue": true,
+        "noDocumentaryMatchClaim": true
+      },
+      "caption": "AI-illustratie: groen-witte en rood-witte supporterskleuren bij een fictief voetbalstadion. Geen opname van de wedstrijd of het echte stadion."
+    }
+  ]
+}

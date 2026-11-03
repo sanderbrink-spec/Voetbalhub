@@ -39,8 +39,8 @@ public final class NewsListCard extends LinearLayout {
   boolean column="column".equalsIgnoreCase(article.optString("type"))||"de derde helft".equalsIgnoreCase(article.optString("category"))||"column".equalsIgnoreCase(article.optString("category"));
   image.setImageDrawable(column?new EditorialArtwork(activity,true):new TopicArtwork39(article));
   if(column){image.setContentDescription("Sander Brink, auteur van De Derde Helft");return;}
-  if(article.optBoolean("uniqueFallback39"))return;
-  Bitmap local=EditorialPhotos.bitmap(activity,article,512);if(local!=null){if(registry.decoded(local))image.setImageBitmap(local);return;}
+
+  Bitmap local=EditorialPhotos.bitmap(activity,article,512);if(local!=null){image.setImageBitmap(local);return;}
   String url=article.optString("imageUrl",""),rights=article.optString("imageRights","");if(!url.startsWith("https://")||!("cleared".equals(rights)||"licensed".equals(rights)))return;
   Bitmap cached=CACHE.get(url);if(cached!=null){if(registry.decoded(cached))image.setImageBitmap(cached);return;}
   IMAGES.execute(()->{HttpURLConnection conn=null;try{conn=(HttpURLConnection)new URL(url).openConnection();conn.setConnectTimeout(10000);conn.setReadTimeout(12000);conn.setInstanceFollowRedirects(false);try(DeadlineHttp.Guard deadline=DeadlineHttp.watch(conn,15000)){if(conn.getResponseCode()!=200||conn.getContentLength()>5000000||!String.valueOf(conn.getContentType()).startsWith("image/"))return;BitmapFactory.Options options=new BitmapFactory.Options();options.inSampleSize=4;Bitmap bitmap;try(InputStream stream=conn.getInputStream()){bitmap=EditorialBitmap.read(stream,512);}if(bitmap!=null){CACHE.put(url,bitmap);activity.runOnUiThread(()->{if(image.isAttachedToWindow()&&!activity.isFinishing()&&registry.decoded(bitmap))image.setImageBitmap(bitmap);});}}}catch(Exception ignored){}finally{if(conn!=null)conn.disconnect();}});

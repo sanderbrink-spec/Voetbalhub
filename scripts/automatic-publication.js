@@ -205,7 +205,7 @@ async function verifyDraft(payload,candidate,docs,options){
  return review;
 }
 async function uploadCover(payload,{token,fetcher=fetch}){
- const media=await require('../newsroom-images').prepare(payload,{usedHashes:payload.usedImageHashes||[]});
+ const media=await require('../editorial-pipeline42').prepare(payload,{usedHashes:payload.usedImageHashes||[]});
  const bytes=media.bytes,identity=sha(JSON.stringify(['licensed-editorial-photo-v1',payload.draft.headline,payload.draft.standfirst,payload.draft.body,media.photo.sha256]));
  async function github(endpoint,method='GET',body){const r=await fetcher('https://api.github.com/repos/'+REPO+endpoint,{method,headers:{Authorization:'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(25000)});let data={};try{data=await r.json();}catch{}return {ok:r.ok,status:r.status,data};}
  const branch=await github('/git/ref/heads/'+config.mediaBranch);

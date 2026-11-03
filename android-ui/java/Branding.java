@@ -17,6 +17,7 @@ public final class Branding {
             for(String key:names){Object item=value.opt(key);if(item instanceof JSONObject)response((JSONObject)item);else if(item instanceof JSONArray)rows((JSONArray)item);else if(item instanceof String)value.put(key,text((String)item));}
             PresentationCovers.apply(value);
             ImageRegistry39.apply(value);
+            EditorialIllustrations42.apply(value);
             String url=value.optString("imageUrl");
             for(String file:new String[]{"groningen-emmen-2026-10-29.webp","emmen-den-bosch-2026-11-01.webp"})
                 if(url.contains("/"+file))value.put("imageUrl",MEDIA+"43490d29c0c4a10347e237a07deafcc960f8e648/public/article-covers/"+file);
