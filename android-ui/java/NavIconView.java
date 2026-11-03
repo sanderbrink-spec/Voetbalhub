@@ -24,7 +24,7 @@ if("De Derde Helft".equals(name))d="M13 4H4V21H20V12 M8 8H11 M8 12H10 M8 17H13 M
 if("Video's".equals(name))d="M3 5H21V19H3Z M10 8L16 12L10 16Z";
 if("Video’s".equals(name))d="M3 5H21V19H3Z M10 8L16 12L10 16Z";
 if("Standen".equals(name))d="M3 21H22 M5 17H8V21H5Z M11 11H14V21H11Z M17 4H20V21H17Z M4 10L10 6L14 8L20 2";
-if("Clubs".equals(name))d="M8 3Q12 6 16 3L22 7L19 12L17 11V21H7V11L5 12L2 7Z M10 9H14";
+if("Clubs".equals(name)||"Mijn Club".equals(name))d="M8 3Q12 6 16 3L22 7L19 12L17 11V21H7V11L5 12L2 7Z M10 9H14";
 if("Favorieten".equals(name))d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8Z";
 if("Meldingen".equals(name))d="M5 17H19L17 14V9Q17 4 12 4Q7 4 7 9V14Z M10 20Q12 23 14 20 M12 2V4";
 return d==null?null:androidx.core.graphics.PathParser.createPathFromPathData(d);}

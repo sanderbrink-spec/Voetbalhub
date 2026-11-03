@@ -14,7 +14,7 @@ on:
       - "scripts/patch-*.py"
       - ".github/workflows/build.yml"
   push:
-    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37", "work/veldio-38", "work/veldio-39", "work/veldio-visual-38", "work/veldio-interface-39"]
+    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37", "work/veldio-38", "work/veldio-39", "work/veldio-visual-38", "work/veldio-interface-39", "work/veldio-40"]
 
 permissions:
   contents: read
@@ -1018,6 +1018,9 @@ jobs:
       - name: Install definitive interface39
         run: python3 scripts/patch-interface39.py
 
+      - name: Install premium phase40 system
+        run: python3 scripts/patch-premium40.py
+
       - name: Verify existing Node regression suite
         timeout-minutes: 2
         run: npm test
@@ -1068,7 +1071,7 @@ jobs:
       - name: Keep unsigned compilation result
         uses: actions/upload-artifact@v4
         with:
-          name: Veldio-39-unsigned-not-installable
+          name: Veldio-40-unsigned-not-installable
           path: app/build/outputs/apk/release/app-release-unsigned.apk
           if-no-files-found: error
 
@@ -1092,14 +1095,14 @@ jobs:
           s = p.read_text()
           old = 'applicationId = "nl.voetbalhub.app1"'
           assert s.count(old) == 1, 'Expected applicationId missing or ambiguous'
-          p.write_text(s.replace(old, 'applicationId = "nl.voetbalhub.app1.test39interface"', 1))
+          p.write_text(s.replace(old, 'applicationId = "nl.voetbalhub.app1.test40premium"', 1))
           manifest = Path('app/src/main/AndroidManifest.xml')
           labels = manifest.read_text()
           assert labels.count('android:label="Veldio"') == 1, 'Test launcher label anchor changed'
-          manifest.write_text(labels.replace('android:label="Veldio"', 'android:label="Veldio interface test"', 1))
+          manifest.write_text(labels.replace('android:label="Veldio"', 'android:label="Veldio 40 test"', 1))
           PY
             gradle :app:assembleDebug --no-daemon
-            echo "Separate test APK: nl.voetbalhub.app1.test39interface. Existing update signing identity unavailable; this APK installs alongside the existing app." >> "$GITHUB_STEP_SUMMARY"
+            echo "Separate test APK: nl.voetbalhub.app1.test40premium. Existing update signing identity unavailable; this APK installs alongside the existing app." >> "$GITHUB_STEP_SUMMARY"
           fi
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs app/build/outputs/apk/debug/app-debug.apk
           sha256sum app/build/outputs/apk/debug/app-debug.apk >> "$GITHUB_STEP_SUMMARY"
@@ -1112,7 +1115,7 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || !inputs.release
         uses: actions/upload-artifact@v4
         with:
-          name: Veldio-39-test-bundle-NOT-FOR-PLAY
+          name: Veldio-40-test-bundle-NOT-FOR-PLAY
           path: app/build/outputs/bundle/debug/app-debug.aab
           if-no-files-found: error
 
@@ -1207,7 +1210,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: python3 scripts/android-interface39.py apk/app-debug.apk
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-premium40.py apk/app-debug.apk
       - name: Keep Android visual checks
         if: always()
         uses: actions/upload-artifact@v4
@@ -1216,3 +1219,4 @@ jobs:
           path: .android-smoke/
           include-hidden-files: true
           if-no-files-found: ignore
+

@@ -12,7 +12,7 @@ public final class CompetitionTile extends android.widget.FrameLayout {
  public CompetitionTile(Activity a,String name,String code,int accent,Bitmap arena,Runnable action){
   super(a);setMinimumHeight(dp(162));setFocusable(true);setClickable(true);setContentDescription(name+", openen");
   GradientDrawable edge=new GradientDrawable();edge.setColor(0xFF07150D);edge.setCornerRadius(dp(18));edge.setStroke(dp(1),accent);setBackground(edge);setClipToOutline(true);setElevation(dp(4));
-  addView(new Arena(a,arena,accent),new LayoutParams(-1,-1));
+  android.widget.ImageView art=new android.widget.ImageView(a);art.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);String id=code.equals("ED")?"news":code.equals("KKD")?"fixtures":code.equals("CL")?"competitions":code.equals("EL")?"column":code.equals("CO")?"quiz":"predictions";art.setImageBitmap(PremiumDesign40.artwork(a,id));art.setColorFilter(accent,android.graphics.PorterDuff.Mode.MULTIPLY);addView(art,new LayoutParams(-1,-1));
   LinearLayout copy=new LinearLayout(a);copy.setOrientation(LinearLayout.VERTICAL);copy.setGravity(Gravity.CENTER);copy.setPadding(dp(8),dp(14),dp(8),dp(13));
   TextView emblem=new TextView(a);emblem.setText(code);emblem.setGravity(Gravity.CENTER);emblem.setTextSize(18);emblem.setTypeface(null,Typeface.BOLD);emblem.setTextColor(Color.WHITE);
   GradientDrawable badge=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{accent,0xFF06110D});badge.setShape(GradientDrawable.OVAL);badge.setStroke(dp(2),0xFFECF7E7);emblem.setBackground(badge);copy.addView(emblem,new LinearLayout.LayoutParams(dp(57),dp(57)));

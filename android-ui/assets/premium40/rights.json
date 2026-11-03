@@ -1,0 +1,21 @@
+{
+  "creator": "Veldio",
+  "kind": "Original decorative vector artwork",
+  "source": "Veldio original icons; scripts/premium-art40.cjs",
+  "thirdPartyMarks": false,
+  "documentary": false,
+  "assets": [
+    "news",
+    "fixtures",
+    "competitions",
+    "predictions",
+    "quiz",
+    "stadium",
+    "column",
+    "videos",
+    "standings",
+    "favorites",
+    "myclub",
+    "more"
+  ]
+}
