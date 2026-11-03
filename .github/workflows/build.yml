@@ -1045,6 +1045,9 @@ jobs:
       - name: Verify interface39 routes, layouts and local tools
         timeout-minutes: 2
         run: NODE_PATH=./node_modules node scripts/browser/interface39.cjs
+      - name: Verify compiled premium40 WebView layouts
+        timeout-minutes: 2
+        run: NODE_PATH=./node_modules node scripts/browser/premium40.cjs app/src/main/assets
       - name: Keep phase 38 UI verification
         if: always()
         uses: actions/upload-artifact@v4

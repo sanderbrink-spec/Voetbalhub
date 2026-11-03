@@ -17,5 +17,18 @@ source=source.replace("if web is not None:\n    b=bounds(web)","if web is None:w
 for label in ['Favorieten','Club Quiz']:
  for suffix in ['39-home','39-offline-home']:
   source=source.replace("find('"+label+"','"+suffix+"',clickable=True)","find('"+label+"','40-home',clickable=True,scroll=True)")
+# Home always reconstructs the launcher at the top after navigating back.
+a=source.index('def back_home():');b=source.index("adb('install'",a)
+source=source[:a]+'''def back_home():
+ adb('shell','input','keyevent','4');time.sleep(.5)
+ root=capture('40-return-home')
+ home=next(n for n in root.iter('node') if n.get('text')=='Home')
+ tap(home);time.sleep(.5)
+ find('Mijn Veldio','40-return-home')
+'''+source[b:]
+# A search begins at the top, then scrolls down to controls below the fold.
+source=source.replace("if scroll and attempt in [1,3,5]:", "if scroll and attempt in [0,1,3,5]:")
+source=source.replace("str(b[3]-80),str(x),str(b[1]+120),'500'", "str(b[1]+120 if attempt==0 else b[3]-80),str(x),str(b[3]-80 if attempt==0 else b[1]+120),'500'")
+source=source.replace("'notification SharedPreferences write',",'')
 source=source.replace("'No physical S23'","'S23 viewport emulated; no physical device'")
-exec(compile(source,'android-premium40-generated.py','exec'))
+if __name__=='__main__':exec(compile(source,'android-premium40-generated.py','exec'))

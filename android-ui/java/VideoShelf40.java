@@ -13,7 +13,7 @@ public final class VideoShelf40 extends FrameLayout {
   if(n==0){TextView empty=PremiumDesign40.text(a,"Er zijn momenteel geen vrijgegeven video’s beschikbaar. Probeer later opnieuw.",15,PremiumDesign40.MUTED,false);empty.setPadding(dp(14),dp(24),dp(14),dp(20));list.addView(empty);}Button retry=new Button(a);retry.setText("Vernieuwen");PremiumDesign40.polish(retry);retry.setOnClickListener(x->load());list.addView(retry);
  }
  private void play(JSONObject v){closeVideo();player=new YoutubePlayerView(a,v.optString("id"),v.optString("title"),this::closeVideo);addView(player,new LayoutParams(-1,dp(300),Gravity.TOP));}
- public void closeVideo(){if(player!=null){YoutubePlayerView old=player;player=null;removeView(old);old.dispose();}}
+ public boolean closeVideo(){if(player!=null){YoutubePlayerView old=player;player=null;removeView(old);old.dispose();return true;}return false;}
  @Override protected void onAttachedToWindow(){super.onAttachedToWindow();attached=true;render(null);load();}
  @Override protected void onDetachedFromWindow(){attached=false;closeVideo();super.onDetachedFromWindow();}
 }

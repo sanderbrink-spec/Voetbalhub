@@ -30,6 +30,7 @@ public final class YoutubePlayerView extends LinearLayout {
             @Override public boolean shouldOverrideUrlLoading(WebView view,String url){return true;}
         });
         addView(player,new LayoutParams(-1,0,1));
+        TextView fallback=new TextView(activity);fallback.setText("Lukt afspelen niet? Open op YouTube  ↗");fallback.setTextColor(PremiumDesign40.GREEN);fallback.setTextSize(12);fallback.setGravity(Gravity.CENTER);fallback.setFocusable(true);fallback.setOnClickListener(v->{try{activity.startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com/watch?v="+id)));}catch(android.content.ActivityNotFoundException e){android.widget.Toast.makeText(activity,"Geen geschikte app beschikbaar",android.widget.Toast.LENGTH_SHORT).show();}});addView(fallback,new LayoutParams(-1,dp(44)));
         // YouTube requires the embedding app identity as HTTP Referer. A HTTPS base URL
         // supplies it for the iframe; the hostname is the actual Android application ID.
         String origin="https://"+activity.getPackageName().toLowerCase(java.util.Locale.ROOT);
