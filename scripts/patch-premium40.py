@@ -56,6 +56,7 @@ assert 'private void showColumn()' in s and 'private void showScores()' in s
 p.write_text(s)
 for f in ['PremiumDesign40','YoutubePlayerView','VideoShelf40','DestinationView39','HomeMenu39','HomeSlideshow40','MatchStrip40','CompetitionTile','FeedPanel','NewsListCard','NavIconView']:
  shutil.copyfile('android-ui/java/'+f+'.java',p.parent/(f+'.java'))
+shutil.copyfile('android-ui/assets/quiz-seasons40.js','app/src/main/assets/quiz-seasons40.js')
 shutil.copyfile('android-ui/assets/clubquiz-ui.js','app/src/main/assets/clubquiz-ui.js')
 shutil.copyfile('android-ui/assets/stadium-view.js','app/src/main/assets/stadium-view.js')
 assets=Path('app/src/main/assets');shutil.copytree('android-ui/assets/premium40',assets/'premium40',dirs_exist_ok=True)

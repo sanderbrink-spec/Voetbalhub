@@ -1,0 +1,415 @@
+{
+  "method": "Use the dated final in each existing primary-source receipt to display start/end season labels. Display only; original question IDs and answer values retained. UEFA 2020 page independently reopened on 2026-11-03 and identifies season 2019/20, winner Bayern München.",
+  "verifiedSource": "https://www.uefa.com/uefachampionsleague/history/seasons/2020/",
+  "checkedAt": "2026-11-03",
+  "corrections": [
+    {
+      "id": "history-uefachampionsleague-2008-winner",
+      "before": "Welke club won de Champions League 2008/09?",
+      "after": "Welke club won de Champions League 2007/08?",
+      "finalDate": "2008-05-21",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2008/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/301604--man-utd-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2008-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2008/09?",
+      "after": "Welke club verloor de finale van de Champions League 2007/08?",
+      "finalDate": "2008-05-21",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2008/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/301604--man-utd-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2008-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2008/09 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2007/08 gespeeld?",
+      "finalDate": "2008-05-21",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2008/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/301604--man-utd-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2009-winner",
+      "before": "Welke club won de Champions League 2009/10?",
+      "after": "Welke club won de Champions League 2008/09?",
+      "finalDate": "2009-05-27",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2009/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/302813--barcelona-vs-man-utd/"
+    },
+    {
+      "id": "history-uefachampionsleague-2009-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2009/10?",
+      "after": "Welke club verloor de finale van de Champions League 2008/09?",
+      "finalDate": "2009-05-27",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2009/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/302813--barcelona-vs-man-utd/"
+    },
+    {
+      "id": "history-uefachampionsleague-2009-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2009/10 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2008/09 gespeeld?",
+      "finalDate": "2009-05-27",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2009/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/302813--barcelona-vs-man-utd/"
+    },
+    {
+      "id": "history-uefachampionsleague-2010-winner",
+      "before": "Welke club won de Champions League 2010/11?",
+      "after": "Welke club won de Champions League 2009/10?",
+      "finalDate": "2010-05-22",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2010/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    {
+      "id": "history-uefachampionsleague-2010-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2010/11?",
+      "after": "Welke club verloor de finale van de Champions League 2009/10?",
+      "finalDate": "2010-05-22",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2010/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    {
+      "id": "history-uefachampionsleague-2010-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2010/11 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2009/10 gespeeld?",
+      "finalDate": "2010-05-22",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2010/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2000488--bayern-munchen-vs-inter/"
+    },
+    {
+      "id": "history-uefachampionsleague-2011-winner",
+      "before": "Welke club won de Champions League 2011/12?",
+      "after": "Welke club won de Champions League 2010/11?",
+      "finalDate": "2011-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2011/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2003352--barcelona-vs-man-utd/"
+    },
+    {
+      "id": "history-uefachampionsleague-2011-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2011/12?",
+      "after": "Welke club verloor de finale van de Champions League 2010/11?",
+      "finalDate": "2011-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2011/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2003352--barcelona-vs-man-utd/"
+    },
+    {
+      "id": "history-uefachampionsleague-2011-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2011/12 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2010/11 gespeeld?",
+      "finalDate": "2011-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2011/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2003352--barcelona-vs-man-utd/"
+    },
+    {
+      "id": "history-uefachampionsleague-2012-winner",
+      "before": "Welke club won de Champions League 2012/13?",
+      "after": "Welke club won de Champions League 2011/12?",
+      "finalDate": "2012-05-19",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2012/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2007693--bayern-munchen-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2012-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2012/13?",
+      "after": "Welke club verloor de finale van de Champions League 2011/12?",
+      "finalDate": "2012-05-19",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2012/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2007693--bayern-munchen-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2012-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2012/13 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2011/12 gespeeld?",
+      "finalDate": "2012-05-19",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2012/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2007693--bayern-munchen-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2013-winner",
+      "before": "Welke club won de Champions League 2013/14?",
+      "after": "Welke club won de Champions League 2012/13?",
+      "finalDate": "2013-05-25",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2013/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2009612--b-dortmund-vs-bayern-munchen/"
+    },
+    {
+      "id": "history-uefachampionsleague-2013-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2013/14?",
+      "after": "Welke club verloor de finale van de Champions League 2012/13?",
+      "finalDate": "2013-05-25",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2013/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2009612--b-dortmund-vs-bayern-munchen/"
+    },
+    {
+      "id": "history-uefachampionsleague-2013-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2013/14 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2012/13 gespeeld?",
+      "finalDate": "2013-05-25",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2013/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2009612--b-dortmund-vs-bayern-munchen/"
+    },
+    {
+      "id": "history-uefachampionsleague-2014-winner",
+      "before": "Welke club won de Champions League 2014/15?",
+      "after": "Welke club won de Champions League 2013/14?",
+      "finalDate": "2014-05-24",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2014/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2011883--real-madrid-vs-atleti/"
+    },
+    {
+      "id": "history-uefachampionsleague-2014-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2014/15?",
+      "after": "Welke club verloor de finale van de Champions League 2013/14?",
+      "finalDate": "2014-05-24",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2014/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2011883--real-madrid-vs-atleti/"
+    },
+    {
+      "id": "history-uefachampionsleague-2014-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2014/15 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2013/14 gespeeld?",
+      "finalDate": "2014-05-24",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2014/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2011883--real-madrid-vs-atleti/"
+    },
+    {
+      "id": "history-uefachampionsleague-2015-winner",
+      "before": "Welke club won de Champions League 2015/16?",
+      "after": "Welke club won de Champions League 2014/15?",
+      "finalDate": "2015-06-06",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2015/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2015227--juventus-vs-barcelona/"
+    },
+    {
+      "id": "history-uefachampionsleague-2015-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2015/16?",
+      "after": "Welke club verloor de finale van de Champions League 2014/15?",
+      "finalDate": "2015-06-06",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2015/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2015227--juventus-vs-barcelona/"
+    },
+    {
+      "id": "history-uefachampionsleague-2015-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2015/16 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2014/15 gespeeld?",
+      "finalDate": "2015-06-06",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2015/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2015227--juventus-vs-barcelona/"
+    },
+    {
+      "id": "history-uefachampionsleague-2016-winner",
+      "before": "Welke club won de Champions League 2016/17?",
+      "after": "Welke club won de Champions League 2015/16?",
+      "finalDate": "2016-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2016/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2015789--real-madrid-vs-atleti/"
+    },
+    {
+      "id": "history-uefachampionsleague-2016-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2016/17?",
+      "after": "Welke club verloor de finale van de Champions League 2015/16?",
+      "finalDate": "2016-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2016/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2015789--real-madrid-vs-atleti/"
+    },
+    {
+      "id": "history-uefachampionsleague-2016-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2016/17 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2015/16 gespeeld?",
+      "finalDate": "2016-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2016/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2015789--real-madrid-vs-atleti/"
+    },
+    {
+      "id": "history-uefachampionsleague-2017-winner",
+      "before": "Welke club won de Champions League 2017/18?",
+      "after": "Welke club won de Champions League 2016/17?",
+      "finalDate": "2017-06-03",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2017/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2019641--juventus-vs-real-madrid/"
+    },
+    {
+      "id": "history-uefachampionsleague-2017-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2017/18?",
+      "after": "Welke club verloor de finale van de Champions League 2016/17?",
+      "finalDate": "2017-06-03",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2017/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2019641--juventus-vs-real-madrid/"
+    },
+    {
+      "id": "history-uefachampionsleague-2017-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2017/18 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2016/17 gespeeld?",
+      "finalDate": "2017-06-03",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2017/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2019641--juventus-vs-real-madrid/"
+    },
+    {
+      "id": "history-uefachampionsleague-2018-winner",
+      "before": "Welke club won de Champions League 2018/19?",
+      "after": "Welke club won de Champions League 2017/18?",
+      "finalDate": "2018-05-26",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2018/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2021711--real-madrid-vs-liverpool/"
+    },
+    {
+      "id": "history-uefachampionsleague-2018-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2018/19?",
+      "after": "Welke club verloor de finale van de Champions League 2017/18?",
+      "finalDate": "2018-05-26",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2018/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2021711--real-madrid-vs-liverpool/"
+    },
+    {
+      "id": "history-uefachampionsleague-2018-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2018/19 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2017/18 gespeeld?",
+      "finalDate": "2018-05-26",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2018/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2021711--real-madrid-vs-liverpool/"
+    },
+    {
+      "id": "history-uefachampionsleague-2019-winner",
+      "before": "Welke club won de Champions League 2019/20?",
+      "after": "Welke club won de Champions League 2018/19?",
+      "finalDate": "2019-06-01",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2019/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2025486--tottenham-vs-liverpool/"
+    },
+    {
+      "id": "history-uefachampionsleague-2019-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2019/20?",
+      "after": "Welke club verloor de finale van de Champions League 2018/19?",
+      "finalDate": "2019-06-01",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2019/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2025486--tottenham-vs-liverpool/"
+    },
+    {
+      "id": "history-uefachampionsleague-2019-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2019/20 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2018/19 gespeeld?",
+      "finalDate": "2019-06-01",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2019/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2025486--tottenham-vs-liverpool/"
+    },
+    {
+      "id": "history-uefachampionsleague-2020-winner",
+      "before": "Welke club won de Champions League 2020/21?",
+      "after": "Welke club won de Champions League 2019/20?",
+      "finalDate": "2020-08-23",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2020/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2030150--paris-vs-bayern-munchen/"
+    },
+    {
+      "id": "history-uefachampionsleague-2020-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2020/21?",
+      "after": "Welke club verloor de finale van de Champions League 2019/20?",
+      "finalDate": "2020-08-23",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2020/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2030150--paris-vs-bayern-munchen/"
+    },
+    {
+      "id": "history-uefachampionsleague-2020-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2020/21 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2019/20 gespeeld?",
+      "finalDate": "2020-08-23",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2020/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2030150--paris-vs-bayern-munchen/"
+    },
+    {
+      "id": "history-uefachampionsleague-2021-winner",
+      "before": "Welke club won de Champions League 2021/22?",
+      "after": "Welke club won de Champions League 2020/21?",
+      "finalDate": "2021-05-29",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2021/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2029498--man-city-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2021-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2021/22?",
+      "after": "Welke club verloor de finale van de Champions League 2020/21?",
+      "finalDate": "2021-05-29",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2021/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2029498--man-city-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2021-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2021/22 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2020/21 gespeeld?",
+      "finalDate": "2021-05-29",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2021/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2029498--man-city-vs-chelsea/"
+    },
+    {
+      "id": "history-uefachampionsleague-2022-winner",
+      "before": "Welke club won de Champions League 2022/23?",
+      "after": "Welke club won de Champions League 2021/22?",
+      "finalDate": "2022-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2022/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2034586--liverpool-vs-real-madrid/"
+    },
+    {
+      "id": "history-uefachampionsleague-2022-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2022/23?",
+      "after": "Welke club verloor de finale van de Champions League 2021/22?",
+      "finalDate": "2022-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2022/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2034586--liverpool-vs-real-madrid/"
+    },
+    {
+      "id": "history-uefachampionsleague-2022-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2022/23 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2021/22 gespeeld?",
+      "finalDate": "2022-05-28",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2022/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2034586--liverpool-vs-real-madrid/"
+    },
+    {
+      "id": "history-uefachampionsleague-2023-winner",
+      "before": "Welke club won de Champions League 2023/24?",
+      "after": "Welke club won de Champions League 2022/23?",
+      "finalDate": "2023-06-10",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2023/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2037765--man-city-vs-inter/"
+    },
+    {
+      "id": "history-uefachampionsleague-2023-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2023/24?",
+      "after": "Welke club verloor de finale van de Champions League 2022/23?",
+      "finalDate": "2023-06-10",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2023/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2037765--man-city-vs-inter/"
+    },
+    {
+      "id": "history-uefachampionsleague-2023-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2023/24 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2022/23 gespeeld?",
+      "finalDate": "2023-06-10",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2023/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2037765--man-city-vs-inter/"
+    },
+    {
+      "id": "history-uefachampionsleague-2024-winner",
+      "before": "Welke club won de Champions League 2024/25?",
+      "after": "Welke club won de Champions League 2023/24?",
+      "finalDate": "2024-06-01",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2024/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2039970--b-dortmund-vs-real-madrid/"
+    },
+    {
+      "id": "history-uefachampionsleague-2024-runner-up",
+      "before": "Welke club verloor de finale van de Champions League 2024/25?",
+      "after": "Welke club verloor de finale van de Champions League 2023/24?",
+      "finalDate": "2024-06-01",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2024/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2039970--b-dortmund-vs-real-madrid/"
+    },
+    {
+      "id": "history-uefachampionsleague-2024-date",
+      "before": "Op welke datum werd de beslissende finale van de Champions League 2024/25 gespeeld?",
+      "after": "Op welke datum werd de beslissende finale van de Champions League 2023/24 gespeeld?",
+      "finalDate": "2024-06-01",
+      "source": "https://www.uefa.com/uefachampionsleague/history/seasons/2024/",
+      "matchSource": "https://www.uefa.com/uefachampionsleague/match/2039970--b-dortmund-vs-real-madrid/"
+    }
+  ]
+}
