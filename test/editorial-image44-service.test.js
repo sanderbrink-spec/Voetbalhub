@@ -18,3 +18,12 @@ test('remote image validation rejects altered bytes and mismatched article ident
  const accepted=await S.remote(payload,{secret:'test',fetcher:async()=>({ok:true,json:async()=>r})});assert.equal(accepted.assetSha256,r.assetSha256);
  for(const patch of [{base64:Buffer.from('altered').toString('base64')},{plan:{identity:'other-article'}}])await assert.rejects(S.remote(payload,{secret:'test',fetcher:async()=>({ok:true,json:async()=>({...r,...patch})})}),/beeld|Beeld/);
 });
+test('exhausted provider credit opens a shared circuit instead of retrying for every article',async()=>{
+ const values=new Map();let calls=0;
+ const client={isReady:true,get:async k=>values.get(k)||null,set:async(k,v)=>values.set(k,v),eval:async()=>2};
+ const fetcher=async()=>{calls++;return {ok:false,status:429,json:async()=>({error:{code:'credit_balance_exhausted'}})};};
+ const first=await S.create(payload,{client,key:'test',fetcher});
+ assert.match(first.reason,/credit_balance_exhausted/);
+ const second=await S.create({...payload,draft:{...payload.draft,headline:'Ajax ander transfergerucht'}},{client,key:'test',fetcher});
+ assert.equal(calls,1);assert.equal(second.attempts,0);assert.equal(second.mode,'neutral-fallback');
+});

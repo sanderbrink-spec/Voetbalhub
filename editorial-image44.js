@@ -94,6 +94,7 @@ function similar(a,b){if(!/^[0-9a-f]{16}$/.test(a)||!/^[0-9a-f]{16}$/.test(b))re
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 async function fallback(plan,reason){
  // A self-authored abstract illustration, not a photograph or a simulated event.
+ if(!plan.identityVerified)plan={...plan,clubs:[]};
  const labels=plan.clubs.length?plan.clubs.map(c=>c.name):['Voetbal'];
  const offset=parseInt(plan.identity.slice(0,2),16);
  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><rect width="1280" height="720" fill="#07120d"/><path d="M${80+offset} 580L420 140H980L1200 580Z" fill="#122d20" stroke="#447157" stroke-width="3"/><circle cx="640" cy="360" r="105" fill="none" stroke="#447157" stroke-width="3"/><g fill="white" text-anchor="middle" font-family="DejaVu Sans,sans-serif">${labels.map((name,i)=>`<text x="640" y="${285+i*74}" font-size="${name.length>30?30:40}">${esc(name)}</text>`).join('')}<text x="640" y="640" font-size="21" fill="#b2c5b8">${esc(plan.category==='transfer'?'Transfernieuws · illustratie':plan.category==='match'?'Wedstrijdnieuws · illustratie':'Clubnieuws · illustratie')}</text></g></svg>`;
@@ -102,6 +103,7 @@ async function fallback(plan,reason){
 }
 async function render(p,{key=process.env.OPENAI_API_KEY,fetcher=fetch,budget={remaining:2},priorHashes=[],generate,review,model=process.env.VELDIO_IMAGE_MODEL||'gpt-image-1.5',visionModel=process.env.VELDIO_VISION_MODEL||'gpt-4.1-mini'}={}){
  const plan=classify(p);
+ if(budget.blockedReason)return fallback(plan,budget.blockedReason);
  if(!plan.identityVerified||(plan.category==='match'&&plan.clubs.length!==2)||!plan.clubs.length||plan.clubs.some(c=>!c.colours))return fallback({...plan,clubs:plan.identityVerified?plan.clubs:[]},'Clubidentiteit of kleuren niet bevestigd.');
  if(!key&&!generate)return fallback(plan,'Beeldprovider niet geconfigureerd.');
  let reason='Generatiebudget bereikt.';
@@ -121,7 +123,7 @@ async function render(p,{key=process.env.OPENAI_API_KEY,fetcher=fetch,budget={re
    if(priorHashes.some(h=>similar(h,vh)))issues.push('Afbeelding lijkt te veel op eerder beeld.');
    if(issues.length){reason=issues.join('; ');continue;}
    return {bytes,plan,mode:'ai-photographic',assetSha256:sha(bytes),visualHash:vh,review:{...inspected,approved:true,method:'pixel-vision-review-v44',model:visionModel}};
-  }catch(e){reason=e.message;break;} // Provider failures do not incur blind paid retries.
+  }catch(e){reason=e.message;if(/credit_balance_exhausted|insufficient_quota/.test(reason))budget.blockedReason=reason;break;} // Provider failures do not incur blind paid retries.
  }
  return fallback(plan,reason);
 }

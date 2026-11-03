@@ -6,6 +6,8 @@ async function create(payload,{client,key=process.env.OPENAI_API_KEY,remaining=2
  if(client?.isReady){
   const cached=await client.get(cacheKey);
   if(cached){const r=JSON.parse(cached);if(r.plan?.identity===plan.identity&&r.mode==='ai-photographic'&&I.sha(Buffer.from(r.base64,'base64'))===r.assetSha256)return {...r,attempts:0};}
+  const blocked=await client.get('editorial-image44-provider-block');
+  if(blocked){const r=await I.fallback(plan,blocked);return {...r,bytes:undefined,base64:r.bytes.toString('base64'),attempts:0};}
  }
  let allowed=Math.min(2,Math.max(0,Math.floor(Number(remaining)||0)));
  if(key){
@@ -19,6 +21,7 @@ async function create(payload,{client,key=process.env.OPENAI_API_KEY,remaining=2
  const budget={remaining:allowed};
  const r=await renderer(payload,{key,fetcher,budget,priorHashes});
  const result={...r,bytes:undefined,base64:r.bytes.toString('base64'),attempts:allowed-budget.remaining};
+ if(client?.isReady&&/credit_balance_exhausted|insufficient_quota/.test(r.reason||''))await client.set('editorial-image44-provider-block',r.reason,{EX:900});
  if(r.mode==='ai-photographic')await client.set(cacheKey,JSON.stringify(result),{EX:30*86400});
  return result;
 }
