@@ -20,6 +20,20 @@ def player_eval(expression):
    if r.get('id')==43:return r.get('result',{}).get('result',{}).get('value')
  finally:ws.close()
 
+# Exercise all six specified native competition routes.
+competition_checks=[]
+for name in ['Eredivisie','Keuken Kampioen Divisie','Champions League','Europa League','Conference League','Premier League']:
+ back_home();root,node=find('Menu: Competities','43-competitions-open',clickable=True,scroll=True);tap(node)
+ root,node=find(name+', openen','43-competition-'+name,clickable=True,scroll=True);tap(node);time.sleep(.6)
+ root=capture('43-competition-detail-'+name);assert adb('shell','pidof',PACKAGE).strip();competition_checks.append(name)
+ adb('shell','input','keyevent','4');time.sleep(.3)
+# Multiple local club selections, removal and a cold process restart.
+back_home();root,node=find('Menu: Favorieten','43-favourites-open',clickable=True,scroll=True);tap(node)
+root,node=find('Club toevoegen +','43-favourites-picker',exact=False,clickable=True);tap(node)
+for club in ['Ajax','PSV','PSV']:
+ root,node=find(club,'43-favourite-'+club,exact=False,clickable=True,scroll=True);tap(node);time.sleep(.7)
+prefs=adb('shell','run-as',PACKAGE,'cat','shared_prefs/voethub.xml');assert 'Ajax' in prefs and 'FC Groningen' in prefs and '<string>PSV</string>' not in prefs
+adb('shell','am','force-stop',PACKAGE);launch();prefs=adb('shell','run-as',PACKAGE,'cat','shared_prefs/voethub.xml');assert 'Ajax' in prefs and '<string>PSV</string>' not in prefs
 back_home();root,node=find('Menu: Samenvattingen','43-videos-open',clickable=True,scroll=True);tap(node);time.sleep(3)
 ids=[v['id'] for v in json.loads(Path('videos/catalog43.json').read_text())['videos']][:5]
 assert len(ids)>=5,'Five verified videos required for device test'
@@ -56,7 +70,7 @@ for index,id in enumerate(ids):
 # Open the explicit external fallback from a video card and verify the dispatched URL.
 root,node=find('Deze video bekijken op YouTube ↗','43-external-fallback',clickable=True,scroll=True);tap(node);time.sleep(1)
 (OUT/'phase43-external-intent.txt').write_text(adb('shell','dumpsys','activity','activities'))
-report=json.loads(resultPath.read_text());report['version']='4.51-phase43';report['videoChecks']=video_checks;report['videoPlaybackAcceptance']=all(v['playing'] for v in video_checks)
+report=json.loads(resultPath.read_text());report['version']='4.51-phase43';report['competitionChecks']=competition_checks;report['favouriteMultipleAndRemovalPersistence']=True;report['videoChecks']=video_checks;report['videoPlaybackAcceptance']=all(v['playing'] for v in video_checks)
 report['checks']+=['five real immersive player openings','landscape player viewport','back returns to preserved list position','background/resume lifecycle','external YouTube intent']
 report['limits']+=['Playback requires reachable YouTube and may be blocked by YouTube device, region or account policies; inspect phase43-video-results.json.']
 resultPath.write_text(json.dumps(report,ensure_ascii=False,indent=2))

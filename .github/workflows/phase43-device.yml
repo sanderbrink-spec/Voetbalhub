@@ -1,0 +1,86 @@
+name: Veldio 43 exact APK Android 16 verification
+on:
+  push:
+    branches: [work/veldio-43]
+    paths: [scripts/android-phase43.py, .github/workflows/phase43-device.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  android43:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for exact full source APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 40); do
+            gh api repos/sanderbrink-spec/Voetbalhub/actions/runs/41690911635 > source-run.json
+            test "$(jq -r .head_sha source-run.json)" = 'd38fcfe3e0ec988822152edfb49c181bf2421f20'
+            gh api repos/sanderbrink-spec/Voetbalhub/actions/runs/41690911635/jobs > source-jobs.json
+            state=$(jq -r '.jobs[] | select(.name=="api-test-and-build") | .conclusion' source-jobs.json)
+            if [ "$state" = success ]; then exit 0; fi
+            if [ "$state" != null ]; then echo "Source APK job failed: $state"; exit 1; fi
+            sleep 10
+          done
+          echo 'Source APK still unavailable'; exit 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: Veldio-Android-test
+          path: apk
+          run-id: 41690911635
+          github-token: ${{ github.token }}
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+          log-accepted-android-sdk-licenses: false
+      - name: Check debug signing and exact package
+        run: |
+          mkdir -p install
+          cp apk/app-debug.apk install/Veldio-43-install.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs install/Veldio-43-install.apk | tee install/signature.txt
+          grep -q 'CN=Android Debug' install/signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging install/Veldio-43-install.apk | tee install/manifest.txt
+          grep -q "package: name='nl.voetbalhub.app1.test43'" install/manifest.txt
+          sha256sum install/Veldio-43-install.apk | tee install/sha256.txt
+          echo "7e58a1f25f0f4e3e00d4c70d2ad85f07058fc9d41d20088f438a3be9e20677d0  install/Veldio-43-install.apk" | sha256sum -c -
+      - run: python3 -m pip install 'uiautomator2>=3,<4' 'websocket-client>=1,<2'
+      - name: Enable acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase43.py apk/app-debug.apk
+      - name: Publish verified direct install APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-43-install
+          path: install/Veldio-43-install.apk
+          if-no-files-found: error
+      - name: Save installation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-43-Android16-evidence
+          include-hidden-files: true
+          path: |
+            .android-smoke/
+            install/signature.txt
+            install/manifest.txt
+            install/sha256.txt
+            source-run.json
+            source-jobs.json
