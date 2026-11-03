@@ -14,7 +14,12 @@ public final class PremiumDesign40 {
  public static void touch(View v){v.setForeground(new RippleDrawable(ColorStateList.valueOf(0x44A9FF35),null,new ColorDrawable(Color.WHITE)));v.setFocusable(true);}
  public static boolean motion(Context c){return android.provider.Settings.Global.getFloat(c.getContentResolver(),android.provider.Settings.Global.ANIMATOR_DURATION_SCALE,1f)>0;}
  public static TextView text(Context c,String value,int size,int color,boolean bold){TextView t=new TextView(c);t.setText(value);t.setTextSize(size);t.setTextColor(color);t.setIncludeFontPadding(false);if(bold)t.setTypeface(Typeface.create("sans-serif",Typeface.BOLD));return t;}
- public static Bitmap artwork(Context c,String id){try(java.io.InputStream in=c.getAssets().open("premium40/"+id+".webp")){return EditorialBitmap.read(in,600);}catch(Exception e){return null;}}
+ private static final android.util.LruCache<String,Bitmap> ART=new android.util.LruCache<String,Bitmap>(6*1024*1024){@Override protected int sizeOf(String key,Bitmap bitmap){return bitmap.getByteCount();}};
+ public static Bitmap artwork(Context c,String id){
+  if(id==null||!id.matches("[a-z]+"))return null;
+  Bitmap cached=ART.get(id);if(cached!=null)return cached;
+  try(java.io.InputStream in=c.getAssets().open("premium40/"+id+".webp")){Bitmap bitmap=EditorialBitmap.read(in,600);ART.put(id,bitmap);return bitmap;}catch(Exception e){return null;}
+ }
  public static void polish(View v){
   if(v instanceof Button){Button b=(Button)v;b.setTextColor(GREEN);b.setAllCaps(false);b.setMinHeight(dp(v.getContext(),48));card(b,EDGE);touch(b);}
   if(v instanceof EditText){v.setBackground(panel(v.getContext(),EDGE,12));v.setPadding(dp(v.getContext(),12),dp(v.getContext(),10),dp(v.getContext(),12),dp(v.getContext(),10));}

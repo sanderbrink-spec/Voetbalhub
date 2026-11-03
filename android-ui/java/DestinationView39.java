@@ -24,7 +24,7 @@ public final class DestinationView39 extends FrameLayout {
  private boolean permission(){NotificationManager m=(NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);return (Build.VERSION.SDK_INT<33||activity.checkSelfPermission("android.permission.POST_NOTIFICATIONS")==PackageManager.PERMISSION_GRANTED)&&m.areNotificationsEnabled();}
  public void deliver(){if(!ready||disposed||activity.isFinishing())return;try{
   JSONObject n=new JSONObject().put("clubNews",prefs().getBoolean("clubNews",false)).put("columns",prefs().getBoolean("columns",false)).put("permission",permission());
-  JSONObject data=new JSONObject().put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new java.util.HashSet<String>()))).put("mode",mode).put("stats",stats).put("loading",loading).put("predictions",new JSONArray(prefs().getString("predictions","[]"))).put("notifications",n);
+  JSONObject data=new JSONObject().put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new java.util.HashSet<String>()))).put("mode",mode).put("stats",PublicationPolicy.allows(stats)?stats:new JSONObject()).put("loading",loading).put("predictions",new JSONArray(prefs().getString("predictions","[]"))).put("notifications",n);
   web.evaluateJavascript("window.setData("+JSONObject.quote(data.toString())+")",null);
  }catch(Exception ignored){}}
  private void response(boolean ok,String msg){if(!disposed&&ready)web.evaluateJavascript("window.result("+ok+","+JSONObject.quote(msg)+")",null);}

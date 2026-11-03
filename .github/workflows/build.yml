@@ -14,7 +14,7 @@ on:
       - "scripts/patch-*.py"
       - ".github/workflows/build.yml"
   push:
-    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37", "work/veldio-38", "work/veldio-39", "work/veldio-visual-38", "work/veldio-interface-39", "work/veldio-40"]
+    branches: [main, master, "fix/veldio-29b", "fix/veldio-31", "fix/veldio-32", "fix/veldio-33", "fix/veldio-35", "work/veldio-37", "work/veldio-38", "work/veldio-39", "work/veldio-visual-38", "work/veldio-interface-39", "work/veldio-40", "work/veldio-41"]
 
 permissions:
   contents: read
@@ -1021,21 +1021,29 @@ jobs:
       - name: Install premium phase40 system
         run: python3 scripts/patch-premium40.py
 
+      - name: Finalize phase41 audited fixes
+        if: github.ref_name == 'work/veldio-41'
+        run: python3 scripts/patch-audit41.py
+
       - name: Verify existing Node regression suite
         timeout-minutes: 2
         run: npm test
-      - name: Verify phase 38 Redis scores and replay protection
+      - name: Verify all Redis regressions and server scoring
         timeout-minutes: 2
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y redis-server
           redis-server --port 6380 --save "" --appendonly no --daemonize yes
-          REDIS_TEST_URL=redis://127.0.0.1:6380 node --test test/quiz39.redis.test.js test/quiz39.test.js test/quiz39-bank.test.js
+          REDIS_TEST_URL=redis://127.0.0.1:6380 node --test --test-concurrency=1
       - name: Install browser verification runtime
         timeout-minutes: 3
         run: |
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
+      - name: Verify contact validation, missing acknowledgement and draft preservation
+        timeout-minutes: 2
+        run: node scripts/browser/contact.cjs
+
       - name: Verify phase 38 small screens and favourite persistence
         timeout-minutes: 2
         run: NODE_PATH=./node_modules node scripts/browser/visual38.cjs
@@ -1072,9 +1080,10 @@ jobs:
         run: gradle :app:assembleRelease --no-daemon
 
       - name: Keep unsigned compilation result
+        if: github.ref_name != 'work/veldio-41'
         uses: actions/upload-artifact@v4
         with:
-          name: Veldio-40-unsigned-not-installable
+          name: Veldio-41-unsigned-not-installable
           path: app/build/outputs/apk/release/app-release-unsigned.apk
           if-no-files-found: error
 
@@ -1088,7 +1097,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ -n "$ANDROID_UPDATE_KEYSTORE_BASE64" ] && [ -n "$ANDROID_UPDATE_STORE_PASSWORD" ] && [ -n "$ANDROID_UPDATE_KEY_ALIAS" ] && [ -n "$ANDROID_UPDATE_KEY_PASSWORD" ] && [ -n "$ANDROID_UPDATE_CERT_SHA256" ]; then
+          if [ "$GITHUB_REF_NAME" != "work/veldio-41" ] && [ -n "$ANDROID_UPDATE_KEYSTORE_BASE64" ] && [ -n "$ANDROID_UPDATE_STORE_PASSWORD" ] && [ -n "$ANDROID_UPDATE_KEY_ALIAS" ] && [ -n "$ANDROID_UPDATE_KEY_PASSWORD" ] && [ -n "$ANDROID_UPDATE_CERT_SHA256" ]; then
             python3 scripts/sign-existing-update.py
             echo "APK signed with the verified existing installation identity." >> "$GITHUB_STEP_SUMMARY"
           else
@@ -1098,11 +1107,14 @@ jobs:
           s = p.read_text()
           old = 'applicationId = "nl.voetbalhub.app1"'
           assert s.count(old) == 1, 'Expected applicationId missing or ambiguous'
-          p.write_text(s.replace(old, 'applicationId = "nl.voetbalhub.app1.test40premium"', 1))
+          import os
+          phase41=os.environ.get('GITHUB_REF_NAME')=='work/veldio-41'
+          package='nl.voetbalhub.app1.test41audit' if phase41 else 'nl.voetbalhub.app1.test40premium'
+          p.write_text(s.replace(old, 'applicationId = "'+package+'"', 1))
           manifest = Path('app/src/main/AndroidManifest.xml')
           labels = manifest.read_text()
           assert labels.count('android:label="Veldio"') == 1, 'Test launcher label anchor changed'
-          manifest.write_text(labels.replace('android:label="Veldio"', 'android:label="Veldio 40 test"', 1))
+          manifest.write_text(labels.replace('android:label="Veldio"', 'android:label="Veldio 41 test"' if phase41 else 'android:label="Veldio 40 test"', 1))
           PY
             gradle :app:assembleDebug --no-daemon
             echo "Separate test APK: nl.voetbalhub.app1.test40premium. Existing update signing identity unavailable; this APK installs alongside the existing app." >> "$GITHUB_STEP_SUMMARY"
@@ -1111,11 +1123,11 @@ jobs:
           sha256sum app/build/outputs/apk/debug/app-debug.apk >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build a separate test bundle for structural validation
-        if: github.event_name != 'workflow_dispatch' || !inputs.release
+        if: github.ref_name != 'work/veldio-41' && (github.event_name != 'workflow_dispatch' || !inputs.release)
         run: gradle :app:bundleDebug --no-daemon
 
       - name: Keep test bundle (not a Play release)
-        if: github.event_name != 'workflow_dispatch' || !inputs.release
+        if: github.ref_name != 'work/veldio-41' && (github.event_name != 'workflow_dispatch' || !inputs.release)
         uses: actions/upload-artifact@v4
         with:
           name: Veldio-40-test-bundle-NOT-FOR-PLAY
@@ -1178,6 +1190,31 @@ jobs:
           path: app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
 
+      - name: Prepare directly installable phase41 APK
+        if: github.ref_name == 'work/veldio-41'
+        run: |
+          mkdir -p install
+          cp app/build/outputs/apk/debug/app-debug.apk install/Veldio-41-install.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs install/Veldio-41-install.apk | tee install/signature.txt
+          grep -q 'CN=Android Debug' install/signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging install/Veldio-41-install.apk > install/manifest.txt
+          sha256sum install/Veldio-41-install.apk > install/sha256.txt
+      - name: Upload phase41 install APK
+        if: github.ref_name == 'work/veldio-41'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-41-install
+          path: install/Veldio-41-install.apk
+          if-no-files-found: error
+      - name: Upload signature evidence
+        if: github.ref_name == 'work/veldio-41'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-41-signature
+          path: |
+            install/signature.txt
+            install/manifest.txt
+            install/sha256.txt
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
@@ -1208,12 +1245,12 @@ jobs:
       - name: Install and inspect Veldio on Android
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
+          api-level: 36
           target: google_apis
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-premium40.py apk/app-debug.apk
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-${{ github.ref_name == 'work/veldio-41' && 'audit41' || 'premium40' }}.py apk/app-debug.apk
       - name: Keep Android visual checks
         if: always()
         uses: actions/upload-artifact@v4
