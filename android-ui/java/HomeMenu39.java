@@ -9,7 +9,8 @@ public final class HomeMenu39 extends ScrollView {
  private int dp(float n){return PremiumDesign40.dp(getContext(),n);}
  public HomeMenu39(Activity a,DestinationView39.Route route,HomeFeatureView.OpenArticle open){super(a);setFillViewport(true);setBackgroundColor(PremiumDesign40.INK);setClipToPadding(false);
   LinearLayout page=new LinearLayout(a);page.setOrientation(1);page.setPadding(dp(10),dp(8),dp(10),dp(28));addView(page,new LayoutParams(-1,-2));
-  page.addView(new HomeSlideshow40(a,open,()->route.open("news")),new LinearLayout.LayoutParams(-1,dp(Math.min(390,Math.max(245,getResources().getDisplayMetrics().widthPixels/getResources().getDisplayMetrics().density*.62f)))));
+  float heroHeight=Math.min(390,Math.max(245,getResources().getDisplayMetrics().widthPixels/getResources().getDisplayMetrics().density*.62f))+Math.max(0,getResources().getConfiguration().fontScale-1)*180;
+  page.addView(new HomeSlideshow40(a,open,()->route.open("news")),new LinearLayout.LayoutParams(-1,dp(heroHeight)));
   LinearLayout.LayoutParams strip=new LinearLayout.LayoutParams(-1,-2);strip.topMargin=dp(10);page.addView(new MatchStrip40(a,()->route.open("fixtures")),strip);
   TextView title=PremiumDesign40.text(a,"Mijn Veldio",25,PremiumDesign40.WHITE,true);title.setTypeface(null,Typeface.BOLD_ITALIC);title.setPadding(dp(3),dp(20),0,dp(14));page.addView(title);
   float scale=getResources().getConfiguration().fontScale;int height=dp(126+Math.max(0,scale-1)*70);
