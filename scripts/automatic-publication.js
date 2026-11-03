@@ -379,8 +379,8 @@ async function run(options={}){
 }
 function runExitCode(report){
  if(!['completed','no_new_verified_articles','daily_limit'].includes(report.status))return 1;
- // An isolated inaccessible source is not a failed editorial run when other sources were evaluated.
- return 0;
+ // A single inaccessible source is tolerated only if other candidates were evaluated.
+ return report.published.length===0&&report.sourceErrors.length>0&&!(report.sourceErrors.length===1&&report.skipped.length>0)?1:0;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({published:r.published.length,skipped:r.skipped.length,sourceErrors:r.sourceErrors.length,status:r.status}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
 module.exports={editorialPriority,nationallyRelevant,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
