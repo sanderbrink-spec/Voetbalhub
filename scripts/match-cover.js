@@ -60,15 +60,12 @@ async function stadiumFor(venue,key,fetcher=fetch){
  return {stadiumImage:`https://media.api-sports.io/football/venues/${matching[0].id}.png`,venueVerified:true};
 }
 async function createCover(m,{token,fetcher=fetch}={}){
- assertMatch(m);
- const assets={home:await asset(m.fixture.home.logo,fetcher),away:await asset(m.fixture.away.logo,fetcher)};
- if(m.kind==='preview')assets.stadium=await stadiumAsset(m,fetcher);
- const source=svg(m,assets),identity=hash(source),filename='match-covers/'+identity+'.png';
- const {Resvg}=require('@resvg/resvg-js');const png=new Resvg(source,{font:{loadSystemFonts:true}}).render().asPng();
- await githubFile(filename,png,{token,fetcher});
- const imageUrl=`https://raw.githubusercontent.com/${REPO}/${BRANCH}/${filename}`;
- const check=await fetcher(imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
- if(!check.ok||hash(Buffer.from(await check.arrayBuffer()))!==hash(png))throw Error('Wedstrijdbeeld niet openbaar bevestigd.');
- return {imageUrl,imageRights:'cleared',imageSource:'Veldio · wedstrijdvormgeving',imageCredit:(m.stadiumCredit||'Stadionbeeld: API-SPORTS')+' · clublogos: gegevensleverancier · vormgeving: Veldio',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,notes:'Vaste beeldafspraak: '+m.kind+'. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.',assetSha256:hash(png),stadiumImageUrl:m.stadiumImage||'',stadiumVenueName:m.fixture.venue?.name||'',stadiumSourceUrl:m.stadiumSourceUrl||m.stadiumImage||'',method:'fixture-specific-stadium-and-logos-v4'}};
+ if(!['preview','report','analysis'].includes(m.kind)||!m.fixture?.home?.name||!m.fixture?.away?.name||!Number.isFinite(Date.parse(m.fixture.date)))throw Error('Bevestigde wedstrijdgegevens ontbreken.');
+ if(m.kind==='report'&&(!['FT','AET','PEN'].includes(m.fixture.status)||!Number.isInteger(m.fixture.goals?.home)||!Number.isInteger(m.fixture.goals?.away)))throw Error('Gecontroleerde eindstand ontbreekt.');
+ const f=m.fixture;
+ return require('./automatic-publication').uploadCover({
+  ...(m.article||{}),articleKind:m.kind,fixture:f,
+  draft:m.article?.draft||{headline:f.home.name+' tegen '+f.away.name,standfirst:m.kind+' · '+f.date,body:[m.competition||'Voetbal']}
+ },{token,fetcher});
 }
 module.exports={assertStadiumIdentity,reviewedStadium,assertMatch,svg,safeAsset,asset,stadiumFor,createCover};

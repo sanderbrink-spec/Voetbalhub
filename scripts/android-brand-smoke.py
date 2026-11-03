@@ -72,7 +72,7 @@ if not any('Alles voetbal. Eén plek.' in x for x in texts):
     time.sleep(1);root=capture('04-menu-bottom');texts=[n.get('text','') for n in root.iter('node')]
 assert any('Alles voetbal. Eén plek.' in x for x in texts),texts
 assert adb('shell','pidof',PACKAGE).strip()
-(OUT/'result.txt').write_text('PASS: install, launch, active process, home and Meer navigation; Veldio branding and slogan; no old visible brand. Android API 35 emulator. No content published.\n')
+(OUT/'result.txt').write_text('PASS: install, launch, active process, home and Meer navigation; Veldio branding and slogan; no old visible brand. Android API '+adb('shell','getprop','ro.build.version.sdk').strip()+' emulator. No content published.\n')
 print((OUT/'result.txt').read_text())
 
 # Seed a disposable emulator with the public feed to test cached article views.
@@ -135,4 +135,43 @@ time.sleep(1);capture('12-back-to-news')
 adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 with (OUT/'result.txt').open('a') as result:
     result.write('PASS: public-feed cache, local column portrait thumbnail, column and news readers, save toggle, font control and back navigation. Cached/offline UI scenario; does not verify Android live networking.\n')
+print((OUT/'result.txt').read_text())
+
+# Verify an actual network fetch and the manual refresh with an empty local cache.
+# This is separate from the offline reader checks above.
+adb('shell','am','force-stop',PACKAGE)
+(OUT/'empty-cache.xml').write_text('<map><string name="last_articles">{&quot;articles&quot;:[]}</string></map>')
+adb('push',str(OUT/'empty-cache.xml'),'/data/local/tmp/veldio-empty-cache.xml')
+adb('shell','run-as',PACKAGE,'cp','/data/local/tmp/veldio-empty-cache.xml','shared_prefs/voetbalhub_editorial.xml')
+adb('shell','am','start','-W','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
+time.sleep(4)
+live_root=capture('13-online-home')
+news_button=next((n for n in live_root.iter('node') if n.get('text')=='Nieuws'),None)
+if news_button is not None:
+    box=list(map(int,re.findall(r'\d+',news_button.get('bounds',''))))
+    adb('shell','input','tap',str((box[0]+box[2])//2),str((box[1]+box[3])//2))
+    time.sleep(2)
+live_root=capture('14-before-refresh')
+refresh=next((n for n in live_root.iter('node') if n.get('text')=='VERVERS'),None)
+assert refresh is not None,'Manual refresh control missing'
+box=list(map(int,re.findall(r'\d+',refresh.get('bounds',''))))
+adb('shell','input','tap',str((box[0]+box[2])//2),str((box[1]+box[3])//2))
+live_feed=None
+for attempt in range(35):
+    time.sleep(3)
+    try:
+        xml=adb('shell','run-as',PACKAGE,'cat','shared_prefs/voetbalhub_editorial.xml')
+        raw=next(n.text for n in ET.fromstring(xml) if n.get('name')=='last_articles')
+        candidate=json.loads(raw)
+        if candidate.get('articles'):
+            live_feed=candidate
+            break
+    except (subprocess.CalledProcessError,ValueError,StopIteration):pass
+assert live_feed and live_feed.get('articles'),'Android did not fetch live articles after refresh'
+(OUT/'android-live-feed.json').write_text(json.dumps(live_feed))
+live_root=capture('15-live-news')
+expected={a['headline'] for a in live_feed['articles'] if a.get('type')!='column' and a.get('category','').lower() not in ('column','de derde helft')}
+assert any(n.get('text') in expected for n in live_root.iter('node')),'Live article card missing from Android screen'
+with (OUT/'result.txt').open('a') as result:
+    result.write('PASS: Android live network fetch from an empty local cache, manual VERVERS, public article data persisted and live news card visible. '+str(len(live_feed['articles']))+' articles received.\n')
 print((OUT/'result.txt').read_text())

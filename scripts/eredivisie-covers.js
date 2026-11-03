@@ -32,7 +32,8 @@ async function sync({key,secret,token,fetcher=fetch}={}){
  const packets=[...before.filter(a=>a.match&&Number.isInteger(a.match.homeScore)&&Number.isInteger(a.match.awayScore)).map(a=>({payload:{draft:{headline:a.headline,standfirst:a.standfirst,body:a.body},match:a.match},kind:'report',home:a.match.homeTeam,away:a.match.awayTeam,date:a.match.playedAt,goals:{home:a.match.homeScore,away:a.match.awayScore},category:a.category})),...require('../automatic-bootstrap.json').map(p=>({payload:{draft:p.draft,verifiedFacts:p.candidate.facts.map(f=>f.text)},kind:'preview',home:p.candidate.teams[0],away:p.candidate.teams[1],date:kickoffFromFacts(p),category:p.candidate.category})),{payload:require('../redactie/trial/article.json').payload,kind:'preview',home:'FC Emmen',away:'FC Den Bosch',date:'2026-11-01T14:30:00+01:00',category:'Keuken Kampioen Divisie'},...require('../redactie/curated/articles.json').filter(p=>p.payload.match).map(p=>({payload:p.payload,kind:'report',home:p.payload.match.homeTeam,away:p.payload.match.awayTeam,date:p.payload.match.playedAt,goals:{home:p.payload.match.homeScore,away:p.payload.match.awayScore},category:'KNVB Beker'}))];
  let stats=null;try{const r=await fetcher(DATA_URL);if(r.ok)stats=await r.json();}catch{}
  for(const a of before){
-  if(a.status!=='published'||a.imageReview?.method==='fixture-specific-stadium-and-logos-v4')continue;
+  // Existing selected artwork stays intact. New publications use the v44 pipeline.
+  if(a.status!=='published'||a.imageUrl)continue;
   const packet=packets.find(p=>contentHash(a)===contentHash(p.payload)||(p.payload.verifiedFacts?.length>=2&&p.payload.verifiedFacts.slice(0,2).every(f=>(a.verifiedFacts||[]).some(actual=>norm(actual)===norm(f)))));if(!packet)continue;
   try{
    const home=await resolveTeam(packet.home,key,fetcher),away=await resolveTeam(packet.away,key,fetcher);
@@ -41,7 +42,7 @@ async function sync({key,secret,token,fetcher=fetch}={}){
    if(packet.kind==='preview'&&!found&&!packet.date.includes('T'))throw Error('Exact aftraptijdstip nog niet bevestigd.');
    const fixture={id:found?.id||packet.payload.match?.playedAt,date:found?.date||packet.date,status:packet.kind==='report'?'FT':'NS',home,away,venue:{...home.venue,name:home.venue?.name||found?.venue?.name||''},goals:packet.goals||{home:null,away:null}};
    const stadium=packet.kind==='preview'?await stadiumFor(fixture.venue,key,fetcher):{};
-   const image=await createCover({kind:packet.kind,fixture,...stadium,competition:packet.category},{token,fetcher});
+   const image=await createCover({kind:packet.kind,fixture,...stadium,competition:packet.category,article:packet.payload},{token,fetcher});
    const response=await fetcher(API+'/article-image',{method:'POST',headers:{Authorization:'Bearer '+secret,'Content-Type':'application/json'},body:JSON.stringify({approved:true,articleId:a.id,...image}),signal:AbortSignal.timeout(25000)});
    const result=await response.json();if(!response.ok||result.updated!==true||result.article?.imageUrl!==image.imageUrl)throw Error('Afbeeldingskoppeling niet bevestigd.');
    updates.push({id:a.id,imageUrl:image.imageUrl});

@@ -590,6 +590,17 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       return send(res,200,{record,published:false});
     } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept kon niet worden opgeslagen."}); }
   }
+  if (url.pathname === "/editorial-image44") {
+    if (body.approvedGeneration !== true) return send(res,400,{error:"approvedGeneration:true is vereist."});
+    if (!body.payload?.draft?.headline) return send(res,400,{error:"Gecontroleerde artikeltekst ontbreekt."});
+    if (imageGenerationInProgress) return send(res,429,{error:"Beeldgeneratie is al bezig."});
+    imageGenerationInProgress=true;
+    try {
+      const result=await require('./editorial-image44-service').create(body.payload,{client,remaining:body.remaining,priorHashes:Array.isArray(body.priorHashes)?body.priorHashes.slice(0,200):[]});
+      return send(res,200,result);
+    } catch { return send(res,503,{error:"Beeldcontrole tijdelijk niet beschikbaar."}); }
+    finally { imageGenerationInProgress=false; }
+  }
   // Author columns expose a capability flag so publication can follow a completed rollout.
   if (url.pathname === "/publish-column") {
     if (!client?.isReady) return send(res,503,{error:"Artikelenopslag is nog niet verbonden."});

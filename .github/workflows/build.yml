@@ -483,7 +483,7 @@ jobs:
                           final java.util.ArrayList<org.json.JSONObject> rows = new java.util.ArrayList<>();
                           final java.util.HashSet<String> seenHeadlines = new java.util.HashSet<>();
                           final java.util.HashSet<String> seenIds = new java.util.HashSet<>();
-                          if (articles != null) for (int i = 0; i < articles.length() && rows.size() < 12; i++) {
+                          if (articles != null) for (int i = 0; i < articles.length() && rows.size() < 30; i++) {
                               org.json.JSONObject article = articles.optJSONObject(i);
                               if (article == null || !"published".equals(article.optString("status"))) continue;
                               String normalizedHeadline = java.text.Normalizer.normalize(article.optString("headline", "").trim().toLowerCase(java.util.Locale.ROOT), java.text.Normalizer.Form.NFKC).replace("  ", " ");
@@ -957,6 +957,18 @@ jobs:
       - name: Apply Veldio premium presentation
         run: python3 scripts/patch-veldio-premium.py
 
+      - name: Set phase 44 version
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          p=Path('app/build.gradle.kts');s=p.read_text()
+          current=int(re.search(r'versionCode\s*=\s*(\d+)',s).group(1))
+          s=re.sub(r'versionCode\s*=\s*\d+', 'versionCode = '+str(max(59,current+1)),s,count=1)
+          s=re.sub(r'versionName\s*=\s*"[^"]+"','versionName = "4.44-veldio"',s,count=1)
+          p.write_text(s)
+          PY
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -968,10 +980,27 @@ jobs:
         run: gradle :app:assembleDebug --no-daemon
 
       - name: Upload APK
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os, subprocess
+          from pathlib import Path
+          apk=Path('app/build/outputs/apk/debug/app-debug.apk')
+          roots=Path(os.environ['ANDROID_HOME'])/'build-tools'
+          signer=sorted(roots.glob('*/apksigner'))[-1]
+          result=subprocess.check_output([str(signer),'verify','--verbose','--print-certs',str(apk)],text=True)
+          assert 'CN=Android Debug' in result, 'APK is not signed with an Android debug certificate'
+          print(result)
+          PY
+
+      - name: Name installable APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Veldio-44-install.apk
+
+      - name: Upload signed Veldio44 APK
         uses: actions/upload-artifact@v4
         with:
           name: Veldio-Android-test
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: Veldio-44-install.apk
           if-no-files-found: error
 
   android-brand-smoke:
@@ -995,12 +1024,12 @@ jobs:
       - name: Install and inspect Veldio on Android
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
+          api-level: 36
           target: google_apis
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: python3 scripts/android-brand-smoke.py apk/app-debug.apk
+          script: python3 scripts/android-brand-smoke.py apk/Veldio-44-install.apk
       - name: Keep Android visual checks
         if: always()
         uses: actions/upload-artifact@v4
