@@ -1,21 +1,141 @@
 {
   "creator": "Veldio",
-  "kind": "Original decorative vector artwork",
-  "source": "Veldio original icons; scripts/premium-art40.cjs",
-  "thirdPartyMarks": false,
-  "documentary": false,
+  "method": "OpenAI built-in imagegen; original generated decorative 3D illustrations",
+  "createdAt": "2026-11-03",
+  "source": "premium40/prompts.json",
+  "note": "Fictional settings and original unbranded objects. Not a photograph of a reported match or real venue. Source SVG alternatives remain original Veldio artwork.",
   "assets": [
-    "news",
-    "fixtures",
-    "competitions",
-    "predictions",
-    "quiz",
-    "stadium",
-    "column",
-    "videos",
-    "standings",
-    "favorites",
-    "myclub",
-    "more"
+    {
+      "id": "news",
+      "file": "news.webp",
+      "sha256": "038b42179845dc4c2e754ae892e983d01069760622a0e531443f435857793e1a",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "fixtures",
+      "file": "fixtures.webp",
+      "sha256": "b1a184c273dd5791fc16e3f378289433b40cd0f322603abd7000034af3784438",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "competitions",
+      "file": "competitions.webp",
+      "sha256": "4575d57671aacb97e3432a72a02b3bc441b54ee498cf48bc23159679b7dfc8db",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "predictions",
+      "file": "predictions.webp",
+      "sha256": "705e0455188250a598e4b55130b26e9f1cd93bbce3a4db2ae601d8db423083e2",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "quiz",
+      "file": "quiz.webp",
+      "sha256": "2a70133c6df3a5a416a16d9e0ef20d1ab6b8e0fa82f748eae4418cfa5b9fb02c",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "stadium",
+      "file": "stadium.webp",
+      "sha256": "1091e0822238df430f4bb876078fe91580375bbd14893e896184886bc3999d79",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "column",
+      "file": "column.webp",
+      "sha256": "46a09edaeedec184db6d0fa086739c3cbda5bc6fbf7e5a802e8788441044c5db",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "videos",
+      "file": "videos.webp",
+      "sha256": "8927b337b4e72017164ba73b262c456277e343481b0373c944eec58a8208426a",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "standings",
+      "file": "standings.webp",
+      "sha256": "103c74c32158e178adc60d658b479bb4ef4a8e5571a6170d355fbc377b36504b",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "favorites",
+      "file": "favorites.webp",
+      "sha256": "9fc8d980c2b4f43db9073ce3fa8313d7d1a657e2ee6914887a18eb791656d7dc",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "myclub",
+      "file": "myclub.webp",
+      "sha256": "d1417ab9c232100d1d0b08c773b9df7db097397ecfa1ceaef9fd35b093a7e425",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    },
+    {
+      "id": "more",
+      "file": "more.webp",
+      "sha256": "ae52947d3e10a3943827c637e6ef5f35729b011ae1b5d20de73dd38715780ef4",
+      "width": 600,
+      "height": 440,
+      "generated": true,
+      "contextOnly": true,
+      "documentary": false,
+      "thirdPartyMarks": false
+    }
   ]
 }
