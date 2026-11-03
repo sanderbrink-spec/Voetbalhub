@@ -21,12 +21,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api repos/sanderbrink-spec/Voetbalhub/actions/runs/41606193539/jobs > build-jobs.json
-          gh api repos/sanderbrink-spec/Voetbalhub/actions/runs/41606193539 > build-run.json
+          gh api repos/sanderbrink-spec/Voetbalhub/actions/runs/41609463996/jobs > build-jobs.json
+          gh api repos/sanderbrink-spec/Voetbalhub/actions/runs/41609463996 > build-run.json
           python3 - <<'PY'
           import json
           run=json.load(open('build-run.json'))
-          assert run['head_sha']=='c6239e9e59ace0b93907f62e4fe5fb0968e92ed6', 'Unexpected source revision'
+          assert run['head_sha']=='a76219a2026f22cd35a58278ea41b6e9d8c2edd0', 'Unexpected source revision'
           jobs=json.load(open('build-jobs.json'))['jobs']
           assert any(j['name']=='api-test-and-build' and j['conclusion']=='success' for j in jobs), 'Complete APK build did not pass'
           PY
@@ -35,7 +35,7 @@ jobs:
         with:
           name: Veldio-Android-test
           path: apk
-          run-id: 41606193539
+          run-id: 41609463996
           github-token: ${{ github.token }}
       - uses: android-actions/setup-android@v3
         with:
@@ -71,7 +71,7 @@ jobs:
           assert pid, 'App process exited'
           log=adb('logcat','-d','-b','crash')
           assert package not in log, log
-          report={'android':16,'api':36,'installation':'Success','launch':'ok','runningPid':pid,'sourceCommit':'c6239e9e59ace0b93907f62e4fe5fb0968e92ed6','package':package,'physicalSamsungTest':False}
+          report={'android':16,'api':36,'installation':'Success','launch':'ok','runningPid':pid,'sourceCommit':'a76219a2026f22cd35a58278ea41b6e9d8c2edd0','package':package,'physicalSamsungTest':False}
           open('android16-installation.json','w').write(json.dumps(report,indent=2))
           print(json.dumps(report))
           PY
