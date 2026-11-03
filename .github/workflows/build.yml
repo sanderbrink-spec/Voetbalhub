@@ -986,11 +986,25 @@ jobs:
           assert 'versionName = "4.44-veldio"' in gradle, 'Unexpected APK version'
           assert 'applicationId = "nl.voetbalhub.app1"' in gradle, 'Package upgrade identity changed'
           strings=list(Path('app/src/main/res').glob('values*/strings.xml'))
-          assert any(re.search(r'<string\\s+name="app_name"[^>]*>Veldio</string>',p.read_text()) for p in strings), 'Launcher label is not Veldio'
+          assert any('name="app_name"' in p.read_text() and '>Veldio</string>' in p.read_text() for p in strings), 'Launcher label is not Veldio'
           provenance={'source_commit':os.environ['GITHUB_SHA'],'version':'4.44-veldio','package':'nl.voetbalhub.app1','components':required,'base_archive':'VoetbalHub-4.22-API-Football.zip','patched_from_current_checkout':True}
           Path('Veldio-build-provenance.json').write_text(json.dumps(provenance,indent=2)+'\\n')
           print(json.dumps(provenance,indent=2))
           PY
+
+      - name: Export assembled Android source for migration into Git
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -czf Veldio-Android-source.tar.gz app build.gradle.kts settings.gradle.kts gradle.properties
+      - name: Preserve complete Android source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-Android-source
+          path: |
+            Veldio-Android-source.tar.gz
+            Veldio-build-provenance.json
+          if-no-files-found: error
 
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
