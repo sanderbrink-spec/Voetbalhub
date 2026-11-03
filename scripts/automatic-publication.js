@@ -109,6 +109,15 @@ function nationallyRelevant(doc){
  if(!highImpact.test(title)&&!majorFixture.test(title))return false;
  return development.test(title)&&body.length>=300;
 }
+function editorialPriority(doc){
+ const title=normalize(doc.title||'');
+ const major=/\b(ajax|feyenoord|psv|fc twente|az)\b/;
+ const exceptional=/\b(promotie|degradatie|kampioen|kampioenschap|ontslag|faillissement|licentie|record)\b/;
+ if(/\b(kkd|keuken kampioen divisie|eerste divisie)\b/.test(title))return exceptional.test(title)?1:0;
+ if(major.test(title))return 4;
+ if(/\b(eredivisie|knvb|champions league|europa league|conference league|transfer|trainer)\b/.test(title))return 3;
+ return 2;
+}
 function partnerDocuments(doc,documents){
  // Do not spend an extraction call on a second page chosen only for generic
  // football vocabulary. Literal evidence and the second reviewer still decide.
@@ -296,7 +305,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  for(const urls of config.sourceGroups){const group=(await Promise.all(urls.map(load))).filter(Boolean);if(group.length>=2){group.bootstrap=bootstrap.find(p=>JSON.stringify(p.sourceUrls)===JSON.stringify(group.map(d=>d.url)));groups.push(group);}}
  const discovered=[];
  for(const index of config.newsIndexes){try{const page=await officialPage(index.url,fetcher);for(const link of discoverLinks(page.html,index)){const doc=await load(link);if(doc)discovered.push(doc);}}catch(e){report.sourceErrors.push({url:index.url,error:e.message});}}
- for(const doc of discovered.sort((a,b)=>(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
+ for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
   if(!doc.publishedAt||Date.parse(doc.publishedAt)<now-config.maxAgeHours*3600000)continue;
   if(!nationallyRelevant(doc)){report.skipped.push({topic:doc.title,reason:'Geen aantoonbare landelijke nieuwswaarde; geen AI-aanroep.'});continue;}
   if(/\b(?:uitgeschakeld|nederlaag|overwinning|wint|won|doelpunten|nabeschouwing|samenvatting)\b/i.test(doc.title))continue;
@@ -372,4 +381,4 @@ function runExitCode(report){
  return report.published.length===0&&report.sourceErrors.length>0?1:0;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({published:r.published.length,skipped:r.skipped.length,sourceErrors:r.sourceErrors.length,status:r.status}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={nationallyRelevant,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
+module.exports={editorialPriority,nationallyRelevant,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
