@@ -1,0 +1,53 @@
+{
+  "id": "f43dc560-a720-4ea7-ac3d-29dcc9e553d3",
+  "status": "published",
+  "author": "Veldio Redactie",
+  "headline": "FC Groningen koppelt duel met Sparta aan maatschappelijk programma",
+  "standfirst": "Rond het thuisduel met Sparta Rotterdam vraagt FC Groningen zondag aandacht voor bewegen. De club organiseert activiteiten bij Euroborg en presenteert een maatschappelijke bal.",
+  "body": [
+    "FC Groningen geeft de competitiewedstrijd tegen Sparta Rotterdam op zondag 1 november een maatschappelijk thema. Bij Euroborg is vanaf 14.45 uur een beweegplein ingericht met activiteiten voor supporters van verschillende leeftijden. Het stadion opent volgens de bezoekersinformatie om 15.15 uur; de wedstrijd begint om 16.45 uur.",
+    "De club geeft deelnemers aan haar maatschappelijke programma’s ook een rol rond het voetbal. Zij lopen mee bij de opkomst, doen mee aan de rustactiviteit of helpen bij het vlaggenspektakel. De aanvoerder draagt daarnaast een speciale band om de aandacht op meer en beter bewegen te vestigen.",
+    "Ook een nieuwe maatschappelijke bal maakt deel uit van het programma. Die krijgt kenmerken van de Groningse provincievlag en is bedoeld voor activiteiten van de stichting. Volgens de aankondiging wordt het impactrapport over seizoen 2025/2026 vooraf met betrokken partners besproken. De openbare versie volgt volgens de club begin volgende week."
+  ],
+  "why_it_matters": "",
+  "category": "FC Groningen",
+  "publishedAt": "2026-11-01T13:50:23.837Z",
+  "verifiedFacts": [
+    "FC Groningen speelt op zondag 1 november 2026 om 16.45 uur in Euroborg thuis tegen Sparta Rotterdam in de Eredivisie; de KNVB bevestigt datum, tegenstander en aanvangstijd.",
+    "FC Groningen kondigt voor het thuisduel een maatschappelijk programma aan van Stichting FC Groningen in de Maatschappij, met een beweegplein vanaf 14.45 uur.",
+    "Het stadion opent volgens de officiële bezoekersinformatie om 15.15 uur.",
+    "Het beweegplein heeft activiteiten voor supporters van alle leeftijden.",
+    "Deelnemers aan maatschappelijke programma’s lopen mee bij de opkomst, doen mee aan de rustactiviteit of het vlaggenspektakel.",
+    "De aanvoerder draagt een speciale aanvoerdersband om aandacht te vragen voor Meer & Beter Bewegen.",
+    "Een nieuwe maatschappelijke bal krijgt kenmerken van de Groningse provincievlag en wordt bij activiteiten gebruikt.",
+    "Volgens de club wordt het impactrapport 2025/2026 vooraf met betrokkenen besproken; het wordt begin volgende week openbaar."
+  ],
+  "sources": [
+    {
+      "url": "https://www.fcgroningen.nl/nieuws/beweegplein-speciale-aanvoerdersband-en-lancering-maatschappelijke-bal-zondag-rond-duel-met-sparta/"
+    },
+    {
+      "url": "https://www.knvb.nl/competities/eredivisie/programma"
+    },
+    {
+      "url": "https://www.fcgroningen.nl/nieuws/supporters-en-beweegplein-geopend-om-14-45-uur/"
+    }
+  ],
+  "editorialChecks": {
+    "originalSourceReviewed": true,
+    "claimsIndependentlyChecked": true,
+    "duplicateChecked": true,
+    "languageChecked": true
+  },
+  "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/groningen-maatschappij.webp",
+  "imageSource": "Veldio · eigen redactionele illustratie",
+  "imageCredit": "Illustratie: Veldio · geen wedstrijdfoto",
+  "imageRights": "cleared",
+  "imageReview": {
+    "kitVerified": true,
+    "playerIdentityVerified": true,
+    "aiDisclosureVerified": true
+  },
+  "autoPublish": false,
+  "feedState": "current"
+}

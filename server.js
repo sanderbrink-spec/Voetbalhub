@@ -285,7 +285,7 @@ async function getArticles(view = "current") {
   const keys = await client.keys("article:*");
   const candidates=await require("./article-storage").readPublished(client,keys);
   const articles=[];
-  for(const article of candidates)try{articles.push(require("./brand").article(withArticleCover(article)));}catch{}
+  for(const article of candidates)try{articles.push(require("./media43").apply(require("./brand").article(withArticleCover(article))));}catch{}
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return require("./feed-policy").selectFeed(articles, {view});
 }
@@ -294,6 +294,7 @@ const quizHandler=require("./quiz39/service").create({redis:client});
 async function handle(req, res) {
   security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
+  if(require("./media43").serve(req,res,url.pathname))return;
   if(await quizHandler(req,res))return;
   if(req.method==="GET"&&url.pathname==="/editorial/veldio-arena.webp"){
     const fs=require("node:fs"),path=require("node:path"),crypto=require("node:crypto"),manifest=JSON.parse(fs.readFileSync(path.join(__dirname,"public/editorial/visual-rights38.json"),"utf8")),bytes=fs.readFileSync(path.join(__dirname,"public/editorial/veldio-arena.webp"));

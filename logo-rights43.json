@@ -1,0 +1,21 @@
+{
+ "reviewedAt":"2026-11-03",
+ "scope":"Commercial Veldio Android news app, competition navigation, favourite cards, article illustration",
+ "default":"No official asset without documented applicable permission; retain original symbols and identifying names",
+ "competitions":[
+  {"name":"Eredivisie","owner":"Eredivisie CV / applicable brand rights holders","decision":"C","implemented":"original emblem","reason":"Public brand manual supplies variants, but no unconditional commercial app licence verified; prior approval requirement unresolved.","sources":["https://eredivisie.nl/meer/merk/","https://eredivisie.nl/meer/merk/logo/"]},
+  {"name":"Keuken Kampioen Divisie","owner":"Cooperatie Eerste Divisie / applicable brand rights holders","decision":"C","implemented":"original emblem","reason":"No applicable public commercial reuse permission established. Terms page not readable.","sources":["https://keukenkampioendivisie.nl/algemene-voorwaarden"]},
+  {"name":"Champions League","owner":"UEFA","decision":"B","implemented":"original emblem","reason":"UEFA platform terms do not grant a general licence to UEFA marks; no written permission supplied.","sources":["https://www.uefa.com/termsconditions/"]},
+  {"name":"Europa League","owner":"UEFA","decision":"B","implemented":"original emblem","reason":"Same UEFA mark restriction; no permission supplied.","sources":["https://www.uefa.com/termsconditions/"]},
+  {"name":"Conference League","owner":"UEFA","decision":"B","implemented":"original emblem","reason":"Same UEFA mark restriction; no permission supplied.","sources":["https://www.uefa.com/termsconditions/"]},
+  {"name":"Premier League","owner":"The Football Association Premier League Limited","decision":"C","implemented":"original emblem","reason":"Logo portal offers limited editorial licence to qualifying Media Users, requires portal originals, no alteration except resize, specified copyright notice. Applicability to persistent navigation and access to correct portal original not verified. Not treated as universally prohibited.","sources":["https://logo.premierleague.com/"]}
+ ],
+ "clubs":{
+  "inventory":"android-ui/assets/club-directory.json",
+  "count":38,
+  "defaultDecision":"C",
+  "reason":"No per-club permission register supplied. Availability on competition or club websites does not itself grant commercial app reuse. No claim that all informative logo use is unlawful.",
+  "exceptions":[{"club":"Sparta Rotterdam","decision":"B","source":"https://www.sparta-rotterdam.nl/copyright-clublogo/","reason":"Club explicitly requires prior written permission, particularly for commercial online platforms; not present."}],
+  "implementation":"Original monograms and club names retained. Groningen-Sparta illustration uses legible club names and colours, no official emblems."
+ }
+}
