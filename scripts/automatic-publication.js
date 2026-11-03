@@ -90,6 +90,19 @@ function discoverLinks(html,index){
  }
  return urls.slice(0,4);
 }
+// National-platform relevance gate. Runs before any paid editorial model call.
+function nationallyRelevant(doc){
+ const title=normalize(doc.title||'');
+ const body=normalize((doc.text||'').slice(0,1600));
+ if(!title||title.length<24)return false;
+ if(/^(alle informatie|match center|wedstrijdprogramma|wedstrijden|nieuws|home|tickets|ticketinformatie|kaartverkoop|veelgestelde vragen|faq|contact|agenda|overzicht)$/.test(title))return false;
+ if(/\b(ticket|tickets|kaartverkoop|seizoenkaart|parkeer|routebeschrijving|openingstijden|fanshop|webshop|merchandise|fotoverslag|trainingsschema|vacature|vrijwilliger|businessclub|hospitality|jeugdopleiding|onder 1[0-9]|onder 2[0-3])\b/.test(title))return false;
+ const important=/\b(eredivisie|eerste divisie|keuken kampioen divisie|knvb|beker|champions league|europa league|conference league|europese|transfer|transfers|contract|trainer|hoofdtrainer|ontslag|vertrek|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|topper|derby|ajax|psv|feyenoord|az|fc twente|fc utrecht|fc groningen|sc heerenveen|nec|sparta|go ahead eagles)\b/;
+ if(!important.test(title))return false;
+ // A club name alone is insufficient: require a material football development.
+ const development=/\b(transfer|transfers|contract|verlengt|verlengd|tekent|tekende|aangetrokken|vertrekt|vertrek|trainer|hoofdtrainer|ontslag|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|beker|europa|eredivisie|competitie|wedstrijd|duel|speelt|treft|tegen)\b/;
+ return development.test(title)&&body.length>=300;
+}
 function partnerDocuments(doc,documents){
  // Do not spend an extraction call on a second page chosen only for generic
  // football vocabulary. Literal evidence and the second reviewer still decide.
@@ -279,6 +292,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  for(const index of config.newsIndexes){try{const page=await officialPage(index.url,fetcher);for(const link of discoverLinks(page.html,index)){const doc=await load(link);if(doc)discovered.push(doc);}}catch(e){report.sourceErrors.push({url:index.url,error:e.message});}}
  for(const doc of discovered.sort((a,b)=>(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
   if(!doc.publishedAt||Date.parse(doc.publishedAt)<now-config.maxAgeHours*3600000)continue;
+  if(!nationallyRelevant(doc)){report.skipped.push({topic:doc.title,reason:'Geen aantoonbare landelijke nieuwswaarde; geen AI-aanroep.'});continue;}
   if(/\b(?:uitgeschakeld|nederlaag|overwinning|wint|won|doelpunten|nabeschouwing|samenvatting)\b/i.test(doc.title))continue;
   if(published.some(a=>a.sources?.some(s=>s.url===doc.url)))continue;
   const partners=partnerDocuments(doc,[...docs.values()]);
@@ -352,4 +366,4 @@ function runExitCode(report){
  return report.published.length===0&&report.sourceErrors.length>0?1:0;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({published:r.published.length,skipped:r.skipped.length,sourceErrors:r.sourceErrors.length,status:r.status}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
+module.exports={nationallyRelevant,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
