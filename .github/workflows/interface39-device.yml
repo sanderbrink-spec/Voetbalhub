@@ -5,7 +5,6 @@ on:
     branches: [work/veldio-interface-39]
     paths:
       - scripts/android-interface39.py
-      - scripts/android-test-accessibility.py
       - .github/workflows/interface39-device.yml
 permissions:
   contents: read
@@ -26,6 +25,8 @@ jobs:
           path: apk
           run-id: 41569860229
           github-token: ${{ github.token }}
+      - name: Install persistent Android test driver
+        run: python3 -m pip install "uiautomator2>=3,<4"
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules

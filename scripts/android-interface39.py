@@ -1,12 +1,15 @@
 """Install final APK, traverse every destination and verify persistent local settings."""
 from pathlib import Path
 import subprocess,os,re,time,sys,xml.etree.ElementTree as ET,json,atexit
+import uiautomator2 as u2
 OUT=Path('.android-smoke');OUT.mkdir(exist_ok=True)
 sdk=Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
 aapt=sorted(sdk.glob('build-tools/*/aapt'))[-1]
 badging=subprocess.check_output([str(aapt),'dump','badging',sys.argv[1]],text=True)
 PACKAGE=re.search(r"package: name='([^']+)'",badging).group(1)
 assert "versionName='4.47-interface39'" in badging
+# One UIAutomation session survives every hierarchy read, including WebView routes.
+device=u2.connect()
 
 def adb(*args):return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT,timeout=40)
 def diagnostics():
@@ -18,8 +21,8 @@ def bounds(n):return list(map(int,re.findall(r'\d+',n.get('bounds',''))))
 def capture(name):
  for attempt in range(5):
   try:
-   adb('shell','uiautomator','dump','--compressed','/sdcard/veldio39.xml');adb('pull','/sdcard/veldio39.xml',str(OUT/(name+'.xml')));root=ET.parse(OUT/(name+'.xml')).getroot();break
-  except subprocess.CalledProcessError:
+   xml=device.dump_hierarchy(compressed=False);(OUT/(name+'.xml')).write_text(xml);root=ET.fromstring(xml);break
+  except Exception:
    if attempt==4:raise
    time.sleep(1)
  adb('shell','screencap','-p','/sdcard/veldio39.png');adb('pull','/sdcard/veldio39.png',str(OUT/(name+'.png')))
@@ -50,7 +53,6 @@ def back_home():
   home=next((n for n in root.iter('node') if n.get('text')=='Home'),None)
   assert home is not None;tap(home)
  find('MIJN VELDIO','return-home')
-subprocess.run([sys.executable,'scripts/android-test-accessibility.py'],check=True)
 adb('install','-r',sys.argv[1]);adb('shell','am','force-stop',PACKAGE);launch()
 root,node=find('MIJN VELDIO','39-home')
 launcher=next((n for n in root.iter('node') if n.get('text')=="Pixel Launcher isn't responding"),None)
