@@ -297,7 +297,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    stage='review';await persist('needs_review');
    await verifyDraft(payload,candidate,group,ai);verification.checks.push('Tweede AI-feitenredacteur akkoord; geen menselijke feitencontrole.');
    stage='image';
-   Object.assign(payload,await uploadCover({...payload,usedImageHashes:require('../newsroom-images').usedHashes(published),usedPerceptualHashes:require('../editorial-pipeline43').usedPerceptual(published)},{token:githubToken,fetcher}));
+   Object.assign(payload,await uploadCover({...payload,usedImageHashes:require('../editorial-pipeline43').usedHashes(published),usedPerceptualHashes:require('../editorial-pipeline43').usedPerceptual(published)},{token:githubToken,fetcher}));
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
    // Refresh before the only publication write to avoid a concurrent/manual duplicate.
    published=(await api('/articles?view=all')).articles;

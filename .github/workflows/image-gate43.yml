@@ -1,0 +1,25 @@
+name: Veldio43 image publication gate
+on:
+  push:
+    branches: [work/veldio-43]
+    paths: ['editorial-pipeline43.js', 'editorial-publication.js', 'editorial-drafts.js', 'autonomous-editor.js', 'test/editorial43.test.js', '.github/workflows/image-gate43.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    services:
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+        options: --health-cmd 'redis-cli ping' --health-interval 5s --health-timeout 3s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: node --test --test-concurrency=1
+        env:
+          REDIS_TEST_URL: redis://127.0.0.1:6379
