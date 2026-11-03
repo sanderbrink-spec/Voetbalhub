@@ -1,8 +1,8 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),http=require('node:http'),crypto=require('node:crypto'),M=require('../quiz39/model'),N=require('../quiz39/names');
-async function using(run){const redis=require('redis').createClient({url:process.env.REDIS_TEST_URL});await redis.connect();const prefix='q39test:'+crypto.randomUUID()+':',env={HUB_API_SECRET:'q39-test-admin-secret-at-least-32-chars'},handler=require('../quiz39/service').create({redis,env,prefix});const server=http.createServer(async(q,r)=>{if(!await handler(q,r)){r.writeHead(404);r.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
- const api=async(path,body,token,method)=>{const response=await fetch(base+'/quiz/v1'+path,{method:method||(body?'POST':'GET'),headers:{...(token?{Authorization:'Bearer '+token}:{}),'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});return {status:response.status,data:response.status===304?null:await response.json(),response};};
- const identity=async()=>{const r=await api('/identity',{participation:'adult-self-declared',privacyVersion:39});assert.equal(r.status,201,JSON.stringify(r.data));return r.data;};
+async function using(run,{envOverrides={}}={}){const redis=require('redis').createClient({url:process.env.REDIS_TEST_URL});await redis.connect();const prefix='q39test:'+crypto.randomUUID()+':',env={HUB_API_SECRET:'q39-test-admin-secret-at-least-32-chars',...envOverrides},handler=require('../quiz39/service').create({redis,env,prefix});const server=http.createServer(async(q,r)=>{if(!await handler(q,r)){r.writeHead(404);r.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
+ const api=async(path,body,token,method,address)=>{const response=await fetch(base+'/quiz/v1'+path,{method:method||(body?'POST':'GET'),headers:{...(address?{'cf-connecting-ip':address}:{}),...(token?{Authorization:'Bearer '+token}:{}),'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});return {status:response.status,data:response.status===304?null:await response.json(),response};};
+ const identity=async(address)=>{const r=await api('/identity',{participation:'adult-self-declared',privacyVersion:39},undefined,undefined,address);assert.equal(r.status,201,JSON.stringify(r.data));return r.data;};
  const start=async(token,mode='quick')=>(await api('/round/start',{mode,level:'easy'},token)).data.round;
  const get=async r=>JSON.parse(await redis.get(prefix+'round:'+r.id));
  async function answer(r,token,{correct=true,elapsed=1200,id=crypto.randomUUID()}={}){const internal=await get(r);const t=await redis.sendCommand(['TIME']);const now=Number(t[0])*1000+Math.floor(Number(t[1])/1000);internal.issuedAt=now-elapsed;await redis.set(prefix+'round:'+r.id,JSON.stringify(internal),{EX:172800});const q=internal.questions[internal.index];return api('/round/answer',{roundId:r.id,nonce:q.nonce,optionId:correct?q.correctId:q.options.find(a=>a.id!==q.correctId).id,requestId:id},token);}
@@ -33,7 +33,7 @@ test('quiz39 blocked owners can inspect only their own profile and erase all sco
 
 // Isolated Redis prefix: no production profiles, scores or editorial content are modified.
 test('phase41 twenty simultaneous players keep separate rounds and atomic answer replays',options,()=>using(async({api,identity,start,get})=>{
- const players=await Promise.all(Array.from({length:20},()=>identity()));
+ const players=await Promise.all(Array.from({length:20},(_,i)=>identity('203.0.113.'+(i+1))));
  assert.equal(new Set(players.map(p=>p.profile.id)).size,20);
  const rounds=await Promise.all(players.map(p=>start(p.token,'daily')));
  assert.equal(new Set(rounds.map(r=>r.id)).size,20);
@@ -49,4 +49,4 @@ test('phase41 twenty simultaneous players keep separate rounds and atomic answer
  }
  const boards=await Promise.all(players.map((p,i)=>api('/board?scope=live&roundId='+rounds[i].id,undefined,p.token)));
  assert.ok(boards.every(b=>b.status===200));
-}));
+},{envOverrides:{RENDER:'true'}}));
