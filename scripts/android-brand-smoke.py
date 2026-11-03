@@ -152,6 +152,13 @@ if news_button is not None:
     adb('shell','input','tap',str((box[0]+box[2])//2),str((box[1]+box[3])//2))
     time.sleep(2)
 live_root=capture('14-before-refresh')
+# The home tab keeps its hero; the dedicated latest-news tab owns VERVERS.
+latest=next((n for n in live_root.iter('node') if n.get('text')=='Laatste nieuws'),None)
+if latest is not None:
+    box=list(map(int,re.findall(r'\d+',latest.get('bounds',''))))
+    adb('shell','input','tap',str((box[0]+box[2])//2),str((box[1]+box[3])//2))
+    time.sleep(2)
+    live_root=capture('14-latest-news-refresh')
 refresh=next((n for n in live_root.iter('node') if n.get('text')=='VERVERS'),None)
 assert refresh is not None,'Manual refresh control missing'
 box=list(map(int,re.findall(r'\d+',refresh.get('bounds',''))))

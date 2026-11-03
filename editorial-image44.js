@@ -78,7 +78,7 @@ function qualityIssues(plan,r){
 }
 async function request(endpoint,body,{key,fetcher}){
  const r=await fetcher('https://api.openai.com/v1/'+endpoint,{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(180000)});
- if(!r.ok)throw Error('Beeldprovider HTTP '+r.status);
+ if(!r.ok){let code='';try{const error=await r.json();code=String(error.error?.code||error.error?.type||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80);}catch{}throw Error('Beeldprovider HTTP '+r.status+(code?' ('+code+')':''));}
  return r.json();
 }
 async function vision(bytes,plan,options){
