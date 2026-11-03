@@ -1,34 +1,66 @@
 {
   "enabled": true,
-  "maxPerRun": 15,
+  "maxPerRun": 10,
   "maxPerDay": 20,
   "maxAgeHours": 72,
   "previewHorizonDays": 7,
   "model": "openai/gpt-oss-120b",
   "mediaBranch": "editorial-media",
-  "officialDomains": ["ajax.nl", "az.nl", "psv.nl", "willem-ii.nl", "feyenoord.com", "fortunasittard.nl", "fcemmen.nl", "fcdenbosch.nl", "fcgroningen.nl", "knvb.nl", "eurojackpotknvbbeker.nl", "inter.it", "clubbrugge.be", "fctwente.nl", "eredivisie.nl", "fcm.dk", "peczwolle.nl", "keukenkampioendivisie.nl", "liverpoolfc.com", "askclub.be"],
-  "newsIndexes": [
-    {"url":"https://keukenkampioendivisie.nl/nieuws","articlePath":"^/nieuws/[^/]+/?$"},
-    {"url":"https://www.inter.it/en/news","articlePath":"^/en/news/[^/]+/?$"},
-    {"url":"https://www.liverpoolfc.com/news","articlePath":"^/news/[^/]+/?$"},
-    {"url":"https://fcemmen.nl/nieuws/","articlePath":"^/[^/]+/$"},
-    {"url":"https://www.ajax.nl/","articlePath":"^/artikelen/[^/]+/?$"},
-    {"url":"https://www.feyenoord.com/nl/news/","articlePath":"^/nl/news/[^/]+/?$"},
-    {"url":"https://www.fcgroningen.nl/nieuws/","articlePath":"^/nieuws/[^/]+/?$"},
-    {"url":"https://www.az.nl/inside-az/nieuws/","articlePath":"^/inside-az/nieuws/[0-9]{4}/[^/]+/[^/]+/?$"},
-    {"url":"https://peczwolle.nl/nieuws","articlePath":"^/nieuws/[^/]+/?$"},
-    {"url":"https://www.psv.nl/media","articlePath":"^/media/artikel/[^/]+/?$"},
-    {"url":"https://www.willem-ii.nl/nieuws","articlePath":"^/artikel/[^/]+/?$"}
+  "officialDomains": [
+    "ajax.nl",
+    "az.nl",
+    "psv.nl",
+    "willem-ii.nl",
+    "feyenoord.com",
+    "fortunasittard.nl",
+    "fcemmen.nl",
+    "fcdenbosch.nl",
+    "fcgroningen.nl",
+    "knvb.nl",
+    "eurojackpotknvbbeker.nl",
+    "inter.it",
+    "clubbrugge.be",
+    "fctwente.nl",
+    "eredivisie.nl",
+    "fcm.dk",
+    "peczwolle.nl",
+    "keukenkampioendivisie.nl",
+    "liverpoolfc.com",
+    "askclub.be"
   ],
-  "sourceGroups": [
-    ["https://www.psv.nl/ticketinfo/veelgestelde-vragen/informatie-psv-club-brugge-04112026", "https://www.askclub.be/hc/nl/articles/55090008860692-PSV-Club-Brugge-zo-haal-je-jouw-ticket-af-in-Eindhoven"],
-    ["https://www.ajax.nl/wedstrijden/", "https://www.fcm.dk/kampe/fc-midtjylland-afc-ajax-05-11-2026/"],
-    ["https://www.willem-ii.nl/artikel/speelschema-tot-en-met-januari-bekend", "https://peczwolle.nl/nieuws/kaartverkoopinformatie-willem-ii-pec-zwolle"],
-    ["https://www.ajax.nl/wedstrijden/", "https://www.az.nl/inside-az/nieuws/2026/oktober/de-az-connectie-ajax-az"],
-    ["https://www.psv.nl/ticketinfo/veelgestelde-vragen/informatie-psv-willem-ii-31102026", "https://www.willem-ii.nl/artikel/verkoopinformatie-psv-willem-ii"],
-    ["https://www.feyenoord.com/nl/service/wedstrijdbezoek/kaartverkoopinformatie-feyenoord-fortuna-sittard", "https://fortunasittard.nl/nieuws/fortuna-opent-nieuw-seizoen-bij-landskampioen-psv"],
-    ["https://www.feyenoord.com/nl/news/kaartverkoop-feyenoord-inter-start-vrijdag-271026", "https://www.inter.it/en/news/feyenoord-inter-tickets-away-section-champions-league"],
-    ["https://www.psv.nl/match-center", "https://www.willem-ii.nl/artikel/speelschema-tot-en-met-januari-bekend"],
-    ["https://fcemmen.nl/wedstrijdprogramma/", "https://www.fcdenbosch.nl/eerste-elftal/wedstrijden/"]
-  ]
+  "newsIndexes": [
+    {
+      "url": "https://www.inter.it/en/news",
+      "articlePath": "^/en/news/[^/]+/?$"
+    },
+    {
+      "url": "https://www.liverpoolfc.com/news",
+      "articlePath": "^/news/[^/]+/?$"
+    },
+    {
+      "url": "https://www.ajax.nl/",
+      "articlePath": "^/artikelen/[^/]+/?$"
+    },
+    {
+      "url": "https://www.feyenoord.com/nl/news/",
+      "articlePath": "^/nl/news/[^/]+/?$"
+    },
+    {
+      "url": "https://www.fcgroningen.nl/nieuws/",
+      "articlePath": "^/nieuws/[^/]+/?$"
+    },
+    {
+      "url": "https://www.az.nl/inside-az/nieuws/",
+      "articlePath": "^/inside-az/nieuws/[0-9]{4}/[^/]+/[^/]+/?$"
+    },
+    {
+      "url": "https://peczwolle.nl/nieuws",
+      "articlePath": "^/nieuws/[^/]+/?$"
+    },
+    {
+      "url": "https://www.psv.nl/media",
+      "articlePath": "^/media/artikel/[^/]+/?$"
+    }
+  ],
+  "sourceGroups": []
 }
