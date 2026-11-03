@@ -103,6 +103,10 @@ function nationallyRelevant(doc){
  if(!important.test(title))return false;
  // A club name alone is insufficient: require a material football development.
  const development=/\b(transfer|transfers|contract|verlengt|verlengd|tekent|tekende|aangetrokken|vertrekt|vertrek|trainer|hoofdtrainer|ontslag|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|beker|europa|eredivisie|competitie|wedstrijd|duel|speelt|treft|tegen)\b/;
+ // Routine fixtures and ordinary club updates do not qualify as national headlines.
+ const highImpact=/\b(transfer|transfers|contract|verlengt|verlengd|tekent|tekende|aangetrokken|vertrekt|vertrek|ontslag|aangesteld|benoemd|schorsing|blessure|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|knvb|licentie|record|halve finale|finale|topper|derby)\b/;
+ const majorFixture=/\b(champions league|europa league|conference league|knvb beker|europese wedstrijd)\b/;
+ if(!highImpact.test(title)&&!majorFixture.test(title))return false;
  return development.test(title)&&body.length>=300;
 }
 function partnerDocuments(doc,documents){
