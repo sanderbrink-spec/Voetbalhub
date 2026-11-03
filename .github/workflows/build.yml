@@ -969,6 +969,29 @@ jobs:
           p.write_text(s)
           PY
 
+      - name: Verify assembled Veldio source and record provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, os, re
+          root=Path('app/src/main/java/nl/voetbalhub/app')
+          main=(root/'MainActivity.java').read_text()
+          required=['VeldioChrome.java','VeldioEditorial.java','WeeklyMatchCard.java','YoutubePlayerView.java','HomeFeatureView.java','NewsListCard.java']
+          missing=[name for name in required if not (root/name).is_file()]
+          assert not missing, f'Missing current Veldio components: {missing}'
+          assert 'VeldioChrome.install(this)' in main, 'Premium Veldio UI patch missing'
+          gradle=Path('app/build.gradle.kts').read_text()
+          assert 'versionName = "4.44-veldio"' in gradle, 'Unexpected APK version'
+          assert 'applicationId = "nl.voetbalhub.app1"' in gradle, 'Package upgrade identity changed'
+          strings=list(Path('app/src/main/res').glob('values*/strings.xml'))
+          assert any(re.search(r'<string\\s+name="app_name"[^>]*>Veldio</string>',p.read_text()) for p in strings), 'Launcher label is not Veldio'
+          provenance={'source_commit':os.environ['GITHUB_SHA'],'version':'4.44-veldio','package':'nl.voetbalhub.app1','components':required,'base_archive':'VoetbalHub-4.22-API-Football.zip','patched_from_current_checkout':True}
+          Path('Veldio-build-provenance.json').write_text(json.dumps(provenance,indent=2)+'\\n')
+          print(json.dumps(provenance,indent=2))
+          PY
+
       - name: Gradle setup
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -1000,7 +1023,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Veldio-Android-test
-          path: Veldio-44-install.apk
+          path: |
+            Veldio-44-install.apk
+            Veldio-build-provenance.json
           if-no-files-found: error
 
   android-brand-smoke:
