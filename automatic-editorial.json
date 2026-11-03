@@ -8,7 +8,7 @@
   "mediaBranch": "editorial-media",
   "officialDomains": ["ajax.nl", "az.nl", "psv.nl", "willem-ii.nl", "feyenoord.com", "fortunasittard.nl", "fcemmen.nl", "fcdenbosch.nl", "fcgroningen.nl", "knvb.nl", "eurojackpotknvbbeker.nl", "inter.it", "clubbrugge.be", "fctwente.nl", "eredivisie.nl", "fcm.dk", "peczwolle.nl", "keukenkampioendivisie.nl", "liverpoolfc.com"],
   "newsIndexes": [
-    {"url":"https://keukenkampioendivisie.nl/nieuws/","articlePath":"^/nieuws/[^/]+/?$"},
+    {"url":"https://keukenkampioendivisie.nl/nieuws","articlePath":"^/nieuws/[^/]+/?$"},
     {"url":"https://www.inter.it/en/news","articlePath":"^/en/news/[^/]+/?$"},
     {"url":"https://www.liverpoolfc.com/news","articlePath":"^/news/[^/]+/?$"},
     {"url":"https://fcemmen.nl/nieuws/","articlePath":"^/[^/]+/$"},

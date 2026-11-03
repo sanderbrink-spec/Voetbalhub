@@ -90,6 +90,17 @@ function discoverLinks(html,index){
  }
  return urls.slice(0,4);
 }
+function partnerDocuments(doc,documents){
+ // Do not spend an extraction call on a second page chosen only for generic
+ // football vocabulary. Literal evidence and the second reviewer still decide.
+ const stop=new Set('voor naar vanaf tegen over deze dit een het zijn wordt worden door heeft hebben met van bij aan als ook meer nieuws nieuwe club clubs wedstrijd wedstrijden duel duels voetbal seizoen laatste the and with from this that news team teams match matches season'.split(' '));
+ const tokens=value=>new Set(normalize(value).split(' ').filter(t=>t.length>3&&!stop.has(t)));
+ const title=tokens(doc.title),words=tokens(doc.title+' '+doc.text.slice(0,4000));
+ return documents.filter(d=>host(d.url)!==host(doc.url)).map(d=>{
+  const other=tokens(d.title+' '+d.text.slice(0,4000));
+  return {doc:d,anchor:[...title].some(t=>other.has(t)),score:[...words].filter(t=>other.has(t)).length};
+ }).filter(x=>x.anchor&&x.score>=6).sort((a,b)=>b.score-a.score).slice(0,2).map(x=>x.doc);
+}
 function validateEvidence(candidate,docs,now=Date.now()){
  const issues=[];
  if(!candidate||!['preview','announcement'].includes(candidate.kind))return ['Alleen actuele voorbeschouwingen en primaire clubmededelingen zijn toegestaan.'];
@@ -270,8 +281,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(!doc.publishedAt||Date.parse(doc.publishedAt)<now-config.maxAgeHours*3600000)continue;
   if(/\b(?:uitgeschakeld|nederlaag|overwinning|wint|won|doelpunten|nabeschouwing|samenvatting)\b/i.test(doc.title))continue;
   if(published.some(a=>a.sources?.some(s=>s.url===doc.url)))continue;
-  const tokens=new Set(normalize(doc.title+' '+doc.text.slice(0,2000)).split(' ').filter(x=>x.length>4));
-  const partners=[...docs.values()].filter(d=>host(d.url)!==host(doc.url)).map(d=>({doc:d,score:normalize(d.title+' '+d.text).split(' ').filter(t=>tokens.has(t)).length})).sort((a,b)=>b.score-a.score).slice(0,2).map(x=>x.doc);
+  const partners=partnerDocuments(doc,[...docs.values()]);
   if(partners.length)groups.push([doc,...partners]);
  }
  const aiFetch=pacedGroq(fetcher);
@@ -339,4 +349,4 @@ function runExitCode(report){
  return report.published.length===0&&report.sourceErrors.length>0?1:0;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({published:r.published.length,skipped:r.skipped.length,sourceErrors:r.sourceErrors.length,status:r.status}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};
+module.exports={partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};

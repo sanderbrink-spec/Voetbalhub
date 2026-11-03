@@ -18,7 +18,7 @@ permissions:
   contents: write
 concurrency:
   group: automatic-verified-editorial-publication
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 jobs:
   publish:
     if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[rebrand]')

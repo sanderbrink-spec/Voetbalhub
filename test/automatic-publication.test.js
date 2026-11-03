@@ -3,6 +3,13 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run}=require('../scripts/automatic-publication');
 const now=Date.parse('2026-10-30T12:00:00Z');
+test('generic football wording does not send unrelated official pages to the paid extractor',()=>{
+ const {partnerDocuments}=require('../scripts/automatic-publication');
+ const doc={url:'https://ajax.nl/artikelen/a',title:'Ajax opent nieuw trainingscentrum in Amsterdam',text:'Ajax opent maandag een trainingscentrum in Amsterdam. De faciliteit krijgt extra kleedkamers, herstelruimtes en trainingsvelden voor de jeugdopleiding.'};
+ const related={...doc,url:'https://knvb.nl/nieuws/a',title:'KNVB bezoekt Ajax trainingscentrum',text:doc.text};
+ const unrelated={url:'https://psv.nl/media/artikel/b',title:'PSV ontvangt Willem II',text:'De club speelt deze wedstrijd in het nieuwe seizoen. Het team heeft meer nieuws voor clubs over de laatste wedstrijden.'};
+ assert.deepEqual(partnerDocuments(doc,[unrelated,related]),[related]);
+});
 function fixture(){
  const texts=['Ajax ontvangt AZ op zaterdag 31 oktober 2026 om 21:00 uur in Amsterdam. De club biedt bezoekers informatie over de toegangskaarten en de ontvangst rond het stadion.',
  'AZ speelt op zaterdag 31 oktober 2026 een uitwedstrijd tegen Ajax. Het duel begint om 21:00 uur en wordt gespeeld in Amsterdam. De club meldt dat bezoekers hun toegangskaart digitaal kunnen gebruiken.'];
