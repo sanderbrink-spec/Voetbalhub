@@ -32,8 +32,10 @@ def augment(root, package, output):
         finally:connection.close()
         if data.get('visibility')!='visible':continue
         output.write_text(json.dumps(data,ensure_ascii=False,indent=2))
+        existing={(' '.join((n.get('text')or n.get('content-desc')or'').split()),n.get('clickable')) for n in web.iter('node')}
         scale=(bounds[2]-bounds[0])/data['width']
         for item in data['rows']:
+            if (item['text'],str(item['clickable']).lower()) in existing:continue
             x1=max(bounds[0],round(bounds[0]+item['x']*scale));y1=max(bounds[1],round(bounds[1]+item['y']*scale))
             x2=min(bounds[2],round(bounds[0]+(item['x']+item['w'])*scale));y2=min(bounds[3],round(bounds[1]+(item['y']+item['h'])*scale))
             if x2<=x1 or y2<=y1:continue
