@@ -3,6 +3,7 @@ Playback success is recorded independently from window, orientation and navigati
 """
 from pathlib import Path
 source=Path('scripts/android-phase42.py').read_text().replace('4.50-phase42','4.51-phase43')
+source=source.replace("root,node=find('NOS Sport op YouTube openen ↗','42-summaries',scroll=True)\nassert any(n.get('text')=='SAMENVATTINGEN' for n in root.iter('node'))","root=capture('43-summaries-heading')\nassert any(n.get('text')=='SAMENVATTINGEN' for n in root.iter('node'))\nroot,node=find('NOS Sport op YouTube openen ↗','42-summaries',scroll=True)")
 exec(compile(source,'android-phase43-base.py','exec'))
 import urllib.request,websocket
 
