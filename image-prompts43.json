@@ -1,0 +1,20 @@
+{
+ "generator":"Built-in imagegen",
+ "generationDate":"2026-11-03",
+ "sharedPromptPrefix":"Use case: photorealistic-natural. Asset type: premium 16:9 football news illustration. ",
+ "sharedPromptSuffix":" No people or match action, no recognizable real stadium, no logos or trademarks, no text, no scores. These are disclosed AI context illustrations, never documentary photos. Main subjects central with safe mobile crops. Realistic photography, excellent texture and sharpness, restrained journalistically credible colour. Each image a single photograph, never collage.",
+ "subjects":{
+  "feyenoord43":"Feyenoord versus Fortuna Sittard. Red and white striped supporters scarf and yellow-green scarf resting over stadium seats. Unbranded football on wet concrete. Filled fictional stadium distant in shallow focus. Warm night floodlights.",
+  "ajax43":"Ajax versus AZ. A red-white scarf folded over an unbranded white football beside goal netting. Wide low-angle composition, filled fictional football arena in soft dusk bokeh. Clean premium editorial still-life.",
+  "psv43":"PSV versus Willem II. Unbranded football in the corner of an empty goal net in the foreground, red-white scarf on one side and red-white-blue scarf on the other. Only distant packed fictional stands, no players. Dramatic but natural floodlight lighting.",
+  "midtjylland43":"Ajax travelling to FC Midtjylland for a European match preview. Black travel bag, unbranded football boots, red-white scarf and black-red scarf on a dressing-room bench. Cool window light, refined realistic still-life. No aircraft brands, no documents, no airport or stadium logos.",
+  "willem43":"Willem II versus PEC Zwolle match preview. Folded red-white-blue scarf and blue-white striped scarf beside an unbranded football on grass. Autumn afternoon, filled fictional football stadium blurred behind. Natural warm light, professional still-life.",
+  "emmen43":"FC Emmen versus FC Den Bosch match preview. Red-white scarf and blue-white scarf hanging on football ground entrance railings. Football in foreground, softly blurred packed fictional stands in background, clear Sunday afternoon sunshine. Detailed cloth, painted iron and grass textures."
+ },
+ "standalonePrompts":{
+  "heerenveen43":"Create a premium photorealistic editorial illustration for a Dutch football news article about Heerenveen versus NEC. Wide 16:9. A beautifully detailed unbranded football beside blue-and-white striped and red-black-green supporters scarves folded on the touchline bench. Filled fictional football stadium softly out of focus, crisp twilight light, believable cloth fibres, documentary editorial still-life style. No people, no match action, no logos, no text, no score graphics. This is a clearly disclosed AI context illustration, not a real photograph of the match. Keep main subjects within central 70% for mobile crop.",
+  "groningen43":"Edit this premium editorial football AI illustration while preserving the ball, green-white and red-white scarf colours, realistic texture, filled fictional background and photo quality. Add beautifully legible tasteful woven lettering 'FC GRONINGEN' on the green-white scarf and 'SPARTA ROTTERDAM' on the red-white scarf, correct exact text, no logos. Include a few small out-of-focus orange training cones and a movement-activity hoop at the edge of the pitch behind the ball, subtly indicating a community sports programme. No recognizable people, no fabricated match action. Wide 16:9 safe central mobile crop. Keep this a believable still-life illustration with no headline overlay, no score and no official emblems."
+ },
+ "editReference":"android-ui/assets/news42/groningen-sparta42.webp",
+ "processing":"Original generated PNGs converted with sharp to 1664x936, without enlargement, WebP quality 86. Source PNG SHA256 and final WebP SHA256 are recorded in editorial-images43.json."
+}
