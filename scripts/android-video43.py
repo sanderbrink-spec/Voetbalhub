@@ -24,10 +24,20 @@ def player_eval(expression):
 back_home();root,node=find('Menu: Samenvattingen','43-videos-open',clickable=True,scroll=True);tap(node);time.sleep(3)
 ids=[v['id'] for v in json.loads(Path('videos/catalog43.json').read_text())['videos']][:5]
 assert len(ids)>=5,'Five verified videos required for device test'
+def allow_player(index):
+ for attempt in range(12):
+  root=capture('43-video-consent-'+str(index))
+  system=next((n for n in root.iter('node') if n.get('text') in ['Got it','Begrepen'] and n.get('clickable')=='true'),None)
+  if system is not None:tap(system);time.sleep(.4);continue
+  button=next((n for n in root.iter('node') if n.get('text','').upper()=='TOESTAAN' and n.get('clickable')=='true'),None)
+  if button is not None:tap(button);return
+  time.sleep(.5)
+ raise AssertionError('YouTube consent button unavailable')
+
 video_checks=[]
 for index,id in enumerate(ids):
  root,node=find('Video afspelen: '+id,'43-video-card-'+str(index),clickable=True,scroll=True);before=bounds(node);tap(node)
- root,node=find('Toestaan','43-video-consent-'+str(index),clickable=True);tap(node);time.sleep(2)
+ allow_player(index);time.sleep(2)
  dimensions=adb('shell','dumpsys','window','displays');(OUT/('43-window-'+str(index)+'.txt')).write_text(dimensions)
  root=capture('43-player-'+str(index));web=next(n for n in root.iter('node') if n.get('class')=='android.webkit.WebView');b=bounds(web);assert b[2]-b[0]>b[3]-b[1],'Player must be landscape'
  state=None
