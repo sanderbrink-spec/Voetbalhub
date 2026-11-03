@@ -95,6 +95,8 @@ function nationallyRelevant(doc){
  const title=normalize(doc.title||'');
  const body=normalize((doc.text||'').slice(0,1600));
  if(!title||title.length<24)return false;
+ // KKD is exceptional coverage only, never routine previews or match listings.
+ if(/\b(kkd|keuken kampioen divisie|eerste divisie)\b/.test(title)&&!/\b(promotie|degradatie|kampioen|kampioenschap|titel|ontslag|hoofdtrainer|trainerswissel|fraude|faillissement|knvb|licentie|record)\b/.test(title))return false;
  if(/^(alle informatie|match center|wedstrijdprogramma|wedstrijden|nieuws|home|tickets|ticketinformatie|kaartverkoop|veelgestelde vragen|faq|contact|agenda|overzicht)$/.test(title))return false;
  if(/\b(ticket|tickets|kaartverkoop|seizoenkaart|parkeer|routebeschrijving|openingstijden|fanshop|webshop|merchandise|fotoverslag|trainingsschema|vacature|vrijwilliger|businessclub|hospitality|jeugdopleiding|onder 1[0-9]|onder 2[0-3])\b/.test(title))return false;
  const important=/\b(eredivisie|eerste divisie|keuken kampioen divisie|knvb|beker|champions league|europa league|conference league|europese|transfer|transfers|contract|trainer|hoofdtrainer|ontslag|vertrek|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|topper|derby|ajax|psv|feyenoord|az|fc twente|fc utrecht|fc groningen|sc heerenveen|nec|sparta|go ahead eagles)\b/;
