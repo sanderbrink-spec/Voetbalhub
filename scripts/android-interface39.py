@@ -45,6 +45,7 @@ def back_home():
   home=next((n for n in root.iter('node') if n.get('text')=='Home'),None)
   assert home is not None;tap(home)
  find('MIJN VELDIO','return-home')
+subprocess.run([sys.executable,'scripts/android-test-accessibility.py'],check=True)
 adb('install','-r',sys.argv[1]);adb('shell','am','force-stop',PACKAGE);launch()
 root,node=find('MIJN VELDIO','39-home')
 launcher=next((n for n in root.iter('node') if n.get('text')=="Pixel Launcher isn't responding"),None)
