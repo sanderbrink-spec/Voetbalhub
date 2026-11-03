@@ -1,0 +1,56 @@
+name: Migrate verified Veldio Android sources
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/migrate-android-source.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  migrate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified assembled Android source
+        uses: actions/download-artifact@v4
+        with:
+          name: Veldio-Android-source
+          run-id: 41737222416
+          github-token: ${{ github.token }}
+          path: source-artifact
+      - name: Verify and extract Veldio source
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, tarfile
+          from pathlib import Path
+          p=Path('source-artifact/Veldio-build-provenance.json')
+          data=json.loads(p.read_text())
+          assert data['source_commit']=='3558d9923805d26f9a5a13079809167ebfe10118', 'Unexpected source commit'
+          assert data['version']=='4.44-veldio', 'Unexpected source version'
+          with tarfile.open('source-artifact/Veldio-Android-source.tar.gz','r:gz') as tar:
+              names=tar.getnames()
+              assert any(n.endswith('app/src/main/java/nl/voetbalhub/app/MainActivity.java') for n in names)
+              assert all(not n.startswith('/') and '..' not in Path(n).parts for n in names)
+              tar.extractall('android-source',filter='data')
+          root=Path('android-source')
+          assert (root/'app/src/main/java/nl/voetbalhub/app/VeldioChrome.java').is_file()
+          assert 'VeldioChrome.install(this)' in (root/'app/src/main/java/nl/voetbalhub/app/MainActivity.java').read_text()
+          PY
+      - name: Commit versioned Android source without legacy ZIP
+        run: |
+          set -euo pipefail
+          mkdir -p android-project
+          cp -a android-source/app android-project/
+          cp android-source/build.gradle.kts android-source/settings.gradle.kts android-source/gradle.properties android-project/
+          cp source-artifact/Veldio-build-provenance.json android-project/source-provenance.json
+          git add android-project
+          if git diff --cached --quiet; then echo 'Android source already migrated'; exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Version assembled Veldio 44 Android source directly in Git'
+          git push origin HEAD:main
