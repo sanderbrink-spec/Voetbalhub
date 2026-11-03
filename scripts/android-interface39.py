@@ -12,6 +12,7 @@ PACKAGE=re.search(r"package: name='([^']+)'",badging).group(1)
 assert "versionName='4.47-interface39'" in badging
 # One UIAutomation session survives every hierarchy read, including WebView routes.
 device=u2.connect()
+launcher_recoveries=0
 
 def adb(*args):return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT,timeout=40)
 def diagnostics():
@@ -34,8 +35,12 @@ def capture(name):
  return root
 
 def find(text,name,exact=True,clickable=False,scroll=False):
+ global launcher_recoveries
  for attempt in range(10):
   root=capture(name)
+  launcher=next((n for n in root.iter('node') if n.get('text')=="Pixel Launcher isn't responding"),None)
+  if launcher is not None and launcher_recoveries==0:
+   close=next(n for n in root.iter('node') if n.get('resource-id')=='android:id/aerr_close');tap(close);launcher_recoveries+=1;launch();continue
   for n in root.iter('node'):
    values=[n.get('text',''),n.get('content-desc','')];b=bounds(n)
    if any(v==text if exact else text in v for v in values) and len(b)==4 and b[3]>b[1]>=0 and (not clickable or n.get('clickable')=='true'):return root,n
@@ -95,10 +100,16 @@ xml=ET.fromstring(adb('shell','run-as',PACKAGE,'cat','shared_prefs/voethub.xml')
 adb('shell','svc','wifi','disable');adb('shell','svc','data','disable');adb('shell','am','force-stop',PACKAGE);launch()
 root,node=find('Favorieten','39-offline-home',clickable=True);tap(node);find('FC Groningen','39-favorites-persisted',exact=False)
 back_home();root,node=find('Club Quiz','39-home',clickable=True);tap(node);root,node=find('Start de quiz','39-quiz-start',exact=False,clickable=True,scroll=True);tap(node);time.sleep(1)
-root=capture('39-quiz-question');buttons=[n for n in root.iter('node') if n.get('clickable')=='true' and n.get('text','').startswith(('A ','B ','C ','D '))]
-# Quiz answer labels can use a newline between letter and text.
-if not buttons:buttons=[n for n in root.iter('node') if n.get('clickable')=='true' and re.match(r'^[ABCD]\s',n.get('text',''))]
-assert len(buttons)==4,'Offline quiz must expose four answer choices';tap(buttons[0]);time.sleep(1);find('Volgende vraag','39-quiz-answer',exact=False,clickable=True,scroll=True)
+# Verify four actual DOM choices, then scroll to a visible answer before touching it.
+buttons=[]
+for attempt in range(6):
+ root=capture('39-quiz-question')
+ dom=OUT/'39-quiz-question-dom.json'
+ if dom.exists():assert json.loads(dom.read_text()).get('answerCount')==4,'Quiz DOM must expose four choices'
+ buttons=[n for n in root.iter('node') if n.get('clickable')=='true' and re.match(r'^[ABCD]\s',n.get('text','')) and len(bounds(n))==4 and bounds(n)[3]>bounds(n)[1]>=0]
+ if buttons:break
+ web=next(n for n in root.iter('node') if n.get('class')=='android.webkit.WebView');b=bounds(web);x=(b[0]+b[2])//2;adb('shell','input','swipe',str(x),str(b[3]-80),str(x),str(b[1]+120),'450');time.sleep(.4)
+assert buttons,'No visible quiz answer after scrolling';tap(buttons[0]);time.sleep(1);find('Volgende vraag','39-quiz-answer',exact=False,clickable=True,scroll=True)
 adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 log=adb('logcat','-d','-t','1500');assert not re.search(r'FATAL EXCEPTION:[\s\S]{0,350}Process: '+re.escape(PACKAGE),log),'App crash'
 result={'apk':sys.argv[1],'package':PACKAGE,'version':'4.47-interface39','checks':['install','launch','3x4 grid','all twelve native bridge destinations','back navigation','notification SharedPreferences write','favourite SharedPreferences and cold-start offline persistence','offline quiz four choices and feedback','no observed app crash'],'destinations':checks,'limits':['No physical S23','No background push test','No invented production fixtures','News freshness and video playback are not asserted by this navigation test']}
