@@ -42,6 +42,9 @@ helper='''    private void showCompetition40(String name,String source){
  }
 '''
 assert s.count(anchor)==1;s=s.replace(anchor,helper+anchor)
+a=s.index('private void showClubQuiz()');b=s.index('\n    private ',a+10)
+quiz=s[a:b].replace('findViewById(R.id.header).setVisibility(android.view.View.VISIBLE)','findViewById(R.id.header).setVisibility(android.view.View.GONE)')
+s=s[:a]+quiz+s[b:]
 # Shared backgrounds, including native settings and menus.
 s=s.replace('setBackgroundColor(C.BG)','setBackgroundColor(PremiumDesign40.INK)')
 for key,value in {'GREEN':'GREEN','TEXT':'WHITE','MUTED':'MUTED','BG':'INK','CARD':'SURFACE','BORDER':'EDGE'}.items():
@@ -50,6 +53,7 @@ assert 'private void showColumn()' in s and 'private void showScores()' in s
 p.write_text(s)
 for f in ['PremiumDesign40','YoutubePlayerView','VideoShelf40','DestinationView39','HomeMenu39','HomeSlideshow40','MatchStrip40','CompetitionTile','FeedPanel','NewsListCard','NavIconView']:
  shutil.copyfile('android-ui/java/'+f+'.java',p.parent/(f+'.java'))
+shutil.copyfile('android-ui/assets/clubquiz-ui.js','app/src/main/assets/clubquiz-ui.js')
 shutil.copyfile('android-ui/assets/stadium-view.js','app/src/main/assets/stadium-view.js')
 assets=Path('app/src/main/assets');shutil.copytree('android-ui/assets/premium40',assets/'premium40',dirs_exist_ok=True)
 # Inline shared CSS to preserve restrictive WebView CSPs (no new network/style domains).
