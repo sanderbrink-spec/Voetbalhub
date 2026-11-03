@@ -1,0 +1,33 @@
+name: Veldio 43 official YouTube catalogue
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: youtube43-catalogue
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/veldio-43
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test test/youtube43.test.js
+      - run: node scripts/youtube-catalog43.js
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      - run: |
+          if ! git diff --quiet -- videos/catalog43.json android-ui/assets/youtube-catalog43.json; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add videos/catalog43.json android-ui/assets/youtube-catalog43.json
+            git commit -m 'Refresh official YouTube43 metadata [device-only] [skip render]'
+            git push
+          fi

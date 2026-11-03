@@ -15,6 +15,7 @@ public final class Branding {
         try {
             java.util.Iterator<String> keys=value.keys();java.util.ArrayList<String> names=new java.util.ArrayList<>();while(keys.hasNext())names.add(keys.next());
             for(String key:names){Object item=value.opt(key);if(item instanceof JSONObject)response((JSONObject)item);else if(item instanceof JSONArray)rows((JSONArray)item);else if(item instanceof String)value.put(key,text((String)item));}
+            if(EditorialImages43.apply(value))return value;
             PresentationCovers.apply(value);
             ImageRegistry39.apply(value);
             EditorialIllustrations42.apply(value);

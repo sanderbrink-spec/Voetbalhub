@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 43,
+  "generator": "ChatGPT imagegen",
+  "terms": "https://openai.com/policies/eu-terms-of-use/",
+  "assets": [
+    {
+      "id": "heerenveen43",
+      "file": "heerenveen43.webp",
+      "clubs": [
+        "sc Heerenveen",
+        "NEC"
+      ],
+      "topics": [
+        "report"
+      ],
+      "sha256": "f005717efb788dc10730a0ff39e026eebc4702ba8f6330d34e0c5c1e727c3f51",
+      "perceptualHash": "1a414f8cbc7abc3c",
+      "sourceSha256": "c0d8d5d681000fcc0a1e8be8deaa88e91096d4fdc50ac948dc5cdbcb81021018",
+      "width": 1664,
+      "height": 936,
+      "review": {
+        "approved": true,
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "subjectVerified": true,
+        "reviewedAt": "2026-11-03"
+      },
+      "caption": "AI-illustratie: sc Heerenveen en NEC, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion."
+    },
+    {
+      "id": "feyenoord43",
+      "file": "feyenoord43.webp",
+      "clubs": [
+        "Feyenoord",
+        "Fortuna Sittard"
+      ],
+      "topics": [
+        "report"
+      ],
+      "sha256": "8e3ddf291ee355d6dec7bf2b43f22ee7f0c86354e20a2fd30756a63bb9e61ed3",
+      "perceptualHash": "56b06428908958e4",
+      "sourceSha256": "0c67b2ff9f8c9117468b86d38608fe4a16b299bdd811a7238688138275fde41d",
+      "width": 1664,
+      "height": 936,
+      "review": {
+        "approved": true,
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "subjectVerified": true,
+        "reviewedAt": "2026-11-03"
+      },
+      "caption": "AI-illustratie: Feyenoord en Fortuna Sittard, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion."
+    },
+    {
+      "id": "ajax43",
+      "file": "ajax43.webp",
+      "clubs": [
+        "Ajax",
+        "AZ"
+      ],
+      "topics": [
+        "report"
+      ],
+      "sha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
+      "perceptualHash": "1f1f5a8dad2c6e2b",
+      "sourceSha256": "ab75b5b9fad4b5a9677121e5ae3476e1ca42650aa3d630e2c0bab37b4c93f657",
+      "width": 1664,
+      "height": 936,
+      "review": {
+        "approved": true,
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "subjectVerified": true,
+        "reviewedAt": "2026-11-03"
+      },
+      "caption": "AI-illustratie: Ajax en AZ, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion."
+    },
+    {
+      "id": "psv43",
+      "file": "psv43.webp",
+      "clubs": [
+        "PSV",
+        "Willem II"
+      ],
+      "topics": [
+        "report"
+      ],
+      "sha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
+      "perceptualHash": "b13537b309f1b2b2",
+      "sourceSha256": "d6569e59516104bb22d7378af0bde120c769980397a0ad07bde99aee844c3978",
+      "width": 1664,
+      "height": 936,
+      "review": {
+        "approved": true,
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "subjectVerified": true,
+        "reviewedAt": "2026-11-03"
+      },
+      "caption": "AI-illustratie: PSV en Willem II, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion."
+    },
+    {
+      "id": "midtjylland43",
+      "file": "midtjylland43.webp",
+      "clubs": [
+        "Ajax",
+        "FC Midtjylland"
+      ],
+      "topics": [
+        "preview"
+      ],
+      "sha256": "922f7b6956799d7b782ee65131342e8d5748695bfb4196ddae6886f20bbc3447",
+      "perceptualHash": "532348e4a4cecccd",
+      "sourceSha256": "e116d584296200b59ca85d2221b75f3a75b930dfbd58fa2e25a777711b4f17d3",
+      "width": 1664,
+      "height": 936,
+      "review": {
+        "approved": true,
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "subjectVerified": true,
+        "reviewedAt": "2026-11-03"
+      },
+      "caption": "AI-illustratie: Ajax en FC Midtjylland, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion."
+    },
+    {
+      "id": "willem43",
+      "file": "willem43.webp",
+      "clubs": [
+        "Willem II",
+        "PEC Zwolle"
+      ],
+      "topics": [
+        "preview"
+      ],
+      "sha256": "d397f4a696a9866375474f2f72d6b5d3ebd361f4feacfce13225966b46002e2f",
+      "perceptualHash": "cbcecde47571ac64",
+      "sourceSha256": "5af7d6554812f4c3422a0e46bf65c2713388d2c8e13fcdb80c35959b46f54bad",
+      "width": 1664,
+      "height": 936,
+      "review": {
+        "approved": true,
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "subjectVerified": true,
+        "reviewedAt": "2026-11-03"
+      },
+      "caption": "AI-illustratie: Willem II en PEC Zwolle, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion."
+    },
+    {
+      "id": "emmen43",
+      "file": "emmen43.webp",
+      "clubs": [
+        "FC Emmen",
+        "FC Den Bosch"
+      ],
+      "topics": [
+        "preview"
+      ],
+      "sha256": "0a6a3c6709eb1f85b83a56cacc9a89c96f826069a02c8d6c54033fede78bb5b1",
+      "perceptualHash": "272426ad8ea42527",
+      "sourceSha256": "cd8791fafa865d73aafe3a13daf02e20fda6d248000f0ec11c6b4609ad53fe9c",
+      "width": 1664,
+      "height": 936,
+      "review": {
+        "approved": true,
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "subjectVerified": true,
+        "reviewedAt": "2026-11-03"
+      },
+      "caption": "AI-illustratie: FC Emmen en FC Den Bosch, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion."
+    },
+    {
+      "id": "groningen43",
+      "file": "groningen43.webp",
+      "clubs": [
+        "FC Groningen",
+        "Sparta Rotterdam"
+      ],
+      "topics": [
+        "community"
+      ],
+      "sha256": "bacf9ec40555f9b15435667da78761b13f37b02f4ffd5a6e272fff8fd273ff98",
+      "perceptualHash": "298fe5d433330113",
+      "sourceSha256": "08ff9c9a42977db5e0334c843da8207a20d3a9c4989b25d2ebf2efb8297ee14f",
+      "width": 1664,
+      "height": 936,
+      "review": {
+        "approved": true,
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "subjectVerified": true,
+        "reviewedAt": "2026-11-03"
+      },
+      "caption": "AI-illustratie: FC Groningen en Sparta Rotterdam, weergegeven met clubkleuren en beweegmateriaal voor het maatschappelijke onderwerp. Geen opname van de beschreven wedstrijd, personen of het echte stadion."
+    }
+  ]
+}

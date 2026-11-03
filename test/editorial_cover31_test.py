@@ -6,9 +6,9 @@ class Covers(unittest.TestCase):
  def test_subject_variation_and_safe_geometry(self):
   with tempfile.TemporaryDirectory() as tmp:
    outputs=[]
-   for name in ['PSV wint van Willem II','FC Groningen organiseert beweegplein','Ajax verlengt contract']:
+   for name in ['PSV wint van Willem II','FC Groningen koppelt duel met Sparta aan maatschappelijk programma','Ajax wint van AZ']:
     p=Path(tmp)/(str(len(outputs))+'.webp');cover.render({'headline':name},p)
-    with Image.open(p) as im:self.assertEqual(im.size,(1280,720));self.assertEqual(im.format,'WEBP')
+    with Image.open(p) as im:self.assertGreaterEqual(im.width,1280);self.assertGreaterEqual(im.height,720);self.assertAlmostEqual(im.width/im.height,16/9,places=2);self.assertEqual(im.format,'WEBP')
     outputs.append(p.read_bytes())
    self.assertEqual(len(set(outputs)),3)
  def test_unreviewed_score_is_never_rendered(self):

@@ -292,7 +292,7 @@ async function getArticles(view = "current") {
     try { display=require("./brand").article(withArticleCover(article)); } catch { continue; }
     // Storage failures during revocation/evidence checks must fail the whole feed.
     // A partial HTTP 200 would hide an outage as missing editorial content.
-    if (!await client.get("editorial:revoked:"+autonomous.contentHash(display))&&(rights.decision("publication",display,{audit:false}).allowed||await autonomous.visible(client,display))) articles.push(display);
+    if (!await client.get("editorial:revoked:"+autonomous.contentHash(display))&&(rights.decision("publication",display,{audit:false}).allowed||await autonomous.visible(client,display))) articles.push(require("./media43").apply(display));
     if(articles.length>=200)break;
   }
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
@@ -303,6 +303,7 @@ const quizHandler=require("./quiz39/service").create({redis:client});
 async function handle(req, res) {
   security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
+  if(require("./media43").serve(req,res,url.pathname))return;
   if(await quizHandler(req,res))return;
   if(require("./policy-pages").serve(req,res,url.pathname))return;
   if(url.pathname!=="/contact"&&url.pathname!=="/health"){

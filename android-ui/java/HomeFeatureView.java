@@ -103,6 +103,8 @@ public final class HomeFeatureView extends FrameLayout {
     });}
     private JSONObject findArticle(String id){JSONArray rows=articles.optJSONArray("articles");if(rows!=null)for(int i=0;i<rows.length();i++){JSONObject a=rows.optJSONObject(i);if(a!=null&&"published".equals(a.optString("status"))&&id.equals(a.optString("id")))return a;}return null;}
     private boolean isColumn(JSONObject a){return "column".equalsIgnoreCase(a.optString("type"))||"column".equalsIgnoreCase(a.optString("category"))||"de derde helft".equalsIgnoreCase(a.optString("category"));}
+    public void pauseVideo(){if(videoPlayer!=null)videoPlayer.pause();}
+    public void resumeVideo(){if(videoPlayer!=null)videoPlayer.resume();}
     public boolean closeVideo(){
         if(videoPlayer==null)return false;
         YoutubePlayerView old=videoPlayer;videoPlayer=null;removeView(old);old.dispose();
