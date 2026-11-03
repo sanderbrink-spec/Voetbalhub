@@ -306,7 +306,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const discovered=[];
  for(const index of config.newsIndexes){try{const page=await officialPage(index.url,fetcher);for(const link of discoverLinks(page.html,index)){const doc=await load(link);if(doc)discovered.push(doc);}}catch(e){report.sourceErrors.push({url:index.url,error:e.message});}}
  for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
-  if(!doc.publishedAt||Date.parse(doc.publishedAt)<now-config.maxAgeHours*3600000)continue;
+  const publishedTime=Date.parse(doc.publishedAt||'');
+  if(!Number.isFinite(publishedTime)||publishedTime>now+300000||publishedTime<now-config.maxAgeHours*3600000)continue;
   if(!nationallyRelevant(doc)){report.skipped.push({topic:doc.title,reason:'Geen aantoonbare landelijke nieuwswaarde; geen AI-aanroep.'});continue;}
   if(/\b(?:uitgeschakeld|nederlaag|overwinning|wint|won|doelpunten|nabeschouwing|samenvatting)\b/i.test(doc.title))continue;
   if(published.some(a=>a.sources?.some(s=>s.url===doc.url)))continue;
