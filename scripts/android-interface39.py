@@ -94,11 +94,11 @@ root,node=find('FC Groningen','39-picker',exact=False,clickable=True);tap(node);
 xml=ET.fromstring(adb('shell','run-as',PACKAGE,'cat','shared_prefs/voethub.xml'));clubs=xml.find("set[@name='clubs']");assert clubs is not None and any(n.text=='FC Groningen' for n in clubs)
 adb('shell','svc','wifi','disable');adb('shell','svc','data','disable');adb('shell','am','force-stop',PACKAGE);launch()
 root,node=find('Favorieten','39-offline-home',clickable=True);tap(node);find('FC Groningen','39-favorites-persisted',exact=False)
-back_home();root,node=find('Club Quiz','39-home',clickable=True);tap(node);root,node=find('Start de quiz','39-quiz-start',clickable=True,scroll=True);tap(node);time.sleep(1)
+back_home();root,node=find('Club Quiz','39-home',clickable=True);tap(node);root,node=find('Start de quiz','39-quiz-start',exact=False,clickable=True,scroll=True);tap(node);time.sleep(1)
 root=capture('39-quiz-question');buttons=[n for n in root.iter('node') if n.get('clickable')=='true' and n.get('text','').startswith(('A ','B ','C ','D '))]
 # Quiz answer labels can use a newline between letter and text.
 if not buttons:buttons=[n for n in root.iter('node') if n.get('clickable')=='true' and re.match(r'^[ABCD]\s',n.get('text',''))]
-assert len(buttons)==4,'Offline quiz must expose four answer choices';tap(buttons[0]);time.sleep(1);find('Volgende vraag','39-quiz-answer',exact=False,clickable=True)
+assert len(buttons)==4,'Offline quiz must expose four answer choices';tap(buttons[0]);time.sleep(1);find('Volgende vraag','39-quiz-answer',exact=False,clickable=True,scroll=True)
 adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 log=adb('logcat','-d','-t','1500');assert not re.search(r'FATAL EXCEPTION:[\s\S]{0,350}Process: '+re.escape(PACKAGE),log),'App crash'
 result={'apk':sys.argv[1],'package':PACKAGE,'version':'4.47-interface39','checks':['install','launch','3x4 grid','all twelve native bridge destinations','back navigation','notification SharedPreferences write','favourite SharedPreferences and cold-start offline persistence','offline quiz four choices and feedback','no observed app crash'],'destinations':checks,'limits':['No physical S23','No background push test','No invented production fixtures','News freshness and video playback are not asserted by this navigation test']}
