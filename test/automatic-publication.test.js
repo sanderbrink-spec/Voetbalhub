@@ -80,3 +80,17 @@ test('selected evidence always resolves to exact source bytes and invented passa
  assert.ok(docs[0].text.includes(c.facts[0].evidence[0].quote));
  assert.throws(()=>hydrateEvidence({facts:[{evidence:[{source:0,fragment:500}]}],sharedEventEvidence:[]},fragments),/Ongeldige verwijzing/);
 });
+
+test('national editorial gate rejects ticket pages and prioritizes major clubs without losing material smaller-club news',()=>{
+ const {nationallyRelevant,editorialPriority}=require('../scripts/automatic-publication');
+ const text='De club heeft na overleg een officieel besluit genomen over de selectie voor het komende seizoen. De technische staf bevestigt de verandering in een uitgebreide verklaring en geeft aan welke gevolgen dit heeft voor de eerste selectie en de voorbereiding op de komende competitiewedstrijden. De club zal de nieuwe situatie nader toelichten.';
+ const major={title:'Ajax bevestigt transfer na akkoord over contract',text};
+ const other={title:'FC Groningen bevestigt transfer na akkoord over contract',text};
+ const ticket={title:'Ajax start kaartverkoop voor nieuwe wedstrijd',text};
+ const routine={title:'PSV speelt volgende week thuis tegen AZ',text};
+ assert.equal(nationallyRelevant(major),true);
+ assert.equal(nationallyRelevant(other),true);
+ assert.equal(nationallyRelevant(ticket),false);
+ assert.equal(nationallyRelevant(routine),false);
+ assert.ok(editorialPriority(major)>editorialPriority(other));
+});
