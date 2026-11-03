@@ -6,7 +6,7 @@ sdk=Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT'])
 aapt=sorted(sdk.glob('build-tools/*/aapt'))[-1]
 badging=subprocess.check_output([str(aapt),'dump','badging',sys.argv[1]],text=True)
 PACKAGE=re.search(r"package: name='([^']+)'",badging).group(1)
-assert "versionName='4.46-interface39'" in badging
+assert "versionName='4.47-interface39'" in badging
 
 def adb(*args):return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT,timeout=40)
 def diagnostics():
@@ -86,5 +86,5 @@ if not buttons:buttons=[n for n in root.iter('node') if n.get('clickable')=='tru
 assert len(buttons)==4,'Offline quiz must expose four answer choices';tap(buttons[0]);time.sleep(1);find('Volgende vraag','39-quiz-answer',exact=False,clickable=True)
 adb('shell','svc','wifi','enable');adb('shell','svc','data','enable')
 log=adb('logcat','-d','-t','1500');assert not re.search(r'FATAL EXCEPTION:[\s\S]{0,350}Process: '+re.escape(PACKAGE),log),'App crash'
-result={'apk':sys.argv[1],'package':PACKAGE,'version':'4.46-interface39','checks':['install','launch','3x4 grid','all twelve native bridge destinations','back navigation','notification SharedPreferences write','favourite SharedPreferences and cold-start offline persistence','offline quiz four choices and feedback','no observed app crash'],'destinations':checks,'limits':['No physical S23','No background push test','No invented production fixtures','News freshness and video playback are not asserted by this navigation test']}
+result={'apk':sys.argv[1],'package':PACKAGE,'version':'4.47-interface39','checks':['install','launch','3x4 grid','all twelve native bridge destinations','back navigation','notification SharedPreferences write','favourite SharedPreferences and cold-start offline persistence','offline quiz four choices and feedback','no observed app crash'],'destinations':checks,'limits':['No physical S23','No background push test','No invented production fixtures','News freshness and video playback are not asserted by this navigation test']}
 (OUT/'interface39-result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result,ensure_ascii=False))
