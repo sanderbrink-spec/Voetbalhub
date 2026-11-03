@@ -7,6 +7,7 @@ async function pixels(){return require('sharp')({create:{width:1536,height:1024,
 test('match, transfer uncertainty and attributed club developments select distinct scenes',()=>{
  assert.equal(I.classify(article).category,'match');
  assert.equal(I.classify({draft:{headline:'FC Groningen koppelt duel met Sparta aan maatschappelijk programma'}}).category,'club');
+ assert.equal(I.classify({...article,articleKind:'preview',draft:{headline:'PSV en Club Brugge geven supporters toegangsinstructies'}}).category,'match');
  assert.equal(I.classify({draft:{headline:'Ajax heeft mogelijk interesse in transfer'},transferStatus:'confirmed'}).scene,'rumour');
  assert.equal(I.classify({draft:{headline:'PSV bevestigt transfer'},transferStatus:'confirmed'}).scene,'confirmed');
  assert.equal(I.classify({draft:{headline:'PSV bevestigt transfer'}}).scene,'unconfirmed');

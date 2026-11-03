@@ -298,15 +298,18 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const evidenceIssues=validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
    const sourceIndices=[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
-   if(candidate.kind==='preview'){report.skipped.push({topic,reason:'Voorbeschouwingen lopen uitsluitend via de gekozen wedstrijd van de speelronde.'});continue;}
    const facts=candidate.facts.map(f=>f.text);
    const sources=sourceIndices.map(i=>({url:group[i].url}));
    const draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:aiFetch,timeoutMs:180000});
    if(M.needsMatch(draft)||M.requiresFlashscore(draft))throw Error('Uitslagen en wedstrijdverslagen wachten op onafhankelijke Flashscore-verificatie.');
    if(generationIssues(draft,facts).length)throw Error(generationIssues(draft,facts).join(' '));
    if(group.some(d=>overlap(d.text,draft)))throw Error('Te veel woordelijke overlap met bron.');
-   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,
+   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,
     reviewNotes:'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. Primaire bronpagina’s live opgehaald, hoofdgebeurtenis op twee onafhankelijke officiële websites bevestigd, letterlijke bewijsplaatsen gevalideerd. Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
+   if(candidate.kind==='preview'){
+    const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
+    payload.feedLifecycle={kind:'preview',expiresAt:new Date(candidate.eventDate+'T23:59:59'+zone).toISOString()};
+   }
    const preflight=M.publicationIssues(payload);if(preflight.length)throw Error(preflight.join(' '));
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});continue;}
    await verifyDraft(payload,candidate,group,ai);

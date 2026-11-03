@@ -34,7 +34,8 @@ function textOf(p){const d=p.draft||p;return [d.headline,d.standfirst,...(Array.
 function classify(p){
  const d=p.draft||p,lead=norm([d.headline,d.standfirst].join(' '));
  let category='club',scene='stadium';
- if(/\b(transfer\w*|overstap|contract\w*|tekent|aangetrokken|huurt|verhuurt|huurdeal)\b/.test(lead)){
+ if(['preview','report','analysis'].includes(p.articleKind)){category='match';scene='scarves';}
+ else if(/\b(transfer\w*|overstap|contract\w*|tekent|aangetrokken|huurt|verhuurt|huurdeal)\b/.test(lead)){
   category='transfer';scene=/\b(gerucht\w*|interesse|mogelijk|zou|wil|gelinkt|overweegt|onderhandel\w*)\b/.test(lead)?'rumour':'unconfirmed';
   // The newsroom must supply verified status. A confident headline alone is insufficient.
   if(p.transferStatus==='confirmed'&&scene!=='rumour')scene='confirmed';

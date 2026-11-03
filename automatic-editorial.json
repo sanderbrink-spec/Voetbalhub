@@ -6,7 +6,7 @@
   "previewHorizonDays": 7,
   "model": "openai/gpt-oss-120b",
   "mediaBranch": "editorial-media",
-  "officialDomains": ["ajax.nl", "az.nl", "psv.nl", "willem-ii.nl", "feyenoord.com", "fortunasittard.nl", "fcemmen.nl", "fcdenbosch.nl", "fcgroningen.nl", "knvb.nl", "eurojackpotknvbbeker.nl", "inter.it", "clubbrugge.be", "fctwente.nl", "eredivisie.nl", "fcm.dk", "peczwolle.nl", "keukenkampioendivisie.nl", "liverpoolfc.com"],
+  "officialDomains": ["ajax.nl", "az.nl", "psv.nl", "willem-ii.nl", "feyenoord.com", "fortunasittard.nl", "fcemmen.nl", "fcdenbosch.nl", "fcgroningen.nl", "knvb.nl", "eurojackpotknvbbeker.nl", "inter.it", "clubbrugge.be", "fctwente.nl", "eredivisie.nl", "fcm.dk", "peczwolle.nl", "keukenkampioendivisie.nl", "liverpoolfc.com", "askclub.be"],
   "newsIndexes": [
     {"url":"https://keukenkampioendivisie.nl/nieuws","articlePath":"^/nieuws/[^/]+/?$"},
     {"url":"https://www.inter.it/en/news","articlePath":"^/en/news/[^/]+/?$"},
@@ -21,6 +21,7 @@
     {"url":"https://www.willem-ii.nl/nieuws","articlePath":"^/artikel/[^/]+/?$"}
   ],
   "sourceGroups": [
+    ["https://www.psv.nl/ticketinfo/veelgestelde-vragen/informatie-psv-club-brugge-04112026", "https://www.askclub.be/hc/nl/articles/55090008860692-PSV-Club-Brugge-zo-haal-je-jouw-ticket-af-in-Eindhoven"],
     ["https://www.ajax.nl/wedstrijden/", "https://www.fcm.dk/kampe/fc-midtjylland-afc-ajax-05-11-2026/"],
     ["https://www.willem-ii.nl/artikel/speelschema-tot-en-met-januari-bekend", "https://peczwolle.nl/nieuws/kaartverkoopinformatie-willem-ii-pec-zwolle"],
     ["https://www.ajax.nl/wedstrijden/", "https://www.az.nl/inside-az/nieuws/2026/oktober/de-az-connectie-ajax-az"],
