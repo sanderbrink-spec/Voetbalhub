@@ -1409,7 +1409,7 @@ private void showScores() {
         android.graphics.Bitmap arena=CompetitionTile.artwork(this);
         String[] codes={"ED","KKD","CL","EL","CO","PL","LL","SA","BL","L1"};
         int[] accents={0xFF338AF4,0xFFDA3651,0xFF436DF1,0xFFEF9426,0xFF40C94B,0xFFAE52D1,0xFFDB436B,0xFF2E9DE4,0xFFDD383F,0xFF438A9C};
-        for(int i=0;i<c.length;i++){final String[] x=c[i];CompetitionTile tile=new CompetitionTile(this,x[0],codes[i%codes.length],accents[i%accents.length],arena,()->{if("Eredivisie".equals(x[0]))showEredivisieStatistics(false);else showCompetition40(x[0],x[1]);});
+        for(int i=0;i<c.length;i++){final String[] x=c[i];CompetitionTile tile=new CompetitionTile(this,x[0],codes[i%codes.length],accents[i%accents.length],arena,()->{showCompetition40(x[0],x[1]);});
             android.widget.GridLayout.LayoutParams gp=new android.widget.GridLayout.LayoutParams();gp.width=0;gp.height=-2;gp.columnSpec=android.widget.GridLayout.spec(android.widget.GridLayout.UNDEFINED,1f);gp.setMargins(dp(5),dp(6),dp(5),dp(6));grid.addView(tile,gp);
         }
         list.addView(grid,new LinearLayout.LayoutParams(-1,-2));
@@ -1499,7 +1499,8 @@ private void showScores() {
         case "stadium":showStadiums("");break;
         case "column":showColumn();break;
         case "videos":showVideos();break;
-        case "standings":showEredivisieStatistics(false);break;
+        case "standings":showDestination39("competition:eredivisie");break;
+        case "statistics":showEredivisieStatistics(false);break;
         case "favorites":showFavorites();break;
         case "myclub":showFavorites();break;
         case "more":showMore();break;
