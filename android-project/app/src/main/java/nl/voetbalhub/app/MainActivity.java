@@ -1382,6 +1382,7 @@ private void showScores() {
         buildNav();
         content.removeAllViews();
         statisticsView=new EredivisieStatsView(this, this::onBackPressed, feature,restoredState);
+        statisticsView.setClubOpener(name->showPersonalHub("profile",name));
         content.addView(statisticsView, new android.widget.FrameLayout.LayoutParams(-1, -1));
     }
     private void addEredivisieFeature(LinearLayout parent) {
@@ -1511,7 +1512,7 @@ private void showScores() {
         personalHubVisible=false;personalHub=null;eredivisieStatisticsVisible=false;weeklyPreviewVisible=false;scoresPageVisible=false;clubQuizView=null;
         findViewById(R.id.header).setVisibility(android.view.View.VISIBLE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
         currentBottomTab="home".equals(mode)?"Home":"";buildNav();content.removeAllViews();
-        content.addView("home".equals(mode)?new HomeMenu39(this,this::openDestination39,this::showEditorialArticle):new DestinationView39(this,mode,this::openDestination39,name->showPersonalHub("search",name)),new android.widget.FrameLayout.LayoutParams(-1,-1));
+        content.addView("home".equals(mode)?new HomeMenu39(this,this::openDestination39,this::showEditorialArticle):new DestinationView39(this,mode,this::openDestination39,name->showPersonalHub("profile",name)),new android.widget.FrameLayout.LayoutParams(-1,-1));
     }
     private void showCompetition40(String name,String source){
  enterScreen("competition40:"+name,()->showCompetition40(name,source));content.removeAllViews();
@@ -1520,7 +1521,10 @@ private void showScores() {
  ScrollView scroll=new ScrollView(this);LinearLayout page=new LinearLayout(this);page.setOrientation(1);page.setPadding(dp(16),dp(12),dp(16),dp(28));
  android.widget.ImageView art=new android.widget.ImageView(this);art.setImageBitmap(PremiumDesign40.artwork(this,"competitions"));art.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);art.setContentDescription("Eigen decoratieve competitie-illustratie");PremiumDesign40.card(art,PremiumDesign40.EDGE);page.addView(art,new LinearLayout.LayoutParams(-1,dp(200)));
  TextView title=tv(name,27,C.TEXT,true);title.setPadding(0,dp(20),0,dp(12));page.addView(title);
- page.addView(tv("Programma, uitslagen en standen verschijnen zodra gecontroleerde gegevens voor deze competitie beschikbaar zijn.",15,C.MUTED,false));
+ page.addView(tv("Bekijk eigen Veldio-artikelen over "+name+". Actuele standen en wedstrijden zijn via de officiële competitiepagina beschikbaar. Er is voor deze competitie nog geen vrijgegeven gegevensfeed gekoppeld.",15,C.MUTED,false));
+ android.widget.Button news=new android.widget.Button(this);news.setText("Veldio-nieuws over "+name);news.setOnClickListener(v->showPersonalHub("competition",name));page.addView(news,new LinearLayout.LayoutParams(-1,-2));
+ page.addView(tv("Stand, programma en uitslagen",20,C.TEXT,true));
+ page.addView(tv("De officiële bron opent in je browser. De informatie wordt daar door de competitieorganisatie bijgehouden. Veldio kopieert deze gegevens niet zonder toestemming.",14,C.MUTED,false));
  android.widget.Button official=new android.widget.Button(this);official.setText("Officiële competitiepagina openen ↗");official.setOnClickListener(v->{try{startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,android.net.Uri.parse(source)));}catch(android.content.ActivityNotFoundException e){android.widget.Toast.makeText(this,"Geen browser beschikbaar",android.widget.Toast.LENGTH_SHORT).show();}});LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.topMargin=dp(20);page.addView(official,lp);scroll.addView(page);root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));content.addView(root);PremiumDesign40.polish(root);
  }
     private void showMore() {

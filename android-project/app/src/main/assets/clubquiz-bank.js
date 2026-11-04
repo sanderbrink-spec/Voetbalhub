@@ -1,4 +1,4 @@
-/* Original Veldio questions. Historical source receipts: quiz/research37.json, research38.json, research39.json. */
+/* Original Veldio questions; source receipt per question. */
 window.CLUBQUIZ_BANK=[
  {
   "id": "league-de-kuip",
@@ -16943,6 +16943,139 @@ window.CLUBQUIZ_BANK=[
    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
   },
   "clubs": [],
+  "topic": "history"
+ },
+ {
+  "id": "founded46-feyenoord",
+  "level": "normal",
+  "question": "In welk jaar werd Feyenoord opgericht?",
+  "answers": [
+   "1908",
+   "1904",
+   "1913",
+   "1920"
+  ],
+  "correct": "1908",
+  "source": "https://www.feyenoord.com/nl/de-club/organisatie/historie",
+  "explanation": "De geschiedenis van Feyenoord begon op 19 juli 1908 in Rotterdam.",
+  "reviewedAt": "2026-11-04",
+  "clubs": [
+   "Feyenoord"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "founded46-ajax",
+  "level": "normal",
+  "question": "In welk jaar werd Ajax opgericht?",
+  "answers": [
+   "1900",
+   "1896",
+   "1905",
+   "1912"
+  ],
+  "correct": "1900",
+  "source": "https://www.ajax.nl/club/historie",
+  "explanation": "Ajax werd op 18 maart 1900 opgericht in Amsterdam.",
+  "reviewedAt": "2026-11-04",
+  "clubs": [
+   "Ajax"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "founded46-psv",
+  "level": "normal",
+  "question": "In welk jaar werd PSV opgericht?",
+  "answers": [
+   "1913",
+   "1909",
+   "1918",
+   "1925"
+  ],
+  "correct": "1913",
+  "source": "https://www.psv.nl/club/historie/geschiedenis-2",
+  "explanation": "PSV werd op 31 augustus 1913 opgericht als sportvereniging voor medewerkers van Philips.",
+  "reviewedAt": "2026-11-04",
+  "clubs": [
+   "PSV"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "founded46-fc-twente",
+  "level": "normal",
+  "question": "In welk jaar werd FC Twente opgericht?",
+  "answers": [
+   "1965",
+   "1961",
+   "1970",
+   "1977"
+  ],
+  "correct": "1965",
+  "source": "https://fctwente.nl/club/historie/van-1965-tot-nu",
+  "explanation": "FC Twente ontstond in 1965 uit een fusie van Enschedese Boys en Sportclub Enschede.",
+  "reviewedAt": "2026-11-04",
+  "clubs": [
+   "FC Twente"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "founded46-az",
+  "level": "normal",
+  "question": "In welk jaar werd AZ opgericht?",
+  "answers": [
+   "1967",
+   "1963",
+   "1972",
+   "1979"
+  ],
+  "correct": "1967",
+  "source": "https://az.nl/club/over-ons/historie",
+  "explanation": "AZ ontstond in 1967 toen Alkmaar ’54 en FC Zaanstreek fuseerden tot AZ’67.",
+  "reviewedAt": "2026-11-04",
+  "clubs": [
+   "AZ"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "twente-fusion46",
+  "level": "hard",
+  "question": "Welke clubs gingen in 1965 samen verder als FC Twente?",
+  "answers": [
+   "Enschedese Boys en Sportclub Enschede",
+   "Heracles en Enschedese Boys",
+   "Sportclub Enschede en Go Ahead",
+   "Heracles en Tubantia"
+  ],
+  "correct": "Enschedese Boys en Sportclub Enschede",
+  "source": "https://fctwente.nl/club/historie/van-1965-tot-nu",
+  "explanation": "FC Twente ontstond in 1965 uit een fusie van Enschedese Boys en Sportclub Enschede.",
+  "reviewedAt": "2026-11-04",
+  "clubs": [
+   "FC Twente"
+  ],
+  "topic": "history"
+ },
+ {
+  "id": "az-fusion46",
+  "level": "hard",
+  "question": "Welke clubs fuseerden in 1967 tot AZ’67?",
+  "answers": [
+   "Alkmaar ’54 en FC Zaanstreek",
+   "ZFC en KFC",
+   "HFC Haarlem en Telstar",
+   "Alkmaar ’54 en FC Volendam"
+  ],
+  "correct": "Alkmaar ’54 en FC Zaanstreek",
+  "source": "https://az.nl/club/over-ons/historie",
+  "explanation": "AZ ontstond in 1967 toen Alkmaar ’54 en FC Zaanstreek fuseerden tot AZ’67.",
+  "reviewedAt": "2026-11-04",
+  "clubs": [
+   "AZ"
+  ],
   "topic": "history"
  }
 ];

@@ -1,0 +1,21 @@
+'use strict';
+const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('node:assert/strict'),path=require('node:path');
+const asset='android-project/app/src/main/assets/';
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});try{for(const width of [320,393]){
+ const page=await browser.newPage({viewport:{width,height:852}}),errors=[],calls=[];page.on('pageerror',e=>errors.push(e.message));await page.route('https://**/*',r=>r.abort());await page.exposeFunction('record',x=>calls.push(x));
+ let html=fs.readFileSync(asset+'personal-hub.html','utf8').replace(/<script src="([^"]+)"><\/script>/g,(_,name)=>'<script>'+fs.readFileSync(asset+name,'utf8')+'</script>');await page.setContent(html);await page.evaluate(()=>{window.PersonalHub={back:()=>record('back'),openArticle:id=>record(id),saveClubs:()=>{},external:url=>record(url)};});
+ const now=Date.now(),article={id:'a',headline:'PSV analyse',status:'published',publishedAt:new Date(now-3600000).toISOString(),standfirst:'Eigen analyse',body:['Tekst'],category:'Champions League'};
+ const state={mode:'profile',query:'PSV',articles:[article],saved:[],clubs:['PSV'],loading:false,stats:{rightsPolicyVersion:26,rightsExpiresAt:now+86400000,updatedAt:new Date(now-3600000).toISOString(),league:{name:'Eredivisie'},standings:[{team:{name:'PSV Eindhoven'},rank:1,points:25,all:{played:10},goalsDiff:15}],fixtures:[{id:1,home:{name:'PSV'},away:{name:'Ajax'},date:new Date(now-86400000).toISOString(),status:'FT',goals:{home:2,away:1}},{id:2,home:{name:'AZ'},away:{name:'PSV'},date:new Date(now+86400000).toISOString(),status:'NS'}]}};
+ await page.evaluate(s=>setData(JSON.stringify(s)),state);await page.getByRole('heading',{name:'Over de club'}).waitFor();assert.ok((await page.locator('#content').innerText()).includes('1913'));assert.ok((await page.locator('#content').innerText()).includes('Plaats 1'));assert.equal(await page.locator('[data-article="a"]').count(),1);
+ await page.locator('[data-profile="Ajax"]').click();assert.ok((await page.locator('#content').innerText()).includes('1900'));await page.evaluate(()=>pageBack());assert.equal(await page.locator('#heading').innerText(),'PSV');
+ await page.locator('[data-source]').first().click();assert.ok(calls.some(x=>x.startsWith('https://www.psv.nl/')));
+ // A refresh keeps the profile open and replaces statistics, without an app rebuild.
+ state.stats.standings[0].points=28;await page.evaluate(s=>setData(JSON.stringify(s)),state);assert.ok((await page.locator('#content').innerText()).includes('28 punten'));
+ state.stats.rightsExpiresAt=now-1;await page.evaluate(s=>setData(JSON.stringify(s)),state);assert.ok(!(await page.locator('#content').innerText()).includes('28 punten'));assert.ok((await page.locator('#content').innerText()).includes('1913'));
+ await page.locator('[data-search-club]').click();assert.equal(await page.getByRole('searchbox').isVisible(),true);await page.evaluate(()=>pageBack());assert.equal(await page.locator('#heading').innerText(),'PSV');
+ // Cold routes to all priority profiles, an unresearched club, competition and offline states.
+ for(const club of ['Ajax','Feyenoord','FC Twente','AZ','FC Groningen']){await page.evaluate(s=>{state.mode=null;setData(JSON.stringify(s));},{...state,query:club,stats:{}});await page.getByRole('heading',{name:'Laatste vijf wedstrijden'}).waitFor();assert.equal(await page.locator('#heading').innerText(),club);}
+ await page.evaluate(s=>{state.mode=null;setData(JSON.stringify(s));},{...state,mode:'competition',query:'Champions League'});assert.equal(await page.locator('[data-article="a"]').count(),1);assert.equal(await page.locator('.tabs').isVisible(),false);
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.deepEqual(errors,[]);
+ fs.mkdirSync('.browser-output',{recursive:true});await page.screenshot({path:'.browser-output/subpages46-'+width+'.png',fullPage:true});await page.close();
+ }console.log('PASS: 320/393px profiles, actual updates, expired rights, news links, external sources, back navigation, competition filtering and empty states');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

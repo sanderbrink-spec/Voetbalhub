@@ -9,7 +9,9 @@ actual={str(f.relative_to(root)) for f in root.rglob('*') if f.is_file() and not
 assert actual==expected, f'Android source file set changed: {actual ^ expected}'
 for name,sha in p['files'].items():
  assert digest((root/name).read_bytes())==sha, f'Android source differs from approved recovery: {name}'
-assert p['asset_count']==134==len(p['assets'])
+assert p['asset_count']==len(p['assets'])
+for name,sha in p.get('phase45_assets',{}).items():
+ if name not in p.get('phase46_changed_assets',[]):assert p['assets'].get(name)==sha, f'Unplanned premium asset change: {name}'
 for name,sha in p['assets'].items():
  assert digest((root/'app/src/main'/name).read_bytes())==sha, f'Phase43 asset mismatch: {name}'
 main=(root/'app/src/main/java/nl/voetbalhub/app/MainActivity.java').read_text()
@@ -22,4 +24,4 @@ if len(sys.argv)>1:
   for name,sha in p['assets'].items():assert digest(z.read(name))==sha, f'APK asset mismatch: {name}'
  p.update(source_commit=os.environ.get('GITHUB_SHA','local'),apk_sha256=digest(apk.read_bytes()),legacy_archive_fallback=False)
  Path('Veldio-build-provenance.json').write_text(json.dumps(p,indent=2)+'\n')
-print('PASS: versioned premium Android source and all 134 approved phase43 assets' + ('; compiled APK verified' if len(sys.argv)>1 else ''))
+print('PASS: versioned premium Android source and all versioned premium assets' + ('; compiled APK verified' if len(sys.argv)>1 else ''))

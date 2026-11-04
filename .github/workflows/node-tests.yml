@@ -1,7 +1,7 @@
 name: Node.js tests
 on:
   push:
-    branches: [main, "fix/**", "work/veldio-45"]
+    branches: [main, "fix/**", "work/veldio-45", "work/veldio-46"]
   pull_request:
     branches: [main]
 jobs:

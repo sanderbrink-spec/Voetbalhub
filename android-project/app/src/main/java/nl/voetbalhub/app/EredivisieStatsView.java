@@ -21,7 +21,12 @@ public final class EredivisieStatsView extends LinearLayout {
     private final WebPageHistory pageHistory;
     private final String restoredState;
     private String json;
-    private boolean ready;
+    private boolean ready,disposed;
+    public interface ClubOpener {void open(String name);}
+    private ClubOpener clubOpener;
+    public void setClubOpener(ClubOpener opener){clubOpener=opener;}
+    public final class ProfileBridge {@android.webkit.JavascriptInterface public void open(String name){if(name==null||name.length()>100)return;activity.runOnUiThread(()->{if(!disposed&&clubOpener!=null)clubOpener.open(name);});}}
+    @Override protected void onDetachedFromWindow(){disposed=true;ready=false;web.stopLoading();web.removeJavascriptInterface("ClubProfile46");web.destroy();super.onDetachedFromWindow();}
     public EredivisieStatsView(Activity activity, Runnable back, boolean feature) {
         this(activity,back,feature,"");
     }
@@ -36,6 +41,7 @@ public final class EredivisieStatsView extends LinearLayout {
         web.getSettings().setAllowFileAccess(true);
         web.getSettings().setAllowContentAccess(false);
         web.getSettings().setDomStorageEnabled(false);
+        web.addJavascriptInterface(new ProfileBridge(),"ClubProfile46");
         pageHistory=new WebPageHistory(web);
         web.setWebViewClient(new WebViewClient(){
             @Override public void onPageFinished(WebView view,String url){ready=true;pageHistory.restore(restoredState); deliver(); if(feature&&restoredState.isEmpty())web.evaluateJavascript("window.showFeatured&&window.showFeatured()",null);}
@@ -48,20 +54,15 @@ public final class EredivisieStatsView extends LinearLayout {
     }
     public boolean handleBack(){return pageHistory.back();}
     public String navigationState(){return pageHistory.snapshot();}
-    private void deliver(){if(!ready)return; if(json!=null)web.evaluateJavascript("window.setData("+JSONObject.quote(json)+")",null);}
+    private void deliver(){if(!ready||disposed)return; if(json!=null)web.evaluateJavascript("window.setData("+JSONObject.quote(json)+")",null);}
     private void load(){new Thread(()->{
         HttpURLConnection conn=null;
         try{
-            conn=(HttpURLConnection)new URL(FEED+"?v="+System.currentTimeMillis()/60000).openConnection();
-            conn.setConnectTimeout(15000);conn.setReadTimeout(20000);conn.setInstanceFollowRedirects(false);
-            if(conn.getResponseCode()!=200)throw new Exception("Geen statistieken beschikbaar");
-            ByteArrayOutputStream out=new ByteArrayOutputStream();
-            try(InputStream in=conn.getInputStream()){byte[] buffer=new byte[8192];int n;while((n=in.read(buffer))!=-1){out.write(buffer,0,n);if(out.size()>3000000)throw new Exception("Gegevens te groot");}}
-            String text=out.toString("UTF-8");JSONObject data=new JSONObject(text);if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");
+            String text=DeadlineHttp.get(FEED,18000,3000000);JSONObject data=new JSONObject(text);if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");
             if(data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Onvolledige gegevens");
             activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",text).apply();
-            activity.runOnUiThread(()->{json=text;deliver();});
-        }catch(Exception e){activity.runOnUiThread(()->{if(ready)web.evaluateJavascript("window.loadFailed&&window.loadFailed()",null);});}
+            activity.runOnUiThread(()->{if(disposed)return;json=text;deliver();});
+        }catch(Exception e){activity.runOnUiThread(()->{if(ready&&!disposed)web.evaluateJavascript("window.loadFailed&&window.loadFailed()",null);});}
         finally{if(conn!=null)conn.disconnect();}
     },"eredivisie-statistics").start();}
 }
