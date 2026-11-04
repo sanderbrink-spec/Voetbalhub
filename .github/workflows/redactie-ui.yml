@@ -46,6 +46,8 @@ jobs:
         run: node scripts/browser/veldio-home.cjs
       - name: Check professional contact form on mobile
         run: node scripts/browser/contact.cjs
+      - name: Check packaged phase46 subpage surfaces
+        run: node scripts/browser/subpage-surfaces46.cjs
       - name: Keep statistics screen for visual inspection
         if: always()
         uses: actions/upload-artifact@v4

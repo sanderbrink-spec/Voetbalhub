@@ -1,0 +1,47 @@
+package nl.voetbalhub.app;
+import android.app.*;
+import android.os.Build;
+import android.content.*;
+import android.content.pm.PackageManager;
+import android.webkit.*;
+import android.widget.FrameLayout;
+import org.json.*;
+import java.util.concurrent.*;
+
+/** Bundled menu and local tools. Only validated route IDs and fixtures cross the bridge. */
+public final class DestinationView39 extends FrameLayout {
+ public interface Route {void open(String route);}public interface Club {void open(String club);}
+ private static final ExecutorService IO=Executors.newFixedThreadPool(2);
+ private final Activity activity;private final WebView web;private final String mode;private final Route route;private final Club club;
+ private volatile JSONObject stats=new JSONObject();private boolean ready,disposed,loading;private int generation;
+ private android.content.SharedPreferences prefs(){return activity.getSharedPreferences("veldio_tools39",0);}
+ public DestinationView39(Activity a,String mode,Route route,Club club){super(a);activity=a;this.mode=mode;this.route=route;this.club=club;
+  web=new WebView(a);web.setBackgroundColor(0xFF050B08);web.getSettings().setJavaScriptEnabled(true);web.getSettings().setAllowFileAccess(true);web.getSettings().setAllowContentAccess(false);web.getSettings().setAllowFileAccessFromFileURLs(false);web.getSettings().setAllowUniversalAccessFromFileURLs(false);
+  web.addJavascriptInterface(new Bridge(),"VeldioDestinations");web.setWebViewClient(new WebViewClient(){@Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){return true;}@Override public boolean shouldOverrideUrlLoading(WebView v,String s){return true;}@Override public void onPageFinished(WebView v,String url){if("file:///android_asset/destinations39.html".equals(url)){ready=true;deliver();}}});
+  addView(web,new LayoutParams(-1,-1));try{JSONObject cached=new JSONObject(a.getSharedPreferences("eredivisie-statistics",0).getString("snapshot","{}"));if(PublicationPolicy.allows(cached))stats=cached;}catch(Exception ignored){}
+  web.loadUrl("file:///android_asset/destinations39.html");if("fixtures".equals(mode)||"predictions".equals(mode))fetch();
+ }
+ private boolean permission(){NotificationManager m=(NotificationManager)activity.getSystemService(Context.NOTIFICATION_SERVICE);return (Build.VERSION.SDK_INT<33||activity.checkSelfPermission("android.permission.POST_NOTIFICATIONS")==PackageManager.PERMISSION_GRANTED)&&m.areNotificationsEnabled();}
+ public void deliver(){if(!ready||disposed||activity.isFinishing())return;try{
+  JSONObject n=new JSONObject().put("clubNews",prefs().getBoolean("clubNews",false)).put("columns",prefs().getBoolean("columns",false)).put("permission",permission());
+  JSONObject data=new JSONObject().put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new java.util.HashSet<String>()))).put("mode",mode).put("stats",PublicationPolicy.allows(stats)?stats:new JSONObject()).put("loading",loading).put("predictions",new JSONArray(prefs().getString("predictions","[]"))).put("notifications",n);
+  web.evaluateJavascript("window.setData("+JSONObject.quote(data.toString())+")",null);
+ }catch(Exception ignored){}}
+ private void response(boolean ok,String msg){if(!disposed&&ready)web.evaluateJavascript("window.result("+ok+","+JSONObject.quote(msg)+")",null);}
+ private void fetch(){if(loading||disposed)return;loading=true;deliver();final int request=++generation;IO.execute(()->{JSONObject loaded=null;try{JSONObject raw=new JSONObject(DeadlineHttp.get("https://voetbalhub-redactie.onrender.com/integrations/statistics",14000,2000000));if(PublicationPolicy.allows(raw)&&raw.optJSONArray("fixtures")!=null)loaded=raw;}catch(Exception ignored){}final JSONObject result=loaded;activity.runOnUiThread(()->{if(disposed||request!=generation)return;loading=false;if(result!=null)stats=result;deliver();});});}
+ @Override public void onWindowFocusChanged(boolean focus){super.onWindowFocusChanged(focus);if(focus&&"notifications".equals(mode))deliver();}
+ @Override protected void onDetachedFromWindow(){disposed=true;generation++;ready=false;web.stopLoading();web.removeJavascriptInterface("VeldioDestinations");web.destroy();super.onDetachedFromWindow();}
+ private final class Bridge {
+  @JavascriptInterface public void open(String value){for(String allowed:new String[]{"news","fixtures","competitions","predictions","quiz","stadium","column","videos","standings","clubs","favorites","notifications"})if(allowed.equals(value)){activity.runOnUiThread(()->{if(!disposed)route.open(value);});return;}}
+  @JavascriptInterface public void clubNews(String name){if(name.length()>100)return;activity.runOnUiThread(()->{if(!disposed)club.open(name);});}
+  @JavascriptInterface public void refresh(String unused){activity.runOnUiThread(()->fetch());}
+  @JavascriptInterface public void permission(String unused){activity.runOnUiThread(()->{if(disposed)return;NewsNotifications39.channel(activity);if(Build.VERSION.SDK_INT>=33&&activity.checkSelfPermission("android.permission.POST_NOTIFICATIONS")!=PackageManager.PERMISSION_GRANTED)activity.requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"},3901);else activity.startActivity(new Intent("android.settings.APP_NOTIFICATION_SETTINGS").putExtra("android.provider.extra.APP_PACKAGE",activity.getPackageName()));});}
+  @JavascriptInterface public void notifications(String raw){if(raw.length()>1000)return;IO.execute(()->{boolean ok=false;try{JSONObject n=new JSONObject(raw);ok=prefs().edit().putBoolean("clubNews",n.getBoolean("clubNews")).putBoolean("columns",n.getBoolean("columns")).commit();}catch(Exception ignored){}final boolean saved=ok;activity.runOnUiThread(()->response(saved,saved?"Voorkeuren opgeslagen.":"Opslaan mislukt."));});}
+  @JavascriptInterface public void predict(String raw){if(raw.length()>1000)return;IO.execute(()->{boolean ok=false;String message="Voorspelling niet opgeslagen. Controleer de wedstrijd en uitslag.";try{
+   if(!PublicationPolicy.allows(stats))throw new Exception("Data no longer approved");JSONObject wanted=new JSONObject(raw);String id=wanted.getString("fixtureId");Object h=wanted.get("home"),a=wanted.get("away");if(!(h instanceof Integer)||!(a instanceof Integer))throw new Exception("Integer required");int home=(Integer)h,away=(Integer)a;if(home<0||home>30||away<0||away>30)throw new Exception("Invalid score");
+   JSONObject fixture=null;JSONArray fixtures=stats.optJSONArray("fixtures");if(fixtures!=null)for(int i=0;i<fixtures.length();i++){JSONObject f=fixtures.getJSONObject(i);if(id.equals(String.valueOf(f.get("id"))))fixture=f;}
+   if(fixture==null||!("NS".equals(fixture.optString("status"))||"TBD".equals(fixture.optString("status")))||java.time.Instant.parse(fixture.getString("date")).toEpochMilli()<=System.currentTimeMillis())throw new Exception("Closed fixture");
+   synchronized(DestinationView39.class){JSONArray old=new JSONArray(prefs().getString("predictions","[]")),rows=new JSONArray();for(int i=0;i<old.length();i++){JSONObject r=old.getJSONObject(i);if(!id.equals(r.optString("fixtureId")))rows.put(r);}if(rows.length()>=200)throw new Exception("Limit");rows.put(new JSONObject().put("fixtureId",id).put("home",home).put("away",away).put("kickoff",fixture.getString("date")).put("label",fixture.getJSONObject("home").getString("name")+" – "+fixture.getJSONObject("away").getString("name")).put("savedAt",System.currentTimeMillis()));ok=prefs().edit().putString("predictions",rows.toString()).commit();}if(ok)message="Voorspelling opgeslagen op dit apparaat.";
+  }catch(Exception ignored){}final boolean saved=ok;final String msg=message;activity.runOnUiThread(()->{if(saved)deliver();response(saved,msg);});});}
+ }
+}

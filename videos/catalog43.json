@@ -14,10 +14,11 @@
       "publishedAt": null,
       "url": "https://www.youtube.com/watch?v=8KFVxwMh0AY",
       "thumbnail": "https://i.ytimg.com/vi/8KFVxwMh0AY/hqdefault.jpg",
-      "embeddable": true,
+      "embeddable": false,
       "verification": "official-oembed",
       "archive": true,
-      "verifiedAt": "2026-11-03T17:52:36.763Z"
+      "verifiedAt": "2026-11-03T17:52:36.763Z",
+      "embedStatus": "not-confirmed-open-on-youtube"
     },
     {
       "id": "3ttUN4--l8w",
@@ -27,10 +28,11 @@
       "publishedAt": null,
       "url": "https://www.youtube.com/watch?v=3ttUN4--l8w",
       "thumbnail": "https://i.ytimg.com/vi/3ttUN4--l8w/hqdefault.jpg",
-      "embeddable": true,
+      "embeddable": false,
       "verification": "official-oembed",
       "archive": true,
-      "verifiedAt": "2026-11-03T17:52:36.763Z"
+      "verifiedAt": "2026-11-03T17:52:36.763Z",
+      "embedStatus": "not-confirmed-open-on-youtube"
     },
     {
       "id": "Qin52W-dlHs",
@@ -40,10 +42,11 @@
       "publishedAt": null,
       "url": "https://www.youtube.com/watch?v=Qin52W-dlHs",
       "thumbnail": "https://i.ytimg.com/vi/Qin52W-dlHs/hqdefault.jpg",
-      "embeddable": true,
+      "embeddable": false,
       "verification": "official-oembed",
       "archive": true,
-      "verifiedAt": "2026-11-03T17:52:36.763Z"
+      "verifiedAt": "2026-11-03T17:52:36.763Z",
+      "embedStatus": "not-confirmed-open-on-youtube"
     },
     {
       "id": "N4GqqpkZ8_I",
@@ -53,10 +56,11 @@
       "publishedAt": null,
       "url": "https://www.youtube.com/watch?v=N4GqqpkZ8_I",
       "thumbnail": "https://i.ytimg.com/vi/N4GqqpkZ8_I/hqdefault.jpg",
-      "embeddable": true,
+      "embeddable": false,
       "verification": "official-oembed",
       "archive": true,
-      "verifiedAt": "2026-11-03T17:52:36.763Z"
+      "verifiedAt": "2026-11-03T17:52:36.763Z",
+      "embedStatus": "not-confirmed-open-on-youtube"
     },
     {
       "id": "6IDlDFBzDvA",
@@ -66,10 +70,11 @@
       "publishedAt": null,
       "url": "https://www.youtube.com/watch?v=6IDlDFBzDvA",
       "thumbnail": "https://i.ytimg.com/vi/6IDlDFBzDvA/hqdefault.jpg",
-      "embeddable": true,
+      "embeddable": false,
       "verification": "official-oembed",
       "archive": true,
-      "verifiedAt": "2026-11-03T17:52:36.763Z"
+      "verifiedAt": "2026-11-03T17:52:36.763Z",
+      "embedStatus": "not-confirmed-open-on-youtube"
     }
   ],
   "warnings": []
