@@ -163,16 +163,23 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/groningen-maatschappij.webp",
-      "imageSource": "Veldio · eigen redactionele illustratie",
-      "imageCredit": "Illustratie: Veldio · geen wedstrijdfoto",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/groningen43.webp",
+      "imageSource": "https://github.com/sanderbrink-spec/Voetbalhub/blob/work/veldio-43/editorial-images43.json",
+      "imageCredit": "Veldio · AI-illustratie",
       "imageRights": "cleared",
       "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true
+        "assetSha256": "bacf9ec40555f9b15435667da78761b13f37b02f4ffd5a6e272fff8fd273ff98",
+        "perceptualHash": "298fe5d433330113",
+        "method": "approved-editorial43",
+        "generated": true,
+        "contextOnly": true,
+        "semanticReviewApproved": true
       },
       "autoPublish": false,
+      "imageAsset": "news43/groningen43.webp",
+      "imageCaption": "AI-illustratie: FC Groningen en Sparta Rotterdam, weergegeven met clubkleuren en beweegmateriaal voor het maatschappelijke onderwerp. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "imageLicenseUrl": "https://openai.com/policies/eu-terms-of-use/",
+      "imageAssetId": "news43/groningen43.webp",
       "feedState": "current"
     },
     {
@@ -229,16 +236,23 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/93ed18f49a3242cec38baf88ec0d7429f28aee4a/phase30-covers/heerenveen-nec.webp",
-      "imageSource": "Veldio · eigen redactionele uitslagillustratie",
-      "imageCredit": "Illustratie: Veldio · geen wedstrijdfoto",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/heerenveen43.webp",
+      "imageSource": "https://github.com/sanderbrink-spec/Voetbalhub/blob/work/veldio-43/editorial-images43.json",
+      "imageCredit": "Veldio · AI-illustratie",
       "imageRights": "cleared",
       "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true
+        "assetSha256": "f005717efb788dc10730a0ff39e026eebc4702ba8f6330d34e0c5c1e727c3f51",
+        "perceptualHash": "1a414f8cbc7abc3c",
+        "method": "approved-editorial43",
+        "generated": true,
+        "contextOnly": true,
+        "semanticReviewApproved": true
       },
       "autoPublish": false,
+      "imageAsset": "news43/heerenveen43.webp",
+      "imageCaption": "AI-illustratie: sc Heerenveen en NEC, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "imageLicenseUrl": "https://openai.com/policies/eu-terms-of-use/",
+      "imageAssetId": "news43/heerenveen43.webp",
       "feedState": "current"
     },
     {
@@ -288,23 +302,23 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=report&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F6fd18daa1161a16046b25126c55fb49421a6b86a42d6835f590ec34c42cc5f7e.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/feyenoord43.webp",
+      "imageSource": "https://github.com/sanderbrink-spec/Voetbalhub/blob/work/veldio-43/editorial-images43.json",
+      "imageCredit": "Veldio · AI-illustratie",
       "imageRights": "cleared",
       "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: report. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "6928fc3264a11d53290e5d6cf45a90a77c3fbef4bd3659734ec4518900eb4b7f",
-        "stadiumImageUrl": "",
-        "stadiumVenueName": "Stadion Feijenoord",
-        "stadiumSourceUrl": "",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-11-01T18:39:02.375Z"
+        "assetSha256": "8e3ddf291ee355d6dec7bf2b43f22ee7f0c86354e20a2fd30756a63bb9e61ed3",
+        "perceptualHash": "56b06428908958e4",
+        "method": "approved-editorial43",
+        "generated": true,
+        "contextOnly": true,
+        "semanticReviewApproved": true
       },
       "autoPublish": false,
+      "imageAsset": "news43/feyenoord43.webp",
+      "imageCaption": "AI-illustratie: Feyenoord en Fortuna Sittard, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "imageLicenseUrl": "https://openai.com/policies/eu-terms-of-use/",
+      "imageAssetId": "news43/feyenoord43.webp",
       "feedState": "current"
     },
     {
@@ -353,23 +367,23 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=report&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F894fe82f48cfd0c3da5df5be93fa0496113163b5fa2c1cb7cfdcc6b5d6ecdc84.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/ajax43.webp",
+      "imageSource": "https://github.com/sanderbrink-spec/Voetbalhub/blob/work/veldio-43/editorial-images43.json",
+      "imageCredit": "Veldio · AI-illustratie",
       "imageRights": "cleared",
       "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: report. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "639602576ee576d2b54596387fc6fc23df80fe9649b253462275422ca9aa7bc6",
-        "stadiumImageUrl": "",
-        "stadiumVenueName": "Johan Cruijff Arena",
-        "stadiumSourceUrl": "",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-11-01T18:39:15.028Z"
+        "assetSha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
+        "perceptualHash": "1f1f5a8dad2c6e2b",
+        "method": "approved-editorial43",
+        "generated": true,
+        "contextOnly": true,
+        "semanticReviewApproved": true
       },
       "autoPublish": false,
+      "imageAsset": "news43/ajax43.webp",
+      "imageCaption": "AI-illustratie: Ajax en AZ, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "imageLicenseUrl": "https://openai.com/policies/eu-terms-of-use/",
+      "imageAssetId": "news43/ajax43.webp",
       "feedState": "current"
     },
     {
@@ -417,23 +431,23 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=report&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F5747170992d51e127fd3150eae8a5a40d9c49758b6e4cc4c278fcbb33b3f7f99.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/psv43.webp",
+      "imageSource": "https://github.com/sanderbrink-spec/Voetbalhub/blob/work/veldio-43/editorial-images43.json",
+      "imageCredit": "Veldio · AI-illustratie",
       "imageRights": "cleared",
       "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: report. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "0fd49e9aec2c2213d8f49e220b161f4e2be8b1cd2f1742f6d6de12b298cd2f17",
-        "stadiumImageUrl": "",
-        "stadiumVenueName": "Philips Stadion",
-        "stadiumSourceUrl": "",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-11-01T18:39:27.926Z"
+        "assetSha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
+        "perceptualHash": "b13537b309f1b2b2",
+        "method": "approved-editorial43",
+        "generated": true,
+        "contextOnly": true,
+        "semanticReviewApproved": true
       },
       "autoPublish": false,
+      "imageAsset": "news43/psv43.webp",
+      "imageCaption": "AI-illustratie: PSV en Willem II, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "imageLicenseUrl": "https://openai.com/policies/eu-terms-of-use/",
+      "imageAssetId": "news43/psv43.webp",
       "feedState": "current"
     },
     {
@@ -761,7 +775,7 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Conference%20League&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2Fe4a744c63784df8275b3734c05bc7c55b4a0fec18332cad57f1ac2067734a64b.png",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Conference%20League&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F47068bbda1193141d9a53bc7c84aedcaad783c01f1754f588b2c95aa096c6bf4.png",
       "imageSource": "Veldio · wedstrijdvormgeving",
       "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
       "imageRights": "cleared",
@@ -771,12 +785,12 @@
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true,
         "notes": "Vaste beeldafspraak: preview. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "6fd761868655b636ca369d6668434d2fd1d3ae9a82db8e2e57c9eaaa2f8961b7",
+        "assetSha256": "3f35dabe2b0bfb1755c061a2de9138eecce9fff055ff1f05fa678a8f3fb7a24b",
         "stadiumImageUrl": "https://media.api-sports.io/football/venues/453.png",
         "stadiumVenueName": "MCH Arena",
         "stadiumSourceUrl": "https://media.api-sports.io/football/venues/453.png",
         "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-10-30T16:22:16.771Z"
+        "reviewedAt": "2026-11-03T20:53:22.399Z"
       },
       "feedState": "current"
     },
@@ -814,7 +828,7 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F753963c773aa5fa71aa021483580682e53eb4b91b3ec360ac2926711aaae42a0.png",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2Fe45d3cfcbb1b476fe163b6d09655ac82fdfe16cd56baae34d2205da413b3b1aa.png",
       "imageSource": "Veldio · wedstrijdvormgeving",
       "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
       "imageRights": "cleared",
@@ -824,12 +838,12 @@
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true,
         "notes": "Vaste beeldafspraak: preview. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "0706a80b53f1c2de06603d6aa874ad76a4957fb2e7e42b63391effab5b7238d5",
+        "assetSha256": "d1c31b295ae5c2bcc4fbdeb9c0acc3a025f7293f2aa9c21df1231c4707b6cb17",
         "stadiumImageUrl": "https://media.api-sports.io/football/venues/1159.png",
         "stadiumVenueName": "Koning Willem II Stadion",
         "stadiumSourceUrl": "https://media.api-sports.io/football/venues/1159.png",
         "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-10-30T16:22:23.179Z"
+        "reviewedAt": "2026-11-03T20:53:29.205Z"
       },
       "feedState": "current"
     },
@@ -871,7 +885,7 @@
       },
       "imageRights": "cleared",
       "autoPublish": false,
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Keuken%20Kampioen%20Divisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F87244394df562000558dbe6a8fdeca0a5f01a06a0a6e3678e55c8d9f1d89bd1c.png",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Keuken%20Kampioen%20Divisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F64231ee40ebc20b34b1cccfcf4d702b70c7635ebdcfa98867edf0fe566bcff3e.png",
       "imageSource": "Veldio · wedstrijdvormgeving",
       "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
       "imageReview": {
@@ -879,16 +893,16 @@
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true,
         "notes": "Vaste beeldafspraak: preview. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "a6960d4987fcca6808f7058c703b84d04040e6bae81e0a537d4b2d0a0b1b85e1",
+        "assetSha256": "1416cab5572fef4f22b40b0a8043d66300970d3f04c241bc223e763fcfaed132",
         "stadiumImageUrl": "https://media.api-sports.io/football/venues/10504.png",
         "stadiumVenueName": "De Oude Meerdijk",
         "stadiumSourceUrl": "https://media.api-sports.io/football/venues/10504.png",
         "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-10-30T16:22:34.726Z"
+        "reviewedAt": "2026-11-03T20:53:43.350Z"
       },
       "feedState": "current"
     }
   ],
-  "mirroredAt": "2026-11-02T20:57:14.731Z",
+  "mirroredAt": "2026-11-04T19:52:05.338Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
