@@ -1,0 +1,4 @@
+'use strict';
+// Probe only Veldio's licensed central API. No extraction from official sites or score providers.
+const fs=require('node:fs');
+(async()=>{const report={checkedAt:new Date().toISOString(),sources:[]};for(const competition of ['bundesliga','laliga','premierleague','championsleague','europaleague','eredivisie']){try{const r=await fetch('https://voetbalhub-redactie.onrender.com/integrations/football?competition='+competition,{signal:AbortSignal.timeout(20000)});if(!r.ok)throw Error('HTTP '+r.status);const s=await r.json();report.sources.push({competition,status:s.status,fixtures:s.fixtures?.length||0,standings:s.standings?.length||0,source:s.source,license:s.sourceDetails?.license||null,updatedAt:s.updatedAt});}catch(e){report.sources.push({competition,status:'unreachable',error:e.message});}}fs.writeFileSync('football47-health.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));})();

@@ -1,43 +1,25 @@
-name: Eredivisie statistics and match of the round
+name: Licensed football source health
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/eredivisie-*.js'
-      - 'scripts/match-cover*'
-      - 'stadium-assets.json'
-      - 'public/stadiums/**'
-      - '.github/workflows/eredivisie.yml'
   schedule:
     - cron: '7 */3 * * *'
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 concurrency:
-  group: eredivisie-statistics
+  group: football47-health
   cancel-in-progress: false
 jobs:
-  statistics:
-    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[rebrand]')
+  sources:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
-      - run: npm install --ignore-scripts --no-audit --no-fund
-      - run: node --test test/eredivisie*.test.js
-      - name: Update statistics and select one featured fixture per round
-        env:
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
-          GITHUB_TOKEN: ${{ github.token }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: node scripts/eredivisie-official.js
-      - name: Apply stadium previews and logo-score reports to matching existing articles
-        env:
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
-          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
-          GITHUB_TOKEN: ${{ github.token }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: node scripts/eredivisie-covers.js
+          node-version: '22'
+      - name: Probe licensed central data only
+        run: node scripts/football47-health.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: football-source-health
+          path: football47-health.json
