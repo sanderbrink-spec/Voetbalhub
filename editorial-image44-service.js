@@ -3,9 +3,13 @@ const I=require('./editorial-image44');
 async function create(payload,{client,key=process.env.OPENAI_API_KEY,remaining=2,priorHashes=[],fetcher=fetch,renderer=I.render,now=Date.now()}={}){
  const plan=I.classify(payload);
  const cacheKey='editorial-image44:'+plan.identity;
+ const matchIdentity=plan.category==='match'&&plan.clubs.length===2&&(payload.fixture?.id||payload.fixture?.date||payload.match?.playedAt);
+ const sharedKey=matchIdentity?'editorial-image47-match:'+I.sha(JSON.stringify([I.VERSION,plan.clubs,payload.fixture?.id||String(payload.fixture?.date||payload.match?.playedAt).slice(0,10)])):null;
  if(client?.isReady){
-  const cached=await client.get(cacheKey);
-  if(cached){const r=JSON.parse(cached);if(r.plan?.identity===plan.identity&&r.mode==='ai-photographic'&&!I.qualityIssues(plan,r.review).length&&I.sha(Buffer.from(r.base64,'base64'))===r.assetSha256)return {...r,attempts:0};}
+  for(const candidate of [cacheKey,...(sharedKey?[sharedKey]:[])]){
+   const cached=await client.get(candidate);
+   if(cached){try{const r=JSON.parse(cached);if((candidate===sharedKey||r.plan?.identity===plan.identity)&&r.mode==='ai-photographic'&&!I.qualityIssues(plan,r.review).length&&I.sha(Buffer.from(r.base64,'base64'))===r.assetSha256)return {...r,plan,attempts:0,reused:true};}catch{/* Invalid cache never bypasses image review. */}}
+  }
   const blocked=await client.get('editorial-image44-provider-block');
   if(blocked){const r=await I.fallback(plan,blocked);return {...r,bytes:undefined,base64:r.bytes.toString('base64'),attempts:0};}
  }
@@ -22,7 +26,7 @@ async function create(payload,{client,key=process.env.OPENAI_API_KEY,remaining=2
  const r=await renderer(payload,{key,fetcher,budget,priorHashes});
  const result={...r,bytes:undefined,base64:r.bytes.toString('base64'),attempts:allowed-budget.remaining};
  if(client?.isReady&&/credit_balance_exhausted|insufficient_quota/.test(r.reason||''))await client.set('editorial-image44-provider-block',r.reason,{EX:900});
- if(r.mode==='ai-photographic')await client.set(cacheKey,JSON.stringify(result),{EX:30*86400});
+ if(r.mode==='ai-photographic'&&client?.isReady){await client.set(cacheKey,JSON.stringify(result),{EX:30*86400});if(sharedKey)await client.set(sharedKey,JSON.stringify(result),{EX:30*86400});}
  return result;
 }
 async function remote(payload,{secret,fetcher=fetch,budget={remaining:2},priorHashes=[]}={}){

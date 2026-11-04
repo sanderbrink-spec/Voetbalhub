@@ -27,3 +27,12 @@ test('exhausted provider credit opens a shared circuit instead of retrying for e
  const second=await S.create({...payload,draft:{...payload.draft,headline:'Ajax ander transfergerucht'}},{client,key:'test',fetcher});
  assert.equal(calls,1);assert.equal(second.attempts,0);assert.equal(second.mode,'neutral-fallback');
 });
+
+test('reviewed scarf photo is reused across preview/report text for the same verified fixture without a paid call',async()=>{
+ const fixture={id:'licensed-match-1',home:{name:'FC Groningen'},away:{name:'Sparta Rotterdam'},date:'2026-11-06T19:00:00Z'},values=new Map();let generated=0;
+ const client={isReady:true,get:async k=>values.get(k)||null,set:async(k,v)=>values.set(k,v)};
+ const renderer=async p=>{generated++;const plan=I.classify(p),bytes=Buffer.from('mock image bytes, never published');return {plan,bytes,mode:'ai-photographic',assetSha256:I.sha(bytes),review:{relevant:true,coloursCorrect:true,highQuality:true,noLogos:true,noIdentifiablePeople:true,noMisleadingEvent:true,issues:[],twoScarves:true,namesOnScarves:true,texts:['FC Groningen','Sparta Rotterdam']}};};
+ const first=await S.create({fixture,articleKind:'preview',draft:{headline:'Voorbeschouwing Groningen Sparta',body:[]}},{client,key:'',renderer});
+ const second=await S.create({fixture,articleKind:'report',draft:{headline:'Nabeschouwing Groningen Sparta',body:[]}},{client,key:'',renderer});
+ assert.equal(generated,1);assert.equal(second.reused,true);assert.equal(second.attempts,0);assert.equal(first.assetSha256,second.assetSha256);assert.notEqual(first.plan.identity,second.plan.identity);
+});

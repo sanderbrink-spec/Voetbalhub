@@ -3,6 +3,7 @@ from pathlib import Path
 source=Path('scripts/android-premium40.py').read_text().replace("'4.48-premium40'","'4.47-test'")
 source=source.replace("'Standen','Favorieten','Mijn Club','Meer'","'Standen','Mijn Clubs','Clubgids','Meer'")
 source=source.replace("if __name__=='__main__':exec", "source=source.replace(\"Video's\",\"Samenvattingen\").replace('Favorieten','Mijn Clubs')\nif __name__=='__main__':exec")
+source=source.replace("if __name__=='__main__':exec","source=source.replace(\"find('Mijn voorspellingen','39-predictions')\",\"find('Mijn voorspellingen','39-predictions',scroll=True)\")\nif __name__=='__main__':exec")
 exec(compile(source,'android-phase47-generated.py','exec'))
 # Record a real prediction through the actual JavaScript -> Java bridge, not a demo fixture.
 import urllib.request,websocket

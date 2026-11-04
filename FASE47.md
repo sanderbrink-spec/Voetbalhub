@@ -1,6 +1,6 @@
 # Veldio fase 47
 
-Basis: premium fase46-commit 43cd30ad9a2628a1013eee25e5ec341e6ea12ab0. Herstelbranch fix/veldio-47-functional. Geen ZIP-bron gebruikt. Buildbron 9e4e9cf57eab30e46a853e7058e87b096037283a; identieke productietree in 003efd72b9255f61fed0216171aca636961d23fb. Laatste documentatie-/servercorrecties kunnen op een latere productiecommit staan; de Android-assets blijven gelijk.
+Basis: premium fase46-commit 43cd30ad9a2628a1013eee25e5ec341e6ea12ab0. Herstelbranch fix/veldio-47-functional. Geen ZIP-bron gebruikt. Definitieve APK-bron: 6ebd0dd006863776d96ab3629bd7fc401f2ec0b3. Eerste build 9e4e9cf bevatte nog de oude Eredivisie-ingang en is vervangen. Laatste documentatie-/servercorrecties kunnen op een latere productiecommit staan; de Android-assets blijven gelijk.
 
 ## De zeven herstelpunten
 
@@ -12,7 +12,7 @@ Basis: premium fase46-commit 43cd30ad9a2628a1013eee25e5ec341e6ea12ab0. Herstelbr
 | Wedstrijden | Centrale gratis OpenLigaDB-laag met vijf kandidaatcompetities, cache, deadline, verzoekbundeling, bronvermelding, competitie-/favorietenfilters en verversing. | Communitygegevens zonder SLA; ontbrekende eindstanden blokkeren de berekende stand. Berekende puntenlijst is geen officiële ranglijst, puntenaftrek of volledige tiebreakimplementatie. |
 | Voorspellen | Echte toekomstige bronduels, lokale opslag, wijzigingen tot bekende aftrap, automatische sluiting, 3/1/0 punten, totaalscore en correctpercentage. Gecontroleerde punten blijven lokaal beschikbaar na herstart en bronuitval. | Geen voorspellingen op onbekende aftraptijd, accounts of online ranglijst. |
 | Competitiepagina’s | Tien gidsen met regio, competitieopzet, achtergrond, officiële bronroute en eigen nieuwsroute. Beschikbare clubs, wedstrijden en berekende cijfers geïntegreerd. | Geen actuele clubs verzonnen voor competities zonder feed; geen kunstmatig nieuws toegevoegd. |
-| Wedstrijdbeelden | Bestaande sjaalpipeline met exacte clubnamen, kleuren, pixelcontrole, cache en neutrale fallback behouden. Cachecontrole aangescherpt zodat ook opgeslagen foto’s nog aan de kwaliteitsregels moeten voldoen. Algemene analyses krijgen niet automatisch een wedstrijdbeeld. | Geen betaalde generatie gestart; bestaande quota en sleutelconfiguratie blijven bepalend. |
+| Wedstrijdbeelden | Bestaande sjaalpipeline met exacte clubnamen, kleuren, pixelcontrole, cache en neutrale fallback behouden. Cachecontrole aangescherpt zodat ook opgeslagen foto’s nog aan de kwaliteitsregels moeten voldoen. Dezelfde gecontroleerde wedstrijdafbeelding kan tussen voor- en nabeschouwing hergebruikt worden zonder nieuwe betaalde aanroep. Algemene analyses krijgen niet automatisch een wedstrijdbeeld. | Geen betaalde generatie gestart; bestaande quota en sleutelconfiguratie blijven bepalend. |
 
 ## Extra herstel
 
@@ -32,11 +32,19 @@ Achtergrond: officiële KNVB-historie, Premier League-historie, Bundesliga-histo
 
 ## Controles en bewijs
 
-Lokale Node-suite: 260 tests, 252 geslaagd, acht bestaande Redis-tests overgeslagen zonder testdatabase. Nieuwe tests dekken 3/1/0 punten, gesloten aftrap, toekomstige/onvolledige eindstanden, offline bewaarde punten, weigering van onbevestigde invoer, dubbele wedstrijd-ID’s, cacheverzoekbundeling en veilige shirtmarkup.
+Lokale Node-suite: 262 tests, 254 geslaagd, acht bestaande Redis-tests overgeslagen zonder testdatabase. Nieuwe tests dekken 3/1/0 punten, gesloten aftrap, toekomstige/onvolledige eindstanden, offline bewaarde punten, weigering van onbevestigde invoer, dubbele wedstrijd-ID’s, cacheverzoekbundeling en veilige shirtmarkup.
 
 Mobiele browsertests: fase46-profielregressie plus functional47.cjs geslaagd op 320 en 393 pixels. Alle tien competitiegidsen, voorspelling via bridge, aftrapvergrendeling, filters, verversing, formulierenbehoud, Mijn Clubs en primaire club gecontroleerd. Bronprovenancecontrole slaagt. Zeven screenshots uit de opdracht geïnspecteerd.
 
 GitHub Actions: Node-suite 41910671661 geslaagd. APK-/API36-workflow 41910671682 bouwt 4.47-test, versiecode 87, rechtstreeks uit versiebeheerde bron. Definitieve build- en Androidresultaten volgen na afronding; geen geslaagde fysieke Galaxy S23-test geclaimd.
+
+## Livecontrole op 4 november 2026
+
+Render-deploy dep-dblpnn3bc2fs73a2ou7g is live met bffcf2a. /health bevestigt deze revisie. Bundesliga: 306 duels en 18 berekende rijen. Champions League en Europa League: elk 144 duels en 36 berekende rijen. La Liga: 380 duels, tien verstreken duels zonder eindstand; Premier League: 380 duels, 29 verstreken duels zonder eindstand. Voor die twee bronnen wordt de onvolledige stand bewust niet getoond. Eredivisie geeft nu HTTP 200 met expliciete unavailable-status, geen 404 en geen verzonnen cijfers.
+
+De eerste API36-test stopte bij de zoekactie naar Mijn voorspellingen onder de schermrand, zonder scrollinstructie. De testdriver is gecorrigeerd. Dit is geen geslaagde volledige Androidtest; een aparte regressieworkflow gebruikt de definitieve bestaande APK zonder herbouw.
+
+Belangrijkste gewijzigde bestanden: football-data47.js, server.js, DestinationView39.java, MainActivity.java, PersonalHubView.java, HomeMenu39.java, NavIconView.java, destinations39.html, personal-hub.html, football47.js, competitions47.js, club-directory.json/js, editorial-image44(-service).js, public/publish-desk.html, redactie/dashboard/index.html en de bijbehorende test-, bronprovenance- en workflowbestanden. Volledige diff is via GitHub beschikbaar.
 
 ## Openstaande blokkades en drie lanceringsprioriteiten
 
