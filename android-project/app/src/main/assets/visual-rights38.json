@@ -1,0 +1,12 @@
+{
+  "asset": "veldio-arena.webp",
+  "sha256": "9827c7dbb48ac6142389ba4c0edfb6084e876592ef97eb771e2559f7af5ccc4a",
+  "method": "OpenAI imagegen, original generated artwork",
+  "generated": true,
+  "contextOnly": true,
+  "venue": "Fictief stadion",
+  "caption": "AI-sfeerillustratie; geen foto van een werkelijk stadion, wedstrijd of persoon.",
+  "prompt": "Fictional packed football stadium at night, emerald and lime floodlights, football on turf, dark left side for UI overlays, no text, no logos, no identifiable real stadium or person.",
+  "createdAt": "2026-11-02",
+  "clubEmblems": "Eigen geometrische monogrammen. Geen officiële logo’s; geen licentie op merken verondersteld."
+}

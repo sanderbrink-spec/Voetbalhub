@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.Veldio" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">#050807</item>
+        <item name="android:navigationBarColor">#050807</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="colorAccent">#25F06B</item>
+    </style>
+</resources>

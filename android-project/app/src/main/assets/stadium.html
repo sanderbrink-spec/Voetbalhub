@@ -1,0 +1,29 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' https://raw.githubusercontent.com file:; script-src 'self' file: 'unsafe-inline'; style-src 'unsafe-inline'"><title>Stadion van de week · Veldio</title><style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050c08;color:#f6faf7;font:17px/1.65 system-ui}main{max-width:760px;margin:auto;padding:0 19px 36px}button,a{color:#a9ffbe}button{font:inherit;cursor:pointer;border:1px solid #325540;background:#0e2016;padding:10px 14px;border-radius:8px;min-height:44px}header{position:sticky;top:0;z-index:2;background:#050c08ed;padding:10px 15px;display:flex;justify-content:space-between;gap:8px}.eyebrow{letter-spacing:1.5px;font-size:11px;color:#a9ffbe;font-weight:800;margin:22px 0 12px}h1{font-size:clamp(28px,7vw,42px);line-height:1.12;letter-spacing:-.8px;margin:12px 0 18px;overflow-wrap:anywhere}h2{font-size:23px;line-height:1.25;margin-top:32px}.intro{font-size:20px;color:#dae5dd}.meta,figcaption,.note{font-size:12px;color:#adbbb2;line-height:1.5}figure{margin:24px -19px}figure img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}figcaption{padding:9px 19px}p{margin:15px 0}li{margin:12px 0}a{overflow-wrap:anywhere}article{overflow-wrap:anywhere}.archive-card{display:block;text-align:left;padding:0;border:0;border-radius:12px;overflow:hidden;width:100%;margin:20px 0;background:#102219}.archive-card img{width:100%;aspect-ratio:16/9;object-fit:cover}.archive-copy{padding:16px}.archive-copy h2{margin:5px 0 12px}.facts{padding:5px 18px;background:#102219;border-left:2px solid #25f06b;border-radius:4px}.sources{font-size:14px}button:focus-visible,a:focus-visible{outline:2px solid #a9ff35;outline-offset:3px}
+
+/* Veldio 40: shared WebView surface, typography and interaction tokens. */
+:root{--bg:#020805;--green:#a9ff35;--panel:#0c2115;--muted:#b0c6b7;--border:#3c6549;color-scheme:dark}
+body{background:radial-gradient(ellipse at 100% 0,#10321d55,transparent 430px),#020805!important;color:#f3f8f4;font-family:system-ui,sans-serif!important}
+main{padding-bottom:max(32px,env(safe-area-inset-bottom));overflow-wrap:anywhere}
+h1,h2,h3{color:#f3f8f4;letter-spacing:-.025em}h1{line-height:1.15}p{line-height:1.7}article{max-width:720px;margin-inline:auto}article p{line-height:1.85}
+.panel,.card,.club,.fixture,.match,.archive-card,.facts,.question-card,.result-card,.empty,.error{border:1px solid var(--border);border-radius:18px;background:linear-gradient(135deg,#153321dd,#030b07);box-shadow:inset 0 1px #d4ffe512,0 6px 20px #0004}
+.panel,.empty,.error{padding:18px}.fixture,.match{padding:14px;margin-block:8px}.club,.row,.tile{box-shadow:inset 0 1px #caffe514,0 5px 16px #0005}
+header,nav{background-color:#020805ed!important}header{border-bottom:1px solid #254a31}
+button,input,select,textarea{font:inherit}button{min-height:44px;border-radius:12px;transition:transform 130ms,box-shadow 130ms}button:active{transform:scale(.98)}button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #a9ff35;outline-offset:3px}
+button.primary,.primary{color:#092002;background:linear-gradient(135deg,#c1ff68,#8ce51c);font-weight:750;box-shadow:0 2px 14px #89ff2620}
+input,select,textarea{background:#05120b!important;color:#f3f8f4;border:1px solid #496c53;border-radius:12px;min-height:46px;padding:12px;max-width:100%}
+img{max-width:100%}.hero,figure img,.archive-card img{border-radius:18px;box-shadow:0 8px 24px #0007}.hero{border:1px solid #487450}
+.hero:has(h1),.hero:has(h2){background:linear-gradient(110deg,#031109ed,#03110965),url('premium40/news.webp') center/cover}
+.row{background:linear-gradient(130deg,#112b1b,#040c07);border:1px solid #31513b;border-radius:16px;padding:12px}.row .thumb{border-radius:11px}
+table{font-variant-numeric:tabular-nums}thead{background:#112d1c}td,th{padding:13px 8px!important}tbody tr:nth-child(even){background:#10251750}.points,.tag,.eyebrow,.category{color:#a9ff35!important}
+.scores{gap:12px}.quiet,.muted,.note,small{color:#b0c6b7}.facts{border-left:3px solid #a9ff35}.archive-copy{padding:20px}.intro{font-size:19px}
+.answer{min-height:58px;border-radius:15px}.answer.correct{background:#173e23!important;border-color:#a9ff35!important}.answer.wrong{border-color:#ff9b8c!important}.timer{accent-color:#a9ff35}
+@media(max-width:359px){h1{font-size:25px!important}main{padding-inline:12px}.panel{padding:14px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+body[data-section=fixtures] main:before,body[data-section=predictions] main:before,body[data-section=myclub] main:before{content:'';display:block;height:100px;border:1px solid #3c6549;border-radius:18px;margin-bottom:20px;background-position:center 40%;background-size:cover;box-shadow:0 6px 20px #0006}
+body[data-section=fixtures] main:before{background-image:url('premium40/fixtures.webp')}body[data-section=predictions] main:before{background-image:url('premium40/predictions.webp')}body[data-section=myclub] main:before{background-image:url('premium40/myclub.webp')}
+
+#play figure{margin-block:12px}#play #photo{max-height:120px;object-fit:cover}#play>h2{font-size:clamp(20px,5.5vw,26px);padding:16px;line-height:1.3}#play #answers button{min-height:52px}#next:not([hidden]){position:sticky;bottom:8px;z-index:5;display:block;box-shadow:0 6px 20px #000b}
+
+</style></head><body><header><button id="back">← Terug</button><button id="archive">Alle stadions</button></header><main id="content"><p>Stadionportretten zijn ook offline beschikbaar.</p></main><script src="stadium-view.js"></script></body></html>

@@ -1,0 +1,11 @@
+<resources>
+    <color name="vh_bg">#050807</color>
+    <color name="vh_surface">#0D1210</color>
+    <color name="vh_surface2">#141B18</color>
+    <color name="vh_green">#25F06B</color>
+    <color name="vh_green_dark">#0D9B43</color>
+    <color name="vh_text">#F6FAF7</color>
+    <color name="vh_muted">#8E9B95</color>
+    <color name="vh_line">#22302A</color>
+    <color name="vh_gold">#FFD447</color>
+</resources>
