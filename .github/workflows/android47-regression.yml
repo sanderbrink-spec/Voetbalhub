@@ -1,0 +1,58 @@
+name: Veldio 47 Android16 artifact regression
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/android47-regression.yml', 'scripts/android-phase47.py']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  android16:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for existing verified APK artifact
+        run: |
+          python3 - <<'PY'
+          import urllib.request,json,time
+          for attempt in range(30):
+              with urllib.request.urlopen('https://api.github.com/repos/sanderbrink-spec/Voetbalhub/actions/runs/41911801976/artifacts',timeout=15) as r:
+                  artifacts=json.load(r).get('artifacts',[])
+              if any(a.get('name')=='Veldio-47' for a in artifacts):
+                  print('Verified build artifact available');break
+              time.sleep(10)
+          else:raise SystemExit('APK artifact missing; no rebuild was started')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: Veldio-47
+          path: apk
+          run-id: 41911801976
+          github-token: ${{ github.token }}
+      - name: Verify identical packaged source
+        run: python3 scripts/verify-android-source.py apk/Veldio-47.apk
+      - name: Install Android test driver
+        run: python3 -m pip install 'uiautomator2>=3,<4' 'websocket-client>=1,<2'
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Test existing APK on Android 16
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase47.py apk/Veldio-47.apk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Veldio-47-Android16-final
+          path: .android-smoke/
+          include-hidden-files: true
+          if-no-files-found: error
