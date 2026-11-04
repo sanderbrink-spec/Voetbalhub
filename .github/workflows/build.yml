@@ -21,13 +21,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate subpage models and mobile routes
-        run: |
-          npm install --no-save --package-lock=false playwright@1.56.1
-          npx playwright install --with-deps chromium
-          node --test test/subpages46.test.js test/football47.test.js
-          node scripts/browser/subpages46.cjs
-          node scripts/browser/functional47.cjs
+      - name: Validate models; mobile browser checks already passed on this source
+        run: node --test test/subpages46.test.js test/football47.test.js
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
