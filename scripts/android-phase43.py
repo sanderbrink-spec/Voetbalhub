@@ -2,7 +2,7 @@
 Playback success is recorded independently from window, orientation and navigation success.
 """
 from pathlib import Path
-source=Path('scripts/android-phase42.py').read_text().replace('4.50-phase42','4.44-herstel')
+source=Path('scripts/android-phase42.py').read_text().replace('4.50-phase42','4.45-test')
 source=source.replace("root,node=find('NOS Sport op YouTube openen ↗','42-summaries',scroll=True)\nassert any(n.get('text')=='SAMENVATTINGEN' for n in root.iter('node'))","root=capture('43-summaries-heading')\nassert any(n.get('text')=='SAMENVATTINGEN' for n in root.iter('node'))\nroot,node=find('NOS Sport op YouTube openen ↗','42-summaries',scroll=True)")
 exec(compile(source,'android-phase43-base.py','exec'))
 import urllib.request,websocket
@@ -81,7 +81,7 @@ for index,id in enumerate(ids):
 # Open the explicit external fallback from a video card and verify the dispatched URL.
 root,node=find('Deze video bekijken op YouTube ↗','43-external-fallback',clickable=True,scroll=True);tap(node);time.sleep(1)
 (OUT/'phase43-external-intent.txt').write_text(adb('shell','dumpsys','activity','activities'))
-report=json.loads(resultPath.read_text());report['version']='4.44-herstel';report['competitionChecks']=competition_checks;report['favouriteMultipleAndRemovalPersistence']=True;report['videoChecks']=video_checks;report['videoPlaybackAcceptance']=all(v['playing'] for v in video_checks)
+report=json.loads(resultPath.read_text());report['version']='4.45-test';report['competitionChecks']=competition_checks;report['favouriteMultipleAndRemovalPersistence']=True;report['videoChecks']=video_checks;report['videoPlaybackAcceptance']=all(v['playing'] for v in video_checks)
 report['checks']+=['five real immersive player openings','landscape player viewport','back returns to preserved list position','background/resume lifecycle','external YouTube intent']
 report['limits']+=['Playback requires reachable YouTube and may be blocked by YouTube device, region or account policies; inspect phase43-video-results.json.']
 resultPath.write_text(json.dumps(report,ensure_ascii=False,indent=2))

@@ -41,19 +41,20 @@ public final class WeeklyMatchCard extends LinearLayout {
         setOrientation(VERTICAL);setPadding(dp(14),dp(12),dp(14),dp(8));
         GradientDrawable bg=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xFF183227,0xFF0E1C16});
         bg.setCornerRadius(dp(20));bg.setStroke(dp(1),0xFF365C42);setBackground(bg);
-        label=text("EREDIVISIE",10,green,true);label.setLetterSpacing(.16f);addView(label);
-        title=text("Eredivisie in cijfers",22,0xFFF4F7F3,true);LayoutParams heading=new LayoutParams(-1,-2);heading.topMargin=dp(8);addView(title,heading);
+        label=text("CLUBSPOTLIGHT",10,green,true);label.setLetterSpacing(.16f);addView(label);
+        title=text("FC Groningen",22,0xFFF4F7F3,true);LayoutParams heading=new LayoutParams(-1,-2);heading.topMargin=dp(8);addView(title,heading);
         matchRow=new LinearLayout(activity);matchRow.setGravity(Gravity.CENTER_VERTICAL);matchRow.setVisibility(GONE);
         homeLogo=new ImageView(activity);homeLogo.setScaleType(ImageView.ScaleType.FIT_CENTER);matchRow.addView(homeLogo,new LayoutParams(dp(52),dp(60)));
         teams=text("",23,0xFFFFFFFF,true);teams.setGravity(Gravity.CENTER);teams.setLineSpacing(dp(3),1f);teams.setPadding(dp(8),0,dp(8),0);matchRow.addView(teams,new LayoutParams(0,-2,1));
         awayLogo=new ImageView(activity);awayLogo.setScaleType(ImageView.ScaleType.FIT_CENTER);matchRow.addView(awayLogo,new LayoutParams(dp(52),dp(60)));
         LayoutParams match=new LayoutParams(-1,-2);match.topMargin=dp(12);addView(matchRow,match);
         details=text("Stand, uitslagen en programma",12,muted,false);details.setLineSpacing(dp(3),1f);LayoutParams meta=new LayoutParams(-1,-2);meta.topMargin=dp(8);addView(details,meta);
-        summary=text("Alle club- en spelersstatistieken op één plek.",13,muted,false);summary.setLineSpacing(dp(3),1f);LayoutParams sub=new LayoutParams(-1,-2);sub.topMargin=dp(8);addView(summary,sub);
+        summary=text("Bekijk de stand en het programma van FC Groningen in het Eredivisie-overzicht.",13,muted,false);summary.setLineSpacing(dp(3),1f);LayoutParams sub=new LayoutParams(-1,-2);sub.topMargin=dp(8);addView(summary,sub);
         LinearLayout cta=new LinearLayout(activity);cta.setGravity(Gravity.CENTER_VERTICAL);
         action=text("Bekijk de statistieken",13,green,true);cta.addView(action,new LayoutParams(0,-2,1));
         TextView arrow=text("→",24,green,false);cta.addView(arrow);LayoutParams ctaParams=new LayoutParams(-1,dp(28));ctaParams.topMargin=dp(6);addView(cta,ctaParams);
         setFocusable(true);setOnClickListener(v->openStatistics.run());
+        String lastValid=activity.getSharedPreferences("eredivisie-statistics",0).getString("last_valid_feature",null);if(lastValid!=null)try{show(new JSONObject(lastValid));}catch(Exception ignored){}
         String cached=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot",null);if(cached!=null)try{show(new JSONObject(cached));}catch(Exception ignored){}
         new Thread(this::load,"weekly-match-card").start();
     }
@@ -72,6 +73,7 @@ public final class WeeklyMatchCard extends LinearLayout {
         String when=DateTimeFormatter.ofPattern("EEEE d MMMM · HH:mm",new Locale("nl","NL")).withZone(ZoneId.of("Europe/Amsterdam")).format(kickoff);
         String round=feature.optString("round","");details.setText(when+(round.isEmpty()?"":"  ·  "+round));
         summary.setVisibility(GONE);action.setText(report?"Lees het wedstrijdverslag":"Bekijk de voorbeschouwing");
+        activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("last_valid_feature",data.toString()).apply();
         setContentDescription("Wedstrijd van de week: "+home+" tegen "+away+". "+when+(report?". Lees het wedstrijdverslag.":". Bekijk de voorbeschouwing."));setOnClickListener(v->openPreview.open(data.toString()));
     }
     private void loadLogo(ImageView view,String address,String club){
@@ -89,10 +91,8 @@ public final class WeeklyMatchCard extends LinearLayout {
             activity.runOnUiThread(()->{if(!activity.isFinishing()&&address.equals(view.getTag()))view.setImageBitmap(bitmap);});
         }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}});
     }
-    private void load(){HttpURLConnection conn=null;try{
-        conn=(HttpURLConnection)new URL("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000).openConnection();
-        conn.setConnectTimeout(12000);conn.setReadTimeout(15000);conn.setInstanceFollowRedirects(false);if(conn.getResponseCode()!=200)return;
-        ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=conn.getInputStream()){byte[] b=new byte[8192];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>3000000)return;}}
-        JSONObject data=new JSONObject(out.toString("UTF-8"));activity.runOnUiThread(()->{if(!activity.isFinishing())try{show(data);}catch(Exception ignored){}});
-    }catch(Exception ignored){}finally{if(conn!=null)conn.disconnect();}}
+    private void load(){try{
+        JSONObject data=new JSONObject(DeadlineHttp.get("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,18000,3000000));
+        activity.runOnUiThread(()->{if(!activity.isFinishing())try{show(data);}catch(Exception ignored){}});
+    }catch(Exception ignored){}}
 }

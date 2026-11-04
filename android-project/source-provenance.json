@@ -145,7 +145,7 @@
     "assets/youtube-seed.json": "aac0cf7f236633446516996ec5e7ee80912a9fc7efdcb9444ee580482c2700c1"
   },
   "files": {
-    "app/build.gradle.kts": "645d9688cd31b07769eb36ddac9f77da72348dd3228eb299d2a43b156f6e1a2a",
+    "app/build.gradle.kts": "703e0e6f2ba4dcbe00c6e1b56fbec4e35bd0a72491bf9381cfcbbc2c7cf5d2f2",
     "app/src/main/AndroidManifest.xml": "13a7cb8a7eda5e6dc2ba5903b45772323774e2483095c15e2b144101a6638e6a",
     "app/src/main/assets/club-directory.js": "841b2190e033e8367b939a6075f4f4abb61686ed37c0bb10851f5f746ce018fb",
     "app/src/main/assets/club-directory.json": "74cd7b8ebdd4f67a72a14d39fe00d917f3c999fd48db8b69f7f934b2701a66a0",
@@ -327,7 +327,7 @@
     "app/src/main/java/nl/voetbalhub/app/VeldioEditorial.java": "1697ee164b6558788175571fefefd8fa73a3df153ad9a7ccaa73117b3ff1c89e",
     "app/src/main/java/nl/voetbalhub/app/VideoShelf40.java": "b8c0efd4cd9f5c5f079af9d882d7140f4dd10d1c3ffaaf66539eb03819c8b409",
     "app/src/main/java/nl/voetbalhub/app/WebPageHistory.java": "6442a95f32544a609db0134c223fdbb4527e201af1e8de88af1522cdbc93d2f8",
-    "app/src/main/java/nl/voetbalhub/app/WeeklyMatchCard.java": "990e77f224fb9200dccdf5e7fddb71ceb7547d323d3b49ab44d89d6bebe0e1d2",
+    "app/src/main/java/nl/voetbalhub/app/WeeklyMatchCard.java": "4b0ef63f57a45ec2c62ee534b08469aa974618194c843138384b116464cffc33",
     "app/src/main/java/nl/voetbalhub/app/YoutubePlayerView.java": "5b2127f7b50647e57ec61d6329edef7e92473ca0619a81eefc06fe159ab7960f",
     "app/src/main/res/drawable/ic_launcher.xml": "20a93ae5fe09e8dcdfc94d55b45dd659cb73ea552c9f4641e45d92381d79fdc6",
     "app/src/main/res/drawable/ic_launcher_foreground.xml": "2a3b8109828cb71344840895c5fefae6be00a7ab0c33b0d31a1d85d0788c76ac",
@@ -349,5 +349,10 @@
     "settings.gradle.kts": "4cf21d1bfd7d0a0ca19d852c34d941a00e0b45f816d8f6d0dea0efff79a1bb85"
   },
   "backend_image_pipeline": "phase44 retained from main",
-  "build_source": "android-project; no archive extraction or build-time UI patching"
+  "build_source": "android-project; no archive extraction or build-time UI patching",
+  "phase45BaseCommit": "eb373c27dda60292f21f43eaa0a2a9bb87cfccfd",
+  "phase45Changes": [
+    "app/build.gradle.kts",
+    "app/src/main/java/nl/voetbalhub/app/WeeklyMatchCard.java"
+  ]
 }

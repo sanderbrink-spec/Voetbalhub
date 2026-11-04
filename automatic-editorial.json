@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "maxPerRun": 10,
-  "maxPerDay": 20,
+  "maxPerRun": 4,
+  "maxPerDay": 15,
   "maxAgeHours": 72,
   "previewHorizonDays": 7,
   "model": "openai/gpt-oss-120b",
@@ -62,5 +62,7 @@
       "articlePath": "^/media/artikel/[^/]+/?$"
     }
   ],
-  "sourceGroups": []
+  "sourceGroups": [],
+  "qualityThreshold": 85,
+  "maxImageRequestsPerRun": 8
 }
