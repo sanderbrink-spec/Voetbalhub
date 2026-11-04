@@ -56,7 +56,7 @@ public final class PersonalHubView extends LinearLayout {
     public boolean handleBack(){return pageHistory.back();}
     public String navigationState(){return pageHistory.snapshot();}
     private void deliver(){if(!ready||disposed||activity.isFinishing())return;try{
-        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);payload.put("directory",directory);payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
+        JSONObject payload=new JSONObject();Branding.response(articles);Branding.response(stats);payload.put("primaryClub",activity.getSharedPreferences("voethub",0).getString("primaryClub",""));payload.put("directory",directory);payload.put("mode",mode);payload.put("query",query);payload.put("articles",articles.optJSONArray("articles"));payload.put("stats",stats);payload.put("saved",EditorialStore.saved(activity));payload.put("clubs",new JSONArray(activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>())));payload.put("offline",offline);payload.put("loading",pending>0);
         web.evaluateJavascript("window.setData("+JSONObject.quote(payload.toString())+")",null);
     }catch(Exception ignored){}}
     private void fetch(String address,boolean news){NETWORK.execute(()->{HttpURLConnection connection=null;JSONObject result=null;try{
@@ -80,8 +80,10 @@ public final class PersonalHubView extends LinearLayout {
             JSONArray rows=stats.optJSONArray("standings");if(rows!=null)for(int i=0;i<rows.length();i++)valid.add(rows.getJSONObject(i).getJSONObject("team").getString("name"));
             for(int i=0;i<requested.length();i++){String name=requested.getString(i);if(!valid.contains(name))throw new Exception("Unknown club");selected.add(name);}
             saved=activity.getSharedPreferences("voethub",0).edit().putStringSet("clubs",selected).commit();
+            if(saved){String primary=activity.getSharedPreferences("voethub",0).getString("primaryClub","");if(!selected.contains(primary))activity.getSharedPreferences("voethub",0).edit().putString("primaryClub",selected.isEmpty()?"":new java.util.TreeSet<String>(selected).first()).commit();}
             if(!saved)activity.getSharedPreferences("voethub",0).edit().putStringSet("clubs",previous).commit();
         }catch(Exception ignored){}final boolean ok=saved;activity.runOnUiThread(()->{if(!ready||disposed||activity.isFinishing())return;web.evaluateJavascript("window.clubsSaved("+ok+")",null);if(ok)deliver();});});}
+        @JavascriptInterface public void savePrimary(String name){activity.runOnUiThread(()->{java.util.Set<String> names=activity.getSharedPreferences("voethub",0).getStringSet("clubs",new HashSet<String>());if(names.contains(name)){activity.getSharedPreferences("voethub",0).edit().putString("primaryClub",name).apply();deliver();}});}
         @JavascriptInterface public void removeSaved(String id){activity.runOnUiThread(()->{JSONObject row=find(id);if(row!=null&&EditorialStore.contains(activity,row))EditorialStore.toggle(activity,row);deliver();});}
     }
 }

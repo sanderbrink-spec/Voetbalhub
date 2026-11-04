@@ -5,7 +5,7 @@ import android.view.*;
 import android.widget.*;
 /** One launcher with the approved carousel geometry and twelve stable native routes. */
 public final class HomeMenu39 extends ScrollView {
- private static final String[][] ITEMS={{"news","Nieuws"},{"fixtures","Wedstrijden"},{"competitions","Competities"},{"predictions","Voorspellen"},{"quiz","Club Quiz"},{"stadium","Stadion van de Week"},{"column","De Derde Helft"},{"videos","Samenvattingen"},{"standings","Standen"},{"favorites","Favorieten"},{"myclub","Mijn Club"},{"more","Meer"}};
+ private static final String[][] ITEMS={{"news","Nieuws"},{"fixtures","Wedstrijden"},{"competitions","Competities"},{"predictions","Voorspellen"},{"quiz","Club Quiz"},{"stadium","Stadion van de Week"},{"column","De Derde Helft"},{"videos","Samenvattingen"},{"standings","Standen"},{"favorites","Mijn Clubs"},{"clubs","Clubgids"},{"more","Meer"}};
  private int dp(float n){return PremiumDesign40.dp(getContext(),n);}
  public HomeMenu39(Activity a,DestinationView39.Route route,HomeFeatureView.OpenArticle open){super(a);setFillViewport(true);setBackgroundColor(PremiumDesign40.INK);setClipToPadding(false);
   LinearLayout page=new LinearLayout(a);page.setOrientation(1);page.setPadding(dp(10),dp(8),dp(10),dp(28));addView(page,new LayoutParams(-1,-2));

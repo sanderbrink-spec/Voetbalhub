@@ -289,11 +289,17 @@ async function getArticles(view = "current") {
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return require("./feed-policy").selectFeed(articles, {view});
 }
+const football47=require("./football-data47").create({redis:client});
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 const quizHandler=require("./quiz39/service").create({redis:client});
 async function handle(req, res) {
   security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
+  if(req.method==='GET'&&url.pathname==='/integrations/football/catalog')return send(res,200,{competitions:football47.catalog()});
+  if(req.method==='GET'&&['/integrations/statistics','/integrations/football'].includes(url.pathname)){
+    const key=url.searchParams.get('competition')||'eredivisie';
+    try{return send(res,200,await football47.get(key));}catch{return send(res,400,{error:'Onbekende competitie.'});}
+  }
   if(require("./media43").serve(req,res,url.pathname))return;
   if(await quizHandler(req,res))return;
   if(req.method==="GET"&&url.pathname==="/editorial/veldio-arena.webp"){
@@ -583,6 +589,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   if (!authorizeRequest(req,res)) return;
   let body;
   try { body = await readBody(req); } catch (e) { return send(res, 400, { error: e.message === "body_too_large" ? "Verzoek te groot." : "Ongeldige JSON." }); }
+  if(url.pathname==='/football-review'){
+    try{return send(res,200,{snapshot:await football47.publish(body),published:true});}catch(e){return send(res,400,{error:e.message});}
+  }
   if (url.pathname === "/editorial-drafts") {
     if (!client?.isReady) return send(res,503,{error:"Conceptenopslag tijdelijk niet beschikbaar."});
     try {

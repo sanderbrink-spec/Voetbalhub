@@ -37,7 +37,7 @@ const logo=()=>'';
 document.addEventListener('click',e=>{const b=e.target.closest('[data-club-profile]');if(b)window.ClubProfile46?.open(b.dataset.clubProfile);});
 window.showFeatured=function(){tab='uitgelicht';openFeatured=false;render();};
 function setData(raw){try{const x=JSON.parse(raw);if(x.schemaVersion!==1||x.league.id!==88||!Subpage46.current(x))throw Error();data=x;render();}catch(e){loadFailed();}}
-function loadFailed(){if(data){$('updated').textContent='Offline · laatst opgeslagen cijfers';return;} $('content').innerHTML='<div class="error"><h2>Statistieken nog niet beschikbaar</h2><p>Er worden geen voorbeeldstanden of verzonnen cijfers getoond.</p><button onclick="location.href=\'app://retry\'">Opnieuw proberen</button></div>';}
+function loadFailed(){$('updated').textContent='Geen actuele vrijgegeven statistiekfeed';if(data){$('updated').textContent='Offline · laatst opgeslagen cijfers';return;} $('content').innerHTML='<div class="error"><h2>Statistieken nog niet beschikbaar</h2><p>Er worden geen voorbeeldstanden of verzonnen cijfers getoond.</p><button onclick="location.href=\'app://retry\'">Opnieuw proberen</button></div>';}
 const trail=new PageTrail();let restoreScroll=null;
 function uiState(){return {tab,round,playerMetric,clubId,search,scrollY:window.scrollY};}
 function applyUi(s){tab=['stand','uitslagen','programma','spelers','clubs','uitgelicht'].includes(s.tab)?s.tab:'stand';round=String(s.round||'');playerMetric=['goals','assists','yellow','red','shots','shotsOnTarget','chances','saves','passes','passAccuracy','topSpeed'].includes(s.playerMetric)?s.playerMetric:'goals';clubId=s.clubId??null;search=String(s.search||'');restoreScroll=Number(s.scrollY)||0;render();}

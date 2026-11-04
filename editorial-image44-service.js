@@ -5,7 +5,7 @@ async function create(payload,{client,key=process.env.OPENAI_API_KEY,remaining=2
  const cacheKey='editorial-image44:'+plan.identity;
  if(client?.isReady){
   const cached=await client.get(cacheKey);
-  if(cached){const r=JSON.parse(cached);if(r.plan?.identity===plan.identity&&r.mode==='ai-photographic'&&I.sha(Buffer.from(r.base64,'base64'))===r.assetSha256)return {...r,attempts:0};}
+  if(cached){const r=JSON.parse(cached);if(r.plan?.identity===plan.identity&&r.mode==='ai-photographic'&&!I.qualityIssues(plan,r.review).length&&I.sha(Buffer.from(r.base64,'base64'))===r.assetSha256)return {...r,attempts:0};}
   const blocked=await client.get('editorial-image44-provider-block');
   if(blocked){const r=await I.fallback(plan,blocked);return {...r,bytes:undefined,base64:r.bytes.toString('base64'),attempts:0};}
  }

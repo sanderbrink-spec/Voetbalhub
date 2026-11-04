@@ -25,7 +25,7 @@ if("Video's".equals(name))d="M3 5H21V19H3Z M10 8L16 12L10 16Z";
 if("Video’s".equals(name))d="M3 5H21V19H3Z M10 8L16 12L10 16Z";
 if("Standen".equals(name))d="M3 21H22 M5 17H8V21H5Z M11 11H14V21H11Z M17 4H20V21H17Z M4 10L10 6L14 8L20 2";
 if("Clubs".equals(name)||"Mijn Club".equals(name))d="M8 3Q12 6 16 3L22 7L19 12L17 11V21H7V11L5 12L2 7Z M10 9H14";
-if("Favorieten".equals(name))d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8Z";
+if("Mijn Clubs".equals(name))d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8Z";
 if("Meldingen".equals(name))d="M5 17H19L17 14V9Q17 4 12 4Q7 4 7 9V14Z M10 20Q12 23 14 20 M12 2V4";
 return d==null?null:androidx.core.graphics.PathParser.createPathFromPathData(d);}
  @Override protected void onDraw(Canvas c){super.onDraw(c);float size=Math.min(getWidth(),getHeight())*.83f;c.save();c.translate((getWidth()-size)/2,(getHeight()-size)/2);c.scale(size/24f,size/24f);p.setColor(color);p.setStrokeWidth(1.8f);p.setStyle(Paint.Style.STROKE);p.setStrokeCap(Paint.Cap.ROUND);p.setStrokeJoin(Paint.Join.ROUND);Path s=new Path();Path custom=customPath();if(custom!=null){p.setStrokeWidth(1.65f);c.drawPath(custom,p);c.restore();return;}
@@ -39,7 +39,7 @@ return d==null?null:androidx.core.graphics.PathParser.createPathFromPathData(d);
   else if("Clubquiz".equals(name)){c.drawRoundRect(7,3,17,13,2,2,p);c.drawLine(12,14,12,20,p);c.drawLine(7,21,17,21,p);s.moveTo(7,5);s.lineTo(3,5);s.lineTo(3,9);s.lineTo(8,12);s.moveTo(17,5);s.lineTo(21,5);s.lineTo(21,9);s.lineTo(16,12);c.drawPath(s,p);}
   else if("Stadions".equals(name)){c.drawOval(2,5,22,13,p);c.drawArc(2,10,22,21,0,180,false,p);c.drawLine(2,9,2,16,p);c.drawLine(22,9,22,16,p);c.drawLine(7,12,7,20,p);c.drawLine(17,12,17,20,p);}
   else if("Video's".equals(name)||"Video’s".equals(name)){c.drawCircle(12,12,10,p);s.moveTo(10,7);s.lineTo(17,12);s.lineTo(10,17);s.close();c.drawPath(s,p);}
-  else if("Favorieten".equals(name)){for(int i=0;i<10;i++){double a=(-90+i*36)*Math.PI/180;float r=i%2==0?9:4,x=12+(float)Math.cos(a)*r,y=12+(float)Math.sin(a)*r;if(i==0)s.moveTo(x,y);else s.lineTo(x,y);}s.close();c.drawPath(s,p);}
+  else if("Mijn Clubs".equals(name)){for(int i=0;i<10;i++){double a=(-90+i*36)*Math.PI/180;float r=i%2==0?9:4,x=12+(float)Math.cos(a)*r,y=12+(float)Math.sin(a)*r;if(i==0)s.moveTo(x,y);else s.lineTo(x,y);}s.close();c.drawPath(s,p);}
   else {c.drawLine(4,6,20,6,p);c.drawLine(4,12,20,12,p);c.drawLine(4,18,20,18,p);}c.restore();
  }
 }

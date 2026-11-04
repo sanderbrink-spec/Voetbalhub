@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void buildNav() {
         nav.removeAllViews();
-        String[][] items = {{"⌂", "Home"}, {"✎", "Column"}, {"◉", "Competities"}, {"★", "Favorieten"}, {"☰", "Meer"}};
+        String[][] items = {{"⌂", "Home"}, {"✎", "Column"}, {"◉", "Competities"}, {"★", "Mijn Clubs"}, {"☰", "Meer"}};
         for (int i = 0; i < items.length; i++) {
             final String page = items[i][1];
             final int index = i;
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                     case "Home": currentBottomTab = "Home"; buildNav(); showHome39(); break;
                     case "Column": currentBottomTab = "Column"; buildNav(); showColumn(); break;
                     case "Competities": currentBottomTab = "Competities"; buildNav(); showCompetitions(); break;
-                    case "Favorieten": currentBottomTab = "Favorieten"; buildNav(); showFavorites(); break;
+                    case "Mijn Clubs": currentBottomTab = "Mijn Clubs"; buildNav(); showFavorites(); break;
                     default: showMore();
                 }
             });
@@ -1439,7 +1439,7 @@ private void showScores() {
         if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
         scoresPageVisible = false; weeklyPreviewVisible = false; eredivisieStatisticsVisible = false;
         personalHubVisible = true;
-        currentBottomTab = "favorites".equals(mode) ? "Favorieten" : "Nieuws";
+        currentBottomTab = "favorites".equals(mode) ? "Mijn Clubs" : "Nieuws";
         buildNav(); findViewById(R.id.header).setVisibility(android.view.View.GONE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
         content.removeAllViews();personalHub = new PersonalHubView(this, mode, query, this::showEditorialArticle, this::onBackPressed,restoredState);
         content.addView(personalHub, new android.widget.FrameLayout.LayoutParams(-1, -1));
@@ -1491,6 +1491,7 @@ private void showScores() {
     }
     private void showHome39(){showDestination39("home");}
     private void openDestination39(String id){
+        if(id.startsWith("competitionNews:")){String key=id.substring(16);try{org.json.JSONObject names=new org.json.JSONObject(new String(BoundedInput.read(getAssets().open("competition-names47.json"),10000),java.nio.charset.StandardCharsets.UTF_8));showPersonalHub("competition",names.optString(key,key));}catch(Exception ignored){}return;}
         switch(id){
         case "news":active="Voor jou";articleDisplayLimit=20;showNews();break;
         case "competitions":showCompetitions();break;
@@ -1500,7 +1501,7 @@ private void showScores() {
         case "videos":showVideos();break;
         case "standings":showEredivisieStatistics(false);break;
         case "favorites":showFavorites();break;
-        case "myclub":showDestination39("myclub");break;
+        case "myclub":showFavorites();break;
         case "more":showMore();break;
         case "fixtures":case "predictions":case "clubs":case "notifications":showDestination39(id);break;
         }
@@ -1515,18 +1516,11 @@ private void showScores() {
         content.addView("home".equals(mode)?new HomeMenu39(this,this::openDestination39,this::showEditorialArticle):new DestinationView39(this,mode,this::openDestination39,name->showPersonalHub("profile",name)),new android.widget.FrameLayout.LayoutParams(-1,-1));
     }
     private void showCompetition40(String name,String source){
- enterScreen("competition40:"+name,()->showCompetition40(name,source));content.removeAllViews();
- findViewById(R.id.header).setVisibility(android.view.View.VISIBLE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
- LinearLayout root=new LinearLayout(this);root.setOrientation(1);root.addView(sectionHeader(name,"TERUG",this::onBackPressed));
- ScrollView scroll=new ScrollView(this);LinearLayout page=new LinearLayout(this);page.setOrientation(1);page.setPadding(dp(16),dp(12),dp(16),dp(28));
- android.widget.ImageView art=new android.widget.ImageView(this);art.setImageBitmap(PremiumDesign40.artwork(this,"competitions"));art.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);art.setContentDescription("Eigen decoratieve competitie-illustratie");PremiumDesign40.card(art,PremiumDesign40.EDGE);page.addView(art,new LinearLayout.LayoutParams(-1,dp(200)));
- TextView title=tv(name,27,C.TEXT,true);title.setPadding(0,dp(20),0,dp(12));page.addView(title);
- page.addView(tv("Bekijk eigen Veldio-artikelen over "+name+". Actuele standen en wedstrijden zijn via de officiële competitiepagina beschikbaar. Er is voor deze competitie nog geen vrijgegeven gegevensfeed gekoppeld.",15,C.MUTED,false));
- android.widget.Button news=new android.widget.Button(this);news.setText("Veldio-nieuws over "+name);news.setOnClickListener(v->showPersonalHub("competition",name));page.addView(news,new LinearLayout.LayoutParams(-1,-2));
- page.addView(tv("Stand, programma en uitslagen",20,C.TEXT,true));
- page.addView(tv("De officiële bron opent in je browser. De informatie wordt daar door de competitieorganisatie bijgehouden. Veldio kopieert deze gegevens niet zonder toestemming.",14,C.MUTED,false));
- android.widget.Button official=new android.widget.Button(this);official.setText("Officiële competitiepagina openen ↗");official.setOnClickListener(v->{try{startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW,android.net.Uri.parse(source)));}catch(android.content.ActivityNotFoundException e){android.widget.Toast.makeText(this,"Geen browser beschikbaar",android.widget.Toast.LENGTH_SHORT).show();}});LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,-2);lp.topMargin=dp(20);page.addView(official,lp);scroll.addView(page);root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));content.addView(root);PremiumDesign40.polish(root);
+ String[] names={"Eredivisie","Keuken Kampioen Divisie","Premier League","Bundesliga","La Liga","Serie A","Ligue 1","Champions League","Europa League","Conference League"};
+ String[] keys={"eredivisie","kkd","premierleague","bundesliga","laliga","seriea","ligue1","championsleague","europaleague","conferenceleague"};
+ for(int i=0;i<names.length;i++)if(names[i].equals(name)){showDestination39("competition:"+keys[i]);return;}
  }
+
     private void showMore() {
  enterScreen("more",this::showMore);eredivisieStatisticsVisible=false;weeklyPreviewVisible=false;
  findViewById(R.id.header).setVisibility(android.view.View.VISIBLE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);

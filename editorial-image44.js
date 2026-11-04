@@ -7,7 +7,7 @@ const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLo
 const CLUBS=[
  ['FC Groningen',['#008f45','#ffffff']],['Sparta Rotterdam',['#dc1927','#ffffff','#151515']],
  ['Ajax',['#cf152d','#ffffff']],['Feyenoord',['#d71920','#ffffff','#111111']],
- ['PSV',['#e21e26','#ffffff']],['AZ',['#db1824','#ffffff']],
+ ['PSV',['#e21e26','#ffffff']],['AZ',['#db1824','#111111']],
  ['sc Heerenveen',['#1262b1','#ffffff','#df1f32']],['NEC',['#d42128','#008148','#111111']],
  ['FC Twente',['#d71920','#ffffff']],['FC Utrecht',['#d71920','#ffffff']],
  ['Go Ahead Eagles',['#df162a','#ffd428']],['Fortuna Sittard',['#f9db28','#168045']],
@@ -34,7 +34,7 @@ function textOf(p){const d=p.draft||p;return [d.headline,d.standfirst,...(Array.
 function classify(p){
  const d=p.draft||p,lead=norm([d.headline,d.standfirst].join(' '));
  let category='club',scene='stadium';
- if(['preview','report','analysis'].includes(p.articleKind)){category='match';scene='scarves';}
+ if(['preview','report'].includes(p.articleKind)||p.articleKind==='analysis'&&(p.fixture||p.match)){category='match';scene='scarves';}
  else if(/\b(transfer\w*|overstap|contract\w*|tekent|aangetrokken|huurt|verhuurt|huurdeal)\b/.test(lead)){
   category='transfer';scene=/\b(gerucht\w*|interesse|mogelijk|zou|wil|gelinkt|overweegt|onderhandel\w*)\b/.test(lead)?'rumour':'unconfirmed';
   // The newsroom must supply verified status. A confident headline alone is insufficient.
@@ -43,7 +43,7 @@ function classify(p){
  else if(/\b(bestuur\w*|directeur\w*|voorzitter|commissaris\w*)\b/.test(lead))scene='boardroom';
  else if(/\b(financi\w*|begroting|jaarrekening|miljoen\w*|sponsor\w*)\b/.test(lead))scene='finance';
  else if(/\b(training\w*|trainingskamp|trainingsveld)\b/.test(lead))scene='training';
- else if(p.match||p.fixture||['preview','report','analysis'].includes(p.articleKind)||/\b(voorbeschouwing|nabeschouwing|wedstrijdanalyse|uitduel|thuisduel|wedstrijdverslag|duel|overwinning|nederlaag|voorsprong|gelijkspel|speelt tegen|ontvangt|wint van|verliest van)\b/.test(lead)){category='match';scene='scarves';}
+ else if(p.match||p.fixture||['preview','report'].includes(p.articleKind)||/\b(voorbeschouwing|nabeschouwing|wedstrijdanalyse|uitduel|thuisduel|wedstrijdverslag|duel|overwinning|nederlaag|voorsprong|gelijkspel|speelt tegen|ontvangt|wint van|verliest van)\b/.test(lead)){category='match';scene='scarves';}
  const text=norm(textOf(p));
  const explicit=p.fixture?[p.fixture.home?.name,p.fixture.away?.name]:p.match?[p.match.homeTeam,p.match.awayTeam]:p.topicTeams||[];
  const names=explicit.length?explicit:CLUBS.filter(c=>new RegExp('(^|[^a-z0-9])'+norm(c.name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=$|[^a-z0-9])').test(text)).map(c=>c.name);
