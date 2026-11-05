@@ -8,8 +8,8 @@ function create({redis,football,prefix='q39:',now=Date.now,profile,safeProfile})
  const bucket=(c,s)=>prefix+'pred49:'+c+':'+s;
  async function handle(req,url,p,body){
  const d=req.method==='POST'?await body(req,['competition','fixtureId','choice']):Object.fromEntries(url.searchParams);
- const competition=d.competition||'bundesliga';if(!Object.hasOwn(require('./football-data47').CATALOG,competition))throw fail('Onbekende competitie.');
- const snap=await football.get(competition),current=Number(snap.rightsExpiresAt)>now(),season=String(d.season||snap.league?.season||'');if(!/^20\d\d$/.test(season))throw fail('Ongeldig seizoen.');
+ const competition=d.competition||'eredivisie';if(!Object.hasOwn(require('./football-data47').CATALOG,competition))throw fail('Onbekende competitie.');
+ const snap=await (football.getSelected||football.get)(competition),current=Number(snap.rightsExpiresAt)>now(),season=String(d.season||snap.league?.season||'');if(!/^20\d\d$/.test(season))throw fail('Ongeldig seizoen.');
  const key=bucket(competition,season),fixtureMap=new Map(current&&String(snap.league?.season)===season?(snap.fixtures||[]).map(f=>[String(f.id),f]):[]);
  if(req.method==='POST'){
   if(url.pathname!=='/quiz/v1/predictions/save'||!['1','X','2'].includes(d.choice)||typeof d.fixtureId!=='string'||d.fixtureId.length>100)throw fail('Ongeldige keuze.');
@@ -19,7 +19,7 @@ function create({redis,football,prefix='q39:',now=Date.now,profile,safeProfile})
   await redis.sAdd(prefix+'predictionKeys:'+p.id,key);
  }else if(req.method!=='GET'||url.pathname!=='/quiz/v1/predictions')throw fail('Route niet gevonden.',404);
  // Keep verified finals if a later feed omits older fixtures. Recalculate corrections.
- const resultsKey=key+':results';for(const f of fixtureMap.values()){const value=outcome(f,now());if(value!==null)await redis.hSet(resultsKey,String(f.id),JSON.stringify({choice:value,goals:f.goals,source:snap.source,checkedAt:snap.updatedAt}));else if(['PST','CANC','TBD'].includes(f.status))await redis.hDel(resultsKey,String(f.id));}
+ const resultsKey=key+':results';for(const f of fixtureMap.values()){const value=outcome(f,now());if(value!==null)await redis.hSet(resultsKey,String(f.id),JSON.stringify({choice:value,goals:f.goals,source:snap.source,checkedAt:snap.updatedAt}));else if(['PST','CANC','TBD','NS','AWAITING','FT'].includes(f.status))await redis.hDel(resultsKey,String(f.id));}
  const finals=await redis.hGetAll(resultsKey),all=await redis.hGetAll(key);if(Object.keys(all).length>500)throw fail('Ranglijst tijdelijk niet beschikbaar.',503);
  const assess=raw=>Object.values(JSON.parse(raw||'{}')).map(r=>{const f=fixtureMap.get(r.fixtureId),final=finals[r.fixtureId]?JSON.parse(finals[r.fixtureId]):null,points=final?(final.choice===r.choice?1:0):null;return {...r,points,result:final?.choice||null,goals:final?.goals||null,status:final?'beoordeeld':f?.status==='CANC'?'afgelast':f?.status==='PST'?'uitgesteld':f?.status==='NS'&&Date.parse(f.date)>now()?'open':'gesloten'};});
  const mine=assess(all[p.id]),rounds=[...new Set([...fixtureMap.values()].map(f=>String(f.round||'Speelronde')).concat(mine.map(r=>r.round)))],round=d.round||rounds.find(r=>[...fixtureMap.values()].some(f=>f.round===r&&f.status==='NS'&&Date.parse(f.date)>now()))||rounds.at(-1)||'',scope=d.scope||'season';if(!['round','season'].includes(scope))throw fail('Ongeldige ranglijst.');

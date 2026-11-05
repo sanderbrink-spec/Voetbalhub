@@ -298,7 +298,7 @@ async function handle(req, res) {
   if(req.method==='GET'&&url.pathname==='/integrations/football/catalog')return send(res,200,{competitions:football47.catalog()});
   if(req.method==='GET'&&['/integrations/statistics','/integrations/football'].includes(url.pathname)){
     const key=url.searchParams.get('competition')||'eredivisie';
-    try{return send(res,200,await football47.get(key));}catch{return send(res,400,{error:'Onbekende competitie.'});}
+    try{return send(res,200,await (url.searchParams.get("view")==="veldio50"?(key==="eredivisie"?football47.overview():football47.getSelected(key)):football47.get(key)));}catch{return send(res,400,{error:'Onbekende competitie.'});}
   }
   if(require("./image-library49").serve(req,res,url.pathname))return;
   if(require("./media43").serve(req,res,url.pathname))return;

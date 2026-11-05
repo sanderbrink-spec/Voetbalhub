@@ -4,7 +4,7 @@
     <application
         android:usesCleartextTraffic="false"
         android:allowBackup="false"
-        android:label="Veldio"
+        android:label="${appLabel}"
         android:icon="@drawable/veldio_logo"
         android:roundIcon="@drawable/veldio_logo"
         android:supportsRtl="true"
