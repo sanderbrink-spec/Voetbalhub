@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void buildNav() {
         nav.removeAllViews();
-        String[][] items = {{"⌂", "Home"}, {"✎", "Column"}, {"◉", "Competities"}, {"★", "Mijn Clubs"}, {"☰", "Meer"}};
+        String[][] items = {{"⌂", "Home"}, {"◉", "Wedstrijden"}, {"◎", "Voorspellen"}, {"★", "Mijn Clubs"}, {"☰", "Meer"}};
         for (int i = 0; i < items.length; i++) {
             final String page = items[i][1];
             final int index = i;
@@ -223,6 +223,8 @@ public class MainActivity extends AppCompatActivity {
             TextView navLabel = tv(page, 10, page.equals(currentBottomTab) ? C.GREEN : C.MUTED, page.equals(currentBottomTab)); navLabel.setGravity(Gravity.CENTER); box.addView(navLabel, new LinearLayout.LayoutParams(-1, dp(18)));
             box.setOnClickListener(v -> {
                 switch (page) {
+                    case "Wedstrijden": showDestination39("fixtures"); break;
+                    case "Voorspellen": showDestination39("predictions"); break;
                     case "Home": currentBottomTab = "Home"; buildNav(); showHome39(); break;
                     case "Column": currentBottomTab = "Column"; buildNav(); showColumn(); break;
                     case "Competities": currentBottomTab = "Competities"; buildNav(); showCompetitions(); break;
@@ -1513,7 +1515,7 @@ private void showScores() {
         if(homeFeature!=null)homeFeature.closeVideo();
         personalHubVisible=false;personalHub=null;eredivisieStatisticsVisible=false;weeklyPreviewVisible=false;scoresPageVisible=false;clubQuizView=null;
         findViewById(R.id.header).setVisibility(android.view.View.VISIBLE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
-        currentBottomTab="home".equals(mode)?"Home":"";buildNav();content.removeAllViews();
+        currentBottomTab="home".equals(mode)?"Home":"fixtures".equals(mode)?"Wedstrijden":"predictions".equals(mode)?"Voorspellen":"";buildNav();content.removeAllViews();
         content.addView("predictions".equals(mode)?new ClubQuizView(this,()->showDestination39("home"),true):"home".equals(mode)?new HomeMenu39(this,this::openDestination39,this::showEditorialArticle):new DestinationView39(this,mode,this::openDestination39,name->showPersonalHub("profile",name)),new android.widget.FrameLayout.LayoutParams(-1,-1));
     }
     private void showCompetition40(String name,String source){

@@ -43,6 +43,14 @@ function create({fetcher=fetch,redis,clock=Date.now}={}){
       if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
      }catch{storageFailed=true;}
     }
+    if(key==='eredivisie'){
+     const season=new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear();
+     const r=await fetcher('https://raw.githubusercontent.com/openfootball/football.json/master/'+season+'-'+String(season+1).slice(-2)+'/nl.1.json',{headers:{'User-Agent':'Veldio/50 (redactie.veldio@gmail.com)'},signal:AbortSignal.timeout(12000)});
+     if(!r.ok)throw Error('Eredivisiebron HTTP '+r.status);
+     const parsed=require('./football-source50').parse(JSON.parse(await sourceBody(r)),now),value=envelope(key,parsed.fixtures,now,parsed.source);
+     if(value.fixtures.some(f=>f.status==='AWAITING')){value.standings=[];value.standingsNote='Uitslagen ontbreken. Stand volgt na bevestiging.';}
+     cache.set(key,{at:now,value,ttl:15*60000});return value;
+    }
     // A Redis failure must not disable the independent public data provider.
     if(!Object.hasOwn(PROVIDERS,key)){
      if(storageFailed)throw Error('Redactionele opslag niet bereikbaar');
@@ -65,5 +73,7 @@ function create({fetcher=fetch,redis,clock=Date.now}={}){
  }
 
  async function publish(body){if(!redis?.isReady)throw Error('Permanente opslag niet beschikbaar');const value=manual(body,clock());const prior=await redis.get('football47:'+body.competition);if(prior){const old=JSON.parse(prior);if(old.rightsExpiresAt>clock()){const merged=new Map((old.fixtures||[]).map(f=>[String(f.id),f]));for(const f of value.fixtures)merged.set(String(f.id),f);if(merged.size>500)throw Error('Maximaal 500 handmatige wedstrijden per competitie');value.fixtures=[...merged.values()].filter(f=>clock()-Date.parse(f.checkedAt)<=36*3600000);}}const saved=await redis.eval("local old=redis.call('GET',KEYS[1]) or ''; if old~=ARGV[1] then return 0 end; redis.call('SET',KEYS[1],ARGV[2]); return 1",{keys:['football47:'+body.competition],arguments:[prior||'',JSON.stringify(value)]});if(Number(saved)!==1)throw Error('Invoer is ondertussen gewijzigd; controleer en probeer opnieuw');cache.delete(body.competition);return value;}
- return {get,publish,catalog:()=>Object.entries(CATALOG).map(([key,v])=>({key,...v}))};}
+ async function getSelected(key){if(!require('./match-selection50').EUROPE.includes(key))return get(key);const snapshots=await Promise.all(require('./match-selection50').EUROPE.map(get)),selected=require('./match-selection50').select(snapshots.flatMap(s=>s.fixtures||[]),require('./match-selection50.json'));const snap=snapshots[require('./match-selection50').EUROPE.indexOf(key)];return {...snap,fixtures:selected.filter(f=>f.competition===key),selection:'Veldio topwedstrijden',selectionLimit:require('./match-selection50.json').maxPerWeek};}
+ async function overview(){const snapshots=await Promise.all(['eredivisie',...require('./match-selection50').EUROPE].map(get));const europe=require('./match-selection50').select(snapshots.slice(1).filter(s=>s.rightsExpiresAt>clock()).flatMap(s=>s.fixtures||[]),require('./match-selection50.json'));return {...snapshots[0],europeanFixtures:europe};}
+ return {get,getSelected,overview,publish,catalog:()=>Object.entries(CATALOG).map(([key,v])=>({key,...v}))};}
 module.exports={CATALOG,SOURCE,table,envelope,fromOpenLiga,manual,currentManual,sourceBody,create};

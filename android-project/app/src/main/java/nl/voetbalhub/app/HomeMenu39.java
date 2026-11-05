@@ -12,6 +12,9 @@ public final class HomeMenu39 extends ScrollView {
   float heroHeight=Math.min(390,Math.max(245,getResources().getDisplayMetrics().widthPixels/getResources().getDisplayMetrics().density*.62f))+Math.max(0,getResources().getConfiguration().fontScale-1)*180;
   page.addView(new HomeSlideshow40(a,open,()->route.open("news")),new LinearLayout.LayoutParams(-1,dp(heroHeight)));
 
+  LinearLayout shortcuts=new LinearLayout(a);page.addView(shortcuts,new LinearLayout.LayoutParams(-1,-2));
+  for(String[] item:new String[][]{{"fixtures","Wedstrijden"},{"predictions","Voorspellen"},{"quiz","Quiz"},{"news","Nieuws"}}){LinearLayout cell=new LinearLayout(a);cell.setOrientation(1);cell.setGravity(Gravity.CENTER);cell.setPadding(dp(2),dp(12),dp(2),dp(12));PremiumDesign40.card(cell,PremiumDesign40.EDGE);NavIconView icon=new NavIconView(a,"Quiz".equals(item[1])?"Club Quiz":item[1],true);cell.addView(icon,new LinearLayout.LayoutParams(dp(28),dp(28)));TextView text=PremiumDesign40.text(a,item[1],11,PremiumDesign40.WHITE,true);text.setGravity(Gravity.CENTER);cell.addView(text);cell.setContentDescription("Menu: "+item[1]);cell.setOnClickListener(v->route.open(item[0]));LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,dp(80),1);lp.setMargins(dp(3),dp(12),dp(3),dp(8));shortcuts.addView(cell,lp);}
+  page.addView(new MatchStrip40(a,()->route.open("fixtures")),new LinearLayout.LayoutParams(-1,-2));
   TextView title=PremiumDesign40.text(a,"Mijn Veldio",25,PremiumDesign40.WHITE,true);title.setTypeface(null,Typeface.BOLD_ITALIC);title.setPadding(dp(3),dp(20),0,dp(14));page.addView(title);
   float scale=getResources().getConfiguration().fontScale;int height=dp(126+Math.max(0,scale-1)*70);
   for(int r=0;r<4;r++){LinearLayout line=new LinearLayout(a);LinearLayout.LayoutParams row=new LinearLayout.LayoutParams(-1,height);row.topMargin=dp(9);page.addView(line,row);

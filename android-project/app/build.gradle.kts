@@ -9,11 +9,11 @@ android {
     buildToolsVersion = "36.0.0"
 
     defaultConfig {
-        applicationId = "nl.voetbalhub.app1"
+        applicationId = if (providers.gradleProperty("veldioPreview50").orNull == "true") "nl.voetbalhub.preview50" else "nl.voetbalhub.app1"
         minSdk = 24
         targetSdk = 36
-        versionCode = 89
-        versionName = "4.49-test"
+        versionCode = 90
+        versionName = "4.50-test"
 
     }
 
