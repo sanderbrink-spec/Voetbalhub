@@ -57,7 +57,29 @@ async function sourceText(response){
  }
  if(!response.body)return '';
  const chunks=[];let size=0;
- …272 tokens truncated…ror('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);}
+ // Bound decompressed bytes while reading, before allocating a complete page.
+ for await(const chunk of response.body){
+  size+=chunk.byteLength;
+  if(size>limit)throw Error('Bronpagina te groot.');
+  chunks.push(Buffer.from(chunk));
+ }
+ return Buffer.concat(chunks,size).toString('utf8');
+}
+async function officialPage(url,fetcher=fetch){
+ if(!allowedUrl(url))throw Error('Niet-toegestane primaire bron.');
+ // One deadline covers both a possible redirect and its response body.
+ const signal=AbortSignal.timeout(20000);
+ for(let attempt=0;attempt<2;attempt++){
+  const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0','Accept':'text/html'},signal});
+  if(r.status>=300&&r.status<400){
+   await r.body?.cancel();
+   const location=r.headers.get('location');
+   if(!location)throw Error('Onverwachte bronomleiding.');
+   const next=new URL(location,url).href;
+   if(attempt||!allowedUrl(next)||host(next)!==host(url))throw Error('Onverwachte bronomleiding.');
+   url=next;continue;
+  }
+  if(!r.ok){await r.body?.cancel();throw Error('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);}
   const html=await sourceText(r);
   return {...extractPage(html,url),html};
  }
