@@ -1,7 +1,7 @@
 'use strict';
 const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('node:assert/strict');
 (async()=>{
- const browser=await chromium.launch({headless:true});
+ const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
  try{
   const {articles,stats,now}=require('./fixtures.cjs');
   const html=fs.readFileSync('android-ui/assets/home-features.html','utf8').replace('<script src="home-model.js"></script>','<script>'+fs.readFileSync('android-ui/assets/home-model.js','utf8')+'</script>');

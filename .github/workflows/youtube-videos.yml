@@ -3,8 +3,7 @@ on:
   push:
     branches: [main]
     paths: ['scripts/youtube-videos.js', '.github/workflows/youtube-videos.yml']
-  schedule:
-    - cron: '19 * * * *'
+  # Legacy RSS collector is manual-only; Android uses /integrations/videos43.
   workflow_dispatch:
 permissions:
   contents: write

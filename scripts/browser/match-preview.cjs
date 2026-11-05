@@ -1,6 +1,6 @@
 'use strict';
 const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('node:assert/strict');
-(async()=>{const browser=await chromium.launch({headless:true});try{
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});try{
  const {stats:data,now}=require('./fixtures.cjs');const f=data.featured.preview.fixture;
  const page=await browser.newPage({viewport:{width:393,height:852}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.clock.setFixedTime(new Date(now));

@@ -8,7 +8,7 @@ const {createContactHandler}=require('../../contact-mail');
  const server=http.createServer((req,res)=>{if(req.method==='GET'){res.setHeader('Content-Type','text/html; charset=utf-8');return res.end(fs.readFileSync('android-ui/assets/contact.html'));}return handler(req,res);});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
  env.CONTACT_PUBLIC_ORIGIN=base;
- const browser=await chromium.launch({headless:true});
+ const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
  try{
  for(const width of [393,320]){
   const page=await browser.newPage({viewport:{width,height:852}}),errors=[],calls=[];page.on('pageerror',e=>errors.push(e.message));

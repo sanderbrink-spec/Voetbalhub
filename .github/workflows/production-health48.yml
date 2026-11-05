@@ -1,0 +1,40 @@
+name: Veldio daily production quality
+on:
+  schedule:
+    - cron: '43 6 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths: ['scripts/production-health48.js', 'scripts/football47-health.js', 'test/production48.test.js', '.github/workflows/production-health48.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: veldio-production-quality
+  cancel-in-progress: false
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install locked audit dependencies
+        run: npm ci --ignore-scripts
+      - name: Validate failure detection and safe recovery
+        run: node --test test/production48.test.js test/football48.test.js
+      - name: Inspect production without publication or paid API calls
+        if: github.event_name != 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/production-health48.js
+      - name: Keep complete machine and readable reports
+        if: always() && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-production-quality
+          path: .quality-output/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

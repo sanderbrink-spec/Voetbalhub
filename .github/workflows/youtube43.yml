@@ -1,10 +1,10 @@
-name: Veldio 43 official YouTube catalogue
+name: Veldio official video catalogue health
 on:
   workflow_dispatch:
   schedule:
     - cron: '17 */6 * * *'
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: youtube43-catalogue
   cancel-in-progress: false
@@ -14,20 +14,16 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: work/veldio-43
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
       - run: node --test test/youtube43.test.js
-      - run: node scripts/youtube-catalog43.js
-        env:
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-      - run: |
-          if ! git diff --quiet -- videos/catalog43.json android-ui/assets/youtube-catalog43.json; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add videos/catalog43.json android-ui/assets/youtube-catalog43.json
-            git commit -m 'Refresh official YouTube43 metadata [device-only] [skip render]'
-            git push
-          fi
+      - name: Inspect the catalogue actually used by Android
+        run: node scripts/video-health48.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: video-catalogue-health
+          path: .quality-output/video-health.json
+          include-hidden-files: true
+          if-no-files-found: error

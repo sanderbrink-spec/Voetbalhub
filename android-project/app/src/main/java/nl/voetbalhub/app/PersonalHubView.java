@@ -61,7 +61,7 @@ public final class PersonalHubView extends LinearLayout {
     }catch(Exception ignored){}}
     private void fetch(String address,boolean news){NETWORK.execute(()->{HttpURLConnection connection=null;JSONObject result=null;try{
         String response=DeadlineHttp.get(address,18000,3000000);
-        JSONObject data=new JSONObject(response);if(news){data=PublicationPolicy.articleFeed(data);if(data==null)throw new Exception("Feed unavailable");}else if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");if(news?data.optJSONArray("articles")==null:data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Invalid data");result=data;
+        JSONObject data=new JSONObject(response);if(news){data=PublicationPolicy.articleFeed(data);if(data==null)throw new Exception("Feed unavailable");}else if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");if(news?data.optJSONArray("articles")==null:data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.optJSONArray("standings")==null||data.optJSONArray("fixtures")==null)throw new Exception("Invalid data");result=data;
     }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}
         final JSONObject data=result;activity.runOnUiThread(()->{if(disposed)return;pending--;if(data!=null){if(news){articles=data;activity.getSharedPreferences("voetbalhub_editorial",0).edit().putString("last_articles",data.toString()).apply();}else{stats=data;activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",data.toString()).apply();}}else offline=true;deliver();});
     });}

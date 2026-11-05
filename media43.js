@@ -6,10 +6,17 @@ function apply(article,{origin='https://voetbalhub-redactie.onrender.com'}={}){
  const rows=require('./android-ui/assets/presentation-covers43.json');
  const copy=sha([article.headline,article.standfirst,...(article.body||[])].join('\n'));
  const row=rows.find(r=>r.id===article.id&&r.contentHash===copy&&(r.previousUrls.includes(article.imageUrl)||r.imageUrl===article.imageUrl||origin+'/news43/'+r.imageAsset.split('/').pop()===article.imageUrl));
- if(!row)return article;
+ if(!row)return safeLegacy(article,origin);
  const file=row.imageAsset.split('/').pop(),proof=require('./editorial-images43.json').assets.find(p=>p.file===file&&p.review?.approved===true&&p.sha256===row.imageReview.assetSha256);
- if(!proof)return article;
+ if(!proof)return safeLegacy(article,origin);
  return {...article,...Object.fromEntries(Object.entries(row).filter(([k])=>k.startsWith('image'))),imageUrl:origin+'/news43/'+file};
+}
+function safeLegacy(article,origin){
+ if(article.imageReview?.method!=='fixture-specific-stadium-and-logos-v4')return article;
+ const hash=sha([article.headline,article.standfirst,...(article.body||[])].join('\n'));
+ const proof=require('./legacy-media48.json').find(r=>r.id===article.id&&r.contentHash===hash);
+ const imageUrl=proof?origin+'/article-covers/'+proof.file:origin+'/editorial/veldio-arena.webp';
+ return {...article,imageUrl,imageAsset:undefined,imageSource:'Veldio · eigen illustratie',imageCredit:'Veldio · eigen abstracte illustratie, geen foto van de beschreven wedstrijd',imageRights:'cleared',imageReview:{method:'self-authored-safe48',noOfficialLogos:true,noRecognizablePeople:true,noDocumentaryClaim:true,...(proof?{assetSha256:proof.assetSha256,clubs:proof.clubs}:{})}};
 }
 const buffers=new Map();
 let catalogue=null,loading=null,lastRefresh=0;

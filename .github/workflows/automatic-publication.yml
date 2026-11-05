@@ -22,7 +22,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[rebrand]')
+    # Audits and deployments must not start additional paid generation/publication.
+    if: github.event_name != 'push'
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     steps:
