@@ -1,0 +1,32 @@
+[
+  {
+    "id": "7c536565-5ef1-43fb-9a34-7bf775d9af48",
+    "contentHash": "f2ed7257817de8621879dcb2579c68ea1b5121bed9a15c0802dc03c7e2aefa8f",
+    "file": "safe48-7c536565-5ef1-43fb-9a34-7bf775d9af48.webp",
+    "assetSha256": "b02cbcb623f8e62174bf756ef59668dddc98edb24aeb9317c7b166c9cdf34a01",
+    "clubs": [
+      "Ajax",
+      "FC Midtjylland"
+    ]
+  },
+  {
+    "id": "79ef5b4d-cb4f-4575-98a6-d13e0ca6544f",
+    "contentHash": "479b26d96b83804680ca9dde6aae096a4b9a58e982efa2814108d1b097aa7dd6",
+    "file": "safe48-79ef5b4d-cb4f-4575-98a6-d13e0ca6544f.webp",
+    "assetSha256": "c8a65f0bda8e79c622016dca8f13680794a74c00bd20b1ed057f770a7d5bda71",
+    "clubs": [
+      "PEC Zwolle",
+      "Willem II"
+    ]
+  },
+  {
+    "id": "fca0bd67-45a0-4891-8415-b8f62e64eb34",
+    "contentHash": "47b04a0ab03f9849f5e299015c53cc518a91701f02658b80d11ff5dba67c38a0",
+    "file": "safe48-fca0bd67-45a0-4891-8415-b8f62e64eb34.webp",
+    "assetSha256": "66ba42ea2002f35813b9b10d063100a9ac572e6e91374e614008a162b011dac9",
+    "clubs": [
+      "FC Emmen",
+      "FC Den Bosch"
+    ]
+  }
+]

@@ -37,3 +37,18 @@ test('a snapshot refreshed during the audit is not falsely reported as future or
  assert.equal(M.footballChecks('x',s,now).find(c=>c.id.endsWith('freshness')).status,'pass');
  assert.equal(M.footballChecks('x',{...s,updatedAt:new Date(now+3600000).toISOString()},now).find(c=>c.id.endsWith('freshness')).status,'fail');
 });
+
+test('legacy logos and stadium photos are replaced without changing approved article text or date',()=>{
+ const media=require('../media43'),fixture=require('./fixtures/media43-article.json');
+ const legacy={...fixture,id:'older',imageReview:{method:'fixture-specific-stadium-and-logos-v4'}};
+ const result=media.apply(legacy);assert.match(result.imageUrl,/editorial\/veldio-arena.webp$/);assert.equal(result.imageReview.noOfficialLogos,true);assert.deepEqual(result.body,legacy.body);assert.equal(result.publishedAt,legacy.publishedAt);
+ for(const proof of require('../legacy-media48.json')){const bytes=require('../article-covers').readCover(proof.file);assert.ok(bytes);assert.equal(require('node:crypto').createHash('sha256').update(bytes).digest('hex'),proof.assetSha256);}
+});
+test('legacy image endpoint never fetches or redistributes the original graphic',async()=>{
+ let calls=0;const bytes=await require('../brand-images').remoteImage('https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/match-covers/old.png',()=>{calls++;throw Error('must not fetch');});assert.ok(bytes.length>10000);assert.equal(calls,0);
+});
+
+test('a previously cleared legacy logo/photo label is not accepted as current rights proof',()=>{
+ const checks=M.articlesChecks([{...story(),imageRights:'cleared',imageReview:{method:'fixture-specific-stadium-and-logos-v4'}}],now);
+ assert.ok(checks.some(c=>c.id==='news.image-rights:a'&&c.status==='fail'));
+});

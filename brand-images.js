@@ -19,12 +19,12 @@ async function brandImage(bytes,context={}){
 }
 async function remoteImage(source,fetcher=fetch,context={}){
  if(!ownMedia(source))throw Error('Only existing images from the project repository are supported');
- const key=source+'\n'+String(context.kind||'')+'\n'+String(context.label||'').slice(0,50);
- const hit=cache.get(key);if(hit&&Date.now()-hit.at<3600000)return hit.bytes;
- const response=await fetcher(source,{redirect:'error',signal:AbortSignal.timeout(15000)});
- if(!response.ok||!/^image\/(?:png|jpeg|webp)(?:;|$)/i.test(response.headers.get('content-type')||'')||Number(response.headers.get('content-length'))>8000000)throw Error('Image unavailable');
- const reader=response.body.getReader();const chunks=[];let size=0;
- try {while(true){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>8000000){await reader.cancel();throw Error('Image too large');}chunks.push(value);}}finally{reader.releaseLock();}
- const bytes=await brandImage(Buffer.concat(chunks),context);if(cache.size>=16)cache.delete(cache.keys().next().value);cache.set(key,{at:Date.now(),bytes});return bytes;
+ // Historical endpoint must not redistribute the original unlicensed logos/photos.
+ // Keep the URL usable for older apps, using the existing reviewed own illustration.
+ const fs=require('node:fs'),crypto=require('node:crypto');
+ const bytes=fs.readFileSync(path.join(__dirname,'public/editorial/veldio-arena.webp'));
+ const proof=require('./public/editorial/visual-rights38.json');
+ if(proof.generated!==true||crypto.createHash('sha256').update(bytes).digest('hex')!==proof.sha256)throw Error('Own fallback image not verified');
+ return bytes;
 }
 module.exports={badge,brandImage,remoteImage};

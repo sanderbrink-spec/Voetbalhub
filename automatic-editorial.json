@@ -60,6 +60,10 @@
     {
       "url": "https://www.psv.nl/media",
       "articlePath": "^/media/artikel/[^/]+/?$"
+    },
+    {
+      "url": "https://fctwente.nl/nieuws",
+      "articlePath": "^/nieuws/[^/]+/?$"
     }
   ],
   "sourceGroups": [],

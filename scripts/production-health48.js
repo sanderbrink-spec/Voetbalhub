@@ -23,6 +23,7 @@ function articlesChecks(articles,now=Date.now()){
   seen.set(key,id);
   if(a.type!=='column'&&(!Array.isArray(a.sources)||!a.sources.length))add('news.sources:'+id,'fail','Bronverwijzingen ontbreken');
   if(a.type!=='column'&&!a.imageUrl&&!a.imageAsset)add('news.image:'+id,'fail','Artikelafbeelding ontbreekt');
+  if(a.imageReview?.method==='fixture-specific-stadium-and-logos-v4')add('news.image-rights:'+id,'fail','Historisch logo-/stadionbeeld zonder actuele vrijgave');
  }
  add('news.freshness',now-latest<=3*DAY?'pass':'fail',latest?'Laatste nieuws: '+new Date(latest).toISOString():'Geen gedateerd nieuws');
  if(!checks.some(c=>c.id.startsWith('news.duplicate:')))add('news.duplicates','pass','Geen dubbele koppen in de actuele feed');
