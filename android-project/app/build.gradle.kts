@@ -10,11 +10,11 @@ android {
 
     defaultConfig {
         applicationId = if (providers.gradleProperty("veldioPreview51").orNull == "true") "nl.voetbalhub.preview51" else "nl.voetbalhub.app1"
-        manifestPlaceholders["appLabel"] = if (providers.gradleProperty("veldioPreview51").orNull == "true") "Veldio 51 Test" else "Veldio"
+        manifestPlaceholders["appLabel"] = if (providers.gradleProperty("veldioPreview51").orNull == "true") "Veldio 52B Test" else "Veldio"
         minSdk = 24
         targetSdk = 36
-        versionCode = 91
-        versionName = "4.51-test"
+        versionCode = 92
+        versionName = "4.52b-test"
 
     }
 

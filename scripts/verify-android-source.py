@@ -11,7 +11,7 @@ for name,sha in p['files'].items():
  assert digest((root/name).read_bytes())==sha, f'Android source differs from approved recovery: {name}'
 assert p['asset_count']==len(p['assets'])
 for name,sha in p.get('phase45_assets',{}).items():
- if name not in p.get('phase46_changed_assets',[])+p.get('phase49_changed_assets',[])+p.get('phase50_changed_assets',[])+p.get('phase51_changed_assets',[]):assert p['assets'].get(name)==sha, f'Unplanned premium asset change: {name}'
+ if name not in p.get('phase46_changed_assets',[])+p.get('phase49_changed_assets',[])+p.get('phase50_changed_assets',[])+p.get('phase51_changed_assets',[])+p.get('phase52_changed_assets',[]):assert p['assets'].get(name)==sha, f'Unplanned premium asset change: {name}'
 for name,sha in p['assets'].items():
  assert digest((root/'app/src/main'/name).read_bytes())==sha, f'Phase43 asset mismatch: {name}'
 main=(root/'app/src/main/java/nl/voetbalhub/app/MainActivity.java').read_text()

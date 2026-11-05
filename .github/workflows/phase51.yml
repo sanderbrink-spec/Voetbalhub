@@ -1,17 +1,16 @@
-name: Veldio 51 design and Android preview
+name: Veldio 52B validation and Android
 on:
   push:
-    branches: ['work/veldio-51']
+    branches: ['work/veldio-52']
   workflow_dispatch:
 concurrency:
-  group: veldio51-current-source
+  group: veldio52-current-source
   cancel-in-progress: true
 permissions:
   contents: read
   actions: read
 jobs:
   validate:
-    if: ${{ !contains(github.event.head_commit.message, '[reuse-phase51-apk]') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     services:
@@ -49,7 +48,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Veldio-51-browser-and-tests
+          name: Veldio-52B-browser-and-tests
           path: .browser-output/
           include-hidden-files: true
   apk:
@@ -94,20 +93,20 @@ jobs:
           PREVIEW: ${{ steps.signing.outputs.preview }}
         run: |
           set -euo pipefail
-          cp android-project/app/build/outputs/apk/debug/app-debug.apk Veldio-51.apk
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-51.apk > signature.txt
-          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-51.apk > manifest.txt
-          grep -q "versionCode='91'.*versionName='4.51-test'" manifest.txt
+          cp android-project/app/build/outputs/apk/debug/app-debug.apk Veldio-52B.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-52B.apk > signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-52B.apk > manifest.txt
+          grep -q "versionCode='92'.*versionName='4.52b-test'" manifest.txt
           if [ "$PREVIEW" = true ]; then grep -q "package: name='nl.voetbalhub.preview51'" manifest.txt; else grep -q "package: name='nl.voetbalhub.app1'" manifest.txt; fi
-          python3 scripts/apk-secret-scan.py Veldio-51.apk
-          python3 scripts/verify-android-source.py Veldio-51.apk
-          sha256sum Veldio-51.apk > sha256.txt
+          python3 scripts/apk-secret-scan.py Veldio-52B.apk
+          python3 scripts/verify-android-source.py Veldio-52B.apk
+          sha256sum Veldio-52B.apk > sha256.txt
           printf 'preview=%s\nsource=%s\n' "$PREVIEW" "$GITHUB_SHA" > installation.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: Veldio-51
+          name: Veldio-52B
           path: |
-            Veldio-51.apk
+            Veldio-52B.apk
             Veldio-build-provenance.json
             signature.txt
             manifest.txt
@@ -116,27 +115,18 @@ jobs:
           if-no-files-found: error
   android16:
     needs: apk
-    if: ${{ always() && (needs.apk.result == 'success' || (needs.apk.result == 'skipped' && contains(github.event.head_commit.message, '[reuse-phase51-apk]'))) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
-        if: needs.apk.result == 'success'
         with:
-          name: Veldio-51
+          name: Veldio-52B
           path: apk
-      - uses: actions/download-artifact@v4
-        if: needs.apk.result == 'skipped'
-        with:
-          name: Veldio-51
-          path: apk
-          run-id: 42121517663
-          github-token: ${{ github.token }}
       - name: Verify test APK matches the checked-out app source
         run: |
           (cd apk && sha256sum -c sha256.txt)
-          python3 scripts/verify-android-source.py apk/Veldio-51.apk
+          python3 scripts/verify-android-source.py apk/Veldio-52B.apk
       - run: python3 -m pip install 'uiautomator2>=3,<4'
       - name: Enable emulator acceleration
         run: |
@@ -150,10 +140,10 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase51.py apk/Veldio-51.apk
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase51.py apk/Veldio-52B.apk
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Veldio-51-Android16
+          name: Veldio-52B-Android16
           path: .android-phase51/
           include-hidden-files: true

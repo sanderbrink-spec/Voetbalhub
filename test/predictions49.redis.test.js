@@ -7,3 +7,59 @@ test('real HTTP and Redis: authenticated save, reopen, change, deadline, points,
  try{assert.equal((await api('/predictions?competition=bundesliga')).status,401);const identity=async()=>(await api('/identity',{participation:'adult-self-declared',privacyVersion:39})).data;const a=await identity(),b=await identity();const concurrent=await Promise.all([save(a.token,'f1','1'),save(a.token,'f1','1')]);assert.deepEqual(concurrent.map(x=>x.status),[200,200]);assert.equal((await api('/predictions?competition=bundesliga',null,a.token)).data.predictions.length,1);assert.equal((await save(b.token,'f1','X')).status,200);handler=require('../quiz39/service').create({redis,prefix,football,env:{HUB_API_SECRET:'test-secret-at-least-32-characters-long'}});assert.equal((await api('/predictions?competition=bundesliga',null,a.token)).data.predictions[0].choice,'1');assert.equal((await save(a.token,'f1','2')).data.predictions[0].choice,'2');await save(a.token,'f1','1');await save(a.token,'f2','X');fixtures[0]={...fixtures[0],date:new Date(Date.now()-1000).toISOString()};assert.equal((await save(a.token,'f1','X')).status,409);fixtures[0]={...fixtures[0],status:'PST'};assert.equal((await save(a.token,'f1','1')).status,409);fixtures[0]={...fixtures[0],status:'NS',date:new Date(Date.now()+1800000).toISOString()};assert.equal((await save(a.token,'f1','1')).status,200);fixtures[0]={...fixtures[0],status:'FT',date:new Date(Date.now()-1000).toISOString(),goals:{home:2,away:1}};let state=(await api('/predictions?competition=bundesliga&scope=round&round=1',null,a.token)).data;assert.equal(state.points,1);assert.equal((await api('/predictions?competition=bundesliga',null,a.token)).data.points,1);assert.equal((await api('/predictions?competition=bundesliga',null,a.token)).data.points,1);assert.equal(state.board.mine.position,1);assert.equal(state.board.top[1].points,0);assert.equal(state.predictions.find(p=>p.fixtureId==='f2').points,null);fixtures[0]={...fixtures[0],goals:{home:0,away:1}};state=(await api('/predictions?competition=bundesliga',null,a.token)).data;assert.equal(state.points,0);fixtures[0]={...fixtures[0],status:'CANC'};state=(await api('/predictions?competition=bundesliga',null,a.token)).data;assert.equal(state.predictions.find(p=>p.fixtureId==='f1').points,null);assert.equal(state.predictions.find(p=>p.fixtureId==='f1').status,'afgelast');fixtures[1]={...fixtures[1],status:'PST'};assert.equal((await save(a.token,'f2','1')).status,409);assert.equal((await api('/predictions?competition=bundesliga&season=2025',null,a.token)).data.predictions.length,0);assert.equal((await api('/me',null,a.token,'DELETE')).status,200);assert.equal(await redis.hExists(prefix+'pred49:bundesliga:2026',a.profile.id),false);assert.equal((await api('/predictions?competition=bundesliga',null,a.token)).status,401);
  }finally{server.closeAllConnections();await new Promise(r=>server.close(r));const keys=await redis.keys(prefix+'*');if(keys.length)await redis.del(keys);await redis.quit();}
 });
+
+test('Veldio publishes one fixed, shared ten-match score round and preserves it across restarts', {skip: !process.env.REDIS_TEST_URL}, async () => {
+ const redis = require('redis').createClient({url: process.env.REDIS_TEST_URL});
+ await redis.connect();
+ const prefix = 'p52test:' + crypto.randomUUID() + ':';
+ const now = Date.now();
+ const fixtures = Array.from({length: 12}, (_, i) => ({
+  id: 'fixture-' + i,
+  date: new Date(now + (i + 1) * 60000).toISOString(),
+  competition: i < 9 ? 'eredivisie' : 'championsleague',
+  status: 'NS', home: {name: 'Thuis'}, away: {name: 'Uit'}
+ }));
+ fixtures[10].date = 'invalid';
+ fixtures[11].status = 'TBD';
+ const overview = async () => ({
+  league: {season: 2026}, rightsExpiresAt: now + 86400000,
+  fixtures: fixtures.slice(0, 9).reverse(), europeanFixtures: fixtures.slice(9)
+ });
+ const player = {id: 'test52', name: 'Testspeler'};
+ const create = () => P.create({redis, prefix, football: {overview}, profile: async () => player, safeProfile: p => p});
+ const query = new URL('http://localhost/quiz/v1/predictions?competition=veldio&scope=round');
+ const post = new URL('http://localhost/quiz/v1/predictions/save');
+ let handler = create();
+ const load = () => handler.handle({method: 'GET'}, query, player);
+ const save = (round, id, home, away) => handler.handle({method: 'POST'}, post, player, async () => ({
+  competition: 'veldio', season: '2026', round, fixtureId: id, home, away
+ }));
+ try {
+  const [first, second] = await Promise.all([load(), load()]);
+  assert.equal(first.fixtures.length, 10);
+  assert.deepEqual(first.fixtures, second.fixtures);
+  assert.deepEqual(first.fixtures.map(f => f.id), fixtures.slice(0, 10).map(f => f.id));
+  await assert.rejects(save(first.round, fixtures[10].id, 1, 0), {status: 409});
+  await assert.rejects(save(first.round, fixtures[0].id, -1, 0), {status: 400});
+  await assert.rejects(save('andere-ronde', fixtures[0].id, 1, 0), {status: 409});
+  for (const f of first.fixtures) await save(first.round, f.id, 2, 1);
+  handler = create();
+  assert.equal((await load()).predictions.length, 10);
+  await save(first.round, fixtures[0].id, 1, 1);
+  assert.equal((await load()).predictions.find(p => p.fixtureId === fixtures[0].id).home, 1);
+  for (const [i, f] of fixtures.slice(0, 10).entries()) {
+   f.date = new Date(now - (10 - i) * 60000).toISOString();
+   f.status = 'FT';
+   f.goals = i === 0 ? {home: 1, away: 1} : {home: 3, away: 2};
+  }
+  await assert.rejects(save(first.round, fixtures[0].id, 0, 1), {status: 409});
+  const result = await load();
+  assert.equal(result.points, 10);
+  assert.equal(result.board.mine.position, 1);
+  assert.equal(result.board.mine.assessed, 10);
+ } finally {
+  const keys = await redis.keys(prefix + '*');
+  if (keys.length) await redis.del(keys);
+  await redis.quit();
+ }
+});
