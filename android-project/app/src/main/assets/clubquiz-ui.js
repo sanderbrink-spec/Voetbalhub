@@ -42,6 +42,29 @@ $('saveName').onclick=async()=>{try{const result=await api('name',{name:$('playe
 $('deleteProfile').onclick=()=>{$('deleteConfirm').hidden=false;};$('cancelDelete').onclick=()=>{$('deleteConfirm').hidden=true;};$('confirmDelete').onclick=async()=>{if($('confirmDelete').disabled)return;$('confirmDelete').disabled=true;try{await api('delete');profile=null;online=false;$('practice').classList.add('selected');$('online').classList.remove('selected');profileView();$('error').textContent='Online profiel verwijderd. Publieke scores verdwijnen uit de weergave.';}catch(e){$('nameStatus').textContent=e.message;}finally{$('confirmDelete').disabled=false;}};
 $('start').onclick=async()=>{$('error').textContent='';try{const mode=$('mode').value,level=$('level').value,club=$('club').value;if(online){if(!profile||profile.blocked)return;const result=await api('start',{mode,level,club});round=result.round;if(round.done)return showResult({mode:round.mode,level:round.level,club:round.club,day:round.day,total:round.total,score:round.correct,points:round.points,online:true});if(round.answered){setScreen('play');$('roundMode').textContent=names[round.mode];$('position').textContent='Vraag '+(round.index+1)+' / '+round.total;$('answers').replaceChildren();feedback(round.lastAnswer,null);pollBoard();}else renderQuestion();}else{const played=scores.daily[E.dayKey()];if(mode==='daily'&&played)return showResult(played);round=E.createRound(bank,{mode,level,club,recent});round.totalMs=0;renderQuestion();}}catch(e){$('error').textContent=e.message;}};
 $('next').onclick=async()=>{if(online){if(round.done)return saveFinal({mode:round.mode,level:round.level,club:round.club,day:round.day,total:round.total,score:round.correct,points:round.points,online:true});try{round=(await api('next',{roundId:round.id,requestId:requestId()})).round;renderQuestion();}catch(e){$('connectionStatus').textContent=e.message;}}else{if(!round.next())return;if(round.done)saveFinal({...round.meta,total:round.questions.length,score:round.score,points:round.points,online:false});else renderQuestion();}};
+// Present the existing modes as large native radio targets without changing the quiz model.
+const modeSelect = $('mode');
+const modeCards = $('modeCards');
+for (const option of modeSelect.options) {
+  const label = document.createElement('label');
+  const radio = document.createElement('input');
+  radio.type = 'radio';
+  radio.name = 'quizMode';
+  radio.value = option.value;
+  radio.checked = option.selected;
+  radio.addEventListener('change', () => {
+    modeSelect.value = radio.value;
+    modeSelect.dispatchEvent(new Event('change'));
+  });
+  label.append(radio, document.createTextNode(option.textContent));
+  modeCards.append(label);
+}
+modeSelect.addEventListener('change', () => {
+  for (const radio of modeCards.querySelectorAll('input')) radio.checked = radio.value === modeSelect.value;
+});
+modeCards.hidden = false;
+modeSelect.hidden = true;
+$('modeLabel').hidden = true;
 $('retryAnswer').onclick=()=>{if(pendingAnswer)sendPending(pendingAnswer.optionId);};$('again').onclick=()=>{setScreen('setup');setup();};$('mode').onchange=setup;$('level').onchange=setup;
 for(const button of document.querySelectorAll('[data-scope]'))button.onclick=()=>{scope=button.dataset.scope;for(const b of document.querySelectorAll('[data-scope]'))b.classList.toggle('selected',b===button);pollBoard();};
 $('share').onclick=async()=>{if(!lastResult)return;const r=lastResult,text='Veldio Clubquiz · '+names[r.mode]+'\n'+r.score+' / '+r.total+' goed · '+(r.points||0)+' punten\n'+r.day+(r.online?' · serverscore':' · offline oefenscore')+' · Alles voetbal. Eén plek.';try{if(window.ClubQuizHub?.share){ClubQuizHub.share(text);$('shareStatus').textContent='Delen geopend.';}else if(navigator.share)await navigator.share({title:'Veldio Clubquiz',text});else{await navigator.clipboard.writeText(text);$('shareStatus').textContent='Resultaat gekopieerd.';}}catch(e){$('shareStatus').textContent=e.name==='AbortError'?'Delen geannuleerd.':'Delen niet beschikbaar. '+text;}};

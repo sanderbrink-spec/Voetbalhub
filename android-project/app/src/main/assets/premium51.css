@@ -1,0 +1,46 @@
+/* Shared WebView design tokens, matching the native PremiumDesign40 palette. */
+:root {
+  color-scheme: dark;
+  --ink: #050907;
+  --surface: #0e2016;
+  --green: #a9ff35;
+  --text: #f3f8f4;
+  --muted: #bac8be;
+  --edge: #31523d;
+  --space: 8px;
+  --radius: 16px;
+  --touch: 48px;
+  --body-size: 15px;
+  --title-size: 26px;
+}
+html, body { background: var(--ink) !important; color: var(--text); }
+body { font-family: system-ui, sans-serif; font-size: var(--body-size); }
+h1 { font-size: var(--title-size); line-height: 1.15; }
+button, select, summary { min-height: var(--touch); }
+button, select { max-width: 100%; }
+button:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+.panel, .fixture, .match-list50, .section50, .match50, .club50 {
+  background: var(--surface);
+  border-color: var(--edge);
+  box-shadow: none;
+}
+.match50 { min-height: 72px; }
+.match50 > span { overflow-wrap: anywhere; }
+.filters50 { flex-wrap: wrap; overflow: visible; }
+#fixtureSelector {
+  max-height: min(600px, 60vh);
+  overflow: auto;
+}
+.prediction-intro {
+  margin-block: 0 calc(2 * var(--space));
+  padding: calc(2 * var(--space));
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: linear-gradient(110deg, var(--surface), #14291b);
+}
+.prediction-intro h1 { margin: 0; }
+.prediction-intro p { margin: var(--space) 0 0; }
+#fixtureSelector:focus-visible { outline: 2px solid var(--green); }

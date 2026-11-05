@@ -7,7 +7,7 @@ import android.view.View;
 /** Consistent outline navigation icons, independent of the phone's emoji font. */
 public final class NavIconView extends View {
  private final String name;private final int color;private final Paint p=new Paint(3);
- public NavIconView(Context c,String name,boolean active){super(c);this.name=name;color=active?0xFF25F06B:0xFF93A198;setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);}
+ public NavIconView(Context c,String name,boolean active){super(c);this.name=name;color=active?PremiumDesign40.GREEN:PremiumDesign40.MUTED;setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);}
 
  private android.graphics.Path customPath(){String d=null;
 if("Home".equals(name))d="M2 11L12 3L22 11 M5 9V21H19V9 M10 21V15H14V21";

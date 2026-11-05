@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 /** Presentation only: original stadium linework and reusable outline icons. */
 public final class VeldioChrome {
- private static final int GREEN=0xFF25F06B;
+ private static final int GREEN=PremiumDesign40.GREEN;
  private static int dp(Activity a,int n){return Math.round(n*a.getResources().getDisplayMetrics().density);}
  private static GradientDrawable panel(int fill,int stroke,int radius){GradientDrawable d=new GradientDrawable();d.setColor(fill);d.setStroke(1,stroke);d.setCornerRadius(radius);return d;}
  public static void install(Activity a){
@@ -22,15 +22,15 @@ public final class VeldioChrome {
   LinearLayout identity=(LinearLayout)((TextView)a.findViewById(R.id.title)).getParent();identity.setPadding(dp(a,8),0,dp(a,3),0);
   TextView title=a.findViewById(R.id.title);title.setTextSize(23);title.setLetterSpacing(.035f);title.setTextColor(0xFFF4FAF6);
   TextView subtitle=a.findViewById(R.id.subtitle);subtitle.setTextSize(11);subtitle.setTextColor(0xFFCAD7CE);subtitle.setPadding(0,dp(a,3),0,0);
-  for(int id:new int[]{R.id.search,R.id.settings}){ImageButton button=a.findViewById(id);button.getLayoutParams().width=dp(a,44);button.getLayoutParams().height=dp(a,44);button.setPadding(dp(a,9),dp(a,9),dp(a,9),dp(a,9));button.setBackground(panel(0xC408130C,0xFF41664C,dp(a,18)));button.setImageTintList(null);button.setImageDrawable(new Icon(id==R.id.search?"search":"settings",0xFFE7F3EB));}
+  for(int id:new int[]{R.id.search,R.id.settings}){ImageButton button=a.findViewById(id);button.getLayoutParams().width=dp(a,PremiumDesign40.TOUCH);button.getLayoutParams().height=dp(a,PremiumDesign40.TOUCH);button.setPadding(dp(a,9),dp(a,9),dp(a,9),dp(a,9));button.setBackground(panel(0xC408130C,0xFF41664C,dp(a,18)));button.setImageTintList(null);button.setImageDrawable(new Icon(id==R.id.search?"search":"settings",0xFFE7F3EB));}
   View chips=a.findViewById(R.id.chipsScroll);chips.getLayoutParams().height=dp(a,46);chips.setBackgroundColor(0xFF050D08);
-  LinearLayout nav=a.findViewById(R.id.nav);GradientDrawable bg=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{0xFF12271B,0xFF060E09});bg.setCornerRadii(new float[]{dp(a,18),dp(a,18),dp(a,18),dp(a,18),0,0,0,0});bg.setStroke(1,0xFF31523D);nav.setBackground(bg);nav.setPadding(dp(a,3),dp(a,5),dp(a,3),dp(a,4));nav.getLayoutParams().height=dp(a,65);
+  LinearLayout nav=a.findViewById(R.id.nav);GradientDrawable bg=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{PremiumDesign40.SURFACE,PremiumDesign40.INK});bg.setCornerRadii(new float[]{dp(a,18),dp(a,18),dp(a,18),dp(a,18),0,0,0,0});bg.setStroke(1,PremiumDesign40.EDGE);nav.setBackground(bg);nav.setPadding(dp(a,3),dp(a,5),dp(a,3),dp(a,4));nav.getLayoutParams().height=dp(a,66);
  }
  public static void chip(Activity a,TextView text,String label,boolean active){
   String icon=label.equals("Voor jou")?"home":label.equals("Laatste nieuws")?"news":label.equals("Transfers")?"transfer":label.equals("Eredivisie")?"trophy":label.equals("Video")?"play":"world";
   Icon d=new Icon(icon,active?0xFF04130A:0xFFDEEBE2);d.setBounds(0,0,dp(a,15),dp(a,15));text.setCompoundDrawables(d,null,null,null);text.setCompoundDrawablePadding(dp(a,6));text.setTextSize(12);text.setTypeface(Typeface.create("sans-serif-medium",Typeface.NORMAL));text.setBackground(panel(active?GREEN:0xFF0B1710,active?GREEN:0xFF34563F,dp(a,20)));text.setMinHeight(dp(a,38));text.setPadding(dp(a,12),0,dp(a,12),0);
  }
- public static void navigation(Activity a,LinearLayout box,boolean active){box.setBackground(panel(active?0xFF183C25:0x00000000,active?0xFF2A7040:0x00000000,dp(a,13)));box.setContentDescription(((TextView)box.getChildAt(1)).getText());box.setSelected(active);box.setFocusable(true);}
+ public static void navigation(Activity a,LinearLayout box,boolean active){box.setBackground(panel(active?0xFF1B3320:0x00000000,active?PremiumDesign40.EDGE:0x00000000,dp(a,13)));box.setContentDescription(((TextView)box.getChildAt(1)).getText());box.setSelected(active);PremiumDesign40.touch(box);}
  private static final class Stadium extends Drawable {
   final Paint p=new Paint(3);
   @Override public void draw(Canvas c){Rect b=getBounds();float w=b.width(),h=b.height();c.save();c.translate(b.left,b.top);p.setShader(new LinearGradient(0,0,w,h,new int[]{0xFF030A06,0xFF0B2113,0xFF0A140C},null,Shader.TileMode.CLAMP));c.drawRect(0,0,w,h,p);p.setShader(null);p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(1);p.setColor(0x303A9951);

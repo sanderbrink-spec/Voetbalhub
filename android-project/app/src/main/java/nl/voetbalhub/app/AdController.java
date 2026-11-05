@@ -5,6 +5,13 @@ import android.view.View;
 public final class AdController {
  private final Activity activity;public AdController(Activity a){activity=a;}
  public View slot(String placement){View v=new View(activity);v.setVisibility(View.GONE);return v;}
- public void privacy(){new android.app.AlertDialog.Builder(activity).setTitle("Advertentieprivacy").setMessage("Deze testversie bevat geen advertentieverzoeken of advertentie-ID. Online quizdeelname staat los van advertenties.").setPositiveButton("Sluiten",null).show();}
+ public void privacy() {
+  PremiumDesign40.infoDialog(activity, "Advertentieprivacy", "Advertenties en quizdeelname",
+   new String[][] {
+    {"Info", "Geen advertenties", "Deze testversie laadt geen advertenties."},
+    {"Info", "Geen advertentie-ID", "Deze testversie gebruikt geen advertentie-ID."},
+    {"Clubquiz", "Quiz blijft onafhankelijk", "Online quizdeelname staat los van advertenties."}
+   });
+ }
  public void pause(){}public void resume(){}public void dispose(){}
 }
