@@ -1,6 +1,6 @@
 'use strict';
 const {chromium}=require('playwright'),fs=require('node:fs'),assert=require('node:assert/strict');
-(async()=>{const browser=await chromium.launch({headless:true});try{
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});try{
  const page=await browser.newPage({viewport:{width:393,height:852}}),errors=[],calls=[];
  page.on('pageerror',e=>errors.push(e.message));await page.exposeFunction('record',(method,value)=>calls.push({method,value}));
  await page.route('https://**/*',route=>route.abort());

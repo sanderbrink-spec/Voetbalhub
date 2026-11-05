@@ -1,35 +1,51 @@
-name: Veldio 47 Android16 artifact regression
+name: Veldio Android16 verified artifact regression
 on:
   push:
-    branches: [main]
+    branches: [main, "work/veldio-48"]
     paths: ['.github/workflows/android47-regression.yml', 'scripts/android-phase47.py']
   workflow_dispatch:
 permissions:
   contents: read
   actions: read
 jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - name: Exercise shipped assets at mobile sizes
+        env:
+          CHROMIUM_PATH: /usr/bin/google-chrome
+        run: |
+          node scripts/browser/functional47.cjs
+          node scripts/browser/subpages46.cjs
+          node scripts/browser/subpage-surfaces46.cjs
+          node scripts/browser/personal-hub.cjs
+          node scripts/browser/veldio-home.cjs
+          node scripts/browser/contact.cjs
+          node scripts/browser/editorial-desk.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Veldio-48-mobile-browser
+          path: .browser-output/
+          include-hidden-files: true
+          if-no-files-found: error
   android16:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Wait for existing verified APK artifact
-        run: |
-          python3 - <<'PY'
-          import urllib.request,json,time
-          for attempt in range(30):
-              with urllib.request.urlopen('https://api.github.com/repos/sanderbrink-spec/Voetbalhub/actions/runs/41911801976/artifacts',timeout=15) as r:
-                  artifacts=json.load(r).get('artifacts',[])
-              if any(a.get('name')=='Veldio-47' for a in artifacts):
-                  print('Verified build artifact available');break
-              time.sleep(10)
-          else:raise SystemExit('APK artifact missing; no rebuild was started')
-          PY
       - uses: actions/download-artifact@v4
         with:
           name: Veldio-47
           path: apk
-          run-id: 41911801976
+          run-id: 41912848471
           github-token: ${{ github.token }}
       - name: Verify identical packaged source
         run: python3 scripts/verify-android-source.py apk/Veldio-47.apk
@@ -52,7 +68,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Veldio-47-Android16-final
+          name: Veldio-48-regression-Android16
           path: .android-smoke/
           include-hidden-files: true
           if-no-files-found: error

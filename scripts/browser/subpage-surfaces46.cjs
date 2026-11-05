@@ -2,7 +2,7 @@
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs');
 const dir='android-project/app/src/main/assets/';
 function html(name){return fs.readFileSync(dir+name,'utf8').replace(/<script src="([^"]+)"><\/script>/g,(_,s)=>'<script>'+fs.readFileSync(dir+s,'utf8')+'</script>');}
-(async()=>{const browser=await chromium.launch({headless:true});try{
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});try{
  let page=await browser.newPage({viewport:{width:393,height:852}}),errors=[],calls=[];page.on('pageerror',e=>errors.push(e.message));await page.route('https://**/*',r=>r.abort());await page.exposeFunction('record',x=>calls.push(x));
  const now=Date.now(),team={id:'psv',name:'PSV'},all={played:4,win:3,draw:1,lose:0,goals:{for:8,against:2}},fixture={id:'1',home:team,away:{id:'ajax',name:'Ajax'},date:new Date(now+86400000).toISOString(),status:'NS',round:'Ronde 5',goals:{home:null,away:null}};
  const stats={schemaVersion:1,rightsPolicyVersion:26,rightsExpiresAt:now+86400000,updatedAt:new Date(now-1000).toISOString(),source:'Testfixture, geen productiegegevens',league:{id:88,name:'Eredivisie',season:2026},standings:[{team,rank:1,points:10,all,home:all,away:all,goalsDiff:6,form:'WWWD'}],fixtures:[fixture],players:{},warnings:[]};
