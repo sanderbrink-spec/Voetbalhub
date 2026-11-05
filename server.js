@@ -369,7 +369,7 @@ async function handle(req, res) {
       autoPublishing: false
     });
   }
-  if (req.method === "OPTIONS") { res.writeHead(204); return res.end(); }
+  if (req.method === "OPTIONS") { res.writeHead(204,{"Access-Control-Allow-Methods":"GET, POST, OPTIONS","Access-Control-Allow-Headers":"Authorization, Content-Type","Vary":"Origin"}); return res.end(); }
   if (req.method === "GET" && url.pathname === "/legacy-desk") {
     res.writeHead(200, {"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store"});
     return res.end(`<!doctype html><html lang="nl"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Veldio | Redactiedesk</title><style>

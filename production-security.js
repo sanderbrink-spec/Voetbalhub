@@ -9,6 +9,6 @@ function originAllowed(origin,configured){if(!origin)return false;return String(
 function harden(req,res,env=process.env){
  res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');res.setHeader('X-Frame-Options','DENY');res.setHeader('Permissions-Policy','camera=(), microphone=(), geolocation=()');
  if(env.NODE_ENV==='production')res.setHeader('Strict-Transport-Security','max-age=31536000');
- if(originAllowed(req.headers.origin,env.ALLOWED_ORIGINS)){res.setHeader('Access-Control-Allow-Origin',req.headers.origin);res.setHeader('Vary','Origin');}
+ if(originAllowed(req.headers.origin,[env.ALLOWED_ORIGINS,'https://voetbalhub-redactiedashboard.onrender.com'].filter(Boolean).join(','))){res.setHeader('Access-Control-Allow-Origin',req.headers.origin);res.setHeader('Vary','Origin');}
 }
 module.exports={authorized,createLimiter,originAllowed,harden};

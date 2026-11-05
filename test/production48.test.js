@@ -29,7 +29,7 @@ test('link probes cannot follow arbitrary/private destinations or include creden
 });
 test('an unreachable production service yields explicit failures and a report; no writes or publishing calls',async()=>{
  const calls=[];const r=await M.audit({now,fetcher:async(u,options)=>{calls.push({u,options});throw Error('offline');},checkLinks:false,checkTasks:false});
- assert.equal(r.status,'fail');assert.ok(r.failed>=10);assert.ok(calls.every(c=>!c.options.method));assert.ok(!calls.some(c=>/publish|draft|image44/.test(c.u)));assert.match(M.markdown(r),/\| fail \|/);
+ assert.equal(r.status,'fail');assert.ok(r.failed>=10);assert.ok(calls.every(c=>!c.options.method||c.options.method==='OPTIONS'));assert.ok(!calls.some(c=>/publish|draft|image44/.test(c.u)));assert.match(M.markdown(r),/\| fail \|/);
 });
 
 test('a snapshot refreshed during the audit is not falsely reported as future or stale',()=>{
