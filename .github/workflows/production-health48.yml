@@ -20,6 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install locked audit dependencies
+        run: npm ci --ignore-scripts
       - name: Validate failure detection and safe recovery
         run: node --test test/production48.test.js test/football48.test.js
       - name: Inspect production without publication or paid API calls
