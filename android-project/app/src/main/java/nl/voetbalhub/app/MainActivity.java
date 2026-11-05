@@ -1516,7 +1516,8 @@ private void showScores() {
         personalHubVisible=false;personalHub=null;eredivisieStatisticsVisible=false;weeklyPreviewVisible=false;scoresPageVisible=false;clubQuizView=null;
         findViewById(R.id.header).setVisibility(android.view.View.VISIBLE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
         currentBottomTab="home".equals(mode)?"Home":"fixtures".equals(mode)?"Wedstrijden":"predictions".equals(mode)?"Voorspellen":"";buildNav();content.removeAllViews();
-        content.addView("predictions".equals(mode)?new ClubQuizView(this,()->showDestination39("home"),true):"home".equals(mode)?new HomeMenu39(this,this::openDestination39,this::showEditorialArticle):new DestinationView39(this,mode,this::openDestination39,name->showPersonalHub("profile",name)),new android.widget.FrameLayout.LayoutParams(-1,-1));
+        if("predictions".equals(mode)){clubQuizView=new ClubQuizView(this,this::closeClubQuiz,true);content.addView(clubQuizView,new android.widget.FrameLayout.LayoutParams(-1,-1));}
+        else content.addView("home".equals(mode)?new HomeMenu39(this,this::openDestination39,this::showEditorialArticle):new DestinationView39(this,mode,this::openDestination39,name->showPersonalHub("profile",name)),new android.widget.FrameLayout.LayoutParams(-1,-1));
     }
     private void showCompetition40(String name,String source){
  String[] names={"Eredivisie","Keuken Kampioen Divisie","Premier League","Bundesliga","La Liga","Serie A","Ligue 1","Champions League","Europa League","Conference League"};

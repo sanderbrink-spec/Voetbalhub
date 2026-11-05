@@ -48,6 +48,7 @@ try:
   # Delete only the emulator-created identity, avoiding production test-data residue.
   evaluate("QuizApi.request('delete').then(()=>true)",page)
  else:limits.append('Production identity unavailable during emulator run; failure UI observed, no production save claimed.')
+ evaluate("document.querySelector('#startQuiz').click();true",page);wait_for(lambda:evaluate("!!document.querySelector('#start')",'clubquiz.html'));device.press('back');wait_for(lambda:evaluate("!!document.querySelector('#startQuiz')",page));checks.append('Quiz opens from predictions and Android back returns to predictions')
  device(text='Mijn Clubs').click();page='personal-hub.html';wait_for(lambda:evaluate("typeof setData==='function'",page))
  evaluate("toggleClub('FC Groningen');true",page);wait_for(lambda:evaluate("!savePending",page));assert evaluate("selected.has('FC Groningen')",page)
  device.screenshot().save(str(OUT/'mijn-clubs50.png'));adb('shell','am','force-stop',PACKAGE);launch();device(text='Mijn Clubs').click();wait_for(lambda:evaluate("typeof selected!=='undefined' && selected.has('FC Groningen')",page));checks.append('Favourite survives actual app process restart')
