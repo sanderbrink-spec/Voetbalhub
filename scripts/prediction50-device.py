@@ -45,7 +45,11 @@ try:
  wait_for(lambda:evaluate("Array.from(document.querySelectorAll('.club-shirt img')).every(i=>i.complete&&i.naturalWidth>0)"))
  box=evaluate("(()=>{const r=document.querySelector('.club-shirt').getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,viewport:innerWidth};})()")
  bounds=device(className='android.webkit.WebView').info['bounds'];scale=(bounds['right']-bounds['left'])/box['viewport'];area=(round(bounds['left']+box['x']*scale),round(bounds['top']+box['y']*scale),round(bounds['left']+(box['x']+box['w'])*scale),round(bounds['top']+(box['y']+box['h'])*scale))
- shown=device.screenshot().crop(area).convert('RGB');evaluate("document.querySelector('.club-shirt').style.visibility='hidden';true");hidden=device.screenshot().crop(area).convert('RGB');evaluate("document.querySelector('.club-shirt').style.visibility='';true")
+ # CSS mutation acknowledgement precedes Android compositor presentation.
+ time.sleep(.6);shown=device.screenshot().crop(area).convert('RGB');shown.save(str(OUT/'shirt-visible.png'))
+ evaluate("document.querySelector('.club-shirt').style.visibility='hidden';new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r(true))))");time.sleep(.6)
+ hidden=device.screenshot().crop(area).convert('RGB');hidden.save(str(OUT/'shirt-hidden.png'))
+ evaluate("document.querySelector('.club-shirt').style.visibility='';new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r(true))))");time.sleep(.6)
  assert ImageChops.difference(shown,hidden).getbbox() is not None,'Shirt must actually paint pixels in the Android WebView'
  checks.append('Actual Android shirt pixels verified against hidden-state screenshot; no file-origin mask failure')
  for c in ['1','X','2','X']:choose(c)
