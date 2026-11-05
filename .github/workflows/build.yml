@@ -9,6 +9,7 @@ on:
     paths: ['android-project/**', 'scripts/android-*.py', 'scripts/verify-android-source.py', 'scripts/browser/subpages46.cjs', 'scripts/browser/phase49.cjs', 'test/subpages46.test.js', '.github/workflows/build.yml']
 permissions:
   contents: read
+  actions: read
 jobs:
   validate49:
     runs-on: ubuntu-24.04
@@ -65,6 +66,13 @@ jobs:
       - name: Build directly from versioned source
         working-directory: android-project
         run: gradle :app:assembleDebug --no-daemon
+      - name: Download installed phase48 signing reference
+        uses: actions/download-artifact@v4
+        with:
+          name: Veldio-48
+          path: signing-reference48
+          run-id: 42001506136
+          github-token: ${{ github.token }}
       - name: Verify signature, manifest and approved APK assets
         run: |
           set -euo pipefail
@@ -76,6 +84,7 @@ jobs:
           python3 scripts/apk-secret-scan.py Veldio-49.apk
           python3 scripts/verify-android-source.py Veldio-49.apk
           sha256sum Veldio-49.apk > sha256.txt
+          python3 scripts/verify-apk-update-signature.py signing-reference48/signature.txt signature.txt
       - uses: actions/upload-artifact@v4
         with:
           name: Veldio-49
