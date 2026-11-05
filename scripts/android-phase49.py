@@ -49,9 +49,9 @@ try:
  open_tile('Voorspellen');page='predictions49.html'
  wait_for(lambda:evaluate("!!document.querySelector('#join')",page));evaluate("document.querySelector('#eligible').checked=true;document.querySelector('#join').click();true",page)
  wait_for(lambda:evaluate("!!document.querySelector('[data-fixture]:enabled')",page),70)
- fixture=evaluate("(()=>{const b=document.querySelector('[data-choice=\"1\"]:enabled');const id=b.dataset.fixture;b.click();return id;})()",page)
- wait_for(lambda:evaluate("document.querySelector('.saved')?.textContent.includes('Opgeslagen: 1')",page))
- evaluate("document.querySelector('[data-choice=\"X\"]:enabled').click();true",page);wait_for(lambda:evaluate("document.querySelector('.saved')?.textContent.includes('Opgeslagen: X')",page))
+ fixture=evaluate("(()=>{const b=document.querySelector('[data-choice=\"1\"]:enabled');const id=b.dataset.fixture;window.acceptance49Fixture=id;b.click();return id;})()",page)
+ wait_for(lambda:evaluate("[...document.querySelectorAll('[data-fixture]')].find(b=>b.dataset.fixture===window.acceptance49Fixture)?.closest('article').querySelector('.saved').textContent.includes('Opgeslagen: 1')",page))
+ evaluate("document.querySelector('[data-choice=\"X\"]:enabled').click();true",page);wait_for(lambda:evaluate("[...document.querySelectorAll('[data-fixture]')].find(b=>b.dataset.fixture===window.acceptance49Fixture)?.closest('article').querySelector('.saved').textContent.includes('Opgeslagen: X')",page))
  checks+=['actual JS-to-Java-to-production server prediction saved and changed before kickoff']
  adb('shell','am','force-stop',PACKAGE);adb('shell','am','start','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');time.sleep(3);open_tile('Voorspellen')
  wait_for(lambda:evaluate("!!document.querySelector('[data-choice=\"X\"][aria-pressed=true]')",page))
