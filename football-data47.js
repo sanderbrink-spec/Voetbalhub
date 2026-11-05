@@ -27,7 +27,7 @@ async function sourceBody(response, limit=2000000) {
  for await(const chunk of response.body){size+=chunk.byteLength;if(size>limit)throw Error('Bronantwoord te groot');chunks.push(Buffer.from(chunk));}
  return Buffer.concat(chunks,size).toString('utf8');
 }
-function create({fetcher=fetch,redis,clock=Date.now}={}){
+function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOOTBALL_DATA_TOKEN}={}){
  const cache=new Map(),pending=new Map();
  async function get(key){
   if(!Object.hasOwn(CATALOG,key))throw Error('Onbekende competitie');
@@ -47,7 +47,22 @@ function create({fetcher=fetch,redis,clock=Date.now}={}){
      const season=new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear();
      const r=await fetcher('https://raw.githubusercontent.com/openfootball/football.json/master/'+season+'-'+String(season+1).slice(-2)+'/nl.1.json',{headers:{'User-Agent':'Veldio/50 (redactie.veldio@gmail.com)'},signal:AbortSignal.timeout(12000)});
      if(!r.ok)throw Error('Eredivisiebron HTTP '+r.status);
-     const parsed=require('./football-source50').parse(JSON.parse(await sourceBody(r)),now),value=envelope(key,parsed.fixtures,now,parsed.source);
+     const parsed=require('./football-source50').parse(JSON.parse(await sourceBody(r)),now);
+     const supplemental=require('./football-results52');
+     let fixtures=parsed.fixtures;
+     if(resultsToken&&fixtures.some(f=>['AWAITING','TBD'].includes(f.status)&&Date.parse(f.date)<now)){
+      try{
+       const response=await fetcher('https://api.football-data.org/v4/competitions/DED/matches?season='+season+'&status=FINISHED',{
+        redirect:'error',headers:{'X-Auth-Token':resultsToken},signal:AbortSignal.timeout(4000)
+       });
+       if(!response.ok){await response.body?.cancel();throw Error('HTTP '+response.status);}
+       fixtures=supplemental.supplement(fixtures,JSON.parse(await sourceBody(response)),season,now);
+      }catch(error){console.warn('football47 Eredivisie aanvullende uitslagen:',error.message);}
+     }
+     const supplemented=fixtures.some(f=>f.resultSource);
+     const source=supplemented?{...parsed.source,name:parsed.source.name+' · '+supplemental.CREDIT,
+      license:'CC0-1.0 (speelschema) · Football-Data.org (aanvullende uitslagen)',databaseDownload:null}:parsed.source;
+     const value=envelope(key,fixtures,now,source);
      if(value.fixtures.some(f=>f.status==='AWAITING')){value.standings=[];value.standingsNote='Uitslagen ontbreken. Stand volgt na bevestiging.';}
      cache.set(key,{at:now,value,ttl:15*60000});return value;
     }

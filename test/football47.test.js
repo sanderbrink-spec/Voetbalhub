@@ -12,3 +12,21 @@ test('concurrent source requests share a request; outage retries after one minut
 test('shirt markup only accepts validated colours and escapes club names',()=>{const s=UI.shirt({name:'<img onerror=alert(1)>',colours:['red" onload="alert(1)','#ffffff']});assert.equal((s.match(/<img/g)||[]).length,1);assert.ok(!s.includes('onload='));assert.ok(s.includes('&lt;img'));});
 
 test('postponed or unknown-time games never remain open for predictions',()=>{for(const status of ['PST','CANC','TBD','AWAITING'])assert.equal(UI.prediction({home:1,away:0},{...fixture(1,'A','B',null,'2026-11-05T12:00:00Z'),status},now).status,'gesloten');});
+
+test('supplementary Eredivisie results match the same fixture and preserve known scores and IDs',()=>{
+ const {supplement}=require('../football-results52');
+ const now=Date.parse('2026-11-06T12:00:00Z');
+ const fixture={id:'stable',status:'AWAITING',date:'2026-11-01T13:30:00Z',round:'Speelronde 11',home:{name:'Excelsior'},away:{name:'FC Twente'}};
+ const match={matchday:11,season:{startDate:'2026-08-07'},utcDate:fixture.date,status:'FINISHED',
+  homeTeam:{name:'SBV Excelsior',shortName:'Excelsior'},awayTeam:{name:'FC Twente',shortName:'Twente'},
+  score:{duration:'REGULAR',fullTime:{home:0,away:2}}};
+ const run=(rows,matches)=>supplement(rows,{competition:{code:'DED'},matches},2026,now);
+ assert.deepEqual(run([fixture],[match])[0].goals,{home:0,away:2});
+ assert.equal(run([fixture],[match])[0].id,'stable');
+ assert.equal(run([fixture],[match])[0].resultExpiresAt,now+36*3600000);
+ const final={...fixture,status:'FT',goals:{home:3,away:0}};
+ assert.equal(run([final],[match])[0],final);
+ for(const variants of [[match,match],[{...match,matchday:10}],[{...match,status:'IN_PLAY'}],[{...match,utcDate:'2026-11-02T13:30:00Z'}],[{...match,score:{...match.score,fullTime:{home:null,away:2}}}]]){
+  assert.equal(run([fixture],variants)[0],fixture);
+ }
+});

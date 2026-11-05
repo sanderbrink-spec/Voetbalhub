@@ -68,9 +68,9 @@
   ],
   "sourceGroups": [
     [
-      "https://www.ajax.nl/wedstrijden/",
+      "https://www.ajax.nl/fans/fc-twente-ajax/",
       "https://fctwente.nl/wedstrijden/eerste-selectie",
-      "https://www.ajax.nl/fans/fc-twente-ajax/"
+      "https://www.ajax.nl/wedstrijden/"
     ]
   ],
   "qualityThreshold": 85,
