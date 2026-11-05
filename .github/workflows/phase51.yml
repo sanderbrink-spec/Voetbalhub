@@ -11,6 +11,7 @@ permissions:
   actions: read
 jobs:
   validate:
+    if: ${{ !contains(github.event.head_commit.message, '[reuse-phase51-apk]') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     services:
@@ -115,14 +116,27 @@ jobs:
           if-no-files-found: error
   android16:
     needs: apk
+    if: ${{ always() && (needs.apk.result == 'success' || (needs.apk.result == 'skipped' && contains(github.event.head_commit.message, '[reuse-phase51-apk]'))) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
+        if: needs.apk.result == 'success'
         with:
           name: Veldio-51
           path: apk
+      - uses: actions/download-artifact@v4
+        if: needs.apk.result == 'skipped'
+        with:
+          name: Veldio-51
+          path: apk
+          run-id: 42121517663
+          github-token: ${{ github.token }}
+      - name: Verify test APK matches the checked-out app source
+        run: |
+          (cd apk && sha256sum -c sha256.txt)
+          python3 scripts/verify-android-source.py apk/Veldio-51.apk
       - run: python3 -m pip install 'uiautomator2>=3,<4'
       - name: Enable emulator acceleration
         run: |

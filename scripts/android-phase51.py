@@ -43,15 +43,17 @@ def capture(name):
 
 
 try:
-    visible("Meer")
+    visible("Stadion van de Week")
     assert device(description="Nieuws").wait(timeout=15)
     capture("nieuws")
     tab("Wedstrijden")
+    visible("Conference League", timeout=40)
     capture("wedstrijden")
     tab("Voorspellen")
     visible("Profiel verbinden")
     capture("voorspellen")
     tab("Mijn Clubs")
+    visible("Mijn favoriete clubs")
     capture("mijn-clubs")
     tab("Meer")
     capture("meer")
@@ -64,13 +66,16 @@ try:
         capture(title.lower().replace(" ", "-"))
         device.press("back")
         assert device(text="Sluiten").wait_gone(timeout=10), title
-    device(scrollable=True).scroll.to(text="Voetbalquiz")
+    if not device(text="Voetbalquiz").exists:
+        device(scrollable=True).scroll.to(text="Voetbalquiz")
     visible("Voetbalquiz").click()
     visible("Spelregels")
     capture("quizkeuze")
     device.press("back")
-    visible("Instellingen, informatie en extra onderdelen")
+    visible("Bronnen en beeldgebruik")
+    assert device(description="Meer").info["selected"]
     device.press("back")
+    visible("Mijn favoriete clubs")
     assert device.app_current()["package"] == package
     checks.extend(["five tabs and 48dp targets", "four dialogs and system Back",
                    "quiz through More", "system Back from quiz and More"])
