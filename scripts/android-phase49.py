@@ -61,15 +61,26 @@ try:
  # Remove the disposable test identity and its predictions after production verification.
  assert evaluate("QuizApi.request('delete').then(r=>r.deleted)",page);checks+=['test profile and prediction records removed after verification']
  open_tile('Club Quiz');page='clubquiz.html';wait_for(lambda:evaluate("!!document.querySelector('#start')",page))
- evaluate("document.querySelector('#practice').click();document.querySelector('#start').click();true",page)
- seen=[]
- for index in range(10):
-  wait_for(lambda:evaluate("document.querySelectorAll('#answers button:not(:disabled)').length===4",page))
-  result=evaluate("(()=>{const text=document.querySelector('#question').textContent,q=CLUBQUIZ_BANK.find(q=>q.question===text);if(!q)throw Error('Missing source question');const image=QuizImages49.get(q),photo=document.querySelector('#photo');if(!image&&!photo.hidden)throw Error('Random image shown');if(image&&!photo.src.endsWith(image.file))throw Error('Wrong image mapping');document.querySelectorAll('#answers button').forEach(b=>{if(b.querySelector('b').textContent===q.correct)b.click();});return q.id;})()",page);seen.append(result)
-  wait_for(lambda:evaluate("!document.querySelector('#next').hidden",page));evaluate("document.querySelector('#next').click();true",page)
- wait_for(lambda:evaluate("!document.querySelector('#result').hidden",page));assert len(set(seen))==10
- assert evaluate("document.querySelector('#score').textContent==='10 / 10'",page)
- evaluate("document.querySelector('#again').click();true",page);assert evaluate("!document.querySelector('#setup').hidden",page)
+ wait_for(lambda:evaluate("typeof document.querySelector('#start').onclick==='function'&&!!window.CLUBQUIZ_BANK",page))
+ # Keep one CDP connection for the timed round. Repeated adb discovery must not
+ # consume the user's fifteen-second question deadline between every assertion.
+ result=evaluate("""(async()=>{
+  const pause=()=>new Promise(r=>setTimeout(r,100));
+  const ready=async check=>{for(let i=0;i<40;i++){if(check())return;await pause();}throw Error('Quiz state: '+JSON.stringify({error:document.querySelector('#error').textContent,position:document.querySelector('#position').textContent,answers:document.querySelector('#answers').innerText,feedback:document.querySelector('#feedback').innerText}));};
+  document.querySelector('#practice').click();document.querySelector('#start').click();const ids=[];
+  for(let i=0;i<10;i++){
+   await ready(()=>document.querySelectorAll('#answers button:not(:disabled)').length===4);
+   const text=document.querySelector('#question').textContent,q=CLUBQUIZ_BANK.find(q=>q.question===text);if(!q)throw Error('Missing source question');
+   const image=QuizImages49.get(q),photo=document.querySelector('#photo');if(!image&&!photo.hidden)throw Error('Random image shown');if(image&&!photo.src.endsWith(image.file))throw Error('Wrong image mapping');
+   const answer=[...document.querySelectorAll('#answers button')].find(b=>b.querySelector('b').textContent===q.correct);if(!answer)throw Error('Correct answer missing');answer.click();ids.push(q.id);
+   await ready(()=>!document.querySelector('#next').hidden);document.querySelector('#next').click();await pause();
+  }
+  await ready(()=>!document.querySelector('#result').hidden);const score=document.querySelector('#score').textContent;
+  document.querySelector('#again').click();return {ids,score,restarted:!document.querySelector('#setup').hidden};
+ })()""",page)
+ assert len(set(result['ids']))==10,result
+ assert result['score']=='10 / 10',result
+ assert result['restarted'],result
  checks+=['offline ten-question round completed with four answers, correct feedback, ten correct answers and no duplicate questions','exact quiz image mapping or no image, full result and restart']
  # Verify exact diagram bindings even when random selection did not pick the three new questions.
  assert evaluate("QuizImages49.get({id:'rules49-centre-circle'}).file==='quiz49/rules49-centre-circle.webp'&&QuizImages49.get({id:'unknown'})===null",page)

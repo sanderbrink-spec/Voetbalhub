@@ -1,0 +1,45 @@
+name: Veldio49 existing APK Android16 acceptance
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/android49-acceptance.yml', 'scripts/android-phase49.py']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  android16:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Veldio-49
+          path: apk
+          run-id: 42022333166
+          github-token: ${{ github.token }}
+      - name: Verify identical packaged Android source
+        run: python3 scripts/verify-android-source.py apk/Veldio-49.apk
+      - run: python3 -m pip install 'uiautomator2>=3,<4' 'websocket-client>=1,<2'
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Verify existing APK on Android16 with deployed backend
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase49.py apk/Veldio-49.apk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Veldio-49-Android16-acceptance
+          path: .android-smoke/
+          include-hidden-files: true
+          if-no-files-found: error
