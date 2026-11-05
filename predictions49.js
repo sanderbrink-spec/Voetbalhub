@@ -13,9 +13,9 @@ function create({redis,football,prefix='q39:',now=Date.now,profile,safeProfile})
  const key=bucket(competition,season),fixtureMap=new Map(current&&String(snap.league?.season)===season?(snap.fixtures||[]).map(f=>[String(f.id),f]):[]);
  if(req.method==='POST'){
   if(url.pathname!=='/quiz/v1/predictions/save'||!['1','X','2'].includes(d.choice)||typeof d.fixtureId!=='string'||d.fixtureId.length>100)throw fail('Ongeldige keuze.');
-  const f=fixtureMap.get(d.fixtureId);if(!f||f.status!=='NS'||Date.parse(f.date)<=now())throw fail('Deze voorspelling is gesloten.',409);
+  const f=fixtureMap.get(d.fixtureId),kickoff=Date.parse(f?.date);if(!f||f.status!=='NS'||!Number.isFinite(kickoff)||kickoff<=now())throw fail('Deze voorspelling is gesloten.',409);
   const record={fixtureId:String(f.id),choice:d.choice,competition,season,round:String(f.round||'Speelronde'),kickoff:f.date,label:f.home.name+' – '+f.away.name};
-  if(Number(await redis.eval(SAVE,{keys:[key],arguments:[p.id,JSON.stringify(record),String(Date.parse(f.date))]}))!==1)throw fail('De aftrap is verstreken.',409);
+  if(Number(await redis.eval(SAVE,{keys:[key],arguments:[p.id,JSON.stringify(record),String(kickoff)]}))!==1)throw fail('De aftrap is verstreken.',409);
   await redis.sAdd(prefix+'predictionKeys:'+p.id,key);
  }else if(req.method!=='GET'||url.pathname!=='/quiz/v1/predictions')throw fail('Route niet gevonden.',404);
  // Keep verified finals if a later feed omits older fixtures. Recalculate corrections.

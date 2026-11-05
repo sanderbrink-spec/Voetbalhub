@@ -2,7 +2,8 @@
 'use strict';
 const MODES=Object.freeze({quick:10,club:20,expert:25,daily:10,stadium:10,player:10,grand:25}),VERSION='40.0';
 function shuffle(values,rng=Math.random){const a=values.slice();for(let i=a.length-1;i>0;i--){const j=Math.min(i,Math.floor(rng()*(i+1)));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function valid(q){return q&&typeof q.id==='string'&&['easy','normal','hard'].includes(q.level)&&typeof q.question==='string'&&Array.isArray(q.answers)&&q.answers.length===4&&new Set(q.answers).size===4&&q.answers.every(a=>typeof a==='string'&&a.length>0)&&q.answers.includes(q.correct)&&/^https:\/\//.test(q.source)&&/^\d{4}-\d{2}-\d{2}$/.test(q.reviewedAt||'');}
+function excludedTopic(...fields){return fields.some(field=>/vrouwenvoetbal|\b(?:vrouwen|leeuwinnen|women(?:'s)?)\b|womenseuro|womensworldcup|women.?s.?champions.?league/i.test(String(field??'')));}
+function valid(q){return q&&typeof q.id==='string'&&['easy','normal','hard'].includes(q.level)&&typeof q.question==='string'&&Array.isArray(q.answers)&&q.answers.length===4&&new Set(q.answers).size===4&&q.answers.every(a=>typeof a==='string'&&a.length>0)&&q.answers.includes(q.correct)&&!excludedTopic(q.id,q.question,q.source,q.explanation,q.topic)&&/^https:\/\//.test(q.source)&&/^\d{4}-\d{2}-\d{2}$/.test(q.reviewedAt||'');}
 function dayKey(now=Date.now()){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);}
 function seeded(seed){let h=2166136261;for(const c of seed){h=Math.imul(h^c.charCodeAt(0),16777619);}return ()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function select(bank,{level='easy',count=10,recent=[],rng=Math.random,now=Date.now()}={}){
@@ -43,5 +44,5 @@ function state(value){
  for(const r of result.history){const key=r.mode+':'+r.level;result.records[key]=Math.max(result.records[key]||0,r.score);if(r.mode==='daily'&&!result.daily[r.day])result.daily[r.day]=r;}return result;
 }
 function record(previous,r){const data=state(previous);if(!validResult(r))throw Error('Ongeldige score');if(r.mode==='daily'&&data.daily[r.day])return data;data.history=saveResult(data.history,r);const key=r.mode+':'+r.level;data.records[key]=Math.max(data.records[key]||0,r.score);if(r.mode==='daily')data.daily[r.day]=r;return state(data);}
-const api={MODES,VERSION,shuffle,valid,select,Round,dayKey,seeded,clubs,createRound,validResult,history,saveResult,best,state,record};if(typeof module==='object'&&module.exports)module.exports=api;else root.ClubQuiz=api;
+const api={MODES,VERSION,shuffle,valid,excludedTopic,select,Round,dayKey,seeded,clubs,createRound,validResult,history,saveResult,best,state,record};if(typeof module==='object'&&module.exports)module.exports=api;else root.ClubQuiz=api;
 })(typeof window==='object'?window:globalThis);
