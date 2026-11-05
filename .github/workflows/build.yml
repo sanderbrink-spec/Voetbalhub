@@ -63,6 +63,20 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'
+      - name: Require the original phase48 signing key before compiling
+        env:
+          VELDIO_PHASE48_KEYSTORE_BASE64: ${{ secrets.VELDIO_PHASE48_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "$VELDIO_PHASE48_KEYSTORE_BASE64" ]; then
+            echo "Original phase48 signing key missing. No replacement key or update APK will be generated."
+            exit 1
+          fi
+          mkdir -p "$HOME/.android"
+          printf '%s' "$VELDIO_PHASE48_KEYSTORE_BASE64" | base64 --decode > "$HOME/.android/debug.keystore"
+          chmod 600 "$HOME/.android/debug.keystore"
+          signer=$(keytool -exportcert -keystore "$HOME/.android/debug.keystore" -alias androiddebugkey -storepass android | sha256sum | cut -d' ' -f1)
+          test "$signer" = "c5defd54898546731e0fc0ea5cac921e78ceb4cde2688df7d7aa99abd0df64d6"
       - name: Build directly from versioned source
         working-directory: android-project
         run: gradle :app:assembleDebug --no-daemon
