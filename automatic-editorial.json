@@ -66,7 +66,12 @@
       "articlePath": "^/nieuws/[^/]+/?$"
     }
   ],
-  "sourceGroups": [],
+  "sourceGroups": [
+    [
+      "https://www.ajax.nl/wedstrijden/",
+      "https://fctwente.nl/wedstrijden/eerste-selectie"
+    ]
+  ],
   "qualityThreshold": 85,
   "maxImageRequestsPerRun": 8
 }

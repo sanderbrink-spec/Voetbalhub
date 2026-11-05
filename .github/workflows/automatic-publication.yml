@@ -22,8 +22,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    # Audits and deployments must not start additional paid generation/publication.
-    if: github.event_name != 'push'
+    # Start a push run only when the commit explicitly requests a verified editorial run.
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[publish-verified-news]')
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     steps:
