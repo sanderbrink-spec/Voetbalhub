@@ -35,6 +35,13 @@ jobs:
       - run: node scripts/browser/phase50.cjs
         env:
           CHROMIUM_PATH: /usr/bin/google-chrome
+      - name: Preserve prior subpage and club behaviour
+        run: |
+          node scripts/browser/subpage-surfaces46.cjs
+          node scripts/browser/functional47.cjs
+          node scripts/browser/subpages46.cjs
+        env:
+          CHROMIUM_PATH: /usr/bin/google-chrome
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -126,10 +133,12 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase50.py apk/Veldio-50.apk
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase50.py apk/Veldio-50.apk && python3 scripts/prediction50-device.py apk/Veldio-50.apk
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Veldio-50-Android16
-          path: .android-smoke/
+          path: |
+            .android-smoke/
+            .android-prediction50/
           include-hidden-files: true

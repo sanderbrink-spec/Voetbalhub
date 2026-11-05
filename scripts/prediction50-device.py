@@ -37,7 +37,7 @@ def choose(c):
  wait_for(lambda:evaluate("document.querySelector('.saved').textContent.includes('Opgeslagen: "+c+"') && !document.querySelector('.saved').textContent.includes('Niet opgeslagen')"))
 try:
  launch();wait_for(lambda:evaluate("!!document.querySelector('#join')"));evaluate("document.querySelector('#eligible').checked=true;document.querySelector('#join').click();true");wait_for(lambda:evaluate("!!document.querySelector('[data-choice]:enabled')"),50);connected=True
- fixture=evaluate("document.querySelector('[data-choice]').dataset.fixture");assert str(fixture).startswith('of-nl-');checks.append('Real released Eredivisie fixture loaded over native bridge: '+fixture)
+ assert evaluate("getComputedStyle(document.querySelector('.club-shirt')).webkitMaskImage.includes('data:image/webp')"),'Shirt mask must not require a cross-origin file request';fixture=evaluate("document.querySelector('[data-choice]').dataset.fixture");assert str(fixture).startswith('of-nl-');checks.append('Real released Eredivisie fixture loaded over native bridge: '+fixture)
  for c in ['1','X','2','X']:choose(c)
  checks.append('1, X and 2 each saved and confirmed by production server; final choice X')
  assert evaluate("QuizApi.request('predictions',{competition:'eredivisie'}).then(r=>r.predictions.length)")==1
