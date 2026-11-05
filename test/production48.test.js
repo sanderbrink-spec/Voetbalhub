@@ -1,0 +1,33 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const M=require('../scripts/production-health48');
+const now=Date.parse('2026-11-05T12:00:00Z');
+const story=()=>({id:'a',headline:'Ajax wint',publishedAt:new Date(now-3600000).toISOString(),body:['Eigen tekst'],sources:[{url:'https://ajax.nl/a'}],imageUrl:'https://example.org/a.webp'});
+test('production audit detects duplicates, missing images, sources and stale news without treating columns as news production',()=>{
+ assert.ok(M.articlesChecks([story()],now).every(c=>c.status==='pass'));
+ const a=story();delete a.imageUrl;delete a.sources;
+ const checks=M.articlesChecks([a,{...story(),id:'b'}],now);
+ for(const key of ['news.image:a','news.sources:a','news.duplicate:b'])assert.ok(checks.some(c=>c.id===key&&c.status==='fail'));
+ assert.ok(M.articlesChecks([{...story(),type:'column'}],now).some(c=>c.id==='news.freshness'&&c.status==='fail'));
+ assert.ok(M.articlesChecks([{...story(),publishedAt:'invalid'}],now).some(c=>c.status==='fail'));
+});
+test('200 responses with missing/stale football data or expired rights fail; cached data exposes failed synchronization',()=>{
+ const s={status:'available',updatedAt:new Date(now).toISOString(),rightsExpiresAt:now+3600000,fixtures:[{id:'a',home:{id:1},away:{id:2},date:new Date(now-2*86400000).toISOString(),status:'NS'}],standings:[]};
+ assert.ok(M.footballChecks('eredivisie',s,now).some(c=>c.id.endsWith('missing-results')&&c.status==='fail'));
+ for(const change of [{status:'source_unavailable'},{rightsExpiresAt:now-1},{updatedAt:'invalid'},{status:'cached'}])assert.ok(M.footballChecks('x',{...s,...change},now).some(c=>c.status==='fail'));
+});
+test('daily control catches failed, missing and stale automatic jobs',()=>{
+ const run={path:'.github/workflows/automatic-publication.yml',status:'completed',conclusion:'success',id:1,created_at:new Date(now).toISOString()};
+ assert.equal(M.workflowChecks([run],now).find(c=>c.id.includes('automatic-publication')).status,'pass');
+ for(const change of [{conclusion:'failure'},{created_at:'2026-10-01T00:00:00Z'}])assert.equal(M.workflowChecks([{...run,...change}],now)[0].status,'fail');
+ assert.ok(M.workflowChecks([],now).every(c=>c.status==='fail'));
+});
+test('link probes cannot follow arbitrary/private destinations or include credentials',async()=>{
+ for(const u of ['http://ajax.nl','https://127.0.0.1/a','https://ajax.nl.evil.com/a','https://name:secret@ajax.nl/a','https://ajax.nl:8080/a'])assert.equal(M.allowedLink(u),false);
+ assert.equal(M.allowedLink('https://www.ajax.nl/a'),true);
+ await assert.rejects(M.request('https://ajax.nl/a',{fetcher:async()=>({status:302,headers:new Headers({location:'https://127.0.0.1/admin'})})}),/buiten toegestane/);
+});
+test('an unreachable production service yields explicit failures and a report; no writes or publishing calls',async()=>{
+ const calls=[];const r=await M.audit({now,fetcher:async(u,options)=>{calls.push({u,options});throw Error('offline');},checkLinks:false,checkTasks:false});
+ assert.equal(r.status,'fail');assert.ok(r.failed>=10);assert.ok(calls.every(c=>!c.options.method));assert.ok(!calls.some(c=>/publish|draft|image44/.test(c.u)));assert.match(M.markdown(r),/\| fail \|/);
+});

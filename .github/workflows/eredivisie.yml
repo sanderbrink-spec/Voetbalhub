@@ -20,6 +20,7 @@ jobs:
       - name: Probe licensed central data only
         run: node scripts/football47-health.js
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: football-source-health
           path: football47-health.json
