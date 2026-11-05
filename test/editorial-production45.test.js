@@ -61,3 +61,10 @@ test('persistent queue uses a SHA lease and updates it after every checkpoint',a
  assert.equal(writes[0].sha,'old');assert.equal(writes[1].sha,'new1');
  assert.equal(writes[0].branch,'editorial-media');
 });
+
+test('an undated official fixture calendar can support a verified upcoming preview',()=>{
+ const calendar=[{...docs[0],publishedAt:''}];
+ assert.equal(assess({review,docs:calendar,now,eventDate:'2026-11-08'}).approved,true);
+ assert.equal(assess({review,docs:calendar,now,eventDate:'2026-11-03'}).approved,false);
+ assert.equal(assess({review,docs:calendar,now,eventDate:'2026-11-15'}).approved,false);
+});

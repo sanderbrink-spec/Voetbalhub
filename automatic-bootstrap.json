@@ -307,5 +307,94 @@
       ],
       "why_it_matters": ""
     }
+  },
+  {
+    "key": "twente-ajax-2026-11-08",
+    "sourceUrls": [
+      "https://www.ajax.nl/wedstrijden/",
+      "https://fctwente.nl/wedstrijden/eerste-selectie",
+      "https://www.ajax.nl/fans/fc-twente-ajax/"
+    ],
+    "candidate": {
+      "kind": "preview",
+      "topic": "FC Twente ontvangt Ajax zondag in Enschede",
+      "category": "Eredivisie",
+      "eventDate": "2026-11-08",
+      "teams": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "facts": [
+        {
+          "text": "FC Twente ontvangt Ajax op zondag 8 november 2026 om 14.30 uur in de Eredivisie.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "VriendenLoterij Eredivisie zo. 08 november 2026 14:30 FC Twente - Ajax"
+            },
+            {
+              "source": 1,
+              "quote": "FC Twente zo 8 nov. 2026 14:30 Vriendenloterij Eredivisie Ajax"
+            }
+          ]
+        },
+        {
+          "text": "De uitwedstrijd van Ajax wordt in Enschede gespeeld.",
+          "evidence": [
+            {
+              "source": 2,
+              "quote": "de uitwedstrijd tegen FC Twente in Enschede"
+            }
+          ]
+        },
+        {
+          "text": "Ajax meldt dat alle duizend kaarten voor het uitvak zijn verkocht.",
+          "evidence": [
+            {
+              "source": 2,
+              "quote": "Er waren 1.000 kaarten beschikbaar, verdeeld over een auto- en buscombi. Alle kaarten zijn uitverkocht."
+            }
+          ]
+        },
+        {
+          "text": "Ajax bood de uitkaarten aan via een buscombi en een autocombi.",
+          "evidence": [
+            {
+              "source": 2,
+              "quote": "verdeeld over een auto- en buscombi"
+            }
+          ]
+        },
+        {
+          "text": "De Ajax-kalender vermeldt ADO Den Haag als de volgende tegenstander van Ajax na het duel met FC Twente.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "FC Twente - Ajax VriendenLoterij Eredivisie zo. 22 november 2026 14:30 Ajax - ADO Den Haag"
+            }
+          ]
+        }
+      ],
+      "sharedEventEvidence": [
+        {
+          "source": 0,
+          "quote": "VriendenLoterij Eredivisie zo. 08 november 2026 14:30 FC Twente - Ajax"
+        },
+        {
+          "source": 1,
+          "quote": "FC Twente zo 8 nov. 2026 14:30 Vriendenloterij Eredivisie Ajax"
+        }
+      ]
+    },
+    "draft": {
+      "headline": "FC Twente ontvangt Ajax zondag in Enschede",
+      "standfirst": "FC Twente speelt zondag thuis tegen Ajax in de Eredivisie. De wedstrijd begint om 14.30 uur.",
+      "body": [
+        "De wedstrijdkalenders van beide clubs vermelden dezelfde aftraptijd. FC Twente is de thuisploeg en Ajax reist voor het competitieduel naar Enschede.",
+        "Ajax meldt dat het uitvak is uitverkocht. Ajax had duizend kaarten voor haar supporters en bood die aan in combinatie met vervoer per bus of auto.",
+        "Ajax speelt na de reis naar Enschede thuis tegen ADO Den Haag. Die wedstrijd volgt op het duel met FC Twente in de competitiekalender van Ajax."
+      ],
+      "why_it_matters": "De wedstrijdkalenders geven Ajax-supporters de aftraptijd in Enschede en de volgorde van de komende competitieduels."
+    }
   }
 ]

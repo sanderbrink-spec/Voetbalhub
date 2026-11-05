@@ -57,29 +57,7 @@ async function sourceText(response){
  }
  if(!response.body)return '';
  const chunks=[];let size=0;
- // Bound decompressed bytes while reading, before allocating a complete page.
- for await(const chunk of response.body){
-  size+=chunk.byteLength;
-  if(size>limit)throw Error('Bronpagina te groot.');
-  chunks.push(Buffer.from(chunk));
- }
- return Buffer.concat(chunks,size).toString('utf8');
-}
-async function officialPage(url,fetcher=fetch){
- if(!allowedUrl(url))throw Error('Niet-toegestane primaire bron.');
- // One deadline covers both a possible redirect and its response body.
- const signal=AbortSignal.timeout(20000);
- for(let attempt=0;attempt<2;attempt++){
-  const r=await fetcher(url,{redirect:'manual',headers:{'User-Agent':'VeldioEditorial/2.0','Accept':'text/html'},signal});
-  if(r.status>=300&&r.status<400){
-   await r.body?.cancel();
-   const location=r.headers.get('location');
-   if(!location)throw Error('Onverwachte bronomleiding.');
-   const next=new URL(location,url).href;
-   if(attempt||!allowedUrl(next)||host(next)!==host(url))throw Error('Onverwachte bronomleiding.');
-   url=next;continue;
-  }
-  if(!r.ok){await r.body?.cancel();throw Error('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);}
+ …272 tokens truncated…ror('Primaire bron onbereikbaar: '+host(url)+' HTTP '+r.status);}
   const html=await sourceText(r);
   return {...extractPage(html,url),html};
  }
@@ -267,7 +245,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  async function load(url){if(docs.has(url))return docs.get(url);try{const d=await officialPage(url,fetcher);if(d.text.length<300)throw Error('Te weinig leesbare broninhoud.');docs.set(url,d);return d;}catch(e){report.sourceErrors.push({url,error:e.message});return null;}}
  const groups=[];
  for(const job of durable.queue.records.filter(j=>durable.queue.due(j,now))){const group=(await Promise.all(job.urls.map(load))).filter(Boolean);if(group.length===job.urls.length){if(durable.queue.enqueue(group,now).id!==job.id)durable.queue.finish(job,'superseded',now);groups.push(group);}else{durable.queue.fail(job,Error('Primaire bron tijdelijk onbereikbaar'),now);}}
- for(const urls of config.sourceGroups){const group=(await Promise.all(urls.map(load))).filter(Boolean);if(group.length>=2){group.bootstrap=bootstrap.find(p=>JSON.stringify(p.sourceUrls)===JSON.stringify(group.map(d=>d.url)));groups.push(group);}}
+ for(const urls of config.sourceGroups){
+  const prepared=bootstrap.find(p=>JSON.stringify(p.sourceUrls)===JSON.stringify(urls));
+  if(prepared?.candidate.kind==='preview'&&prepared.candidate.eventDate<=today)continue;
+  const group=(await Promise.all(urls.map(load))).filter(Boolean);
+  if(group.length>=2){if(group.length===urls.length)group.bootstrap=prepared;groups.push(group);}
+ }
  const discovered=[];
  for(const index of config.newsIndexes){try{const page=await officialPage(index.url,fetcher);for(const link of discoverLinks(page.html,index)){const doc=await load(link);if(doc)discovered.push(doc);}}catch(e){report.sourceErrors.push({url:index.url,error:e.message});}}
  for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
@@ -311,7 +294,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const preflight=M.publicationIssues(payload);if(preflight.length)throw Error(preflight.join(' '));
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    const review=await verifyDraft(payload,candidate,group,ai,published);
-   const assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold});
+   const assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold,...(candidate.kind==='preview'?{eventDate:candidate.eventDate}:{})});
    report.assessments.push({topic,...assessment});
    if(!assessment.approved)throw Error(assessment.reasons.join(' '));
    payload.reviewNotes+=' Redactiescore fase45: '+JSON.stringify(assessment);
