@@ -34,7 +34,7 @@ def evaluate(expression):
  finally:ws.close()
 def choose(c):
  evaluate("document.querySelector('[data-choice=\""+c+"\"]').click();document.querySelector('#savePrediction').click();true")
- wait_for(lambda:evaluate("document.querySelector('.saved').textContent.includes('Opgeslagen: "+c+"') && !document.querySelector('.saved').textContent.includes('Niet opgeslagen')"))
+ wait_for(lambda:evaluate("document.querySelector('.saved').textContent.includes('Opgeslagen: "+c+"') && !document.querySelector('.saved').textContent.includes('Opslag niet bevestigd')"))
 try:
  launch();wait_for(lambda:evaluate("!!document.querySelector('#join')"));evaluate("document.querySelector('#eligible').checked=true;document.querySelector('#join').click();true");wait_for(lambda:evaluate("!!document.querySelector('[data-choice]:enabled')"),50);connected=True
  assert evaluate("getComputedStyle(document.querySelector('.club-shirt')).webkitMaskImage.includes('data:image/webp')"),'Shirt mask must not require a cross-origin file request';fixture=evaluate("document.querySelector('[data-choice]').dataset.fixture");assert str(fixture).startswith('of-nl-');checks.append('Real released Eredivisie fixture loaded over native bridge: '+fixture)
@@ -55,7 +55,7 @@ try:
  device.screenshot().save(str(OUT/'restored-after-restart.png'))
  adb('shell','svc','wifi','disable');adb('shell','svc','data','disable');evaluate("document.querySelector('[data-choice=\"2\"]').click();document.querySelector('#savePrediction').click();true")
  wait_for(lambda:evaluate("/Geen verbinding|Probeer opnieuw/.test(document.querySelector('#status').textContent)"),35)
- assert evaluate("document.querySelector('.saved').textContent.includes('Opgeslagen: X') && document.querySelector('.saved').textContent.includes('Niet opgeslagen')");device.screenshot().save(str(OUT/'offline-save-retains-confirmed-choice.png'));checks.append('Offline save reports failure and retains confirmed choice X')
+ assert evaluate("document.querySelector('.saved').textContent.includes('Opgeslagen: X') && document.querySelector('.saved').textContent.includes('Opslag niet bevestigd')");device.screenshot().save(str(OUT/'offline-save-retains-confirmed-choice.png'));checks.append('Offline save reports failure and retains confirmed choice X')
  adb('shell','svc','wifi','enable');adb('shell','svc','data','enable');time.sleep(5)
  choice=evaluate("QuizApi.request('predictions',{competition:'eredivisie'}).then(r=>r.predictions.find(p=>p.fixtureId==="+json.dumps(fixture)+").choice)");assert choice in ['X','2'],repr(choice);checks.append('Reconnect resolves uncertain request outcome from server: '+choice);evaluate("document.querySelector('#refresh').click();true");wait_for(lambda:evaluate("document.querySelector('.saved').textContent.includes('Opgeslagen: "+choice+"')"));checks.append('Refresh displays confirmed server outcome without false success before acknowledgement')
  evaluate("QuizApi.request('delete').then(()=>true)");connected=False;checks.append('Temporary emulator profile and its predictions deleted');device(text='Home').click();wait_for(lambda:device(description='Menu: Wedstrijden').exists);device.screenshot().save(str(OUT/'home-fully-loaded.png'))
