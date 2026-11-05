@@ -12,8 +12,8 @@ android {
         applicationId = "nl.voetbalhub.app1"
         minSdk = 24
         targetSdk = 36
-        versionCode = 88
-        versionName = "4.48-test"
+        versionCode = 89
+        versionName = "4.49-test"
 
     }
 
