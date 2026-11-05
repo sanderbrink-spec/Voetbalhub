@@ -32,7 +32,7 @@ function footballChecks(key,s,now=Date.now()){
  const checks=[],add=(name,status,detail)=>checks.push({id:'football.'+key+'.'+name,status,detail});
  const date=Date.parse(s.updatedAt),age=now-date;
  add('available',['available','cached'].includes(s.status)&&s.fixtures?.length?'pass':'fail',s.message||s.status||'Status ontbreekt');
- add('freshness',Number.isFinite(date)&&age>=0&&age<=36*3600000&&Number(s.rightsExpiresAt)>now?'pass':'fail','Bijgewerkt: '+(s.updatedAt||'onbekend'));
+ add('freshness',Number.isFinite(date)&&age>=-5*60000&&age<=36*3600000&&Number(s.rightsExpiresAt)>now?'pass':'fail','Bijgewerkt: '+(s.updatedAt||'onbekend'));
  if(s.status==='cached')add('synchronization','fail','Bronuitval; alleen eerder gecontroleerde cache beschikbaar');
  const fixtures=s.fixtures||[],ids=new Set();
  for(const f of fixtures){
@@ -77,7 +77,7 @@ async function audit({fetcher=fetch,now=Date.now(),token=process.env.GITHUB_TOKE
  const routes=['/desk','/football-desk','/contact','/privacy','/integrations/football/catalog'];
  for(const path of routes)try{await request(BASE+path,{fetcher,json:false});add('route:'+path,'pass','Bereikbaar');}catch(e){add('route:'+path,'fail',e.message);}
  try{const r=await get('/articles?view=all');if(!Array.isArray(r.articles))throw Error('Ongeldige artikelenresponse');articles=r.articles;report.checks.push(...articlesChecks(articles,now));}catch(e){add('news.response','fail',e.message);}
- for(const key of ['eredivisie','kkd','bundesliga','premierleague','laliga','championsleague','europaleague'])try{report.checks.push(...footballChecks(key,await get('/integrations/football?competition='+key),now));}catch(e){add('football.'+key+'.response','fail',e.message);}
+ for(const key of ['eredivisie','kkd','bundesliga','premierleague','laliga','championsleague','europaleague','conferenceleague'])try{report.checks.push(...footballChecks(key,await get('/integrations/football?competition='+key),now));}catch(e){add('football.'+key+'.response','fail',e.message);}
  try{const r=await get('/integrations/videos43');add('videos.catalogue',r.videos?.length&&Date.parse(r.expiresAt)>now?'pass':'fail',r.playlistStatus||'Geen status');if(r.videos?.some(v=>v.embeddable&&v.verification!=='youtube-data-api'))add('videos.embedding','fail','Insluittoestemming niet bevestigd');}catch(e){add('videos.catalogue','fail',e.message);}
  if(checkLinks){
   const values=[...new Set(articles.filter(a=>a.feedState!=='archived').flatMap(a=>[a.imageUrl,...(a.sources||[]).map(s=>s.url)]).filter(Boolean))];

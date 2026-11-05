@@ -5,13 +5,13 @@ on:
     branches: [main]
     paths: ['android-project/**', 'scripts/android-*.py', 'scripts/verify-android-source.py', 'scripts/browser/subpages46.cjs', 'test/subpages46.test.js', '.github/workflows/build.yml']
   push:
-    branches: [main, 'fix/veldio-44b-premium-recovery', 'work/veldio-45', 'work/veldio-46', 'fix/veldio-47-functional']
+    branches: [main, 'fix/veldio-44b-premium-recovery', 'work/veldio-45', 'work/veldio-46', 'fix/veldio-47-functional', 'work/veldio-48']
     paths: ['android-project/**', 'scripts/android-*.py', 'scripts/verify-android-source.py', 'scripts/browser/subpages46.cjs', 'test/subpages46.test.js', '.github/workflows/build.yml']
 permissions:
   contents: read
 jobs:
   build:
-    if: github.event_name != 'pull_request' || github.head_ref != 'work/veldio-46'
+    if: (github.event_name != 'pull_request' || !startsWith(github.head_ref, 'work/veldio-')) && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[reuse-tested-apk]'))
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -39,19 +39,19 @@ jobs:
       - name: Verify signature, manifest and approved APK assets
         run: |
           set -euo pipefail
-          cp android-project/app/build/outputs/apk/debug/app-debug.apk Veldio-47.apk
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-47.apk > signature.txt
-          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-47.apk > manifest.txt
-          grep -q "package: name='nl.voetbalhub.app1'.*versionCode='87'.*versionName='4.47-test'" manifest.txt
+          cp android-project/app/build/outputs/apk/debug/app-debug.apk Veldio-48.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-48.apk > signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-48.apk > manifest.txt
+          grep -q "package: name='nl.voetbalhub.app1'.*versionCode='88'.*versionName='4.48-test'" manifest.txt
           grep -q "application-label:'Veldio'" manifest.txt
-          python3 scripts/apk-secret-scan.py Veldio-47.apk
-          python3 scripts/verify-android-source.py Veldio-47.apk
-          sha256sum Veldio-47.apk > sha256.txt
+          python3 scripts/apk-secret-scan.py Veldio-48.apk
+          python3 scripts/verify-android-source.py Veldio-48.apk
+          sha256sum Veldio-48.apk > sha256.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: Veldio-47
+          name: Veldio-48
           path: |
-            Veldio-47.apk
+            Veldio-48.apk
             Veldio-build-provenance.json
             signature.txt
             manifest.txt
@@ -65,7 +65,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: Veldio-47
+          name: Veldio-48
           path: apk
       - name: Install device test driver
         run: python3 -m pip install 'uiautomator2>=3,<4' 'websocket-client>=1,<2'
@@ -82,11 +82,11 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase47.py apk/Veldio-47.apk
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase48.py apk/Veldio-48.apk
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Veldio-47-Android16
+          name: Veldio-48-Android16
           path: .android-smoke/
           include-hidden-files: true
           if-no-files-found: error

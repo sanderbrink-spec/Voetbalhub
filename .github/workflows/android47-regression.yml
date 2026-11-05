@@ -1,7 +1,7 @@
 name: Veldio Android16 verified artifact regression
 on:
   push:
-    branches: [main, "work/veldio-48"]
+    branches: [main]
     paths: ['.github/workflows/android47-regression.yml', 'scripts/android-phase47.py']
   workflow_dispatch:
 permissions:
@@ -41,6 +41,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: a845792cd6b4e7e2c596aa859088d58303e8830c
       - uses: actions/download-artifact@v4
         with:
           name: Veldio-47

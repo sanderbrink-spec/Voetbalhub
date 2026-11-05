@@ -4,8 +4,8 @@
   "approved_apk_run": 41719319572,
   "approved_apk_artifact": 13272705387,
   "approved_apk_sha256": "bce258f0931f55f517aa4114bf3f54a896e1d53478a347fd40be5cbdd55e1243",
-  "version": "4.47-test",
-  "version_code": 87,
+  "version": "4.48-test",
+  "version_code": 88,
   "package": "nl.voetbalhub.app1",
   "asset_count": 141,
   "assets": {
@@ -32,7 +32,7 @@
     "assets/visual-rights38.json": "b54540662dc615ee2e52a19b522750b7866c1cae8f58b72216b9a149e3d6e226",
     "assets/youtube-player43.html": "d0136caddd07c4304cd1057023b9f12dd77ed1c1606ee7ed2dd05a7c784428ac",
     "assets/youtube-seed.json": "aac0cf7f236633446516996ec5e7ee80912a9fc7efdcb9444ee580482c2700c1",
-    "assets/personal-hub.html": "987ff20a579a8da186083cdf262036b85b18c57505cdc5eb63360ba12ada040e",
+    "assets/personal-hub.html": "dd18349973dfb73452a8d19d8e363e8a37e99a3ee32e1c5f053f34bc6122cd7b",
     "assets/competition-names47.json": "de7f20c9d832c7f663c2196ca375a36951e059155f67accbb8e3ce8c9769e851",
     "assets/stadium.html": "b17485cd26d39b39fd108289fd15d28eb412f6bd01573a5e704d53f386488750",
     "assets/clubquiz-ui.js": "2d8e959e313d2ccfb5e37848c8944928a50acf4861e89707acf2d25aea531c40",
@@ -155,7 +155,7 @@
     "settings.gradle.kts": "4cf21d1bfd7d0a0ca19d852c34d941a00e0b45f816d8f6d0dea0efff79a1bb85",
     "build.gradle.kts": "7affc359fa871247e8f608f01aee79617629544e22697bdbdeb4e127a250d007",
     "gradle.properties": "fa078c27c9e4bde28a029d673875b028884505efa436b68cf60e1ac0be5b679b",
-    "app/build.gradle.kts": "3c4a8de0fb1cf2f7d040a6f63803a11f0bcc1ff3cd8514ffbe0678718dc1e5b8",
+    "app/build.gradle.kts": "6b9e9f06e6201ca861c51e04343ff6be1e0fb4d5ac9150004930d346df5908df",
     "app/src/main/AndroidManifest.xml": "13a7cb8a7eda5e6dc2ba5903b45772323774e2483095c15e2b144101a6638e6a",
     "app/src/main/assets/veldio-logo.png": "efc63ba8d212c9c953295d171ff9cf2ffa01c993dec4ec872ecb1bf53f643ccc",
     "app/src/main/assets/home-features.html": "4c5c202ef7dd1961e96c5a7fe6b3b122618b1ba83c27effa51ead2a9260a955d",
@@ -180,7 +180,7 @@
     "app/src/main/assets/visual-rights38.json": "b54540662dc615ee2e52a19b522750b7866c1cae8f58b72216b9a149e3d6e226",
     "app/src/main/assets/youtube-player43.html": "d0136caddd07c4304cd1057023b9f12dd77ed1c1606ee7ed2dd05a7c784428ac",
     "app/src/main/assets/youtube-seed.json": "aac0cf7f236633446516996ec5e7ee80912a9fc7efdcb9444ee580482c2700c1",
-    "app/src/main/assets/personal-hub.html": "987ff20a579a8da186083cdf262036b85b18c57505cdc5eb63360ba12ada040e",
+    "app/src/main/assets/personal-hub.html": "dd18349973dfb73452a8d19d8e363e8a37e99a3ee32e1c5f053f34bc6122cd7b",
     "app/src/main/assets/competition-names47.json": "de7f20c9d832c7f663c2196ca375a36951e059155f67accbb8e3ce8c9769e851",
     "app/src/main/assets/stadium.html": "b17485cd26d39b39fd108289fd15d28eb412f6bd01573a5e704d53f386488750",
     "app/src/main/assets/clubquiz-ui.js": "2d8e959e313d2ccfb5e37848c8944928a50acf4861e89707acf2d25aea531c40",
@@ -240,7 +240,7 @@
     "app/src/main/java/nl/voetbalhub/app/CompetitionEmblem42.java": "c303bc56978813601a276ef721c2321a112f165f5d5a88168b7d7afd8e89c27a",
     "app/src/main/java/nl/voetbalhub/app/EditorialPhotos.java": "8364c83003cc56da89b0e7bd86a5c0da4529d1e13971f4bc2c6c918013a23364",
     "app/src/main/java/nl/voetbalhub/app/EditorialStore.java": "87487e4423fa666a6a539598a99acdbdd68d77697c0d694df928e7452b166365",
-    "app/src/main/java/nl/voetbalhub/app/PersonalHubView.java": "c79402342befa07d204dab61fdd0bebabd637040e756f1353bbeed867ae614b0",
+    "app/src/main/java/nl/voetbalhub/app/PersonalHubView.java": "d1ef8a2a387ea401106fdc95c9bf579396ab12dab030390c3eb8861928dadcaa",
     "app/src/main/java/nl/voetbalhub/app/CompetitionTile.java": "26173f1c4c7f2f22e42f8c11c2ffde353c1a071dbf063da87f00d099c61ab541",
     "app/src/main/java/nl/voetbalhub/app/AdController.java": "3bd19437f8dd7cddddf1cfae908bc99a705ecc18e538a1126e3f4cac22545635",
     "app/src/main/java/nl/voetbalhub/app/MatchStrip40.java": "9d4648575484b15e86ba618ccd5aa349fa7830140afb5bd8460ef9ec79ac5987",
@@ -673,5 +673,11 @@
     "assets/eredivisie.html",
     "assets/club-directory.json",
     "assets/premium40/clubs.webp"
-  ]
+  ],
+  "phase48_changed_files": [
+    "app/build.gradle.kts",
+    "app/src/main/java/nl/voetbalhub/app/PersonalHubView.java",
+    "app/src/main/assets/personal-hub.html"
+  ],
+  "phase48_note": "Distinguish unavailable competition feed from network failure; keep all visual assets."
 }

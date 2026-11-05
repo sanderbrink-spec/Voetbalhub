@@ -31,3 +31,9 @@ test('an unreachable production service yields explicit failures and a report; n
  const calls=[];const r=await M.audit({now,fetcher:async(u,options)=>{calls.push({u,options});throw Error('offline');},checkLinks:false,checkTasks:false});
  assert.equal(r.status,'fail');assert.ok(r.failed>=10);assert.ok(calls.every(c=>!c.options.method));assert.ok(!calls.some(c=>/publish|draft|image44/.test(c.u)));assert.match(M.markdown(r),/\| fail \|/);
 });
+
+test('a snapshot refreshed during the audit is not falsely reported as future or stale',()=>{
+ const s={status:'available',updatedAt:new Date(now+30000).toISOString(),rightsExpiresAt:now+3600000,fixtures:[{id:'a',home:{id:1},away:{id:2},date:new Date(now+86400000).toISOString(),status:'NS'}],standings:[{}]};
+ assert.equal(M.footballChecks('x',s,now).find(c=>c.id.endsWith('freshness')).status,'pass');
+ assert.equal(M.footballChecks('x',{...s,updatedAt:new Date(now+3600000).toISOString()},now).find(c=>c.id.endsWith('freshness')).status,'fail');
+});
