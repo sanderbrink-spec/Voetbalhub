@@ -312,8 +312,8 @@
     "key": "twente-ajax-2026-11-08",
     "sourceUrls": [
       "https://www.ajax.nl/fans/fc-twente-ajax/",
-      "https://fctwente.nl/wedstrijden/eerste-selectie",
-      "https://www.ajax.nl/wedstrijden/"
+      "https://www.ajax.nl/wedstrijden/",
+      "https://fctwente.nl/wedstrijden/eerste-selectie"
     ],
     "candidate": {
       "kind": "preview",
@@ -329,11 +329,11 @@
           "text": "FC Twente ontvangt Ajax op zondag 8 november 2026 om 14.30 uur in de Eredivisie.",
           "evidence": [
             {
-              "source": 2,
+              "source": 1,
               "quote": "VriendenLoterij Eredivisie zo. 08 november 2026 14:30 FC Twente - Ajax"
             },
             {
-              "source": 1,
+              "source": 2,
               "quote": "FC Twente zo 8 nov. 2026 14:30 Vriendenloterij Eredivisie Ajax"
             }
           ]
@@ -366,22 +366,35 @@
           ]
         },
         {
-          "text": "De Ajax-kalender vermeldt ADO Den Haag als de volgende tegenstander van Ajax na het duel met FC Twente.",
+          "text": "Ajax had 625 buscombikaarten en 375 autocombikaarten beschikbaar.",
           "evidence": [
             {
-              "source": 2,
-              "quote": "FC Twente - Ajax VriendenLoterij Eredivisie zo. 22 november 2026 14:30 Ajax - ADO Den Haag"
+              "source": 0,
+              "quote": "Buscombi Er waren 625 kaarten beschikbaar voor € 33,69 per kaart, inclusief buscombi."
+            },
+            {
+              "source": 0,
+              "quote": "Autocombi Daarnaast zijn er 375 autocombi-kaarten beschikbaar"
+            }
+          ]
+        },
+        {
+          "text": "Hengelo is volgens Ajax de standaard opstapplaats voor de buscombi.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "De standaard opstapplaats is Hengelo. Via de Supportersvereniging Ajax kun je ook gebruikmaken van alternatieve opstapplaatsen."
             }
           ]
         }
       ],
       "sharedEventEvidence": [
         {
-          "source": 2,
+          "source": 1,
           "quote": "VriendenLoterij Eredivisie zo. 08 november 2026 14:30 FC Twente - Ajax"
         },
         {
-          "source": 1,
+          "source": 2,
           "quote": "FC Twente zo 8 nov. 2026 14:30 Vriendenloterij Eredivisie Ajax"
         }
       ]
@@ -390,11 +403,11 @@
       "headline": "Uitvak uitverkocht voor Ajax bij FC Twente",
       "standfirst": "Ajax meldt dat alle duizend uitkaarten voor de Eredivisiewedstrijd tegen FC Twente zijn verkocht.",
       "body": [
-        "Ajax bood de uitkaarten aan in combinatie met vervoer. Supporters konden kiezen tussen reizen per bus of reizen met de auto.",
+        "Ajax bood de uitkaarten aan in combinatie met vervoer. Van de duizend beschikbare kaarten waren er 625 voor de buscombi en 375 voor de autocombi.",
         "De wedstrijdkalenders van beide clubs noemen zondag 8 november om 14.30 uur als aftraptijd. FC Twente ontvangt Ajax in Enschede.",
-        "Ajax speelt na de reis naar Enschede thuis tegen ADO Den Haag. Die wedstrijd volgt op het duel met FC Twente in de competitiekalender van Ajax."
+        "De club vermeldt Hengelo als standaard opstapplaats voor supporters die per bus reizen. Het uitvak zelf is volgens Ajax uitverkocht."
       ],
-      "why_it_matters": "Het uitvak voor het duel in Enschede zit vol. Ajax-supporters kunnen bij de club terecht voor informatie over hun vervoersregeling."
+      "why_it_matters": "De bezoekersregeling is relevant voor Ajax-supporters die al een uitkaart hebben."
     }
   }
 ]
