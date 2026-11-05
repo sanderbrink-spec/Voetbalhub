@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [main]
-    paths: ['android-project/**', 'scripts/android-*.py', 'scripts/verify-android-source.py', 'scripts/browser/subpages46.cjs', 'test/subpages46.test.js', '.github/workflows/build.yml']
+    paths: ['android-project/**', 'scripts/android-*.py', 'scripts/verify-android-source.py', 'scripts/browser/subpages46.cjs', 'scripts/browser/phase49.cjs', 'test/subpages46.test.js', '.github/workflows/build.yml']
   push:
     branches: [main, 'fix/veldio-44b-premium-recovery', 'work/veldio-45', 'work/veldio-46', 'fix/veldio-47-functional', 'work/veldio-48', 'work/veldio-49']
-    paths: ['android-project/**', 'scripts/android-*.py', 'scripts/verify-android-source.py', 'scripts/browser/subpages46.cjs', 'test/subpages46.test.js', '.github/workflows/build.yml']
+    paths: ['android-project/**', 'scripts/android-*.py', 'scripts/verify-android-source.py', 'scripts/browser/subpages46.cjs', 'scripts/browser/phase49.cjs', 'test/subpages46.test.js', '.github/workflows/build.yml']
 permissions:
   contents: read
 jobs:
