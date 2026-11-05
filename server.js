@@ -291,7 +291,7 @@ async function getArticles(view = "current") {
 }
 const football47=require("./football-data47").create({redis:client});
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
-const quizHandler=require("./quiz39/service").create({redis:client});
+const quizHandler=require("./quiz39/service").create({redis:client,football:football47});
 async function handle(req, res) {
   security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
@@ -300,6 +300,7 @@ async function handle(req, res) {
     const key=url.searchParams.get('competition')||'eredivisie';
     try{return send(res,200,await football47.get(key));}catch{return send(res,400,{error:'Onbekende competitie.'});}
   }
+  if(require("./image-library49").serve(req,res,url.pathname))return;
   if(require("./media43").serve(req,res,url.pathname))return;
   if(await quizHandler(req,res))return;
   if(req.method==="GET"&&url.pathname==="/editorial/veldio-arena.webp"){

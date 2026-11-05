@@ -17077,5 +17077,59 @@ window.CLUBQUIZ_BANK=[
    "AZ"
   ],
   "topic": "history"
+ },
+ {
+  "id": "rules49-penalty-mark",
+  "level": "easy",
+  "question": "Op hoeveel meter van de doellijn ligt de strafschopstip bij standaard veldvoetbal?",
+  "answers": [
+   "11 meter",
+   "9,15 meter",
+   "16,5 meter",
+   "5,5 meter"
+  ],
+  "correct": "11 meter",
+  "explanation": "De strafschopstip ligt volgens IFAB Law 1 op 11 meter van de doellijn.",
+  "source": "https://www.theifab.com/laws/latest/the-field-of-play/",
+  "reviewedAt": "2026-11-05",
+  "clubs": [],
+  "topic": "rules",
+  "image": {}
+ },
+ {
+  "id": "rules49-centre-circle",
+  "level": "normal",
+  "question": "Welke straal heeft de middencirkel bij standaard veldvoetbal?",
+  "answers": [
+   "9,15 meter",
+   "11 meter",
+   "5,5 meter",
+   "16,5 meter"
+  ],
+  "correct": "9,15 meter",
+  "explanation": "IFAB Law 1 geeft een straal van 9,15 meter voor de middencirkel.",
+  "source": "https://www.theifab.com/laws/latest/the-field-of-play/",
+  "reviewedAt": "2026-11-05",
+  "clubs": [],
+  "topic": "rules",
+  "image": {}
+ },
+ {
+  "id": "rules49-goal-height",
+  "level": "normal",
+  "question": "Hoe hoog is de onderkant van de lat boven de grond bij een standaard voetbaldoel?",
+  "answers": [
+   "2,44 meter",
+   "2 meter",
+   "2,50 meter",
+   "3 meter"
+  ],
+  "correct": "2,44 meter",
+  "explanation": "Volgens IFAB Law 1 is de onderkant van de lat 2,44 meter boven de grond.",
+  "source": "https://www.theifab.com/laws/latest/the-field-of-play/",
+  "reviewedAt": "2026-11-05",
+  "clubs": [],
+  "topic": "rules",
+  "image": {}
  }
 ];

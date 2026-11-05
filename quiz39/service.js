@@ -9,10 +9,11 @@ const sha=v=>crypto.createHash('sha256').update(v).digest('hex');
 const displayNames={'German Democratic Republi':'Oost-Duitsland','Greece':'Griekenland','Serbia':'Servië','Switzerland':'Zwitserland','USSR':'Sovjet-Unie','Ukraine':'Oekraïne'};
 const displayName=text=>displayNames[text]||text;
 const displayExplanation=text=>Object.entries(displayNames).reduce((out,[source,target])=>out.replaceAll(source,target),String(text||''));
-function create({redis,env=process.env,prefix='q39:',now=Date.now}={}){
+function create({redis,env=process.env,prefix='q39:',now=Date.now,football}={}){
  const key=(...parts)=>prefix+parts.join(':'),limiter=security.createLimiter({now}),boardCache=new Map();
  function reply(res,status,data,headers={}){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...headers});res.end(status===304?undefined:JSON.stringify(data));}
  async function body(req,allowed){const parts=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>8192)throw Object.assign(Error('Ongeldige invoer.'),{status:413});parts.push(chunk);}let data;try{data=JSON.parse(Buffer.concat(parts).toString('utf8')||'{}');}catch{throw Object.assign(Error('Ongeldige invoer.'),{status:400});}if(!data||Array.isArray(data)||typeof data!=='object'||Object.keys(data).some(k=>!allowed.includes(k)))throw Object.assign(Error('Ongeldige invoer.'),{status:400});return data;}
+ const predictions=football?require('../predictions49').create({redis,football,prefix,now,profile,safeProfile}):null;
  const uuid=()=>crypto.randomUUID();
  async function profile(id){try{const p=JSON.parse(await redis.get(key('player',id)));return p&&p.id===id?p:null;}catch{return null;}}
  function safeProfile(p){const safe=p.nameApproved&&N.check(p.name).allowed?p.name:p.alias;return {id:p.id,name:N.check(safe).allowed?safe:'VeiligeSpeler',pending:!!p.pendingName,blocked:!!p.blocked,retentionDays:90,records:p.records40||{}};}
@@ -43,9 +44,10 @@ function create({redis,env=process.env,prefix='q39:',now=Date.now}={}){
   }
   const p=await auth(req,['GET','DELETE'].includes(req.method)&&url.pathname==='/quiz/v1/me');
   if(!limiter('token:'+p.id,180)){reply(res,429,{message:'Te veel quizverzoeken.'},{'Retry-After':'60'});return true;}
+  if(url.pathname.startsWith('/quiz/v1/predictions')&&predictions){reply(res,200,await predictions.handle(req,url,p,body));return true;}
   if(url.pathname==='/quiz/v1/me'&&req.method==='GET'){reply(res,200,{profile:safeProfile(p)});return true;}
   if(url.pathname==='/quiz/v1/me'&&req.method==='DELETE'){
-   await patch(p,{blocked:true,pendingName:'',nameApproved:false});const boards=await redis.sMembers(key('ownedBoards',p.id));for(let i=0;i<boards.length;i+=32)await Promise.all(boards.slice(i,i+32).filter(k=>k.startsWith(prefix+'board:')||k.startsWith(prefix+'live:')).map(k=>redis.hDel(k,p.id)));
+   await patch(p,{blocked:true,pendingName:'',nameApproved:false});if(predictions)await predictions.remove(p.id);const boards=await redis.sMembers(key('ownedBoards',p.id));for(let i=0;i<boards.length;i+=32)await Promise.all(boards.slice(i,i+32).filter(k=>k.startsWith(prefix+'board:')||k.startsWith(prefix+'live:')).map(k=>redis.hDel(k,p.id)));
    const owned=await redis.sMembers(key('ownedKeys',p.id));const allowed=owned.filter(k=>k.startsWith(prefix+'round:')||k.startsWith(prefix+'claim:'+p.id+':'));for(let i=0;i<allowed.length;i+=64)await redis.del(allowed.slice(i,i+64));
    const reports=await redis.hGetAll(key('reports'));for(const [id,raw]of Object.entries(reports))if(JSON.parse(raw).target===p.id||id===sha(p.id+':'+JSON.parse(raw).target))await redis.hDel(key('reports'),id);
    await redis.del([key('player',p.id),key('ownedBoards',p.id),key('ownedKeys',p.id)]);await redis.sRem(key('players'),p.id);boardCache.clear();reply(res,200,{deleted:true});return true;}

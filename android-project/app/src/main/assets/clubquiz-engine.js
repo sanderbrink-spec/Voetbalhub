@@ -7,7 +7,8 @@ function dayKey(now=Date.now()){return new Intl.DateTimeFormat('sv-SE',{timeZone
 function seeded(seed){let h=2166136261;for(const c of seed){h=Math.imul(h^c.charCodeAt(0),16777619);}return ()=>{h+=0x6D2B79F5;let t=h;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function select(bank,{level='easy',count=10,recent=[],rng=Math.random,now=Date.now()}={}){
  if(!['easy','normal','hard','mixed'].includes(level))throw Error('Onbekend niveau');
- const pool=bank.filter(q=>valid(q)&&(level==='mixed'||q.level===level)&&(!q.validUntil||Date.parse(q.validUntil)>now));
+ const seenIds=new Set();
+ const pool=bank.filter(q=>!seenIds.has(q.id)&&seenIds.add(q.id)).filter(q=>valid(q)&&(level==='mixed'||q.level===level)&&(!q.validUntil||Date.parse(q.validUntil)>now));
  const history=Array.isArray(recent)?recent.filter(x=>typeof x==='string'):[];
  const fresh=shuffle(pool.filter(q=>!history.includes(q.id)),rng);
  const seen=pool.filter(q=>history.includes(q.id)).sort((a,b)=>history.lastIndexOf(a.id)-history.lastIndexOf(b.id));
