@@ -163,10 +163,8 @@ public class MainActivity extends AppCompatActivity {
         prefs = getSharedPreferences("voethub", MODE_PRIVATE);
         lastRefresh = prefs.getLong("lastRefresh", 0L);
         loadCachedArticles();
-        buildChips();
-        buildNav();
-        findViewById(R.id.logo).setOnClickListener(v -> { active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showHome39(); });
-        findViewById(R.id.title).setOnClickListener(v -> { active = "Voor jou"; articleDisplayLimit = 20; buildChips(); showHome39(); });
+        findViewById(R.id.logo).setOnClickListener(v -> { articleDisplayLimit = 20; showHome39(); });
+        findViewById(R.id.title).setOnClickListener(v -> { articleDisplayLimit = 20; showHome39(); });
         findViewById(R.id.search).setOnClickListener(v -> showSearch());
         findViewById(R.id.settings).setOnClickListener(v -> showSettings());
         ImageRegistry39.load(this);
@@ -202,7 +200,9 @@ public class MainActivity extends AppCompatActivity {
                 active = label;
                 articleDisplayLimit = 20;
                 buildChips();
-                if (label.equals("Video")) showVideos(); else showNews();
+                if (label.equals("Voor jou")) showHome39();
+                else if (label.equals("Video")) showVideos();
+                else showNews();
             });
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-2, dp(38));
             lp.setMargins(0, 0, dp(8), 0);
@@ -1512,10 +1512,15 @@ private void showScores() {
     }
     private void showDestination39(String mode){
         enterScreen("destination39:"+mode,()->showDestination39(mode));
+        if ("home".equals(mode)) {
+            active = "Voor jou";
+            buildChips();
+        }
         if(liveScoresRefresh!=null)main.removeCallbacks(liveScoresRefresh);
         if(homeFeature!=null)homeFeature.closeVideo();
         personalHubVisible=false;personalHub=null;eredivisieStatisticsVisible=false;weeklyPreviewVisible=false;scoresPageVisible=false;clubQuizView=null;
-        findViewById(R.id.header).setVisibility(android.view.View.VISIBLE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
+        findViewById(R.id.header).setVisibility(android.view.View.VISIBLE);
+        findViewById(R.id.chipsScroll).setVisibility("home".equals(mode) ? View.VISIBLE : View.GONE);
         currentBottomTab="fixtures".equals(mode)?"Wedstrijden":"predictions".equals(mode)?"Voorspellen":"notifications".equals(mode)?"Meer":"Nieuws";buildNav();content.removeAllViews();
         if("predictions".equals(mode)){clubQuizView=new ClubQuizView(this,this::closeClubQuiz,true);content.addView(clubQuizView,new android.widget.FrameLayout.LayoutParams(-1,-1));}
         else content.addView("home".equals(mode)?new HomeMenu39(this,this::openDestination39,this::showEditorialArticle):new DestinationView39(this,mode,this::openDestination39,name->showPersonalHub("profile",name)),new android.widget.FrameLayout.LayoutParams(-1,-1));

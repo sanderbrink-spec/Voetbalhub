@@ -1,4 +1,4 @@
-<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline'; connect-src 'self'"><title>Veldio Clubquiz</title><link rel="stylesheet" href="quiz39.css"><style>/* Veldio 40: shared WebView surface, typography and interaction tokens. */
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' file:; script-src 'self' file:; style-src 'self' file: 'unsafe-inline'; connect-src 'self'"><title>Veldio Clubquiz</title><link rel="stylesheet" href="quiz39.css"><style>/* Veldio 40: shared WebView surface, typography and interaction tokens. */
 :root{--bg:#020805;--green:#a9ff35;--panel:#0c2115;--muted:#b0c6b7;--border:#3c6549;color-scheme:dark}
 body{background:radial-gradient(ellipse at 100% 0,#10321d55,transparent 430px),#020805!important;color:#f3f8f4;font-family:system-ui,sans-serif!important}
 main{padding-bottom:max(32px,env(safe-area-inset-bottom));overflow-wrap:anywhere}
@@ -23,7 +23,8 @@ body[data-section=fixtures] main:before{background-image:url('premium40/fixtures
 
 #play figure{margin-block:12px}#play #photo{max-height:120px;object-fit:cover}#play>h2{font-size:clamp(20px,5.5vw,26px);padding:16px;line-height:1.3}#play #answers button{min-height:52px}#next:not([hidden]){position:sticky;bottom:8px;z-index:5;display:block;box-shadow:0 6px 20px #000b}
 </style><link rel="stylesheet" href="premium51.css"><style>
-header .brand { object-fit: contain; max-height: 52px; width: auto; }
+header .brand { flex: 0 0 52px; object-fit: contain; width: 52px; height: 52px; }
+.header-badge { min-width: 0; overflow-wrap: anywhere; }
 header #back { min-width: var(--touch); }
 .intro { min-height: 132px; border: 1px solid var(--edge); box-shadow: none; }
 .intro-copy { padding: 18px; }
@@ -34,11 +35,14 @@ header #back { min-width: var(--touch); }
 #modeCards { min-inline-size: 0; padding: 8px; }
 #modeCards legend { padding-inline: 6px; color: var(--text); font-weight: 700; }
 #modeCards label { display: flex; align-items: center; gap: 10px; min-height: var(--touch); padding: 6px 10px; margin: 4px 0; color: var(--text); border: 1px solid var(--edge); border-radius: 12px; cursor: pointer; }
-#modeCards input { flex: none; accent-color: var(--green); }
+#modeCards input[type=radio] { flex: 0 0 16px; width: 16px; min-height: 16px; padding: 0; margin: 0; accent-color: var(--green); }
 #modeCards label:has(:checked) { border-color: var(--green); background: #192d17; }
 #modeCards label:focus-within { outline: 2px solid var(--green); }
-#play .timer { display: flex; align-items: center; gap: 4px; }
-#play .answer { box-shadow: none; border-color: var(--edge); background: var(--surface); }
+#play .timer { display: flex; align-items: center; justify-content: center; gap: 3px; box-shadow: none; }
+#play .timer svg { position: relative; }
+#play #answers button.answer { box-shadow: none; border-color: var(--edge); background: var(--surface); }
+#play #answers button.correct { color: var(--text); }
+#play #answers button.correct span { color: var(--green); }
 </style></head><body>
 <header><button id="back" aria-label="Terug">←</button><img src="veldio-logo.png" class="brand" alt="Veldio. Alles voetbal. Eén plek."><span class="header-badge">VOETBALQUIZ</span></header>
 <main><section id="setup"><div class="intro"><img class="intro-photo" src="veldio-arena.webp" alt="AI-sfeerillustratie van een fictief vol voetbalstadion"><div class="intro-shade"></div><div class="intro-copy"><svg class="trophy" aria-hidden="true" viewBox="0 0 100 100"><path d="M30 15h40v26c0 23-40 23-40 0zM30 22H16v14q0 15 20 15M70 22h14v14q0 15-20 15M50 60v21M32 85h36" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg><h1>Voetbalquiz</h1><p>Test je voetbalkennis.</p></div></div>

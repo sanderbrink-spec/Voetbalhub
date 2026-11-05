@@ -3,7 +3,7 @@ const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { pathToFileURL } = require('node:url');
+const http = require('node:http');
 
 async function run() {
   const browser = await chromium.launch({
@@ -13,12 +13,23 @@ async function run() {
   const output = '.browser-output/phase51';
   fs.mkdirSync(output, { recursive: true });
   const assets = path.resolve('android-project/app/src/main/assets');
+  const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript' };
+  const server = http.createServer((request, response) => {
+    const file = path.join(assets, new URL(request.url, 'http://localhost').pathname);
+    if (!file.startsWith(assets + path.sep) || !fs.existsSync(file)) {
+      response.writeHead(404).end();
+      return;
+    }
+    response.setHeader('Content-Type', types[path.extname(file)] || 'application/octet-stream');
+    fs.createReadStream(file).pipe(response);
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
     for (const width of [320, 393, 430]) {
       const page = await browser.newPage({ viewport: { width, height: 851 } });
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
-      await page.goto(pathToFileURL(path.join(assets, 'clubquiz.html')).href);
+      await page.goto('http://127.0.0.1:' + server.address().port + '/clubquiz.html');
       const categories = page.getByRole('radio');
       assert.equal(await categories.count(), 7);
       const rules = page.locator('.quiz-rules');
@@ -31,7 +42,8 @@ async function run() {
       assert.equal(await page.locator('#club').isVisible(), true);
       await page.getByRole('radio', { name: /Snelle aftrap/ }).check();
       assert.equal(await page.locator('#mode').inputValue(), 'quick');
-      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      assert.ok(overflow <= 0, width + 'px: horizontal overflow of ' + overflow + 'px');
       if (width === 393) await page.screenshot({ path: output + '/quizkeuze.png', fullPage: true });
       await page.locator('#start').click();
       await page.locator('#answers button').first().waitFor();
@@ -50,6 +62,7 @@ async function run() {
     }
   } finally {
     await browser.close();
+    server.close();
   }
 }
 
