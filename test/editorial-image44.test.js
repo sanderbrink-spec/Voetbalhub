@@ -48,13 +48,8 @@ test('provider failures do not blindly retry; visually repeated images fail clos
  assert.equal(repeated.mode,'neutral-fallback');assert.match(repeated.reason,/lijkt te veel/);
  assert.equal(I.similar('ffffffffffffffff','fffffffffffffffe'),true);assert.equal(I.similar('0000000000000000','ffffffffffffffff'),false);
 });
-test('cache reuses only matching reviewed bytes and never calls the paid provider again',async()=>{
+test('automatic covers use approved library metadata without a paid call',async()=>{
  const {uploadCover}=require('../scripts/automatic-publication');
- const plan=I.classify(article),bytes=await pixels();
- const image={imageUrl:'https://raw.githubusercontent.com/sanderbrink-spec/Voetbalhub/editorial-media/automatic-covers/'+plan.identity+'.webp',imageReview:{pipelineVersion:I.VERSION,mode:'ai-photographic',assetSha256:I.sha(bytes)}};
- const fetcher=async url=>{
-  if(url===image.imageUrl)return {ok:true,arrayBuffer:async()=>bytes};
-  return {ok:true,status:200,json:async()=>url.includes('.json?')?{content:Buffer.from(JSON.stringify({identity:plan.identity,image})).toString('base64')}:{object:{sha:'main'}}};
- };
- assert.deepEqual(await uploadCover(article,{token:'test',fetcher,imageOptions:{generate:()=>{throw Error('Cache generated twice');}}}),image);
+ const image=await uploadCover(article,{token:'test',fetcher:()=>{throw Error('No network for library selection');}});
+ assert.equal(image.imageReview.mode,'approved-library');assert.equal(image.imageRights,'cleared');
 });

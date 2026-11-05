@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 49,
+  "categories": [
+    "preview",
+    "report",
+    "transfer",
+    "rumour",
+    "contract",
+    "club",
+    "injury",
+    "tactics",
+    "competition",
+    "championship",
+    "analysis",
+    "interview",
+    "youth",
+    "supporters",
+    "suspension",
+    "international",
+    "history",
+    "quiz",
+    "neutral"
+  ],
+  "assets": [
+    {
+      "id": "heerenveen43",
+      "file": "public/news43/heerenveen43.webp",
+      "categories": [
+        "owner-reviewed-legacy"
+      ],
+      "subject": "sc Heerenveen / NEC",
+      "clubs": [
+        "sc Heerenveen",
+        "NEC"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "report"
+      ],
+      "variant": "legacy43",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "editorial-images43.json, existing pixel review",
+      "approval": "approved",
+      "reviewer": "Veldio phase43",
+      "lastUsed": null,
+      "sha256": "f005717efb788dc10730a0ff39e026eebc4702ba8f6330d34e0c5c1e727c3f51",
+      "caption": "AI-illustratie: sc Heerenveen en NEC, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": []
+    },
+    {
+      "id": "feyenoord43",
+      "file": "public/news43/feyenoord43.webp",
+      "categories": [
+        "owner-reviewed-legacy"
+      ],
+      "subject": "Feyenoord / Fortuna Sittard",
+      "clubs": [
+        "Feyenoord",
+        "Fortuna Sittard"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "report"
+      ],
+      "variant": "legacy43",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "editorial-images43.json, existing pixel review",
+      "approval": "approved",
+      "reviewer": "Veldio phase43",
+      "lastUsed": null,
+      "sha256": "8e3ddf291ee355d6dec7bf2b43f22ee7f0c86354e20a2fd30756a63bb9e61ed3",
+      "caption": "AI-illustratie: Feyenoord en Fortuna Sittard, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": []
+    },
+    {
+      "id": "ajax43",
+      "file": "public/news43/ajax43.webp",
+      "categories": [
+        "owner-reviewed-legacy"
+      ],
+      "subject": "Ajax / AZ",
+      "clubs": [
+        "Ajax",
+        "AZ"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "report"
+      ],
+      "variant": "legacy43",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "editorial-images43.json, existing pixel review",
+      "approval": "approved",
+      "reviewer": "Veldio phase43",
+      "lastUsed": null,
+      "sha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
+      "caption": "AI-illustratie: Ajax en AZ, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": []
+    },
+    {
+      "id": "psv43",
+      "file": "public/news43/psv43.webp",
+      "categories": [
+        "owner-reviewed-legacy"
+      ],
+      "subject": "PSV / Willem II",
+      "clubs": [
+        "PSV",
+        "Willem II"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "report"
+      ],
+      "variant": "legacy43",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "editorial-images43.json, existing pixel review",
+      "approval": "approved",
+      "reviewer": "Veldio phase43",
+      "lastUsed": null,
+      "sha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
+      "caption": "AI-illustratie: PSV en Willem II, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": []
+    },
+    {
+      "id": "midtjylland43",
+      "file": "public/news43/midtjylland43.webp",
+      "categories": [
+        "owner-reviewed-legacy"
+      ],
+      "subject": "Ajax / FC Midtjylland",
+      "clubs": [
+        "Ajax",
+        "FC Midtjylland"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "preview"
+      ],
+      "variant": "legacy43",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "editorial-images43.json, existing pixel review",
+      "approval": "approved",
+      "reviewer": "Veldio phase43",
+      "lastUsed": null,
+      "sha256": "922f7b6956799d7b782ee65131342e8d5748695bfb4196ddae6886f20bbc3447",
+      "caption": "AI-illustratie: Ajax en FC Midtjylland, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": []
+    },
+    {
+      "id": "willem43",
+      "file": "public/news43/willem43.webp",
+      "categories": [
+        "owner-reviewed-legacy"
+      ],
+      "subject": "Willem II / PEC Zwolle",
+      "clubs": [
+        "Willem II",
+        "PEC Zwolle"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "preview"
+      ],
+      "variant": "legacy43",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "editorial-images43.json, existing pixel review",
+      "approval": "approved",
+      "reviewer": "Veldio phase43",
+      "lastUsed": null,
+      "sha256": "d397f4a696a9866375474f2f72d6b5d3ebd361f4feacfce13225966b46002e2f",
+      "caption": "AI-illustratie: Willem II en PEC Zwolle, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": []
+    },
+    {
+      "id": "emmen43",
+      "file": "public/news43/emmen43.webp",
+      "categories": [
+        "owner-reviewed-legacy"
+      ],
+      "subject": "FC Emmen / FC Den Bosch",
+      "clubs": [
+        "FC Emmen",
+        "FC Den Bosch"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "preview"
+      ],
+      "variant": "legacy43",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "editorial-images43.json, existing pixel review",
+      "approval": "approved",
+      "reviewer": "Veldio phase43",
+      "lastUsed": null,
+      "sha256": "0a6a3c6709eb1f85b83a56cacc9a89c96f826069a02c8d6c54033fede78bb5b1",
+      "caption": "AI-illustratie: FC Emmen en FC Den Bosch, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": []
+    },
+    {
+      "id": "groningen43",
+      "file": "public/news43/groningen43.webp",
+      "categories": [
+        "owner-reviewed-legacy"
+      ],
+      "subject": "FC Groningen / Sparta Rotterdam",
+      "clubs": [
+        "FC Groningen",
+        "Sparta Rotterdam"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "community"
+      ],
+      "variant": "legacy43",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "editorial-images43.json, existing pixel review",
+      "approval": "approved",
+      "reviewer": "Veldio phase43",
+      "lastUsed": null,
+      "sha256": "bacf9ec40555f9b15435667da78761b13f37b02f4ffd5a6e272fff8fd273ff98",
+      "caption": "AI-illustratie: FC Groningen en Sparta Rotterdam, weergegeven met clubkleuren en beweegmateriaal voor het maatschappelijke onderwerp. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": []
+    },
+    {
+      "id": "neutral-arena49",
+      "file": "public/editorial/veldio-arena.webp",
+      "categories": [
+        "neutral"
+      ],
+      "subject": "Fictieve voetbalsfeer",
+      "clubs": [],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "voetbal"
+      ],
+      "variant": "arena",
+      "origin": "OpenAI imagegen, original generated artwork",
+      "rights": "original-ai",
+      "rightsEvidence": "public/editorial/visual-rights38.json",
+      "approval": "approved",
+      "reviewer": "Veldio phase38",
+      "lastUsed": null,
+      "sha256": "9827c7dbb48ac6142389ba4c0edfb6084e876592ef97eb771e2559f7af5ccc4a",
+      "caption": "AI-sfeerillustratie; geen foto van een werkelijk stadion, wedstrijd of persoon.",
+      "questionIds": []
+    },
+    {
+      "id": "rules49-penalty-mark",
+      "file": "public/library49/rules49-penalty-mark.webp",
+      "categories": [
+        "quiz"
+      ],
+      "subject": "Spelregels: penalty",
+      "clubs": [],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "spelregels"
+      ],
+      "variant": "penalty",
+      "origin": "Veldio code-native field diagram",
+      "rights": "original-vector",
+      "rightsEvidence": "scripts/prepare-quiz49.js; dimensions verified IFAB Law 1 on 2026-11-05",
+      "approval": "approved",
+      "reviewer": "Technical review phase49",
+      "lastUsed": null,
+      "sha256": "a8b205deaa26d250feb08cdfb7d735e2548c9f402e9cff1fa705b8315b65f7c3",
+      "caption": "Eigen schematische veldillustratie bij de spelregelvraag. Niet op schaal; geen afmetingen of antwoordlabels.",
+      "questionIds": [
+        "rules49-penalty-mark"
+      ],
+      "answerSafe": true
+    },
+    {
+      "id": "rules49-centre-circle",
+      "file": "public/library49/rules49-centre-circle.webp",
+      "categories": [
+        "quiz"
+      ],
+      "subject": "Spelregels: centre",
+      "clubs": [],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "spelregels"
+      ],
+      "variant": "centre",
+      "origin": "Veldio code-native field diagram",
+      "rights": "original-vector",
+      "rightsEvidence": "scripts/prepare-quiz49.js; dimensions verified IFAB Law 1 on 2026-11-05",
+      "approval": "approved",
+      "reviewer": "Technical review phase49",
+      "lastUsed": null,
+      "sha256": "782c0a4489a99626c0f23c787455da74674ca4a89cf1d947873e436e3c6ed419",
+      "caption": "Eigen schematische veldillustratie bij de spelregelvraag. Niet op schaal; geen afmetingen of antwoordlabels.",
+      "questionIds": [
+        "rules49-centre-circle"
+      ],
+      "answerSafe": true
+    },
+    {
+      "id": "rules49-goal-height",
+      "file": "public/library49/rules49-goal-height.webp",
+      "categories": [
+        "quiz"
+      ],
+      "subject": "Spelregels: goal",
+      "clubs": [],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "spelregels"
+      ],
+      "variant": "goal",
+      "origin": "Veldio code-native field diagram",
+      "rights": "original-vector",
+      "rightsEvidence": "scripts/prepare-quiz49.js; dimensions verified IFAB Law 1 on 2026-11-05",
+      "approval": "approved",
+      "reviewer": "Technical review phase49",
+      "lastUsed": null,
+      "sha256": "6af05996d024b4ee7b4a640af56be4d30835a12f3c297ef54e999c1e9ae8a87a",
+      "caption": "Eigen schematische veldillustratie bij de spelregelvraag. Niet op schaal; geen afmetingen of antwoordlabels.",
+      "questionIds": [
+        "rules49-goal-height"
+      ],
+      "answerSafe": true
+    }
+  ]
+}

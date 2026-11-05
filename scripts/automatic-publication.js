@@ -241,42 +241,12 @@ async function verifyDraft(payload,candidate,docs,options,recent=[]){
  return review;
 }
 async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
- const images=require('../editorial-image44');
- const plan=images.classify(payload),identity=plan.identity;
- async function github(endpoint,method='GET',body){const r=await fetcher('https://api.github.com/repos/'+REPO+endpoint,{method,headers:{Authorization:'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(25000)});let data={};try{data=await r.json();}catch{}return {ok:r.ok,status:r.status,data};}
- const branch=await github('/git/ref/heads/'+config.mediaBranch);
- if(branch.status===404){const main=await github('/git/ref/heads/main');if(!main.ok)throw Error('Mediabron ontbreekt.');const made=await github('/git/refs','POST',{ref:'refs/heads/'+config.mediaBranch,sha:main.data.object.sha});if(!made.ok&&made.status!==422)throw Error('Mediatak kon niet worden gemaakt.');}
- else if(!branch.ok)throw Error('Mediatak niet beschikbaar.');
- const target='/contents/automatic-covers/'+identity+'.webp';
- const proofTarget='/contents/automatic-covers/'+identity+'.json';
- const prior=await github(proofTarget+'?ref='+config.mediaBranch);
- if(prior.ok&&prior.data.content){
-  let proof;try{proof=JSON.parse(Buffer.from(prior.data.content,'base64').toString());}catch{}
-  if(proof?.identity===identity&&proof.image?.imageReview?.pipelineVersion===images.VERSION&&proof.image.imageReview.mode==='ai-photographic'){
-   const cached=await fetcher(proof.image.imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
-   if(cached.ok&&sha(Buffer.from(await cached.arrayBuffer()))===proof.image.imageReview.assetSha256)return proof.image;
-   throw Error('Bestaande goedgekeurde afbeelding wijkt af van het bewijs.');
-  }
- }else if(prior.status!==404)throw Error('Beeldbewijs niet beschikbaar.');
- let rendered;
- if(!process.env.OPENAI_API_KEY&&imageOptions.secret&&!imageOptions.generate){
-  try{rendered=await require('../editorial-image44-service').remote(payload,{fetcher,...imageOptions});}
-  catch(e){rendered=await images.fallback(plan,e.message);}
- }else rendered=await images.render(payload,{fetcher,...imageOptions});
- const bytes=rendered.bytes;
- const existing=await github(target+'?ref='+config.mediaBranch);
- if(existing.status===404||existing.ok){
-  // A neutral fallback may be upgraded when the image provider becomes available.
-  const created=await github(target,'PUT',{message:'Add Veldio44 checked '+rendered.mode+' [skip ci]',branch:config.mediaBranch,content:bytes.toString('base64'),...(existing.ok?{sha:existing.data.sha}:{})});if(!created.ok)throw Error('Artikelafbeelding kon niet worden opgeslagen.');
- }
- else if(!existing.ok)throw Error('Bestaande artikelafbeelding niet controleerbaar.');
- const imageUrl='https://raw.githubusercontent.com/'+REPO+'/'+config.mediaBranch+'/automatic-covers/'+identity+'.webp';
- const hosted=await fetcher(imageUrl,{redirect:'error',signal:AbortSignal.timeout(25000)});
- if(!hosted.ok||!/^image\/webp/i.test(hosted.headers.get('content-type')||'')||sha(Buffer.from(await hosted.arrayBuffer()))!==sha(bytes))throw Error('Openbare artikelafbeelding niet bevestigd.');
- const image={imageUrl,imageSource:rendered.mode==='ai-photographic'?'Veldio · AI-illustratie':'Veldio · neutrale illustratie',imageCredit:rendered.mode==='ai-photographic'?'Veldio · AI-illustratie, geen opname van de beschreven gebeurtenis':'Veldio · eigen neutrale redactionele illustratie',imageRights:'cleared',imageReview:{kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,pipelineVersion:images.VERSION,category:plan.category,scene:plan.scene,clubs:rendered.plan.clubs.map(c=>c.name),mode:rendered.mode,notes:rendered.mode==='ai-photographic'?'Originele AI-illustratie met pixelcontrole op namen, kleuren, kwaliteit en misleiding. Geen logo’s, echte personen of documentaire gebeurtenisclaim.':'Goedgekeurd eigen neutraal sjabloon. Geen foto, logo’s of echte personen. Reden: '+rendered.reason,assetSha256:sha(bytes),visualHash:rendered.visualHash,review:rendered.review}};
- const saved=await github(proofTarget,'PUT',{message:'Store Veldio44 image provenance [skip ci]',branch:config.mediaBranch,content:Buffer.from(JSON.stringify({identity,image})).toString('base64'),...(prior.ok?{sha:prior.data.sha}:{})});
- if(!saved.ok)throw Error('Beeldbewijs kon niet worden opgeslagen.');
- return image;
+ const library=require('../image-library49');
+ if(imageOptions.secret){try{const r=await require('../editorial-image44-service').remote(payload,{secret:imageOptions.secret,fetcher,budget:{remaining:0}});if(r.mode==='approved-library')return Object.fromEntries(Object.entries(r).filter(([key])=>key.startsWith('image')));}catch{/* Approved local fallback remains available during backend outages. */}}
+ const asset=await library.select(payload);
+ if(!asset)throw Error('Geen goedgekeurd bibliotheekbeeld beschikbaar.');
+ return library.fields(asset);
+
 }
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),report}={}){
  if(!config.enabled){report.status='disabled';return report;}
