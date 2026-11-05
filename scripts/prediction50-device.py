@@ -38,12 +38,12 @@ def choose(c):
  wait_for(lambda:evaluate("document.querySelector('.saved').textContent.includes('Opgeslagen: "+c+"') && !document.querySelector('.saved').textContent.includes('Opslag niet bevestigd')"))
 try:
  launch();wait_for(lambda:evaluate("!!document.querySelector('#join')"));evaluate("document.querySelector('#eligible').checked=true;document.querySelector('#join').click();true");wait_for(lambda:evaluate("!!document.querySelector('[data-choice]:enabled')"),50);connected=True
- assert evaluate("getComputedStyle(document.querySelector('.club-shirt')).webkitMaskImage.includes('data:image/webp')"),'Shirt mask must not require a cross-origin file request';fixture=evaluate("document.querySelector('[data-choice]').dataset.fixture");assert str(fixture).startswith('of-nl-');checks.append('Real released Eredivisie fixture loaded over native bridge: '+fixture)
+ assert evaluate("document.querySelector('.club-shirt').tagName==='IMG'"),'Shirts use ordinary optimized image assets';fixture=evaluate("document.querySelector('[data-choice]').dataset.fixture");assert str(fixture).startswith('of-nl-');checks.append('Real released Eredivisie fixture loaded over native bridge: '+fixture)
  from PIL import ImageChops
- wait_for(lambda:evaluate("Array.from(document.querySelectorAll('.club-shirt img')).every(i=>i.complete&&i.naturalWidth>0)"))
+ wait_for(lambda:evaluate("Array.from(document.querySelectorAll('img.club-shirt')).every(i=>i.complete&&i.naturalWidth>0)"))
  box=evaluate("(()=>{const r=document.querySelector('.club-shirt').getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,viewport:innerWidth};})()")
  bounds=device(className='android.webkit.WebView').info['bounds'];scale=(bounds['right']-bounds['left'])/box['viewport'];area=(round(bounds['left']+box['x']*scale),round(bounds['top']+box['y']*scale),round(bounds['left']+(box['x']+box['w'])*scale),round(bounds['top']+(box['y']+box['h'])*scale))
- shown=device.screenshot().crop(area).convert('RGB');evaluate("document.querySelector('.club-shirt').style.visibility='hidden';true");hidden=device.screenshot().crop(area).convert('RGB');evaluate("document.querySelector('.club-shirt').style.visibility='';true")
+ evaluate("new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r(true))))");time.sleep(.4);shown=device.screenshot().crop(area).convert('RGB');shown.save(str(OUT/'shirt-visible-crop.png'));evaluate("document.querySelector('.club-shirt').style.visibility='hidden';true");time.sleep(.4);hidden=device.screenshot().crop(area).convert('RGB');hidden.save(str(OUT/'shirt-hidden-crop.png'));evaluate("document.querySelector('.club-shirt').style.visibility='';true");time.sleep(.4)
  assert ImageChops.difference(shown,hidden).getbbox() is not None,'Shirt must actually paint pixels in the Android WebView'
  checks.append('Actual Android shirt pixels verified against hidden-state screenshot; no file-origin mask failure')
  for c in ['1','X','2','X']:choose(c)
