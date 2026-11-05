@@ -20,7 +20,8 @@ sdk=Path(os.environ.get('ANDROID_HOME') or os.environ['ANDROID_SDK_ROOT']);aapt=
 badging=subprocess.check_output([str(aapt),'dump','badging',sys.argv[1]],text=True);assert "versionName='4.50-test'" in badging
 PACKAGE=re.search(r"package: name='([^']+)'",badging).group(1)
 adb('install','-r',sys.argv[1]);device=u2.connect()
-def launch():adb('shell','am','start','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');time.sleep(3)
+def launch():
+ adb('shell','am','start','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');wait_for(lambda:device(text='Voorspellen').exists,45)
 def evaluate(expression,page):
  pid=adb('shell','pidof',PACKAGE).strip().split()[0];adb('forward','tcp:9222','localabstract:webview_devtools_remote_'+pid)
  with urllib.request.urlopen('http://127.0.0.1:9222/json/list',timeout=5) as r:targets=json.load(r)
