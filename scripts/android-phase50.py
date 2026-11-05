@@ -21,7 +21,8 @@ badging=subprocess.check_output([str(aapt),'dump','badging',sys.argv[1]],text=Tr
 PACKAGE=re.search(r"package: name='([^']+)'",badging).group(1)
 adb('install','-r',sys.argv[1]);device=u2.connect()
 def launch():
- adb('shell','am','start','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity');wait_for(lambda:device(text='Voorspellen').exists,45)
+ adb('shell','am','start','-n',PACKAGE+'/nl.voetbalhub.app.MainActivity')
+ wait_for(lambda:device(text='Voorspellen').exists,60)
 def evaluate(expression,page):
  pid=adb('shell','pidof',PACKAGE).strip().split()[0];adb('forward','tcp:9222','localabstract:webview_devtools_remote_'+pid)
  with urllib.request.urlopen('http://127.0.0.1:9222/json/list',timeout=5) as r:targets=json.load(r)

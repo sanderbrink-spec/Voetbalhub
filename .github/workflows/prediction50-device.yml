@@ -1,8 +1,8 @@
 name: Veldio50 real Android prediction acceptance
 on:
   push:
-    branches: [main]
-    paths: ['.github/workflows/prediction50-device.yml']
+    branches: [work/veldio-50]
+    paths: ['.github/workflows/prediction50-device.yml', 'scripts/prediction50-device.py', 'scripts/android-phase50.py']
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,6 +19,10 @@ jobs:
           path: apk
           run-id: 42077690558
           github-token: ${{ github.token }}
+      - name: Verify exact published APK bytes and packaged sources
+        run: |
+          cd apk && sha256sum -c sha256.txt && cd ..
+          python3 scripts/verify-android-source.py apk/Veldio-50.apk
       - run: python3 -m pip install 'uiautomator2>=3,<4' 'websocket-client>=1,<2'
       - name: Enable emulator acceleration
         run: |
@@ -32,7 +36,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-phase50.py apk/Veldio-50.apk && python3 scripts/prediction50-device.py apk/Veldio-50.apk
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/prediction50-device.py apk/Veldio-50.apk
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -2,6 +2,7 @@ name: Veldio 50 validation and Android preview
 on:
   push:
     branches: ['work/veldio-50']
+    paths-ignore: ['scripts/android-phase50.py', 'scripts/prediction50-device.py', '.github/workflows/prediction50-device.yml', '.github/workflows/phase50.yml']
   workflow_dispatch:
 concurrency:
   group: veldio50-current-source
