@@ -49,7 +49,7 @@ function footballChecks(key,s,now=Date.now()){
 function workflowChecks(runs,now=Date.now()){
  const paths=['automatic-publication.yml','auto-editor.yml','eredivisie.yml','youtube43.yml'];
  return paths.map(name=>{
-  const r=runs.filter(r=>r.path?.endsWith('/'+name)&&r.status==='completed').sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at))[0];
+  const r=runs.filter(r=>r.path?.endsWith('/'+name)&&r.status==='completed'&&r.conclusion!=='skipped').sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at))[0];
   return {id:'task.'+name,status:r&&r.conclusion==='success'&&now-Date.parse(r.created_at)<2*DAY?'pass':'fail',detail:r?'Run '+r.id+': '+r.conclusion+'; '+r.created_at:'Geen recente afgeronde taak gevonden'};
  });
 }

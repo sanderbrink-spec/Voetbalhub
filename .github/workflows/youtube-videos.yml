@@ -1,8 +1,5 @@
 name: Actuele Eredivisie YouTube-video’s
 on:
-  push:
-    branches: [main]
-    paths: ['scripts/youtube-videos.js', '.github/workflows/youtube-videos.yml']
   # Legacy RSS collector is manual-only; Android uses /integrations/videos43.
   workflow_dispatch:
 permissions:

@@ -52,3 +52,10 @@ test('a previously cleared legacy logo/photo label is not accepted as current ri
  const checks=M.articlesChecks([{...story(),imageRights:'cleared',imageReview:{method:'fixture-specific-stadium-and-logos-v4'}}],now);
  assert.ok(checks.some(c=>c.id==='news.image-rights:a'&&c.status==='fail'));
 });
+
+test('intentional skipped publication on deployment does not hide the latest real task result',()=>{
+ const run={path:'.github/workflows/automatic-publication.yml',status:'completed',conclusion:'success',id:1,created_at:new Date(now-3600000).toISOString()};
+ const skipped={...run,id:2,conclusion:'skipped',created_at:new Date(now).toISOString()};
+ const c=M.workflowChecks([run,skipped],now)[0];assert.equal(c.status,'pass');assert.match(c.detail,/Run 1:/);
+ assert.equal(M.workflowChecks([skipped],now)[0].status,'fail');
+});
