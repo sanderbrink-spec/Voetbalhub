@@ -428,7 +428,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(seenGroups.has(key))continue;
   seenGroups.add(key);
   const job=durable.queue.enqueue(group,now);
-  if(group.matchRecord)job.matchId=group.matchRecord.matchId;
+  if(group.matchRecord){
+   job.matchId=group.matchRecord.matchId;
+   if(!job.matchHeadlineV2&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
+   job.matchHeadlineV2=true;
+  }
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&!job.primaryDecisionV2){
    if(job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
    job.primaryDecisionV2=true;
@@ -467,15 +471,21 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const sources=sourceIndices.map(i=>({url:group[i].url}));
    report.counts.selected++;route.selected++;
    stage='generation';
-   const draft=matchRecord?await complete([
-    {role:'system',content:'Schrijf een korte, originele Nederlandse Veldio-wedstrijdtekst uitsluitend uit deze officiële wedstrijdgegevens. Geef JSON met headline (5 tot 14 woorden), standfirst (8 tot 35 woorden) en body (één of twee alinea’s van 10 tot 65 woorden). Vermeld de exacte eindstand in thuis-uit-volgorde en de bron (OpenFootball of exact Football data provided by the Football-Data.org API). Bij score_update alleen een uitslagupdate. Bij match_report beschrijf het verschil tussen ruststand en eindstand wanneer de ruststand bekend is. Gebruik geen minuten, spelers, spelbeeld, stand, gevolgen of andere feiten buiten de gegevens. Herhaal de intro niet in de tekst.'},
-    {role:'user',content:JSON.stringify(matchRecord)}
-   ],ai):group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
+   let draft;
+   if(matchRecord){
+    const {homeTeam,awayTeam,homeScore,awayScore}=matchRecord.match;
+    const headline=homeTeam+' – '+awayTeam+' eindigt in '+homeScore+'-'+awayScore;
+    const text=await complete([
+     {role:'system',content:'Schrijf een korte, originele Nederlandse Veldio-wedstrijdtekst bij de vaste kop en uitsluitend uit de officiële wedstrijdgegevens. Geef JSON met standfirst (8 tot 35 woorden) en body (één of twee alinea’s van 10 tot 65 woorden). De vaste kop noemt de eindstand in thuis-uit-volgorde. Bij score_update schrijf je een uitslagupdate. Bij match_report beschrijf je het verschil tussen rust en eindstand. Vermeld de bron OpenFootball of de verplichte bronregel Football data provided by the Football-Data.org API als aparte zin binnen de laatste alinea. Gebruik geen minuten, spelers, spelbeeld, stand, gevolgen of andere feiten buiten de gegevens. Vermijd herhaling.'},
+     {role:'user',content:JSON.stringify({headline,...matchRecord})}
+    ],ai);
+    draft={headline,standfirst:text.standfirst,body:text.body};
+   }else{
+    draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
+   }
    report.counts.generated++;route.generated++;
    stage='quality';
    if(!matchRecord&&(M.needsMatch(draft)||M.requiresFlashscore(draft)))throw Error('Uitslagen en wedstrijdverslagen wachten op onafhankelijke Flashscore-verificatie.');
-   if(matchRecord&&!new RegExp('\\b'+matchRecord.match.homeScore+'\\s*[-–]\\s*'+matchRecord.match.awayScore+'\\b').test([draft.headline,draft.standfirst,...(Array.isArray(draft.body)?draft.body:[])].join(' ')))
-    throw Error('De gecontroleerde eindstand ontbreekt in de wedstrijdtekst.');
    if(!matchRecord&&generationIssues(draft,facts).length)throw Error(generationIssues(draft,facts).join(' '));
    if(!matchRecord&&group.some(d=>overlap(d.text,draft)))throw Error('Te veel woordelijke overlap met bron.');
    const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks}:{}),
