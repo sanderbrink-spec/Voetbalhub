@@ -33,6 +33,10 @@ function extractPage(html,url){
   const end=html.indexOf('<div id="maincontent"',start);
   if(start>=0&&end>start)main=html.slice(start,end);
  }
+ // The official cup site places the article body in a Wysiwyg block.
+ if(!main&&host(url)==='eurojackpotknvbbeker.nl'&&new URL(url).pathname.startsWith('/nieuws/')){
+  main=html.match(/<div class="Wysiwyg">([\s\S]*?)<\/div>/i)?.[1];
+ }
  if(!main)return {url,title,publishedAt,text:''};
  const text=plain(main).slice(0,14000);
  if(!publishedAt){
@@ -100,13 +104,13 @@ function nationallyRelevant(doc){
  if(/\b(kkd|keuken kampioen divisie|eerste divisie)\b/.test(title)&&!/\b(promotie|degradatie|kampioen|kampioenschap|titel|ontslag|hoofdtrainer|trainerswissel|fraude|faillissement|knvb|licentie|record)\b/.test(title))return false;
  if(/^(alle informatie|match center|wedstrijdprogramma|wedstrijden|nieuws|home|tickets|ticketinformatie|kaartverkoop|veelgestelde vragen|faq|contact|agenda|overzicht)$/.test(title))return false;
  if(/\b(ticket|tickets|kaartverkoop|seizoenkaart|parkeer|routebeschrijving|openingstijden|fanshop|webshop|merchandise|fotoverslag|trainingsschema|vacature|vrijwilliger|businessclub|hospitality|jeugdopleiding|onder 1[0-9]|onder 2[0-3])\b/.test(title))return false;
- const important=/\b(eredivisie|eerste divisie|keuken kampioen divisie|knvb|beker|champions league|europa league|conference league|europese|transfer|transfers|contract|trainer|hoofdtrainer|ontslag|vertrek|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|topper|derby|ajax|psv|feyenoord|az|fc twente|fc utrecht|fc groningen|sc heerenveen|nec|sparta|go ahead eagles)\b/;
+ const important=/\b(eredivisie|eerste divisie|keuken kampioen divisie|knvb|beker|bekeravontuur|bekerloting|bekerprogramma|champions league|europa league|conference league|europese|transfer|transfers|contract|trainer|hoofdtrainer|ontslag|vertrek|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|topper|derby|ajax|psv|feyenoord|az|fc twente|fc utrecht|fc groningen|sc heerenveen|nec|sparta|go ahead eagles)\b/;
  if(!important.test(title))return false;
  // A club name alone is insufficient: require a material football development.
- const development=/\b(transfer|transfers|contract|verlengt|verlengd|tekent|tekende|aangetrokken|vertrekt|vertrek|trainer|hoofdtrainer|ontslag|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|beker|europa|eredivisie|competitie|wedstrijd|duel|speelt|treft|tegen)\b/;
+ const development=/\b(transfer|transfers|contract|verlengt|verlengd|tekent|tekende|aangetrokken|vertrekt|vertrek|trainer|hoofdtrainer|ontslag|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|beker|bekeravontuur|bekerloting|bekerprogramma|europa|eredivisie|competitie|wedstrijd|duel|speelt|treft|tegen)\b/;
  // Routine fixtures and ordinary club updates do not qualify as national headlines.
  const highImpact=/\b(transfer|transfers|contract|verlengt|verlengd|tekent|tekende|aangetrokken|vertrekt|vertrek|ontslag|aangesteld|benoemd|schorsing|blessure|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|knvb|licentie|record|halve finale|finale|topper|derby)\b/;
- const majorFixture=/\b(champions league|europa league|conference league|knvb beker|europese wedstrijd)\b/;
+ const majorFixture=/\b(champions league|europa league|conference league|knvb beker|bekeravontuur|bekerloting|bekerprogramma|europese wedstrijd)\b/;
  if(!highImpact.test(title)&&!majorFixture.test(title))return false;
  return development.test(title)&&body.length>=300;
 }

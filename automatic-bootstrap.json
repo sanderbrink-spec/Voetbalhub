@@ -409,5 +409,93 @@
       ],
       "why_it_matters": "De bezoekersregeling is relevant voor Ajax-supporters die al een uitkaart hebben."
     }
+  },
+  {
+    "key": "hoek-az-bekerprogramma-2026-11-06",
+    "sourceUrls": [
+      "https://az.nl/inside-az/nieuws/2026/oktober/az-start-nieuw-bekeravontuur-tegen-hsv-hoek",
+      "https://www.eurojackpotknvbbeker.nl/nieuws/eurojackpot-knvb-beker/tweede-ronde-eurojackpot-knvb-beker-ingepland-dit-zijn-de-speeldagen-0"
+    ],
+    "candidate": {
+      "kind": "announcement",
+      "topic": "Bekerduel tussen HSV Hoek en AZ krijgt datum",
+      "category": "KNVB Beker",
+      "eventDate": "",
+      "teams": [
+        "HSV Hoek",
+        "AZ"
+      ],
+      "facts": [
+        {
+          "text": "HSV Hoek ontvangt AZ op woensdag 16 december 2026 om 20.00 uur in de tweede ronde van de Eurojackpot KNVB Beker.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "De Alkmaarders trappen hun campagne af met een uitwedstrijd tegen HSV Hoek. Het duel wordt gespeeld op 16 december 2026 om 20:00 uur."
+            },
+            {
+              "source": 1,
+              "quote": "Woensdag 16 december 20.00 uur HSV Hoek - AZ"
+            }
+          ]
+        },
+        {
+          "text": "AZ begint pas in de tweede ronde omdat het de hoofdfase van een Europees toernooi haalde.",
+          "evidence": [
+            {
+              "source": 0,
+              "quote": "AZ stroomt in de tweede ronde van het bekertoernooi in, omdat de ploeg zich heeft gekwalificeerd voor de hoofdfase van een Europees toernooi."
+            }
+          ]
+        },
+        {
+          "text": "De tweede bekerronde begint op dinsdag 1 december met RKC Waalwijk tegen SC Cambuur.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "De tweede ronde begint op dinsdag 1 december in Waalwijk, waar RKC bezoek krijgt van SC Cambuur."
+            }
+          ]
+        },
+        {
+          "text": "De KNVB biedt deelnemers aan de Champions League en Europa League de mogelijkheid hun bekerduel twee weken later te spelen.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "de clubs die uitkomen in de UEFA Champions League en Europa League maken gebruik van de mogelijkheid hun bekerwedstrijd twee weken later in te plannen."
+            }
+          ]
+        },
+        {
+          "text": "De KNVB plant GVVV tegen Feyenoord op woensdag 16 december om 18.45 uur.",
+          "evidence": [
+            {
+              "source": 1,
+              "quote": "Woensdag 16 december 18.45 uur GVVV - Feyenoord"
+            }
+          ]
+        }
+      ],
+      "sharedEventEvidence": [
+        {
+          "source": 0,
+          "quote": "De Alkmaarders trappen hun campagne af met een uitwedstrijd tegen HSV Hoek. Het duel wordt gespeeld op 16 december 2026 om 20:00 uur."
+        },
+        {
+          "source": 1,
+          "quote": "Woensdag 16 december 20.00 uur HSV Hoek - AZ"
+        }
+      ]
+    },
+    "draft": {
+      "headline": "Bekerduel tussen HSV Hoek en AZ krijgt datum",
+      "standfirst": "HSV Hoek ontvangt AZ op woensdag 16 december om 20.00 uur in de tweede ronde van de KNVB Beker.",
+      "body": [
+        "Voor AZ is de uitwedstrijd het begin van het bekertoernooi. AZ stroomt deze ronde in vanwege hun kwalificatie voor de hoofdfase van een Europees toernooi.",
+        "RKC Waalwijk en SC Cambuur openen de ronde op dinsdag 1 december, ruim twee weken voor het duel tussen HSV Hoek en AZ.",
+        "De KNVB geeft deelnemers aan de Champions League en Europa League ruimte om later te spelen. Op de avond van Hoek tegen AZ staat ook GVVV tegen Feyenoord op het programma, om 18.45 uur."
+      ],
+      "why_it_matters": "De aangekondigde speeldatum maakt duidelijk hoe de Europese kalender doorwerkt in de tweede bekerronde."
+    }
   }
 ]
