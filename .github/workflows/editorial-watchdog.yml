@@ -4,7 +4,7 @@ on:
     - cron: '48 * * * *'
   workflow_dispatch:
 permissions:
-  actions: read
+  actions: write
   issues: write
   contents: read
 jobs:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Detect repeated scheduled editorial failures
+      - name: Recover one failed scheduled run and detect repeated failures
         uses: actions/github-script@v7
         with:
           script: |
@@ -26,7 +26,7 @@ jobs:
             const runs = data.workflow_runs
               .filter(run => run.status === 'completed')
               .sort((a,b) => new Date(b.created_at)-new Date(a.created_at));
-            if (runs.length < 3) {
+            // Retry at most once per scheduled run. Do not rerun an in-progress attempt.\n            const newest = runs[0];\n            if (newest && newest.conclusion === 'failure' && newest.run_attempt === 1) {\n              const ageMinutes = (Date.now()-new Date(newest.updated_at).getTime())/60000;\n              if (ageMinutes >= 5 && ageMinutes <= 90) {\n                await github.rest.actions.reRunWorkflow({owner,repo,run_id:newest.id});\n                core.notice('Eenmalige automatische herstart: '+newest.html_url);\n                return;\n              }\n            }\n            if (runs.length < 3) {
               core.info('Nog geen drie voltooide geplande redactierondes.');
               return;
             }
