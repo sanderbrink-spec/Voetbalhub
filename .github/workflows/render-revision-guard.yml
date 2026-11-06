@@ -1,0 +1,54 @@
+name: Verify Render tracks main
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '8 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check deployed revision matches main
+        id: check
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${GITHUB_SHA}"
+          if [ "${GITHUB_EVENT_NAME}" != "push" ]; then
+            expected="$(git ls-remote https://github.com/${GITHUB_REPOSITORY}.git refs/heads/main | cut -f1)"
+          fi
+          echo "Expected main revision: $expected"
+          for attempt in $(seq 1 30); do
+            body="$(curl -fsS --max-time 15 https://voetbalhub-redactie.onrender.com/ready || true)"
+            revision="$(printf '%s' "$body" | jq -r '.revision // empty' 2>/dev/null || true)"
+            ready="$(printf '%s' "$body" | jq -r '.ready // false' 2>/dev/null || true)"
+            if [ "$ready" = "true" ] && [ "$revision" = "$expected" ]; then
+              echo "Render matches main: $revision"
+              exit 0
+            fi
+            echo "Attempt $attempt: Render revision ${revision:-unavailable}, expected $expected"
+            sleep 20
+          done
+          echo "::error::Render is not running the current main revision."
+          exit 1
+      - name: Create or close deployment drift alert
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          CHECK_RESULT: ${{ steps.check.outcome }}
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const title='[Veldio] Render loopt achter op GitHub main';
+            const {data:issues}=await github.rest.issues.listForRepo({owner,repo,state:'open',per_page:100});
+            const existing=issues.find(i=>i.title===title);
+            if(process.env.CHECK_RESULT!=='success'&&!existing) {
+              await github.rest.issues.create({owner,repo,title,body:'De Render /ready revisie komt niet overeen met de actuele main commit. Controleer Render auto-deploy, build en GitHub-koppeling. Workflow: '+context.serverUrl+'/'+owner+'/'+repo+'/actions/runs/'+context.runId});
+            } else if(process.env.CHECK_RESULT==='success'&&existing) {
+              await github.rest.issues.update({owner,repo,issue_number:existing.number,state:'closed'});
+            }
