@@ -495,7 +495,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const second=halftime
       ? 'De vastgelegde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Na de pauze veranderde de score naar '+homeScore+'-'+awayScore+'. De beschikbare registratie bevestigt geen doelpuntenmakers, minuten of tactische ontwikkelingen. '+attribution+'.'
       : 'De beschikbare registratie vermeldt geen gecontroleerde ruststand of afzonderlijke wedstrijdmomenten. Daarom doet Veldio geen uitspraken over doelpuntenmakers, tijdstippen of het spelbeeld. '+attribution+'.';
-    draft={headline,standfirst,body:[first,second]};
+    const third='De berichtgeving beperkt zich tot de gecontroleerde eindstand en de beschikbare wedstrijdregistratie. Aanvullende conclusies over het wedstrijdverloop, individuele prestaties of gevolgen voor de ranglijst zijn zonder afzonderlijke betrouwbare bevestiging niet verantwoord. Veldio vult ontbrekende gegevens daarom niet zelf in.';
+    draft={headline,standfirst,body:[first,second,third]};
    }else{
     draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
