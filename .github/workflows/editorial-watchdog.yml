@@ -26,7 +26,29 @@ jobs:
             const runs = data.workflow_runs
               .filter(run => run.status === 'completed')
               .sort((a,b) => new Date(b.created_at)-new Date(a.created_at));
-            // Retry at most once per scheduled run. Do not rerun an in-progress attempt.\n            const newest = runs[0];\n            if (newest && newest.conclusion === 'failure' && newest.run_attempt === 1) {\n              const ageMinutes = (Date.now()-new Date(newest.updated_at).getTime())/60000;\n              if (ageMinutes >= 5 && ageMinutes <= 90) {\n                await github.rest.actions.reRunWorkflow({owner,repo,run_id:newest.id});\n                core.notice('Eenmalige automatische herstart: '+newest.html_url);\n                return;\n              }\n            }\n            if (runs.length < 3) {
+            // Retry at most once per scheduled run. Do not rerun an in-progress attempt.\n            const newest = runs[0];\n            if (newest && newest.conclusion === 'failure' && newest.run_attempt === 1) {\n              const ageMinutes = (Date.now()-new Date(newest.updated_at).getTime())/60000;\n              if (ageMinutes >= 5 && ageMinutes <= 90) {\n                await github.rest.actions.reRunWorkflow({owner,repo,run_id:newest.id});\n                core.notice('Eenmalige automatische herstart: '+newest.html_url);\n                return;\n              }\n            }\n            // A missing schedule is itself a failure; do not wait for three runs.
+            const latestScheduled = runs[0];
+            const lastStart = latestScheduled ? new Date(latestScheduled.created_at).getTime() : 0;
+            const stale = !lastStart || Date.now() - lastStart > 3 * 60 * 60 * 1000;
+            if (stale) {
+              const missingTitle = '[Veldio] Automatische redactie: geplande rondes ontbreken';
+              const {data:openIssues} = await github.rest.issues.listForRepo({
+                owner,repo,state:'open',per_page:100
+              });
+              const missing = openIssues.find(issue => issue.title === missingTitle);
+              if (!missing) await github.rest.issues.create({
+                owner,repo,title:missingTitle,
+                body:'Er is in de afgelopen drie uur geen geplande automatische redactieronde gestart. Controleer GitHub Actions schedules en repositoryinstellingen.'
+              });
+              core.setFailed('Geen geplande redactieronde in de afgelopen drie uur.');
+              return;
+            }
+            const {data:openIssues} = await github.rest.issues.listForRepo({
+              owner,repo,state:'open',per_page:100
+            });
+            const missing = openIssues.find(issue => issue.title === '[Veldio] Automatische redactie: geplande rondes ontbreken');
+            if (missing) await github.rest.issues.update({owner,repo,issue_number:missing.number,state:'closed'});
+            if (runs.length < 3) {
               core.info('Nog geen drie voltooide geplande redactierondes.');
               return;
             }
