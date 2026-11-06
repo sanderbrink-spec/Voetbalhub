@@ -430,8 +430,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const job=durable.queue.enqueue(group,now);
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
-   if(!job.matchOutputV3&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
-   job.matchOutputV3=true;
+   if(!job.matchOutputV4&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
+   job.matchOutputV4=true;
   }
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&!job.primaryDecisionV2){
    if(job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
@@ -475,13 +475,19 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(matchRecord){
     const {homeTeam,awayTeam,homeScore,awayScore}=matchRecord.match;
     const headline=homeTeam+' – '+awayTeam+' eindigt in '+homeScore+'-'+awayScore;
-    const text=await complete([
-     {role:'system',content:'Schrijf een korte, originele Nederlandse Veldio-wedstrijdtekst bij de vaste kop en uitsluitend uit de officiële wedstrijdgegevens. Geef JSON met standfirst (8 tot 35 woorden) en body (één of twee alinea’s van 10 tot 65 woorden). De vaste kop noemt de eindstand in thuis-uit-volgorde. Bij score_update schrijf je een uitslagupdate. Bij match_report beschrijf je het verschil tussen rust en eindstand. Laat de bronvermelding weg. Die wordt toegevoegd door Veldio. Gebruik geen minuten, spelers, spelbeeld, stand, gevolgen of andere feiten buiten de gegevens. Vermijd herhaling.'},
+    const messages=[
+     {role:'system',content:'Schrijf een korte, originele Nederlandse Veldio-wedstrijdtekst bij de vaste kop en uitsluitend uit de officiële wedstrijdgegevens. Geef JSON {"standfirst":"intro van 8 tot 35 woorden","body":["één alinea van 18 tot 45 woorden"]}. De vaste kop noemt de eindstand in thuis-uit-volgorde. Bij score_update schrijf je een uitslagupdate. Bij match_report beschrijf je het verschil tussen rust en eindstand. Laat de bronvermelding weg. Die wordt toegevoegd door Veldio. Gebruik geen minuten, spelers, spelbeeld, stand, gevolgen of andere feiten buiten de gegevens. Vermijd herhaling.'},
      {role:'user',content:JSON.stringify({headline,...matchRecord})}
-    ],ai);
-    const body=Array.isArray(text.body)?text.body.map(p=>typeof p==='string'?p.trim():p):[];
-    if(typeof body.at(-1)==='string')body[body.length-1]+=' '+(sources[0].url===matches.FD?CREDIT:'Bron: OpenFootball')+'.';
-    draft={headline,standfirst:text.standfirst,body};
+    ];
+    for(let attempt=0;attempt<2;attempt++){
+     const text=await complete(messages,ai);
+     const body=M.paragraphs(text).map(p=>p.trim());
+     if(body.length)body[body.length-1]+=' '+(sources[0].url===matches.FD?CREDIT:'Bron: OpenFootball')+'.';
+     draft={headline,standfirst:text.standfirst,body};
+     const issues=M.draftIssues(draft,true);
+     if(!issues.length||attempt===1)break;
+     messages.push({role:'user',content:'Herstel de tekstvorm met dezelfde wedstrijdgegevens: '+issues.join(' ')});
+    }
    }else{
     draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
