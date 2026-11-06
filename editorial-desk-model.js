@@ -15,12 +15,18 @@
     return /\b(?:\d+\s*[-–:]\s*\d+|uitslag|eindstand|ruststand|ranglijst|klassement|standen?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|gele kaarten|rode kaarten|xg|expected goals|doelpuntenmaker|scoreverloop)\b/i
       .test([draft.headline, draft.standfirst, ...(Array.isArray(draft.body) ? draft.body : [])].join(' '));
   }
+  const briefEligible = payload => payload.articleKind === 'announcement' &&
+    ['club_decision','association_decision'].includes(payload.primaryAuthority) &&
+    payload.sources?.length === 1 && Boolean(host(payload.sources[0]?.url)) &&
+    !payload.transferStatus && payload.verifiedFacts?.length >= 1 && payload.verifiedFacts.length <= 3;
+  const compactStructure = 'body (1-2 inhoudelijke alinea’s, elk 10-65 woorden)';
+  const standardStructure = 'body (3-5 alinea’s, elk 18-120 woorden en minimaal 70 tekens)';
   function draftIssues(d = {}, compact = false) {
     const issues = [];
     const body = Array.isArray(d.body) ? d.body.filter(p => typeof p === 'string' && p.trim()).map(p => p.trim()) : [];
     if (words(d.headline) < 5 || words(d.headline) > 14) issues.push('Kop: 5 tot 14 woorden.');
     if (words(d.standfirst) < 8 || words(d.standfirst) > 35) issues.push('Intro: 8 tot 35 woorden.');
-    if (compact ? body.length < 1 || body.length > 2 || body.some(p => words(p) < 10 || words(p) > 65) : body.length < 3 || body.length > 5 || body.some(p => p.length < 70 || words(p) < 18 || words(p) > 120)) issues.push(compact ? 'Wedstrijdtekst: één of twee korte inhoudelijke alinea’s.' : 'Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.');
+    if (compact ? body.length < 1 || body.length > 2 || body.some(p => words(p) < 10 || words(p) > 65) : body.length < 3 || body.length > 5 || body.some(p => p.length < 70 || words(p) < 18 || words(p) > 120)) issues.push(compact ? 'Compacte tekst: één of twee korte inhoudelijke alinea’s.' : 'Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.');
     const normalize = value => String(value || '').toLowerCase().normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
     const blocks = [d.standfirst, ...body].map(normalize).filter(Boolean);
@@ -39,9 +45,10 @@
   function publicationIssues(payload) {
     const issues = [], d = payload.draft || {};
     const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
-    issues.push(...draftIssues(d, registeredMatch));
+    const brief = briefEligible(payload);
+    issues.push(...draftIssues(d, registeredMatch || brief));
     issues.push(...factAudit.audit(payload));
-    if (!Array.isArray(payload.verifiedFacts) || payload.verifiedFacts.filter(x => typeof x === 'string' && x.trim()).length < 2) issues.push('Vul twee zelf gecontroleerde feiten in.');
+    if (!Array.isArray(payload.verifiedFacts) || payload.verifiedFacts.filter(x => typeof x === 'string' && x.trim()).length < (brief ? 1 : 2)) issues.push(brief ? 'Vul het gecontroleerde besluit in.' : 'Vul twee zelf gecontroleerde feiten in.');
     const sources = Array.isArray(payload.sources) ? payload.sources : [];
     const hosts = sources.map(s => host(s?.url));
     const primary = payload.articleKind === 'announcement' && sources.length === 1 &&
@@ -86,5 +93,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

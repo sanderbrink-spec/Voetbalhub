@@ -1,5 +1,5 @@
 'use strict';
-const { draftIssues, paragraphs } = require('./editorial-desk-model');
+const { draftIssues, paragraphs, compactStructure, standardStructure } = require('./editorial-desk-model');
 const { headlineContradictions } = require('./editorial-quality');
 class DraftError extends Error {
   constructor(status, message, retryAfter) { super(message); this.status=status; this.retryAfter=retryAfter; }
@@ -12,16 +12,16 @@ function normalizeDraft(text) {
   if(value.skip===true||String(value.editorialDecision||value.editorial_decision||'').toLowerCase()==='skip')return {skip:true};
   return {...value,headline:typeof value.headline==='string'?value.headline.trim():'',standfirst:typeof value.standfirst==='string'?value.standfirst.trim():'',body:paragraphs(value).map(p=>p.trim())};
 }
-function generationIssues(draft,facts,match=null) {
+function generationIssues(draft,facts,match=null,compact=false) {
   if(!draft)return ['Geef uitsluitend een geldig JSON-object met kop, intro en body.'];
-  const issues=draftIssues(draft);
+  const issues=draftIssues(draft,compact);
   if(headlineContradictions(draft))issues.push('De kop noemt tegenstrijdige wedstrijdresultaten. Gebruik alleen het aangeleverde resultaat.');
   issues.push(...require('./editorial-facts').evidenceIssues(draft,facts,match));
   return [...new Set(issues)];
 }
-async function createEditorialDraft({topic,category,facts,sourceUrls,match=null}, {apiKey,model,fetcher=fetch,timeoutMs=25000}) {
-  const prompt=`Je bent de Nederlandstalige Veldio-redactie. Schrijf een zelfstandig feitelijk voetbalconcept uitsluitend op basis van de aangeleverde feiten. URL's zijn geen bewijs dat je pagina's hebt gelezen. Verzin geen feiten, namen, citaten, scores, cijfers, conclusies of attributies. Neem geen uitgeverstekst over en vertaal geen artikel. Kies eerst welke verschillende feiten in iedere alinea thuishoren; schrijf daarna de tekst. Iedere alinea behandelt andere aangeleverde informatie. Gebruik scores alleen exact zoals ze in de feiten staan, met dezelfde thuis-uit-volgorde. Beschrijf geen doelpuntenmakers, spelbeeld, blessure, citaat, ruststand of wedstrijdverloop dat niet expliciet als feit is aangeleverd. De intro vat het hoofdpunt samen en wordt niet in de eerste alinea herhaald. Als de informatie onvoldoende is voor drie inhoudelijke alinea's, geef JSON {"skip":true,"reason":"onvoldoende feiten"}; vul nooit op. Anders: geef uitsluitend JSON met headline (5-14 Nederlandse woorden), standfirst (8-35 woorden), body (3-5 alinea's, elk 18-120 woorden en minimaal 70 tekens), why_it_matters, verification_notes en claims. Gebruik helder, direct Nederlands. Gebruik directe zinnen met de club als onderwerp, bijvoorbeeld "Ajax speelt" of "FC Midtjylland meldt". Vermijd een inleidende constructie als "Voor Ajax" of "Volgens FC". Claims bevatten claim, evidence en status; gebruik unverified tenzij het bewijs letterlijk in de aangeleverde feiten staat. verification_notes begint met "BRONCONTROLE VEREIST: AI heeft de feiten niet onafhankelijk geverifieerd." Publiceer nooit zelf.`;
-  const messages=[{role:'system',content:prompt},{role:'user',content:JSON.stringify({topic,category,facts,sourceUrls,match})}];
+async function createEditorialDraft({topic,category,facts,sourceUrls,match=null,compact=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000}) {
+  const prompt=`Je bent de Nederlandstalige Veldio-redactie. Schrijf een zelfstandig feitelijk voetbalconcept uitsluitend op basis van de aangeleverde feiten. URL's zijn geen bewijs dat je pagina's hebt gelezen. Verzin geen feiten, namen, citaten, scores, cijfers, conclusies of attributies. Neem geen uitgeverstekst over en vertaal geen artikel. Kies eerst welke verschillende feiten in iedere alinea thuishoren; schrijf daarna de tekst. Iedere alinea behandelt andere aangeleverde informatie. Gebruik scores alleen exact zoals ze in de feiten staan, met dezelfde thuis-uit-volgorde. Beschrijf geen doelpuntenmakers, spelbeeld, blessure, citaat, ruststand of wedstrijdverloop dat niet expliciet als feit is aangeleverd. De intro vat het hoofdpunt samen en wordt niet in de eerste alinea herhaald. ${compact ? "Schrijf een kort nieuwsbericht over het besluit. Gebruik de intro voor de kern en de body voor de concrete details of expliciete bronattributie. Splits één rijk feit waar mogelijk in besluit en details. Herhaal het besluit niet in andere woorden." : "Schrijf een regulier artikel met drie tot vijf inhoudelijke alinea’s."} Als de informatie onvoldoende is voor de gekozen vorm, geef JSON {"skip":true,"reason":"onvoldoende feiten"}; vul nooit op. Anders: geef uitsluitend JSON met headline (5-14 Nederlandse woorden), standfirst (8-35 woorden), ${compact ? compactStructure : standardStructure}, why_it_matters, verification_notes en claims. Gebruik helder, direct Nederlands. Gebruik directe zinnen met de club als onderwerp, bijvoorbeeld "Ajax speelt" of "FC Midtjylland meldt". Vermijd een inleidende constructie als "Voor Ajax" of "Volgens FC". Claims bevatten claim, evidence en status; gebruik unverified tenzij het bewijs letterlijk in de aangeleverde feiten staat. verification_notes begint met "BRONCONTROLE VEREIST: AI heeft de feiten niet onafhankelijk geverifieerd." Publiceer nooit zelf.`;
+  const messages=[{role:'system',content:prompt},{role:'user',content:JSON.stringify({topic,category,facts,sourceUrls,match,compact})}];
   // Both writing and its single targeted repair share one 25-second deadline.
   const signal=AbortSignal.timeout(timeoutMs);
   for(let attempt=0;attempt<2;attempt++){
@@ -45,8 +45,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,match=null}
     }
     const text=data?.choices?.[0]?.message?.content||'';
     const draft=normalizeDraft(text);
-    if(draft?.skip)throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul extra informatie aan, bij voorkeur 4 tot 8 verschillende feiten.');
-    const issues=generationIssues(draft,facts,match);
+    if(draft?.skip)throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.');
+    const issues=generationIssues(draft,facts,match,compact);
     if(!issues.length)return {...draft,qualityReview:{automatedTextChecksPassed:true,revisionApplied:attempt===1,attempts:attempt+1,factVerificationRequired:true,autoPublish:false}};
     if(attempt===1){const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;throw error;}
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});

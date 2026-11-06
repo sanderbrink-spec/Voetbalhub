@@ -270,3 +270,24 @@ test('revision editor may decline insufficient evidence rather than fabricate co
   'Onvoldoende journalistieke diepgang',{key:'test',fetcher:async()=>Response.json({choices:[{message:{content:JSON.stringify({skip:true})}}]})});
  assert.equal(result,null);
 });
+
+test('one verified official decision can use the brief format without relaxing other publication checks',()=>{
+ const M=require('../editorial-desk-model');
+ const {generationIssues}=require('../editorial-ai');
+ const fact='Ajax bevestigt de aanstelling van de hoofdtrainer per 1 november.';
+ const doc={url:'https://www.ajax.nl/artikelen/aanstelling',title:'Ajax stelt hoofdtrainer aan',text:fact,publishedAt:'2026-10-30T08:00:00Z'};
+ const candidate={kind:'announcement',primaryAuthority:'club_decision',facts:[{text:fact,evidence:[{source:0,quote:fact}]}]};
+ const payload={
+  articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,verifiedFacts:[fact],sources:[{url:doc.url}],
+  editorialChecks:Object.fromEntries(M.checks.map(check=>[check,true])),
+  draft:{headline:'Ajax maakt aanstelling van hoofdtrainer bekend',standfirst:'Ajax heeft de aanstelling van de hoofdtrainer officieel bekendgemaakt.',body:['Uit de bekendmaking blijkt dat het besluit per 1 november ingaat.']}
+ };
+ assert.deepEqual(validateEvidence(candidate,[doc],now),[]);
+ assert.deepEqual(generationIssues(payload.draft,[fact],null,true),[]);
+ assert.deepEqual(M.publicationIssues(payload),[]);
+ assert.ok(M.publicationIssues({...payload,primaryAuthority:undefined}).length);
+ assert.ok(M.publicationIssues({...payload,editorialChecks:{}}).length);
+ assert.ok(M.publicationIssues({...payload,draft:{...payload.draft,body:[payload.draft.standfirst]}}).length);
+ assert.ok(validateEvidence({...candidate,transferStatus:'confirmed'},[doc],now).length);
+ assert.ok(validateEvidence(candidate,[{...doc,text:'Geen bevestiging in de bron.'}],now).length);
+});
