@@ -493,7 +493,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const standfirst='De ontmoeting tussen '+homeTeam+' en '+awayTeam+' in de '+matchRecord.category+' eindigde op '+homeScore+'-'+awayScore+'. De geregistreerde wedstrijdgegevens vormen de basis voor dit bericht.';
     const first=round+' De officiële eindstand luidt '+homeScore+'-'+awayScore+'. Daarmee staat een '+outcome+' vast, met een verschil van '+margin+' doelpunt'+(margin===1?'':'en')+'. Meer over het wedstrijdverloop volgt alleen wanneer afzonderlijke gebeurtenissen gecontroleerd zijn.';
     const second=halftime
-      ? 'De vastgelegde ruststand was '+halftime.match(/\\d+-\\d+/)[0]+'. Na de pauze veranderde de score naar '+homeScore+'-'+awayScore+'. De beschikbare registratie bevestigt geen doelpuntenmakers, minuten of tactische ontwikkelingen. '+attribution+'.'
+      ? 'De vastgelegde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Na de pauze veranderde de score naar '+homeScore+'-'+awayScore+'. De beschikbare registratie bevestigt geen doelpuntenmakers, minuten of tactische ontwikkelingen. '+attribution+'.'
       : 'De beschikbare registratie vermeldt geen gecontroleerde ruststand of afzonderlijke wedstrijdmomenten. Daarom doet Veldio geen uitspraken over doelpuntenmakers, tijdstippen of het spelbeeld. '+attribution+'.';
     draft={headline,standfirst,body:[first,second]};
    }else{
@@ -521,7 +521,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      report.assessments.push({topic,revision,...assessment});
      if(assessment.approved)break;
      rejection=assessment.reasons.join(' ');
-    }catch(error){rejection=error.message;}
+    }catch(error){
+     if(!/^Tweede feitencontrole: /.test(error.message))throw error;
+     rejection=error.message;
+    }
     if(matchRecord||revision===2)throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
     const revised=await reviseDraft(payload,candidate,group,rejection,ai);
     if(!revised)throw Error('Onvoldoende feiten voor verantwoorde herschrijving.');
