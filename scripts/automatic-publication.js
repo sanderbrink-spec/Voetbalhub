@@ -22,13 +22,20 @@ function plain(html){
  .replace(/\s+/g,' ').trim();
 }
 function extractPage(html,url){
- const title=plain((html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)||html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)||[])[1]||'');
+ const article=html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1];
+ const title=plain(((article||html).match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)||html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)||[])[1]||'');
  let publishedAt='';
  for(const match of html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)){
-  try{const walk=x=>{if(!x||typeof x!=='object')return; if(x.datePublished&&!publishedAt)publishedAt=x.datePublished;for(const v of Object.values(x))if(typeof v==='object')if(Array.isArray(v))v.forEach(walk);else walk(v);};walk(JSON.parse(match[1]));}catch{}
+  try{const walk=x=>{if(!x||typeof x!=='object')return; if(typeof x.datePublished==='string'&&Number.isFinite(Date.parse(x.datePublished))&&!publishedAt)publishedAt=x.datePublished;for(const v of Object.values(x))if(typeof v==='object')if(Array.isArray(v))v.forEach(walk);else walk(v);};walk(JSON.parse(match[1]));}catch{}
  }
- if(!publishedAt){const m=html.match(/<meta[^>]*(?:property|name)=["']article:published_time["'][^>]*content=["']([^"']+)/i);if(m)publishedAt=m[1];}
- let main=(html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)||html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
+ if(!publishedAt){
+  for(const [tag] of html.matchAll(/<meta\b[^>]*>/gi)){
+   if(!/(?:property|name)\s*=\s*["']article:published_time["']/i.test(tag))continue;
+   const date=tag.match(/\bcontent\s*=\s*["']([^"']+)/i)?.[1];
+   if(Number.isFinite(Date.parse(date))) {publishedAt=date;break;}
+  }
+ }
+ let main=article||html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1];
  // PSV renders fixture cards outside its otherwise empty <main> element.
  if(host(url)==='psv.nl'&&/^\/match-center\/?$/.test(new URL(url).pathname)){
   const start=html.indexOf('<div class="overviewheader-visual">');
@@ -42,7 +49,7 @@ function extractPage(html,url){
  if(!main)return {url,title,publishedAt,text:''};
  const text=plain(main).slice(0,14000);
  if(!publishedAt){
-  const time=html.match(/<time[^>]*datetime=["']([^"']+)["']/i);
+  const time=main.match(/<time[^>]*datetime=["']([^"']+)["']/i);
   if(time&&Number.isFinite(Date.parse(time[1])))publishedAt=time[1];
   else {
    const header=text.slice(0,400),date=header.match(/\b([0-3]\d)[.-]([01]\d)[.-](20\d\d)\b/);
@@ -101,20 +108,20 @@ function discoverLinks(html,index){
 function nationallyRelevant(doc){
  const title=normalize(doc.title||'');
  const body=normalize((doc.text||'').slice(0,1600));
- if(!title||title.length<24)return false;
+ if(!title||!body)return false;
  // KKD is exceptional coverage only, never routine previews or match listings.
  if(/\b(kkd|keuken kampioen divisie|eerste divisie)\b/.test(title)&&!/\b(promotie|degradatie|kampioen|kampioenschap|titel|ontslag|hoofdtrainer|trainerswissel|fraude|faillissement|knvb|licentie|record)\b/.test(title))return false;
  if(/^(alle informatie|match center|wedstrijdprogramma|wedstrijden|nieuws|home|tickets|ticketinformatie|kaartverkoop|veelgestelde vragen|faq|contact|agenda|overzicht)$/.test(title))return false;
  if(/\b(ticket|tickets|kaartverkoop|seizoenkaart|parkeer|routebeschrijving|openingstijden|fanshop|webshop|merchandise|fotoverslag|trainingsschema|vacature|vrijwilliger|businessclub|hospitality|jeugdopleiding|onder 1[0-9]|onder 2[0-3])\b/.test(title))return false;
  const important=/\b(eredivisie|eerste divisie|keuken kampioen divisie|knvb|beker|bekeravontuur|bekerloting|bekerprogramma|champions league|europa league|conference league|europese|transfer|transfers|contract|trainer|hoofdtrainer|ontslag|vertrek|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|topper|derby|ajax|psv|feyenoord|az|fc twente|fc utrecht|fc groningen|sc heerenveen|nec|sparta|go ahead eagles)\b/;
- if(!important.test(title))return false;
+ if(!important.test(title)&&!important.test(body))return false;
  // A club name alone is insufficient: require a material football development.
  const development=/\b(transfer|transfers|contract|verlengt|verlengd|tekent|tekende|aangetrokken|vertrekt|vertrek|trainer|hoofdtrainer|ontslag|aangesteld|benoemd|schorsing|blessure|selectie|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|beker|bekeravontuur|bekerloting|bekerprogramma|europa|eredivisie|competitie|wedstrijd|duel|speelt|treft|tegen)\b/;
  // Routine fixtures and ordinary club updates do not qualify as national headlines.
  const highImpact=/\b(transfer|transfers|contract|verlengt|verlengd|tekent|tekende|aangetrokken|vertrekt|vertrek|ontslag|aangesteld|benoemd|schorsing|blessure|directeur|bestuur|overname|promotie|degradatie|kampioen|titelstrijd|knvb|licentie|record|halve finale|finale|topper|derby)\b/;
  const majorFixture=/\b(champions league|europa league|conference league|knvb beker|bekeravontuur|bekerloting|bekerprogramma|europese wedstrijd)\b/;
- if(!highImpact.test(title)&&!majorFixture.test(title))return false;
- return development.test(title)&&body.length>=300;
+ const lead=title+' '+body.slice(0,500);
+ return development.test(lead)&&(highImpact.test(lead)||majorFixture.test(lead));
 }
 const editorialPriority=production.priority;
 function partnerDocuments(doc,documents){
@@ -125,8 +132,9 @@ function partnerDocuments(doc,documents){
  const title=tokens(doc.title),words=tokens(doc.title+' '+doc.text.slice(0,4000));
  return documents.filter(d=>owner(d.url)!==owner(doc.url)).map(d=>{
   const other=tokens(d.title+' '+d.text.slice(0,4000));
-  return {doc:d,anchor:[...title].some(t=>other.has(t)),score:[...words].filter(t=>other.has(t)).length};
- }).filter(x=>x.anchor&&x.score>=6).sort((a,b)=>b.score-a.score).slice(0,2).map(x=>x.doc);
+  const otherTitle=tokens(d.title);
+  return {doc:d,anchor:[...title].some(t=>other.has(t))||[...otherTitle].some(t=>words.has(t)),titleOverlap:[...title].filter(t=>otherTitle.has(t)).length,score:[...words].filter(t=>other.has(t)).length};
+ }).filter(x=>x.anchor&&(x.score>=6||x.titleOverlap>=2&&x.score>=4)).sort((a,b)=>b.score-a.score).slice(0,2).map(x=>x.doc);
 }
 function validateEvidence(candidate,docs,now=Date.now()){
  const issues=[];
@@ -254,7 +262,7 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
-async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),report}={}){
+async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,report}={}){
  if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
  const headers={Authorization:'Bearer '+secret,'Content-Type':'application/json'};
@@ -271,7 +279,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(!attempts.has(url))attempts.set(url,(async()=>{
    try{
     const doc=await officialPage(url,fetcher);
-    if(doc.text.length<300)throw Error('Te weinig leesbare broninhoud.');
+    if(doc.text.length<300){
+     report.sourceErrors.push({url,error:'Te weinig leesbare broninhoud.',code:'insufficient_content'});
+     return null;
+    }
     docs.set(doc.url,doc);
     return doc;
    }catch(error){report.sourceErrors.push({url,error:error.message});return null;}
@@ -305,8 +316,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   found.forEach(url=>links.add(url));
  }catch(error){
   report.sources.gdelt={status:'unavailable',links:0};
-  report.sourceErrors.push({source:'GDELT',error:error.message});
+  report.sourceErrors.push({source:'GDELT',error:error.message,code:error.cause?.code||error.code||error.name});
  }
+ const linkFor=doc=>articleUrl(doc.url,config.newsIndexes)||doc.url;
  const discovered=[];
  for(const link of links){
   const doc=await load(link);
@@ -316,18 +328,33 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.counts.readable=discovered.length;
  for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
   const publishedTime=Date.parse(doc.publishedAt||'');
-  if(!Number.isFinite(publishedTime)||publishedTime>now+300000||publishedTime<now-config.maxAgeHours*3600000){report.counts.stale++;continue;}
-  if(!nationallyRelevant(doc)){report.skipped.push({topic:doc.title,reason:'Geen aantoonbare landelijke nieuwswaarde; geen AI-aanroep.'});continue;}
-  if(/\b(?:uitgeschakeld|nederlaag|overwinning|wint|won|doelpunten|nabeschouwing|samenvatting)\b/i.test(doc.title))continue;
-  if(published.some(a=>a.sources?.some(s=>s.url===doc.url)))continue;
+  const signal={url:doc.url,topic:doc.title,publishedAt:doc.publishedAt};
+  report.signals.push(signal);
+  if(!Number.isFinite(publishedTime)||publishedTime>now+300000||publishedTime<now-config.maxAgeHours*3600000){
+   report.counts.stale++;
+   signal.outcome=!Number.isFinite(publishedTime)?'missing_date':publishedTime>now+300000?'future_date':'stale_date';
+   continue;
+  }
+  report.counts.current++;
+  if(!nationallyRelevant(doc)){signal.outcome='no_national_relevance';continue;}
+  report.counts.relevant++;
+  if(/\b(?:uitgeschakeld|nederlaag|overwinning|wint|won|doelpunten|nabeschouwing|samenvatting)\b/i.test(doc.title)){signal.outcome='unsupported_result';continue;}
+  if(published.some(a=>articleUrl(a.sources?.[0]?.url,config.newsIndexes)===linkFor(doc))){signal.outcome='duplicate_primary_source';continue;}
+  report.counts.eligible++;
   const partners=partnerDocuments(doc,[...docs.values()]);
-  if(partners.length)groups.push([doc,...partners]);
-  else report.counts.noCorroboration++;
+  if(partners.length){
+   groups.push([doc,...partners]);
+   signal.outcome='partner_found';
+   signal.partners=partners.map(partner=>partner.url);
+  }else{
+   signal.outcome='no_corroboration';
+   report.counts.noCorroboration++;
+  }
  }
  const ai={key:groqKey,fetcher:pacedGroq((url,options)=>{
   if(String(url).startsWith('https://api.groq.com/'))report.counts.aiRequests++;
   return fetcher(url,options);
- })};
+ },groqIntervalMs)};
 
  const imageBudget={remaining:config.maxImageRequestsPerRun||8};
  const jobs=new Map();
@@ -352,17 +379,21 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.target=limit;report.imageProviderConfigured=Boolean(process.env.OPENAI_API_KEY);
  for(const {group,job} of [...jobs.values()].slice(0,8)){
   if(report.published.length>=limit)break;
-  let topic=group[0].title;
+  let topic=group[0].title,stage='verification';
+  report.counts.attempted++;
   try{
    const candidate=group.bootstrap?.candidate||await extractCandidate(group,ai);
-   if(candidate.skip){report.skipped.push({topic,reason:'Onvoldoende onafhankelijke feiten.'});durable.queue.finish(job,'review',now);continue;}
+   if(candidate.skip){report.skipped.push({topic,stage,reason:'Onvoldoende onafhankelijke feiten.'});durable.queue.finish(job,'review',now);continue;}
    const evidenceIssues=validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
    const sourceIndices=[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
    const facts=candidate.facts.map(f=>f.text);
    const sources=sourceIndices.map(i=>({url:group[i].url}));
-   const draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:aiFetch,timeoutMs:180000});
+   report.counts.selected++;
+   stage='generation';
+   const draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    report.counts.generated++;
+   stage='quality';
    if(M.needsMatch(draft)||M.requiresFlashscore(draft))throw Error('Uitslagen en wedstrijdverslagen wachten op onafhankelijke Flashscore-verificatie.');
    if(generationIssues(draft,facts).length)throw Error(generationIssues(draft,facts).join(' '));
    if(group.some(d=>overlap(d.text,draft)))throw Error('Te veel woordelijke overlap met bron.');
@@ -380,6 +411,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(!assessment.approved)throw Error(assessment.reasons.join(' '));
    report.counts.approved++;
    payload.reviewNotes+=' Redactiescore fase45: '+JSON.stringify(assessment);
+   stage='artwork';
    Object.assign(payload,await uploadCover(payload,{token:githubToken,fetcher,imageOptions:{secret,budget:imageBudget,priorHashes}}));
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
    // Refresh before the only publication write to avoid a concurrent/manual duplicate.
@@ -387,8 +419,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp inmiddels gepubliceerd.'});durable.queue.finish(job,'duplicate',now);continue;}
    const latestCount=published.filter(a=>{const t=Date.parse(a.publishedAt);return Number.isFinite(t)&&new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(t))===today;}).length;
    if(latestCount>=config.maxPerDay){report.status='daily_limit';break;}
+   stage='storage';
    const saved=await api('/editorial-drafts',{payload,approve:true});
    if(saved.record?.status!=='approved'||saved.record.contentHash!==fingerprint(payload))throw Error('Gecontroleerde tekstversie niet bevestigd.');
+   report.counts.stored++;
+   stage='publication';
    const result=await api('/publish',{...payload,approved:true,editorialDraftId:saved.record.id,expectedRevision:saved.record.revision});
    if(result.status!=='published'||result.article?.imageUrl!==payload.imageUrl)throw Error('Publicatie inclusief afbeelding niet bevestigd.');
    // Use the same unauthenticated endpoint as Android, not the desk-only view.
@@ -401,19 +436,20 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    report.published.push({id:visible.id,headline:visible.headline,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.category,imageMode:payload.imageReview.mode});published.push(visible);
    durable.queue.finish(job,'published',now);
    console.log('Gepubliceerd met afbeelding:',visible.headline);
-  }catch(e){durable.queue.fail(job,e,now);report.skipped.push({topic,reason:e.message});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
+  }catch(e){durable.queue.fail(job,e,now);const technical=job.reason==='external_service_unavailable'||['storage','publication'].includes(stage)||(stage==='generation'&&!e.issues&&e.status!==422)||e instanceof ReferenceError||e instanceof TypeError;
+   (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
   finally{await durable.save();}
  }
  return report;
 }
 async function run(options={}){
- const report={startedAt:new Date(options.now||Date.now()).toISOString(),published:[],skipped:[],sourceErrors:[],assessments:[],sources:{},counts:{found:0,readable:0,stale:0,noCorroboration:0,uniqueGroups:0,queued:0,aiRequests:0,generated:0,approved:0,published:0}};
+ const report={startedAt:new Date(options.now||Date.now()).toISOString(),published:[],skipped:[],sourceErrors:[],processingErrors:[],signals:[],assessments:[],sources:{},counts:{found:0,readable:0,stale:0,current:0,relevant:0,eligible:0,noCorroboration:0,uniqueGroups:0,queued:0,attempted:0,selected:0,aiRequests:0,generated:0,approved:0,stored:0,published:0}};
  try{
   await execute({...options,report});
   if(!report.status){
    const sourcesUnavailable=report.sources.gdelt?.status==='unavailable'&&
     report.sources.officialIndexes.every(source=>source.status==='unavailable')&&!report.counts.readable;
-   report.status=report.published.length?'completed':sourcesUnavailable?'sources_unavailable':'no_new_verified_articles';
+   report.status=report.published.length?'completed':report.processingErrors.length?'processing_errors':sourcesUnavailable?'sources_unavailable':'no_new_verified_articles';
   }
   return report;
  }catch(error){report.status='failed';report.error=error.message;throw error;}
@@ -421,15 +457,16 @@ async function run(options={}){
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
   if(process.env.GITHUB_STEP_SUMMARY){
-   const {found,readable,stale,noCorroboration,uniqueGroups,generated,approved,published,aiRequests}=report.counts;
+   const {found,readable,stale,current,relevant,eligible,noCorroboration,uniqueGroups,queued,attempted,selected,generated,approved,stored,published,aiRequests}=report.counts;
    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,[
     '## Automatische Veldio-redactie',
     '',
     'Status: '+report.status,
     'Links: '+found+' gevonden, '+readable+' leesbaar, '+stale+' verouderd of ongedateerd.',
-    'Onderwerpen: '+uniqueGroups+' groepen, '+noCorroboration+' signalen zonder tweede bron.',
-    'Artikelen: '+generated+' geschreven, '+approved+' goedgekeurd, '+published+' gepubliceerd.',
-    'Aanroepen taalmodel: '+aiRequests+'. Bronfouten: '+report.sourceErrors.length+'.',
+    'Onderwerpen: '+current+' actueel, '+relevant+' relevant, '+eligible+' passend, '+noCorroboration+' zonder tweede bron.',
+    'Verificatie: '+uniqueGroups+' groepen, '+queued+' klaar, '+attempted+' geprobeerd, '+selected+' geselecteerd.',
+    'Artikelen: '+generated+' geschreven, '+approved+' goedgekeurd, '+stored+' opgeslagen, '+published+' gepubliceerd, '+report.skipped.length+' afgewezen.',
+    'Aanroepen taalmodel: '+aiRequests+'. Bronfouten: '+report.sourceErrors.length+'. Verwerkingsfouten: '+report.processingErrors.length+'.',
     ''
    ].join('\n'));
   }
@@ -438,5 +475,5 @@ async function run(options={}){
 function runExitCode(report){
  return ['completed','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
 }
-if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({published:r.published.length,skipped:r.skipped.length,sourceErrors:r.sourceErrors.length,status:r.status}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
+if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
 module.exports={verifyDraft,editorialPriority,nationallyRelevant,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};

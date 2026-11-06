@@ -130,3 +130,58 @@ test('partial outages keep discovery running without AI calls or article writes 
  assert.equal(report.counts.aiRequests,0);
  assert.equal(calls.some(([url,method])=>method==='POST'||url.includes('api.groq.com')),false);
 });
+
+test('archived official cup evidence reaches the non-bootstrap writer and the public feed',async()=>{
+ const {fingerprint}=require('../editorial-drafts');
+ const {candidate,draft,sourceUrls}=require('../automatic-bootstrap.json').find(entry=>entry.key==='hoek-az-bekerprogramma-2026-11-06');
+ const config=require('../automatic-editorial.json');
+ const urls=[sourceUrls[0].replace(/\/[^/]+$/,'/bekerprogramma-hsv-hoek-az'),sourceUrls[1].replace(/\/[^/]+$/,'/bekerprogramma-hsv-hoek-az')];
+ const title='KNVB Bekerprogramma HSV Hoek en AZ';
+ const evidence=candidate.facts.flatMap(fact=>fact.evidence);
+ const pages=urls.map((url,index)=>{
+  const quotes=[...new Set(evidence.filter(e=>e.source===index).map(e=>e.quote))];
+  const text=title+' '+quotes.join(' ');
+  return {url,text,title,publishedAt:'2026-11-06T08:00:00Z'};
+ });
+ const fragments=pages.map(evidenceFragments);
+ const references=candidate.facts.map(fact=>({
+  text:fact.text,
+  evidence:fact.evidence.map(({source,quote})=>{
+   const fragment=fragments[source].findIndex(text=>text.includes(quote.slice(0,35)));
+   assert.notEqual(fragment,-1);
+   return {source,fragment};
+  })
+ }));
+ const extraction={...candidate,facts:references,sharedEventEvidence:[{source:0,fragment:0},{source:1,fragment:0}]};
+ const modelResponses=[extraction,draft,{approved:true,issues:[],scores:Object.fromEntries(['actuality','reliability','nationalValue','originality','journalism','diversity'].map(key=>[key,95]))}];
+ let saved,article;
+ const report=await run({secret:'test',groqKey:'test',githubToken:'test',groqIntervalMs:0,now:Date.parse('2026-11-06T10:00:00Z'),fetcher:async(url,options={})=>{
+  if(url.endsWith('/articles?view=all')||url.endsWith('/articles'))return Response.json({articles:article?[article]:[]});
+  if(url.includes('editorial-queue45.json'))return options.method==='PUT'?Response.json({content:{sha:'test'}}):new Response(null,{status:404});
+  if(url.includes('gdeltproject.org'))return new Response(null,{status:429});
+  if(url.endsWith('/models'))return Response.json({data:[{id:config.model}]});
+  if(url.endsWith('/chat/completions')){
+   assert.ok(modelResponses.length);
+   return Response.json({choices:[{message:{content:JSON.stringify(modelResponses.shift())}}]});
+  }
+  if(url.endsWith('/editorial-drafts')){
+   saved=JSON.parse(options.body).payload;
+   return Response.json({record:{id:'test-draft',revision:1,status:'approved',contentHash:fingerprint(saved)}});
+  }
+  if(url.endsWith('/publish')){
+   assert.equal(JSON.parse(options.body).editorialDraftId,'test-draft');
+   article={id:'test-article',imageUrl:saved.imageUrl,...saved.draft};
+   return Response.json({status:'published',article});
+  }
+  const page=pages.find(entry=>entry.url===url);
+  if(page)return new Response('<meta content="'+page.publishedAt+'" property="article:published_time"><main><nav>Menu</nav><article><h1>'+page.title+'</h1><p>'+page.text.slice(page.title.length)+'</p></article></main>');
+  const index=config.newsIndexes.find(entry=>entry.url===url);
+  if(index)return new Response(pages.filter(page=>new URL(page.url).hostname===new URL(url).hostname).map(page=>'<a href="'+page.url+'">Bekerprogramma</a>').join(''));
+  return new Response(null,{status:404});
+ }});
+ assert.equal(report.status,'completed',JSON.stringify(report));
+ assert.deepEqual([report.counts.selected,report.counts.generated,report.counts.stored,report.counts.published],[1,1,1,1]);
+ assert.equal(report.sources.gdelt.status,'unavailable');
+ assert.equal(report.assessments[0].threshold,85);
+ assert.equal(modelResponses.length,0);
+});
