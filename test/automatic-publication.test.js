@@ -8,7 +8,8 @@ test('generic football wording does not send unrelated official pages to the pai
  const doc={url:'https://ajax.nl/artikelen/a',title:'Ajax opent nieuw trainingscentrum in Amsterdam',text:'Ajax opent maandag een trainingscentrum in Amsterdam. De faciliteit krijgt extra kleedkamers, herstelruimtes en trainingsvelden voor de jeugdopleiding.'};
  const related={...doc,url:'https://knvb.nl/nieuws/a',title:'KNVB bezoekt Ajax trainingscentrum',text:doc.text};
  const unrelated={url:'https://psv.nl/media/artikel/b',title:'PSV ontvangt Willem II',text:'De club speelt deze wedstrijd in het nieuwe seizoen. Het team heeft meer nieuws voor clubs over de laatste wedstrijden.'};
- assert.deepEqual(partnerDocuments(doc,[unrelated,related]),[related]);
+ const coincidental={url:'https://peczwolle.nl/nieuws/b',title:'Ajax speelt tegen PEC Zwolle',text:'Ajax speelt een wedstrijd in Amsterdam. Het team uit Amsterdam komt tijdens het seizoen naar Zwolle.'};
+ assert.deepEqual(partnerDocuments(doc,[unrelated,coincidental,related]),[related]);
 });
 function fixture(){
  const texts=['Ajax ontvangt AZ op zaterdag 31 oktober 2026 om 21:00 uur in Amsterdam. De club biedt bezoekers informatie over de toegangskaarten en de ontvangst rond het stadion.',
@@ -35,6 +36,7 @@ test('discovery cannot leave the exact configured official site or article path'
 test('primary publication dates parse Dutch and PSV headers without using a future fixture date as publication time',()=>{
  assert.equal(extractPage('<main><h1>Clubnieuws</h1>03-11-2026<p>Actuele mededeling.</p></main>','https://psv.nl/media/artikel/test').publishedAt,'2026-11-03');
  assert.equal(extractPage('<main><h1>Clubnieuws</h1>Zondag 01 november 2026 om 19:10<p>Clubmededeling.</p></main>','https://fcgroningen.nl/nieuws/test/').publishedAt,'2026-11-01');
+ assert.equal(extractPage('<meta property="og:datePublished" content="2026-11-05T02:41:44+01:00"><main><h1>Clubnieuws</h1></main>','https://fctwente.nl/nieuws/test').publishedAt,'2026-11-05T02:41:44+01:00');
  assert.equal(extractPage('<main><h1>Ajax speelt donderdag 5 november 2026</h1><p>Het duel staat gepland.</p></main>','https://ajax.nl/artikelen/test').publishedAt,'');
 });
 test('literal evidence from two official domains passes while invented quotes and single-domain confirmation fail',()=>{

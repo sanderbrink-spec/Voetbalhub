@@ -42,7 +42,7 @@
       "articlePath": "^/artikelen/[^/]+/?$"
     },
     {
-      "url": "https://www.feyenoord.com/nl/news/",
+      "url": "https://www.feyenoord.com/nl/news",
       "articlePath": "^/nl/news/[^/]+/?$"
     },
     {
@@ -66,7 +66,7 @@
       "articlePath": "^/nieuws/[^/]+/?$"
     },
     {
-      "url": "https://www.eurojackpotknvbbeker.nl/nieuws",
+      "url": "https://www.eurojackpotknvbbeker.nl/home",
       "articlePath": "^/nieuws/eurojackpot-knvb-beker/[^/]+/?$"
     }
   ],

@@ -30,7 +30,7 @@ function extractPage(html,url){
  }
  if(!publishedAt){
   for(const [tag] of html.matchAll(/<meta\b[^>]*>/gi)){
-   if(!/(?:property|name)\s*=\s*["']article:published_time["']/i.test(tag))continue;
+   if(!/(?:property|name)\s*=\s*["'](?:article:published_time|og:datePublished)["']/i.test(tag))continue;
    const date=tag.match(/\bcontent\s*=\s*["']([^"']+)/i)?.[1];
    if(Number.isFinite(Date.parse(date))) {publishedAt=date;break;}
   }
@@ -127,14 +127,16 @@ const editorialPriority=production.priority;
 function partnerDocuments(doc,documents){
  // Do not spend an extraction call on a second page chosen only for generic
  // football vocabulary. Literal evidence and the second reviewer still decide.
- const stop=new Set('voor naar vanaf tegen over deze dit een het zijn wordt worden door heeft hebben met van bij aan als ook meer nieuws nieuwe club clubs wedstrijd wedstrijden duel duels voetbal seizoen laatste the and with from this that news team teams match matches season'.split(' '));
+ const stop=new Set('voor naar vanaf tegen over deze dit een het zijn wordt worden door heeft hebben met van bij aan als ook meer nieuws nieuwe club clubs wedstrijd wedstrijden duel duels voetbal seizoen laatste the and with from this that news team teams match matches season league champions conference europese eredivisie persconferentie liveblog highlights selectie speelt'.split(' '));
  const tokens=value=>new Set(normalize(value).split(' ').filter(t=>t.length>3&&!stop.has(t)));
- const title=tokens(doc.title),words=tokens(doc.title+' '+doc.text.slice(0,4000));
+ const countMatches=(left,right)=>[...left].filter(token=>right.has(token)).length;
+ const title=tokens(doc.title),lead=tokens(doc.title+' '+doc.text.slice(0,1000));
  return documents.filter(d=>owner(d.url)!==owner(doc.url)).map(d=>{
-  const other=tokens(d.title+' '+d.text.slice(0,4000));
-  const otherTitle=tokens(d.title);
-  return {doc:d,anchor:[...title].some(t=>other.has(t))||[...otherTitle].some(t=>words.has(t)),titleOverlap:[...title].filter(t=>otherTitle.has(t)).length,score:[...words].filter(t=>other.has(t)).length};
- }).filter(x=>x.anchor&&(x.score>=6||x.titleOverlap>=2&&x.score>=4)).sort((a,b)=>b.score-a.score).slice(0,2).map(x=>x.doc);
+  const otherTitle=tokens(d.title),otherLead=tokens(d.title+' '+d.text.slice(0,1000));
+  const anchors=Math.max(countMatches(title,otherLead),countMatches(otherTitle,lead));
+  return {doc:d,anchors,score:countMatches(lead,otherLead)};
+ }).filter(x=>x.anchors>=2&&x.score>=4)
+  .sort((a,b)=>b.anchors-a.anchors||b.score-a.score).slice(0,2).map(x=>x.doc);
 }
 function validateEvidence(candidate,docs,now=Date.now()){
  const issues=[];
@@ -338,7 +340,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   report.counts.current++;
   if(!nationallyRelevant(doc)){signal.outcome='no_national_relevance';continue;}
   report.counts.relevant++;
-  if(/\b(?:uitgeschakeld|nederlaag|overwinning|wint|won|doelpunten|nabeschouwing|samenvatting)\b/i.test(doc.title)){signal.outcome='unsupported_result';continue;}
+  if(/\b(?:uitgeschakeld|nederlaag|overwinning|zege|verslaat|wint|won|doelpunten|nabeschouwing|samenvatting|highlights|liveblog|in beeld|komt tekort)\b/i.test(doc.title)){signal.outcome='unsupported_result';continue;}
   if(published.some(a=>articleUrl(a.sources?.[0]?.url,config.newsIndexes)===linkFor(doc))){signal.outcome='duplicate_primary_source';continue;}
   report.counts.eligible++;
   const partners=partnerDocuments(doc,[...docs.values()]);
