@@ -286,7 +286,7 @@ async function verifyDraft(payload,candidate,docs,options,recent=[]){
 }
 async function reviseDraft(payload,candidate,docs,reason,options){
  const revised=await complete([
-  {role:'system',content:'Je bent de eindredacteur van Veldio. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (3-5 alinea’s van 18-120 woorden, minimaal 70 tekens per alinea). Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.'},
+  {role:'system',content:'Je bent de eindredacteur van Veldio. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Gebruik namen exact zoals ze in verifiedFacts staan, zonder aliassen of toevoegingen. Schrijf expliciet welke organisatie elke club- of bondmededeling bevestigde. Formuleer vanuit verifiedFacts met een eigen zinsbouw. Gebruik letterlijke bronpassages alleen om feiten te controleren. Neem geen bronzinnen of citaten over. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (3-5 alinea’s van 18-120 woorden, minimaal 70 tekens per alinea). Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.'},
   {role:'user',content:JSON.stringify({draft:payload.draft,rejection:reason,verifiedFacts:payload.verifiedFacts,candidate,sources:docs.map(d=>({url:d.url,title:d.title,publishedAt:d.publishedAt,text:compactSource(d)}))})}
  ],options);
  if(revised.skip)return null;
@@ -501,21 +501,24 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    report.counts.generated++;route.generated++;
    stage='quality';
-   if(!matchRecord&&(M.needsMatch(draft)||M.requiresFlashscore(draft)))throw Error('Uitslagen en wedstrijdverslagen wachten op onafhankelijke Flashscore-verificatie.');
-   if(!matchRecord&&generationIssues(draft,facts).length)throw Error(generationIssues(draft,facts).join(' '));
-   if(!matchRecord&&group.some(d=>overlap(d.text,draft)))throw Error('Te veel woordelijke overlap met bron.');
    const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks}:{}),
     reviewNotes:'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
     payload.feedLifecycle={kind:'preview',expiresAt:new Date(candidate.eventDate+'T23:59:59'+zone).toISOString()};
    }
-   const preflight=M.publicationIssues(payload);if(preflight.length)throw Error(preflight.join(' '));
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
    for(let revision=0;revision<=2;revision++){
-    let rejection='';
-    try{
+    const issues=M.publicationIssues(payload);
+    if(!matchRecord){
+     issues.push(...generationIssues(draft,facts));
+     if(M.needsMatch(draft)||M.requiresFlashscore(draft))issues.push('Niet-geverifieerde wedstrijdclaim.');
+     if(group.some(d=>overlap(d.text,draft)))issues.push('Woordelijke bronoverlap.');
+    }
+    let rejection=[...new Set(issues)].join(' ');
+    assessment=undefined;
+    if(!rejection)try{
      const review=await verifyDraft(payload,candidate,group,ai,published);
      assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold,...(candidate.kind==='preview'?{eventDate:candidate.eventDate}:{})});
      report.assessments.push({topic,revision,...assessment});
@@ -525,13 +528,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      if(!/^Tweede feitencontrole: /.test(error.message))throw error;
      rejection=error.message;
     }
+    if(!assessment){
+     report.assessments.push({topic,revision,approved:false,score:null,reasons:[rejection]});
+    }
     if(matchRecord||revision===2)throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
     const revised=await reviseDraft(payload,candidate,group,rejection,ai);
     if(!revised)throw Error('Onvoldoende feiten voor verantwoorde herschrijving.');
-    const issues=[...M.publicationIssues({...payload,draft:revised}),...generationIssues(revised,facts)];
-    if(M.needsMatch(revised)||M.requiresFlashscore(revised))issues.push('Niet-geverifieerde wedstrijdclaim.');
-    if(group.some(d=>overlap(d.text,revised)))issues.push('Woordelijke bronoverlap.');
-    if(issues.length)throw Error('Herschrijving voldoet niet aan de controle: '+issues.join(' '));
     payload.draft=revised;
     draft=revised;
    }
@@ -551,6 +553,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(saved.record?.status!=='approved'||saved.record.contentHash!==fingerprint(payload))throw Error('Gecontroleerde tekstversie niet bevestigd.');
    report.counts.stored++;
    stage='publication';
+   report.counts.publicationAttempts++;
    const result=await api('/publish',{...payload,approved:true,editorialDraftId:saved.record.id,expectedRevision:saved.record.revision});
    if(result.status!=='published'||result.article?.imageUrl!==payload.imageUrl)throw Error('Publicatie inclusief afbeelding niet bevestigd.');
    // Use the same unauthenticated endpoint as Android, not the desk-only view.
@@ -558,9 +561,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(!publicResponse.ok)throw Error('Openbare Android-feed niet beschikbaar.');
    const visible=(await publicResponse.json()).articles?.find(a=>a.id===result.article.id);
    if(!visible||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(draft.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
+   const repeatedResponse=await fetcher(API+'/articles',{signal:AbortSignal.timeout(60000),cache:'no-store'});
+   if(!repeatedResponse.ok||!(await repeatedResponse.json()).articles?.some(article=>article.id===visible.id))throw Error('Gepubliceerd artikel niet opnieuw opvraagbaar.');
    if(payload.imageReview.mode==='ai-photographic')priorHashes.push(payload.imageReview.visualHash);
    report.counts.published++;route.published++;
-   report.published.push({route:matchRecord?'match':'news',id:visible.id,url:API+'/articles?id='+encodeURIComponent(visible.id),headline:visible.headline,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.category,imageMode:payload.imageReview.mode});published.push(visible);
+   report.published.push({route:matchRecord?'match':'news',id:visible.id,url:API+'/articles?id='+encodeURIComponent(visible.id),headline:visible.headline,score:assessment.score,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.category,imageMode:payload.imageReview.mode});published.push(visible);
    durable.queue.finish(job,'published',now);
    console.log('Gepubliceerd met afbeelding:',visible.headline);
   }catch(e){durable.queue.fail(job,e,now);const technical=job.reason==='external_service_unavailable'||['storage','publication'].includes(stage)||(stage==='generation'&&!e.issues&&e.status!==422)||e instanceof ReferenceError||e instanceof TypeError;
@@ -571,7 +576,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  return report;
 }
 async function run(options={}){
- const report={startedAt:new Date(options.now||Date.now()).toISOString(),published:[],skipped:[],sourceErrors:[],processingErrors:[],signals:[],assessments:[],sources:{},routes:Object.fromEntries(['news','match'].map(key=>[key,{found:0,selected:0,generated:0,rejected:0,published:0}])),counts:{found:0,readable:0,stale:0,current:0,relevant:0,eligible:0,noCorroboration:0,uniqueGroups:0,queued:0,attempted:0,selected:0,aiRequests:0,generated:0,approved:0,stored:0,published:0}};
+ const report={startedAt:new Date(options.now||Date.now()).toISOString(),commit:process.env.GITHUB_SHA||null,published:[],skipped:[],sourceErrors:[],processingErrors:[],signals:[],assessments:[],sources:{},routes:Object.fromEntries(['news','match'].map(key=>[key,{found:0,selected:0,generated:0,rejected:0,published:0}])),counts:{found:0,readable:0,stale:0,current:0,relevant:0,eligible:0,noCorroboration:0,uniqueGroups:0,queued:0,attempted:0,selected:0,aiRequests:0,generated:0,approved:0,stored:0,publicationAttempts:0,published:0}};
  try{
   await execute({...options,report});
   if(!report.status){
@@ -582,6 +587,7 @@ async function run(options={}){
   return report;
  }catch(error){report.status='failed';report.error=error.message;throw error;}
  finally{
+  report.outcome=report.published.length?'success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':'error';
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
   if(process.env.GITHUB_STEP_SUMMARY){
@@ -589,11 +595,11 @@ async function run(options={}){
    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,[
     '## Automatische Veldio-redactie',
     '',
-    'Status: '+report.status,
+    'Status: '+report.outcome+' ('+report.status+'). Commit: '+(report.commit||'onbekend'),
     'Links: '+found+' gevonden, '+readable+' leesbaar, '+stale+' verouderd of ongedateerd.',
     'Onderwerpen: '+current+' actueel, '+relevant+' relevant, '+eligible+' passend, '+noCorroboration+' zonder tweede bron.',
     'Verificatie: '+uniqueGroups+' groepen, '+queued+' klaar, '+attempted+' geprobeerd, '+selected+' geselecteerd.',
-    'Artikelen: '+generated+' geschreven, '+approved+' goedgekeurd, '+stored+' opgeslagen, '+published+' gepubliceerd, '+report.skipped.length+' afgewezen.',
+    'Artikelen: '+generated+' geschreven, '+approved+' goedgekeurd, '+stored+' opgeslagen, '+published+' gepubliceerd uit '+report.counts.publicationAttempts+' publicatiepogingen, '+report.skipped.length+' afgewezen.',
     'Per route: '+JSON.stringify(report.routes),
     'Aanroepen taalmodel: '+aiRequests+'. Bronfouten: '+report.sourceErrors.length+'. Verwerkingsfouten: '+report.processingErrors.length+'.',
     ''
