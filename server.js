@@ -297,7 +297,7 @@ const contactHandler=require("./contact-mail").createContactHandler({redis:clien
 const quizHandler=require("./quiz39/service").create({redis:client,football:football47});
 function publicationId(record) {
   if (!record.payload.matchId) return record.id.slice(14);
-  const hash = crypto.createHash('sha256').update(record.payload.matchId).digest('hex');
+  const hash = require('node:crypto').createHash('sha256').update(record.payload.matchId).digest('hex');
   return hash.slice(0,8)+'-'+hash.slice(8,12)+'-5'+hash.slice(13,16)+'-a'+hash.slice(17,20)+'-'+hash.slice(20,32);
 }
 async function automaticEvidenceIssue(payload) {

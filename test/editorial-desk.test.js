@@ -218,3 +218,29 @@ test('author-column endpoint requires authentication and publishes the full appr
  const response=await post(packet);assert.equal(response.status,200);const result=await response.json();assert.equal(result.article.author,'Sander Brink');assert.equal(result.article.type,'column');assert.ok(result.article.body.length>3);assert.equal((await (await post(packet)).json()).alreadyPublished,true);
  const feed=await (await fetch(base+'/articles')).json(),article=feed.articles.find(a=>a.id===result.article.id);assert.equal(article.manuscript,packet.manuscript.trim());assert.equal(store.size,before+1);
 });
+
+test('registered match approval, publication and retry share a stable article ID',async()=>{
+ const now=Date.now();
+ const fixture={id:'of-nl-2026-fc-twente-psv',competition:'eredivisie',date:new Date(now-4*3600000).toISOString(),
+  status:'FT',round:'Speelronde 7',home:{name:'FC Twente'},away:{name:'PSV'},goals:{home:3,away:2},halfTime:{home:1,away:2}};
+ store.set('football47:eredivisie',JSON.stringify({rightsExpiresAt:now+3600000,status:'available',fixtures:[fixture]}));
+ const match=require('../editorial-match55').candidate(fixture,now);
+ const payload={...match,editorialScore:95,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),
+  draft:{headline:'FC Twente verslaat PSV met 3-2',
+   standfirst:'FC Twente heeft de thuiswedstrijd tegen PSV in de Eredivisie gewonnen.',
+   body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten. Bron voor de uitslag en ruststand is OpenFootball.']}};
+ const tampered=await saveOwn({approve:true,payload:{...payload,match:{...match.match,homeScore:9}}});
+ assert.equal(tampered.status,400);
+ const approved=await saveOwn({approve:true,payload});
+ assert.equal(approved.status,200);
+ const {record}=await approved.json();
+ const request={...payload,approved:true,editorialDraftId:record.id,expectedRevision:record.revision};
+ const written=await publish(request);
+ assert.equal(written.status,200);
+ const {article}=await written.json();
+ const retry=await publish(request);
+ assert.equal((await retry.json()).article.id,article.id);
+ const feed=await (await fetch(base+'/articles?id='+article.id)).json();
+ assert.equal(feed.count,1);
+ assert.equal(feed.articles[0].matchId,fixture.id);
+});
