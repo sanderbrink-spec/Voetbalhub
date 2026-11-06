@@ -461,8 +461,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }
   // Re-evaluate a legacy review once when its official decision can use the new brief format.
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&job.status==='review'&&
-     job.reason==='editorial_review_required'&&!job.briefRecoveryV59&&recoveredReviews<2&&
-     now-(job.updatedAt||job.createdAt)>=3600000){
+     job.reason==='editorial_review_required'&&!job.briefRecoveryV59&&recoveredReviews<2){
    job.briefRecoveryV59=true;
    job.status='pending';
    job.attempts=0;
@@ -496,7 +495,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    const candidate=matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
     group.bootstrap?.candidate||await extractCandidate(group,ai,now);
-   if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Onvoldoende onafhankelijke feiten.'});durable.queue.finish(job,'review',now);continue;}
+   if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now);continue;}
    const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
    const sourceIndices=matchRecord?[0]:[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
