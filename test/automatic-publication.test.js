@@ -262,3 +262,11 @@ test('software retains primary authority when the extraction model omits editori
  assert.equal(candidate.primaryAuthority,'club_decision');
  assert.deepEqual(validateEvidence(candidate,[doc],now),[]);
 });
+
+test('revision editor may decline insufficient evidence rather than fabricate content',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ const result=await reviseDraft({draft:{headline:'Voorlopige kop',standfirst:'Voorlopige intro',body:['Concept']},verifiedFacts:['Feit A']},
+  {kind:'announcement'},[{url:'https://www.ajax.nl/artikelen/test',title:'Test',text:'Beperkte feiten',publishedAt:'2026-11-06'}],
+  'Onvoldoende journalistieke diepgang',{key:'test',fetcher:async()=>Response.json({choices:[{message:{content:JSON.stringify({skip:true})}}]})});
+ assert.equal(result,null);
+});
