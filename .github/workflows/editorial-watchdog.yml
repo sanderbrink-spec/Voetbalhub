@@ -1,0 +1,66 @@
+name: Veldio editorial watchdog
+on:
+  schedule:
+    - cron: '48 * * * *'
+  workflow_dispatch:
+permissions:
+  actions: read
+  issues: write
+  contents: read
+jobs:
+  monitor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Detect repeated scheduled editorial failures
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const workflow_id = 'automatic-publication.yml';
+            const title = '[Veldio] Automatische redactie: herhaalde uitvoeringsfouten';
+            const {data} = await github.rest.actions.listWorkflowRuns({
+              owner, repo, workflow_id, event: 'schedule', per_page: 20
+            });
+            const runs = data.workflow_runs
+              .filter(run => run.status === 'completed')
+              .sort((a,b) => new Date(b.created_at)-new Date(a.created_at));
+            if (runs.length < 3) {
+              core.info('Nog geen drie voltooide geplande redactierondes.');
+              return;
+            }
+            const last = runs.slice(0,3);
+            const failures = last.every(run => run.conclusion !== 'success');
+            const {data:issues} = await github.rest.issues.listForRepo({
+              owner, repo, state:'open', labels:'veldio-editorial-alert', per_page:100
+            });
+            const existing = issues.find(issue => issue.title === title);
+            if (failures) {
+              const body = [
+                'De laatste drie voltooide geplande redactierondes zijn niet geslaagd.',
+                'Dit is een technische waarschuwing, geen reden om de kwaliteitscontrole te verlagen.',
+                '',
+                ...last.map(run => '- '+run.created_at+': '+run.conclusion+' '+run.html_url),
+                '',
+                'Controleer GitHub Actions, Groq-limieten, bronverzameling en Render.',
+                'Na een geslaagde geplande ronde sluit de bewaking deze melding automatisch.'
+              ].join('\n');
+              if (!existing) {
+                try {
+                  await github.rest.issues.create({owner,repo,title,body,labels:['veldio-editorial-alert']});
+                } catch (error) {
+                  if (error.status !== 422) throw error;
+                  await github.rest.issues.create({owner,repo,title,body});
+                }
+              } else {
+                await github.rest.issues.update({owner,repo,issue_number:existing.number,body});
+              }
+              core.setFailed('Drie opeenvolgende geplande redactierondes mislukt.');
+            } else if (existing && last[0].conclusion === 'success') {
+              await github.rest.issues.createComment({
+                owner,repo,issue_number:existing.number,
+                body:'Automatisch hersteld: de meest recente geplande redactieronde is geslaagd. '+last[0].html_url
+              });
+              await github.rest.issues.update({owner,repo,issue_number:existing.number,state:'closed'});
+            }
