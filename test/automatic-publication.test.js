@@ -196,11 +196,6 @@ test('verified historical Eredivisie data generates a compact report even when e
   status:'FT',round:'Speelronde 7',home:{name:'FC Twente'},away:{name:'PSV'},
   goals:{home:3,away:2},halfTime:{home:1,away:2}
  };
- const draft={
-  headline:'FC Twente verslaat PSV met 3-2',
-  standfirst:'FC Twente heeft de thuiswedstrijd tegen PSV in de Eredivisie gewonnen.',
-  body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten.']
- };
  const scores=Object.fromEntries(['actuality','reliability','nationalValue','originality','journalism','diversity'].map(key=>[key,95]));
  let saved, article, calls=0;
  const report=await run({
@@ -211,12 +206,14 @@ test('verified historical Eredivisie data generates a compact report even when e
    if(url.includes('editorial-queue45.json'))return options.method==='PUT'?Response.json({content:{sha:'test'}}):new Response(null,{status:404});
    if(url.endsWith('/models'))return Response.json({data:[{id:config.model}]});
    if(url.endsWith('/chat/completions')){
-    const response=calls++===0?draft:{approved:true,issues:[],scores};
+    calls++;
+    const response={approved:true,issues:[],scores};
     return Response.json({choices:[{message:{content:JSON.stringify(response)}}]});
    }
    if(url.endsWith('/editorial-drafts')){
     saved=JSON.parse(options.body).payload;
     assert.equal(saved.articleKind,'match_report');
+    assert.match(saved.draft.body[0],/Bij rust was het 1-2\. De eindstand was 3-2\./);
     assert.match(saved.draft.body.at(-1),/Bron: OpenFootball\.$/);
     assert.deepEqual(require('../editorial-desk-model').publicationIssues(saved),[]);
     assert.equal(require('../editorial-match55').matchesRegistration(saved,[match],Date.parse('2026-09-20T16:00:00Z')),true);
@@ -232,7 +229,7 @@ test('verified historical Eredivisie data generates a compact report even when e
  assert.equal(report.status,'completed',JSON.stringify(report));
  assert.deepEqual(report.routes.match,{found:1,selected:1,generated:1,rejected:0,published:1});
  assert.equal(report.assessments[0].threshold,85);
- assert.equal(calls,2);
+ assert.equal(calls,1);
 });
 
 test('one official source can verify its own appointment, but cannot verify a disputed transfer',()=>{
