@@ -7,11 +7,13 @@ const {fingerprint}=require('../editorial-drafts');
 const config=require('../automatic-editorial.json');
 const bootstrap=require('../automatic-bootstrap.json');
 const production=require('../editorial-production45');
+const {articleUrl,discoverGdelt}=require('./editorial-discovery53');
 const API='https://voetbalhub-redactie.onrender.com';
 const REPO='sanderbrink-spec/Voetbalhub';
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
 const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const host=url=>new URL(url).hostname.replace(/^www\./,'');
+const owner=url=>['knvb.nl','eurojackpotknvbbeker.nl'].includes(host(url))?'knvb.nl':host(url);
 function allowedUrl(value){try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password&&config.officialDomains.includes(host(value));}catch{return false;}}
 function plain(html){
  return String(html).replace(/<(script|style|nav|header|footer|aside|noscript|svg|form)\b[^>]*>[\s\S]*?<\/\1>/gi,' ')
@@ -121,7 +123,7 @@ function partnerDocuments(doc,documents){
  const stop=new Set('voor naar vanaf tegen over deze dit een het zijn wordt worden door heeft hebben met van bij aan als ook meer nieuws nieuwe club clubs wedstrijd wedstrijden duel duels voetbal seizoen laatste the and with from this that news team teams match matches season'.split(' '));
  const tokens=value=>new Set(normalize(value).split(' ').filter(t=>t.length>3&&!stop.has(t)));
  const title=tokens(doc.title),words=tokens(doc.title+' '+doc.text.slice(0,4000));
- return documents.filter(d=>host(d.url)!==host(doc.url)).map(d=>{
+ return documents.filter(d=>owner(d.url)!==owner(doc.url)).map(d=>{
   const other=tokens(d.title+' '+d.text.slice(0,4000));
   return {doc:d,anchor:[...title].some(t=>other.has(t)),score:[...words].filter(t=>other.has(t)).length};
  }).filter(x=>x.anchor&&x.score>=6).sort((a,b)=>b.score-a.score).slice(0,2).map(x=>x.doc);
@@ -141,9 +143,9 @@ function validateEvidence(candidate,docs,now=Date.now()){
   }
  }
  const shared=candidate.sharedEventEvidence;
- if(!Array.isArray(shared)||new Set(shared.map(e=>docs[e.source]&&host(docs[e.source].url)).filter(Boolean)).size<2)issues.push('Hoofdgebeurtenis niet bij twee onafhankelijke primaire bronnen bevestigd.');
+ if(!Array.isArray(shared)||new Set(shared.map(e=>docs[e.source]&&owner(docs[e.source].url)).filter(Boolean)).size<2)issues.push('Hoofdgebeurtenis niet bij twee onafhankelijke primaire bronnen bevestigd.');
  else for(const e of shared){if(!docs[e.source]||typeof e.quote!=='string'||e.quote.length<25||!normalize(docs[e.source].text).includes(normalize(e.quote)))issues.push('Onafhankelijke bevestiging ontbreekt in de bron.');else used.add(e.source);}
- if(new Set([...used].map(i=>host(docs[i].url))).size<2)issues.push('Twee onafhankelijke bronwebsites zijn vereist.');
+ if(new Set([...used].map(i=>owner(docs[i].url))).size<2)issues.push('Twee onafhankelijke bronwebsites zijn vereist.');
  if(candidate.kind==='preview'){
   const date=String(candidate.eventDate||'');
   const time=Date.parse(date+'T23:59:59+01:00');
@@ -255,9 +257,6 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),report}={}){
  if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
- const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(20000)});
- if(!models.ok)throw Error('Beschikbare taalmodellen konden niet worden gecontroleerd.');
- const model=selectModel(await models.json());report.model=model;console.log('Beschikbaar redactiemodel:',model);
  const headers={Authorization:'Bearer '+secret,'Content-Type':'application/json'};
  async function api(endpoint,body){const r=await fetcher(API+endpoint,{headers,signal:AbortSignal.timeout(60000),...(body?{method:'POST',body:JSON.stringify(body)}:{})});const d=await r.json();if(!r.ok)throw Error(endpoint+': HTTP '+r.status+' '+(d.error||''));return d;}
  const publicFeed=await api('/articles?view=all');let published=publicFeed.articles;
@@ -267,8 +266,18 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const limit=Math.min(config.maxPerRun,Math.max(0,config.maxPerDay-todayCount));
  if(!limit){report.status='daily_limit';return report;}
  const durable=await production.openQueue({token:githubToken,branch:config.mediaBranch,fetcher});
- const docs=new Map();
- async function load(url){if(docs.has(url))return docs.get(url);try{const d=await officialPage(url,fetcher);if(d.text.length<300)throw Error('Te weinig leesbare broninhoud.');docs.set(url,d);return d;}catch(e){report.sourceErrors.push({url,error:e.message});return null;}}
+ const docs=new Map(), attempts=new Map();
+ async function load(url){
+  if(!attempts.has(url))attempts.set(url,(async()=>{
+   try{
+    const doc=await officialPage(url,fetcher);
+    if(doc.text.length<300)throw Error('Te weinig leesbare broninhoud.');
+    docs.set(doc.url,doc);
+    return doc;
+   }catch(error){report.sourceErrors.push({url,error:error.message});return null;}
+  })());
+  return attempts.get(url);
+ }
  const groups=[];
  for(const job of durable.queue.records.filter(j=>durable.queue.due(j,now))){const group=(await Promise.all(job.urls.map(load))).filter(Boolean);if(group.length===job.urls.length){if(durable.queue.enqueue(group,now).id!==job.id)durable.queue.finish(job,'superseded',now);groups.push(group);}else{durable.queue.fail(job,Error('Primaire bron tijdelijk onbereikbaar'),now);}}
  for(const urls of config.sourceGroups){
@@ -277,26 +286,71 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const group=(await Promise.all(urls.map(load))).filter(Boolean);
   if(group.length>=2){if(group.length===urls.length)group.bootstrap=prepared;groups.push(group);}
  }
+ const links=new Set();
+ const indexStatus=report.sources.officialIndexes=[];
+ for(const index of config.newsIndexes){
+  try{
+   const page=await officialPage(index.url,fetcher);
+   const found=discoverLinks(page.html,index).map(url=>articleUrl(url,[index])).filter(Boolean);
+   found.forEach(url=>links.add(url));
+   indexStatus.push({url:index.url,status:'ok',links:found.length});
+  }catch(error){
+   indexStatus.push({url:index.url,status:'unavailable',links:0});
+   report.sourceErrors.push({url:index.url,error:error.message});
+  }
+ }
+ try{
+  const found=await discoverGdelt(config.newsIndexes,fetcher,sourceText);
+  report.sources.gdelt={status:'ok',links:found.length};
+  found.forEach(url=>links.add(url));
+ }catch(error){
+  report.sources.gdelt={status:'unavailable',links:0};
+  report.sourceErrors.push({source:'GDELT',error:error.message});
+ }
  const discovered=[];
- for(const index of config.newsIndexes){try{const page=await officialPage(index.url,fetcher);for(const link of discoverLinks(page.html,index)){const doc=await load(link);if(doc)discovered.push(doc);}}catch(e){report.sourceErrors.push({url:index.url,error:e.message});}}
+ for(const link of links){
+  const doc=await load(link);
+  if(doc&&!discovered.includes(doc))discovered.push(doc);
+ }
+ report.counts.found=links.size;
+ report.counts.readable=discovered.length;
  for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
   const publishedTime=Date.parse(doc.publishedAt||'');
-  if(!Number.isFinite(publishedTime)||publishedTime>now+300000||publishedTime<now-config.maxAgeHours*3600000)continue;
+  if(!Number.isFinite(publishedTime)||publishedTime>now+300000||publishedTime<now-config.maxAgeHours*3600000){report.counts.stale++;continue;}
   if(!nationallyRelevant(doc)){report.skipped.push({topic:doc.title,reason:'Geen aantoonbare landelijke nieuwswaarde; geen AI-aanroep.'});continue;}
   if(/\b(?:uitgeschakeld|nederlaag|overwinning|wint|won|doelpunten|nabeschouwing|samenvatting)\b/i.test(doc.title))continue;
   if(published.some(a=>a.sources?.some(s=>s.url===doc.url)))continue;
   const partners=partnerDocuments(doc,[...docs.values()]);
   if(partners.length)groups.push([doc,...partners]);
+  else report.counts.noCorroboration++;
  }
- const aiFetch=pacedGroq(fetcher);
- const ai={key:groqKey,model,fetcher:aiFetch};
+ const ai={key:groqKey,fetcher:pacedGroq((url,options)=>{
+  if(String(url).startsWith('https://api.groq.com/'))report.counts.aiRequests++;
+  return fetcher(url,options);
+ })};
+
  const imageBudget={remaining:config.maxImageRequestsPerRun||8};
  const jobs=new Map();
- for(const group of groups){const job=durable.queue.enqueue(group,now);if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});}
+ const seenGroups=new Set();
+ for(const group of groups){
+  const key=JSON.stringify([...new Set(group.map(doc=>doc.url))].sort());
+  if(seenGroups.has(key))continue;
+  seenGroups.add(key);
+  const job=durable.queue.enqueue(group,now);
+  if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
+ }
+ report.counts.uniqueGroups=seenGroups.size;
+ report.counts.queued=jobs.size;
  await durable.save();
+ if(!jobs.size)return report;
+ report.counts.aiRequests++;
+ const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(75000)});
+ if(!models.ok)throw Error('Beschikbare taalmodellen konden niet worden gecontroleerd: HTTP '+models.status);
+ const model=ai.model=selectModel(await models.json());
+ report.model=model;
  const priorHashes=published.filter(a=>a.imageReview?.mode==='ai-photographic').map(a=>a.imageReview.visualHash).filter(Boolean);
  report.target=limit;report.imageProviderConfigured=Boolean(process.env.OPENAI_API_KEY);
- for(const {group,job} of [...jobs.values()].slice(0,45)){
+ for(const {group,job} of [...jobs.values()].slice(0,8)){
   if(report.published.length>=limit)break;
   let topic=group[0].title;
   try{
@@ -308,6 +362,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const facts=candidate.facts.map(f=>f.text);
    const sources=sourceIndices.map(i=>({url:group[i].url}));
    const draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:aiFetch,timeoutMs:180000});
+   report.counts.generated++;
    if(M.needsMatch(draft)||M.requiresFlashscore(draft))throw Error('Uitslagen en wedstrijdverslagen wachten op onafhankelijke Flashscore-verificatie.');
    if(generationIssues(draft,facts).length)throw Error(generationIssues(draft,facts).join(' '));
    if(group.some(d=>overlap(d.text,draft)))throw Error('Te veel woordelijke overlap met bron.');
@@ -323,6 +378,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold,...(candidate.kind==='preview'?{eventDate:candidate.eventDate}:{})});
    report.assessments.push({topic,...assessment});
    if(!assessment.approved)throw Error(assessment.reasons.join(' '));
+   report.counts.approved++;
    payload.reviewNotes+=' Redactiescore fase45: '+JSON.stringify(assessment);
    Object.assign(payload,await uploadCover(payload,{token:githubToken,fetcher,imageOptions:{secret,budget:imageBudget,priorHashes}}));
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
@@ -341,6 +397,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const visible=(await publicResponse.json()).articles?.find(a=>a.id===result.article.id);
    if(!visible||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(draft.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
    if(payload.imageReview.mode==='ai-photographic')priorHashes.push(payload.imageReview.visualHash);
+   report.counts.published++;
    report.published.push({id:visible.id,headline:visible.headline,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.category,imageMode:payload.imageReview.mode});published.push(visible);
    durable.queue.finish(job,'published',now);
    console.log('Gepubliceerd met afbeelding:',visible.headline);
@@ -350,22 +407,36 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  return report;
 }
 async function run(options={}){
- const report={startedAt:new Date(options.now||Date.now()).toISOString(),published:[],skipped:[],sourceErrors:[],assessments:[]};
+ const report={startedAt:new Date(options.now||Date.now()).toISOString(),published:[],skipped:[],sourceErrors:[],assessments:[],sources:{},counts:{found:0,readable:0,stale:0,noCorroboration:0,uniqueGroups:0,queued:0,aiRequests:0,generated:0,approved:0,published:0}};
  try{
   await execute({...options,report});
-  report.status ||= report.published.length?'completed':'no_new_verified_articles';
+  if(!report.status){
+   const sourcesUnavailable=report.sources.gdelt?.status==='unavailable'&&
+    report.sources.officialIndexes.every(source=>source.status==='unavailable')&&!report.counts.readable;
+   report.status=report.published.length?'completed':sourcesUnavailable?'sources_unavailable':'no_new_verified_articles';
+  }
   return report;
  }catch(error){report.status='failed';report.error=error.message;throw error;}
  finally{
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
-  if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,'## Automatische Veldio-redactie\n\n'+report.published.length+' gepubliceerd; '+report.skipped.length+' tegengehouden. Status: '+report.status+'.\n');
+  if(process.env.GITHUB_STEP_SUMMARY){
+   const {found,readable,stale,noCorroboration,uniqueGroups,generated,approved,published,aiRequests}=report.counts;
+   fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,[
+    '## Automatische Veldio-redactie',
+    '',
+    'Status: '+report.status,
+    'Links: '+found+' gevonden, '+readable+' leesbaar, '+stale+' verouderd of ongedateerd.',
+    'Onderwerpen: '+uniqueGroups+' groepen, '+noCorroboration+' signalen zonder tweede bron.',
+    'Artikelen: '+generated+' geschreven, '+approved+' goedgekeurd, '+published+' gepubliceerd.',
+    'Aanroepen taalmodel: '+aiRequests+'. Bronfouten: '+report.sourceErrors.length+'.',
+    ''
+   ].join('\n'));
+  }
  }
 }
 function runExitCode(report){
- if(!['completed','no_new_verified_articles','daily_limit'].includes(report.status))return 1;
- // A single inaccessible source is tolerated only if other candidates were evaluated.
- return report.published.length===0&&report.sourceErrors.length>0&&!(report.sourceErrors.length===1&&(report.skipped?.length||0)>0)?1:0;
+ return ['completed','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({published:r.published.length,skipped:r.skipped.length,sourceErrors:r.sourceErrors.length,status:r.status}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
 module.exports={verifyDraft,editorialPriority,nationallyRelevant,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run};

@@ -42,9 +42,9 @@ test('redirect loops, missing locations and redirects outside the source never r
 });
 test('publication workflow distinguishes policy/provider failures from a quiet editorial run',()=>{
  const base={published:[],sourceErrors:[]};
- for(const status of ['rights_blocked','disabled','provider_daily_limit','no_verified_sources','failed'])assert.equal(runExitCode({...base,status}),1);
+ for(const status of ['rights_blocked','disabled','provider_daily_limit','no_verified_sources','sources_unavailable','failed'])assert.equal(runExitCode({...base,status}),1);
  for(const status of ['no_new_verified_articles','daily_limit','completed'])assert.equal(runExitCode({...base,status}),0);
- assert.equal(runExitCode({...base,status:'no_new_verified_articles',sourceErrors:[{error:'offline'}]}),1);
+ assert.equal(runExitCode({...base,status:'no_new_verified_articles',sourceErrors:[{error:'offline'}]}),0);
  assert.equal(runExitCode({...base,status:'provider_daily_limit',published:[{id:'one'}]}),1);
 });
 test('unconfigured real CLI exits unsuccessfully and leaves a complete machine-readable report',()=>{

@@ -25,3 +25,13 @@ Een redacteur moet bevestigen dat namen, uitslagen, data, citaten, bronrechten e
 
 ## Disclaimer
 Dit is een operationeel bronbeleid, geen juridisch advies. Controleer voorwaarden en vraag toestemming/licenties waar nodig voordat je commercieel publiceert.
+## Fase 53 bronregister
+
+| Bron | Toegang en gebruik | Opslag en vermelding | Beeld |
+| --- | --- | --- | --- |
+| [GDELT DOC API](https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/) | Publieke API. [GDELT-gebruiksvoorwaarden](https://www.gdeltproject.org/about.html#termsofuse). Alleen signalering via links naar reeds geconfigureerde officiële artikelpaden. Eén aanvraag per redactieronde. | Alleen genormaliseerde links in de bestaande wachtrij. GDELT wordt in het redactierapport vermeld. Koppen, indexdatums en mediateksten gelden nooit als feitbewijs. | Beeldvelden worden genegeerd. |
+| [Football-Data.org](https://www.football-data.org/about) | Bestaande API-sleutel en Eredivisie-koppeling. De bestaande wedstrijdroute gebruikt deze voor aanvullende uitslagen. | Bestaande cachetermijnen en zichtbare bronvermelding. Controleer de voorwaarden bij uitbreiding naar een andere app of toepassing. | Geen providerlogo's overnemen. |
+| [OpenFootball](https://github.com/openfootball/football.json) | Bestaande publieke JSON-data, door het project als publiek domein aangeboden. | Bestaande wedstrijdcache en providervermelding. | Geen clublogo's uit data-afbeeldingen afleiden. |
+| Bestaande officiële club- en competitiebronnen | De bestaande domein- en padconfiguratie wordt hergebruikt. Een vermelding in die configuratie bewijst op zichzelf geen toestemming voor geautomatiseerde commerciële verwerking. Voor nieuwe domeinen of feeds is documentatie van de toegestane verwerking vereist. | Alleen eigen journalistieke tekst, bronlinks en bestaande bewijscontroles. De [KNVB-voorwaarden](https://www.knvb.nl/info/3047/gebruikersvoorwaarden) beperken hergebruik van sitemateriaal. KNVB en de KNVB-bekersite tellen samen als één bronhouder. | Alleen beelden uit de goedgekeurde Veldio-bibliotheek. |
+| UEFA, FIFA en overige externe nieuwsfeeds | Geen nieuwe koppelingen. Toegestane toegang en commercieel gebruik moeten per methode worden vastgesteld. | Geen nieuwe opslag of herpublicatie. | Geen externe beelden. |
+| Veldio-archief | Bestaande openbare feed voor duplicaatcontrole en vergelijking van recente koppen. | Bestaande Veldio-opslag. | Bestaande beeldcontrole. |

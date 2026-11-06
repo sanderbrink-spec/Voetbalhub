@@ -94,3 +94,39 @@ test('national editorial gate rejects ticket pages and prioritizes major clubs w
  assert.equal(nationallyRelevant(routine),false);
  assert.ok(editorialPriority(major)>editorialPriority(other));
 });
+
+test('GDELT supplies bounded discovery links but never content or evidence', async()=>{
+ const {discoverGdelt}=require('../scripts/editorial-discovery53');
+ const {sourceText}=require('../scripts/automatic-publication');
+ const index={url:'https://www.ajax.nl/',articlePath:'^/artikelen/[^/]+/?$'};
+ const result=await discoverGdelt([index],async(url,options)=>{
+  assert.equal(new URL(url).hostname,'api.gdeltproject.org');
+  assert.equal(options.redirect,'error');
+  return Response.json({articles:[
+   {url:'https://ajax.nl/artikelen/nieuws?utm=1',title:'Onbevestigde tekst'},
+   {url:'https://www.ajax.nl/artikelen/nieuws#ander'},
+   {url:'https://ajax.nl/fans/a'},
+   {url:'https://ajax.nl.example.org/artikelen/a'}
+  ]});
+ },sourceText);
+ assert.deepEqual(result,['https://www.ajax.nl/artikelen/nieuws']);
+ await assert.rejects(discoverGdelt([index],async()=>new Response(null,{status:429}),sourceText),/HTTP 429/);
+});
+
+test('partial outages keep discovery running without AI calls or article writes on an empty round',async()=>{
+ const config=require('../automatic-editorial.json');
+ const calls=[];
+ const report=await run({secret:'test',groqKey:'test',githubToken:'test',now,fetcher:async(url,options={})=>{
+  calls.push([url,options.method||'GET']);
+  if(url.includes('/articles?'))return Response.json({articles:[]});
+  if(url.includes('editorial-queue45.json'))return options.method==='PUT'?Response.json({content:{sha:'test'}}):new Response(null,{status:404});
+  if(url.includes('gdeltproject.org')||url===config.newsIndexes[0].url)return new Response(null,{status:429});
+  return new Response('<main><h1>Geen nieuwe nieuwslinks</h1></main>');
+ }});
+ assert.equal(report.status,'no_new_verified_articles');
+ assert.equal(report.sources.gdelt.status,'unavailable');
+ assert.equal(report.sources.officialIndexes[0].status,'unavailable');
+ assert.ok(report.sources.officialIndexes.some(source=>source.status==='ok'));
+ assert.equal(report.counts.aiRequests,0);
+ assert.equal(calls.some(([url,method])=>method==='POST'||url.includes('api.groq.com')),false);
+});
