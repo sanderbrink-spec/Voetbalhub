@@ -214,7 +214,7 @@ test('verified historical Eredivisie data generates a compact report even when e
     saved=JSON.parse(options.body).payload;
     assert.equal(saved.articleKind,'match_report');
     assert.match(saved.draft.body[1],/ruststand was 1-2/);
-    assert.match(saved.draft.body.at(-1),/OpenFootball\\.$/);
+    assert.ok(saved.draft.body.at(-1).endsWith('OpenFootball.'));
     assert.deepEqual(require('../editorial-desk-model').publicationIssues(saved),[]);
     assert.equal(require('../editorial-match55').matchesRegistration(saved,[match],Date.parse('2026-09-20T16:00:00Z')),true);
     return Response.json({record:{id:'isolated',revision:1,status:'approved',contentHash:fingerprint(saved)}});
