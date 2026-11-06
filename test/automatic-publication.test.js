@@ -249,3 +249,18 @@ test('one official source can verify its own appointment, but cannot verify a di
  assert.ok(validateEvidence({...candidate,transferStatus:'confirmed'},[doc],now).some(issue=>issue.includes('onafhankelijke')));
  assert.ok(validateEvidence(candidate,[{...doc,url:'https://www.inter.it/en/'}],now).length);
 });
+
+test('software retains primary authority when the extraction model omits editorial metadata',async()=>{
+ const {extractCandidate}=require('../scripts/automatic-publication');
+ const doc={url:'https://www.inter.it/en/news/simone-lo-schiavo-is-the-new-director-of-football-development-inter',
+  title:'Simone Lo Schiavo is the new Director of Football Development',publishedAt:new Date(now-3600000).toISOString(),
+  text:'Simone Lo Schiavo joined Inter as Director of Football Development on 5 November 2026, reporting to Dario Baccin.'};
+ const facts=['Inter benoemt Simone Lo Schiavo.','Hij wordt directeur voetbalontwikkeling.',
+  'Hij trad op vijf november in dienst.','De nieuwe directeur rapporteert aan Dario Baccin.']
+  .map(text=>({text,evidence:[{source:0,fragment:0}]}));
+ const candidate=await extractCandidate([doc],{key:'isolated',fetcher:async()=>Response.json({choices:[{message:{
+  content:JSON.stringify({kind:'announcement',transferStatus:'unconfirmed',facts})
+ }}]})},now);
+ assert.equal(candidate.primaryAuthority,'club_decision');
+ assert.deepEqual(validateEvidence(candidate,[doc],now),[]);
+});

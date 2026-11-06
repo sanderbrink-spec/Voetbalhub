@@ -6,7 +6,7 @@ const FD = 'https://www.football-data.org/';
 const {CREDIT} = require('./football-results52');
 const {sourceBody} = require('./football-data47');
 const EURO = require('./match-selection50');
-const HOURS = 36 * 3600000;
+const MAX_AGE_MS = 48 * 3600000;
 const validScore = value => Number.isInteger(value) && value >= 0 && value <= 99;
 
 function candidate(fixture, now) {
@@ -15,7 +15,7 @@ function candidate(fixture, now) {
  const championsLeague = fixture.competition === 'championsleague' && /^fd-cl-\d+$/.test(fixture.id);
  if (!(championsLeague || fixture.competition === 'eredivisie' && /^of-nl-\d{4}-[a-z0-9-]+$/.test(fixture.id)) ||
      fixture.status !== 'FT' ||
-     !(kickoff < now && now - kickoff <= HOURS) ||
+     !(kickoff < now && now - kickoff <= MAX_AGE_MS) ||
      !fixture.home?.name || !fixture.away?.name || ![home, away].every(validScore)) return null;
  const supplemented = Boolean(fixture.resultSource);
  if (supplemented && !(fixture.resultExpiresAt > now)) return null;
@@ -54,7 +54,7 @@ function europeanRegistry({fetcher = fetch, token, clock = Date.now} = {}) {
   if (cache?.expires > now) return cache.value;
   if (inFlight) return inFlight;
   inFlight = (async () => {
-   const dateFrom = new Date(now - HOURS).toISOString().slice(0,10);
+   const dateFrom = new Date(now - MAX_AGE_MS).toISOString().slice(0,10);
    const dateTo = new Date(now).toISOString().slice(0,10);
    const params = new URLSearchParams({dateFrom,dateTo,status:'FINISHED'});
    const stages = {LEAGUE_STAGE:'Competitiefase',GROUP_STAGE:'Competitiefase',LAST_16:'Achtste finale',
@@ -76,7 +76,7 @@ function europeanRegistry({fetcher = fetch, token, clock = Date.now} = {}) {
          ![goals?.home,goals?.away].every(validScore)) continue;
      const fixture = {id:'fd-cl-'+row.id,competition:'championsleague',date:row.utcDate,status:'FT',round,
       home:{name:row.homeTeam.name},away:{name:row.awayTeam.name},goals,halfTime:row.score.halfTime,
-      resultSource:CREDIT,resultExpiresAt:now+HOURS};
+      resultSource:CREDIT,resultExpiresAt:now+MAX_AGE_MS};
      if (candidate(fixture,now)) fixtures.push(fixture);
     }
     return {status:'available',fixtures:EURO.select(fixtures,require('./match-selection50.json'))};
@@ -91,4 +91,4 @@ function europeanRegistry({fetcher = fetch, token, clock = Date.now} = {}) {
   } finally { inFlight = null; }
  };
 }
-module.exports = {candidate, matchesRegistration, europeanRegistry, OPEN, FD};
+module.exports = {candidate, matchesRegistration, europeanRegistry, MAX_AGE_MS, OPEN, FD};
