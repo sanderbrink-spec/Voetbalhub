@@ -430,14 +430,15 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const job=durable.queue.enqueue(group,now);
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
-   if(!job.matchOutputV4&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
-   job.matchOutputV4=true;
+   if(!job.matchOutputV5&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
+   job.matchOutputV5=true;
   }
-  if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&!job.primaryDecisionV2){
+  if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&!job.primaryDecisionV3){
    if(job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
-   job.primaryDecisionV2=true;
+   job.primaryDecisionV3=true;
   }
   if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
+  else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||null});
  }
  report.counts.uniqueGroups=seenGroups.size;
  report.counts.queued=jobs.size;
@@ -475,19 +476,14 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(matchRecord){
     const {homeTeam,awayTeam,homeScore,awayScore}=matchRecord.match;
     const headline=homeTeam+' – '+awayTeam+' eindigt in '+homeScore+'-'+awayScore;
-    const messages=[
-     {role:'system',content:'Schrijf een korte, originele Nederlandse Veldio-wedstrijdtekst bij de vaste kop en uitsluitend uit de officiële wedstrijdgegevens. Geef JSON {"standfirst":"intro van 8 tot 35 woorden","body":["één alinea van 18 tot 45 woorden"]}. De vaste kop noemt de eindstand in thuis-uit-volgorde. Bij score_update schrijf je een uitslagupdate. Bij match_report beschrijf je het verschil tussen rust en eindstand. Laat de bronvermelding weg. Die wordt toegevoegd door Veldio. Gebruik geen minuten, spelers, spelbeeld, stand, gevolgen of andere feiten buiten de gegevens. Vermijd herhaling.'},
-     {role:'user',content:JSON.stringify({headline,...matchRecord})}
-    ];
-    for(let attempt=0;attempt<2;attempt++){
-     const text=await complete(messages,ai);
-     const body=M.paragraphs(text).map(p=>p.trim());
-     if(body.length)body[body.length-1]+=' '+(sources[0].url===matches.FD?CREDIT:'Bron: OpenFootball')+'.';
-     draft={headline,standfirst:text.standfirst,body};
-     const issues=M.draftIssues(draft,true);
-     if(!issues.length||attempt===1)break;
-     messages.push({role:'user',content:'Herstel de tekstvorm met dezelfde wedstrijdgegevens: '+issues.join(' ')});
-    }
+    const competition = facts[1];
+    const halftime = facts[2];
+    const attribution = sources[0].url===matches.FD ? CREDIT : 'Bron: OpenFootball';
+    const standfirst = homeTeam+' en '+awayTeam+' speelden tegen elkaar in de '+matchRecord.category+'.';
+    const result = halftime
+     ? 'Bij rust was het '+halftime.match(/\d+-\d+/)[0]+'. De eindstand was '+homeScore+'-'+awayScore+'.'
+     : 'De wedstrijd eindigde in '+homeScore+'-'+awayScore+'.';
+    draft={headline,standfirst,body:[competition+' '+result+' '+attribution+'.']};
    }else{
     draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
