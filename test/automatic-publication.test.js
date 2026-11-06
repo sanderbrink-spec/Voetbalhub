@@ -213,8 +213,8 @@ test('verified historical Eredivisie data generates a compact report even when e
    if(url.endsWith('/editorial-drafts')){
     saved=JSON.parse(options.body).payload;
     assert.equal(saved.articleKind,'match_report');
-    assert.match(saved.draft.body[0],/Bij rust was het 1-2\. De eindstand was 3-2\./);
-    assert.match(saved.draft.body.at(-1),/Bron: OpenFootball\.$/);
+    assert.match(saved.draft.body[1],/ruststand was 1-2/);
+    assert.ok(saved.draft.body.at(-1).endsWith('OpenFootball.'));
     assert.deepEqual(require('../editorial-desk-model').publicationIssues(saved),[]);
     assert.equal(require('../editorial-match55').matchesRegistration(saved,[match],Date.parse('2026-09-20T16:00:00Z')),true);
     return Response.json({record:{id:'isolated',revision:1,status:'approved',contentHash:fingerprint(saved)}});
@@ -261,4 +261,12 @@ test('software retains primary authority when the extraction model omits editori
  }}]})},now);
  assert.equal(candidate.primaryAuthority,'club_decision');
  assert.deepEqual(validateEvidence(candidate,[doc],now),[]);
+});
+
+test('revision editor may decline insufficient evidence rather than fabricate content',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ const result=await reviseDraft({draft:{headline:'Voorlopige kop',standfirst:'Voorlopige intro',body:['Concept']},verifiedFacts:['Feit A']},
+  {kind:'announcement'},[{url:'https://www.ajax.nl/artikelen/test',title:'Test',text:'Beperkte feiten',publishedAt:'2026-11-06'}],
+  'Onvoldoende journalistieke diepgang',{key:'test',fetcher:async()=>Response.json({choices:[{message:{content:JSON.stringify({skip:true})}}]})});
+ assert.equal(result,null);
 });

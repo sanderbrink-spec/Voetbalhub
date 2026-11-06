@@ -284,6 +284,15 @@ async function verifyDraft(payload,candidate,docs,options,recent=[]){
  if(review.approved!==true||!Array.isArray(review.issues)||review.issues.length)throw Error('Tweede feitencontrole: '+(review.issues||['niet goedgekeurd']).join('; '));
  return review;
 }
+async function reviseDraft(payload,candidate,docs,reason,options){
+ const revised=await complete([
+  {role:'system',content:'Je bent de eindredacteur van Veldio. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (3-5 alinea’s van 18-120 woorden, minimaal 70 tekens per alinea). Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.'},
+  {role:'user',content:JSON.stringify({draft:payload.draft,rejection:reason,verifiedFacts:payload.verifiedFacts,candidate,sources:docs.map(d=>({url:d.url,title:d.title,publishedAt:d.publishedAt,text:compactSource(d)}))})}
+ ],options);
+ if(revised.skip)return null;
+ if(!revised||typeof revised.headline!=='string'||typeof revised.standfirst!=='string'||!Array.isArray(revised.body))throw Error('Herschrijving heeft geen geldige artikelstructuur.');
+ return {headline:revised.headline,standfirst:revised.standfirst,body:revised.body};
+}
 async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  const library=require('../image-library49');
  if(imageOptions.secret){try{const r=await require('../editorial-image44-service').remote(payload,{secret:imageOptions.secret,fetcher,budget:{remaining:0}});if(r.mode==='approved-library')return Object.fromEntries(Object.entries(r).filter(([key])=>key.startsWith('image')));}catch{/* Approved local fallback remains available during backend outages. */}}
@@ -474,16 +483,19 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    stage='generation';
    let draft;
    if(matchRecord){
-    const {homeTeam,awayTeam,homeScore,awayScore}=matchRecord.match;
-    const headline=homeTeam+' – '+awayTeam+' eindigt in '+homeScore+'-'+awayScore;
-    const competition = facts[1];
-    const halftime = facts[2];
-    const attribution = sources[0].url===matches.FD ? CREDIT : 'Bron: OpenFootball';
-    const standfirst = homeTeam+' en '+awayTeam+' speelden tegen elkaar in de '+matchRecord.category+'.';
-    const result = halftime
-     ? 'Bij rust was het '+halftime.match(/\d+-\d+/)[0]+'. De eindstand was '+homeScore+'-'+awayScore+'.'
-     : 'De wedstrijd eindigde in '+homeScore+'-'+awayScore+'.';
-    draft={headline,standfirst,body:[competition+' '+result+' '+attribution+'.']};
+    const {homeTeam,awayTeam,homeScore,awayScore,playedAt}=matchRecord.match;
+    const margin=Math.abs(homeScore-awayScore);
+    const outcome=homeScore===awayScore?'gelijkspel':homeScore>awayScore?'thuiszege':'uitzege';
+    const round=facts[1];
+    const halftime=facts[2];
+    const attribution=sources[0].url===matches.FD ? CREDIT : 'OpenFootball';
+    const headline=homeTeam+' en '+awayTeam+' sluiten duel af op '+homeScore+'-'+awayScore;
+    const standfirst='De ontmoeting tussen '+homeTeam+' en '+awayTeam+' in de '+matchRecord.category+' eindigde op '+homeScore+'-'+awayScore+'. De geregistreerde wedstrijdgegevens vormen de basis voor dit bericht.';
+    const first=round+' De officiële eindstand luidt '+homeScore+'-'+awayScore+'. Daarmee staat een '+outcome+' vast, met een verschil van '+margin+' doelpunt'+(margin===1?'':'en')+'. Meer over het wedstrijdverloop volgt alleen wanneer afzonderlijke gebeurtenissen gecontroleerd zijn.';
+    const second=halftime
+      ? 'De vastgelegde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Na de pauze veranderde de score naar '+homeScore+'-'+awayScore+'. De beschikbare registratie bevestigt geen doelpuntenmakers, minuten of tactische ontwikkelingen. '+attribution+'.'
+      : 'De beschikbare registratie vermeldt geen gecontroleerde ruststand of afzonderlijke wedstrijdmomenten. Daarom doet Veldio geen uitspraken over doelpuntenmakers, tijdstippen of het spelbeeld. '+attribution+'.';
+    draft={headline,standfirst,body:[first,second]};
    }else{
     draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
@@ -500,10 +512,29 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    const preflight=M.publicationIssues(payload);if(preflight.length)throw Error(preflight.join(' '));
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
-   const review=await verifyDraft(payload,candidate,group,ai,published);
-   const assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold,...(candidate.kind==='preview'?{eventDate:candidate.eventDate}:{})});
-   report.assessments.push({topic,...assessment});
-   if(!assessment.approved)throw Error(assessment.reasons.join(' '));
+   let assessment;
+   for(let revision=0;revision<=2;revision++){
+    let rejection='';
+    try{
+     const review=await verifyDraft(payload,candidate,group,ai,published);
+     assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold,...(candidate.kind==='preview'?{eventDate:candidate.eventDate}:{})});
+     report.assessments.push({topic,revision,...assessment});
+     if(assessment.approved)break;
+     rejection=assessment.reasons.join(' ');
+    }catch(error){
+     if(!/^Tweede feitencontrole: /.test(error.message))throw error;
+     rejection=error.message;
+    }
+    if(matchRecord||revision===2)throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
+    const revised=await reviseDraft(payload,candidate,group,rejection,ai);
+    if(!revised)throw Error('Onvoldoende feiten voor verantwoorde herschrijving.');
+    const issues=[...M.publicationIssues({...payload,draft:revised}),...generationIssues(revised,facts)];
+    if(M.needsMatch(revised)||M.requiresFlashscore(revised))issues.push('Niet-geverifieerde wedstrijdclaim.');
+    if(group.some(d=>overlap(d.text,revised)))issues.push('Woordelijke bronoverlap.');
+    if(issues.length)throw Error('Herschrijving voldoet niet aan de controle: '+issues.join(' '));
+    payload.draft=revised;
+    draft=revised;
+   }
    report.counts.approved++;
    payload.editorialScore=assessment.score;
    payload.reviewNotes+=' Redactiescore fase45: '+JSON.stringify(assessment);
@@ -574,4 +605,4 @@ function runExitCode(report){
  return ['completed','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
