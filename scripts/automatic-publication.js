@@ -474,16 +474,19 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    stage='generation';
    let draft;
    if(matchRecord){
-    const {homeTeam,awayTeam,homeScore,awayScore}=matchRecord.match;
-    const headline=homeTeam+' – '+awayTeam+' eindigt in '+homeScore+'-'+awayScore;
-    const competition = facts[1];
-    const halftime = facts[2];
-    const attribution = sources[0].url===matches.FD ? CREDIT : 'Bron: OpenFootball';
-    const standfirst = homeTeam+' en '+awayTeam+' speelden tegen elkaar in de '+matchRecord.category+'.';
-    const result = halftime
-     ? 'Bij rust was het '+halftime.match(/\d+-\d+/)[0]+'. De eindstand was '+homeScore+'-'+awayScore+'.'
-     : 'De wedstrijd eindigde in '+homeScore+'-'+awayScore+'.';
-    draft={headline,standfirst,body:[competition+' '+result+' '+attribution+'.']};
+    const {homeTeam,awayTeam,homeScore,awayScore,playedAt}=matchRecord.match;
+    const margin=Math.abs(homeScore-awayScore);
+    const outcome=homeScore===awayScore?'gelijkspel':homeScore>awayScore?'thuiszege':'uitzege';
+    const round=facts[1];
+    const halftime=facts[2];
+    const attribution=sources[0].url===matches.FD ? CREDIT : 'OpenFootball';
+    const headline=homeTeam+' en '+awayTeam+' sluiten duel af op '+homeScore+'-'+awayScore;
+    const standfirst='De ontmoeting tussen '+homeTeam+' en '+awayTeam+' in de '+matchRecord.category+' eindigde op '+homeScore+'-'+awayScore+'. De geregistreerde wedstrijdgegevens vormen de basis voor dit bericht.';
+    const first=round+' De officiële eindstand luidt '+homeScore+'-'+awayScore+'. Daarmee staat een '+outcome+' vast, met een verschil van '+margin+' doelpunt'+(margin===1?'':'en')+'. Meer over het wedstrijdverloop volgt alleen wanneer afzonderlijke gebeurtenissen gecontroleerd zijn.';
+    const second=halftime
+      ? 'De vastgelegde ruststand was '+halftime.match(/\\d+-\\d+/)[0]+'. Na de pauze veranderde de score naar '+homeScore+'-'+awayScore+'. De beschikbare registratie bevestigt geen doelpuntenmakers, minuten of tactische ontwikkelingen. '+attribution+'.'
+      : 'De beschikbare registratie vermeldt geen gecontroleerde ruststand of afzonderlijke wedstrijdmomenten. Daarom doet Veldio geen uitspraken over doelpuntenmakers, tijdstippen of het spelbeeld. '+attribution+'.';
+    draft={headline,standfirst,body:[first,second]};
    }else{
     draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
