@@ -202,7 +202,7 @@ test('verified historical Eredivisie data generates a compact report even when e
   secret:'isolated',groqKey:'isolated',githubToken:'isolated',now:Date.parse('2026-09-20T16:00:00Z'),groqIntervalMs:0,
   fetcher:async(url,options={})=>{
    if(url.includes('/integrations/football'))return Response.json({status:'available',fixtures:[match]});
-   if(url.includes('/articles'))return Response.json({articles:article?[article]:[]});
+   if(url.includes('/articles'))return Response.json({articles:article?[article]:[],rightsPolicyVersion:26,rightsExpiresAt:Date.now()+3600000});
    if(url.includes('editorial-queue45.json'))return options.method==='PUT'?Response.json({content:{sha:'test'}}):new Response(null,{status:404});
    if(url.endsWith('/models'))return Response.json({data:[{id:config.model}]});
    if(url.endsWith('/chat/completions')){

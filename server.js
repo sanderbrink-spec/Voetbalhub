@@ -447,7 +447,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const id = url.searchParams.get("id");
       const feed = await runtime.withDeadline(() => getArticles(view), 9000);
       const articles = id ? feed.filter(article => article.id === id) : feed;
-      res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, { count: articles.length, articles }); }
+      res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, view === "all" ? {count:articles.length,articles} : require("./feed-policy").articleEnvelope(articles)); }
     catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
@@ -916,8 +916,10 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         return send(res, 409, { error: "Dubbele publicatie geblokkeerd: een vrijwel identiek artikel bestaat al.", existingArticleId: existing.id });
       }
     }
+    const compactVerified = reviewedDraft && publishBody.length < 3 && imageUrl &&
+      (body.matchId || require("./editorial-desk-model").briefEligible(body));
     const now = new Date().toISOString();
-    const article = { ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? publicationId(reviewedDraft) : crypto.randomUUID(), ...(body.matchId ? {matchId:body.matchId, articleKind:body.articleKind} : {}), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
+    const article = { ...(compactVerified ? {compactVerified:true} : {}), ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? publicationId(reviewedDraft) : crypto.randomUUID(), ...(body.matchId ? {matchId:body.matchId, articleKind:body.articleKind} : {}), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
     const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
     if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
     if(reviewedDraft) { try {await require("./editorial-drafts").markPublished(client,reviewedDraft,article.id);} catch {console.warn("Published article retained; draft status update deferred.");} }

@@ -583,7 +583,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    // Use the same unauthenticated endpoint as Android, not the desk-only view.
    const publicResponse=await fetcher(API+'/articles',{signal:AbortSignal.timeout(60000),cache:'no-store'});
    if(!publicResponse.ok)throw Error('Openbare Android-feed niet beschikbaar.');
-   const visible=(await publicResponse.json()).articles?.find(a=>a.id===result.article.id);
+   const publicFeed=await publicResponse.json();
+   const visible=publicFeed.articles?.find(a=>a.id===result.article.id);
+   if(draft.body.length<3&&(publicFeed.rightsPolicyVersion!==26||!(publicFeed.rightsExpiresAt>Date.now())))
+    throw Error('Android accepteert dit compacte artikel niet zonder geldig feedbeleid.');
    if(!visible||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(draft.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
    const repeatedResponse=await fetcher(API+'/articles',{signal:AbortSignal.timeout(60000),cache:'no-store'});
    if(!repeatedResponse.ok||!(await repeatedResponse.json()).articles?.some(article=>article.id===visible.id))throw Error('Gepubliceerd artikel niet opnieuw opvraagbaar.');

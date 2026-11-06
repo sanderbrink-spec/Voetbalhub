@@ -24,3 +24,17 @@ test('sorting uses publication date and a stable tie-breaker',()=>{
   const list=[{id:'z',publishedAt:'2026-11-01'},{id:'old',publishedAt:'2026-10-30'},{id:'a',publishedAt:'2026-11-01'}];
   assert.deepEqual(selectFeed(list).map(a=>a.id),['a','z','old']);
 });
+
+test('Android rights envelope includes only verified compact articles and preserves legacy checks',()=>{
+  const {articleEnvelope}=require('../feed-policy');
+  const checks=Object.fromEntries(require('../editorial-desk-model').checks.map(key=>[key,true]));
+  const brief={id:'brief',status:'published',headline:'Officieel clubbesluit',body:['Toelichting'],compactVerified:true,imageRights:'cleared',editorialChecks:checks};
+  const legacy={...brief,id:'legacy',compactVerified:undefined,body:['Een','Twee','Drie']};
+  const hidden={...brief,id:'hidden',compactVerified:undefined};
+  const unverified={...brief,id:'unverified',editorialChecks:{}};
+  const feed=articleEnvelope([brief,legacy,hidden,unverified],1000);
+  assert.equal(feed.rightsPolicyVersion,26);
+  assert.ok(feed.rightsExpiresAt>1000);
+  assert.deepEqual(feed.articles.map(article=>article.id),['brief','legacy']);
+  assert.deepEqual(articleEnvelope([legacy]),{count:1,articles:[legacy]});
+});
