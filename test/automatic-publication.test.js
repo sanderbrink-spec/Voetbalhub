@@ -199,7 +199,7 @@ test('verified historical Eredivisie data generates a compact report even when e
  const draft={
   headline:'FC Twente verslaat PSV met 3-2',
   standfirst:'FC Twente heeft de thuiswedstrijd tegen PSV in de Eredivisie gewonnen.',
-  body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten. Bron voor de uitslag en ruststand is OpenFootball.']
+  body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten.']
  };
  const scores=Object.fromEntries(['actuality','reliability','nationalValue','originality','journalism','diversity'].map(key=>[key,95]));
  let saved, article, calls=0;
@@ -217,6 +217,7 @@ test('verified historical Eredivisie data generates a compact report even when e
    if(url.endsWith('/editorial-drafts')){
     saved=JSON.parse(options.body).payload;
     assert.equal(saved.articleKind,'match_report');
+    assert.match(saved.draft.body.at(-1),/Bron: OpenFootball\.$/);
     assert.deepEqual(require('../editorial-desk-model').publicationIssues(saved),[]);
     assert.equal(require('../editorial-match55').matchesRegistration(saved,[match],Date.parse('2026-09-20T16:00:00Z')),true);
     return Response.json({record:{id:'isolated',revision:1,status:'approved',contentHash:fingerprint(saved)}});

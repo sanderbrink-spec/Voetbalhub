@@ -430,8 +430,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const job=durable.queue.enqueue(group,now);
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
-   if(!job.matchHeadlineV2&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
-   job.matchHeadlineV2=true;
+   if(!job.matchOutputV3&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
+   job.matchOutputV3=true;
   }
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&!job.primaryDecisionV2){
    if(job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
@@ -476,10 +476,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const {homeTeam,awayTeam,homeScore,awayScore}=matchRecord.match;
     const headline=homeTeam+' – '+awayTeam+' eindigt in '+homeScore+'-'+awayScore;
     const text=await complete([
-     {role:'system',content:'Schrijf een korte, originele Nederlandse Veldio-wedstrijdtekst bij de vaste kop en uitsluitend uit de officiële wedstrijdgegevens. Geef JSON met standfirst (8 tot 35 woorden) en body (één of twee alinea’s van 10 tot 65 woorden). De vaste kop noemt de eindstand in thuis-uit-volgorde. Bij score_update schrijf je een uitslagupdate. Bij match_report beschrijf je het verschil tussen rust en eindstand. Vermeld de bron OpenFootball of de verplichte bronregel Football data provided by the Football-Data.org API als aparte zin binnen de laatste alinea. Gebruik geen minuten, spelers, spelbeeld, stand, gevolgen of andere feiten buiten de gegevens. Vermijd herhaling.'},
+     {role:'system',content:'Schrijf een korte, originele Nederlandse Veldio-wedstrijdtekst bij de vaste kop en uitsluitend uit de officiële wedstrijdgegevens. Geef JSON met standfirst (8 tot 35 woorden) en body (één of twee alinea’s van 10 tot 65 woorden). De vaste kop noemt de eindstand in thuis-uit-volgorde. Bij score_update schrijf je een uitslagupdate. Bij match_report beschrijf je het verschil tussen rust en eindstand. Laat de bronvermelding weg. Die wordt toegevoegd door Veldio. Gebruik geen minuten, spelers, spelbeeld, stand, gevolgen of andere feiten buiten de gegevens. Vermijd herhaling.'},
      {role:'user',content:JSON.stringify({headline,...matchRecord})}
     ],ai);
-    draft={headline,standfirst:text.standfirst,body:text.body};
+    const body=Array.isArray(text.body)?text.body.map(p=>typeof p==='string'?p.trim():p):[];
+    if(typeof body.at(-1)==='string')body[body.length-1]+=' '+(sources[0].url===matches.FD?CREDIT:'Bron: OpenFootball')+'.';
+    draft={headline,standfirst:text.standfirst,body};
    }else{
     draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url)},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
@@ -494,7 +496,6 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
     payload.feedLifecycle={kind:'preview',expiresAt:new Date(candidate.eventDate+'T23:59:59'+zone).toISOString()};
    }
-   if(matchRecord&&sources[0].url===matches.FD&&(!Array.isArray(draft.body)||!draft.body.some(p=>typeof p==='string'&&p.includes(CREDIT))))throw Error('Verplichte bronvermelding ontbreekt.');
    const preflight=M.publicationIssues(payload);if(preflight.length)throw Error(preflight.join(' '));
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    const review=await verifyDraft(payload,candidate,group,ai,published);
