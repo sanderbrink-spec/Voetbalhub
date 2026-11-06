@@ -432,6 +432,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const imageBudget={remaining:config.maxImageRequestsPerRun||8};
  const jobs=new Map();
  const seenGroups=new Set();
+ let recoveredReviews=0;
  for(const group of scheduled){
   const key=group.matchRecord?.matchId||JSON.stringify([...new Set(group.map(doc=>doc.url))].sort());
   if(seenGroups.has(key))continue;
@@ -445,6 +446,17 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&!job.primaryDecisionV3){
    if(job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
    job.primaryDecisionV3=true;
+  }
+  // One bounded retry per unchanged evidence group after the editorial recovery fix.
+  // Never override a journalistic rejection or relax the independent quality gate.
+  if(!group.matchRecord&&job.status==='review'&&job.reason==='editorial_review_required'&&
+     !job.reviewRecoveryV58C&&job.attempts<=1&&recoveredReviews<2&&
+     now-(job.updatedAt||job.createdAt)>=3600000){
+   job.reviewRecoveryV58C=true;
+   job.status='pending';
+   job.attempts=0;
+   job.nextAttemptAt=now;
+   recoveredReviews++;
   }
   if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
   else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||null});
