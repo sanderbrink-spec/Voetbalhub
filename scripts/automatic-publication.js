@@ -284,6 +284,15 @@ async function verifyDraft(payload,candidate,docs,options,recent=[]){
  if(review.approved!==true||!Array.isArray(review.issues)||review.issues.length)throw Error('Tweede feitencontrole: '+(review.issues||['niet goedgekeurd']).join('; '));
  return review;
 }
+async function reviseDraft(payload,candidate,docs,reason,options){
+ const revised=await complete([
+  {role:'system',content:'Je bent de eindredacteur van Veldio. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (3-5 alinea’s van 18-120 woorden, minimaal 70 tekens per alinea). Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.'},
+  {role:'user',content:JSON.stringify({draft:payload.draft,rejection:reason,verifiedFacts:payload.verifiedFacts,candidate,sources:docs.map(d=>({url:d.url,title:d.title,publishedAt:d.publishedAt,text:compactSource(d)}))})}
+ ],options);
+ if(revised.skip)return null;
+ if(!revised||typeof revised.headline!=='string'||typeof revised.standfirst!=='string'||!Array.isArray(revised.body))throw Error('Herschrijving heeft geen geldige artikelstructuur.');
+ return {headline:revised.headline,standfirst:revised.standfirst,body:revised.body};
+}
 async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  const library=require('../image-library49');
  if(imageOptions.secret){try{const r=await require('../editorial-image44-service').remote(payload,{secret:imageOptions.secret,fetcher,budget:{remaining:0}});if(r.mode==='approved-library')return Object.fromEntries(Object.entries(r).filter(([key])=>key.startsWith('image')));}catch{/* Approved local fallback remains available during backend outages. */}}
@@ -503,10 +512,26 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    const preflight=M.publicationIssues(payload);if(preflight.length)throw Error(preflight.join(' '));
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
-   const review=await verifyDraft(payload,candidate,group,ai,published);
-   const assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold,...(candidate.kind==='preview'?{eventDate:candidate.eventDate}:{})});
-   report.assessments.push({topic,...assessment});
-   if(!assessment.approved)throw Error(assessment.reasons.join(' '));
+   let assessment;
+   for(let revision=0;revision<=2;revision++){
+    let rejection='';
+    try{
+     const review=await verifyDraft(payload,candidate,group,ai,published);
+     assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold,...(candidate.kind==='preview'?{eventDate:candidate.eventDate}:{})});
+     report.assessments.push({topic,revision,...assessment});
+     if(assessment.approved)break;
+     rejection=assessment.reasons.join(' ');
+    }catch(error){rejection=error.message;}
+    if(matchRecord||revision===2)throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
+    const revised=await reviseDraft(payload,candidate,group,rejection,ai);
+    if(!revised)throw Error('Onvoldoende feiten voor verantwoorde herschrijving.');
+    const issues=[...M.publicationIssues({...payload,draft:revised}),...generationIssues(revised,facts)];
+    if(M.needsMatch(revised)||M.requiresFlashscore(revised))issues.push('Niet-geverifieerde wedstrijdclaim.');
+    if(group.some(d=>overlap(d.text,revised)))issues.push('Woordelijke bronoverlap.');
+    if(issues.length)throw Error('Herschrijving voldoet niet aan de controle: '+issues.join(' '));
+    payload.draft=revised;
+    draft=revised;
+   }
    report.counts.approved++;
    payload.editorialScore=assessment.score;
    payload.reviewNotes+=' Redactiescore fase45: '+JSON.stringify(assessment);
@@ -577,4 +602,4 @@ function runExitCode(report){
  return ['completed','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
 }
 if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
