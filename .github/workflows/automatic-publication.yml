@@ -5,6 +5,7 @@ on:
     paths:
       - 'automatic-editorial.json'
       - 'editorial-production45.js'
+      - 'editorial-match55.js'
       - 'automatic-bootstrap.json'
       - 'scripts/automatic-publication.js'
       - 'scripts/render-editorial-cover.py'
@@ -38,6 +39,17 @@ jobs:
       - run: npm install --ignore-scripts --no-audit --no-fund
       - name: Validate publication gates
         run: npm test
+      - name: Verify the matching Render revision
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl -fsS --max-time 10 https://voetbalhub-redactie.onrender.com/ready |
+              jq -e --arg sha "$GITHUB_SHA" '.ready and .revision == $sha' >/dev/null; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::Render draait nog niet op de workflowcommit."
+          exit 1
       - name: Collect official sources and publish checked stories with artwork
         env:
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}

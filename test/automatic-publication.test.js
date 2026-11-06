@@ -187,3 +187,65 @@ test('archived official cup evidence reaches the non-bootstrap writer and the pu
  assert.equal(report.assessments[0].threshold,85);
  assert.equal(modelResponses.length,0);
 });
+
+test('verified historical Eredivisie data generates a compact report even when every news index fails',async()=>{
+ const {fingerprint}=require('../editorial-drafts');
+ const config=require('../automatic-editorial.json');
+ const match={
+  id:'of-nl-2026-fc-twente-psv',competition:'eredivisie',date:'2026-09-20T12:30:00.000Z',
+  status:'FT',round:'Speelronde 7',home:{name:'FC Twente'},away:{name:'PSV'},
+  goals:{home:3,away:2},halfTime:{home:1,away:2}
+ };
+ const draft={
+  headline:'FC Twente verslaat PSV met 3-2',
+  standfirst:'FC Twente heeft de thuiswedstrijd tegen PSV in de Eredivisie gewonnen.',
+  body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten. Bron voor de uitslag en ruststand is OpenFootball.']
+ };
+ const scores=Object.fromEntries(['actuality','reliability','nationalValue','originality','journalism','diversity'].map(key=>[key,95]));
+ let saved, article, calls=0;
+ const report=await run({
+  secret:'isolated',groqKey:'isolated',githubToken:'isolated',now:Date.parse('2026-09-20T16:00:00Z'),groqIntervalMs:0,
+  fetcher:async(url,options={})=>{
+   if(url.includes('/integrations/football'))return Response.json({status:'available',fixtures:[match]});
+   if(url.includes('/articles'))return Response.json({articles:article?[article]:[]});
+   if(url.includes('editorial-queue45.json'))return options.method==='PUT'?Response.json({content:{sha:'test'}}):new Response(null,{status:404});
+   if(url.endsWith('/models'))return Response.json({data:[{id:config.model}]});
+   if(url.endsWith('/chat/completions')){
+    const response=calls++===0?draft:{approved:true,issues:[],scores};
+    return Response.json({choices:[{message:{content:JSON.stringify(response)}}]});
+   }
+   if(url.endsWith('/editorial-drafts')){
+    saved=JSON.parse(options.body).payload;
+    assert.equal(saved.articleKind,'match_report');
+    assert.deepEqual(require('../editorial-desk-model').publicationIssues(saved),[]);
+    assert.equal(require('../editorial-match55').matchesRegistration(saved,[match],Date.parse('2026-09-20T16:00:00Z')),true);
+    return Response.json({record:{id:'isolated',revision:1,status:'approved',contentHash:fingerprint(saved)}});
+   }
+   if(url.endsWith('/publish')){
+    article={id:'isolated',imageUrl:saved.imageUrl,body:saved.draft.body};
+    return Response.json({status:'published',article});
+   }
+   return new Response(null,{status:503});
+  }
+ });
+ assert.equal(report.status,'completed',JSON.stringify(report));
+ assert.deepEqual(report.routes.match,{found:1,selected:1,generated:1,rejected:0,published:1});
+ assert.equal(report.assessments[0].threshold,85);
+ assert.equal(calls,2);
+});
+
+test('one official source can verify its own appointment, but cannot verify a disputed transfer',()=>{
+ const url='https://www.inter.it/en/news/simone-lo-schiavo-is-the-new-director-of-football-development-inter';
+ const title='Simone Lo Schiavo is the new Director of Football Development';
+ const text='Simone Lo Schiavo joined the club as Director of Football Development on 5 November 2026.';
+ const doc={url,title,text,publishedAt:new Date(now-3600000).toISOString()};
+ const candidate={kind:'announcement',primaryAuthority:'club_decision',sharedEventEvidence:[],facts:[
+  'Inter benoemt Simone Lo Schiavo.',
+  'Simone Lo Schiavo trad in dienst bij Inter.',
+  'De functie betreft voetbalontwikkeling.',
+  'De aanstelling ging in op vijf november.'
+ ].map(textFact=>({text:textFact,evidence:[{source:0,quote:text}]}))};
+ assert.deepEqual(validateEvidence(candidate,[doc],now),[]);
+ assert.ok(validateEvidence({...candidate,transferStatus:'confirmed'},[doc],now).some(issue=>issue.includes('onafhankelijke')));
+ assert.ok(validateEvidence(candidate,[{...doc,url:'https://www.inter.it/en/'}],now).length);
+});

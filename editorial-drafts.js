@@ -17,6 +17,11 @@ function cleanPayload(value={}){
  const d=value.draft||{};
  return {
   draft:{headline:String(d.headline||'').trim().slice(0,200),standfirst:String(d.standfirst||'').trim().slice(0,700),body:Array.isArray(d.body)?d.body.filter(x=>typeof x==='string').map(x=>x.trim().slice(0,6000)).filter(Boolean).slice(0,5):[],why_it_matters:String(d.why_it_matters||'').slice(0,1000)},
+  ...(value.matchId ? {matchId:String(value.matchId).slice(0,150)} : {}),
+  ...(value.articleKind ? {articleKind:String(value.articleKind).slice(0,30)} : {}),
+  ...(Number.isInteger(value.editorialScore) ? {editorialScore:value.editorialScore} : {}),
+  ...(value.primaryAuthority ? {primaryAuthority:String(value.primaryAuthority).slice(0,30)} : {}),
+  ...(value.feedLifecycle ? {feedLifecycle:require('./feed-policy').publicationLifecycle(value.feedLifecycle)} : {}),
   match:value.match?{homeTeam:String(value.match.homeTeam||'').trim().slice(0,100),awayTeam:String(value.match.awayTeam||'').trim().slice(0,100),homeScore:Number.isInteger(value.match.homeScore)?value.match.homeScore:null,awayScore:Number.isInteger(value.match.awayScore)?value.match.awayScore:null,playedAt:String(value.match.playedAt||'').slice(0,10)}:null,
   factChecks:Object.fromEntries(['resultVerified','namesVerified','dateVerified','timelineVerified'].map(k=>[k,value.factChecks?.[k]===true])),
   reviewNotes:String(value.reviewNotes||'').trim().slice(0,3000),

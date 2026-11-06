@@ -15,12 +15,12 @@
     return /\b(?:\d+\s*[-–:]\s*\d+|uitslag|eindstand|ruststand|ranglijst|klassement|standen?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|gele kaarten|rode kaarten|xg|expected goals|doelpuntenmaker|scoreverloop)\b/i
       .test([draft.headline, draft.standfirst, ...(Array.isArray(draft.body) ? draft.body : [])].join(' '));
   }
-  function draftIssues(d = {}) {
+  function draftIssues(d = {}, compact = false) {
     const issues = [];
     const body = Array.isArray(d.body) ? d.body.filter(p => typeof p === 'string' && p.trim()).map(p => p.trim()) : [];
     if (words(d.headline) < 5 || words(d.headline) > 14) issues.push('Kop: 5 tot 14 woorden.');
     if (words(d.standfirst) < 8 || words(d.standfirst) > 35) issues.push('Intro: 8 tot 35 woorden.');
-    if (body.length < 3 || body.length > 5 || body.some(p => p.length < 70 || words(p) < 18 || words(p) > 120)) issues.push('Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.');
+    if (compact ? body.length < 1 || body.length > 2 || body.some(p => words(p) < 10 || words(p) > 65) : body.length < 3 || body.length > 5 || body.some(p => p.length < 70 || words(p) < 18 || words(p) > 120)) issues.push(compact ? 'Wedstrijdtekst: één of twee korte inhoudelijke alinea’s.' : 'Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.');
     const normalize = value => String(value || '').toLowerCase().normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
     const blocks = [d.standfirst, ...body].map(normalize).filter(Boolean);
@@ -38,13 +38,18 @@
   }
   function publicationIssues(payload) {
     const issues = [], d = payload.draft || {};
-    issues.push(...draftIssues(d));
+    const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
+    issues.push(...draftIssues(d, registeredMatch));
     issues.push(...factAudit.audit(payload));
     if (!Array.isArray(payload.verifiedFacts) || payload.verifiedFacts.filter(x => typeof x === 'string' && x.trim()).length < 2) issues.push('Vul twee zelf gecontroleerde feiten in.');
     const sources = Array.isArray(payload.sources) ? payload.sources : [];
     const hosts = sources.map(s => host(s?.url));
-    if (sources.length < 2 || hosts.some(h => !h) || new Set(hosts.filter(Boolean)).size < 2) issues.push('Voeg twee geldige HTTPS-bronnen van verschillende websites toe.');
-    if (requiresFlashscore(d) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
+    const primary = payload.articleKind === 'announcement' && sources.length === 1 &&
+      ['club_decision','association_decision'].includes(payload.primaryAuthority) && Boolean(hosts[0]);
+    const matchSource = registeredMatch && sources.length === 1 &&
+      ['https://github.com/openfootball/football.json','https://www.football-data.org/'].includes(sources[0]?.url);
+    if (!primary && !matchSource && (sources.length < 2 || hosts.some(h => !h) || new Set(hosts.filter(Boolean)).size < 2)) issues.push('Voeg twee geldige HTTPS-bronnen van verschillende websites toe.');
+    if (!matchSource && requiresFlashscore(d) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
     const missing = checks.filter(key => payload.editorialChecks?.[key] !== true);
     if (missing.length) issues.push('Rond alle vier redactionele controles af.');
     if (payload.imageUrl && (!host(payload.imageUrl) || !payload.imageSource?.trim() || !payload.imageCredit?.trim() || !['cleared','licensed'].includes(payload.imageRights) || !['kitVerified','playerIdentityVerified','aiDisclosureVerified'].every(k => payload.imageReview?.[k] === true))) issues.push('Rond de beeldgegevens en alle drie beeldcontroles af.');

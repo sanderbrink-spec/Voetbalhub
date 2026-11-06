@@ -290,8 +290,39 @@ async function getArticles(view = "current") {
   return require("./feed-policy").selectFeed(articles, {view});
 }
 const football47=require("./football-data47").create({redis:client});
+const europeanEditorial=require('./editorial-match55').europeanRegistry({
+  token:process.env.FOOTBALL_DATA_API_KEY?.trim()||process.env.FOOTBALL_DATA_TOKEN?.trim()
+});
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 const quizHandler=require("./quiz39/service").create({redis:client,football:football47});
+function publicationId(record) {
+  if (!record.payload.matchId) return record.id.slice(14);
+  const hash = crypto.createHash('sha256').update(record.payload.matchId).digest('hex');
+  return hash.slice(0,8)+'-'+hash.slice(8,12)+'-5'+hash.slice(13,16)+'-a'+hash.slice(17,20)+'-'+hash.slice(20,32);
+}
+async function automaticEvidenceIssue(payload) {
+  if (!payload?.matchId && !payload?.primaryAuthority) return '';
+  if (!Number.isInteger(payload.editorialScore) || payload.editorialScore < 85 || payload.editorialScore > 100)
+    return 'Automatische publicatie vereist een redactionele score van minimaal 85.';
+  if (payload.matchId) {
+    if (typeof payload.matchId !== 'string') return 'Ongeldig wedstrijd-ID.';
+    const snapshot = await (payload.matchId.startsWith('fd-cl-') ? europeanEditorial() : football47.get('eredivisie'));
+    if (!require('./editorial-match55').matchesRegistration(payload, snapshot.fixtures || [], Date.now()))
+      return 'De primaire wedstrijdregistratie bevestigt de aangeleverde feiten niet.';
+    if (payload.sources[0].url === require('./editorial-match55').FD &&
+        !payload.draft?.body?.some(p => typeof p === 'string' && p.includes(require('./football-results52').CREDIT)))
+      return 'Verplichte bronvermelding ontbreekt.';
+  } else {
+    const {articleUrl} = require('./scripts/editorial-discovery53');
+    const source = payload.sources?.[0]?.url;
+    const canonical = articleUrl(source, require('./automatic-editorial.json').newsIndexes);
+    const association = canonical && /^(www\.)?(knvb\.nl|eurojackpotknvbbeker\.nl)$/.test(new URL(canonical).hostname);
+    if (!canonical || payload.sources.length !== 1 || payload.articleKind !== 'announcement' ||
+        payload.primaryAuthority !== (association ? 'association_decision' : 'club_decision'))
+      return 'De opgegeven primaire bron is niet bevoegd voor deze publicatieroute.';
+  }
+  return '';
+}
 async function handle(req, res) {
   security.harden(req,res,process.env);
   const url = new URL(req.url, "http://localhost");
@@ -413,7 +444,10 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const started=Date.now(); const view = url.searchParams.get("view") || "current";
       if (!["current","archive","all"].includes(view)) return send(res,400,{error:"Onbekende nieuwsweergave."});
-      const articles = await runtime.withDeadline(() => getArticles(view), 9000); res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, { count: articles.length, articles }); }
+      const id = url.searchParams.get("id");
+      const feed = await runtime.withDeadline(() => getArticles(view), 9000);
+      const articles = id ? feed.filter(article => article.id === id) : feed;
+      res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, { count: articles.length, articles }); }
     catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
@@ -590,6 +624,10 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     res.writeHead(200, { "Content-Type": "image/png", "Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'" });
     return res.end(Buffer.from(encoded, "base64"));
   }
+  if (req.method === 'GET' && url.pathname === '/editorial-champions-league') {
+    if (!authorizeRequest(req,res)) return;
+    return send(res,200,await europeanEditorial());
+  }
   if (req.method !== "POST") return send(res, 404, { error: "Gebruik GET /health, GET /articles, GET /inbox of POST /draft en POST /publish." });
   if (!authorizeRequest(req,res)) return;
   let body;
@@ -600,6 +638,10 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   if (url.pathname === "/editorial-drafts") {
     if (!client?.isReady) return send(res,503,{error:"Conceptenopslag tijdelijk niet beschikbaar."});
     try {
+      if (body.approve === true) {
+        const issue = await automaticEvidenceIssue(body.payload);
+        if (issue) return send(res,400,{error:issue});
+      }
       const record=await require("./editorial-drafts").saveDraft(client,{id:body.id,expectedRevision:body.expectedRevision,payload:body.payload,approve:body.approve===true});
       return send(res,200,{record,published:false});
     } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept kon niet worden opgeslagen."}); }
@@ -815,7 +857,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         reviewedDraft=await require("./editorial-drafts").getDraft(client,body.editorialDraftId);
         const matchingContent=require("./editorial-drafts").fingerprint(body)===reviewedDraft.contentHash;
         if (reviewedDraft.status==="published" && matchingContent) {
-          const existing=await client.get("article:"+reviewedDraft.id.slice(14));
+          const existing=await client.get("article:"+publicationId(reviewedDraft));
           if(existing)return send(res,200,{status:"published",article:JSON.parse(existing)});
         }
         if (body.expectedRevision!==reviewedDraft.revision || reviewedDraft.status!=="approved" || !matchingContent)
@@ -823,6 +865,10 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept niet beschikbaar."}); }
     }
     if(reviewedDraft)body={...reviewedDraft.payload,approved:body.approved};
+    if ((body.matchId || body.primaryAuthority) && !reviewedDraft)
+      return send(res,400,{error:"Automatische publicatie vereist een goedgekeurd concept."});
+    const automaticIssue = await automaticEvidenceIssue(body);
+    if (automaticIssue) return send(res,400,{error:automaticIssue});
     // Reviewed match artwork travels with automatic and manual publication alike.
     body=withArticleCover(body);
     let feedLifecycle;
@@ -840,7 +886,6 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const missingChecks = requiredChecks.filter(key => review[key] !== true);
     if (missingChecks.length) return send(res, 400, { error: "Publicatie geblokkeerd: voltooi alle redactionele controles.", missingChecks });
     const publishBody = Array.isArray(d.body) ? d.body.filter(p => typeof p === "string").map(p => p.trim()).filter(Boolean) : [];
-    if (typeof d.headline !== "string" || !d.headline.trim() || typeof d.standfirst !== "string" || !d.standfirst.trim() || publishBody.length < 3 || publishBody.length > 5 || publishBody.some(p => p.length < 70)) return send(res, 400, { error: "Publicatie geblokkeerd: kop, intro en 3-5 inhoudelijke alinea's van minimaal 70 tekens zijn verplicht." });
     // Shared preflight already checks headline, intro, paragraphs and repeated copy.
     const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim().slice(0,1000) : "";
     const imageSource = typeof body.imageSource === "string" ? body.imageSource.trim().slice(0,300) : "";
@@ -867,12 +912,12 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const newWords = new Set(incomingBody.split(" ").filter(w => w.length > 4));
       const shared = [...oldWords].filter(w => newWords.has(w)).length;
       const overlap = Math.min(oldWords.size, newWords.size) ? shared / Math.min(oldWords.size, newWords.size) : 0;
-      if (incomingHeadline === oldHeadline || (oldWords.size >= 18 && newWords.size >= 18 && overlap >= 0.88)) {
+      if ((body.matchId && body.matchId === existing.matchId) || incomingHeadline === oldHeadline || (oldWords.size >= 18 && newWords.size >= 18 && overlap >= 0.88)) {
         return send(res, 409, { error: "Dubbele publicatie geblokkeerd: een vrijwel identiek artikel bestaat al.", existingArticleId: existing.id });
       }
     }
     const now = new Date().toISOString();
-    const article = { ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? reviewedDraft.id.slice(14) : crypto.randomUUID(), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
+    const article = { ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? publicationId(reviewedDraft) : crypto.randomUUID(), ...(body.matchId ? {matchId:body.matchId, articleKind:body.articleKind} : {}), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
     const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
     if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
     if(reviewedDraft) { try {await require("./editorial-drafts").markPublished(client,reviewedDraft,article.id);} catch {console.warn("Published article retained; draft status update deferred.");} }

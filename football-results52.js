@@ -31,9 +31,11 @@ function supplement(fixtures, response, season, now) {
       matchesTeam(row.homeTeam, f.home.name) && matchesTeam(row.awayTeam, f.away.name)
     );
     if (matches.length !== 1) return f;
-    const {score} = matches[0];
+    const {score,row} = matches[0];
+    const half = row.score?.halfTime;
+    const halfTime = [half?.home,half?.away].every(n => Number.isInteger(n) && n >= 0) && half.home <= score.home && half.away <= score.away ? half : null;
     return {...f, status: 'FT', goals: {home: score.home, away: score.away},
-      resultSource: CREDIT, resultExpiresAt: now + 36 * 3600000};
+      ...(halfTime ? {halfTime} : {}), resultSource: CREDIT, resultExpiresAt: now + 36 * 3600000};
   });
 }
 
