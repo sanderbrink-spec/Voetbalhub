@@ -27,7 +27,7 @@ async function sourceBody(response, limit=2000000) {
  for await(const chunk of response.body){size+=chunk.byteLength;if(size>limit)throw Error('Bronantwoord te groot');chunks.push(Buffer.from(chunk));}
  return Buffer.concat(chunks,size).toString('utf8');
 }
-function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOOTBALL_DATA_TOKEN}={}){
+function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOOTBALL_DATA_API_KEY?.trim()||process.env.FOOTBALL_DATA_TOKEN?.trim()}={}){
  const cache=new Map(),pending=new Map();
  async function get(key){
   if(!Object.hasOwn(CATALOG,key))throw Error('Onbekende competitie');
@@ -57,6 +57,7 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
        });
        if(!response.ok){await response.body?.cancel();throw Error('HTTP '+response.status);}
        fixtures=supplemental.supplement(fixtures,JSON.parse(await sourceBody(response)),season,now);
+       console.info('football47 Eredivisie aanvullende uitslagen:',fixtures.filter(f=>f.resultSource).length);
       }catch(error){console.warn('football47 Eredivisie aanvullende uitslagen:',error.message);}
      }
      const supplemented=fixtures.some(f=>f.resultSource);
