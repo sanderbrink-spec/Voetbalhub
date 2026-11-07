@@ -518,7 +518,16 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const second=halftime
       ? 'De vastgelegde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Na de pauze veranderde de score naar '+homeScore+'-'+awayScore+'. De beschikbare registratie bevestigt geen doelpuntenmakers, minuten of tactische ontwikkelingen. '+attribution+'.'
       : 'De beschikbare registratie vermeldt geen gecontroleerde ruststand of afzonderlijke wedstrijdmomenten. Daarom doet Veldio geen uitspraken over doelpuntenmakers, tijdstippen of het spelbeeld. '+attribution+'.';
-    draft={headline,standfirst,body:[first,second]};
+    // The standard editorial gate requires three substantive paragraphs. A verified
+    // score alone cannot support that structure without invented match events.
+    // Keep such records in review instead of submitting guaranteed rejections.
+    if(!halftime){
+     report.skipped.push({topic,stage:'verification',reason:'Onvoldoende gecontroleerde wedstrijdgegevens voor drie inhoudelijke alinea’s; ruststand of onafhankelijk geverifieerde wedstrijdfeiten ontbreken.'});
+     durable.queue.finish(job,'review',now);
+     continue;
+    }
+    const context='Deze wedstrijd werd gespeeld op '+playedAt+' in de '+matchRecord.category+'. '+round+' De registratie bevestigt de deelnemende clubs '+homeTeam+' en '+awayTeam+'. Verdere wedstrijdomstandigheden worden niet als feit gepresenteerd zonder aanvullende verificatie.';
+    draft={headline,standfirst,body:[first,context,second]};
    }else{
     draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),compact},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
