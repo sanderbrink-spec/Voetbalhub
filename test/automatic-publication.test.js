@@ -333,3 +333,19 @@ test('focused production refuses an unconfigured source before any network call'
  await assert.rejects(runProduction({focusSourceUrl:'https://example.com/article',fetcher:async()=>{calls++;}}),/Ongeldige gerichte/);
  assert.equal(calls,0);
 });
+
+
+test('a focused push uses only an explicit commit trailer and preserves dispatch input',()=>{
+ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+ const {publicationFocus}=require('../scripts/automatic-publication');
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'veldio-focus-'));
+ const event=path.join(dir,'event.json'),source='https://peczwolle.nl/nieuws/aanstelling';
+ try{
+  fs.writeFileSync(event,JSON.stringify({head_commit:{message:'Repair writer\n\nEditorial-Source: '+source}}));
+  assert.equal(publicationFocus({GITHUB_EVENT_NAME:'push',GITHUB_EVENT_PATH:event}),source);
+  assert.equal(publicationFocus({GITHUB_EVENT_NAME:'schedule',GITHUB_EVENT_PATH:event}),undefined);
+  assert.equal(publicationFocus({FOCUS_SOURCE_URL:'dispatch'}),'dispatch');
+  fs.writeFileSync(event,JSON.stringify({head_commit:{message:'Ordinary push'}}));
+  assert.equal(publicationFocus({GITHUB_EVENT_NAME:'push',GITHUB_EVENT_PATH:event}),undefined);
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
