@@ -381,3 +381,15 @@ test('persistently invented primary facts stay blocked after one repair',async()
  }},now),/niet letterlijk/);
  assert.equal(calls,2);
 });
+
+
+test('overlap feedback identifies exact copied words while preserving the ten-word rejection',()=>{
+ const {overlapPhrases}=require('../scripts/automatic-publication');
+ const source='Dennis van der Ree en Maikel van der Werff keren terug als assistent-trainer.';
+ const copied={headline:'De technische staf krijgt een nieuwe taak',standfirst:'PEC Zwolle heeft de samenstelling van de technische staf bekendgemaakt.',body:[source]};
+ assert.ok(overlap(source,copied));
+ assert.ok(overlapPhrases(source,copied).includes('dennis van der ree en maikel van der werff keren'));
+ const rewritten={...copied,body:['Maikel van der Werff wordt weer assistent, net als Dennis van der Ree.']};
+ assert.equal(overlap(source,rewritten),false);
+ assert.deepEqual(overlapPhrases(source,rewritten),[]);
+});
