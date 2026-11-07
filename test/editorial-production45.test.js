@@ -68,3 +68,25 @@ test('an undated official fixture calendar can support a verified upcoming previ
  assert.equal(assess({review,docs:calendar,now,eventDate:'2026-11-03'}).approved,false);
  assert.equal(assess({review,docs:calendar,now,eventDate:'2026-11-15'}).approved,false);
 });
+
+
+test('a configured threshold below 85 never lowers the quality floor',()=>{
+ const low={...review,scores:Object.fromEntries(Object.keys(WEIGHTS).map(k=>[k,k==='reliability'?90:80]))};
+ const result=assess({review:low,docs,now,threshold:1});
+ assert.equal(result.threshold,85);assert.equal(result.approved,false);
+});
+test('queue distinguishes software, storage, publication and journalistic failures without leaking raw errors',()=>{
+ for(const [stage,error,category] of [
+  ['quality',new TypeError('secret source text'),'quality_control_failure'],
+  ['generation',new SyntaxError('invalid JSON'),'generator_failure'],
+  ['storage',Error('write rejected'),'storage_failure'],
+  ['publication',Error('version missing'),'publication_failure'],
+  ['quality',Error('Unverified claim'),'journalistic_rejection']
+ ]){
+  const q=new EditorialQueue(),job=q.enqueue(docs,now);q.fail(job,error,now,{stage});
+  const restored=new EditorialQueue(JSON.parse(JSON.stringify(q.records))).records[0];
+  assert.equal(restored.failureCategory,category);assert.equal(restored.failureStage,stage);
+  assert.match(restored.errorHash,/^[a-f0-9]{64}$/);assert.ok(!JSON.stringify(restored).includes(error.message));
+  assert.equal(q.due(job,now+86400000),false);
+ }
+});

@@ -11,6 +11,7 @@ function priority(doc) {
  return 2;
 }
 function assess({review, docs, evidenceIssues=[], duplicate=false, copied=false, now=Date.now(), threshold=85, eventDate}) {
+ threshold=Math.max(85,Number.isFinite(threshold)?threshold:85);
  const reasons=[]; const scores={};
  for (const key of Object.keys(WEIGHTS)) {
   const value=review?.scores?.[key];
@@ -46,14 +47,24 @@ class EditorialQueue {
   return job;
  }
  due(job,now=Date.now()) {return ['pending','retry'].includes(job.status)&&job.attempts<4&&job.nextAttemptAt<=now;}
- finish(job,status,now=Date.now()) {job.status=status;job.updatedAt=now;}
- fail(job,error,now=Date.now()) {
+ finish(job,status,now=Date.now(),diagnostic={}) {job.status=status;job.updatedAt=now;
+  if(diagnostic.reason)job.reason=diagnostic.reason;
+  if(diagnostic.stage)job.failureStage=diagnostic.stage;
+  if(diagnostic.category)job.failureCategory=diagnostic.category;
+ }
+ fail(job,error,now=Date.now(),{stage='verification'}={}) {
   job.attempts++;job.updatedAt=now;
   const transient=error?.code==='GROQ_DAILY_QUOTA'||/HTTP (429|5\d\d)|timeout|timed out|fetch failed|network|tijdelijk|onbereikbaar|niet beschikbaar/i.test(error?.message||'');
   job.status=transient&&job.attempts<4?'retry':'review';
   job.nextAttemptAt=now+Math.min(24*3600000,3600000*2**(job.attempts-1));
   // Public queue stores URLs and machine status only, never source text, tokens or model output.
-  job.reason=transient?'external_service_unavailable':'editorial_review_required';
+  const software=error instanceof ReferenceError||error instanceof TypeError||error instanceof SyntaxError;
+  job.failureStage=stage;
+  job.failureCategory=transient?'temporary_source_failure':stage==='storage'?'storage_failure':stage==='publication'?'publication_failure':software||stage==='generation'?'generator_failure':'journalistic_rejection';
+  if(software&&stage==='quality')job.failureCategory='quality_control_failure';
+  job.reason=transient?'external_service_unavailable':software?'software_error':stage==='storage'?'storage_error':stage==='publication'?'publication_error':stage==='generation'?'generation_error':'editorial_review_required';
+  // Hash links the detailed artifact error without publishing source text or secrets.
+  job.errorHash=crypto.createHash('sha256').update(String(error?.message||'')).digest('hex');
  }
  prune(now=Date.now()) {this.records=this.records.filter(j=>now-(j.updatedAt||j.createdAt)<7*86400000).slice(-500);}
 }

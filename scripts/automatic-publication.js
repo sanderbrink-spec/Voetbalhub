@@ -302,11 +302,17 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
-async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,report}={}){
+async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,report,expectedRevision=process.env.GITHUB_SHA}={}){
  if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
  const headers={Authorization:'Bearer '+secret,'Content-Type':'application/json'};
  async function api(endpoint,body){const r=await fetcher(API+endpoint,{headers,signal:AbortSignal.timeout(60000),...(body?{method:'POST',body:JSON.stringify(body)}:{})});const d=await r.json();if(!r.ok)throw Error(endpoint+': HTTP '+r.status+' '+(d.error||''));return d;}
+ async function verifyRevision(){
+  if(!expectedRevision)return;
+  const ready=await api('/ready');
+  if(!ready.ready||ready.revision!==expectedRevision)throw Error('Backendversie wijkt af van de geteste workflowcommit.');
+ }
+ await verifyRevision();
  const publicFeed=await api('/articles?view=all');let published=publicFeed.articles;
  if(!Array.isArray(published))throw Error('Openbare feed niet controleerbaar.');
  const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(now));
@@ -443,6 +449,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    job.matchId=group.matchRecord.matchId;
    if(!job.matchOutputV5&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
    job.matchOutputV5=true;
+   // One full reassessment after the compact generator repair, never direct approval.
+   if(job.status==='review'&&job.reason==='editorial_review_required'&&!job.failureCategory&&!job.matchRecoveryV60){
+    job.matchRecoveryV60=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+   }
   }
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&!job.primaryDecisionV3){
    if(job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
@@ -469,11 +479,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    recoveredReviews++;
   }
   if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
-  else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||null});
+  else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||'legacy_review_without_reason',failureCategory:job.failureCategory||null,stage:job.failureStage||null});
  }
  report.counts.uniqueGroups=seenGroups.size;
  report.counts.queued=jobs.size;
  await durable.save();
+ report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection').length};
  if(!jobs.size)return report;
  report.counts.aiRequests++;
  const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(75000)});
@@ -495,7 +506,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    const candidate=matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
     group.bootstrap?.candidate||await extractCandidate(group,ai,now);
-   if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now);continue;}
+   if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage:'verification',category:'journalistic_rejection'});continue;}
    const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
    const sourceIndices=matchRecord?[0]:[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
@@ -506,19 +517,16 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    stage='generation';
    let draft;
    if(matchRecord){
-    const {homeTeam,awayTeam,homeScore,awayScore,playedAt}=matchRecord.match;
-    const margin=Math.abs(homeScore-awayScore);
-    const outcome=homeScore===awayScore?'gelijkspel':homeScore>awayScore?'thuiszege':'uitzege';
-    const round=facts[1];
-    const halftime=facts[2];
+    const {homeTeam,awayTeam,homeScore,awayScore}=matchRecord.match;
+    const halftime=matchRecord.verifiedFacts[2];
     const attribution=sources[0].url===matches.FD ? CREDIT : 'OpenFootball';
     const headline=homeTeam+' en '+awayTeam+' sluiten duel af op '+homeScore+'-'+awayScore;
-    const standfirst='De ontmoeting tussen '+homeTeam+' en '+awayTeam+' in de '+matchRecord.category+' eindigde op '+homeScore+'-'+awayScore+'. De geregistreerde wedstrijdgegevens vormen de basis voor dit bericht.';
-    const first=round+' De officiële eindstand luidt '+homeScore+'-'+awayScore+'. Daarmee staat een '+outcome+' vast, met een verschil van '+margin+' doelpunt'+(margin===1?'':'en')+'. Meer over het wedstrijdverloop volgt alleen wanneer afzonderlijke gebeurtenissen gecontroleerd zijn.';
-    const second=halftime
-      ? 'De vastgelegde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Na de pauze veranderde de score naar '+homeScore+'-'+awayScore+'. De beschikbare registratie bevestigt geen doelpuntenmakers, minuten of tactische ontwikkelingen. '+attribution+'.'
-      : 'De beschikbare registratie vermeldt geen gecontroleerde ruststand of afzonderlijke wedstrijdmomenten. Daarom doet Veldio geen uitspraken over doelpuntenmakers, tijdstippen of het spelbeeld. '+attribution+'.';
-    draft={headline,standfirst,body:[first,second]};
+    const standfirst='De ontmoeting tussen '+homeTeam+' en '+awayTeam+' in de '+matchRecord.category+' eindigde op '+homeScore+'-'+awayScore+'.';
+    // Keep only registered facts; no numerical margin or missing-halftime narrative.
+    const first=matchRecord.verifiedFacts[1]+' De wedstrijdregistratie is de bron voor de eindstand. Bron: '+attribution+'.';
+    const body=[first];
+    if(halftime)body.push('De geregistreerde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Deze tussenstand is afzonderlijk vastgelegd in dezelfde wedstrijdregistratie.');
+    draft={headline,standfirst,body};
    }else{
     draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),compact},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
@@ -572,6 +580,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const latestCount=published.filter(a=>{const t=Date.parse(a.publishedAt);return Number.isFinite(t)&&new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(t))===today;}).length;
    if(latestCount>=config.maxPerDay){report.status='daily_limit';break;}
    stage='storage';
+   await verifyRevision();
    const saved=await api('/editorial-drafts',{payload,approve:true});
    if(saved.record?.status!=='approved'||saved.record.contentHash!==fingerprint(payload))throw Error('Gecontroleerde tekstversie niet bevestigd.');
    report.counts.stored++;
@@ -594,11 +603,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    report.published.push({route:matchRecord?'match':'news',id:visible.id,url:API+'/articles?id='+encodeURIComponent(visible.id),headline:visible.headline,score:assessment.score,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.category,imageMode:payload.imageReview.mode});published.push(visible);
    durable.queue.finish(job,'published',now);
    console.log('Gepubliceerd met afbeelding:',visible.headline);
-  }catch(e){durable.queue.fail(job,e,now);const technical=job.reason==='external_service_unavailable'||['storage','publication'].includes(stage)||(stage==='generation'&&!e.issues&&e.status!==422)||e instanceof ReferenceError||e instanceof TypeError;
+  }catch(e){durable.queue.fail(job,e,now,{stage});const technical=job.failureCategory!=='journalistic_rejection';
    if(!technical)route.rejected++;
    (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
   finally{await durable.save();}
  }
+ report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection').length};
  return report;
 }
 async function run(options={}){
@@ -608,7 +618,7 @@ async function run(options={}){
   if(!report.status){
    const sourcesUnavailable=report.sources.gdelt?.status==='unavailable'&&
     report.sources.match.status==='unavailable'&&report.sources.officialIndexes.every(source=>source.status==='unavailable')&&!report.counts.readable;
-   report.status=report.processingErrors.length?'processing_errors':report.published.length?'completed':sourcesUnavailable?'sources_unavailable':'no_new_verified_articles';
+   report.status=report.processingErrors.length||report.queue?.technicalReview?'processing_errors':report.published.length?'completed':sourcesUnavailable?'sources_unavailable':'no_new_verified_articles';
   }
   return report;
  }catch(error){report.status='failed';report.error=error.message;throw error;}
