@@ -188,22 +188,27 @@ test('archived official cup evidence reaches the non-bootstrap writer and the pu
  assert.equal(modelResponses.length,0);
 });
 
-test('verified historical Eredivisie data generates a compact report even when every news index fails',async()=>{
+for(const hasHalf of [true,false])test('registered match uses compact format with halftime='+hasHalf+' during source outage and recovers legacy queue once',async()=>{
  const {fingerprint}=require('../editorial-drafts');
  const config=require('../automatic-editorial.json');
  const match={
-  id:'of-nl-2026-fc-twente-psv',competition:'eredivisie',date:'2026-09-20T12:30:00.000Z',
+  id:'of-nl-2026-fc-twente-psv',competition:'eredivisie',date:new Date(Date.now()-3*3600000).toISOString(),
   status:'FT',round:'Speelronde 7',home:{name:'FC Twente'},away:{name:'PSV'},
-  goals:{home:3,away:2},halfTime:{home:1,away:2}
+  goals:{home:3,away:0},...(hasHalf?{halfTime:{home:1,away:0}}:{})
  };
  const scores=Object.fromEntries(['actuality','reliability','nationalValue','originality','journalism','diversity'].map(key=>[key,95]));
- let saved, article, calls=0;
+ const clock=Date.now();
+ const record=require('../editorial-match55').candidate(match,clock);
+ const queue=new (require('../editorial-production45').EditorialQueue)();
+ const job=queue.enqueue([{url:record.sources[0].url,title:record.topic,text:record.verifiedFacts.join(' '),publishedAt:record.publishedAt}],clock);
+ Object.assign(job,{status:'review',reason:'editorial_review_required',matchOutputV5:true,matchId:record.matchId});
+ let saved, article, calls=0,checkpoint;
  const report=await run({
-  secret:'isolated',groqKey:'isolated',githubToken:'isolated',now:Date.parse('2026-09-20T16:00:00Z'),groqIntervalMs:0,
+  secret:'isolated',groqKey:'isolated',githubToken:'isolated',now:clock,groqIntervalMs:0,
   fetcher:async(url,options={})=>{
    if(url.includes('/integrations/football'))return Response.json({status:'available',fixtures:[match]});
    if(url.includes('/articles'))return Response.json({articles:article?[article]:[],rightsPolicyVersion:26,rightsExpiresAt:Date.now()+3600000});
-   if(url.includes('editorial-queue45.json'))return options.method==='PUT'?Response.json({content:{sha:'test'}}):new Response(null,{status:404});
+   if(url.includes('editorial-queue45.json')){if(options.method==='PUT'){checkpoint=JSON.parse(Buffer.from(JSON.parse(options.body).content,'base64'));return Response.json({content:{sha:'test'}});}return Response.json({sha:'old',content:Buffer.from(JSON.stringify({records:queue.records})).toString('base64')});}
    if(url.endsWith('/models'))return Response.json({data:[{id:config.model}]});
    if(url.endsWith('/chat/completions')){
     calls++;
@@ -212,11 +217,13 @@ test('verified historical Eredivisie data generates a compact report even when e
    }
    if(url.endsWith('/editorial-drafts')){
     saved=JSON.parse(options.body).payload;
-    assert.equal(saved.articleKind,'match_report');
-    assert.match(saved.draft.body[1],/ruststand was 1-2/);
-    assert.ok(saved.draft.body.at(-1).endsWith('OpenFootball.'));
+    assert.equal(saved.articleKind,hasHalf?'match_report':'score_update');
+    assert.equal(saved.draft.body.length,hasHalf?2:1);
+    if(hasHalf)assert.match(saved.draft.body[1],/ruststand was 1-0/);
+    else assert.ok(!saved.draft.body.join(' ').includes('ruststand'));
+    assert.ok(saved.draft.body[0].endsWith('OpenFootball.'));
     assert.deepEqual(require('../editorial-desk-model').publicationIssues(saved),[]);
-    assert.equal(require('../editorial-match55').matchesRegistration(saved,[match],Date.parse('2026-09-20T16:00:00Z')),true);
+    assert.equal(require('../editorial-match55').matchesRegistration(saved,[match],clock),true);
     return Response.json({record:{id:'isolated',revision:1,status:'approved',contentHash:fingerprint(saved)}});
    }
    if(url.endsWith('/publish')){
@@ -230,6 +237,8 @@ test('verified historical Eredivisie data generates a compact report even when e
  assert.deepEqual(report.routes.match,{found:1,selected:1,generated:1,rejected:0,published:1});
  assert.equal(report.assessments[0].threshold,85);
  assert.equal(calls,1);
+ assert.equal(checkpoint.records[0].status,'published');
+ assert.equal(checkpoint.records[0].matchRecoveryV60,true);
 });
 
 test('one official source can verify its own appointment, but cannot verify a disputed transfer',()=>{
