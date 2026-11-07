@@ -308,3 +308,28 @@ test('production revision mismatch stops discovery and publication before any wr
  fetcher:async(url,options={})=>{calls.push([url,options.method]);return Response.json({ready:true,revision:'old-commit'});}}),/Backendversie/);
  assert.equal(calls.length,1);assert.ok(calls[0][0].endsWith('/ready'));assert.equal(calls[0][1],undefined);
 });
+
+
+test('writer recovery retries a generator failure once and never reopens a factual or quality rejection',()=>{
+ const {recoverGeneration}=require('../scripts/automatic-publication');
+ const original={status:'review',failureStage:'generation',failureCategory:'generator_failure',attempts:1};
+ const job={...original};
+ assert.equal(recoverGeneration(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);assert.equal(job.nextAttemptAt,now);
+ job.status='review';
+ assert.equal(recoverGeneration(job,now),false);
+ for(const changes of [
+  {failureStage:'verification',failureCategory:'journalistic_rejection'},
+  {failureStage:'quality',failureCategory:'journalistic_rejection'},
+  {status:'published'}, {failureCategory:undefined}, {status:'retry'}
+ ]){
+  const rejected={...original,...changes},before={...rejected};
+  assert.equal(recoverGeneration(rejected,now),false);assert.deepEqual(rejected,before);
+ }
+});
+
+test('focused production refuses an unconfigured source before any network call',async()=>{
+ let calls=0;
+ await assert.rejects(runProduction({focusSourceUrl:'https://example.com/article',fetcher:async()=>{calls++;}}),/Ongeldige gerichte/);
+ assert.equal(calls,0);
+});
