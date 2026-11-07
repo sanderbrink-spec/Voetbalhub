@@ -94,3 +94,23 @@ jobs:
             } else if (existing) {
               await github.rest.issues.update({owner,repo,issue_number:existing.number,state:'closed'});
             }
+
+            // A explained editorial rejection is not a technical failure, but persistent
+            // zero output must remain visible even when Actions is green.
+            const qualityTitle = '[Veldio] Redactie: geen publiceerbare artikelen';
+            const qualityAlert = issues.find(issue => issue.title === qualityTitle);
+            const awaitingReview = report?.signals?.some(signal => signal.outcome === 'queue_review');
+            const editorialBlock = report && !failed && report.counts.published === 0 && (report.counts.generated > 0 || awaitingReview);
+            if (editorialBlock) {
+              const body = ['Geen artikel gepubliceerd ondanks generatie of een beoordelingswachtrij.',
+                'Dit is een redactionele waarschuwing. Verlaag geen kwaliteitsnormen.',
+                'Run: '+context.serverUrl+'/'+owner+'/'+repo+'/actions/runs/'+context.runId,
+                'Tellingen: '+JSON.stringify(report.counts),
+                ...report.skipped.map(item => '- '+item.topic+': '+item.reason),
+                'Wachtrijredenen en beoordelingen staan in het runrapport.'].join('\n');
+              if (qualityAlert) await github.rest.issues.update({owner,repo,issue_number:qualityAlert.number,body});
+              else await github.rest.issues.create({owner,repo,title:qualityTitle,body});
+              core.warning('Geen publiceerbaar artikel; redactionele blokkade zichtbaar gemaakt.');
+            } else if (qualityAlert && report?.counts.published > 0) {
+              await github.rest.issues.update({owner,repo,issue_number:qualityAlert.number,state:'closed'});
+            }
