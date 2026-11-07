@@ -1,7 +1,8 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run}=require('../scripts/automatic-publication');
+const {allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,run:runProduction}=require('../scripts/automatic-publication');
+const run=options=>runProduction({...options,expectedRevision:null});
 const now=Date.parse('2026-10-30T12:00:00Z');
 test('generic football wording does not send unrelated official pages to the paid extractor',()=>{
  const {partnerDocuments}=require('../scripts/automatic-publication');
@@ -299,4 +300,11 @@ test('one verified official decision can use the brief format without relaxing o
  assert.ok(M.publicationIssues({...payload,draft:{...payload.draft,body:[payload.draft.standfirst]}}).length);
  assert.ok(validateEvidence({...candidate,transferStatus:'confirmed'},[doc],now).length);
  assert.ok(validateEvidence(candidate,[{...doc,text:'Geen bevestiging in de bron.'}],now).length);
+});
+
+test('production revision mismatch stops discovery and publication before any writes',async()=>{
+ const calls=[];
+ await assert.rejects(runProduction({secret:'test',groqKey:'test',githubToken:'test',expectedRevision:'tested-commit',
+ fetcher:async(url,options={})=>{calls.push([url,options.method]);return Response.json({ready:true,revision:'old-commit'});}}),/Backendversie/);
+ assert.equal(calls.length,1);assert.ok(calls[0][0].endsWith('/ready'));assert.equal(calls[0][1],undefined);
 });

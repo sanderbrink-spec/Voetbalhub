@@ -302,15 +302,15 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
-async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,report}={}){
+async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,report,expectedRevision=process.env.GITHUB_SHA}={}){
  if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
  const headers={Authorization:'Bearer '+secret,'Content-Type':'application/json'};
  async function api(endpoint,body){const r=await fetcher(API+endpoint,{headers,signal:AbortSignal.timeout(60000),...(body?{method:'POST',body:JSON.stringify(body)}:{})});const d=await r.json();if(!r.ok)throw Error(endpoint+': HTTP '+r.status+' '+(d.error||''));return d;}
  async function verifyRevision(){
-  if(!process.env.GITHUB_SHA)return;
+  if(!expectedRevision)return;
   const ready=await api('/ready');
-  if(!ready.ready||ready.revision!==process.env.GITHUB_SHA)throw Error('Backendversie wijkt af van de geteste workflowcommit.');
+  if(!ready.ready||ready.revision!==expectedRevision)throw Error('Backendversie wijkt af van de geteste workflowcommit.');
  }
  await verifyRevision();
  const publicFeed=await api('/articles?view=all');let published=publicFeed.articles;

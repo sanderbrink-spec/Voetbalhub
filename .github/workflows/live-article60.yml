@@ -1,0 +1,71 @@
+name: Veldio production article Android16 proof
+on:
+  workflow_run:
+    workflows: ['Automatic verified news and images']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful autonomous publication run ID
+        required: true
+permissions:
+  contents: read
+  actions: read
+jobs:
+  publication:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-24.04
+    outputs:
+      article_id: ${{ steps.report.outputs.article_id }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: automatic-editorial-report
+          path: report
+          run-id: ${{ inputs.run_id || github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - id: report
+        run: |
+          python3 - <<'PY'
+          import json,os
+          r=json.load(open('report/report.json'))
+          if r['outcome']=='success' and r['counts']['published']>0:
+              with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('article_id='+r['published'][0]['id']+'\n')
+          else:print('Geen productieartikel om op Android te valideren.')
+          PY
+  android16:
+    needs: publication
+    if: needs.publication.outputs.article_id != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Veldio-49
+          path: apk
+          run-id: 42022333166
+          github-token: ${{ github.token }}
+      - run: python3 -m pip install 'uiautomator2>=3,<4'
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        env:
+          ARTICLE_ID: ${{ needs.publication.outputs.article_id }}
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/verify-live-article60.py apk/Veldio-49.apk "$ARTICLE_ID"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Veldio-production-article-Android16
+          path: .android-smoke/
+          include-hidden-files: true
+          if-no-files-found: error
