@@ -16,6 +16,11 @@ on:
   schedule:
     - cron: '23 * * * *'
   workflow_dispatch:
+    inputs:
+      source_url:
+        description: Optional discovered official article URL to process alone
+        required: false
+        type: string
 permissions:
   contents: write
   issues: write
@@ -53,6 +58,7 @@ jobs:
           exit 1
       - name: Collect official sources and publish checked stories with artwork
         env:
+          FOCUS_SOURCE_URL: ${{ inputs.source_url }}
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}

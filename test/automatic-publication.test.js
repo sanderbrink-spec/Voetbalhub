@@ -308,3 +308,44 @@ test('production revision mismatch stops discovery and publication before any wr
  fetcher:async(url,options={})=>{calls.push([url,options.method]);return Response.json({ready:true,revision:'old-commit'});}}),/Backendversie/);
  assert.equal(calls.length,1);assert.ok(calls[0][0].endsWith('/ready'));assert.equal(calls[0][1],undefined);
 });
+
+
+test('writer recovery retries a generator failure once and never reopens a factual or quality rejection',()=>{
+ const {recoverGeneration}=require('../scripts/automatic-publication');
+ const original={status:'review',failureStage:'generation',failureCategory:'generator_failure',attempts:1};
+ const job={...original};
+ assert.equal(recoverGeneration(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);assert.equal(job.nextAttemptAt,now);
+ job.status='review';
+ assert.equal(recoverGeneration(job,now),false);
+ for(const changes of [
+  {failureStage:'verification',failureCategory:'journalistic_rejection'},
+  {failureStage:'quality',failureCategory:'journalistic_rejection'},
+  {status:'published'}, {failureCategory:undefined}, {status:'retry'}
+ ]){
+  const rejected={...original,...changes},before={...rejected};
+  assert.equal(recoverGeneration(rejected,now),false);assert.deepEqual(rejected,before);
+ }
+});
+
+test('focused production refuses an unconfigured source before any network call',async()=>{
+ let calls=0;
+ await assert.rejects(runProduction({focusSourceUrl:'https://example.com/article',fetcher:async()=>{calls++;}}),/Ongeldige gerichte/);
+ assert.equal(calls,0);
+});
+
+
+test('a focused push uses only an explicit commit trailer and preserves dispatch input',()=>{
+ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+ const {publicationFocus}=require('../scripts/automatic-publication');
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'veldio-focus-'));
+ const event=path.join(dir,'event.json'),source='https://peczwolle.nl/nieuws/aanstelling';
+ try{
+  fs.writeFileSync(event,JSON.stringify({head_commit:{message:'Repair writer\n\nEditorial-Source: '+source}}));
+  assert.equal(publicationFocus({GITHUB_EVENT_NAME:'push',GITHUB_EVENT_PATH:event}),source);
+  assert.equal(publicationFocus({GITHUB_EVENT_NAME:'schedule',GITHUB_EVENT_PATH:event}),undefined);
+  assert.equal(publicationFocus({FOCUS_SOURCE_URL:'dispatch'}),'dispatch');
+  fs.writeFileSync(event,JSON.stringify({head_commit:{message:'Ordinary push'}}));
+  assert.equal(publicationFocus({GITHUB_EVENT_NAME:'push',GITHUB_EVENT_PATH:event}),undefined);
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});

@@ -262,7 +262,7 @@ async function extractCandidate(docs,options,now){
  const fragments=docs.map(evidenceFragments);
  const authority=docs.length===1?primaryAuthority(docs[0]):'';
  const scope=authority
-  ? 'De enige bron is bevoegd voor haar eigen officiële besluit. Extraheer alleen een announcement als de club of bond dat besluit zelf bevestigt. Gebruik geen gerucht, betwiste claim of transfer tussen clubs. De bron moet elk feit expliciet ondersteunen. Gebruik bronattributie en selecteer één tot zes verschillende feiten. Eén expliciet bevestigd, belangrijk besluit volstaat voor een kort bericht. Kies eerst het concrete besluit en de ingangsdatum of looptijd. Kies daarna afzonderlijke feiten die de aanleiding, betrokken functie of directe gevolgen verduidelijken, uitsluitend als de bron die expliciet noemt. Vermijd meerdere parafrases van hetzelfde feit. Gebruik geen tweede bron of sharedEventEvidence.'
+  ? 'De enige bron is bevoegd voor haar eigen officiële besluit. Extraheer alleen een announcement als de club of bond dat besluit zelf bevestigt. Gebruik geen gerucht, betwiste claim of transfer tussen clubs. De bron moet elk feit expliciet ondersteunen. Gebruik bronattributie en selecteer alle inhoudelijk verschillende relevante feiten, maximaal acht. Een rijke bekendmaking mag niet tot alleen de benoeming worden teruggebracht. Leg expliciet genoemde ingangsdatum, contractduur, stafwijzigingen en relevante loopbaanachtergrond als afzonderlijke feiten vast. Vermijd historische wedstrijdresultaten en promotieclaims die aanvullende wedstrijdverificatie vereisen. Eén expliciet bevestigd, belangrijk besluit volstaat voor een kort bericht. Kies eerst het concrete besluit en de ingangsdatum of looptijd. Kies daarna afzonderlijke feiten die de aanleiding, betrokken functie of directe gevolgen verduidelijken, uitsluitend als de bron die expliciet noemt. Vermijd meerdere parafrases van hetzelfde feit. Gebruik geen tweede bron of sharedEventEvidence.'
   : 'Extraheer een announcement of preview. Twee onafhankelijke club- of bondwebsites moeten dezelfde hoofdgebeurtenis bevestigen. Benoem transfergeruchten expliciet als onbevestigd. Bevestigde transfers vereisen bevestiging van beide betrokken clubs. Vooruitblikken gelden voor wedstrijden vanaf morgen tot zeven dagen vooruit. Controleer wedstrijddatum en tijdzone. Zoek vier tot zes verschillende feiten.';
  const format=authority
   ? '{"kind":"announcement","topic":"Nederlands onderwerp","category":"club of competitie","eventDate":"YYYY-MM-DD of leeg","teams":["clubnamen"],"facts":[{"text":"feit in zelfstandig Nederlands","evidence":[{"source":0,"fragment":1}]}]}'
@@ -302,7 +302,15 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
-async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,report,expectedRevision=process.env.GITHUB_SHA}={}){
+function recoverGeneration(job,now){
+ if(job.status!=='review'||job.failureStage!=='generation'||
+    job.failureCategory!=='generator_failure'||job.generationRecoveryV61)return false;
+ job.generationRecoveryV61=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
+async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,report,focusSourceUrl,expectedRevision=process.env.GITHUB_SHA}={}){
+ if(focusSourceUrl&&!articleUrl(focusSourceUrl,config.newsIndexes))throw Error('Ongeldige gerichte nieuwsbron.');
+ if(focusSourceUrl)report.focusSourceUrl=focusSourceUrl;
  if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
  const headers={Authorization:'Bearer '+secret,'Content-Type':'application/json'};
@@ -441,6 +449,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const seenGroups=new Set();
  let recoveredReviews=0;
  for(const group of scheduled){
+  if(focusSourceUrl&&(group.matchRecord||group[0].url!==focusSourceUrl))continue;
   const key=group.matchRecord?.matchId||JSON.stringify([...new Set(group.map(doc=>doc.url))].sort());
   if(seenGroups.has(key))continue;
   seenGroups.add(key);
@@ -478,13 +487,16 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    job.nextAttemptAt=now;
    recoveredReviews++;
   }
+  // A writer repair may retry its own generator failure once; never reopen a
+  // factual/quality rejection or approve an existing draft. Sources are fetched anew.
+  if(!group.matchRecord)recoverGeneration(job,now);
   if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
   else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||'legacy_review_without_reason',failureCategory:job.failureCategory||null,stage:job.failureStage||null});
  }
  report.counts.uniqueGroups=seenGroups.size;
  report.counts.queued=jobs.size;
  await durable.save();
- report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection').length};
+ report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
  if(!jobs.size)return report;
  report.counts.aiRequests++;
  const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(75000)});
@@ -512,6 +524,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const sourceIndices=matchRecord?[0]:[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
    const facts=matchRecord?.verifiedFacts||candidate.facts.map(f=>f.text);
    const sources=sourceIndices.map(i=>({url:group[i].url}));
+   if(focusSourceUrl)report.focusFacts=facts;
    const compact=M.briefEligible({articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,transferStatus:candidate.transferStatus,verifiedFacts:facts,sources});
    report.counts.selected++;route.selected++;
    stage='generation';
@@ -605,10 +618,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    console.log('Gepubliceerd met afbeelding:',visible.headline);
   }catch(e){durable.queue.fail(job,e,now,{stage});const technical=job.failureCategory!=='journalistic_rejection';
    if(!technical)route.rejected++;
-   (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
+   (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message,...(e.issues?{issues:e.issues}:{}),...(e.rejectedDraft?{rejectedDraft:e.rejectedDraft}:{})});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
   finally{await durable.save();}
  }
- report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection').length};
+ report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
  return report;
 }
 async function run(options={}){
@@ -649,5 +662,25 @@ async function run(options={}){
 function runExitCode(report){
  return ['completed','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
 }
-if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+async function focusedProductionRun(options){
+ const report=await run(options);
+ if(options.focusSourceUrl&&report.published.length){
+  // Repeat discovery through the same route. A published source must be skipped
+  // before another writer call or publication write; retain the first run's evidence.
+  const repeated=await run(options);
+  report.repeatedProcessing={counts:repeated.counts,signals:repeated.signals,
+   passed:repeated.counts.published===0&&repeated.counts.stored===0&&repeated.counts.aiRequests===0&&
+    repeated.signals.some(s=>s.url===options.focusSourceUrl&&s.outcome==='duplicate_primary_source')};
+  if(!report.repeatedProcessing.passed){report.status='processing_errors';report.outcome='error';}
+  fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
+ }
+ return report;
+}
+function publicationFocus(env=process.env){
+ if(env.FOCUS_SOURCE_URL)return env.FOCUS_SOURCE_URL;
+ if(env.GITHUB_EVENT_NAME!=='push'||!env.GITHUB_EVENT_PATH)return undefined;
+ const event=JSON.parse(fs.readFileSync(env.GITHUB_EVENT_PATH,'utf8'));
+ return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
+}
+if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
+module.exports={publicationFocus,recoverGeneration,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
