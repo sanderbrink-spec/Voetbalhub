@@ -182,12 +182,16 @@ function validateEvidence(candidate,docs,now=Date.now()){
  if(new Set(facts.map(f=>normalize(f.text))).size!==facts.length)issues.push('Dubbele feiten.');
  return [...new Set(issues)];
 }
-function overlap(source,draft){
+function overlapPhrases(source,draft){
  const words=normalize(source).split(' '),phrases=new Set();
  for(let i=0;i<=words.length-10;i++)phrases.add(words.slice(i,i+10).join(' '));
  const generated=normalize([draft.headline,draft.standfirst,...draft.body].join(' ')).split(' ');
- return generated.some((_,i)=>i<=generated.length-10&&phrases.has(generated.slice(i,i+10).join(' ')));
+ return [...new Set(generated.flatMap((_,i)=>{
+  const phrase=generated.slice(i,i+10).join(' ');
+  return i<=generated.length-10&&phrases.has(phrase)?[phrase]:[];
+ }))].slice(0,6);
 }
+function overlap(source,draft){return overlapPhrases(source,draft).length>0;}
 function duplicate(candidate,published){
  const urls=candidate.sources.map(s=>s.url);
  const title=normalize(candidate.draft.headline),words=new Set(title.split(' ').filter(w=>w.length>3));
@@ -507,6 +511,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      job.errorHash==='e58c8cc7f9e39f2ef13ab917aadb63cb0a3af6fbbcd2490e68715c6b1109f626'){
    job.literalFactRecoveryV61=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
   }
+  // Re-run only the documented overlap failure after providing the missing exact
+  // passages to the repair editor. The same ten-word rule still blocks publication.
+  if(focusSourceUrl&&job.status==='review'&&job.literalFactRecoveryV61&&!job.overlapFeedbackRecoveryV61&&
+     job.errorHash===sha('Kwaliteitscontrole na 2 herschrijvingen: Woordelijke bronoverlap.')){
+   job.overlapFeedbackRecoveryV61=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+  }
   if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
   else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||'legacy_review_without_reason',failureCategory:job.failureCategory||null,stage:job.failureStage||null});
  }
@@ -575,7 +585,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(!matchRecord){
      issues.push(...generationIssues(draft,facts,null,compact));
      if(M.needsMatch(draft)||M.requiresFlashscore(draft))issues.push('Niet-geverifieerde wedstrijdclaim.');
-     if(group.some(d=>overlap(d.text,draft)))issues.push('Woordelijke bronoverlap.');
+     const copied=[...new Set(group.flatMap(d=>overlapPhrases(d.text,draft)))].slice(0,6);
+     if(copied.length)issues.push('Woordelijke bronoverlap. Herschrijf deze letterlijke reeksen met eigen zinsbouw: '+JSON.stringify(copied)+'. Behoud alle namen en feiten, maar verander de woordvolgorde; alleen andere leestekens helpen niet.');
     }
     let rejection=[...new Set(issues)].join(' ');
     assessment=undefined;
@@ -590,7 +601,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      rejection=error.message;
     }
     if(!assessment){
-     report.assessments.push({topic,revision,approved:false,score:null,reasons:[rejection]});
+     report.assessments.push({topic,revision,approved:false,score:null,reasons:[rejection],...(focusSourceUrl?{draft:{headline:draft.headline,standfirst:draft.standfirst,body:draft.body}}:{})});
     }
     if(matchRecord||revision===2)throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
     const revised=await reviseDraft(payload,candidate,group,rejection,ai);
@@ -700,4 +711,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={publicationFocus,recoverGeneration,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={overlapPhrases,publicationFocus,recoverGeneration,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
