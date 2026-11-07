@@ -496,7 +496,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.counts.uniqueGroups=seenGroups.size;
  report.counts.queued=jobs.size;
  await durable.save();
- report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection').length};
+ report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
  if(!jobs.size)return report;
  report.counts.aiRequests++;
  const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(75000)});
@@ -621,7 +621,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message,...(e.issues?{issues:e.issues}:{}),...(e.rejectedDraft?{rejectedDraft:e.rejectedDraft}:{})});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
   finally{await durable.save();}
  }
- report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection').length};
+ report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
  return report;
 }
 async function run(options={}){
