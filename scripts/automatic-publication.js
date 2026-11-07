@@ -662,11 +662,25 @@ async function run(options={}){
 function runExitCode(report){
  return ['completed','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
 }
+async function focusedProductionRun(options){
+ const report=await run(options);
+ if(options.focusSourceUrl&&report.published.length){
+  // Repeat discovery through the same route. A published source must be skipped
+  // before another writer call or publication write; retain the first run's evidence.
+  const repeated=await run(options);
+  report.repeatedProcessing={counts:repeated.counts,signals:repeated.signals,
+   passed:repeated.counts.published===0&&repeated.counts.stored===0&&repeated.counts.aiRequests===0&&
+    repeated.signals.some(s=>s.url===options.focusSourceUrl&&s.outcome==='duplicate_primary_source')};
+  if(!report.repeatedProcessing.passed){report.status='processing_errors';report.outcome='error';}
+  fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
+ }
+ return report;
+}
 function publicationFocus(env=process.env){
  if(env.FOCUS_SOURCE_URL)return env.FOCUS_SOURCE_URL;
  if(env.GITHUB_EVENT_NAME!=='push'||!env.GITHUB_EVENT_PATH)return undefined;
  const event=JSON.parse(fs.readFileSync(env.GITHUB_EVENT_PATH,'utf8'));
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
-if(require.main===module)run({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
+if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
 module.exports={publicationFocus,recoverGeneration,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
