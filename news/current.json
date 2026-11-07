@@ -775,22 +775,21 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Conference%20League&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F47068bbda1193141d9a53bc7c84aedcaad783c01f1754f588b2c95aa096c6bf4.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-covers/safe48-7c536565-5ef1-43fb-9a34-7bf775d9af48.webp",
+      "imageSource": "Veldio · eigen illustratie",
+      "imageCredit": "Veldio · eigen abstracte illustratie, geen foto van de beschreven wedstrijd",
       "imageRights": "cleared",
       "autoPublish": false,
       "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: preview. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "3f35dabe2b0bfb1755c061a2de9138eecce9fff055ff1f05fa678a8f3fb7a24b",
-        "stadiumImageUrl": "https://media.api-sports.io/football/venues/453.png",
-        "stadiumVenueName": "MCH Arena",
-        "stadiumSourceUrl": "https://media.api-sports.io/football/venues/453.png",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-11-03T20:53:22.399Z"
+        "method": "self-authored-safe48",
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "assetSha256": "b02cbcb623f8e62174bf756ef59668dddc98edb24aeb9317c7b166c9cdf34a01",
+        "clubs": [
+          "Ajax",
+          "FC Midtjylland"
+        ]
       },
       "feedState": "current"
     },
@@ -828,22 +827,21 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Eredivisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2Fe45d3cfcbb1b476fe163b6d09655ac82fdfe16cd56baae34d2205da413b3b1aa.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-covers/safe48-79ef5b4d-cb4f-4575-98a6-d13e0ca6544f.webp",
+      "imageSource": "Veldio · eigen illustratie",
+      "imageCredit": "Veldio · eigen abstracte illustratie, geen foto van de beschreven wedstrijd",
       "imageRights": "cleared",
       "autoPublish": false,
       "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: preview. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "d1c31b295ae5c2bcc4fbdeb9c0acc3a025f7293f2aa9c21df1231c4707b6cb17",
-        "stadiumImageUrl": "https://media.api-sports.io/football/venues/1159.png",
-        "stadiumVenueName": "Koning Willem II Stadion",
-        "stadiumSourceUrl": "https://media.api-sports.io/football/venues/1159.png",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-11-03T20:53:29.205Z"
+        "method": "self-authored-safe48",
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "assetSha256": "c8a65f0bda8e79c622016dca8f13680794a74c00bd20b1ed057f770a7d5bda71",
+        "clubs": [
+          "PEC Zwolle",
+          "Willem II"
+        ]
       },
       "feedState": "current"
     },
@@ -885,24 +883,23 @@
       },
       "imageRights": "cleared",
       "autoPublish": false,
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/brand/fixture-image?style=2&kind=preview&label=Keuken%20Kampioen%20Divisie&source=https%3A%2F%2Fraw.githubusercontent.com%2Fsanderbrink-spec%2FVoetbalhub%2Feditorial-media%2Fmatch-covers%2F64231ee40ebc20b34b1cccfcf4d702b70c7635ebdcfa98867edf0fe566bcff3e.png",
-      "imageSource": "Veldio · wedstrijdvormgeving",
-      "imageCredit": "Stadionbeeld: API-SPORTS · clublogos: gegevensleverancier · vormgeving: Veldio",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-covers/safe48-fca0bd67-45a0-4891-8415-b8f62e64eb34.webp",
+      "imageSource": "Veldio · eigen illustratie",
+      "imageCredit": "Veldio · eigen abstracte illustratie, geen foto van de beschreven wedstrijd",
       "imageReview": {
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "notes": "Vaste beeldafspraak: preview. Exacte thuis-uitvolgorde en wedstrijddata uit de gegevensbron. Geen fictieve spelers of shirts.",
-        "assetSha256": "1416cab5572fef4f22b40b0a8043d66300970d3f04c241bc223e763fcfaed132",
-        "stadiumImageUrl": "https://media.api-sports.io/football/venues/10504.png",
-        "stadiumVenueName": "De Oude Meerdijk",
-        "stadiumSourceUrl": "https://media.api-sports.io/football/venues/10504.png",
-        "method": "fixture-specific-stadium-and-logos-v4",
-        "reviewedAt": "2026-11-03T20:53:43.350Z"
+        "method": "self-authored-safe48",
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true,
+        "assetSha256": "66ba42ea2002f35813b9b10d063100a9ac572e6e91374e614008a162b011dac9",
+        "clubs": [
+          "FC Emmen",
+          "FC Den Bosch"
+        ]
       },
       "feedState": "current"
     }
   ],
-  "mirroredAt": "2026-11-04T19:52:05.338Z",
+  "mirroredAt": "2026-11-07T06:06:06.506Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
