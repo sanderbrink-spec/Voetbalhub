@@ -50,7 +50,18 @@ jobs:
                 owner,repo,title:missingTitle,
                 body:'Er is in de afgelopen drie uur geen geplande automatische redactieronde gestart. Controleer GitHub Actions schedules en repositoryinstellingen.'
               });
-              core.setFailed('Geen geplande redactieronde in de afgelopen drie uur.');
+              // Recover a dropped GitHub schedule through the existing watchdog.
+              // Never overlap a live publication run or repeatedly dispatch within 90 minutes.
+              const {data:all} = await github.rest.actions.listWorkflowRuns({owner,repo,workflow_id,per_page:20});
+              const latest = all.workflow_runs[0];
+              const active = all.workflow_runs.some(run => run.status !== 'completed');
+              const recentlyStarted = latest && Date.now()-new Date(latest.created_at).getTime() < 90*60000;
+              if (!active && !recentlyStarted) {
+                await github.rest.actions.createWorkflowDispatch({owner,repo,workflow_id,ref:'main'});
+                core.notice('Ontbrekende planning: één vervangende redactieronde aangevraagd.');
+              } else {
+                core.notice('Ontbrekende planning gesignaleerd; een recente of lopende ronde voorkomt een dubbele start.');
+              }
               return;
             }
             const {data:openIssues} = await github.rest.issues.listForRepo({

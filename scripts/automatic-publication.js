@@ -460,7 +460,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }
   // One bounded retry per unchanged evidence group after the editorial recovery fix.
   // Never override a journalistic rejection or relax the independent quality gate.
-  if(!group.matchRecord&&job.status==='review'&&job.reason==='editorial_review_required'&&
+  if(!group.matchRecord&&job.status==='review'&&job.reason==='editorial_review_required'&&!job.failureCategory&&
      !job.reviewRecoveryV58C&&job.attempts<=1&&recoveredReviews<2&&
      now-(job.updatedAt||job.createdAt)>=3600000){
    job.reviewRecoveryV58C=true;
@@ -471,7 +471,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }
   // Re-evaluate a legacy review once when its official decision can use the new brief format.
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0])&&job.status==='review'&&
-     job.reason==='editorial_review_required'&&!job.briefRecoveryV59&&recoveredReviews<2){
+     job.reason==='editorial_review_required'&&!job.failureCategory&&!job.briefRecoveryV59&&recoveredReviews<2){
    job.briefRecoveryV59=true;
    job.status='pending';
    job.attempts=0;
