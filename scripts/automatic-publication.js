@@ -500,8 +500,15 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    job.nextAttemptAt=now;
    recoveredReviews++;
   }
-  // A writer repair may retry its own generator failure once; never reopen a
-  // factual/quality rejection or approve an existing draft. Sources are fetched anew.
+  // The V62 rewrite has changed since these quality rejections were recorded.
+  // Reprocess each unchanged, previously rejected news packet at most once;
+  // regenerate from freshly fetched official evidence and run every gate again.
+  // This is not an approval and never reuses a rejected draft or score.
+  if(!group.matchRecord&&job.status==='review'&&job.failureStage==='quality'&&
+     job.failureCategory==='journalistic_rejection'&&!job.rewriteRecoveryV62){
+   job.rewriteRecoveryV62=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+  }
+  // Generator failures have their own separate bounded retry path.
   if(!group.matchRecord)recoverGeneration(job,now);
   // The focused trial's recorded packet invented 13 November and merged unrelated
   // career claims. Re-extract that exact rejected job once under literal checks;
