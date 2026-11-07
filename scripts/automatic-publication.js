@@ -514,15 +514,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const attribution=sources[0].url===matches.FD ? CREDIT : 'OpenFootball';
     const headline=homeTeam+' en '+awayTeam+' sluiten duel af op '+homeScore+'-'+awayScore;
     const standfirst='De ontmoeting tussen '+homeTeam+' en '+awayTeam+' in de '+matchRecord.category+' eindigde op '+homeScore+'-'+awayScore+'. De geregistreerde wedstrijdgegevens vormen de basis voor dit bericht.';
-    const first=round+' De officiële eindstand luidt '+homeScore+'-'+awayScore+'. Daarmee staat een '+outcome+' vast, met een verschil van '+margin+' doelpunt'+(margin===1?'':'en')+'. Meer over het wedstrijdverloop volgt alleen wanneer afzonderlijke gebeurtenissen gecontroleerd zijn.';
-    const second=halftime
-      ? 'De vastgelegde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Na de pauze veranderde de score naar '+homeScore+'-'+awayScore+'. De beschikbare registratie bevestigt geen doelpuntenmakers, minuten of tactische ontwikkelingen. '+attribution+'.'
-      : 'De beschikbare registratie vermeldt geen gecontroleerde ruststand of afzonderlijke wedstrijdmomenten. Daarom doet Veldio geen uitspraken over doelpuntenmakers, tijdstippen of het spelbeeld. '+attribution+'.';
     // Registered match reports use the compact 1-2 paragraph gate.
     // Avoid inventing events to meet a standard news-article length.
     const conciseFirst=round+' De eindstand was '+homeScore+'-'+awayScore+'. Dit betekent een '+outcome+' met '+margin+' doelpunt'+(margin===1?'':'en')+' verschil.';
     const conciseSecond=halftime
-      ? 'De geregistreerde ruststand was '+halftime.match(/\\d+-\\d+/)?.[0]+'. De eindstand werd '+homeScore+'-'+awayScore+'. Niet afzonderlijk geverifieerde doelpuntenmakers of wedstrijdmomenten worden niet vermeld. Bron: '+attribution+'.'
+      ? 'De geregistreerde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. De eindstand werd '+homeScore+'-'+awayScore+'. Niet afzonderlijk geverifieerde doelpuntenmakers of wedstrijdmomenten worden niet vermeld. Bron: '+attribution+'.'
       : 'De bron bevestigt geen ruststand of afzonderlijke wedstrijdmomenten. Daarom vermeldt Veldio geen doelpuntenmakers, tijdstippen of spelbeeld zonder aanvullende controle. Bron: '+attribution+'.';
     draft={headline,standfirst,body:[conciseFirst,conciseSecond]};
    }else{
