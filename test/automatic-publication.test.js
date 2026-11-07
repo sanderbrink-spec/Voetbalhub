@@ -263,8 +263,7 @@ test('software retains primary authority when the extraction model omits editori
  const doc={url:'https://www.inter.it/en/news/simone-lo-schiavo-is-the-new-director-of-football-development-inter',
   title:'Simone Lo Schiavo is the new Director of Football Development',publishedAt:new Date(now-3600000).toISOString(),
   text:'Simone Lo Schiavo joined Inter as Director of Football Development on 5 November 2026, reporting to Dario Baccin.'};
- const facts=['Inter benoemt Simone Lo Schiavo.','Hij wordt directeur voetbalontwikkeling.',
-  'Hij trad op vijf november in dienst.','De nieuwe directeur rapporteert aan Dario Baccin.']
+ const facts=[doc.text]
   .map(text=>({text,evidence:[{source:0,fragment:0}]}));
  const candidate=await extractCandidate([doc],{key:'isolated',fetcher:async()=>Response.json({choices:[{message:{
   content:JSON.stringify({kind:'announcement',transferStatus:'unconfirmed',facts})
@@ -348,4 +347,37 @@ test('a focused push uses only an explicit commit trailer and preserves dispatch
   fs.writeFileSync(event,JSON.stringify({head_commit:{message:'Ordinary push'}}));
   assert.equal(publicationFocus({GITHUB_EVENT_NAME:'push',GITHUB_EVENT_PATH:event}),undefined);
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+
+test('primary extraction repairs an invented date before the writer can receive it',async()=>{
+ const {extractCandidate}=require('../scripts/automatic-publication');
+ const doc={url:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',
+  title:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',publishedAt:'2026-11-07T10:14:00+01:00',
+  text:'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld. De ervaren oefenmeester staat vanaf maandag voor de groep.'};
+ let calls=0;
+ const extracted=await extractCandidate([doc],{key:'test',fetcher:async(_,options)=>{
+  calls++;
+  if(calls===2)assert.match(JSON.parse(options.body).messages.at(-1).content,/niet-brongetrouwe/);
+  return Response.json({choices:[{message:{content:JSON.stringify({kind:'announcement',facts:[{
+   text:calls===1?'Pastoor begint op 13 november 2026 als hoofdtrainer.':doc.text,
+   evidence:[{source:0,fragment:0}]
+  }]})}}]});
+ }},now);
+ assert.equal(calls,2);assert.equal(extracted.facts[0].text,doc.text);
+ assert.equal(extracted.facts[0].text.includes('13 november'),false);
+ assert.deepEqual(validateEvidence(extracted,[doc],Date.parse('2026-11-07T18:00:00Z')),[]);
+});
+
+test('persistently invented primary facts stay blocked after one repair',async()=>{
+ const {extractCandidate}=require('../scripts/automatic-publication');
+ const doc={url:'https://peczwolle.nl/nieuws/aanstelling',title:'PEC Zwolle benoemt hoofdtrainer',
+  text:'PEC Zwolle heeft een nieuwe hoofdtrainer benoemd die vanaf maandag aan de slag gaat.'};
+ let calls=0;
+ await assert.rejects(extractCandidate([doc],{key:'test',fetcher:async()=>{
+  calls++;return Response.json({choices:[{message:{content:JSON.stringify({kind:'announcement',facts:[{
+   text:'De nieuwe hoofdtrainer begint op 13 november.',evidence:[{source:0,fragment:0}]
+  }]})}}]});
+ }},now),/niet letterlijk/);
+ assert.equal(calls,2);
 });
