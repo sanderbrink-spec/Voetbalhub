@@ -164,6 +164,13 @@ function generationIssues(draft,facts,match=null,compact=false) {
   issues.push(...require('./editorial-facts').evidenceIssues(draft,facts,match));
   return [...new Set(issues)];
 }
+// Delegate the single known structural overlap to the specialist editor.
+// The publication workflow independently re-runs the exact same preflight,
+// source attribution, overlap checks and 85/90 approval gates on its rewrite.
+function mayDelegateLeadOverlap(issues,{automaticPublication=false,coachPlan=false}={}){
+ return Boolean(automaticPublication&&coachPlan&&Array.isArray(issues)&&issues.length===1&&
+  issues[0]==='Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.');
+}
 async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],primaryAuthority=null,match=null,compact=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000}) {
   const assignment=editorialAssignment(facts,{compact});
   const coachPlan=primaryAuthority==='club_decision'&&String(topic||'').toLocaleLowerCase('nl').includes('hoofdtrainer')&&facts.length>=4;
@@ -239,9 +246,12 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      issues.push(...unverifiedTimelineAndRoles(draft,facts));
     }
     if(!issues.length)return {...draft,qualityReview:{automatedTextChecksPassed:true,revisionApplied:attempt===1,attempts:attempt+1,factVerificationRequired:true,autoPublish:false}};
-    if(attempt===1){const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;error.rejectedDraft=draft;throw error;}
+    if(attempt===1){
+     if(mayDelegateLeadOverlap(issues,{automaticPublication,coachPlan}))return {...draft,qualityReview:{automatedTextChecksPassed:false,needsSpecialistRevision:true,attempts:attempt+1,factVerificationRequired:true,autoPublish:false}};
+     const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;error.rejectedDraft=draft;throw error;
+    }
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles};
+module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
 

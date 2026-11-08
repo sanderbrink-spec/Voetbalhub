@@ -302,3 +302,13 @@ test('V107 thin or unverified source never receives a forced writer retry',async
  {apiKey:'fake',model:'openai/gpt-oss-120b',fetcher:async()=>{calls++;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});}}),error=>error.status===422);
  assert.equal(calls,1);
 });
+
+test('V108 only one lead/body duplication reaches the specialist, not the publisher or any other failed gate',()=>{
+ const {mayDelegateLeadOverlap}=require('../editorial-ai');
+ const overlap='Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.';
+ assert.equal(mayDelegateLeadOverlap([overlap],{automaticPublication:true,coachPlan:true}),true);
+ assert.equal(mayDelegateLeadOverlap([overlap,'Niet-geverifieerde claim.'],{automaticPublication:true,coachPlan:true}),false);
+ assert.equal(mayDelegateLeadOverlap([overlap],{automaticPublication:true,coachPlan:false}),false);
+ assert.equal(mayDelegateLeadOverlap([overlap],{automaticPublication:false,coachPlan:true}),false);
+ assert.equal(mayDelegateLeadOverlap(['Woordelijke bronoverlap.'],{automaticPublication:true,coachPlan:true}),false);
+});
