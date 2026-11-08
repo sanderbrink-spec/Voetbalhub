@@ -70,7 +70,7 @@ test('request compaction keeps the decisive match information and rate limits ar
 });
 test('model discovery selects an available supported model and rejects unavailable catalogs',()=>{
  assert.equal(selectModel({data:[{id:'openai/gpt-oss-120b'}]}),'openai/gpt-oss-120b');
- assert.equal(selectModel({data:[{id:'openai/gpt-oss-20b'}]}),'openai/gpt-oss-20b');
+ assert.throws(()=>selectModel({data:[{id:'openai/gpt-oss-20b'}]}),/niet beschikbaar/);
  assert.throws(()=>selectModel({data:[{id:'llama-3.3-70b-versatile'}]}),/Geen beschikbaar/);
 });
 test('all launch articles pass the same original-copy and factual preflight',()=>{
@@ -818,4 +818,27 @@ test('V91 generator correction may retry only once and never reopen a journalist
  job.status='review';assert.equal(recoverCompleteBodyV91(job,now),false);
  assert.equal(recoverCompleteBodyV91({...rejected,failureStage:'quality'},now),false);
  assert.equal(recoverCompleteBodyV91({...rejected,failureCategory:'journalistic_rejection'},now),false);
+});
+
+test('V94 Groq reviewer and rewriter get high effort and remain separate from low-effort extraction',async()=>{
+ const {verifyDraft,reviseDraft}=require('../scripts/automatic-publication');
+ const requests=[];
+ const fetcher=async(_,options)=>{
+  const request=JSON.parse(options.body);requests.push(request);
+  const answer=requests.length===1?
+   {approved:true,issues:[],scores:{actuality:90,reliability:95,nationalValue:90,originality:90,journalism:90,diversity:90}}:
+   {headline:'Officiële benoeming van een nieuwe PEC Zwolle trainer',
+    standfirst:'De club bevestigt de aanstelling van een nieuwe hoofdtrainer.',
+    body:['De club stelt de nieuwe hoofdtrainer aan en legt de contractafspraken vast.']};
+  return Response.json({choices:[{message:{content:JSON.stringify(answer)}}]});
+ };
+ const doc={url:'https://peczwolle.nl/nieuws/aanstelling',title:'Nieuwe trainer',text:'PEC Zwolle benoemt een hoofdtrainer en meldt zijn contractdetails.',publishedAt:'2026-11-08T09:00:00Z'};
+ const payload={draft:{headline:'PEC Zwolle benoemt een trainer',standfirst:'Een officiële aanstelling',body:['De club heeft nieuws.']},articleKind:'announcement',primaryAuthority:'club_decision',verifiedFacts:[doc.text],sources:[{url:doc.url}]};
+ const options={key:'fake',model:'openai/gpt-oss-120b',fetcher};
+ const review=await verifyDraft(payload,{kind:'announcement'},[doc],options,[]);
+ assert.equal(review.approved,true);
+ const fixed=await reviseDraft(payload,{kind:'announcement'},[doc],'Woordelijke overlap',options,[]);
+ assert.ok(Array.isArray(fixed.body));
+ assert.deepEqual(requests.map(x=>x.reasoning_effort),['high','high']);
+ assert.deepEqual(requests.map(x=>x.max_completion_tokens),[4200,4200]);
 });
