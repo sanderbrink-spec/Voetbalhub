@@ -904,3 +904,28 @@ test('V96 end editor explicitly acts on factual section plan and rejected score 
  assert.deepEqual(user.verifiedFacts,facts);
  assert.equal(user.editorialAssignment.leadFactIds.length,1);
 });
+
+test('V98 strict 120B revision enforces schema while permitting evidence-based skip',async()=>{
+ const {complete}=require('../scripts/automatic-publication');
+ let request;
+ const draft={skip:false,headline:'PEC Zwolle heeft nieuwe hoofdtrainer aangesteld',standfirst:'De club meldt dat een nieuwe hoofdtrainer aantreedt en de staf ondersteunt.',body:['De afspraken zijn bevestigd door PEC Zwolle en worden gecontroleerd.']};
+ const received=await complete([{role:'system',content:'Geef JSON artikel.'},{role:'user',content:'Controleer de aangeleverde feiten.'}],
+ {key:'TEST_KEY_DO_NOT_LEAK',model:'openai/gpt-oss-120b',fetcher:async(_,options)=>{request=JSON.parse(options.body);return Response.json({choices:[{message:{content:JSON.stringify(draft)}}]});}},'revision');
+ assert.deepEqual(received,draft);
+ assert.equal(request.reasoning_effort,'high');
+ assert.equal(request.response_format.type,'json_schema');
+ assert.equal(request.response_format.json_schema.strict,true);
+ assert.ok(request.response_format.json_schema.schema.required.includes('skip'));
+ assert.match(request.messages[0].content,/Bij onvoldoende bewijs/);
+});
+test('V98 provider 400 errors are classified without leaking the provider prompt or credentials',async()=>{
+ const {complete}=require('../scripts/automatic-publication');
+ const secret='TEST_KEY_DO_NOT_LEAK', source='PRIVATE_SOURCE_NOT_FOR_LOGS';
+ const mock=async()=>Response.json({error:{type:'invalid_request_error',code:'json_validate_failed',param:'response_format',message:'Failed to generate JSON: '+source+' '+secret}}, {status:400});
+ await assert.rejects(complete([{role:'user',content:source}],{key:secret,model:'openai/gpt-oss-120b',fetcher:mock},'revision'),e=>{
+  assert.equal(e.code,'GROQ_BAD_REQUEST');
+  assert.match(e.message,/oorzaak=json_generation/);
+  assert.doesNotMatch(e.message,/PRIVATE_SOURCE|TEST_KEY/);
+  return true;
+ });
+});

@@ -103,3 +103,14 @@ test('quoted temporary source wording in quality rejection is not a transport ou
  assert.equal(actualProvider.status,'retry');
  assert.equal(actualProvider.failureCategory,'temporary_source_failure');
 });
+
+test('V98 provider HTTP 400 is a permanent request failure even when legacy wording says temporarily unavailable',()=>{
+ const {EditorialQueue}=require('../editorial-production45');
+ const now=Date.parse('2026-11-08T12:00:00Z'),queue=new EditorialQueue();
+ const job=queue.enqueue([{url:'https://peczwolle.nl/nieuws/verified-appointment',text:'Verified official facts'}],now);
+ const err=new Error('Redactionele AI tijdelijk niet beschikbaar: HTTP 400');err.code='GROQ_BAD_REQUEST';
+ queue.fail(job,err,now,{stage:'quality'});
+ assert.equal(job.status,'review');
+ assert.equal(job.failureCategory,'journalistic_rejection');
+ assert.equal(job.reason,'editorial_review_required');
+});
