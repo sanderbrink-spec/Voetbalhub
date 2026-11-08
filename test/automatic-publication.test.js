@@ -725,3 +725,35 @@ test('V74 bounds fresh full review for verified phrase rewrite to one try',()=>{
  job.status='review';assert.equal(recoverVerifiedPhraseRewriteV74(job,now),false);
  assert.equal(recoverVerifiedPhraseRewriteV74({...job,verifiedPhraseRewriteV74:false,failureStage:'verification'},now),false);
 });
+
+test('V88 literal primary quotes supply two attributed views without becoming objective facts',()=>{
+ const {verifiedOfficialCoachDecision,validateEvidence}=require('../scripts/automatic-publication');
+ const text=[
+  'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.',
+  'De trainer begint maandag en heeft een contract tot 2027.',
+  'Pastoor werkte in 2025 buiten Nederland als trainer.',
+  'Alex Pastoor: ,,De gesprekken waren prettig en ik wil graag samen met de ploeg werken aan goede resultaten.”',
+  'Technisch directeur Gerry Hamstra licht de komst toe: ,,We hebben meerdere opties bekeken en zijn enthousiast over deze trainer.”',
+  'Dennis van der Ree keert terug als assistent-trainer.'
+ ].join(' ');
+ const doc={title:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',url:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',text,publishedAt:'2026-11-08T08:00:00Z'};
+ const candidate=verifiedOfficialCoachDecision(doc);
+ assert.ok(candidate);
+ const facts=candidate.facts.map(f=>f.text);
+ assert.ok(facts.some(f=>f.includes('Alex Pastoor: ,,')&&f.includes('gesprekken waren prettig')));
+ assert.ok(facts.some(f=>f.includes('Gerry Hamstra')&&f.includes('meerdere opties bekeken')));
+ assert.ok(facts.every(f=>text.includes(f)&&f.length<=800));
+ assert.deepEqual(validateEvidence(candidate,[doc],Date.parse('2026-11-08T12:00:00Z')),[]);
+ assert.equal(verifiedOfficialCoachDecision({...doc,title:'Gerucht over mogelijke trainer'}),null);
+});
+test('V88 official quote review never reopens prior quality failures more than once',()=>{
+ const {recoverOfficialStatementsV88}=require('../scripts/automatic-publication');
+ const sample={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:2};
+ const job={...sample};
+ assert.equal(recoverOfficialStatementsV88(job,Date.now()),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';
+ assert.equal(recoverOfficialStatementsV88(job,Date.now()),false);
+ for(const overrides of [{failureStage:'verification'},{failureStage:'generation'},{failureCategory:'generator_failure'},{status:'published'}])
+  assert.equal(recoverOfficialStatementsV88({...sample,...overrides},Date.now()),false);
+});
