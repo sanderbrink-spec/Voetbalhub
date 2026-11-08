@@ -8,6 +8,8 @@ on:
       - 'editorial-match55.js'
       - 'automatic-bootstrap.json'
       - 'scripts/automatic-publication.js'
+      - 'editorial-ai.js'
+      - 'editorial-overlap-repair.js'
       - 'scripts/render-editorial-cover.py'
       - 'scripts/refresh-automatic-covers.js'
       - 'editorial-image44.js'
