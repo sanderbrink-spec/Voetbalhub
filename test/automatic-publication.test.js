@@ -213,7 +213,13 @@ for(const hasHalf of [true,false])test('registered match uses compact format wit
    if(url.endsWith('/models'))return Response.json({data:[{id:config.model}]});
    if(url.endsWith('/chat/completions')){
     calls++;
-    const response={approved:true,issues:[],scores};
+    const request=JSON.parse(options.body);
+    if(calls===1||(hasHalf&&calls===3)){
+     assert.deepEqual(JSON.parse(request.messages[1].content).verifiedFacts,record.verifiedFacts);
+     return Response.json({choices:[{message:{content:JSON.stringify({headline:'FC Twente en PSV sluiten duel af op 3-0',standfirst:'De ontmoeting tussen FC Twente en PSV in de Eredivisie eindigde op 3-0.',body:[record.verifiedFacts[1]+' De wedstrijdregistratie is de bron voor de eindstand. Bron: OpenFootball.',...(hasHalf?['De geregistreerde ruststand was 1-0. Deze tussenstand is afzonderlijk vastgelegd in dezelfde wedstrijdregistratie.']:[])]})}}]});
+    }
+    assert.match(request.messages[0].content,/tweede feitenredacteur/);
+    const response=hasHalf&&calls===2?{approved:false,issues:['De tekst moet origineler worden geformuleerd.'],scores}:{approved:true,issues:[],scores};
     return Response.json({choices:[{message:{content:JSON.stringify(response)}}]});
    }
    if(url.endsWith('/editorial-drafts')){
@@ -236,8 +242,9 @@ for(const hasHalf of [true,false])test('registered match uses compact format wit
  });
  assert.equal(report.status,'completed',JSON.stringify(report));
  assert.deepEqual(report.routes.match,{found:1,selected:1,generated:1,rejected:0,published:1});
- assert.equal(report.assessments[0].threshold,85);
- assert.equal(calls,1);
+ assert.equal(report.assessments.at(-1).threshold,85);
+ assert.equal(calls,hasHalf?4:2);
+ assert.equal(report.generationOrigin,'production_ai');
  assert.equal(checkpoint.records[0].status,'published');
  assert.equal(checkpoint.records[0].matchRecoveryV60,true);
 });
