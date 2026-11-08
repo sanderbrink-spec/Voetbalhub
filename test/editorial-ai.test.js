@@ -1,6 +1,6 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues}=require('../editorial-ai');
+const {createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues}=require('../editorial-ai');
 const good={headline:'FC Groningen bespreekt plannen voor het komende seizoen',standfirst:'De club bespreekt nieuwe plannen met de betrokken medewerkers en neemt de uitkomsten mee in de voorbereiding op het komende seizoen.',body:[
 'Op het trainingscomplex werkten spelers in kleine groepen aan verschillende oefeningen onder leiding van de technische staf terwijl de overige medewerkers hun taken voorbereidden.',
 'Tijdens een apart overleg spraken vertegenwoordigers van de club met supporters over praktische onderwerpen rond de ontvangst van bezoekers en bereikbaarheid van het stadion.',
@@ -219,4 +219,36 @@ test('V102 first writer sees official publisher while original fact gate remains
  assert.equal(result.qualityReview.autoPublish,false);
  assert.equal(JSON.parse(sent.messages[1].content).officialPublisher,'PEC Zwolle');
  assert.match(sent.messages[0].content,/Deze nieuwsgebeurtenis is uitsluitend via een officiële mededeling van PEC Zwolle vastgesteld/);
+});
+
+test('V103 coach reporting has only three evidential body themes, never fabricated padding',()=>{
+ const input={topic:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',primaryAuthority:'club_decision',facts:['Benoeming','Contract','Staf','Loopbaan']};
+ assert.deepEqual(officialCoachStructureIssues({body:['Staf','Loopbaan','Toelichting']},input),[]);
+ assert.equal(officialCoachStructureIssues({body:['Staf','Loopbaan','Toelichting','Niet bewezen gevolg']},input).length,1);
+ assert.deepEqual(officialCoachStructureIssues({body:['A','B','C','D']},{...input,primaryAuthority:null}),[]);
+});
+test('V103 unsupported causal and comparative claims require literal source support',()=>{
+ const draft={headline:'PEC Zwolle bevestigt trainersaanstelling',
+ standfirst:'Volgens PEC Zwolle is de coach aangesteld.',
+ body:['Het contract garandeert stabiliteit voor de club en schept een langetermijnvisie.',
+       'De functie is de meest aantrekkelijke keuze voor de nieuwe hoofdtrainer.',
+       'De club meldt dat twee assistenten terugkeren.']};
+ const facts=['PEC Zwolle benoemt de trainer.','De club bevestigt het contract tot 2027.'];
+ assert.equal(unsupportedInterpretationIssues(draft,facts).length,3);
+ const supported=[...facts,'Stabiliteit en visie zijn door de club letterlijk genoemd.','De coach noemt dit de meest aantrekkelijke keuze.'];
+ assert.deepEqual(unsupportedInterpretationIssues(draft,supported),[]);
+ assert.deepEqual(unsupportedInterpretationIssues({body:['Geen gevolgtrekking.']},facts),[]);
+});
+test('V103 writer requests three evidence-led body paragraphs for official coach appointment',async()=>{
+ let sent;
+ const draft={headline:'PEC Zwolle maakt aanstelling nieuwe hoofdtrainer bekend',
+ standfirst:'PEC Zwolle bevestigt het besluit om een nieuwe hoofdtrainer aan te stellen met ondersteuning van zijn staf.',
+ body:['De club meldt verder dat de assistenten terugkeren naar hun oude functies binnen de technische staf rondom de trainer.',
+       'De coach werkte eerder in het buitenland en heeft daarnaast een aantoonbare functie bij een nationale ploeg vervuld.',
+       'In de officiële bekendmaking geeft de club een toelichting op de keuze en de afgesproken voorwaarden van zijn contract.']};
+ const facts=['PEC Zwolle bevestigt een hoofdtrainer.','De assistenten keren terug naar hun functie.','De coach werkte eerder in het buitenland.','De club licht de benoeming toe.'];
+ const good=await createEditorialDraft({topic:'PEC Zwolle benoemt hoofdtrainer',category:'clubnieuws',primaryAuthority:'club_decision',facts,sourceUrls:['https://peczwolle.nl/nieuws/feit'],automaticPublication:true},
+ {apiKey:'test',model:'openai/gpt-oss-120b',fetcher:async(_,opts)=>{sent=JSON.parse(opts.body);return reply(draft);}});
+ assert.equal(good.body.length,3);
+ assert.match(sent.messages[0].content,/Lever precies drie bodyalinea’s/);
 });
