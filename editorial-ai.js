@@ -178,7 +178,7 @@ function mayDelegateLeadOverlap(issues,{automaticPublication=false,coachPlan=fal
  return Boolean(automaticPublication&&coachPlan&&Array.isArray(issues)&&issues.length===1&&
   issues[0]==='Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.');
 }
-async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],primaryAuthority=null,match=null,compact=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router}) {
+async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],primaryAuthority=null,match=null,compact=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
   // Normal server calls and production share the same provider interface.
   if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
   const assignment=editorialAssignment(facts,{compact});
@@ -209,10 +209,11 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // Number and person inventories are supplied separately so the writer cannot
   // infer dates or staff identities from the current date, title or URL.
   const allowedNumbers=[...new Set(facts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
-  const messages=[{role:'system',content:prompt+' De bijgevoegde editorialAssignment is een taakverdeling op basis van bestaande feiten-ID’s. Begin de intro bij leadFactIds. Gebruik voor elke bodyalinea een ander controleerbaar detail uit bodySections en herhaal geen feiten uit de intro als alineaonderwerp. De labels voegen geen feiten toe. Als er te weinig onafhankelijke details zijn voor de gevraagde vorm, geef skip in plaats van opvulling. Elke naam, datum en claim blijft uitsluitend verifieerbaar met facts. Elke genoemde datum, jaartal en getalwaarde moet letterlijk voorkomen in facts. Vul geen jaartal afgeleid van de publicatiedatum in. Controleer persoonsnamen per woordgroep tegen facts; verzin geen trainersstaf, functie of loopbaanfeit.'},{role:'user',content:JSON.stringify({topic,category,facts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
+  const messages=resume?.messages||[{role:'system',content:prompt+' De bijgevoegde editorialAssignment is een taakverdeling op basis van bestaande feiten-ID’s. Begin de intro bij leadFactIds. Gebruik voor elke bodyalinea een ander controleerbaar detail uit bodySections en herhaal geen feiten uit de intro als alineaonderwerp. De labels voegen geen feiten toe. Als er te weinig onafhankelijke details zijn voor de gevraagde vorm, geef skip in plaats van opvulling. Elke naam, datum en claim blijft uitsluitend verifieerbaar met facts. Elke genoemde datum, jaartal en getalwaarde moet letterlijk voorkomen in facts. Vul geen jaartal afgeleid van de publicatiedatum in. Controleer persoonsnamen per woordgroep tegen facts; verzin geen trainersstaf, functie of loopbaanfeit.'},{role:'user',content:JSON.stringify({topic,category,facts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
   // Both writing and its single targeted repair share one 25-second deadline.
   const signal=AbortSignal.timeout(timeoutMs);
-  for(let attempt=0;attempt<2;attempt++){
+  for(let attempt=resume?.attempt||0;attempt<2;attempt++){
+    await onProgress({attempt,messages});
     let data;
     try{
       if(router){
