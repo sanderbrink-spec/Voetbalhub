@@ -18,7 +18,7 @@
   const briefEligible = payload => payload.articleKind === 'announcement' &&
     ['club_decision','association_decision'].includes(payload.primaryAuthority) &&
     payload.sources?.length === 1 && Boolean(host(payload.sources[0]?.url)) &&
-    !payload.transferStatus && payload.verifiedFacts?.length >= 1 && payload.verifiedFacts.length <= 3;
+    !payload.transferStatus && payload.verifiedFacts?.length >= 1 && payload.verifiedFacts.length <= 5;
   const compactStructure = 'body (1-2 inhoudelijke alinea’s, elk 10-65 woorden)';
   const standardStructure = 'body (3-5 alinea’s, elk 18-120 woorden en minimaal 70 tekens)';
   function draftIssues(d = {}, compact = false) {
