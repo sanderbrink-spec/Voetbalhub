@@ -25,3 +25,41 @@ function reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases){
  return changed?{...draft,body}:draft;
 }
 module.exports={reframeVerifiedStaffPair};
+
+
+// Safe deterministic normalizations using only facts already validated as literal
+// official source evidence. Full independent quality checks remain mandatory.
+function reframeVerifiedClubDecision(draft,facts,docs,overlapPhrases){
+ if(!draft||!Array.isArray(draft.body)||!Array.isArray(facts)||!Array.isArray(docs)||
+    typeof overlapPhrases!=='function')return draft;
+ const overlaps=d=>docs.reduce((sum,doc)=>sum+overlapPhrases(doc.text,d).length,0);
+ const before=overlaps(draft);
+ if(!before)return draft;
+ const escape=value=>value.replace(/[.*+?^$()|[\]\\]/g,'\\$&').replace(/[{}]/g,'\\$&');
+ const name='[A-ZÀ-Ý][a-zà-ÿ]+(?:\\s+(?:van|de|der|den|ten|ter))*\\s+[A-ZÀ-Ý][a-zà-ÿ]+';
+ let candidate={...draft,body:[...draft.body]},changed=false;
+ for(const fact of facts){
+  const text=String(fact||'');
+  const appointment=text.match(/^([A-ZÀ-Ý][\p{L} .-]{1,45}?) heeft ([A-ZÀ-Ý][\p{L} .-]{2,55}?) als nieuwe (hoofdtrainer|trainer|coach) aangesteld[.!]?$/u);
+  if(appointment){
+   const [,club,person,role]=appointment;
+   const source=appointment[0].replace(/[.!]$/,'');
+   const target=person+' is benoemd tot '+role+' van '+club;
+   const rule=new RegExp(escape(source),'gi');
+   const changedIntro=candidate.standfirst?.replace(rule,target);
+   const changedBody=candidate.body.map(x=>x.replace(rule,target));
+   if(changedIntro!==candidate.standfirst||changedBody.some((x,i)=>x!==candidate.body[i])){
+    candidate={...candidate,standfirst:changedIntro,body:changedBody};changed=true;
+   }
+  }
+  const sourcePair=text.match(new RegExp('^('+name+')\\s+en\\s+('+name+'),\\s+die\\s+.+?\\b(?:keren|gaan)\\s+(?:weer\\s+)?terug\\b.+?assistent','u'));
+  if(sourcePair){
+   const [,first,second]=sourcePair;
+   const rule=new RegExp(escape(first)+'\\s+en\\s+'+escape(second),'g');
+   const body=candidate.body.map(x=>x.replace(rule,second+' en '+first));
+   if(body.some((x,i)=>x!==candidate.body[i])){candidate={...candidate,body};changed=true;}
+  }
+ }
+ return changed&&overlaps(candidate)<before?candidate:draft;
+}
+module.exports.reframeVerifiedClubDecision=reframeVerifiedClubDecision;
