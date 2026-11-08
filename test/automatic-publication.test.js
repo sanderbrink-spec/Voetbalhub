@@ -929,3 +929,29 @@ test('V98 provider 400 errors are classified without leaking the provider prompt
   return true;
  });
 });
+
+test('V99 GPT-OSS high JSON failure gets exactly one medium retry with the same facts and strict safety schema',async()=>{
+ const {complete}=require('../scripts/automatic-publication');
+ const requests=[],facts='PEC Zwolle bevestigt een hoofdtrainer en de naam Alex Pastoor.';
+ const fetcher=async(_,options)=>{
+  requests.push(JSON.parse(options.body));
+  if(requests.length===1)return Response.json({error:{type:'invalid_request_error',code:'json_validate_failed',message:'JSON generation failed'}},{status:400});
+  return Response.json({choices:[{message:{content:JSON.stringify({skip:false,headline:'PEC Zwolle stelt nieuwe hoofdtrainer aan',standfirst:'De club bevestigt de naam van de nieuwe coach.',body:['PEC Zwolle noemt Alex Pastoor als de nieuwe hoofdtrainer van de club.']})}}]});
+ };
+ const answer=await complete([{role:'system',content:'Geef JSON'},{role:'user',content:facts}],{key:'fake',model:'openai/gpt-oss-120b',fetcher},'revision');
+ assert.equal(answer.skip,false);
+ assert.deepEqual(requests.map(r=>r.reasoning_effort),['high','medium']);
+ assert.ok(requests.every(r=>r.response_format?.json_schema?.strict===true));
+ assert.deepEqual(requests.map(r=>r.messages[1].content),[facts,facts]);
+});
+test('V99 never retries unsupported provider 400 and caps repeated JSON failures at two attempts',async()=>{
+ const {complete}=require('../scripts/automatic-publication');
+ let calls=0;
+ const bad=async()=>{calls++;return Response.json({error:{code:'bad_parameter',type:'invalid_request_error',message:'parameter not supported'}},{status:400});};
+ await assert.rejects(complete([{role:'user',content:'JSON'}],{key:'fake',model:'openai/gpt-oss-120b',fetcher:bad},'review'),/code=bad_parameter/);
+ assert.equal(calls,1);
+ calls=0;
+ const invalid=async()=>{calls++;return Response.json({error:{code:'json_validate_failed',type:'invalid_request_error',message:'JSON failure'}},{status:400});};
+ await assert.rejects(complete([{role:'user',content:'JSON'}],{key:'fake',model:'openai/gpt-oss-120b',fetcher:invalid},'review'),e=>e.code==='GROQ_BAD_REQUEST'&&/oorzaak=json_generation/.test(e.message));
+ assert.equal(calls,2);
+});
