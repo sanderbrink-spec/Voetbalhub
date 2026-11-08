@@ -652,3 +652,36 @@ test('full-length verified staff paraphrase keeps its news context and passes so
  assert.ok(rewritten.body[0].split(' ').length>=18);
  assert.deepEqual(overlapPhrases(evidence,rewritten),[]);
 });
+
+test('V73 editorial rewrite cannot copy original publisher prose from its input',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ let req;
+ const verified='PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.';
+ const result=await reviseDraft({draft:{headline:'Oud nieuwsbericht',standfirst:'Oude zin',body:['Oude alinea.']},verifiedFacts:[verified],articleKind:'announcement',
+ primaryAuthority:'club_decision',sources:[{url:'https://peczwolle.nl/nieuws/aanstelling'}]},
+ {kind:'announcement',topic:'Trainer bevestigd',primaryAuthority:'club_decision',facts:[{text:verified}]},
+ [{url:'https://peczwolle.nl/nieuws/aanstelling',title:'Officiële benoeming',publishedAt:'2026-11-07',text:'NIET-OVERNEMEN-OFFICIELE-ARTIKELTEKST'}],
+ 'Woordelijke bronoverlap', {key:'test',model:'test',fetcher:async(_,options)=>{
+  req=JSON.parse(options.body).messages;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});
+ }});
+ assert.equal(result,null);
+ assert.ok(req[0].content.includes('nieuw, origineel Nederlands voetbalartikel'));
+ const input=JSON.parse(req[1].content);
+ assert.deepEqual(input.verifiedFacts,[verified]);
+ assert.equal(JSON.stringify(input).includes('NIET-OVERNEMEN-OFFICIELE-ARTIKELTEKST'),false);
+ assert.equal(input.candidate.facts,undefined);
+ assert.equal(input.sources[0].text,undefined);
+});
+
+test('V73 source-independent originality retry only reopens the specific quality rejection once',()=>{
+ const {recoverIndependentOriginalityV73}=require('../scripts/automatic-publication');
+ const rejected={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',
+ errorHash:'f66458e0fb2a084b84873fb367bd0bb682661f6224030ced0c7a4496dd110b4f',attempts:2};
+ const job={...rejected};
+ assert.equal(recoverIndependentOriginalityV73(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';
+ assert.equal(recoverIndependentOriginalityV73(job,now),false);
+ assert.equal(recoverIndependentOriginalityV73({...rejected,errorHash:'other'},now),false);
+ assert.equal(recoverIndependentOriginalityV73({...rejected,failureStage:'verification'},now),false);
+});
