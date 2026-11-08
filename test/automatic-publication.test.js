@@ -757,3 +757,42 @@ test('V88 official quote review never reopens prior quality failures more than o
  for(const overrides of [{failureStage:'verification'},{failureStage:'generation'},{failureCategory:'generator_failure'},{status:'published'}])
   assert.equal(recoverOfficialStatementsV88({...sample,...overrides},Date.now()),false);
 });
+
+test('V89 official coach evidence selection preserves staff, keeper and both career dates before quotes',()=>{
+ const {verifiedOfficialCoachDecision}=require('../scripts/automatic-publication');
+ const text=[
+  'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.',
+  'Hij tekent een contract tot de zomer van 2027.',
+  'In 2024 besloot Pastoor te stoppen met werken als hoofdtrainer.',
+  'In 2025 was hij assistent-bondscoach van Indonesië.',
+  'Nu keert Pastoor terug naar het hoogste niveau in Nederland.',
+  'Een nieuwe rol wacht op de trainer bij zijn oude competitie.',
+  'Alex Pastoor: ,,Ik heb meerdere mogelijkheden besproken en wil nu graag aan de slag in Zwolle.”',
+  'Technisch directeur Gerry Hamstra: ,,De trainer heeft veel ervaring en wij hebben samen voor de samenwerking gekozen.”',
+  'Pastoor staat vanaf maandag voor de groep in Zwolle.',
+  'Dennis van der Ree en Maikel van der Werff, die tijdelijk de leiding hadden, keren weer terug als assistent-trainers.',
+  'Samen met keeperstrainer Diederik Boer gaan zij Pastoor ondersteunen.'
+ ].join(' ');
+ const doc={url:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',title:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',text};
+ const candidate=verifiedOfficialCoachDecision(doc);
+ assert.ok(candidate);
+ const facts=candidate.facts.map(x=>x.text);
+ assert.equal(facts.length,8);
+ assert.ok(facts.some(x=>x.includes('Dennis van der Ree')&&x.includes('Maikel van der Werff')));
+ assert.ok(facts.some(x=>x.includes('Diederik Boer')));
+ assert.ok(facts.some(x=>x.includes('2024')));
+ assert.ok(facts.some(x=>x.includes('2025')));
+ assert.ok(facts.some(x=>x.includes('Alex Pastoor: ,,')&&x.includes('mogelijkheden')));
+ assert.ok(facts.some(x=>x.includes('Gerry Hamstra: ,,')&&x.includes('ervaring')));
+ assert.ok(facts.every(x=>doc.text.includes(x)));
+});
+test('V89 source coverage retry is bounded to verified quality rejection',()=>{
+ const {recoverCoachCoverageV89}=require('../scripts/automatic-publication');
+ const sample={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection'};
+ const job={...sample};
+ assert.equal(recoverCoachCoverageV89(job,Date.now()),true);
+ assert.equal(job.status,'pending');
+ job.status='review';assert.equal(recoverCoachCoverageV89(job,Date.now()),false);
+ assert.equal(recoverCoachCoverageV89({...sample,failureStage:'verification'},Date.now()),false);
+ assert.equal(recoverCoachCoverageV89({...sample,failureCategory:'generator_failure'},Date.now()),false);
+});
