@@ -649,6 +649,6 @@ test('full-length verified staff paraphrase keeps its news context and passes so
  const rewritten=reframeVerifiedStaffPair(original,[evidence],[{text:evidence}]);
  assert.ok(rewritten.body[0].startsWith('Maikel van der Werff en Dennis van der Ree,'));
  assert.ok(rewritten.body[0].includes('Samen met keeperstrainer Diederik Boer'));
- assert.ok(rewritten.body[0].split(/\\s+/).length>=18);
+ assert.ok(rewritten.body[0].split(' ').length>=18);
  assert.deepEqual(overlapPhrases(evidence,rewritten),[]);
 });
