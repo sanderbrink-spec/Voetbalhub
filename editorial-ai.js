@@ -108,6 +108,21 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  }
  return result;
 }
+// A publication year is not automatically a football season. A named role
+// must be explicitly present in the verified evidence, not inferred.
+function unverifiedTimelineAndRoles(draft,facts=[]){
+ if(!draft||!Array.isArray(draft.body))return [];
+ const text=[draft.headline,draft.standfirst,...draft.body].filter(v=>typeof v==='string').join(' ').toLocaleLowerCase('nl');
+ const evidence=facts.filter(v=>typeof v==='string').join(' ').toLocaleLowerCase('nl');
+ const issues=[];
+ for(const m of text.matchAll(/\b20\d{2}\s*\/\s*20\d{2}\b/g)){
+  if(!evidence.includes(m[0]))issues.push('Niet-geverifieerde seizoenscombinatie '+m[0]+': losse jaartallen zijn geen bewijs van een seizoen.');
+ }
+ for(const role of ['clubdirecteur','algemeen directeur','sportdirecteur','sportief directeur','technisch directeur']){
+  if(text.includes(role)&&!evidence.includes(role))issues.push('Functietitel '+role+' ontbreekt letterlijk in verifiedFacts; gebruik alleen bewezen titels of geen titel.');
+ }
+ return [...new Set(issues)];
+}
 // Factual announcement articles must not manufacture extra paragraphs from
 // the same facts. Each certified coaching appointment gets three themes.
 function officialCoachStructureIssues(draft,{topic='',primaryAuthority=null,facts=[]}={}){
@@ -192,11 +207,12 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts}));
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority,facts}));
      issues.push(...unsupportedInterpretationIssues(draft,facts));
+     issues.push(...unverifiedTimelineAndRoles(draft,facts));
     }
     if(!issues.length)return {...draft,qualityReview:{automatedTextChecksPassed:true,revisionApplied:attempt===1,attempts:attempt+1,factVerificationRequired:true,autoPublish:false}};
     if(attempt===1){const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;error.rejectedDraft=draft;throw error;}
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues};
+module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles};
 
