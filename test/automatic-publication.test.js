@@ -808,3 +808,14 @@ test('V90 targeted official article is read after falling out of club index and 
  assert.deepEqual(editorialSourceLinks(new Set(),focus),[focus]);
  assert.deepEqual(editorialSourceLinks(new Set()),[]);
 });
+
+test('V91 generator correction may retry only once and never reopen a journalistic quality rejection',()=>{
+ const {recoverCompleteBodyV91}=require('../scripts/automatic-publication');
+ const rejected={status:'review',failureStage:'generation',failureCategory:'generator_failure',attempts:2};
+ const job={...rejected};
+ assert.equal(recoverCompleteBodyV91(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';assert.equal(recoverCompleteBodyV91(job,now),false);
+ assert.equal(recoverCompleteBodyV91({...rejected,failureStage:'quality'},now),false);
+ assert.equal(recoverCompleteBodyV91({...rejected,failureCategory:'journalistic_rejection'},now),false);
+});
