@@ -3,6 +3,9 @@ const crypto=require('node:crypto');
 const MODELS=Object.freeze({groq:'openai/gpt-oss-120b',openai:'gpt-4.1-mini',gemini:'gemini-2.5-pro',openrouter:'openai/gpt-oss-120b:free'});
 const TASKS=Object.freeze({extraction:{budget:2400,effort:'low'},writing:{budget:3600,effort:'medium'},revision:{budget:4200,effort:'high'},review:{budget:4200,effort:'high'}});
 const ENDPOINTS={groq:'https://api.groq.com/openai/v1/chat/completions',openai:'https://api.openai.com/v1/chat/completions',gemini:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',openrouter:'https://openrouter.ai/api/v1/chat/completions'};
+// Force paragraph arrays at generation time. Reject incompatible output rather
+// than silently splitting, rewriting or approving unverified AI copy.
+const WRITING_FORMAT=Object.freeze({type:'json_schema',json_schema:{name:'veldio_editorial_article',strict:true,schema:{type:'object',properties:{skip:{type:'boolean'},headline:{type:'string'},standfirst:{type:'string'},body:{type:'array',items:{type:'string'}}},required:['skip','headline','standfirst','body'],additionalProperties:false}}});
 function retryDelay(value,now=Date.now()){
  if(value===null||value===undefined||value==='')return 0;
  const seconds=Number(value),delay=Number.isFinite(seconds)?seconds*1000:Date.parse(value)-now;
@@ -83,7 +86,7 @@ class EditorialProviderRouter{
      body={systemInstruction:{parts:[{text:messages.filter(m=>m.role==='system').map(m=>m.content).join('\n')}]},contents:messages.filter(m=>m.role!=='system').map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),generationConfig:{responseMimeType:'application/json',temperature:0,maxOutputTokens:budget}};
     }else{
      headers.Authorization='Bearer '+this.keys[provider];
-     body={model:this.models[provider],messages,temperature:0,response_format:requestOptions.response_format||{type:'json_object'},...(provider==='groq'?{max_completion_tokens:budget,reasoning_effort:jsonAttempt?'medium':spec.effort,include_reasoning:false}:provider==='openai'?{max_completion_tokens:budget}:{max_tokens:budget,provider:{max_price:{prompt:0,completion:0},allow_fallbacks:false,require_parameters:true},reasoning:{effort:spec.effort,exclude:true}})};
+     body={model:this.models[provider],messages,temperature:0,response_format:requestOptions.response_format||(task==='writing'&&['groq','openai'].includes(provider)?WRITING_FORMAT:{type:'json_object'}),...(provider==='groq'?{max_completion_tokens:budget,reasoning_effort:jsonAttempt?'medium':spec.effort,include_reasoning:false}:provider==='openai'?{max_completion_tokens:budget}:{max_tokens:budget,provider:{max_price:{prompt:0,completion:0},allow_fallbacks:false,require_parameters:true},reasoning:{effort:spec.effort,exclude:true}})};
     }
     slot.requests++;slot.tokens+=estimate;slot.nextAt=this.now()+this.intervalMs;
     await this.onState(this.state);this.onAttempt({provider,task,model:MODELS[provider]});
