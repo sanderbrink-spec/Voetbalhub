@@ -71,7 +71,7 @@ test('request compaction keeps the decisive match information and rate limits ar
 test('model discovery selects an available supported model and rejects unavailable catalogs',()=>{
  assert.equal(selectModel({data:[{id:'openai/gpt-oss-120b'}]}),'openai/gpt-oss-120b');
  assert.throws(()=>selectModel({data:[{id:'openai/gpt-oss-20b'}]}),/niet beschikbaar/);
- assert.throws(()=>selectModel({data:[{id:'llama-3.3-70b-versatile'}]}),/Geen beschikbaar/);
+ assert.throws(()=>selectModel({data:[{id:'llama-3.3-70b-versatile'}]}),/niet beschikbaar/);
 });
 test('all launch articles pass the same original-copy and factual preflight',()=>{
  const {generationIssues}=require('../editorial-ai');
