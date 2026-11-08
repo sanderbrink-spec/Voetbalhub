@@ -426,6 +426,11 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
+function editorialSourceLinks(discovered,focusSourceUrl){
+ // A targeted official source remains verifiable even after falling out of a
+ // homepage's limited latest-news list. Never broaden the focused run.
+ return focusSourceUrl?[focusSourceUrl]:[...discovered];
+}
 function recoverCoachCoverageV89(job,now){
  // The new source selector supplies staff roles omitted by previous first-N
  // extraction. A reviewed official appointment may be retried once.
@@ -619,12 +624,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const authoritative=[];
  const linkFor=doc=>articleUrl(doc.url,config.newsIndexes)||doc.url;
  const discovered=[];
- const linksToRead=[...links];
+ const linksToRead=editorialSourceLinks(links,focusSourceUrl);
  for(let index=0;index<linksToRead.length;index+=6){
   const batch=await Promise.all(linksToRead.slice(index,index+6).map(load));
   for(const doc of batch)if(doc&&!discovered.some(item=>item.url===doc.url))discovered.push(doc);
  }
- report.counts.found=links.size;
+ report.counts.found=linksToRead.length;
  report.counts.readable=discovered.length;
  for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
   const publishedTime=Date.parse(doc.publishedAt||'');
@@ -653,7 +658,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    report.counts.noCorroboration++;
   }
  }
- report.routes.news.found=links.size;
+ report.routes.news.found=linksToRead.length;
  // Interleave both sources so a noisy news queue cannot starve match coverage.
  groups.push(...authoritative);
  groups.sort((a,b)=>editorialPriority(b[0])-editorialPriority(a[0])||Date.parse(b[0].publishedAt)-Date.parse(a[0].publishedAt));
@@ -955,4 +960,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};

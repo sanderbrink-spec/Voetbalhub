@@ -796,3 +796,15 @@ test('V89 source coverage retry is bounded to verified quality rejection',()=>{
  assert.equal(recoverCoachCoverageV89({...sample,failureStage:'verification'},Date.now()),false);
  assert.equal(recoverCoachCoverageV89({...sample,failureCategory:'generator_failure'},Date.now()),false);
 });
+
+test('V90 targeted official article is read after falling out of club index and never processes other links',()=>{
+ const {editorialSourceLinks,allowedUrl}=require('../scripts/automatic-publication');
+ const focus='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const other='https://www.ajax.nl/artikelen/ander-artikel';
+ const discovered=new Set([other]);
+ assert.equal(allowedUrl(focus),true);
+ assert.deepEqual(editorialSourceLinks(discovered,focus),[focus]);
+ assert.deepEqual(editorialSourceLinks(discovered),[other]);
+ assert.deepEqual(editorialSourceLinks(new Set(),focus),[focus]);
+ assert.deepEqual(editorialSourceLinks(new Set()),[]);
+});
