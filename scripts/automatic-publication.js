@@ -271,6 +271,46 @@ function selectModel(catalog){
  for(const id of [config.model,'openai/gpt-oss-20b'])if(available.has(id))return id;
  throw Error('Geen beschikbaar ondersteund redactiemodel gevonden.');
 }
+// The model selects *where* a claim appears; only literal source bytes can
+// become verified facts. A paraphrased extraction is never passed as evidence.
+function alignPrimaryLiteralFacts(candidate){
+ if(!Array.isArray(candidate?.facts))return candidate;
+ const stop=new Set('de het een en van voor bij aan om die dat deze dit met zijn haar wordt worden heeft hebben naar over onder uit als ook dan in op tot te der den maar meer vanaf echter sinds tijdens tussen aldus volgens club trainer hoofdtrainer nieuwe nieuw laatste eerste door terug'.split(' '));
+ const tokens=value=>[...new Set(normalize(value).split(' ').filter(w=>w.length>=3&&!stop.has(w)))];
+ const fixed=[],used=new Set();
+ for(const fact of candidate.facts){
+  if(typeof fact?.text!=='string'||!Array.isArray(fact.evidence))continue;
+  let chosen=fact.text;
+  const quoted=fact.evidence.map(x=>String(x.quote||'')).filter(q=>q.length>=25);
+  if(!quoted.some(q=>normalize(q).includes(normalize(fact.text)))){
+   const wanted=tokens(fact.text);
+   const nums=[...new Set(String(fact.text).match(/\d+(?:[.,]\d+)?/g)||[])];
+   const options=[];
+   for(const quote of quoted){
+    // Do not repair a number that the cited passage never contained.
+    if(nums.some(n=>!(quote.match(/\d+(?:[.,]\d+)?/g)||[]).includes(n)))continue;
+    const sentences=quote.split(/(?<=[.!?])\s+(?=[A-ZÀ-Ý0-9“‘])/u).map(x=>x.trim()).filter(x=>x.length>=25);
+    for(const passage of [...sentences,quote]){
+     const actual=new Set(tokens(passage)),matched=wanted.filter(w=>actual.has(w)).length;
+     const ratio=wanted.length?matched/wanted.length:0;
+     if(matched>=3&&ratio>=0.40&&nums.every(n=>(passage.match(/\d+(?:[.,]\d+)?/g)||[]).includes(n)))
+      options.push({passage,matched,ratio});
+    }
+   }
+   options.sort((a,b)=>b.ratio-a.ratio||b.matched-a.matched||a.passage.length-b.passage.length);
+   if(options.length)chosen=options[0].passage;
+  }
+  const key=normalize(chosen);
+  if(quoted.some(q=>normalize(q).includes(key))&&!used.has(key)){
+   fixed.push({...fact,text:chosen});used.add(key);
+  }else{
+   // Unverifiable claims remain invalid and are retried by the existing
+   // bounded extraction loop; they are never silently converted or approved.
+   fixed.push(fact);
+  }
+ }
+ return {...candidate,facts:fixed};
+}
 async function extractCandidate(docs,options,now){
  const fragments=docs.map(evidenceFragments);
  const authority=docs.length===1?primaryAuthority(docs[0]):'';
@@ -294,8 +334,10 @@ async function extractCandidate(docs,options,now){
   if(candidate.transferStatus==='unconfirmed')delete candidate.transferStatus;
  }
  const hydrated=hydrateEvidence(candidate,fragments);
- const unsupported=authority?hydrated.facts.filter(f=>!f.evidence.some(e=>normalize(e.quote).includes(normalize(f.text)))):[];
- if(!unsupported.length)return hydrated;
+ const aligned=authority?alignPrimaryLiteralFacts(hydrated):hydrated;
+ if(authority&&aligned.kind==='announcement')aligned.topic=docs[0].title;
+ const unsupported=authority?aligned.facts.filter(f=>!f.evidence.some(e=>normalize(e.quote).includes(normalize(f.text)))):[];
+ if(!unsupported.length)return aligned;
  if(attempt===1)throw Error('Primaire feittekst staat niet letterlijk in de aangewezen bronpassage.');
  messages.push({role:'assistant',content:JSON.stringify(candidate)},
   {role:'user',content:'Herstel uitsluitend deze niet-brongetrouwe feiten: '+JSON.stringify(unsupported.map(f=>f.text))+'. Gebruik per feit een aaneengesloten letterlijke bronpassage. Reken geen datums uit en vat geen afzonderlijke loopbaanprestaties samen. Geef skip als de bron onvoldoende informatie bevat.'});
@@ -778,4 +820,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
