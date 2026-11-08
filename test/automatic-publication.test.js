@@ -479,7 +479,7 @@ test('source-copied verified assistant pair can be reframed without adding facts
   body:['Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden, keren terug als assistent-trainers.']};
  assert.ok(overlapPhrases(doc.text,draft).length);
  const result=reframeVerifiedStaffPair(draft,[quoted],[doc]);
- assert.deepEqual(result.body,['Maikel van der Werff en Dennis van der Ree keren terug als assistent-trainers.']);
+ assert.deepEqual(result.body,['Maikel van der Werff en Dennis van der Ree, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden, keren terug als assistent-trainers.']);
  assert.deepEqual(overlapPhrases(doc.text,result),[]);
  assert.deepEqual(reframeVerifiedStaffPair(draft,[quoted.replace('keren terug','blijven')],[doc]),draft);
  assert.deepEqual(reframeVerifiedStaffPair(draft,[],[doc]),draft);
@@ -614,4 +614,30 @@ test('new coaching-storyline review is bounded and never overrides verification 
  job.status='review';
  assert.equal(recoverCoachStoryline(job,now),false);
  assert.equal(recoverCoachStoryline({...job,coachStoryRecoveryV70:false,failureStage:'verification'},now),false);
+});
+
+
+test('V71 verified assistant name reorder preserves full paragraphs and additional facts',()=>{
+ const {reframeVerifiedStaffPair,overlapPhrases}=require('../scripts/automatic-publication');
+ const evidence='Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden overgenomen, keren weer terug in hun functie van assistent-trainer.';
+ const paragraph='Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden de tijdelijke leiding hadden, keren terug naar hun functie als assistent-trainers. Samen met keeperstrainer Diederik Boer vormen zij de nieuwe staf rondom Pastoor.';
+ const draft={headline:'Vernieuwde staf',standfirst:'Pastoor is aangesteld.',body:[paragraph]};
+ const updated=reframeVerifiedStaffPair(draft,[evidence],[{text:evidence}]);
+ assert.equal(updated.body.length,1);
+ assert.ok(updated.body[0].startsWith('Maikel van der Werff en Dennis van der Ree,'));
+ assert.ok(updated.body[0].includes('Samen met keeperstrainer Diederik Boer'));
+ assert.ok(updated.body[0].includes('vijf wedstrijden'));
+ assert.equal(overlapPhrases(evidence,updated).length,0);
+ assert.ok(updated.body[0].split(/\s+/).length>=18);
+});
+
+test('V71 only retries the observed exact editorial overlap once',()=>{
+ const {recoverVerifiedStaffPairV71}=require('../scripts/automatic-publication');
+ const rejected={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',errorHash:'d6bff107135d6b7765a6144513f9478e92edb5d76a72ff8586b36493a303940c',attempts:1};
+ const job={...rejected};
+ assert.equal(recoverVerifiedStaffPairV71(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';assert.equal(recoverVerifiedStaffPairV71(job,now),false);
+ assert.equal(recoverVerifiedStaffPairV71({...rejected,errorHash:'different'},now),false);
+ assert.equal(recoverVerifiedStaffPairV71({...rejected,failureStage:'verification'},now),false);
 });
