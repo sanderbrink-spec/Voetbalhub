@@ -991,3 +991,26 @@ test('V102 rewriting editor gets verified source label and no raw publisher arti
  assert.match(messages[0].content,/Bij officialPublisher moet de intro duidelijk de officiële bron noemen/);
  assert.equal(JSON.stringify(input).includes('COPYRIGHTED-NOT-PASSED-TO-WRITER'),false);
 });
+
+test('V103 independent revision never sees rejected hallucinated draft or whole source page',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ let messages;
+ const facts=['PEC Zwolle heeft een hoofdtrainer benoemd.','De assistenten keren terug.','In 2025 had hij een buitenlandse functie.','Alex Pastoor: ,,Ik zie mijn rol bij PEC Zwolle als een mooie uitdaging.”'];
+ const draft={headline:'AFGEKEURDE-VERZONNEN-KOP',standfirst:'Het contract garandeert stabiliteit.',body:['AFGEKEURD-VERZONNEN-DETAIL-VISIE']};
+ const result=await reviseDraft({draft,articleKind:'announcement',primaryAuthority:'club_decision',verifiedFacts:facts,sources:[{url:'https://peczwolle.nl/nieuws/besluit'}]},
+ {kind:'announcement',topic:'PEC Zwolle benoemt hoofdtrainer',primaryAuthority:'club_decision'},
+ [{url:'https://peczwolle.nl/nieuws/besluit',title:'Officiële mededeling',publishedAt:'2026-11-08',text:'ORIGINELE-BRONPAGINA-NIET-GEBRUIKEN'}],
+ 'Oorspronkelijke tekst onvoldoende origineel. "Dit is een letterlijk gekopieerde passage uit de originele bron".',
+ {key:'test',model:'test-model',fetcher:async(_,options)=>{messages=JSON.parse(options.body).messages;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});}});
+ assert.equal(result,null);
+ const user=JSON.parse(messages[1].content);
+ assert.equal(user.draft,undefined);
+ assert.equal(user.coachPlan,true);
+ assert.deepEqual(user.verifiedFacts,facts);
+ assert.equal(user.factRoles[3].kind,'toegeschreven_uitspraak');
+ assert.equal(user.factRoles[0].kind,'gecontroleerd_bronfeit');
+ assert.equal(user.rejection.includes('letterlijk gekopieerde passage'),false);
+ assert.equal(JSON.stringify(user).includes('AFGEKEURD-VERZONNEN'),false);
+ assert.equal(JSON.stringify(user).includes('ORIGINELE-BRONPAGINA'),false);
+ assert.match(messages[0].content,/Als coachPlan waar is/);
+});
