@@ -26,7 +26,8 @@
     "peczwolle.nl",
     "keukenkampioendivisie.nl",
     "liverpoolfc.com",
-    "askclub.be"
+    "askclub.be",
+    "english.ajax.nl"
   ],
   "newsIndexes": [
     {
@@ -68,6 +69,10 @@
     {
       "url": "https://www.eurojackpotknvbbeker.nl/home",
       "articlePath": "^/nieuws/eurojackpot-knvb-beker/[^/]+/?$"
+    },
+    {
+      "url": "https://english.ajax.nl/articles",
+      "articlePath": "^/articles/[^/]+/?$"
     }
   ],
   "sourceGroups": [
