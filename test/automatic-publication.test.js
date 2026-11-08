@@ -427,3 +427,18 @@ test('repair requests explicitly whitelist numbers instead of inventing dates or
  assert.match(instructions,/persoonsnamen en cijfers/);
  assert.deepEqual(JSON.parse(input.messages[1].content).allowedNumbers,[]);
 });
+
+test('V63 full quality retry of official decisions is bounded and excludes other failures',()=>{
+ const {recoverEditorialBrief}=require('../scripts/automatic-publication');
+ const rejected={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:2};
+ const job={...rejected};
+ assert.equal(recoverEditorialBrief(job,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ job.status='review';
+ assert.equal(recoverEditorialBrief(job,now),false);
+ for(const changes of [
+  {failureStage:'verification'}, {failureStage:'generation'},
+  {failureCategory:'temporary_source_failure'}, {status:'published'}
+ ])assert.equal(recoverEditorialBrief({...rejected,...changes},now),false);
+});
