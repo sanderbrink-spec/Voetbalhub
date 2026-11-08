@@ -100,3 +100,14 @@ test('draft generation through the router preserves all existing preflight rejec
  const router=new EditorialProviderRouter({...options,fetcher:mock(async()=>response({...draft,body:['te kort']}))});
  await assert.rejects(createEditorialDraft({topic:'Ajax clubbesluit',category:'Voetbal',facts:['Ajax bevestigt het besluit.','De club meldde dit zondag.'],sourceUrls:['https://ajax.nl/artikelen/test'],compact:true,automaticPublication:true},{apiKey:'x',model:MODELS.groq,router,timeoutMs:1000}),e=>e.status===502);assert.equal(router.trace.length,2);
 });
+test('invalid JSON remains a bounded response failure, never a day-quota classification',async()=>{
+ const router=new EditorialProviderRouter({groqKey:'x',intervalMs:0,fetcher:async()=>json({choices:[{message:{content:'not-json'}}]})});
+ const queue=new EditorialQueue(),job=queue.enqueue([{url:'https://ajax.nl/a',text:'Evidence'}],0);
+ for(let i=0;i<4;i++)try{await router.complete(messages);}catch(error){assert.equal(error.availabilityCategory,'invalid_response');queue.fail(job,error,0);}
+ assert.equal(job.failureCategory,'provider_invalid_response');assert.equal(job.reason,'invalid_provider_json');assert.equal(job.attempts,4);assert.equal(job.status,'review');
+ assert.deepEqual(router.trace[0].outputShape,{parseableObject:false});
+});
+test('terminal and expired queue entries discard encrypted working copies',()=>{
+ const queue=new EditorialQueue(),job=queue.enqueue([{url:'https://ajax.nl/a',text:'Evidence'}],0);job.checkpoint={data:'opaque'};queue.finish(job,'published',1);assert.equal(job.checkpoint,undefined);
+ job.status='retry';job.checkpoint={data:'opaque'};queue.prune(86400002);assert.equal(job.checkpoint,undefined);
+});
