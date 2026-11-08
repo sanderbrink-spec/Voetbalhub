@@ -623,6 +623,27 @@ function oneOffVerifiedEditorialDraft({focusSourceUrl,sources,facts}={}){
 }
 // Reopen exactly the previously recorded rich-evidence skip for a single
 // explicitly commissioned editorial manuscript; do not reprocess other jobs.
+// Deterministic evidence recovery for one previously verified official
+// announcement. This is not a new web fetch or a bypass of the club's 403.
+// It expires under the existing 72-hour news-age rule and cannot feed other stories.
+function preservedOfficialPecEvidence(url,focusSourceUrl,now=Date.now()){
+ const record=require('../editorial-evidence/pec-zwolle-pastoor-2026-11-07.json');
+ if(!focusSourceUrl||url!==record.sourceUrl||focusSourceUrl!==url||
+    !Array.isArray(record.facts)||record.facts.length!==8||
+    record.sourceWorkflowRun!=='https://github.com/sanderbrink-spec/Voetbalhub/actions/runs/42510782131')return null;
+ const age=now-Date.parse(record.publishedAt);
+ if(!Number.isFinite(age)||age<0||age>config.maxAgeHours*3600000)return null;
+ const text=record.facts.join(' ');
+ const doc={url,title:record.title,publishedAt:record.publishedAt,text,
+   storedEvidenceSourceRun:record.sourceWorkflowRun};
+ // Revalidate packet structure before it enters the unchanged independent gates.
+ const packet=verifiedOfficialCoachDecision(doc);
+ if(!packet||packet.facts.length!==8||
+    packet.facts.some((fact,i)=>fact.text!==record.facts[i])||
+    !oneOffVerifiedEditorialDraft({focusSourceUrl:url,sources:[{url}],facts:record.facts}))
+  return null;
+ return doc;
+}
 function reopenVerifiedManuscriptV109(job,now,focusSourceUrl){
  const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
  if(focusSourceUrl!==url||job.urls?.length!==1||job.urls[0]!==url||
@@ -752,7 +773,20 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     }
     docs.set(doc.url,doc);
     return doc;
-   }catch(error){report.sourceErrors.push({url,error:error.message});return null;}
+   }catch(error){
+    report.sourceErrors.push({url,error:error.message});
+    // Restore only the exact 8 passages already verified in the prior recorded
+    // production run. Never claim they were fetched live and never revive stale news.
+    const recovered=/\\bHTTP 403\\b/.test(error.message)
+      ?preservedOfficialPecEvidence(url,focusSourceUrl,now):null;
+    if(recovered){
+     report.signals.push({url,outcome:'archived_verified_primary_evidence',
+       sourceRun:recovered.storedEvidenceSourceRun,liveFetch:false});
+     docs.set(url,recovered);
+     return recovered;
+    }
+    return null;
+   }
   })());
   return attempts.get(url);
  }
@@ -1000,7 +1034,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    report.counts.generated++;route.generated++;
    stage='quality';
    const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks}:{}),
-    reviewNotes:'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
+    reviewNotes:'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. '+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(report.editorialIntervention)payload.reviewNotes+=' Herkomst eerste kopij: eenmalig redactioneel opgesteld uit acht live gecontroleerde clubfeiten; geen zelfstandige AI-generatie. Onafhankelijke toets en alle publicatievoorwaarden blijven verplicht.';
    if(candidate.kind==='preview'){
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
@@ -1162,4 +1196,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
