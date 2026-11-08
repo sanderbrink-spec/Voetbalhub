@@ -48,7 +48,7 @@ jobs:
         with:
           script: |
             const {owner, repo} = context.repo;
-            const {data} = await github.rest.actions.listWorkflowRuns({owner, repo, workflow_id: 'phase51.yml', branch: 'main', status: 'success', per_page: 30});
+            const {data} = await github.rest.actions.listWorkflowRuns({owner, repo, workflow_id: 'phase51.yml', status: 'success', per_page: 30});
             for (const run of data.workflow_runs) {
               const {data: artifacts} = await github.rest.actions.listWorkflowRunArtifacts({owner, repo, run_id: run.id});
               if (artifacts.artifacts.some(a => a.name === 'Veldio-52B' && !a.expired)) {
