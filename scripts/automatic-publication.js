@@ -366,6 +366,16 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
+function recoverLiteralEvidenceRejection(job,now){
+ // The exact formerly rejected model quote can be re-extracted once after
+ // V67's literal-source alignment. Other rejected claims remain unchanged.
+ if(job.status!=='review'||job.failureStage!=='verification'||
+    job.failureCategory!=='journalistic_rejection'||
+    job.errorHash!==sha('Primaire feittekst staat niet letterlijk in de aangewezen bronpassage.')||
+    job.literalEvidenceRecoveryV67)return false;
+ job.literalEvidenceRecoveryV67=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
 function recoverRichVerifiedContext(job,now){
  // One new review after changing the source extraction and full-story structure.
  // The old draft and assessment are never reused or approved.
@@ -597,6 +607,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverMisclassifiedOverlap(job,now);
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverVerifiedNameRewrite(job,now);
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverRichVerifiedContext(job,now);
+  if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverLiteralEvidenceRejection(job,now);
   // Generator failures have their own separate bounded retry path.
   if(!group.matchRecord)recoverGeneration(job,now);
   // The focused trial's recorded packet invented 13 November and merged unrelated
@@ -820,4 +831,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
