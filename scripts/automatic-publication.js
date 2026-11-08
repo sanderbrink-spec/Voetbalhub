@@ -324,6 +324,14 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
+function recoverVerifiedNameRewrite(job,now){
+ // New source-proven rewrite logic may run once on a rejected official decision.
+ // Rebuild the draft from checked evidence; never reuse or approve old copy.
+ if(job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.verifiedNameRewriteV65)return false;
+ job.verifiedNameRewriteV65=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
 function recoverMisclassifiedOverlap(job,now){
  // Past runs may have mistaken "tijdelijk" inside copied source prose for a
  // temporary provider error. Allow one immediate new review under fixed logic.
@@ -537,6 +545,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   // whitelist improvement. This does not waive any existing publication gate.
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverEditorialBrief(job,now);
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverMisclassifiedOverlap(job,now);
+  if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverVerifiedNameRewrite(job,now);
   // Generator failures have their own separate bounded retry path.
   if(!group.matchRecord)recoverGeneration(job,now);
   // The focused trial's recorded packet invented 13 November and merged unrelated
@@ -760,4 +769,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
