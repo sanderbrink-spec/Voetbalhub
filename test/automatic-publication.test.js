@@ -1147,3 +1147,18 @@ test('V110 retries only the actually observed PEC quality rejection once and ret
   primaryAuthority:'club_decision',sourceUrls:[url],facts
  }),[]);
 });
+
+test('Previously verified PEC evidence survives a temporary HTTP 403 only in the original source window',()=>{
+ const {preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft}=require('../scripts/automatic-publication');
+ const record=require('../editorial-evidence/pec-zwolle-pastoor-2026-11-07.json');
+ const now=Date.parse('2026-11-08T19:00:00Z'),url=record.sourceUrl;
+ const recovered=preservedOfficialPecEvidence(url,url,now);
+ assert.ok(recovered,'the exact previously verified packet should be usable');
+ assert.equal(recovered.storedEvidenceSourceRun,record.sourceWorkflowRun);
+ assert.equal(recovered.publishedAt,record.publishedAt);
+ assert.equal(recovered.text,record.facts.join(' '));
+ assert.ok(oneOffVerifiedEditorialDraft({focusSourceUrl:url,sources:[{url}],facts:record.facts}));
+ assert.equal(preservedOfficialPecEvidence(url,url,Date.parse('2026-11-12T10:00:00Z')),null);
+ assert.equal(preservedOfficialPecEvidence(url,'https://ajax.nl/nieuws/anders',now),null);
+ assert.equal(preservedOfficialPecEvidence('https://www.peczwolle.nl/nieuws/anders','https://www.peczwolle.nl/nieuws/anders',now),null);
+});
