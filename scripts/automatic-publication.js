@@ -10,6 +10,7 @@ const bootstrap=require('../automatic-bootstrap.json');
 const production=require('../editorial-production45');
 const {createRouter,sealCheckpoint,openCheckpoint}=require('../editorial-provider-router');
 const matches=require('../editorial-match55');
+const matchEvidence122=require('../editorial-match-evidence122');
 const {CREDIT}=require('../football-results52');
 const {articleUrl,discoverGdelt}=require('./editorial-discovery53');
 const API='https://voetbalhub-redactie.onrender.com';
@@ -886,6 +887,18 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }
  }
  report.routes.news.found=linksToRead.length;
+ // Enrich registered results only from automatically discovered, official
+ // match reports with a complete score-consistent goal timeline.
+ for(const group of matchGroups){
+  const original=group.matchRecord;
+  for(const doc of discovered){
+   const enriched=matchEvidence122.attach(original,doc,now);
+   if(!enriched)continue;
+   group.push(doc);group.matchRecord=enriched;
+   report.signals.push({route:'match',matchId:original.matchId,outcome:'official_goal_timeline_verified',sourceUrl:doc.url,events:enriched.verifiedFacts.length-original.verifiedFacts.length});
+   break;
+  }
+ }
  // Interleave both sources so a noisy news queue cannot starve match coverage.
  groups.push(...authoritative);
  groups.sort((a,b)=>editorialPriority(b[0])-editorialPriority(a[0])||Date.parse(b[0].publishedAt)-Date.parse(a[0].publishedAt));
@@ -1021,7 +1034,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage:'verification',category:'journalistic_rejection'});continue;}
    const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
-   const sourceIndices=matchRecord?[0]:[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
+   const sourceIndices=matchRecord?matchRecord.sources.map((_,i)=>i):[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
    const facts=matchRecord?.verifiedFacts||candidate.facts.map(f=>f.text);
    const sources=sourceIndices.map(i=>({url:group[i].url}));
    await checkpointStep({candidate});
@@ -1031,10 +1044,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    stage='generation';
    let draft=checkpoint.draft;
    if(!draft&&matchRecord){
-    draft=await complete([
-     {role:'system',content:'Je bent de Nederlandstalige Veldio-wedstrijdredacteur. Schrijf een origineel kort uitslagbericht uitsluitend uit verifiedFacts. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (1-2 alinea’s van 10-65 woorden). De intro noemt de gecontroleerde eindstand. De body geeft uitsluitend de geverifieerde datum, competitie, speelronde en eventuele ruststand, met expliciete toeschrijving aan sourceName. Verzin geen doelpuntenmakers, kaarten, wissels, spelbeeld, kansen, gevolgen of emoties. Herhaal de eindstand niet als opvulling. Neem geen bronzin letterlijk over. Bij onvoldoende verschillende feiten: {"skip":true}.'},
-     {role:'user',content:JSON.stringify({verifiedFacts:facts,match:matchRecord.match,sourceName:sources[0].url===matches.FD?CREDIT:'OpenFootball',sourceUrls:sources.map(s=>s.url)})}
-    ],ai,'writing');
+    const rich=Boolean(matchRecord.matchEvidence);
+     draft=await complete([
+      {role:'system',content:rich
+       ? 'Je bent de onafhankelijke Nederlandstalige Veldio-wedstrijdredacteur. Schrijf uitsluitend op basis van verifiedFacts een origineel verslag met headline, standfirst en body (3-5 inhoudelijke alinea’s). Leg de ontwikkelingen in het scoreverloop helder uit. Voeg geen feiten, assists, kansen, VAR-ingrepen, tactisch wedstrijdbeeld, dominantie, wissels, quotes of ranglijstgevolgen toe die niet uit verifiedFacts volgen. De officiële clubbron is alleen feitenbewijs, geen over te schrijven voorbeeldartikel. Vermeld de bron duidelijk. Bij te weinig feiten: {"skip":true}. Retourneer uitsluitend JSON.'
+       : 'Je bent de Nederlandstalige Veldio-wedstrijdredacteur. Schrijf een origineel kort uitslagbericht uitsluitend uit verifiedFacts. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (1-2 alinea’s van 10-65 woorden). De intro noemt de gecontroleerde eindstand. De body geeft uitsluitend de geverifieerde datum, competitie, speelronde en eventuele ruststand, met expliciete toeschrijving aan sourceName. Verzin geen doelpuntenmakers, kaarten, wissels, spelbeeld, kansen, gevolgen of emoties. Herhaal de eindstand niet als opvulling. Neem geen bronzin letterlijk over. Bij onvoldoende verschillende feiten: {"skip":true}.'},
+      {role:'user',content:JSON.stringify({verifiedFacts:facts,match:matchRecord.match,sourceName:sources[0].url===matches.FD?CREDIT:'OpenFootball',sourceUrls:sources.map(s=>s.url)})}
+     ],ai,'writing');
     if(draft?.skip)throw Error('Onvoldoende feiten voor een origineel wedstrijdbericht.');
     report.generationOrigin='production_ai';
    }else if(!draft){
@@ -1044,7 +1060,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    await checkpointStep({draft,generation:null});
    report.counts.generated++;route.generated++;
    stage='quality';
-   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks}:{}),
+   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
     reviewNotes:'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. '+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
