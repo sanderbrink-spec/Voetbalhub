@@ -8,7 +8,14 @@ function officialUrl(value){
 function evidence(record,doc,now=Date.now()){
  if(!record?.match||!doc||!officialUrl(doc.url)||typeof doc.text!=='string'||doc.text.length<120||doc.text.length>20000)return null;
  const time=Date.parse(doc.publishedAt||''),matchTime=Date.parse(record.publishedAt||'');
- if(!Number.isFinite(time)||!Number.isFinite(matchTime)||time<matchTime-3600000||time>now+300000||time<now-48*3600000)return null;
+ const dateOnly=/^\d{4}-\d{2}-\d{2}$/.test(doc.publishedAt||'');
+ const sourceDay=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(time));
+ const matchDay=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(matchTime));
+ // A date-only first-party publication provides no exact clock time.
+ // Accept that exact match day without pretending to know when it was posted.
+ if(!Number.isFinite(time)||!Number.isFinite(matchTime)||time>now+300000||
+    (dateOnly?sourceDay!==matchDay:time<matchTime-3600000)||
+    (dateOnly?now-matchTime>48*3600000:time<now-48*3600000))return null;
  const {homeTeam,awayTeam,homeScore,awayScore}=record.match;
  if(![homeTeam,awayTeam].every(v=>typeof v==='string'&&v.length>=3)||![homeScore,awayScore].every(Number.isInteger))return null;
  const content=normalized(doc.text),heading=normalized(doc.title);
