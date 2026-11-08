@@ -1,6 +1,24 @@
 'use strict';
 const { draftIssues, paragraphs, compactStructure, standardStructure } = require('./editorial-desk-model');
 const { headlineContradictions } = require('./editorial-quality');
+// Task-specific free-tier GPT-OSS policy. Source extraction stays fast;
+// writing gets deeper reasoning and the independent review gets high effort.
+const editorialModelTasks=Object.freeze({
+ extraction:{effort:'low',budget:2400},
+ writing:{effort:'medium',budget:3600},
+ revision:{effort:'high',budget:4200},
+ review:{effort:'high',budget:4200}
+});
+function groqEditorialOptions(model,task,{automaticPublication=false}={}){
+ const spec=editorialModelTasks[task];
+ if(!spec)throw new RangeError('Onbekende redactietaak: '+task);
+ const oss=/^openai\/gpt-oss-(?:20b|120b)$/.test(String(model));
+ return {
+  response_format:{type:'json_object'},
+  max_completion_tokens:task==='writing'&&!automaticPublication?2000:spec.budget,
+  ...(oss?{reasoning_effort:spec.effort,include_reasoning:false}:{})
+ };
+}
 class DraftError extends Error {
   constructor(status, message, retryAfter) { super(message); this.status=status; this.retryAfter=retryAfter; }
 }
@@ -35,7 +53,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     try{
       const response=await fetcher('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',signal,headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},
-        body:JSON.stringify({model,messages,response_format:{type:'json_object'},temperature:0.2,max_completion_tokens:automaticPublication?2400:1600,...(model.startsWith("openai/gpt-oss-")?{reasoning_effort:"low"}:{})})
+        body:JSON.stringify({model,messages,temperature:0.2,...groqEditorialOptions(model,'writing',{automaticPublication})})
       });
       if(response.status===429){
         const seconds=Number(response.headers.get('retry-after'));
@@ -58,5 +76,5 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues};
+module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions};
 
