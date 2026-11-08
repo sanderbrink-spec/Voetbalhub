@@ -1,6 +1,6 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {createEditorialDraft,groqEditorialOptions,editorialAssignment}=require('../editorial-ai');
+const {createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues}=require('../editorial-ai');
 const good={headline:'FC Groningen bespreekt plannen voor het komende seizoen',standfirst:'De club bespreekt nieuwe plannen met de betrokken medewerkers en neemt de uitkomsten mee in de voorbereiding op het komende seizoen.',body:[
 'Op het trainingscomplex werkten spelers in kleine groepen aan verschillende oefeningen onder leiding van de technische staf terwijl de overige medewerkers hun taken voorbereidden.',
 'Tijdens een apart overleg spraken vertegenwoordigers van de club met supporters over praktische onderwerpen rond de ontvangst van bezoekers en bereikbaarheid van het stadion.',
@@ -153,7 +153,10 @@ test('V95 writer receives a deterministic reporting assignment alongside the ori
 
 test('V96 official club authority survives writer planning and reaches Groq unchanged',async()=>{
  let request;
- const mock=async(_,options)=>{request=JSON.parse(options.body);return reply(good);};
+ const attributed={...good,
+  standfirst:'FC Groningen meldt dat de club plannen met betrokken medewerkers bespreekt en de uitkomsten verwerkt in de voorbereiding op het seizoen.',
+  body:['De club meldt dat spelers op het trainingscomplex met de technische staf oefeningen uitvoerden terwijl medewerkers hun taken voorbereidden.',...good.body.slice(1)]};
+ const mock=async(_,options)=>{request=JSON.parse(options.body);return reply(attributed);};
  const facts=[good.headline,good.standfirst,...good.body];
  await createEditorialDraft({...input,topic:'PEC Zwolle benoemt hoofdtrainer',facts,primaryAuthority:'club_decision',automaticPublication:true},{...config,fetcher:mock});
  const supplied=JSON.parse(request.messages[1].content);
@@ -178,4 +181,42 @@ test('V96 reporter removes only identical meaningful facts and preserves differe
  assert.equal(plan.leadFactIds[0],'F6');
  const different=editorialAssignment(['PSV wint de finale van Ajax','PSV verliest de finale van Ajax']);
  assert.equal(different.bodySections.length,1);
+});
+
+test('V102 publisher label requires an exact trusted HTTPS official hostname',()=>{
+ assert.equal(officialPublisherName('https://peczwolle.nl/nieuws/nieuwe-trainer'),'PEC Zwolle');
+ assert.equal(officialPublisherName('https://www.fcgroningen.nl/nieuws/feit'),'FC Groningen');
+ for(const url of ['http://peczwolle.nl/nieuws','https://peczwolle.nl.evil.net/nieuws','https://fake-peczwolle.nl/nieuws','invalid'])
+  assert.equal(officialPublisherName(url),null);
+});
+test('V102 initial official article must attribute both the club decision and at least one substantive paragraph',()=>{
+ const context={primaryAuthority:'club_decision',sourceUrls:['https://peczwolle.nl/nieuws/nieuwe-trainer'],facts:['Feit 1','Feit 2','Feit 3','Feit 4']};
+ const draft={headline:'Nieuwe hoofdtrainer in Zwolle aangekondigd',
+  standfirst:'PEC Zwolle heeft een trainer aangesteld en legt de contractvoorwaarden aan supporters en medewerkers uit.',
+  body:['De assistenten keren terug naar hun eerdere functie bij de technische staf.',
+        'De trainer werkte eerder bij een buitenlandse voetbalbond.',
+        'Het bestuur heeft meerdere kandidaten overwogen en vervolgens besloten.']};
+ assert.equal(editorialAttributionIssues({...draft,standfirst:'PEC Zwolle heeft een trainer aangesteld bij de club.'},context).length,2);
+ assert.equal(editorialAttributionIssues(draft,context).length,1);
+ const attributed={...draft,body:['De club meldt dat de assistenten naar hun eerdere functie terugkeren.',...draft.body.slice(1)]};
+ assert.deepEqual(editorialAttributionIssues(attributed,context),[]);
+ assert.deepEqual(editorialAttributionIssues(draft,{...context,primaryAuthority:null}),[]);
+ assert.deepEqual(editorialAttributionIssues(draft,{...context,sourceUrls:['https://peczwolle.nl/nieuws','https://ajax.nl/nieuws']}),[]);
+});
+test('V102 first writer sees official publisher while original fact gate remains mandatory',async()=>{
+ const facts=['PEC Zwolle bevestigt de aanstelling van een hoofdtrainer.',
+  'Dennis van der Ree en Maikel van der Werff keren terug als assistenten.',
+  'De trainer werkte eerder als assistent-bondscoach bij Indonesië.',
+  'De club vermeldt een contract en licht de benoeming toe.'];
+ let sent;
+ const news={headline:'PEC Zwolle kiest vaste hoofdtrainer en nieuwe staf',
+  standfirst:'PEC Zwolle bevestigt de benoeming van een hoofdtrainer en maakt de afspraken over de assistenten bekend.',
+  body:['De club meldt dat Dennis van der Ree en Maikel van der Werff terugkeren als assistenten van de nieuwe hoofdtrainer.',
+   'De benoemde trainer was eerder als assistent-bondscoach werkzaam bij Indonesië en vervult nu een rol bij PEC Zwolle.',
+   'In de bekendmaking licht de club de contractafspraken en de benoeming nader toe zonder aanvullende onbewezen conclusies.']};
+ const result=await createEditorialDraft({topic:'PEC Zwolle benoemt nieuwe hoofdtrainer',category:'clubnieuws',facts,sourceUrls:['https://peczwolle.nl/nieuws/nieuwe-trainer'],primaryAuthority:'club_decision',automaticPublication:true},
+ {apiKey:'fake',model:'openai/gpt-oss-120b',fetcher:async(_,options)=>{sent=JSON.parse(options.body);return reply(news);}});
+ assert.equal(result.qualityReview.autoPublish,false);
+ assert.equal(JSON.parse(sent.messages[1].content).officialPublisher,'PEC Zwolle');
+ assert.match(sent.messages[0].content,/Deze nieuwsgebeurtenis is uitsluitend via een officiële mededeling van PEC Zwolle vastgesteld/);
 });
