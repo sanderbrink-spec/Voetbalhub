@@ -469,3 +469,19 @@ test('past misclassified source-overlap errors are reopened only once',()=>{
  assert.equal(recoverMisclassifiedOverlap(job,now),false);
  assert.equal(recoverMisclassifiedOverlap({...original,failureStage:'generation'},now),false);
 });
+
+
+test('source-copied verified assistant pair can be reframed without adding facts',()=>{
+ const {reframeVerifiedStaffPair,overlapPhrases}=require('../scripts/automatic-publication');
+ const quoted='Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden overgenomen, keren terug in hun functie van assistent-trainer.';
+ const doc={text:quoted};
+ const draft={headline:'PEC Zwolle maakt trainersaanstelling bekend',standfirst:'De club heeft een nieuwe hoofdtrainer aangewezen.',
+  body:['Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden, keren terug als assistent-trainers.']};
+ assert.ok(overlapPhrases(doc.text,draft).length);
+ const result=reframeVerifiedStaffPair(draft,[quoted],[doc]);
+ assert.deepEqual(result.body,['Maikel van der Werff en Dennis van der Ree keren terug als assistent-trainers.']);
+ assert.deepEqual(overlapPhrases(doc.text,result),[]);
+ assert.deepEqual(reframeVerifiedStaffPair(draft,[quoted.replace('keren terug','blijven')],[doc]),draft);
+ assert.deepEqual(reframeVerifiedStaffPair(draft,[],[doc]),draft);
+ assert.deepEqual(reframeVerifiedStaffPair(draft,[quoted],[{text:'Een andere tekst zonder letterlijke bronoverlap.'}]),draft);
+});

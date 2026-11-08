@@ -2,6 +2,7 @@
 const fs=require('node:fs');
 const crypto=require('node:crypto');
 const M=require('../editorial-desk-model');
+const {reframeVerifiedStaffPair}=require('../editorial-overlap-repair');
 const {generationIssues,createEditorialDraft}=require('../editorial-ai');
 const {fingerprint}=require('../editorial-drafts');
 const config=require('../automatic-editorial.json');
@@ -616,6 +617,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
    for(let revision=0;revision<=2;revision++){
+    if(!matchRecord&&compact){
+     const reframed=reframeVerifiedStaffPair(draft,facts,group,overlapPhrases);
+     if(reframed!==draft){draft=reframed;payload.draft=reframed;}
+    }
     // Store complete AI copy for the owner's review as a separate Actions artifact,
     // not as publicly printed job logs or a queue field.
     if(!matchRecord&&report.draftSnapshots.length<12)report.draftSnapshots.push({
@@ -755,4 +760,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={overlapPhrases,publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
