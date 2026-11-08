@@ -842,3 +842,29 @@ test('V94 Groq reviewer and rewriter get high effort and remain separate from lo
  assert.deepEqual(requests.map(x=>x.reasoning_effort),['high','high']);
  assert.deepEqual(requests.map(x=>x.max_completion_tokens),[4200,4200]);
 });
+
+test('V95 quality review scores become specific bounded revision instructions, never permission to lower the bar',()=>{
+ const {editorialRewriteFeedback}=require('../scripts/automatic-publication');
+ const feedback=editorialRewriteFeedback({approved:false,score:75,scores:{actuality:90,reliability:95,nationalValue:80,originality:30,journalism:70,diversity:40}});
+ assert.equal(feedback.previousScore,75);
+ assert.equal(feedback.dimensions.originality,30);
+ assert.ok(feedback.priorities.some(p=>p.startsWith('Originaliteit:')));
+ assert.ok(feedback.priorities.some(p=>p.startsWith('Variatie:')));
+ assert.equal(feedback.priorities.some(p=>p.includes('verlaag')),false);
+ assert.equal(editorialRewriteFeedback({approved:true,scores:{originality:100}}),null);
+});
+test('V95 rewrite sees quality weaknesses and verified fact plan but never raw source body',async()=>{
+ const {reviseDraft,editorialRewriteFeedback}=require('../scripts/automatic-publication');
+ let messages;
+ const facts=['PEC Zwolle benoemt Alex Pastoor als hoofdtrainer.','Maikel van der Werff wordt assistent-trainer.','In 2025 werkte Pastoor in Indonesië.','Technisch directeur Hamstra legt de keuze uit.'];
+ const feedback=editorialRewriteFeedback({approved:false,score:75,scores:{actuality:90,reliability:95,nationalValue:80,originality:30,journalism:70,diversity:40}});
+ const result=await reviseDraft({draft:{headline:'Verkeerde kop',standfirst:'Een fout concept',body:['Te letterlijk.']},verifiedFacts:facts,articleKind:'announcement',primaryAuthority:'club_decision',sources:[{url:'https://peczwolle.nl/nieuws/benoeming'}]},
+ {kind:'announcement',primaryAuthority:'club_decision'},[{url:'https://peczwolle.nl/nieuws/benoeming',title:'Titel',publishedAt:'2026-11-08',text:'NIET-DELEN-MET-SCHRIJVER'}],
+ 'Originaliteit lager dan 70.',{key:'test',model:'test-model',fetcher:async(_,options)=>{messages=JSON.parse(options.body).messages;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});}},[],feedback);
+ assert.equal(result,null);
+ const user=JSON.parse(messages[1].content);
+ assert.deepEqual(user.verifiedFacts,facts);
+ assert.equal(user.reviewFeedback.dimensions.originality,30);
+ assert.deepEqual(user.editorialAssignment.leadFactIds,['F1']);
+ assert.equal(JSON.stringify(user).includes('NIET-DELEN-MET-SCHRIJVER'),false);
+});
