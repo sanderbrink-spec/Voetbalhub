@@ -1,8 +1,8 @@
 'use strict';
 const crypto=require('node:crypto');
-const MODELS=Object.freeze({groq:'openai/gpt-oss-120b',gemini:'gemini-2.5-pro',openrouter:'openai/gpt-oss-120b:free'});
+const MODELS=Object.freeze({groq:'openai/gpt-oss-120b',openai:'gpt-4.1-mini',gemini:'gemini-2.5-pro',openrouter:'openai/gpt-oss-120b:free'});
 const TASKS=Object.freeze({extraction:{budget:2400,effort:'low'},writing:{budget:3600,effort:'medium'},revision:{budget:4200,effort:'high'},review:{budget:4200,effort:'high'}});
-const ENDPOINTS={groq:'https://api.groq.com/openai/v1/chat/completions',gemini:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',openrouter:'https://openrouter.ai/api/v1/chat/completions'};
+const ENDPOINTS={groq:'https://api.groq.com/openai/v1/chat/completions',openai:'https://api.openai.com/v1/chat/completions',gemini:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',openrouter:'https://openrouter.ai/api/v1/chat/completions'};
 function retryDelay(value,now=Date.now()){
  if(value===null||value===undefined||value==='')return 0;
  const seconds=Number(value),delay=Number.isFinite(seconds)?seconds*1000:Date.parse(value)-now;
@@ -30,13 +30,13 @@ class ProviderUnavailable extends Error{
  }
 }
 class EditorialProviderRouter{
- constructor({groqKey,geminiKey,openrouterKey,geminiFreeTierConfirmed=false,fetcher=fetch,now=Date.now,state={},onState=async()=>{},onAttempt=()=>{},intervalMs=35000,timeoutMs=180000,limits={}}={}){
-  this.keys={groq:groqKey,gemini:geminiKey,openrouter:openrouterKey};
+ constructor({groqKey,openaiKey,openaiModel,geminiKey,openrouterKey,geminiFreeTierConfirmed=false,fetcher=fetch,now=Date.now,state={},onState=async()=>{},onAttempt=()=>{},intervalMs=35000,timeoutMs=180000,limits={}}={}){
+  this.keys={groq:groqKey,openai:openaiKey,gemini:geminiKey,openrouter:openrouterKey};this.models={...MODELS,openai:openaiModel||MODELS.openai};
   this.geminiFreeTierConfirmed=geminiFreeTierConfirmed;this.fetcher=fetcher;this.now=now;this.state=state;this.onState=onState;this.onAttempt=onAttempt;this.intervalMs=intervalMs;this.timeoutMs=timeoutMs;this.trace=[];this.lastWriter=null;
-  this.limits={groq:{requests:80,tokens:150000},gemini:{requests:20,tokens:100000},openrouter:{requests:45,tokens:150000},...limits};
+  this.limits={groq:{requests:80,tokens:150000},openai:{requests:80,tokens:150000},gemini:{requests:20,tokens:100000},openrouter:{requests:45,tokens:150000},...limits};
   this.openrouterVerifiedUntil=0;this.pending=Promise.resolve();
  }
- configured(){return Object.entries(this.keys).map(([provider,key])=>({provider,model:MODELS[provider],keyPresent:Boolean(key),enabled:Boolean(key)&&(provider!=='gemini'||this.geminiFreeTierConfirmed),reason:!key?'missing_key':provider==='gemini'&&!this.geminiFreeTierConfirmed?'free_project_not_confirmed':provider==='openrouter'?'requires_live_zero_price_check':'configured'}));}
+ configured(){return Object.entries(this.keys).map(([provider,key])=>({provider,model:this.models[provider],keyPresent:Boolean(key),enabled:Boolean(key)&&(provider!=='gemini'||this.geminiFreeTierConfirmed),reason:!key?'missing_key':provider==='gemini'&&!this.geminiFreeTierConfirmed?'free_project_not_confirmed':provider==='openrouter'?'requires_live_zero_price_check':'configured'}));}
  slot(provider){
   const day=new Date(this.now()).toISOString().slice(0,10),old=this.state[provider];
   if(!old||old.day!==day)this.state[provider]={day,requests:0,tokens:0,blockedUntil:old?.blockedUntil||0,nextAt:old?.nextAt||0};
@@ -60,8 +60,8 @@ class EditorialProviderRouter{
  async _complete(messages,{task='extraction',requestOptions={},signal,writer=this.lastWriter,articleId=this.articleId||null}={}){
   const spec=TASKS[task];if(!spec)throw new RangeError('Onbekende redactietaak');
   const attempts=[],estimate=Math.ceil(JSON.stringify(messages).length/3)+spec.budget;
-  let order=['groq','gemini','openrouter'];
-  if(task==='review'&&writer)order.sort((a,b)=>((a===writer.provider?2:(a==='gemini'?'gemini':'gpt-oss')===writer.family?1:0)-(b===writer.provider?2:(b==='gemini'?'gemini':'gpt-oss')===writer.family?1:0)));
+  let order=this.keys.openai?['openai','groq','gemini','openrouter']:['groq','gemini','openrouter'];
+  if(task==='review'&&writer)order.sort((a,b)=>((a===writer.provider?2:(a==='gemini'?'gemini':a==='openai'?'openai':'gpt-oss')===writer.family?1:0)-(b===writer.provider?2:(b==='gemini'?'gemini':b==='openai'?'openai':'gpt-oss')===writer.family?1:0)));
   for(const provider of order){
    if(signal?.aborted)throw signal.reason;
    if(!this.keys[provider]||(provider==='gemini'&&!this.geminiFreeTierConfirmed))continue;
@@ -83,7 +83,7 @@ class EditorialProviderRouter{
      body={systemInstruction:{parts:[{text:messages.filter(m=>m.role==='system').map(m=>m.content).join('\n')}]},contents:messages.filter(m=>m.role!=='system').map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),generationConfig:{responseMimeType:'application/json',temperature:0,maxOutputTokens:budget}};
     }else{
      headers.Authorization='Bearer '+this.keys[provider];
-     body={model:MODELS[provider],messages,temperature:0,response_format:requestOptions.response_format||{type:'json_object'},...(provider==='groq'?{max_completion_tokens:budget,reasoning_effort:jsonAttempt?'medium':spec.effort,include_reasoning:false}:{max_tokens:budget,provider:{max_price:{prompt:0,completion:0},allow_fallbacks:false,require_parameters:true},reasoning:{effort:spec.effort,exclude:true}})};
+     body={model:this.models[provider],messages,temperature:0,response_format:requestOptions.response_format||{type:'json_object'},...(provider==='groq'?{max_completion_tokens:budget,reasoning_effort:jsonAttempt?'medium':spec.effort,include_reasoning:false}:provider==='openai'?{max_completion_tokens:budget}:{max_tokens:budget,provider:{max_price:{prompt:0,completion:0},allow_fallbacks:false,require_parameters:true},reasoning:{effort:spec.effort,exclude:true}})};
     }
     slot.requests++;slot.tokens+=estimate;slot.nextAt=this.now()+this.intervalMs;
     await this.onState(this.state);this.onAttempt({provider,task,model:MODELS[provider]});
@@ -111,7 +111,7 @@ class EditorialProviderRouter{
      break;
     }catch(error){if(signal?.aborted)throw signal.reason;kind=['TimeoutError','AbortError'].includes(error?.name)?'timeout':'temporary';break;}
    }
-   const record={provider,model:MODELS[provider],family:provider==='gemini'?'gemini':'gpt-oss',task,outcome:kind,...(kind==='invalid_json'?{outputShape:outputShape||{parseableObject:false}}:{}),articleId,at:new Date(this.now()).toISOString()};
+   const record={provider,model:this.models[provider],family:provider==='gemini'?'gemini':provider==='openai'?'openai':'gpt-oss',task,outcome:kind,...(kind==='invalid_json'?{outputShape:outputShape||{parseableObject:false}}:{}),articleId,at:new Date(this.now()).toISOString()};
    this.trace.push(record);
    if(kind==='success'){
     if(['writing','revision'].includes(task)&&result.skip!==true)this.lastWriter={provider,model:MODELS[provider],family:record.family};
@@ -123,7 +123,7 @@ class EditorialProviderRouter{
   throw new ProviderUnavailable(attempts,Math.ceil((delays.length?Math.min(...delays):3600000)/1000));
  }
 }
-function createRouter({env=process.env,...options}={}){return new EditorialProviderRouter({groqKey:env.GROQ_API_KEY,geminiKey:env.GEMINI_API_KEY||env.GOOGLE_API_KEY,openrouterKey:env.OPENROUTER_API_KEY,geminiFreeTierConfirmed:env.GEMINI_FREE_TIER_CONFIRMED==='true',...options});}
+function createRouter({env=process.env,...options}={}){return new EditorialProviderRouter({groqKey:env.GROQ_API_KEY,openaiKey:env.OPENAI_API_KEY,openaiModel:env.OPENAI_MODEL,geminiKey:env.GEMINI_API_KEY||env.GOOGLE_API_KEY,openrouterKey:env.OPENROUTER_API_KEY,geminiFreeTierConfirmed:env.GEMINI_FREE_TIER_CONFIRMED==='true',...options});}
 // Public durable queue contains only authenticated ciphertext, never source text.
 function sealCheckpoint(value,secret,context){
  const iv=crypto.randomBytes(12),key=crypto.createHash('sha256').update(secret).digest(),cipher=crypto.createCipheriv('aes-256-gcm',key,iv);cipher.setAAD(Buffer.from(context));
