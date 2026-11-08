@@ -552,3 +552,14 @@ test('official extraction emits only literal evidence when the model paraphrases
  assert.equal(candidate.topic,doc.title);
  assert.ok(doc.text.includes(candidate.facts[0].text));
 });
+
+test('only the exact previously failed literal primary evidence job retries once after V67',()=>{
+ const {recoverLiteralEvidenceRejection}=require('../scripts/automatic-publication');
+ const hash=require('node:crypto').createHash('sha256').update('Primaire feittekst staat niet letterlijk in de aangewezen bronpassage.').digest('hex');
+ const job={status:'review',failureStage:'verification',failureCategory:'journalistic_rejection',errorHash:hash,attempts:2};
+ assert.equal(recoverLiteralEvidenceRejection(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';assert.equal(recoverLiteralEvidenceRejection(job,now),false);
+ assert.equal(recoverLiteralEvidenceRejection({...job,literalEvidenceRecoveryV67:false,errorHash:'wrong'},now),false);
+ assert.equal(recoverLiteralEvidenceRejection({...job,literalEvidenceRecoveryV67:false,failureStage:'quality'},now),false);
+});
