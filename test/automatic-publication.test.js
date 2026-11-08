@@ -977,3 +977,17 @@ test('V100 reopens only the recorded Groq JSON provider failure once for the foc
   {jsonFailureRecoveryV100:true}])assert.equal(reopenVerifiedJsonFailureV100({...original,...diff},now,url),false);
  assert.equal(reopenVerifiedJsonFailureV100({...original},now,'https://ajax.nl/artikelen/andere'),false);
 });
+
+test('V102 rewriting editor gets verified source label and no raw publisher article',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ const facts=['PEC Zwolle benoemt Alex Pastoor als hoofdtrainer.','De assistenten keren terug bij de club.','In 2025 werkte hij bij Indonesië.','De club bevestigt een contract tot 2027.'];
+ let messages;
+ await reviseDraft({draft:{headline:'Oude kop',standfirst:'Oude intro',body:['Oude alinea.']},articleKind:'announcement',primaryAuthority:'club_decision',verifiedFacts:facts,sources:[{url:'https://peczwolle.nl/nieuws/feit'}]},
+  {kind:'announcement',primaryAuthority:'club_decision'},[{url:'https://peczwolle.nl/nieuws/feit',title:'Officiële bekendmaking',publishedAt:'2026-11-08',text:'COPYRIGHTED-NOT-PASSED-TO-WRITER'}],
+  'Bronvermelding en originaliteit onvoldoende',{key:'fake',model:'test-model',fetcher:async(_,options)=>{messages=JSON.parse(options.body).messages;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});}});
+ const input=JSON.parse(messages[1].content);
+ assert.equal(input.officialPublisher,'PEC Zwolle');
+ assert.deepEqual(input.verifiedFacts,facts);
+ assert.match(messages[0].content,/Bij officialPublisher moet de intro duidelijk de officiële bron noemen/);
+ assert.equal(JSON.stringify(input).includes('COPYRIGHTED-NOT-PASSED-TO-WRITER'),false);
+});
