@@ -1,6 +1,6 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {createEditorialDraft}=require('../editorial-ai');
+const {createEditorialDraft,groqEditorialOptions}=require('../editorial-ai');
 const good={headline:'FC Groningen bespreekt plannen voor het komende seizoen',standfirst:'De club bespreekt nieuwe plannen met de betrokken medewerkers en neemt de uitkomsten mee in de voorbereiding op het komende seizoen.',body:[
 'Op het trainingscomplex werkten spelers in kleine groepen aan verschillende oefeningen onder leiding van de technische staf terwijl de overige medewerkers hun taken voorbereidden.',
 'Tijdens een apart overleg spraken vertegenwoordigers van de club met supporters over praktische onderwerpen rond de ontvangst van bezoekers en bereikbaarheid van het stadion.',
@@ -85,10 +85,32 @@ test('V91 automatic newsroom requests only a completed article JSON and reserves
   request=JSON.parse(options.body);
   return reply(good);
  }});
- assert.equal(request.max_completion_tokens,2400);
+ assert.equal(request.max_completion_tokens,3600);
  assert.match(request.messages[0].content,/GEEN claims, why_it_matters of verification_notes/);
  assert.match(request.messages[0].content,/lege alinea’s is altijd een ongeldig concept/);
  assert.equal(request.messages[0].content.includes('Claims bevatten claim, evidence en status'),false);
  assert.equal(request.messages[1].content.includes('"automaticPublication":true'),true);
  assert.equal(output.body.length,3);
+});
+
+test('V94 models get deliberate reasoning budgets for each newsroom job',()=>{
+ const model='openai/gpt-oss-120b';
+ for(const [role,effort,budget] of [['extraction','low',2400],['writing','medium',3600],['revision','high',4200],['review','high',4200]]){
+  const body=groqEditorialOptions(model,role,{automaticPublication:true});
+  assert.equal(body.reasoning_effort,effort);
+  assert.equal(body.max_completion_tokens,budget);
+  assert.equal(body.include_reasoning,false);
+  assert.deepEqual(body.response_format,{type:'json_object'});
+ }
+ assert.equal(groqEditorialOptions(model,'writing').max_completion_tokens,2000);
+ assert.equal(groqEditorialOptions('test-model','writing').reasoning_effort,undefined);
+ assert.throws(()=>groqEditorialOptions(model,'other'),RangeError);
+});
+test('V94 automated writer uses 120B medium, no premium model or new API',async()=>{
+ let request;
+ const f=async(_,options)=>{request=JSON.parse(options.body);return reply(good);};
+ await createEditorialDraft({...input,automaticPublication:true},{...config,model:'openai/gpt-oss-120b',fetcher:f});
+ assert.equal(request.model,'openai/gpt-oss-120b');
+ assert.equal(request.reasoning_effort,'medium');
+ assert.equal(request.max_completion_tokens,3600);
 });
