@@ -479,7 +479,7 @@ test('source-copied verified assistant pair can be reframed without adding facts
   body:['Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden, keren terug als assistent-trainers.']};
  assert.ok(overlapPhrases(doc.text,draft).length);
  const result=reframeVerifiedStaffPair(draft,[quoted],[doc]);
- assert.deepEqual(result.body,['Maikel van der Werff en Dennis van der Ree keren terug als assistent-trainers.']);
+ assert.deepEqual(result.body,['Maikel van der Werff en Dennis van der Ree, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden, keren terug als assistent-trainers.']);
  assert.deepEqual(overlapPhrases(doc.text,result),[]);
  assert.deepEqual(reframeVerifiedStaffPair(draft,[quoted.replace('keren terug','blijven')],[doc]),draft);
  assert.deepEqual(reframeVerifiedStaffPair(draft,[],[doc]),draft);
@@ -630,7 +630,7 @@ test('verified assistant-pair overlap repair also works on full three-paragraph 
  assert.equal(result.body.length,3);
  assert.equal(result.body[0],draft.body[0]);
  assert.equal(result.body[1],draft.body[1]);
- assert.match(result.body[2],/^Maikel van der Werff en Dennis van der Ree keren terug/);
+ assert.match(result.body[2],/^Maikel van der Werff en Dennis van der Ree, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden/);
  assert.deepEqual(overlapPhrases(doc.text,result),[]);
 });
 test('full-story anti-copy retry is bounded and excludes other failures',()=>{
@@ -639,4 +639,16 @@ test('full-story anti-copy retry is bounded and excludes other failures',()=>{
  assert.equal(recoverFullStoryOverlap(job,now),true);
  job.status='review';assert.equal(recoverFullStoryOverlap(job,now),false);
  assert.equal(recoverFullStoryOverlap({...job,fullStoryOverlapV71:false,failureStage:'verification'},now),false);
+});
+
+test('full-length verified staff paraphrase keeps its news context and passes source-overlap gate',()=>{
+ const {reframeVerifiedStaffPair,overlapPhrases}=require('../scripts/automatic-publication');
+ const evidence='Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden overgenomen, keren weer terug in hun functie van assistent-trainer.';
+ const paragraph='Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden, keren terug naar hun functie als assistent-trainers. Samen met keeperstrainer Diederik Boer vormen zij de nieuwe staf rondom Pastoor.';
+ const original={headline:'PEC Zwolle heeft een nieuwe technische staf aangesteld',standfirst:'De club wijzigt de taakverdeling van haar technische staf.',body:[paragraph]};
+ const rewritten=reframeVerifiedStaffPair(original,[evidence],[{text:evidence}]);
+ assert.ok(rewritten.body[0].startsWith('Maikel van der Werff en Dennis van der Ree,'));
+ assert.ok(rewritten.body[0].includes('Samen met keeperstrainer Diederik Boer'));
+ assert.ok(rewritten.body[0].split(/\\s+/).length>=18);
+ assert.deepEqual(overlapPhrases(evidence,rewritten),[]);
 });
