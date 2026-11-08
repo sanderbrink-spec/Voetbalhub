@@ -395,13 +395,13 @@ test('overlap feedback identifies exact copied words while preserving the ten-wo
 });
 
 
-test('four or five verified facts support a concise primary decision without waiving gates',()=>{
+test('primary news is concise for at most three facts and full depth for four or more',()=>{
  const M=require('../editorial-desk-model');
  const docs=[{url:'https://peczwolle.nl/nieuws/aanstelling'}];
- for(const n of [1,3,4,5]){
+ for(const n of [1,2,3,4,5]){
   const facts=Array.from({length:n},(_,i)=>'Concreet vastgelegd feit '+i);
   const payload={articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:facts};
-  assert.equal(M.briefEligible(payload),true);
+  assert.equal(M.briefEligible(payload),n<=3);
  }
  assert.equal(M.briefEligible({articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:Array(6).fill('feit')}),false);
  assert.equal(M.briefEligible({articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:['feit'],transferStatus:'confirmed'}),false);
@@ -495,4 +495,18 @@ test('new verified-name rewrite retries one rejected official article exactly on
  assert.equal(recoverVerifiedNameRewrite(job,now),false);
  assert.equal(recoverVerifiedNameRewrite({...job,verifiedNameRewriteV65:false,failureStage:'verification'},now),false);
  assert.equal(recoverVerifiedNameRewrite({...job,verifiedNameRewriteV65:false,failureCategory:'temporary_source_failure'},now),false);
+});
+
+test('V66 factual richness retries one rejected official packet and never bypasses controls',()=>{
+ const {recoverRichVerifiedContext}=require('../scripts/automatic-publication');
+ const job={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:2};
+ assert.equal(recoverRichVerifiedContext(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';assert.equal(recoverRichVerifiedContext(job,now),false);
+ assert.equal(recoverRichVerifiedContext({...job,richContextRecoveryV66:false,failureStage:'verification'},now),false);
+ assert.equal(recoverRichVerifiedContext({...job,richContextRecoveryV66:false,failureCategory:'temporary_source_failure'},now),false);
+ const M=require('../editorial-desk-model');
+ assert.ok(M.publicationIssues({articleKind:'announcement',primaryAuthority:'club_decision',
+ sources:[{url:'https://peczwolle.nl/nieuws/aanstelling'}],verifiedFacts:['een','twee','drie','vier'],
+ draft:{headline:'Te korte kop',standfirst:'Ook te kort',body:['een']}}).length>0);
 });
