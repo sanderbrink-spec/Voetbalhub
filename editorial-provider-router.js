@@ -86,7 +86,7 @@ class EditorialProviderRouter{
      body={systemInstruction:{parts:[{text:messages.filter(m=>m.role==='system').map(m=>m.content).join('\n')}]},contents:messages.filter(m=>m.role!=='system').map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),generationConfig:{responseMimeType:'application/json',temperature:0,maxOutputTokens:budget}};
     }else{
      headers.Authorization='Bearer '+this.keys[provider];
-     body={model:this.models[provider],messages,temperature:0,response_format:requestOptions.response_format||(task==='writing'&&['groq','openai'].includes(provider)?WRITING_FORMAT:{type:'json_object'}),...(provider==='groq'?{max_completion_tokens:budget,reasoning_effort:jsonAttempt?'medium':spec.effort,include_reasoning:false}:provider==='openai'?{max_completion_tokens:budget}:{max_tokens:budget,provider:{max_price:{prompt:0,completion:0},allow_fallbacks:false,require_parameters:true},reasoning:{effort:spec.effort,exclude:true}})};
+     body={model:this.models[provider],messages,temperature:0,response_format:requestOptions.response_format||(['writing','revision'].includes(task)&&['groq','openai'].includes(provider)?WRITING_FORMAT:{type:'json_object'}),...(provider==='groq'?{max_completion_tokens:budget,reasoning_effort:jsonAttempt?'medium':spec.effort,include_reasoning:false}:provider==='openai'?{max_completion_tokens:budget}:{max_tokens:budget,provider:{max_price:{prompt:0,completion:0},allow_fallbacks:false,require_parameters:true},reasoning:{effort:spec.effort,exclude:true}})};
     }
     slot.requests++;slot.tokens+=estimate;slot.nextAt=this.now()+this.intervalMs;
     await this.onState(this.state);this.onAttempt({provider,task,model:MODELS[provider]});
