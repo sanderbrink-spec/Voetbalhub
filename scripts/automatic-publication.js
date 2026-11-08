@@ -2,7 +2,7 @@
 const fs=require('node:fs');
 const crypto=require('node:crypto');
 const M=require('../editorial-desk-model');
-const {reframeVerifiedStaffPair}=require('../editorial-overlap-repair');
+const {reframeVerifiedStaffPair,reframeVerifiedClubDecision}=require('../editorial-overlap-repair');
 const {generationIssues,createEditorialDraft}=require('../editorial-ai');
 const {fingerprint}=require('../editorial-drafts');
 const config=require('../automatic-editorial.json');
@@ -394,6 +394,14 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
+function recoverVerifiedPhraseRewriteV74(job,now){
+ // Re-process at most once after the deterministic, fact-preserving source
+ // overlap repair. Rejection and second reviewer remain fully authoritative.
+ if(job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.verifiedPhraseRewriteV74)return false;
+ job.verifiedPhraseRewriteV74=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
 function recoverIndependentOriginalityV73(job,now){
  // One new complete editorial review after preventing publication-source
  // copying in the revision prompt. Only the observed V71 quality failure.
@@ -623,7 +631,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const job=durable.queue.enqueue(group,now);
   if(group.length===1&&!group.matchRecord){
    const officialCoach=verifiedOfficialCoachDecision(group[0]);
-   if(officialCoach){group.officialCoachCandidate=officialCoach;recoverOfficialCoachDecision(job,now);recoverCoachStoryline(job,now);recoverFullStoryOverlap(job,now);recoverIndependentOriginalityV73(job,now);}
+   if(officialCoach){group.officialCoachCandidate=officialCoach;recoverOfficialCoachDecision(job,now);recoverCoachStoryline(job,now);recoverFullStoryOverlap(job,now);recoverIndependentOriginalityV73(job,now);recoverVerifiedPhraseRewriteV74(job,now);}
   }
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
@@ -757,7 +765,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      // V71: the same source-copied staff clause appears in both brief and full
      // news articles. The helper only rewrites an explicitly verified fact.
      const reframed=reframeVerifiedStaffPair(draft,facts,group,overlapPhrases);
-     if(reframed!==draft){draft=reframed;payload.draft=reframed;}
+     const corrected=reframeVerifiedClubDecision(reframed,facts,group,overlapPhrases);
+     if(corrected!==draft){draft=corrected;payload.draft=corrected;}
     }
     // Store complete AI copy for the owner's review as a separate Actions artifact,
     // not as publicly printed job logs or a queue field.
@@ -898,4 +907,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
