@@ -213,7 +213,7 @@ test('V102 first writer sees official publisher while original fact gate remains
   standfirst:'PEC Zwolle bevestigt de benoeming van een hoofdtrainer en maakt de afspraken over de assistenten bekend.',
   body:['De club meldt dat Dennis van der Ree en Maikel van der Werff terugkeren als assistenten van de nieuwe hoofdtrainer.',
    'De benoemde trainer was eerder als assistent-bondscoach werkzaam bij Indonesië en vervult nu een rol bij PEC Zwolle.',
-   'In de bekendmaking licht de club de contractafspraken en de benoeming nader toe zonder aanvullende onbewezen conclusies.']};
+   'In de bekendmaking licht de club de concrete contractafspraken en de benoeming nader toe zonder aanvullende onbewezen conclusies of een verzonnen wedstrijdverloop.']};
  const result=await createEditorialDraft({topic:'PEC Zwolle benoemt nieuwe hoofdtrainer',category:'clubnieuws',facts,sourceUrls:['https://peczwolle.nl/nieuws/nieuwe-trainer'],primaryAuthority:'club_decision',automaticPublication:true},
  {apiKey:'fake',model:'openai/gpt-oss-120b',fetcher:async(_,options)=>{sent=JSON.parse(options.body);return reply(news);}});
  assert.equal(result.qualityReview.autoPublish,false);
