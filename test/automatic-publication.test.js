@@ -1012,5 +1012,21 @@ test('V103 independent revision never sees rejected hallucinated draft or whole 
  assert.equal(user.rejection.includes('letterlijk gekopieerde passage'),false);
  assert.equal(JSON.stringify(user).includes('AFGEKEURD-VERZONNEN'),false);
  assert.equal(JSON.stringify(user).includes('ORIGINELE-BRONPAGINA'),false);
- assert.match(messages[0].content,/Als coachPlan waar is/);
+ assert.match(messages[0].content,/Body 1: de concrete staf-/);
+});
+
+test('V105 independent coach revision uses compact three-part facts-only briefing',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ let sent;
+ const facts=['PEC Zwolle meldt de aanstelling van Alex Pastoor.','De club zegt dat de staf verandert.','Pastoor werkte eerder in Indonesië.','Gerry Hamstra geeft een toegeschreven mening over de coach.'];
+ await reviseDraft({draft:{headline:'OUDE-FOUT',standfirst:'Oude fout',body:['Verzonnen conclusie.']},verifiedFacts:facts,articleKind:'announcement',primaryAuthority:'club_decision',sources:[{url:'https://peczwolle.nl/nieuws/benoeming'}]},
+ {kind:'announcement',topic:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',primaryAuthority:'club_decision'},
+ [{url:'https://peczwolle.nl/nieuws/benoeming',title:'Officiële bekendmaking',publishedAt:'2026-11-08'}],
+ 'Originaliteit te laag.',{key:'fake',model:'test-model',fetcher:async(_,options)=>{
+  sent=JSON.parse(options.body).messages;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});
+ }});
+ assert.ok(sent[0].content.length<2600);
+ assert.match(sent[0].content,/Het vorige concept is bewust weggelaten/);
+ assert.match(sent[0].content,/Body 1: de concrete staf-/);
+ assert.equal(JSON.parse(sent[1].content).draft,undefined);
 });
