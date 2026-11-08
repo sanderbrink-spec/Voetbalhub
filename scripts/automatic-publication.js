@@ -617,7 +617,7 @@ function oneOffVerifiedEditorialDraft({focusSourceUrl,sources,facts}={}){
   body:[
    'De wissel verandert de verantwoordelijkheden binnen de trainersstaf. Dennis van der Ree en Maikel van der Werff namen vijf wedstrijden lang tijdelijk de leiding. PEC Zwolle meldt dat beiden weer als assistent-trainer verdergaan en samen met keeperstrainer Diederik Boer de nieuwe hoofdtrainer ondersteunen.',
    'Pastoor keert terug in een functie die hij in 2024 voorlopig had neergelegd. Een jaar later vervulde hij bij Indonesië een andere rol, als assistent-bondscoach. Met zijn komst naar Zwolle neemt hij opnieuw de taken van een hoofdtrainer op zich.',
-   'In de officiële clubbekendmaking licht Pastoor zijn keuze toe. Eerdere mogelijkheden om als trainer aan de slag te gaan voelden volgens hem niet passend. Hij noemt de gesprekken met Gerry en Joost prettig en ziet mogelijkheden in de spelersgroep. Technisch directeur Gerry Hamstra zegt dat PEC Zwolle verschillende kandidaten bekeek, direct positief was over Pastoor en bij de contractduur rekening hield met de wens van de trainer.'
+   'In de officiële clubbekendmaking licht Pastoor zijn keuze toe. Eerdere mogelijkheden om als trainer aan de slag te gaan voelden volgens hem niet passend. Hij noemt de gesprekken met Gerry en Joost prettig en ziet mogelijkheden in de spelersgroep. Gerry Hamstra zegt dat PEC Zwolle verschillende kandidaten bekeek, direct positief was over Pastoor en bij de contractduur rekening hield met de wens van de trainer.'
   ]
  };
 }
