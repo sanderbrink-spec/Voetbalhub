@@ -82,7 +82,7 @@ function officialPublisherName(url){
  try{
   const value=new URL(url);
   if(value.protocol!=='https:'||value.username||value.password)return null;
-  return names[value.hostname.toLowerCase().replace(/^www\\./,'')]||null;
+  return names[value.hostname.toLowerCase().replace(/^www\./,'')]||null;
  }catch{return null;}
 }
 // Attribute both the decision and its contextual claims. This is an
