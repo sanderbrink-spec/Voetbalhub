@@ -394,6 +394,16 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
+function recoverVerifiedStaffPairV71(job,now){
+ // One specific editorial retry after a verified pair was still copied.
+ // Never override verification, fact, rights or numerical quality checks.
+ if(job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||
+    job.errorHash!=='d6bff107135d6b7765a6144513f9478e92edb5d76a72ff8586b36493a303940c'||
+    job.verifiedStaffPairRecoveryV71)return false;
+ job.verifiedStaffPairRecoveryV71=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
 function recoverCoachStoryline(job,now){
  // A rewritten, source-grounded editorial storyline earns one reassessment.
  if(job.status!=='review'||job.failureStage!=='quality'||
@@ -605,7 +615,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const job=durable.queue.enqueue(group,now);
   if(group.length===1&&!group.matchRecord){
    const officialCoach=verifiedOfficialCoachDecision(group[0]);
-   if(officialCoach){group.officialCoachCandidate=officialCoach;recoverOfficialCoachDecision(job,now);recoverCoachStoryline(job,now);}
+   if(officialCoach){group.officialCoachCandidate=officialCoach;recoverOfficialCoachDecision(job,now);recoverCoachStoryline(job,now);recoverVerifiedStaffPairV71(job,now);}
   }
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
@@ -735,7 +745,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
    for(let revision=0;revision<=2;revision++){
-    if(!matchRecord&&compact){
+    if(!matchRecord&&candidate.primaryAuthority==='club_decision'){
      const reframed=reframeVerifiedStaffPair(draft,facts,group,overlapPhrases);
      if(reframed!==draft){draft=reframed;payload.draft=reframed;}
     }
@@ -878,4 +888,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={recoverVerifiedStaffPairV71,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
