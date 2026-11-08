@@ -94,7 +94,7 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  const lowered=x=>String(x||'').toLocaleLowerCase('nl');
  const name=lowered(publisher);
  const signals=['volgens','aldus','meldt','bevestigt','schrijft','laat weten','maakt bekend','bekendgemaakt','bekendmaking'];
- const isNamedAttribution=x=>lowered(x).split(/[.!?](?:\\s+|$)/).some(sentence=>
+ const isNamedAttribution=x=>lowered(x).split(/[.!?](?:\s+|$)/).some(sentence=>
   sentence.includes(name)&&signals.some(signal=>sentence.includes(signal)));
  const paragraphs=draft.body.filter(x=>typeof x==='string');
  const lead=String(draft.standfirst||'');
