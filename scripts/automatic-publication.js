@@ -261,9 +261,41 @@ function pacedGroq(fetcher=fetch,intervalMs=35000){
   }
  };
 }
+// Groq supports strict structured outputs for GPT-OSS 120B. A skipped
+// revision must stay representable, so the model can refuse thin evidence.
+const strictRevisionFormat={
+ type:'json_schema',
+ json_schema:{name:'veldio_verified_revision',strict:true,schema:{
+  type:'object',
+  properties:{skip:{type:'boolean'},headline:{type:'string'},standfirst:{type:'string'},body:{type:'array',items:{type:'string'}}},
+  required:['skip','headline','standfirst','body'],additionalProperties:false
+ }}
+};
+function providerErrorDetails(data){
+ const error=data?.error||{};
+ const safe=value=>String(value||'unknown').replace(/[^a-zA-Z0-9_]/g,'').slice(0,48)||'unknown';
+ const message=String(error.message||'');
+ const reason=/json_validate_failed|failed to generate json|generated json/i.test(message)?'json_generation'
+  :/response_format|json_schema|structured output/i.test(message)?'response_format'
+  :/reasoning_effort|include_reasoning|reasoning_format/i.test(message)?'reasoning_option'
+  :/context length|max_completion_tokens|token limit/i.test(message)?'context_budget'
+  :/temperature/i.test(message)?'temperature'
+  :'other';
+ return {code:safe(error.code),type:safe(error.type),param:safe(error.param),reason};
+}
 async function complete(messages,{key,model=config.model,fetcher=fetch},task='extraction'){
- const r=await fetcher('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},signal:AbortSignal.timeout(180000),body:JSON.stringify({model,messages,temperature:0,...groqEditorialOptions(model,task)})});
- if(!r.ok)throw Error('Redactionele AI tijdelijk niet beschikbaar: HTTP '+r.status);
+ const strict=task==='revision'&&model==='openai/gpt-oss-120b';
+ const format=strict?{...groqEditorialOptions(model,task),response_format:strictRevisionFormat}:groqEditorialOptions(model,task);
+ const input=strict?[{...messages[0],content:messages[0].content+' Geef altijd een JSON-object met alle velden skip, headline, standfirst en body. Bij onvoldoende bewijs: skip=true, headline="", standfirst="" en body=[]. Bij een bruikbare tekst: skip=false en alle tekstvelden volledig invullen.'},...messages.slice(1)]:messages;
+ const r=await fetcher('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},signal:AbortSignal.timeout(180000),body:JSON.stringify({model,messages:input,temperature:0,...format})});
+ if(!r.ok){
+  // Keep provider generated text, source contents and credentials out of public
+  // logs. Only controlled non-sensitive error categories are retained.
+  const details=providerErrorDetails(await r.json().catch(()=>null));
+  const err=new Error('Redactionele AI: HTTP '+r.status+' taak='+task+' type='+details.type+' code='+details.code+' param='+details.param+' oorzaak='+details.reason);
+  if(r.status===400)err.code='GROQ_BAD_REQUEST';
+  throw err;
+ }
  const data=await r.json();return JSON.parse(String(data.choices?.[0]?.message?.content||'').replace(/^```(?:json)?\s*|\s*```$/g,''));
 }
 function selectModel(catalog){
@@ -1008,4 +1040,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
