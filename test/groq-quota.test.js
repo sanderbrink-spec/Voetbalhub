@@ -4,6 +4,10 @@ const {pacedGroq}=require('../scripts/automatic-publication');
 const {dailyQuota}=require('../groq-quota');
 const endpoint='https://api.groq.com/openai/v1/chat/completions';
 const limited=message=>new Response(JSON.stringify({error:{message}}),{status:429,headers:{'retry-after':'0'}});
+test('daily quota preserves only a bounded retry-after delay',async()=>{
+ const fetcher=pacedGroq(async()=>new Response(JSON.stringify({error:{message:'tokens per day exhausted private detail'}}),{status:429,headers:{'retry-after':'7200'}}),0);
+ await assert.rejects(fetcher(endpoint,{}),error=>error.code==='GROQ_DAILY_QUOTA'&&error.retryAfterSeconds===7200&&!error.message.includes('private'));
+});
 
 test('daily provider exhaustion stops further model calls without blocking other services or exposing provider details',async()=>{
  for(const message of ['Rate limit reached on tokens per day (TPD). gsk_private-test','Rate limit reached on requests per day (RPD).','Daily token quota exhausted']){

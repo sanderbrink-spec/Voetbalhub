@@ -30,6 +30,7 @@ function assess({review, docs, evidenceIssues=[], duplicate=false, copied=false,
  if(duplicate) {scores.diversity=0;reasons.push('Dubbel onderwerp.');}
  if(copied) {scores.originality=0;reasons.push('Woordelijke overlap met bron.');}
  if(scores.reliability<90) reasons.push('Betrouwbaarheid lager dan 90.');
+ if(scores.journalism<85) reasons.push('Journalistieke kwaliteit lager dan 85.');
  for(const key of Object.keys(WEIGHTS)) if(scores[key]<70) reasons.push(key+' lager dan 70.');
  const score=Math.round(Object.keys(WEIGHTS).reduce((sum,key)=>sum+scores[key]*WEIGHTS[key]/100,0));
  if(score<threshold) reasons.push('Redactiescore lager dan '+threshold+'.');
@@ -53,6 +54,16 @@ class EditorialQueue {
   if(diagnostic.category)job.failureCategory=diagnostic.category;
  }
  fail(job,error,now=Date.now(),{stage='verification'}={}) {
+  // Provider capacity is not an unsuccessful editorial attempt. Retain the
+  // existing attempt budget and wait until the provider permits another call.
+  if(error?.code==='GROQ_DAILY_QUOTA'){
+   const seconds=Number(error.retryAfterSeconds);
+   job.status='retry';job.updatedAt=now;
+   job.nextAttemptAt=now+1000*(Number.isFinite(seconds)&&seconds>0?Math.min(86400,seconds):3600);
+   job.failureStage=stage;job.failureCategory='provider_quota';job.reason='provider_daily_limit';
+   job.errorHash=crypto.createHash('sha256').update(error.code).digest('hex');
+   return;
+  }
   job.attempts++;job.updatedAt=now;
   // Never mistake quoted source wording (e.g. "tijdelijk de leiding") for an
   // HTTP/provider outage inside a rejected quality assessment.

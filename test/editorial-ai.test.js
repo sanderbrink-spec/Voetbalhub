@@ -312,3 +312,11 @@ test('V108 only one lead/body duplication reaches the specialist, not the publis
  assert.equal(mayDelegateLeadOverlap([overlap],{automaticPublication:false,coachPlan:true}),false);
  assert.equal(mayDelegateLeadOverlap(['Woordelijke bronoverlap.'],{automaticPublication:true,coachPlan:true}),false);
 });
+
+test('English rewrite is rejected while Dutch reporting with foreign club names remains eligible',()=>{
+ const {generationIssues}=require('../editorial-ai');
+ const english={headline:'Alex Pastoor appointed head coach of PEC Zwolle',standfirst:'PEC Zwolle confirms Alex Pastoor as head coach with a contract for the next campaign.',body:['According to the club, the coaching staff will include the existing coaches who resume their positions with the team. Their responsibilities will be defined by the club.']};
+ assert.ok(generationIssues(english,[]).some(issue=>issue.includes('Engelstalig')));
+ const dutch={headline:'PEC Zwolle bevestigt de komst van Alex Pastoor',standfirst:'De club meldt dat de trainer maandag begint.',body:['Volgens de club keren de assistenten terug in hun eigen functie. De club heeft de verdeling van de taken bekendgemaakt. Liverpool en Manchester City worden hier alleen als clubnamen genoemd.']};
+ assert.ok(!generationIssues(dutch,[]).some(issue=>issue.includes('Engelstalig')));
+});
