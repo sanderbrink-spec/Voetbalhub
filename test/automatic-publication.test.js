@@ -880,3 +880,27 @@ test('V92 fixes only uniquely verified single-character surname typos, not inven
  assert.match(fixed.body[1],/Alex Pstrrr/);
  assert.equal(repairUniqueVerifiedNameTypo(draft,['Alex Pastoor','Alex Pastar']).headline,draft.headline);
 });
+
+test('V96 end editor explicitly acts on factual section plan and rejected score dimensions without changing gates',async()=>{
+ const {reviseDraft,editorialRewriteFeedback}=require('../scripts/automatic-publication');
+ let system='',user;
+ const facts=[
+  'PEC Zwolle heeft Alex Pastoor als hoofdtrainer aangesteld.',
+  'Dennis van der Ree en Maikel van der Werff keren als assistenten terug.',
+  'In 2025 was Alex Pastoor assistent-bondscoach bij Indonesië.',
+  'Gerry Hamstra licht de keuze van PEC Zwolle toe.'
+ ];
+ const score={approved:false,score:75,scores:{actuality:90,reliability:95,nationalValue:80,originality:30,journalism:70,diversity:40}};
+ const payload={draft:{headline:'Oude kop',standfirst:'Oude standfirst',body:['Oude alinea']},verifiedFacts:facts,
+  articleKind:'announcement',primaryAuthority:'club_decision',sources:[{url:'https://peczwolle.nl/nieuws/aanstelling'}]};
+ await reviseDraft(payload,{kind:'announcement',primaryAuthority:'club_decision'},[{url:'https://peczwolle.nl/nieuws/aanstelling',title:'Aanstelling',publishedAt:'2026-11-08'}],
+ 'Redactiescore lager dan 85.',{key:'fake',model:'test-model',fetcher:async(_,options)=>{
+  const messages=JSON.parse(options.body).messages;system=messages[0].content;user=JSON.parse(messages[1].content);
+  return Response.json({choices:[{message:{content:'{"skip":true}'}}]});
+ }},[],editorialRewriteFeedback(score));
+ assert.ok(system.includes('reviewFeedback.priorities'));
+ assert.ok(system.includes('editorialAssignment'));
+ assert.equal(user.reviewFeedback.dimensions.originality,30);
+ assert.deepEqual(user.verifiedFacts,facts);
+ assert.equal(user.editorialAssignment.leadFactIds.length,1);
+});
