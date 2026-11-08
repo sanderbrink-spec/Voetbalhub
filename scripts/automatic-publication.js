@@ -311,6 +311,45 @@ function alignPrimaryLiteralFacts(candidate){
  }
  return {...candidate,facts:fixed};
 }
+// A verified official decision must not disappear because the extraction model
+// elects to skip. This fallback only selects literal, complete source sentences;
+// every later evidence, originality, second-editor and 85-point gate still runs.
+function recoverOfficialSourceLiterals(doc){
+ const authority=primaryAuthority(doc);
+ if(!authority||typeof doc?.text!=='string')return null;
+ const quotes=evidenceFragments(doc);
+ const ignore=new Set('nieuwe nieuw hoofdtrainer trainer club nieuws officieel wordt met zijn haar voor het een van bij naar onder aangesteld benoemd ontslag vertrekt verlengt tekent heeft'.split(' '));
+ const anchors=[...new Set(normalize(doc.title).split(' ').filter(w=>w.length>=3&&!ignore.has(w)))];
+ if(anchors.length<2)return null;
+ const items=[];
+ for(const raw of doc.text.split(/(?<=[.!?])\s+(?=[A-ZÀ-Ý0-9“‘])/u)){
+  const sentence=raw.trim().replace(/^.*?\b(?:Gisteren|Vandaag|Eergisteren)\s*-\s*\d{1,2}[:.]\d{2}\s+(?=[A-ZÀ-Ý])/u,'');
+  if(sentence.length<35||sentence.length>300||!/[.!?]$/.test(sentence))continue;
+  if(/,,|[“”„]|cookie|privacy|fanshop|kaartverkoop|gerelateerde berichten/i.test(sentence))continue;
+  const quote=quotes.find(q=>q.includes(sentence));
+  if(!quote)continue; // A sentence crossing fragments has no single literal proof.
+  const words=new Set(normalize(sentence).split(' '));
+  const anchorMatches=anchors.filter(w=>words.has(w)).length;
+  const decision=/\b(?:aangesteld|benoemd|ontslagen|ontslag|vertrekt|verlengt|verlengd|tekent|tekende|contract|getekend)\b/i.test(sentence);
+  const relevant=/\b(?:trainer|hoofdtrainer|contract|assistent|eredivisie|directeur|zwolle|maandag|seizoen|club|coach|keeperstrainer|bondscoach|promoveren|overgenomen|terugkeren|terug)\b/i.test(sentence);
+  items.push({text:sentence,evidence:[{source:0,quote}],anchorMatches,decision,relevant});
+ }
+ const first=items.find(x=>x.decision&&x.anchorMatches>=2);
+ if(!first)return null; // A headline alone never counts as a confirmed decision.
+ const selected=[first];
+ const seen=new Set([normalize(first.text)]);
+ for(const item of items){
+  if(!item.relevant&&!item.decision)continue;
+  const key=normalize(item.text);
+  if(seen.has(key))continue;
+  selected.push(item);seen.add(key);
+  if(selected.length>=7)break;
+ }
+ if(selected.length<3)return null;
+ return {kind:'announcement',topic:doc.title,category:'clubnieuws',eventDate:'',teams:[],
+  primaryAuthority:authority,sharedEventEvidence:[],
+  facts:selected.map(({text,evidence})=>({text,evidence}))};
+}
 async function extractCandidate(docs,options,now){
  const fragments=docs.map(evidenceFragments);
  const authority=docs.length===1?primaryAuthority(docs[0]):'';
@@ -327,7 +366,7 @@ async function extractCandidate(docs,options,now){
  if(authority)messages[0].content+=' Voor deze primaire mededeling moet facts[].text een aaneengesloten letterlijke passage uit de aangewezen bronpassage zijn, in de oorspronkelijke taal. De schrijver parafraseert later. Zet relatieve dagen nooit om in datums. Voeg geen namen, cijfers of samengestelde loopbaanclaims toe. Elke feittekst moet letterlijk binnen één van zijn evidence-passages staan.';
  for(let attempt=0;attempt<2;attempt++){
  const candidate=await complete(messages,options);
- if(candidate.skip)return candidate;
+ if(candidate.skip)return authority?(recoverOfficialSourceLiterals(docs[0])||candidate):candidate;
  if(authority&&candidate.kind==='announcement'){
   candidate.primaryAuthority=authority;
   candidate.sharedEventEvidence=[];
@@ -365,6 +404,14 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  if(!asset)throw Error('Geen goedgekeurd bibliotheekbeeld beschikbaar.');
  return library.fields(asset);
 
+}
+function recoverOfficialSourceSkip(job,now){
+ // At most one new evidence-based review of a previously skipped official story.
+ if(job.status!=='review'||job.failureStage!=='verification'||
+    job.failureCategory!=='journalistic_rejection'||
+    job.reason!=='insufficient_verified_facts'||job.officialSourceFallbackV68)return false;
+ job.officialSourceFallbackV68=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
 }
 function recoverLiteralEvidenceRejection(job,now){
  // The exact formerly rejected model quote can be re-extracted once after
@@ -608,6 +655,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverVerifiedNameRewrite(job,now);
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverRichVerifiedContext(job,now);
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverLiteralEvidenceRejection(job,now);
+  if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverOfficialSourceSkip(job,now);
   // Generator failures have their own separate bounded retry path.
   if(!group.matchRecord)recoverGeneration(job,now);
   // The focused trial's recorded packet invented 13 November and merged unrelated
@@ -831,4 +879,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={recoverOfficialSourceSkip,recoverOfficialSourceLiterals,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
