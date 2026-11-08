@@ -868,3 +868,15 @@ test('V95 rewrite sees quality weaknesses and verified fact plan but never raw s
  assert.deepEqual(user.editorialAssignment.leadFactIds,['F1']);
  assert.equal(JSON.stringify(user).includes('NIET-DELEN-MET-SCHRIJVER'),false);
 });
+
+test('V92 fixes only uniquely verified single-character surname typos, not invented identities',()=>{
+ const {repairUniqueVerifiedNameTypo}=require('../scripts/automatic-publication');
+ const facts=['PEC Zwolle stelt Alex Pastoor aan als hoofdtrainer.','Dennis van der Ree en Maikel van der Werff keren terug.'];
+ const draft={headline:'Alex Pastor wordt trainer bij PEC Zwolle',standfirst:'Alex Pastor gaat aan de slag.',body:['Alex Pastor krijgt de leiding.','Een onbekende Alex Pstrrr wordt niet toegevoegd.']};
+ const fixed=repairUniqueVerifiedNameTypo(draft,facts);
+ assert.match(fixed.headline,/Alex Pastoor/);
+ assert.match(fixed.standfirst,/Alex Pastoor/);
+ assert.match(fixed.body[0],/Alex Pastoor/);
+ assert.match(fixed.body[1],/Alex Pstrrr/);
+ assert.equal(repairUniqueVerifiedNameTypo(draft,['Alex Pastoor','Alex Pastar']).headline,draft.headline);
+});
