@@ -57,7 +57,8 @@ class EditorialQueue {
   // Never mistake quoted source wording (e.g. "tijdelijk de leiding") for an
   // HTTP/provider outage inside a rejected quality assessment.
   const qualityRejection=stage==='quality'&&/^Kwaliteitscontrole na \d+ herschrijvingen:/.test(String(error?.message||''));
-  const transient=!qualityRejection&&(error?.code==='GROQ_DAILY_QUOTA'||/HTTP (429|5\d\d)|timeout|timed out|fetch failed|network|tijdelijk|onbereikbaar|niet beschikbaar/i.test(error?.message||''));
+  const invalidRequest=error?.code==='GROQ_BAD_REQUEST'||/HTTP 400\b/.test(String(error?.message||''));
+  const transient=!qualityRejection&&!invalidRequest&&(error?.code==='GROQ_DAILY_QUOTA'||/HTTP (429|5\d\d)|timeout|timed out|fetch failed|network|tijdelijk|onbereikbaar|niet beschikbaar/i.test(error?.message||''));
   job.status=transient&&job.attempts<4?'retry':'review';
   job.nextAttemptAt=now+Math.min(24*3600000,3600000*2**(job.attempts-1));
   // Public queue stores URLs and machine status only, never source text, tokens or model output.
