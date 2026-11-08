@@ -685,3 +685,43 @@ test('V73 source-independent originality retry only reopens the specific quality
  assert.equal(recoverIndependentOriginalityV73({...rejected,errorHash:'other'},now),false);
  assert.equal(recoverIndependentOriginalityV73({...rejected,failureStage:'verification'},now),false);
 });
+
+
+test('V74 fact-verified official decision and assistants are phrased without literal source overlap',()=>{
+ const {reframeVerifiedClubDecision,overlapPhrases}=require('../scripts/automatic-publication');
+ const lead='PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.';
+ const duo='Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden overgenomen, keren weer terug in hun functie van assistent-trainer.';
+ const doc={text:lead+' De 60-jarige ervaren oefenmeester staat vanaf maandag voor de groep en tekent een contract tot de zomer van 2027 in Zwolle. '+duo};
+ const draft={headline:'PEC Zwolle krijgt in Alex Pastoor een nieuwe hoofdtrainer',
+ standfirst:'De club laat weten dat de trainer maandag begint met zijn nieuwe werkzaamheden.',
+ body:[lead+' De 60-jarige trainer begint maandag bij de club en zijn contract loopt tot de zomer van 2027.',
+  'De trainerswissel volgt op een periode van tijdelijke leiding in Zwolle. '+duo+' Zij werken straks samen met keeperstrainer Diederik Boer.']};
+ const fixed=reframeVerifiedClubDecision(draft,[lead,duo],[doc],overlapPhrases);
+ assert.notDeepEqual(fixed,draft);
+ assert.ok(fixed.body[0].includes('Alex Pastoor is benoemd tot hoofdtrainer van PEC Zwolle.'));
+ assert.ok(fixed.body[1].includes('Maikel van der Werff en Dennis van der Ree'));
+ assert.ok(fixed.body[1].includes('Diederik Boer'));
+ assert.equal(overlapPhrases(doc.text,fixed).length,0);
+});
+test('V74 refuses unsourced semantic edits and does not weaken rejection',()=>{
+ const {reframeVerifiedClubDecision,overlapPhrases}=require('../scripts/automatic-publication');
+ const doc={text:'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld. De assistenten ondersteunen de nieuwe coach.'};
+ const draft={headline:'PEC Zwolle benoemt een nieuwe hoofdtrainer bij de club',
+ standfirst:'De trainer wordt binnenkort aangesteld als hoofdcoach van de vereniging.',
+ body:['PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld. De assistenten ondersteunen de nieuwe coach. De nieuwe trainer neemt zijn taken bij de club op zich.']};
+ const unchanged=reframeVerifiedClubDecision(draft,[],[doc],overlapPhrases);
+ assert.deepEqual(unchanged,draft);
+ const fact='PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.';
+ const fixed=reframeVerifiedClubDecision(draft,[fact],[doc],overlapPhrases);
+ assert.notDeepEqual(fixed,draft);
+ assert.equal(fixed.body[0].includes('is benoemd tot hoofdtrainer'),true);
+});
+
+test('V74 bounds fresh full review for verified phrase rewrite to one try',()=>{
+ const {recoverVerifiedPhraseRewriteV74}=require('../scripts/automatic-publication');
+ const job={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:2};
+ assert.equal(recoverVerifiedPhraseRewriteV74(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';assert.equal(recoverVerifiedPhraseRewriteV74(job,now),false);
+ assert.equal(recoverVerifiedPhraseRewriteV74({...job,verifiedPhraseRewriteV74:false,failureStage:'verification'},now),false);
+});
