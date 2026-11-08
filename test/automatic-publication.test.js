@@ -442,3 +442,30 @@ test('V63 full quality retry of official decisions is bounded and excludes other
   {failureCategory:'temporary_source_failure'}, {status:'published'}
  ])assert.equal(recoverEditorialBrief({...rejected,...changes},now),false);
 });
+
+test('unrelated football matches are not used as independent confirmation',()=>{
+ const {partnerDocuments}=require('../scripts/automatic-publication');
+ const base={url:'https://www.az.nl/inside-az/nieuws/2026/november/liveblog-jong-az-almere-city',title:'Jong AZ houdt geen punten over aan duel met Almere City FC',
+  text:'Jong AZ houdt geen punten over aan duel met Almere City FC. De club speelt deze wedstrijd zonder punten tegen Almere.'};
+ const unrelated={url:'https://peczwolle.nl/nieuws/pec-zwolle-komt-met-reactie-tegen-ado-den-haag-en-wint',title:'PEC Zwolle komt met reactie tegen ADO Den Haag en wint',
+  text:'PEC Zwolle wint een wedstrijd na een reactie tegen ADO Den Haag. De club speelt opnieuw in de competitie met de selectie.'};
+ const related={url:'https://www.psv.nl/media/artikel/andere-wedstrijd',title:'PSV ontvangt Ajax in duel',
+  text:'PSV speelt de komende wedstrijd tegen Ajax. De ploeg is klaar voor het duel.'};
+ assert.deepEqual(partnerDocuments(base,[unrelated,related]),[]);
+ const a={url:'https://www.fcgroningen.nl/nieuws/naar-az',title:'FC Groningen naar AZ in Alkmaar',
+  text:'FC Groningen speelt zaterdag een wedstrijd tegen AZ in Alkmaar.'};
+ const anniversary={url:'https://www.az.nl/inside-az/nieuws/2026/november/20-jaar-afas-stadion-az-fc-groningen',title:'20 jaar AFAS Stadion: AZ – FC Groningen',
+  text:'AZ en FC Groningen zijn verbonden aan het stadion en de komende wedstrijd. De club viert 20 jaar.'};
+ assert.deepEqual(partnerDocuments(a,[anniversary]),[]);
+});
+test('past misclassified source-overlap errors are reopened only once',()=>{
+ const {recoverMisclassifiedOverlap}=require('../scripts/automatic-publication');
+ const original={status:'retry',failureStage:'quality',failureCategory:'temporary_source_failure',attempts:1};
+ const job={...original};
+ assert.equal(recoverMisclassifiedOverlap(job,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ job.status='review';
+ assert.equal(recoverMisclassifiedOverlap(job,now),false);
+ assert.equal(recoverMisclassifiedOverlap({...original,failureStage:'generation'},now),false);
+});

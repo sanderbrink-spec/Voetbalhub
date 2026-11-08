@@ -133,12 +133,20 @@ function partnerDocuments(doc,documents){
  const stop=new Set('voor naar vanaf tegen over deze dit een het zijn wordt worden door heeft hebben met van bij aan als ook meer nieuws nieuwe club clubs wedstrijd wedstrijden duel duels voetbal seizoen laatste the and with from this that news team teams match matches season league champions conference europese eredivisie persconferentie liveblog highlights selectie speelt'.split(' '));
  const tokens=value=>new Set(normalize(value).split(' ').filter(t=>t.length>3&&!stop.has(t)));
  const countMatches=(left,right)=>[...left].filter(token=>right.has(token)).length;
+ const clubWords=new Set('ajax feyenoord psv az groningen twente pec zwolle sparta almere city ado haag willem fortuna sittard telstar nec utrecht heerenveen eagles emmen brugge inter liverpool'.split(' '));
+ const fixtureTitle=value=>/\b(?:vooruitblik|voorbeschouwing|wedstrijd|duel|focus|treft|ontvangt|tegen|speelt|naar)\b/i.test(value)||
+  /^[^:]{2,38}\s[-–]\s[^:]{2,38}$/.test(value);
+
  const title=tokens(doc.title),lead=tokens(doc.title+' '+doc.text.slice(0,1000));
  return documents.filter(d=>owner(d.url)!==owner(doc.url)).map(d=>{
   const otherTitle=tokens(d.title),otherLead=tokens(d.title+' '+d.text.slice(0,1000));
   const anchors=Math.max(countMatches(title,otherLead),countMatches(otherTitle,lead));
-  return {doc:d,anchors,score:countMatches(lead,otherLead)};
- }).filter(x=>x.anchors>=2&&x.score>=4)
+  const commonTitle=[...title].filter(token=>otherTitle.has(token));
+  const sameSpecificSubject=commonTitle.some(token=>!clubWords.has(token));
+  const confirmedFixtureLabels=fixtureTitle(doc.title)&&fixtureTitle(d.title);
+  return {doc:d,anchors,score:countMatches(lead,otherLead),
+   coherent:commonTitle.length>=2&&(sameSpecificSubject||confirmedFixtureLabels)};
+ }).filter(x=>x.coherent&&x.anchors>=2&&x.score>=4)
   .sort((a,b)=>b.anchors-a.anchors||b.score-a.score).slice(0,2).map(x=>x.doc);
 }
 function primaryAuthority(doc){
@@ -300,7 +308,7 @@ async function verifyDraft(payload,candidate,docs,options,recent=[]){
 async function reviseDraft(payload,candidate,docs,reason,options){
  const structure=M.briefEligible(payload)?M.compactStructure:M.standardStructure;
  const revised=await complete([
-  {role:'system',content:`Je bent de eindredacteur van Veldio. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Gebruik uitsluitend persoonsnamen en cijfers die letterlijk in verifiedFacts voorkomen. Alle datums en jaartallen die niet in verifiedFacts staan moeten volledig uit het artikel verdwijnen; de huidige systeemdatum is geen bron. Geen onbestaande samenstellingen als 'Assistents Dennis'. Voeg nooit een technisch directeur, bestuurder, speler of andere persoon toe omdat die waarschijnlijk bij de club betrokken is. Controleer vóór je antwoord iedere genoemde persoon tegen verifiedFacts; ontbreekt de naam, verwijder de volledige onbewezen bewering. Schrijf expliciet welke organisatie elke club- of bondmededeling bevestigde. Maak eerst intern een feitenverdeling: intro bevat uitsluitend het nieuwsbesluit; elke bodyalinea behandelt een ander, concreet geverifieerd detail. Herhaal de aanstelling niet opnieuw in de eerste bodyalinea. Verander bij bronoverlap de volledige zinsstructuur en volgorde van informatie, niet alleen synoniemen of leestekens. Controleer dat geen reeks van tien opeenvolgende woorden uit de bron in het concept voorkomt. Formuleer vanuit verifiedFacts met een eigen zinsbouw. Gebruik letterlijke bronpassages alleen om feiten te controleren. Neem geen bronzinnen of citaten over. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden),  ${structure}. Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.`},
+  {role:'system',content:`Je bent de eindredacteur van Veldio. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Gebruik uitsluitend persoonsnamen en cijfers die letterlijk in verifiedFacts voorkomen. Als een bron meerdere personen in een opsomming noemt, verander de volgorde van die personen wanneer ze dezelfde functie bekleden, of verdeel ze over afzonderlijke zinnen. Herhaal nooit de volledige namenreeks met daaropvolgende tijdsaanduiding uit de bron. Is een ondergeschikt detail niet zonder letterlijk kopiëren weer te geven, laat dat detail weg. Alle datums en jaartallen die niet in verifiedFacts staan moeten volledig uit het artikel verdwijnen; de huidige systeemdatum is geen bron. Geen onbestaande samenstellingen als 'Assistents Dennis'. Voeg nooit een technisch directeur, bestuurder, speler of andere persoon toe omdat die waarschijnlijk bij de club betrokken is. Controleer vóór je antwoord iedere genoemde persoon tegen verifiedFacts; ontbreekt de naam, verwijder de volledige onbewezen bewering. Schrijf expliciet welke organisatie elke club- of bondmededeling bevestigde. Maak eerst intern een feitenverdeling: intro bevat uitsluitend het nieuwsbesluit; elke bodyalinea behandelt een ander, concreet geverifieerd detail. Herhaal de aanstelling niet opnieuw in de eerste bodyalinea. Verander bij bronoverlap de volledige zinsstructuur en volgorde van informatie, niet alleen synoniemen of leestekens. Controleer dat geen reeks van tien opeenvolgende woorden uit de bron in het concept voorkomt. Formuleer vanuit verifiedFacts met een eigen zinsbouw. Gebruik letterlijke bronpassages alleen om feiten te controleren. Neem geen bronzinnen of citaten over. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden),  ${structure}. Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.`},
   {role:'user',content:JSON.stringify({draft:payload.draft,rejection:reason,verifiedFacts:payload.verifiedFacts,allowedNumbers:[...new Set(payload.verifiedFacts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))],candidate,sources:docs.map(d=>({url:d.url,title:d.title,publishedAt:d.publishedAt,text:compactSource(d)}))})}
  ],options);
  if(revised.skip)return null;
@@ -314,6 +322,14 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  if(!asset)throw Error('Geen goedgekeurd bibliotheekbeeld beschikbaar.');
  return library.fields(asset);
 
+}
+function recoverMisclassifiedOverlap(job,now){
+ // Past runs may have mistaken "tijdelijk" inside copied source prose for a
+ // temporary provider error. Allow one immediate new review under fixed logic.
+ if(!['review','retry'].includes(job.status)||job.failureStage!=='quality'||
+    job.failureCategory!=='temporary_source_failure'||job.overlapRepairV64)return false;
+ job.overlapRepairV64=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
 }
 function recoverEditorialBrief(job,now){
  // A revised evidence-first generator earns one new full review, never approval.
@@ -519,6 +535,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   // Re-evaluate one official decision once after the V63 short-form and fact
   // whitelist improvement. This does not waive any existing publication gate.
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverEditorialBrief(job,now);
+  if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverMisclassifiedOverlap(job,now);
   // Generator failures have their own separate bounded retry path.
   if(!group.matchRecord)recoverGeneration(job,now);
   // The focused trial's recorded packet invented 13 November and merged unrelated
@@ -738,4 +755,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={overlapPhrases,publicationFocus,recoverGeneration,recoverEditorialBrief,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={overlapPhrases,publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};

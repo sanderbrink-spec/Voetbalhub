@@ -90,3 +90,16 @@ test('queue distinguishes software, storage, publication and journalistic failur
   assert.equal(q.due(job,now+86400000),false);
  }
 });
+
+test('quoted temporary source wording in quality rejection is not a transport outage',()=>{
+ const q=new EditorialQueue(),job=q.enqueue([{url:'https://peczwolle.nl/nieuws/aanstelling',text:'officieel'}],now);
+ q.fail(job,new Error('Kwaliteitscontrole na 2 herschrijvingen: Woordelijke bronoverlap: assistenten die tijdelijk de leiding hadden.'),now,{stage:'quality'});
+ assert.equal(job.status,'review');
+ assert.equal(job.failureStage,'quality');
+ assert.equal(job.failureCategory,'journalistic_rejection');
+ assert.equal(job.reason,'editorial_review_required');
+ const actualProvider=q.enqueue([{url:'https://ajax.nl/artikelen/ander',text:'officieel'}],now);
+ q.fail(actualProvider,new Error('Redactionele AI tijdelijk niet beschikbaar: HTTP 429'),now,{stage:'quality'});
+ assert.equal(actualProvider.status,'retry');
+ assert.equal(actualProvider.failureCategory,'temporary_source_failure');
+});
