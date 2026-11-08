@@ -563,3 +563,33 @@ test('only the exact previously failed literal primary evidence job retries once
  assert.equal(recoverLiteralEvidenceRejection({...job,literalEvidenceRecoveryV67:false,errorHash:'wrong'},now),false);
  assert.equal(recoverLiteralEvidenceRejection({...job,literalEvidenceRecoveryV67:false,failureStage:'quality'},now),false);
 });
+
+test('official coach announcement is grounded directly in literal club sentences rather than an AI skip',()=>{
+ const {verifiedOfficialCoachDecision,validateEvidence}=require('../scripts/automatic-publication');
+ const doc={url:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',
+ title:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',publishedAt:'2026-11-07T10:14:00+01:00',
+ text:'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld. De ervaren oefenmeester staat vanaf maandag voor de groep en tekent een contract tot de zomer van 2027 in Zwolle. In 2024 besloot Pastoor voorlopig te stoppen als hoofdtrainer. In 2025 was hij assistent-bondscoach van Indonesië. Dennis van der Ree en Maikel van der Werff keren terug als assistent-trainers. Samen met keeperstrainer Diederik Boer assisteren zij Pastoor.'};
+ const candidate=verifiedOfficialCoachDecision(doc);
+ assert.equal(candidate.kind,'announcement');
+ assert.equal(candidate.primaryAuthority,'club_decision');
+ assert.ok(candidate.facts.length>=4);
+ assert.equal(candidate.topic,doc.title);
+ for(const fact of candidate.facts){assert.ok(doc.text.includes(fact.text));assert.equal(fact.evidence[0].quote,fact.text);}
+ assert.deepEqual(validateEvidence(candidate,[doc],Date.parse('2026-11-08T10:00:00Z')),[]);
+});
+test('deterministic official-decision route excludes rumours, previews and transfers',()=>{
+ const {verifiedOfficialCoachDecision}=require('../scripts/automatic-publication');
+ const text='De club heeft een nieuwe hoofdtrainer aangesteld en bevestigt het besluit per direct. De assistent neemt de leiding over.';
+ for(const title of ['Gerucht nieuwe hoofdtrainer PEC Zwolle','Vooruitblik nieuwe trainer PEC Zwolle','Transfer van nieuwe trainer PEC Zwolle','Nieuwsbrief over voetbal']){
+  assert.equal(verifiedOfficialCoachDecision({url:'https://peczwolle.nl/nieuws/test',title,text}),null);
+ }
+});
+test('previously skipped verified coaching decision gets exactly one strict new assessment',()=>{
+ const {recoverOfficialCoachDecision}=require('../scripts/automatic-publication');
+ const job={status:'review',failureStage:'verification',failureCategory:'journalistic_rejection',reason:'insufficient_verified_facts',attempts:1};
+ assert.equal(recoverOfficialCoachDecision(job,now),true);
+ assert.equal(job.status,'pending');
+ job.status='review';
+ assert.equal(recoverOfficialCoachDecision(job,now),false);
+ assert.equal(recoverOfficialCoachDecision({...job,officialCoachRecoveryV69:false,failureStage:'quality'},now),false);
+});
