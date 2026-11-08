@@ -300,8 +300,8 @@ async function verifyDraft(payload,candidate,docs,options,recent=[]){
 async function reviseDraft(payload,candidate,docs,reason,options){
  const structure=M.briefEligible(payload)?M.compactStructure:M.standardStructure;
  const revised=await complete([
-  {role:'system',content:`Je bent de eindredacteur van Veldio. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Gebruik uitsluitend persoonsnamen die letterlijk in verifiedFacts voorkomen. Voeg nooit een technisch directeur, bestuurder, speler of andere persoon toe omdat die waarschijnlijk bij de club betrokken is. Controleer vóór je antwoord iedere genoemde persoon tegen verifiedFacts; ontbreekt de naam, verwijder de volledige onbewezen bewering. Schrijf expliciet welke organisatie elke club- of bondmededeling bevestigde. Maak eerst intern een feitenverdeling: intro bevat uitsluitend het nieuwsbesluit; elke bodyalinea behandelt een ander, concreet geverifieerd detail. Herhaal de aanstelling niet opnieuw in de eerste bodyalinea. Verander bij bronoverlap de volledige zinsstructuur en volgorde van informatie, niet alleen synoniemen of leestekens. Controleer dat geen reeks van tien opeenvolgende woorden uit de bron in het concept voorkomt. Formuleer vanuit verifiedFacts met een eigen zinsbouw. Gebruik letterlijke bronpassages alleen om feiten te controleren. Neem geen bronzinnen of citaten over. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden),  ${structure}. Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.`},
-  {role:'user',content:JSON.stringify({draft:payload.draft,rejection:reason,verifiedFacts:payload.verifiedFacts,candidate,sources:docs.map(d=>({url:d.url,title:d.title,publishedAt:d.publishedAt,text:compactSource(d)}))})}
+  {role:'system',content:`Je bent de eindredacteur van Veldio. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Gebruik uitsluitend persoonsnamen en cijfers die letterlijk in verifiedFacts voorkomen. Alle datums en jaartallen die niet in verifiedFacts staan moeten volledig uit het artikel verdwijnen; de huidige systeemdatum is geen bron. Geen onbestaande samenstellingen als 'Assistents Dennis'. Voeg nooit een technisch directeur, bestuurder, speler of andere persoon toe omdat die waarschijnlijk bij de club betrokken is. Controleer vóór je antwoord iedere genoemde persoon tegen verifiedFacts; ontbreekt de naam, verwijder de volledige onbewezen bewering. Schrijf expliciet welke organisatie elke club- of bondmededeling bevestigde. Maak eerst intern een feitenverdeling: intro bevat uitsluitend het nieuwsbesluit; elke bodyalinea behandelt een ander, concreet geverifieerd detail. Herhaal de aanstelling niet opnieuw in de eerste bodyalinea. Verander bij bronoverlap de volledige zinsstructuur en volgorde van informatie, niet alleen synoniemen of leestekens. Controleer dat geen reeks van tien opeenvolgende woorden uit de bron in het concept voorkomt. Formuleer vanuit verifiedFacts met een eigen zinsbouw. Gebruik letterlijke bronpassages alleen om feiten te controleren. Neem geen bronzinnen of citaten over. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden),  ${structure}. Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.`},
+  {role:'user',content:JSON.stringify({draft:payload.draft,rejection:reason,verifiedFacts:payload.verifiedFacts,allowedNumbers:[...new Set(payload.verifiedFacts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))],candidate,sources:docs.map(d=>({url:d.url,title:d.title,publishedAt:d.publishedAt,text:compactSource(d)}))})}
  ],options);
  if(revised.skip)return null;
  if(!revised||typeof revised.headline!=='string'||typeof revised.standfirst!=='string'||!Array.isArray(revised.body))throw Error('Herschrijving heeft geen geldige artikelstructuur.');
@@ -314,6 +314,14 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  if(!asset)throw Error('Geen goedgekeurd bibliotheekbeeld beschikbaar.');
  return library.fields(asset);
 
+}
+function recoverEditorialBrief(job,now){
+ // A revised evidence-first generator earns one new full review, never approval.
+ // Never reopen verification failures, match articles or a second V63 rejection.
+ if(job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.compactRecoveryV63)return false;
+ job.compactRecoveryV63=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
 }
 function recoverGeneration(job,now){
  if(job.status!=='review'||job.failureStage!=='generation'||
@@ -508,6 +516,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      job.failureCategory==='journalistic_rejection'&&!job.rewriteRecoveryV62){
    job.rewriteRecoveryV62=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
   }
+  // Re-evaluate one official decision once after the V63 short-form and fact
+  // whitelist improvement. This does not waive any existing publication gate.
+  if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverEditorialBrief(job,now);
   // Generator failures have their own separate bounded retry path.
   if(!group.matchRecord)recoverGeneration(job,now);
   // The focused trial's recorded packet invented 13 November and merged unrelated
@@ -588,6 +599,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
    for(let revision=0;revision<=2;revision++){
+    // Store complete AI copy for the owner's review as a separate Actions artifact,
+    // not as publicly printed job logs or a queue field.
+    if(!matchRecord&&report.draftSnapshots.length<12)report.draftSnapshots.push({
+     topic,revision,draft:{headline:draft.headline,standfirst:draft.standfirst,body:draft.body}
+    });
     const issues=M.publicationIssues(payload);
     if(!matchRecord){
      issues.push(...generationIssues(draft,facts,null,compact));
@@ -661,6 +677,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
 }
 async function run(options={}){
  const report={startedAt:new Date(options.now||Date.now()).toISOString(),commit:process.env.GITHUB_SHA||null,published:[],skipped:[],sourceErrors:[],processingErrors:[],signals:[],assessments:[],sources:{},routes:Object.fromEntries(['news','match'].map(key=>[key,{found:0,selected:0,generated:0,rejected:0,published:0}])),counts:{found:0,readable:0,stale:0,current:0,relevant:0,eligible:0,noCorroboration:0,uniqueGroups:0,queued:0,attempted:0,selected:0,aiRequests:0,generated:0,approved:0,stored:0,publicationAttempts:0,published:0}};
+ Object.defineProperty(report,'draftSnapshots',{value:[],enumerable:false});
  try{
   await execute({...options,report});
   if(!report.status){
@@ -674,6 +691,9 @@ async function run(options={}){
   report.outcome=report.status==='completed'?'success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':'error';
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
+  fs.writeFileSync('.automatic-output/draft-review.json',JSON.stringify({
+   runAt:report.startedAt,commit:report.commit,drafts:report.draftSnapshots
+  },null,2));
   if(process.env.GITHUB_STEP_SUMMARY){
    const {found,readable,stale,current,relevant,eligible,noCorroboration,uniqueGroups,queued,attempted,selected,generated,approved,stored,published,aiRequests}=report.counts;
    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,[
@@ -718,4 +738,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={overlapPhrases,publicationFocus,recoverGeneration,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={overlapPhrases,publicationFocus,recoverGeneration,recoverEditorialBrief,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};

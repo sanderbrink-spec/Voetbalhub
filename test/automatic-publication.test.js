@@ -393,3 +393,52 @@ test('overlap feedback identifies exact copied words while preserving the ten-wo
  assert.equal(overlap(source,rewritten),false);
  assert.deepEqual(overlapPhrases(source,rewritten),[]);
 });
+
+
+test('four or five verified facts support a concise primary decision without waiving gates',()=>{
+ const M=require('../editorial-desk-model');
+ const docs=[{url:'https://peczwolle.nl/nieuws/aanstelling'}];
+ for(const n of [1,3,4,5]){
+  const facts=Array.from({length:n},(_,i)=>'Concreet vastgelegd feit '+i);
+  const payload={articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:facts};
+  assert.equal(M.briefEligible(payload),true);
+ }
+ assert.equal(M.briefEligible({articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:Array(6).fill('feit')}),false);
+ assert.equal(M.briefEligible({articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:['feit'],transferStatus:'confirmed'}),false);
+ assert.ok(M.publicationIssues({articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:['feit'],draft:{headline:'Onvolledige kop'}}).length>0);
+});
+
+test('repair requests explicitly whitelist numbers instead of inventing dates or staff',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ const facts=['PEC Zwolle benoemt Alex Pastoor tot hoofdtrainer.'];
+ let input;
+ const fetcher=async(_,options)=>{
+  input=JSON.parse(options.body);
+  return Response.json({choices:[{message:{content:JSON.stringify({
+   headline:'PEC Zwolle maakt nieuwe hoofdtrainer officieel bekend',
+   standfirst:'De club meldt de benoeming van Alex Pastoor als hoofdtrainer.',
+   body:['PEC Zwolle bevestigt de aanstelling van Pastoor.']
+  })}}]});
+ };
+ const revised=await reviseDraft({draft:{headline:'Afgekeurd',body:[]},verifiedFacts:facts,articleKind:'announcement',primaryAuthority:'club_decision',sources:[{url:'https://peczwolle.nl/nieuws/aanstelling'}]}, {topic:'Alex Pastoor'},[], 'Cijfers ontbreken in de gecontroleerde feiten: 2026', {key:'test',model:'test',fetcher});
+ assert.ok(Array.isArray(revised.body));
+ const instructions=input.messages[0].content;
+ assert.match(instructions,/jaartallen/);
+ assert.match(instructions,/persoonsnamen en cijfers/);
+ assert.deepEqual(JSON.parse(input.messages[1].content).allowedNumbers,[]);
+});
+
+test('V63 full quality retry of official decisions is bounded and excludes other failures',()=>{
+ const {recoverEditorialBrief}=require('../scripts/automatic-publication');
+ const rejected={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:2};
+ const job={...rejected};
+ assert.equal(recoverEditorialBrief(job,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ job.status='review';
+ assert.equal(recoverEditorialBrief(job,now),false);
+ for(const changes of [
+  {failureStage:'verification'}, {failureStage:'generation'},
+  {failureCategory:'temporary_source_failure'}, {status:'published'}
+ ])assert.equal(recoverEditorialBrief({...rejected,...changes},now),false);
+});
