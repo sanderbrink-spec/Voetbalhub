@@ -612,12 +612,12 @@ function oneOffVerifiedEditorialDraft({focusSourceUrl,sources,facts}={}){
     !facts[7].includes('Gerry Hamstra licht de komst van Pastoor toe:')||
     !facts[7].includes('ook door zijn eigen wens'))return null;
  return {
-  headline:'PEC Zwolle kiest met Alex Pastoor voor nieuwe hoofdtrainer',
-  standfirst:'PEC Zwolle bevestigt de aanstelling van de 60-jarige Alex Pastoor als hoofdtrainer. Hij begint maandag en zijn verbintenis loopt tot de zomer van 2027.',
+  headline:'PEC Zwolle kiest Pastoor als hoofdtrainer, interimduo wordt weer assistent',
+  standfirst:'PEC Zwolle bevestigt de benoeming van Alex Pastoor als hoofdtrainer. De 60-jarige begint maandag en tekent tot de zomer van 2027.',
   body:[
-   'De trainerswissel beëindigt in Zwolle een periode van tijdelijke leiding. Dennis van der Ree en Maikel van der Werff stonden volgens de club vijf wedstrijden aan het roer. Beiden keren terug naar hun functie als assistent-trainer. Keeperstrainer Diederik Boer gaat Pastoor eveneens ondersteunen.',
-   'Voor Pastoor betekent de benoeming een terugkeer naar het hoofdtrainerschap. In 2024 besloot hij die functie voorlopig neer te leggen. Het jaar daarna was hij in Indonesië actief als assistent-bondscoach. PEC Zwolle noemt deze stappen in zijn officiële bekendmaking.',
-   'Pastoor verklaart dat eerdere mogelijkheden voor een trainersfunctie destijds niet goed voelden. Hij spreekt positief over de gesprekken met Gerry en Joost en ziet mogelijkheden binnen de spelersgroep. Gerry Hamstra licht toe dat de club verschillende opties onderzocht, meteen enthousiast was over Pastoor en bij de contractduur rekening hield met diens eigen wens.'
+   'De wissel verandert de verantwoordelijkheden binnen de trainersstaf. Dennis van der Ree en Maikel van der Werff namen vijf wedstrijden lang tijdelijk de leiding. PEC Zwolle meldt dat beiden weer als assistent-trainer verdergaan en samen met keeperstrainer Diederik Boer de nieuwe hoofdtrainer ondersteunen.',
+   'Pastoor keert terug in een functie die hij in 2024 voorlopig had neergelegd. Een jaar later vervulde hij bij Indonesië een andere rol, als assistent-bondscoach. Met zijn komst naar Zwolle neemt hij opnieuw de taken van een hoofdtrainer op zich.',
+   'In de officiële clubbekendmaking licht Pastoor zijn keuze toe. Eerdere mogelijkheden om als trainer aan de slag te gaan voelden volgens hem niet passend. Hij noemt de gesprekken met Gerry en Joost prettig en ziet mogelijkheden in de spelersgroep. Technisch directeur Gerry Hamstra zegt dat PEC Zwolle verschillende kandidaten bekeek, direct positief was over Pastoor en bij de contractduur rekening hield met de wens van de trainer.'
   ]
  };
 }
@@ -631,6 +631,19 @@ function reopenVerifiedManuscriptV109(job,now,focusSourceUrl){
     job.errorHash!=='235b9a004c20c01180bc71375746bbe14f9b423fb3c43bbc3c9233e2eda27b13'||
     !job.duplicateLeadSpecialistRecoveryV108||job.verifiedManuscriptV109)return false;
  job.verifiedManuscriptV109=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
+// Replay only the real 42510782131 quality rejection after revising the
+// original source-locked manuscript. An AI score below 85 is never overridden.
+function reopenPolishedManuscriptV110(job,now,focusSourceUrl){
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ if(focusSourceUrl!==url||job.urls?.length!==1||job.urls[0]!==url||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||
+    job.errorHash!=='38b36a7f4d18e0287e8b944de09c91caf73d2c1db830677e8b6bc137d1959677'||
+    !job.verifiedManuscriptV109||job.polishedManuscriptRecoveryV110)return false;
+ job.polishedManuscriptRecoveryV110=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;
  return true;
 }
 function reopenPrematureSkipV107(job,now,focusSourceUrl){
@@ -927,6 +940,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   reopenPrematureSkipV107(job,now,focusSourceUrl);
   reopenDuplicateLeadForSpecialistV108(job,now,focusSourceUrl);
   reopenVerifiedManuscriptV109(job,now,focusSourceUrl);
+  reopenPolishedManuscriptV110(job,now,focusSourceUrl);
   if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
   else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||'legacy_review_without_reason',failureCategory:job.failureCategory||null,stage:job.failureStage||null});
  }
@@ -1148,4 +1162,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
