@@ -108,6 +108,21 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  }
  return result;
 }
+// A year is not a competition season, and a named job title must appear
+// literally in the independently verified evidence.
+function unverifiedTimelineAndRoles(draft,facts=[]){
+ if(!draft||!Array.isArray(draft.body))return [];
+ const text=[draft.headline,draft.standfirst,...draft.body].filter(v=>typeof v==='string').join(' ').toLocaleLowerCase('nl');
+ const evidence=facts.filter(v=>typeof v==='string').join(' ').toLocaleLowerCase('nl');
+ const issues=[];
+ for(const m of text.matchAll(/\b20\d{2}\s*\/\s*20\d{2}\b/g)){
+  if(!evidence.includes(m[0]))issues.push('Niet-geverifieerde seizoenscombinatie '+m[0]+': losse jaartallen bewijzen geen seizoen.');
+ }
+ for(const role of ['clubdirecteur','algemeen directeur','sportdirecteur','sportief directeur','technisch directeur']){
+  if(text.includes(role)&&!evidence.includes(role))issues.push('Functietitel '+role+' ontbreekt in verifiedFacts; verwijder of corrigeer op basis van de bron.');
+ }
+ return [...new Set(issues)];
+}
 // Factual announcement articles must not manufacture extra paragraphs from
 // the same facts. Each certified coaching appointment gets three themes.
 function officialCoachStructureIssues(draft,{topic='',primaryAuthority=null,facts=[]}={}){
@@ -202,17 +217,31 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     }
     const text=data?.choices?.[0]?.message?.content||'';
     const draft=normalizeDraft(text);
-    if(draft?.skip)throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.');
+    if(draft?.skip){
+     const sufficientCoachEvidence=automaticPublication&&coachPlan&&officialPublisher&&facts.length>=7&&
+      facts.some(x=>/assistent|keeperstrainer/i.test(x))&&facts.some(x=>/\b20\d\d\b/.test(x))&&
+      facts.some(x=>/licht.*toe|verklaar|: ,,|: “|: „/i.test(x));
+     // A rich official packet gets at most one second writer attempt, not
+     // an automatic approval or a relaxation of any source/quality gate.
+     if(attempt===0&&sufficientCoachEvidence){
+      messages.push({role:'assistant',content:'{"skip":true}'},{
+       role:'user',content:'Controleer of je skip ten onrechte hebt gekozen. De officiële feiten bevatten aantoonbaar een besluit, stafrollen, eerdere loopbaanstappen en expliciete toegeschreven toelichting. Schrijf een nieuw, kort, origineel artikel met precies drie afzonderlijke bodyalinea’s uitsluitend uit die bestaande facts. De intro bevestigt het besluit namens officialPublisher. Voeg geen zelfbedachte seizoenen, nieuwe functietitels, gevolgen of persoonlijke oordelen toe. Indien een deel toch geen feitelijke grond heeft, laat uitsluitend dat detail weg en gebruik een ander geverifieerd feit. Bij echt onvoldoende bewijs blijft skip toegestaan.'
+      });
+      continue;
+     }
+     throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.');
+    }
     const issues=generationIssues(draft,facts,match,compact);
     if(automaticPublication){
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts}));
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority,facts}));
      issues.push(...unsupportedInterpretationIssues(draft,facts));
+     issues.push(...unverifiedTimelineAndRoles(draft,facts));
     }
     if(!issues.length)return {...draft,qualityReview:{automatedTextChecksPassed:true,revisionApplied:attempt===1,attempts:attempt+1,factVerificationRequired:true,autoPublish:false}};
     if(attempt===1){const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;error.rejectedDraft=draft;throw error;}
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues};
+module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles};
 

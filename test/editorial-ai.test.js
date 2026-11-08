@@ -275,3 +275,30 @@ test('V105 official coaching writer uses a compact unambiguous factual brief',as
  assert.match(textPrompt,/Geen vierde of vijfde alinea/);
  assert.match(textPrompt,/Verzin geen seizoen of verband tussen twee datums/);
 });
+
+test('V107 rich official coaching evidence earns exactly one second writer attempt after premature skip',async()=>{
+ const {createEditorialDraft}=require('../editorial-ai');
+ const facts=[
+ 'PEC Zwolle heeft Alex Pastoor benoemd als hoofdtrainer.',
+ 'De trainer begint maandag en tekent een contract tot 2027.',
+ 'Dennis van der Ree en Maikel van der Werff keren terug als assistenten.',
+ 'Keeperstrainer Diederik Boer ondersteunt Pastoor.',
+ 'In 2024 besloot Pastoor voorlopig te stoppen.',
+ 'In 2025 werkte Pastoor als assistent-bondscoach bij Indonesië.',
+ 'Alex Pastoor: ,,Ik zie PEC Zwolle als een mooie uitdaging.”',
+ 'Gerry Hamstra licht de keuze toe: ,,De club bekeek meerdere opties.”'
+ ];
+ const requests=[],fetcher=async(_,options)=>{requests.push(JSON.parse(options.body));return Response.json({choices:[{message:{content:'{"skip":true}'}}]});};
+ await assert.rejects(createEditorialDraft({topic:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',category:'clubnieuws',primaryAuthority:'club_decision',facts,sourceUrls:['https://peczwolle.nl/nieuws/besluit'],automaticPublication:true},
+ {apiKey:'fake',model:'openai/gpt-oss-120b',fetcher,timeoutMs:20000}),error=>error.status===422);
+ assert.equal(requests.length,2);
+ assert.match(requests[1].messages.at(-1).content,/Controleer of je skip ten onrechte hebt gekozen/);
+ assert.ok(JSON.stringify(requests[1].messages).includes('Alex Pastoor'));
+});
+test('V107 thin or unverified source never receives a forced writer retry',async()=>{
+ const {createEditorialDraft}=require('../editorial-ai');
+ let calls=0;
+ await assert.rejects(createEditorialDraft({topic:'Onbevestigd trainersnieuws',category:'clubnieuws',primaryAuthority:'club_decision',facts:['Onbevestigd gerucht.'],sourceUrls:['https://peczwolle.nl/nieuws/besluit'],automaticPublication:true},
+ {apiKey:'fake',model:'openai/gpt-oss-120b',fetcher:async()=>{calls++;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});}}),error=>error.status===422);
+ assert.equal(calls,1);
+});
