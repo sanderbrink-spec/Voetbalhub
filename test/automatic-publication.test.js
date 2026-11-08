@@ -991,3 +991,17 @@ test('V102 rewriting editor gets verified source label and no raw publisher arti
  assert.match(messages[0].content,/Bij officialPublisher moet de intro duidelijk de officiële bron noemen/);
  assert.equal(JSON.stringify(input).includes('COPYRIGHTED-NOT-PASSED-TO-WRITER'),false);
 });
+
+test('V103 rejects unsupported strategy and personal motivation while preserving verified factual claims',()=>{
+ const {unsupportedEditorialInferences}=require('../editorial-ai');
+ const facts=['PEC Zwolle stelt Alex Pastoor aan als hoofdtrainer tot 2027.'];
+ const draft={headline:'PEC Zwolle stelt Alex Pastoor aan',standfirst:'De club bevestigt het besluit.',body:[
+  'De aanstelling biedt de club stabiliteit en ruimte voor zijn visie op de lange termijn.',
+  'Pastoor ziet potentie en kijkt ernaar uit om maximale prestaties te bereiken.',
+  'Zijn buitenlandse ervaring heeft zijn profiel verder verrijkt.'
+ ]};
+ const issues=unsupportedEditorialInferences(draft,facts);
+ assert.equal(issues.length,3);
+ assert.deepEqual(unsupportedEditorialInferences({headline:'Feitelijk',standfirst:'PEC Zwolle bevestigt het besluit.',body:['Alex Pastoor is tot 2027 hoofdtrainer.']},facts),[]);
+ assert.deepEqual(unsupportedEditorialInferences({headline:'Feitelijk',standfirst:'PEC Zwolle bevestigt het besluit.',body:['De club meldt stabiliteit.']},[...facts,'De club meldt stabiliteit.']),[]);
+});
