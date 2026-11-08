@@ -40,12 +40,39 @@ jobs:
     timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Resolve the current premium APK build
+        id: apk
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const {data} = await github.rest.actions.listWorkflowRuns({owner, repo, workflow_id: 'phase51.yml', branch: 'main', status: 'success', per_page: 30});
+            for (const run of data.workflow_runs) {
+              const {data: artifacts} = await github.rest.actions.listWorkflowRunArtifacts({owner, repo, run_id: run.id});
+              if (artifacts.artifacts.some(a => a.name === 'Veldio-52B' && !a.expired)) {
+                core.setOutput('run_id', String(run.id));
+                return;
+              }
+            }
+            core.setFailed('Geen actuele premium APK beschikbaar; Android-publicatiebewijs ontbreekt.');
       - uses: actions/download-artifact@v4
         with:
-          name: Veldio-49
+          name: Veldio-52B
           path: apk
-          run-id: 42022333166
+          run-id: ${{ steps.apk.outputs.run_id }}
           github-token: ${{ github.token }}
+      - name: Require APK provenance to match the production source
+        run: |
+          (cd apk && sha256sum -c sha256.txt)
+          python3 scripts/verify-android-source.py apk/Veldio-52B.apk
+          python3 - <<'PY'
+          import json
+          expected=json.load(open('android-project/source-provenance.json'))
+          built=json.load(open('apk/Veldio-build-provenance.json'))
+          assert built['files']==expected['files'], 'APK-broncode wijkt af van de productiebroncode'
+          PY
       - run: python3 -m pip install 'uiautomator2>=3,<4'
       - name: Enable emulator acceleration
         run: |
@@ -61,7 +88,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/verify-live-article60.py apk/Veldio-49.apk "$ARTICLE_ID"
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/verify-live-article60.py apk/Veldio-52B.apk "$ARTICLE_ID"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
