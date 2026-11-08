@@ -17,7 +17,7 @@ function evidence(record,doc,now=Date.now()){
  const header=scorePattern.exec(content);
  if(!header)return null;
  const tail=content.slice(header.index+header[0].length,header.index+header[0].length+1600);
- const pattern=/(?:^|\s)(\d{1,2})(?:\+(\d{1,2}))?\s*[.']\s*([A-Za-zÀ-ž][A-Za-zÀ-ž .'-]{1,55}?)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})(?=\s|$)/g;
+ const pattern=/(?:^|\s)(\d{1,2})(?:\+(\d{1,2}))?\s*[.']\s*([A-Za-zÀ-ž][A-Za-zÀ-ž .()'-]{1,55}?)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})(?=\s|$)/g;
  const events=[];
  for(const match of tail.matchAll(pattern)){
   const minute=Number(match[1]),extra=match[2]?Number(match[2]):0;
@@ -37,7 +37,7 @@ function evidence(record,doc,now=Date.now()){
  if(previousHome!==homeScore||previousAway!==awayScore)return null;
  const facts=events.map(e=>'Volgens het officiële wedstrijdverslag veranderde de stand in minuut '+e.minute+(e.extra?'+'+e.extra:'')+' door '+e.person+' naar '+e.home+'-'+e.away+'.');
  return {sourceUrl:doc.url,sourcePublishedAt:doc.publishedAt,events,facts,
-  sourceExcerpt:content.slice(header.index,header.index+header[0].length+1600)};
+  sourceExcerpt:content.slice(Math.max(0,header.index-160),header.index+header[0].length+1600)};
 }
 function attach(record,doc,now=Date.now()){
  const verified=evidence(record,doc,now);if(!verified)return null;
