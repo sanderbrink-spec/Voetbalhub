@@ -1178,3 +1178,14 @@ test('Focused publication never reports green when nothing was published',()=>{
  assert.equal(runExitCode({status:'no_new_verified_articles',focusSourceUrl:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',counts:{published:0}}),1);
  assert.equal(runExitCode({status:'completed',focusSourceUrl:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',counts:{published:1}}),0);
 });
+
+
+test('only the observed registered match copy rejection earns one reassessment with the AI writer',()=>{
+ const {reopenObservedMatchCopyFailure}=require('../scripts/automatic-publication');
+ const reason='Kwaliteitscontrole na 0 herschrijvingen: Tweede feitencontrole: Zeer weinig originaliteit; tekst is bijna letterlijk gekopieerd van bron; Ontbrekende expliciete bronattributie in tweede zin';
+ const original={matchId:'of-nl-2026-az-groningen',status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',errorHash:require('node:crypto').createHash('sha256').update(reason).digest('hex'),attempts:1};
+ const job={...original};assert.equal(reopenObservedMatchCopyFailure(job,1234),true);
+ assert.equal(job.status,'pending');assert.equal(job.nextAttemptAt,1234);
+ Object.assign(job,{status:'review'});assert.equal(reopenObservedMatchCopyFailure(job,1235),false);
+ for(const change of [{matchId:undefined},{errorHash:'other-failure'},{failureStage:'verification'},{status:'published'}])assert.equal(reopenObservedMatchCopyFailure({...original,...change},1234),false);
+});
