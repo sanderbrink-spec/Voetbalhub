@@ -61,7 +61,7 @@ function extractPage(html,url){
    // Only an explicitly labelled date in the article header is a publication date;
    // fixture dates and unrelated dates in body copy do not count.
    const header=text.slice(0,1000),date=header.match(/\b(?:Date|Datum)\s*:\s*([0-3]\d)[.-]([01]\d)[.-](20\d\d)\b/i)
-    ||header.slice(0,400).match(/^\s*([0-3]\d)[.-]([01]\d)[.-](20\d\d)\b/);
+    ||header.slice(0,400).match(/\b([0-3]\d)[.-]([01]\d)[.-](20\d\d)\b/);
    if(date)publishedAt=date[3]+'-'+date[2]+'-'+date[1];
    else {
     // Explicit Dutch publication header, not an arbitrary fixture date in copy.
