@@ -85,6 +85,22 @@ function officialPublisherName(url){
   return names[value.hostname.toLowerCase().replace(/^www\./,'')]||null;
  }catch{return null;}
 }
+// An appointment or contract cannot, on its own, substantiate strategy,
+// motivation or guaranteed outcomes. Never convert a review score into proof.
+function unsupportedEditorialInferences(draft,facts=[]){
+ if(!draft||!Array.isArray(draft.body))return [];
+ const verified=String((facts||[]).join(' ')).toLocaleLowerCase('nl');
+ const article=[draft.headline,draft.standfirst,...draft.body].filter(x=>typeof x==='string').join(' ');
+ const sentences=article.split(/(?<=[.!?])\s+/);
+ const patterns=[
+  {name:'onbewezen stabiliteit of toekomstvisie',re:/\b(?:stabiliteit|langetermijnvisie|lange.termijnvisie|ruimte voor zijn visie|waarborgt de toekomst)\b/i},
+  {name:'onbewezen voorkeur of persoonlijke motivatie',re:/\b(?:meest aantrekkelijke|spreekt hem het meest aan|ziet potentie|kijkt ernaar uit)\b/i},
+  {name:'onbewezen waardering van loopbaan',re:/\b(?:verrijkt zijn profiel|versterkt zijn profiel|biedt de club zekerheid)\b/i}
+ ];
+ return [...new Set(sentences.flatMap(sentence=>patterns.filter(rule=>
+  rule.re.test(sentence)&&!rule.re.test(verified)).map(rule=>
+  'Onbewezen interpretatie ('+rule.name+'): verwijder deze claim of onderbouw haar uitsluitend met verifiedFacts.')))];
+}
 // Attribute both the decision and its contextual claims. This is an
 // additional preflight rejection, never a substitute for independent review.
 function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],facts=[]}={}){
@@ -164,11 +180,11 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     const draft=normalizeDraft(text);
     if(draft?.skip)throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.');
     const issues=generationIssues(draft,facts,match,compact);
-    if(automaticPublication)issues.push(...editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts}));
+    if(automaticPublication){issues.push(...editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts}));issues.push(...unsupportedEditorialInferences(draft,facts));}
     if(!issues.length)return {...draft,qualityReview:{automatedTextChecksPassed:true,revisionApplied:attempt===1,attempts:attempt+1,factVerificationRequired:true,autoPublish:false}};
     if(attempt===1){const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;error.rejectedDraft=draft;throw error;}
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues};
+module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,unsupportedEditorialInferences};
 
