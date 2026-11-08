@@ -485,3 +485,14 @@ test('source-copied verified assistant pair can be reframed without adding facts
  assert.deepEqual(reframeVerifiedStaffPair(draft,[],[doc]),draft);
  assert.deepEqual(reframeVerifiedStaffPair(draft,[quoted],[{text:'Een andere tekst zonder letterlijke bronoverlap.'}]),draft);
 });
+
+test('new verified-name rewrite retries one rejected official article exactly once',()=>{
+ const {recoverVerifiedNameRewrite}=require('../scripts/automatic-publication');
+ const job={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:3};
+ assert.equal(recoverVerifiedNameRewrite(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';
+ assert.equal(recoverVerifiedNameRewrite(job,now),false);
+ assert.equal(recoverVerifiedNameRewrite({...job,verifiedNameRewriteV65:false,failureStage:'verification'},now),false);
+ assert.equal(recoverVerifiedNameRewrite({...job,verifiedNameRewriteV65:false,failureCategory:'temporary_source_failure'},now),false);
+});
