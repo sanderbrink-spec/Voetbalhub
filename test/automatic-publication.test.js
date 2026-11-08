@@ -593,3 +593,33 @@ test('previously skipped verified coaching decision gets exactly one strict new 
  assert.equal(recoverOfficialCoachDecision(job,now),false);
  assert.equal(recoverOfficialCoachDecision({...job,officialCoachRecoveryV69:false,failureStage:'quality'},now),false);
 });
+
+
+test('V70 quality rejection gets one full revision only when independent-copy metrics failed',()=>{
+ const {recoverDistinctArticleV70}=require('../scripts/automatic-publication');
+ const hash=require('node:crypto').createHash('sha256').update('Kwaliteitscontrole na 2 herschrijvingen: originality lager dan 70. diversity lager dan 70. Redactiescore lager dan 85.').digest('hex');
+ const item={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',reason:'editorial_review_required',errorHash:hash,attempts:2};
+ assert.equal(recoverDistinctArticleV70(item,now),true);
+ assert.equal(item.status,'pending');assert.equal(item.attempts,0);
+ item.status='review';
+ assert.equal(recoverDistinctArticleV70(item,now),false);
+ assert.equal(recoverDistinctArticleV70({...item,distinctArticleRecoveryV70:false,errorHash:'unrelated'},now),false);
+ assert.equal(recoverDistinctArticleV70({...item,distinctArticleRecoveryV70:false,failureStage:'verification'},now),false);
+});
+
+test('V70 source-independent revision uses verified facts but does not feed the raw publisher article to the writer',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ let prompt;
+ const facts=['PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.','Dennis van der Ree keert terug als assistent-trainer.'];
+ await reviseDraft({draft:{headline:'Afgekeurde kop',standfirst:'Afgekeurde intro',body:['Afgekeurde tekst.']},verifiedFacts:facts},
+  {kind:'announcement',topic:'Alex Pastoor aanstelling',primaryAuthority:'club_decision'},
+  [{url:'https://peczwolle.nl/nieuws/aanstelling',title:'Nieuws',text:'BRONTEKST_NEEM_DEZE_NIET_OVER',publishedAt:'2026-11-07'}],
+  'Woordelijke bronoverlap',{key:'test',model:'test',fetcher:async(_,options)=>{
+   prompt=JSON.parse(options.body).messages;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});
+  }});
+ const req=JSON.parse(prompt[1].content);
+ assert.deepEqual(req.verifiedFacts,facts);
+ assert.ok(!JSON.stringify(req).includes('BRONTEKST_NEEM_DEZE_NIET_OVER'));
+ assert.deepEqual(req.sources,[{url:'https://peczwolle.nl/nieuws/aanstelling',title:'Nieuws',publishedAt:'2026-11-07'}]);
+ assert.match(prompt[0].content,/volledig nieuw/);
+});
