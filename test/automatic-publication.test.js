@@ -708,7 +708,7 @@ test('V74 refuses unsourced semantic edits and does not weaken rejection',()=>{
  const doc={text:'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld. De assistenten ondersteunen de nieuwe coach.'};
  const draft={headline:'PEC Zwolle benoemt een nieuwe hoofdtrainer bij de club',
  standfirst:'De trainer wordt binnenkort aangesteld als hoofdcoach van de vereniging.',
- body:['PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld. De nieuwe trainer neemt zijn taken bij de club op zich.']};
+ body:['PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld. De assistenten ondersteunen de nieuwe coach. De nieuwe trainer neemt zijn taken bij de club op zich.']};
  const unchanged=reframeVerifiedClubDecision(draft,[],[doc],overlapPhrases);
  assert.deepEqual(unchanged,draft);
  const fact='PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.';
