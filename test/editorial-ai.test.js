@@ -250,5 +250,28 @@ test('V103 writer requests three evidence-led body paragraphs for official coach
  const good=await createEditorialDraft({topic:'PEC Zwolle benoemt hoofdtrainer',category:'clubnieuws',primaryAuthority:'club_decision',facts,sourceUrls:['https://peczwolle.nl/nieuws/feit'],automaticPublication:true},
  {apiKey:'test',model:'openai/gpt-oss-120b',fetcher:async(_,opts)=>{sent=JSON.parse(opts.body);return reply(draft);}});
  assert.equal(good.body.length,3);
- assert.match(sent.messages[0].content,/Lever precies drie bodyalinea’s/);
+ assert.match(sent.messages[0].content,/body \(exact drie alinea’s/);
+});
+
+test('V105 official coaching writer uses a compact unambiguous factual brief',async()=>{
+ const {createEditorialDraft}=require('../editorial-ai');
+ let textPrompt;
+ const facts=['PEC Zwolle stelt Alex Pastoor aan als hoofdtrainer.',
+  'Dennis van der Ree en Maikel van der Werff keren terug als assistenten.',
+  'Pastoor was in 2025 assistent-bondscoach van Indonesië.',
+  'De club verklaart zijn aanstelling en contractvoorwaarden.'];
+ const draft={headline:'PEC Zwolle benoemt hoofdtrainer en bevestigt zijn staf',
+  standfirst:'PEC Zwolle bevestigt de komst van de nieuwe hoofdtrainer en meldt de voorwaarden van zijn contract en de technische staf.',
+  body:['De club meldt dat Dennis van der Ree en Maikel van der Werff terugkeren naar hun functie als assistenten binnen de staf rondom de nieuwe hoofdtrainer.',
+  'In 2025 werkte Pastoor als assistent-bondscoach van Indonesië; deze buitenlandse functie is in de gecontroleerde clubmededeling afzonderlijk bevestigd.',
+  'In de officiële bekendmaking legt de club uit welke afspraken rond de benoeming zijn vastgelegd zonder verdere onbewezen gevolgen te beschrijven.']};
+ await createEditorialDraft({topic:'PEC Zwolle benoemt hoofdtrainer',primaryAuthority:'club_decision',sourceUrls:['https://peczwolle.nl/nieuws/benoeming'],facts,category:'clubnieuws',automaticPublication:true},
+ {apiKey:'test',model:'openai/gpt-oss-120b',fetcher:async(_,options)=>{
+  textPrompt=JSON.parse(options.body).messages[0].content;
+  return reply(draft);
+ }});
+ assert.ok(textPrompt.length<2600);
+ assert.match(textPrompt,/Alinea 1 beschrijft alleen de feitelijke verandering in assistentrollen/);
+ assert.match(textPrompt,/Geen vierde of vijfde alinea/);
+ assert.match(textPrompt,/Verzin geen seizoen of verband tussen twee datums/);
 });
