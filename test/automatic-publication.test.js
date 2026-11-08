@@ -819,3 +819,15 @@ test('V91 generator correction may retry only once and never reopen a journalist
  assert.equal(recoverCompleteBodyV91({...rejected,failureStage:'quality'},now),false);
  assert.equal(recoverCompleteBodyV91({...rejected,failureCategory:'journalistic_rejection'},now),false);
 });
+
+test('V92 fixes only uniquely verified single-character surname typos, not invented identities',()=>{
+ const {repairUniqueVerifiedNameTypo}=require('../scripts/automatic-publication');
+ const facts=['PEC Zwolle stelt Alex Pastoor aan als hoofdtrainer.','Dennis van der Ree en Maikel van der Werff keren terug.'];
+ const draft={headline:'Alex Pastor wordt trainer bij PEC Zwolle',standfirst:'Alex Pastor gaat aan de slag.',body:['Alex Pastor krijgt de leiding.','Een onbekende Alex Paster wordt niet toegevoegd.']};
+ const fixed=repairUniqueVerifiedNameTypo(draft,facts);
+ assert.match(fixed.headline,/Alex Pastoor/);
+ assert.match(fixed.standfirst,/Alex Pastoor/);
+ assert.match(fixed.body[0],/Alex Pastoor/);
+ assert.match(fixed.body[1],/Alex Paster/);
+ assert.equal(repairUniqueVerifiedNameTypo(draft,['Alex Pastoor','Alex Pastar']).headline,draft.headline);
+});
