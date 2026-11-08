@@ -1173,6 +1173,9 @@ async function run(options={}){
  }
 }
 function runExitCode(report){
+ // A normally empty scheduled news hour is healthy; an explicitly focused
+ // production attempt is not successful until its article is actually visible.
+ if(report.focusSourceUrl&&report.counts?.published===0)return 1;
  return ['completed','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
 }
 async function focusedProductionRun(options){
