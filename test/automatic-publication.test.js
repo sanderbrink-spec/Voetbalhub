@@ -534,3 +534,21 @@ test('primary literal alignment never accepts numbers or passages outside cited 
  assert.equal(aligned.facts[0].text,bad.facts[0].text);
  assert.ok(!source.includes(aligned.facts[0].text));
 });
+
+test('official extraction emits only literal evidence when the model paraphrases',async()=>{
+ const {extractCandidate}=require('../scripts/automatic-publication');
+ const doc={url:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',
+  title:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',publishedAt:'2026-11-07T10:14:00+01:00',
+  text:'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld. De ervaren coach begint op maandag bij de club.'};
+ let calls=0;
+ const candidate=await extractCandidate([doc],{key:'test',model:'test',fetcher:async()=>{
+  calls++;return Response.json({choices:[{message:{content:JSON.stringify({
+   kind:'announcement',topic:'Veldio: clubbesluit',
+   facts:[{text:'PEC Zwolle benoemt Alex Pastoor tot nieuwe hoofdtrainer.',
+     evidence:[{source:0,fragment:0}]}]
+  })}}]});
+ }},Date.parse('2026-11-08T10:00:00Z'));
+ assert.equal(calls,1);
+ assert.equal(candidate.topic,doc.title);
+ assert.ok(doc.text.includes(candidate.facts[0].text));
+});
