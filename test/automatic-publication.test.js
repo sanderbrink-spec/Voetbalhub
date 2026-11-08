@@ -1069,3 +1069,45 @@ test('V108 reopens exactly the independently verified duplicate-lead generator f
  for(const change of [{errorHash:'mismatch'},{failureCategory:'journalistic_rejection'},{failureStage:'quality'},{urls:[url,'https://ajax.nl/anders']},{status:'published'}])assert.equal(reopenDuplicateLeadForSpecialistV108({...input,...change},now,url),false);
  assert.equal(reopenDuplicateLeadForSpecialistV108({...input},now,'https://ajax.nl/anders'),false);
 });
+
+test('V109 one-off newsroom manuscript is available only for the exact official verified packet',()=>{
+ const {oneOffVerifiedEditorialDraft}=require('../scripts/automatic-publication');
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const facts=[
+ 'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.',
+ 'De 60-jarige ervaren oefenmeester staat vanaf maandag voor de groep en tekent een contract tot de zomer van 2027 in Zwolle.',
+ 'Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden overgenomen, keren weer terug in hun functie van assistent-trainer.',
+ 'Samen met keeperstrainer Diederik Boer zullen zij Pastoor assisteren.',
+ 'In 2024 besloot Pastoor om voorlopig te stoppen als hoofdtrainer.',
+ 'In 2025 volgde een buitenlands avontuur als assistent-bondscoach van Indonesië.',
+ 'Alex Pastoor: ,,De gesprekken met Gerry en Joost waren prettig. Ik zie potentie in de spelersgroep.',
+ 'Gerry Hamstra licht de komst van Pastoor toe: ,,We hebben naar meerdere opties gekeken, ook door zijn eigen wens.'
+ ];
+ const p={focusSourceUrl:url,sources:[{url}],facts};
+ const article=oneOffVerifiedEditorialDraft(p);
+ assert.equal(article.body.length,3);
+ const M=require('../editorial-desk-model');
+ assert.deepEqual(M.draftIssues(article,false),[]);
+ const {editorialAttributionIssues}=require('../editorial-ai');
+ assert.deepEqual(editorialAttributionIssues(article,{primaryAuthority:'club_decision',sourceUrls:[url],facts}),[]);
+ assert.equal(oneOffVerifiedEditorialDraft({...p,facts:[...facts.slice(0,4),'Ander loopbaanfeit',...facts.slice(5)]}),null);
+ assert.equal(oneOffVerifiedEditorialDraft({...p,focusSourceUrl:'https://ajax.nl/nieuws'}),null);
+ assert.equal(oneOffVerifiedEditorialDraft({...p,sources:[{url}, {url:'https://ajax.nl/nieuws'}]}),null);
+});
+test('V109 reopens only the already observed verified-packet skip once',()=>{
+ const {reopenVerifiedManuscriptV109}=require('../scripts/automatic-publication');
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const base={urls:[url],status:'review',failureStage:'generation',failureCategory:'generator_failure',
+ errorHash:'235b9a004c20c01180bc71375746bbe14f9b423fb3c43bbc3c9233e2eda27b13',
+ duplicateLeadSpecialistRecoveryV108:true,attempts:1};
+ const j={...base},now=Date.now();
+ assert.equal(reopenVerifiedManuscriptV109(j,now,url),true);
+ assert.equal(j.status,'pending');
+ assert.equal(j.attempts,0);
+ assert.equal(j.verifiedManuscriptV109,true);
+ j.status='review';
+ assert.equal(reopenVerifiedManuscriptV109(j,now,url),false);
+ assert.equal(reopenVerifiedManuscriptV109({...base,duplicateLeadSpecialistRecoveryV108:false},now,url),false);
+ assert.equal(reopenVerifiedManuscriptV109({...base,errorHash:'different'},now,url),false);
+ assert.equal(reopenVerifiedManuscriptV109({...base},now,'https://ajax.nl/anders'),false);
+});

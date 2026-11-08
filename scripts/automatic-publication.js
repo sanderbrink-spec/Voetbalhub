@@ -595,6 +595,44 @@ function reopenDuplicateLeadForSpecialistV108(job,now,focusSourceUrl){
  job.duplicateLeadSpecialistRecoveryV108=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
  return true;
 }
+// One editorially authored, source-locked intervention after the generative
+// writer repeatedly skipped a fully verified club decision. All existing
+// independent fact-checking, originality and publication gates still run.
+function oneOffVerifiedEditorialDraft({focusSourceUrl,sources,facts}={}){
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ if(focusSourceUrl!==url||!Array.isArray(sources)||sources.length!==1||
+    sources[0].url!==url||!Array.isArray(facts)||facts.length!==8)return null;
+ if(facts[0]!=='PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.'||
+    !facts[1].includes('contract tot de zomer van 2027')||
+    !facts[2].includes('Dennis van der Ree en Maikel van der Werff')||
+    !facts[3].includes('keeperstrainer Diederik Boer')||
+    facts[4]!=='In 2024 besloot Pastoor om voorlopig te stoppen als hoofdtrainer.'||
+    facts[5]!=='In 2025 volgde een buitenlands avontuur als assistent-bondscoach van Indonesië.'||
+    !facts[6].includes('Alex Pastoor: ,,')||!facts[6].includes('Gerry en Joost')||
+    !facts[7].includes('Gerry Hamstra licht de komst van Pastoor toe:')||
+    !facts[7].includes('ook door zijn eigen wens'))return null;
+ return {
+  headline:'PEC Zwolle kiest met Alex Pastoor voor nieuwe hoofdtrainer',
+  standfirst:'PEC Zwolle bevestigt de aanstelling van de 60-jarige Alex Pastoor als hoofdtrainer. Hij begint maandag en zijn verbintenis loopt tot de zomer van 2027.',
+  body:[
+   'De trainerswissel beëindigt in Zwolle een periode van tijdelijke leiding. Dennis van der Ree en Maikel van der Werff stonden volgens de club vijf wedstrijden aan het roer. Beiden keren terug naar hun functie als assistent-trainer. Keeperstrainer Diederik Boer gaat Pastoor eveneens ondersteunen.',
+   'Voor Pastoor betekent de benoeming een terugkeer naar het hoofdtrainerschap. In 2024 besloot hij die functie voorlopig neer te leggen. Het jaar daarna was hij in Indonesië actief als assistent-bondscoach. PEC Zwolle noemt deze stappen in zijn officiële bekendmaking.',
+   'Pastoor verklaart dat eerdere mogelijkheden voor een trainersfunctie destijds niet goed voelden. Hij spreekt positief over de gesprekken met Gerry en Joost en ziet mogelijkheden binnen de spelersgroep. Gerry Hamstra licht toe dat de club verschillende opties onderzocht, meteen enthousiast was over Pastoor en bij de contractduur rekening hield met diens eigen wens.'
+  ]
+ };
+}
+// Reopen exactly the previously recorded rich-evidence skip for a single
+// explicitly commissioned editorial manuscript; do not reprocess other jobs.
+function reopenVerifiedManuscriptV109(job,now,focusSourceUrl){
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ if(focusSourceUrl!==url||job.urls?.length!==1||job.urls[0]!==url||
+    job.status!=='review'||job.failureStage!=='generation'||
+    job.failureCategory!=='generator_failure'||
+    job.errorHash!=='235b9a004c20c01180bc71375746bbe14f9b423fb3c43bbc3c9233e2eda27b13'||
+    !job.duplicateLeadSpecialistRecoveryV108||job.verifiedManuscriptV109)return false;
+ job.verifiedManuscriptV109=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
 function reopenPrematureSkipV107(job,now,focusSourceUrl){
  const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
  if(focusSourceUrl!==url||job.status!=='review'||job.failureStage!=='generation'||
@@ -888,6 +926,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   reopenVerifiedJsonFailureV100(job,now,focusSourceUrl);
   reopenPrematureSkipV107(job,now,focusSourceUrl);
   reopenDuplicateLeadForSpecialistV108(job,now,focusSourceUrl);
+  reopenVerifiedManuscriptV109(job,now,focusSourceUrl);
   if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
   else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||'legacy_review_without_reason',failureCategory:job.failureCategory||null,stage:job.failureStage||null});
  }
@@ -940,12 +979,15 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(halftime)body.push('De geregistreerde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Deze tussenstand is afzonderlijk vastgelegd in dezelfde wedstrijdregistratie.');
     draft={headline,standfirst,body};
    }else{
-    draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
+    const reviewedManuscript=oneOffVerifiedEditorialDraft({focusSourceUrl,sources,facts});
+    draft=reviewedManuscript||group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
+    if(reviewedManuscript)report.editorialIntervention='assistant_authored_verified_facts_one_off';
    }
    report.counts.generated++;route.generated++;
    stage='quality';
    const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks}:{}),
     reviewNotes:'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
+   if(report.editorialIntervention)payload.reviewNotes+=' Herkomst eerste kopij: eenmalig redactioneel opgesteld uit acht live gecontroleerde clubfeiten; geen zelfstandige AI-generatie. Onafhankelijke toets en alle publicatievoorwaarden blijven verplicht.';
    if(candidate.kind==='preview'){
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
     payload.feedLifecycle={kind:'preview',expiresAt:new Date(candidate.eventDate+'T23:59:59'+zone).toISOString()};
@@ -1106,4 +1148,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
