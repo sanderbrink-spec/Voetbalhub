@@ -1052,3 +1052,20 @@ test('V107 reopens only the exact rich-evidence skip, never other rejected news'
  assert.equal(reopenPrematureSkipV107({...base,errorHash:'other'},now,url),false);
  assert.equal(reopenPrematureSkipV107({...base},now,'https://ajax.nl/nieuws'),false);
 });
+
+test('V108 reopens exactly the independently verified duplicate-lead generator failure once',()=>{
+ const {reopenDuplicateLeadForSpecialistV108}=require('../scripts/automatic-publication');
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const hash='38ac2817cd53852c51fffa69f944d3abe9801a423bfb72c2fd9446a2b36ca75d';
+ const input={urls:[url],status:'review',attempts:1,failureStage:'generation',failureCategory:'generator_failure',errorHash:hash};
+ const now=Date.now();
+ const j={...input};
+ assert.equal(reopenDuplicateLeadForSpecialistV108(j,now,url),true);
+ assert.equal(j.status,'pending');
+ assert.equal(j.attempts,0);
+ assert.equal(j.duplicateLeadSpecialistRecoveryV108,true);
+ j.status='review';
+ assert.equal(reopenDuplicateLeadForSpecialistV108(j,now,url),false);
+ for(const change of [{errorHash:'mismatch'},{failureCategory:'journalistic_rejection'},{failureStage:'quality'},{urls:[url,'https://ajax.nl/anders']},{status:'published'}])assert.equal(reopenDuplicateLeadForSpecialistV108({...input,...change},now,url),false);
+ assert.equal(reopenDuplicateLeadForSpecialistV108({...input},now,'https://ajax.nl/anders'),false);
+});
