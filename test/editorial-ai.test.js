@@ -78,3 +78,17 @@ test('provider limits and insufficient facts do not trigger a repair or extra AI
   await assert.rejects(createEditorialDraft(input,{...config,fetcher:async()=>{calls++;return response();}}));assert.equal(calls,1);
  }
 });
+
+test('V91 automatic newsroom requests only a completed article JSON and reserves enough output tokens',async()=>{
+ let request;
+ const output=await createEditorialDraft({...input,automaticPublication:true},{...config,fetcher:async(_,options)=>{
+  request=JSON.parse(options.body);
+  return reply(good);
+ }});
+ assert.equal(request.max_completion_tokens,2400);
+ assert.match(request.messages[0].content,/GEEN claims, why_it_matters of verification_notes/);
+ assert.match(request.messages[0].content,/lege alinea’s is altijd een ongeldig concept/);
+ assert.equal(request.messages[0].content.includes('Claims bevatten claim, evidence en status'),false);
+ assert.equal(request.messages[1].content.includes('"automaticPublication":true'),true);
+ assert.equal(output.body.length,3);
+});
