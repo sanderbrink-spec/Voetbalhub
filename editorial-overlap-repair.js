@@ -14,8 +14,12 @@ function reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases){
   const verified=facts.some(f=>String(f).includes(first)&&String(f).includes(second)&&
    /\bassistent/i.test(f)&&/\b(?:terug|hervat|weer)\b/i.test(f));
   if(!verified)return paragraph;
-  const replacement=second+' en '+first+' keren terug als assistent-trainers.';
-  if(docs.some(doc=>overlapPhrases(doc.text,{headline:'',standfirst:'',body:[replacement]}).length))return paragraph;
+  // Swap only the already-verified pair; retain remaining source-grounded
+  // context and the full-length paragraph structure.
+  const originalPair=first+' en '+second;
+  const replacement=second+' en '+first+paragraph.slice(originalPair.length);
+  if(replacement===paragraph||
+    docs.some(doc=>overlapPhrases(doc.text,{headline:'',standfirst:'',body:[replacement]}).length))return paragraph;
   changed=true;return replacement;
  });
  return changed?{...draft,body}:draft;
