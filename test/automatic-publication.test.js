@@ -563,3 +563,49 @@ test('only the exact previously failed literal primary evidence job retries once
  assert.equal(recoverLiteralEvidenceRejection({...job,literalEvidenceRecoveryV67:false,errorHash:'wrong'},now),false);
  assert.equal(recoverLiteralEvidenceRejection({...job,literalEvidenceRecoveryV67:false,failureStage:'quality'},now),false);
 });
+
+test('V68 official decision can recover a model skip using only literal source sentences',async()=>{
+ const {extractCandidate,recoverOfficialSourceLiterals,validateEvidence}=require('../scripts/automatic-publication');
+ const doc={url:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',
+  title:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',publishedAt:'2026-11-07T10:14:00+01:00',
+  text:[
+   'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle Gisteren - 10:14 PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.',
+   'De ervaren oefenmeester begint maandag bij de club en tekent een contract tot de zomer van 2027.',
+   'Pastoor werkte eerder als hoofdtrainer bij Excelsior, Sparta Rotterdam en Almere City FC.',
+   'In 2025 was hij assistent-bondscoach van Indonesië.',
+   'Dennis van der Ree en Maikel van der Werff keren terug in hun functie van assistent-trainer.',
+   'Keeperstrainer Diederik Boer zal de nieuwe trainer assisteren.',
+   'Technisch directeur Gerry Hamstra bevestigt dat het contract tot de zomer van 2027 loopt.'
+  ].join(' ')};
+ const direct=recoverOfficialSourceLiterals(doc);
+ assert.ok(direct?.facts.length>=3,'rijk officieel bronbesluit moet meerdere letterlijk aantoonbare feiten leveren');
+ let calls=0;
+ const result=await extractCandidate([doc],{key:'test',model:'test',fetcher:async()=>{
+  calls++;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});
+ }},Date.parse('2026-11-08T10:00:00Z'));
+ assert.equal(calls,1);
+ assert.equal(result.kind,'announcement');
+ assert.equal(result.primaryAuthority,'club_decision');
+ assert.equal(result.topic,doc.title);
+ assert.ok(result.facts.every(f=>doc.text.includes(f.text)&&f.evidence.every(e=>e.source===0&&doc.text.includes(e.quote)&&e.quote.includes(f.text))));
+ assert.deepEqual(validateEvidence(result,[doc],Date.parse('2026-11-08T10:00:00Z')),[]);
+});
+
+test('V68 cannot recover a headline without a matching official body decision',()=>{
+ const {recoverOfficialSourceLiterals}=require('../scripts/automatic-publication');
+ const doc={url:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',
+  title:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',
+  text:'PEC Zwolle houdt vandaag een openbare training. De club meldt geen nieuwe benoeming. Supporters kunnen de komende weken het trainingsveld bezoeken. PEC Zwolle heeft nog geen verdere informatie over aanstellingen bekendgemaakt.'};
+ assert.equal(recoverOfficialSourceLiterals(doc),null);
+});
+
+test('V68 retries only a prior verified official source skip once',()=>{
+ const {recoverOfficialSourceSkip}=require('../scripts/automatic-publication');
+ const job={status:'review',failureStage:'verification',failureCategory:'journalistic_rejection',reason:'insufficient_verified_facts',attempts:1};
+ assert.equal(recoverOfficialSourceSkip(job,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ job.status='review';
+ assert.equal(recoverOfficialSourceSkip(job,now),false);
+ assert.equal(recoverOfficialSourceSkip({...job,officialSourceFallbackV68:false,failureStage:'quality'},now),false);
+ assert.equal(recoverOfficialSourceSkip({...job,officialSourceFallbackV68:false,reason:'editorial_review_required'},now),false);
+});
