@@ -30,8 +30,8 @@ function editorialAssignment(facts,{compact=false}={}){
   if(!value||seen.has(key))continue;
   seen.add(key);
   const label=/\b(?:technisch directeur|algemeen directeur|bestuurder|toelicht|verklaar|zegt|aldus|vertelt|benadrukt|enthousiast|motiver|opties bekeken)\b/i.test(value)?'Officiële toelichting'
-   :/\b(?:assistent(?:-trainer|-bondscoach)?|keeperstrainer|staf|interim|tijdelijk de leiding|terug(?:keer|keren|gekeerd))\b/i.test(value)?'Concrete personele wijzigingen'
    :/\b(?:loopbaan|ervaring|eerder|carrière|bondscoach|gestopt|in 20\d\d|tijdens 20\d\d|Indonesi[eë])\b/i.test(value)?'Bevestigde achtergrond'
+   :/\b(?:assistent(?:-trainer|-bondscoach)?|keeperstrainer|staf|interim|tijdelijk de leiding|terug(?:keer|keren|gekeerd))\b/i.test(value)?'Concrete personele wijzigingen'
    :/\b(?:contract|verbintenis|ingaande|vanaf maandag|vanaf dinsdag|tot de zomer|looptijd)\b/i.test(value)?'Ingangsdatum en voorwaarden'
    :/\b(?:aanstell|benoem|hoofdtrainer|nieuwe trainer|nieuwe coach|bevestig|besluit)\b/i.test(value)?'Kernbesluit'
    :'Overige gecontroleerde informatie';
