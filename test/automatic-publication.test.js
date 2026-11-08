@@ -1146,6 +1146,7 @@ test('V110 retries only the actually observed PEC quality rejection once and ret
  assert.deepEqual(require('../editorial-ai').editorialAttributionIssues(draft,{
   primaryAuthority:'club_decision',sourceUrls:[url],facts
  }),[]);
+ assert.deepEqual(require('../editorial-ai').unverifiedTimelineAndRoles(draft,facts),[]);
 });
 
 test('Previously verified PEC evidence survives a temporary HTTP 403 only in the original source window',()=>{
