@@ -1111,3 +1111,39 @@ test('V109 reopens only the already observed verified-packet skip once',()=>{
  assert.equal(reopenVerifiedManuscriptV109({...base,errorHash:'different'},now,url),false);
  assert.equal(reopenVerifiedManuscriptV109({...base},now,'https://ajax.nl/anders'),false);
 });
+
+test('V110 retries only the actually observed PEC quality rejection once and retains all publication gates',()=>{
+ const {reopenPolishedManuscriptV110,oneOffVerifiedEditorialDraft}=require('../scripts/automatic-publication');
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const base={urls:[url],status:'review',failureStage:'quality',
+  failureCategory:'journalistic_rejection',
+  errorHash:'38b36a7f4d18e0287e8b944de09c91caf73d2c1db830677e8b6bc137d1959677',
+  verifiedManuscriptV109:true,attempts:1};
+ const now=Date.now(),job={...base};
+ assert.equal(reopenPolishedManuscriptV110(job,now,url),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.polishedManuscriptRecoveryV110,true);
+ job.status='review';
+ assert.equal(reopenPolishedManuscriptV110(job,now,url),false);
+ assert.equal(reopenPolishedManuscriptV110({...base,verifiedManuscriptV109:false},now,url),false);
+ assert.equal(reopenPolishedManuscriptV110({...base,failureCategory:'generator_failure'},now,url),false);
+ assert.equal(reopenPolishedManuscriptV110({...base,errorHash:'wrong'},now,url),false);
+ assert.equal(reopenPolishedManuscriptV110({...base},now,'https://ajax.nl/anders'),false);
+ const facts=[
+  'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.',
+  'De 60-jarige ervaren oefenmeester staat vanaf maandag voor de groep en tekent een contract tot de zomer van 2027 in Zwolle.',
+  'Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden overgenomen, keren weer terug in hun functie van assistent-trainer.',
+  'Samen met keeperstrainer Diederik Boer zullen zij Pastoor assisteren.',
+  'In 2024 besloot Pastoor om voorlopig te stoppen als hoofdtrainer.',
+  'In 2025 volgde een buitenlands avontuur als assistent-bondscoach van Indonesië.',
+  'Alex Pastoor: ,,De gesprekken met Gerry en Joost waren prettig. Ik zie potentie in de spelersgroep.',
+  'Gerry Hamstra licht de komst van Pastoor toe: ,,We hebben naar meerdere opties gekeken, ook door zijn eigen wens.'
+ ];
+ const draft=oneOffVerifiedEditorialDraft({focusSourceUrl:url,sources:[{url}],facts});
+ assert.ok(draft);
+ assert.equal(draft.body.length,3);
+ assert.deepEqual(require('../editorial-desk-model').draftIssues(draft,false),[]);
+ assert.deepEqual(require('../editorial-ai').editorialAttributionIssues(draft,{
+  primaryAuthority:'club_decision',sourceUrls:[url],facts
+ }),[]);
+});
