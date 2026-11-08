@@ -151,3 +151,22 @@ test('typed schema never converts invalid body strings into approved articles',a
  await assert.rejects(router.complete(messages,{task:'writing'}),{code:'EDITORIAL_AI_UNAVAILABLE'});
  assert.deepEqual(router.trace.map(t=>t.outcome),['invalid_json','invalid_json']);
 });
+
+
+test('revision API enforces the same strict paragraph array as writing on OpenAI and Groq',async()=>{
+ for(const env of [{openaiKey:'secret-openai'},{groqKey:'secret-groq'}]){
+  const router=new EditorialProviderRouter({...env,intervalMs:0,fetcher:async(url,opt)=>{
+   const body=JSON.parse(opt.body);
+   assert.equal(body.response_format.type,'json_schema');
+   assert.equal(body.response_format.json_schema.strict,true);
+   assert.equal(body.response_format.json_schema.schema.properties.body.type,'array');
+   return response({...draft,skip:false});
+  }});
+  assert.equal((await router.complete(messages,{task:'revision'})).body.length,1);
+ }
+});
+test('revisions still reject malformed body strings and never auto-approve copy',async()=>{
+ const router=new EditorialProviderRouter({openaiKey:'x',groqKey:'x',intervalMs:0,fetcher:async()=>response({...draft,body:'invalid'} )});
+ await assert.rejects(router.complete(messages,{task:'revision'}),{code:'EDITORIAL_AI_UNAVAILABLE'});
+ assert.deepEqual(router.trace.map(t=>t.outcome),['invalid_json','invalid_json']);
+});
