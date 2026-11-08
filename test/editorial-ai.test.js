@@ -1,6 +1,6 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {createEditorialDraft,groqEditorialOptions}=require('../editorial-ai');
+const {createEditorialDraft,groqEditorialOptions,editorialAssignment}=require('../editorial-ai');
 const good={headline:'FC Groningen bespreekt plannen voor het komende seizoen',standfirst:'De club bespreekt nieuwe plannen met de betrokken medewerkers en neemt de uitkomsten mee in de voorbereiding op het komende seizoen.',body:[
 'Op het trainingscomplex werkten spelers in kleine groepen aan verschillende oefeningen onder leiding van de technische staf terwijl de overige medewerkers hun taken voorbereidden.',
 'Tijdens een apart overleg spraken vertegenwoordigers van de club met supporters over praktische onderwerpen rond de ontvangst van bezoekers en bereikbaarheid van het stadion.',
@@ -113,4 +113,40 @@ test('V94 automated writer uses 120B medium, no premium model or new API',async(
  assert.equal(request.model,'openai/gpt-oss-120b');
  assert.equal(request.reasoning_effort,'medium');
  assert.equal(request.max_completion_tokens,3600);
+});
+
+test('V95 reporter assigns different verified fact IDs to an intro and three body themes without inventing claims',()=>{
+ const facts=[
+  'PEC Zwolle heeft Alex Pastoor als hoofdtrainer aangesteld.',
+  'Dennis van der Ree en Maikel van der Werff keren als assistent-trainer terug.',
+  'In 2025 werkte Pastoor als assistent-bondscoach van Indonesië.',
+  'Technisch directeur Gerry Hamstra zegt dat de club meerdere opties heeft overwogen.',
+  'Pastoor tekent een contract tot de zomer van 2027.'
+ ];
+ const plan=editorialAssignment(facts);
+ assert.deepEqual(plan.leadFactIds,['F1']);
+ assert.equal(plan.bodySections.length,4);
+ const ids=[...plan.leadFactIds,...plan.bodySections.flatMap(x=>x.factIds)];
+ assert.deepEqual(ids.slice().sort(),['F1','F2','F3','F4','F5']);
+ assert.equal(new Set(ids).size,ids.length);
+ assert.match(plan.bodySections[0].angle,/personele/i);
+ const brief=editorialAssignment(facts,{compact:true});
+ assert.ok(brief.bodySections.length<=2);
+ assert.deepEqual([...brief.leadFactIds,...brief.bodySections.flatMap(x=>x.factIds)].sort(),ids.slice().sort());
+});
+test('V95 reporter deduplicates identical source facts and refuses to invent paragraph themes',()=>{
+ const facts=['PSV bevestigt een trainersbesluit.','PSV bevestigt een trainersbesluit.','De club vermeldt een ingangsdatum.'];
+ const plan=editorialAssignment(facts);
+ assert.deepEqual([...plan.leadFactIds,...plan.bodySections.flatMap(x=>x.factIds)].sort(),['F1','F3']);
+ assert.equal(plan.bodySections.length,1);
+ assert.deepEqual(editorialAssignment([]),{leadFactIds:[],bodySections:[]});
+});
+test('V95 writer receives a deterministic reporting assignment alongside the original verified facts',async()=>{
+ let request;
+ const f=async(_,options)=>{request=JSON.parse(options.body);return reply(good);};
+ await createEditorialDraft({...input,automaticPublication:true},{...config,fetcher:f});
+ const supplied=JSON.parse(request.messages[1].content);
+ assert.deepEqual(supplied.facts,input.facts);
+ assert.ok(supplied.editorialAssignment.leadFactIds.length>0);
+ assert.ok(request.messages[0].content.includes('labels voegen geen feiten toe'));
 });
