@@ -178,7 +178,9 @@ function mayDelegateLeadOverlap(issues,{automaticPublication=false,coachPlan=fal
  return Boolean(automaticPublication&&coachPlan&&Array.isArray(issues)&&issues.length===1&&
   issues[0]==='Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.');
 }
-async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],primaryAuthority=null,match=null,compact=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000}) {
+async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],primaryAuthority=null,match=null,compact=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router}) {
+  // Normal server calls and production share the same provider interface.
+  if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
   const assignment=editorialAssignment(facts,{compact});
   const coachPlan=primaryAuthority==='club_decision'&&String(topic||'').toLocaleLowerCase('nl').includes('hoofdtrainer')&&facts.length>=4;
   const officialPublisher=['club_decision','association_decision'].includes(primaryAuthority)&&sourceUrls.length===1?officialPublisherName(sourceUrls[0]):null;
@@ -213,6 +215,10 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   for(let attempt=0;attempt<2;attempt++){
     let data;
     try{
+      if(router){
+       const value=await router.complete(messages,{task:attempt?'revision':'writing',requestOptions:groqEditorialOptions(model,'writing',{automaticPublication})});
+       data={choices:[{message:{content:JSON.stringify(value)}}]};
+      }else{
       const response=await fetcher('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',signal,headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},
         body:JSON.stringify({model,messages,temperature:0.2,...groqEditorialOptions(model,'writing',{automaticPublication})})
@@ -223,8 +229,9 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
       }
       if(!response.ok)throw new DraftError(502,'De AI-dienst is tijdelijk niet beschikbaar. Je invoer blijft bewaard.');
       data=await response.json();
+      }
     }catch(error){
-      if(error?.code==='GROQ_DAILY_QUOTA')throw error;
+      if(['GROQ_DAILY_QUOTA','EDITORIAL_AI_UNAVAILABLE'].includes(error?.code))throw error;
       if(error instanceof DraftError)throw error;
       if(signal.aborted||['TimeoutError','AbortError'].includes(error?.name))throw new DraftError(504,'De AI-dienst antwoordde niet binnen 25 seconden. Je invoer blijft bewaard.');
       throw new DraftError(502,'Geen bruikbaar antwoord van de AI-dienst. Je invoer blijft bewaard.');

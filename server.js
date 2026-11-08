@@ -11,6 +11,7 @@ const PORT = Number(process.env.PORT || 10000);
 let imageGenerationInProgress = false;
 const API_SECRET = process.env.HUB_API_SECRET || "";
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
+const editorialRouter=require("./editorial-provider-router").createRouter();
 const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 const client = process.env.REDIS_URL ? createClient({
   url: process.env.REDIS_URL,
@@ -205,7 +206,7 @@ async function polishIncomingDraft(item) {
       languagePolishNote: "Alleen broninformatie beschikbaar. Geen zelfstandig verslag. Open primaire bronnen, controleer feiten en schrijf daarna een origineel artikel."
     };
   }
-  if (!GROQ_API_KEY) return { ...item, languagePolish: "not_run", reportAvailable: Array.isArray(item.body) && item.body.length >= 3 };
+  if (!editorialRouter.configured().some(p=>p.enabled)) return { ...item, languagePolish: "not_run", reportAvailable: Array.isArray(item.body) && item.body.length >= 3 };
   // RSS-only input is not enough evidence to safely rewrite an article. Keep the
   // incoming draft unchanged and force editorial review instead of asking AI to expand it.
   const hasArticleText = [ev.content, ev.excerpt].some(v => typeof v === "string" && v.trim().length >= 250);
@@ -219,23 +220,10 @@ async function polishIncomingDraft(item) {
   const sourceText = [src.title, src.description, ev.title, ev.description, cleanExtractedSourceText(ev.excerpt), cleanExtractedSourceText(ev.content), item.feedTitle, item.feedDescription].filter(v => typeof v === "string").join("\n").slice(0, 7000);
   if (!sourceText.trim()) return { ...item, languagePolish: "skipped_no_source_text" };
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(20000),
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [
+    const parsed = await editorialRouter.complete([
           { role: "system", content: "Je bent de onafhankelijke eindredacteur en verslaggever van Veldio. Schrijf een zelfstandig journalistiek stuk van Veldio op basis van controleerbare feiten, niet een navertelling of zin-voor-zin-parafrase van het aangeleverde artikel. Gebruik een aangeleverd nieuwsartikel nooit als grondtekst om na te vertellen. Behandel journalistieke tekst van andere media alleen als aanleiding om feiten te controleren; neem geen invalshoek, selectie, opbouw, analyse of formulering daarvan over. Geef voorrang aan primaire en feitelijke bronnen zoals officiële club- en competitie-informatie en controleerbare wedstrijddata. Voor wedstrijdverslagen: baseer het verhaal waar mogelijk op de wedstrijd zelf en afzonderlijk gecontroleerde gegevens zoals uitslag, doelpunten, tijdlijn en statistieken; schrijf een eigen analyse van het wedstrijdbeeld, maar leid conclusies zoals “had het meeste initiatief” of “keeper hield de ploeg op de been” alleen af uit beschikbare feiten en vermeldingen/waarnemingen die daarvoor voldoende basis geven. Als alleen een artikel of RSS-bericht beschikbaar is en er onvoldoende onafhankelijke feiten zijn om een zelfstandig stuk te maken, kies skip in plaats van een parafrase. Bepaal zelf de invalshoek, volgorde en opbouw; schrijf alle zinnen opnieuw vanuit nul in natuurlijk Nederlands. Neem geen zinnen, opvallende formuleringen, creatieve metaforen, tussenkoppen of citaten uit de bron over. Gebruik alleen korte letterlijke citaten wanneer die journalistiek noodzakelijk zijn en zet ze tussen aanhalingstekens met duidelijke bronvermelding; standaard: geen citaten. Verander niet alleen synoniemen: de formulering en structuur moeten zelfstandig zijn. Als het nieuws niet genoeg feiten biedt voor een zelfstandig artikel, kies skip. Gebruik eigen journalistieke structuur en eigen formuleringen, vermeld de bron transparant en behoud de bronlink. Neem alleen feiten op die aantoonbaar in de meegeleverde broninformatie staan; verzin niets en kopieer geen lange passages of quotes. Verander onzekerheid niet in zekerheid. Geen niet-onderbouwde claims over uitslagen, blessures, transfers, ranglijsten, wedstrijdverloop of uitspraken. PRIORITERING: laat een bericht weg als het vooral een losse, kleine update over één speler is (rating, compliment, droom, gerucht of individuele prestatie) en er geen aanwijzing is dat het breed en onafhankelijk door meerdere betrouwbare media als groot nieuws wordt behandeld. Zo’n item krijgt editorialDecision is skip en een korte skipReason; verzin geen breedte van media-aandacht. Geef voorrang aan groot clubnieuws, belangrijke wedstrijden/toernooien, officiële beslissingen, transfers met sterke bevestiging, blessures met grote impact en ontwikkelingen die meerdere clubs of competities raken. Als de broninformatie te mager is om een degelijk origineel stuk te maken, kies skip in plaats van opvullen. Schrijf natuurlijk Nederlands, één onderwerp per stuk, zonder onnodige dramatisering. Retourneer uitsluitend geldige JSON met editorialDecision (keep of skip), skipReason, headline, standfirst en body (array met 3-5 inhoudelijke alinea’s, elk minimaal 70 tekens, zonder opvulling of onbewezen feiten). Dit is geen onafhankelijke factcheck; menselijke broncontrole blijft verplicht. Originaliteitsregel: als twee reeksen van acht opeenvolgende woorden letterlijk overeenkomen met de bron, mag het stuk niet worden opgeslagen als uitgewerkte bijdrage." },
           { role: "user", content: JSON.stringify({ sourceTitle: src.title || item.sourceTitle || "", sourceText, headline: item.headline || "", standfirst: item.standfirst || "", body: Array.isArray(item.body) ? item.body : [] }) }
-        ],
-        response_format: { type: "json_object" },
-        temperature: 0.1
-      })
-    });
-    const data = await response.json();
-    if (!response.ok) return { ...item, languagePolish: "failed" };
-    const parsed = JSON.parse(data.choices?.[0]?.message?.content || "{}");
+        ], {task:"revision"});
     const normalized = normalizeEditorialResponse(parsed);
     if (!normalized.ok) {
       return { ...item, languagePolish: "failed_invalid_response", languagePolishNote: normalized.reason + " Concept blijft geblokkeerd." };
@@ -439,7 +427,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     });
   }
   if (req.method === "GET" && url.pathname === "/health") {
-    return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: !!GROQ_API_KEY, imagePipeline: { version:44, providerConfigured:!!process.env.OPENAI_API_KEY }, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
+    return send(res, 200, { ok: true, service: "Veldio Redactie API", revision:runtime.revision(process.env), manualAuthorColumns: true, contact: require("./contact-mail").contactConfiguration(), storage: client?.isReady ? "connected" : "not_connected", aiConfigured: editorialRouter.configured().some(p=>p.enabled), imagePipeline: { version:44, providerConfigured:!!process.env.OPENAI_API_KEY }, draftMode: "verified_facts_only", automaticSourceIngestion: false, autoPublish: false });
   }
   if (req.method === "GET" && url.pathname === "/articles") {
     try { const started=Date.now(); const view = url.searchParams.get("view") || "current";
@@ -706,7 +694,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     const topic = typeof body.topic === "string" ? body.topic.trim().slice(0,300) : "";
     const facts = Array.isArray(body.facts) ? body.facts.filter(x => typeof x === "string" && x.trim()).slice(0,20) : [];
     if (!topic || facts.length < 2) return send(res, 400, { error: "Onderwerp en minimaal twee gecontroleerde feiten zijn vereist." });
-    if (!GROQ_API_KEY) return send(res, 503, { error: "GROQ_API_KEY ontbreekt in Render environment variables." });
+    if (!editorialRouter.configured().some(p=>p.enabled)) return send(res, 503, { error: "Geen geschikte redactionele AI-provider geconfigureerd." });
     const uniqueFacts = [...new Set(facts.map(f => f.trim()))];
     if (uniqueFacts.length < 2) return send(res, 400, { error: "Vul minimaal twee verschillende gecontroleerde feiten in." });
     try {
@@ -714,7 +702,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         topic, category: String(body.category || "Voetbal").slice(0,80),match:body.match||null,
         facts: uniqueFacts.map(f => f.slice(0,5000)),
         sourceUrls: (Array.isArray(body.sourceUrls) ? body.sourceUrls : []).filter(u => typeof u === "string" && /^https:\/\//i.test(u)).slice(0,10)
-      }, {apiKey:GROQ_API_KEY,model:MODEL});
+      }, {apiKey:GROQ_API_KEY,model:MODEL,router:editorialRouter});
       let savedDraft=null,storageWarning="";
       if (client?.isReady) {
         try { savedDraft=await require("./editorial-drafts").saveDraft(client,{payload:{draft,category:body.category,reviewNotes:body.reviewNotes||"",match:body.match||null,verifiedFacts:uniqueFacts,sources:(body.sourceUrls||[]).map(url=>({url})),imageRights:"not_needed"}}); }

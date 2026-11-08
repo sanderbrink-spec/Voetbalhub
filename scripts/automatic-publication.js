@@ -8,6 +8,7 @@ const {fingerprint}=require('../editorial-drafts');
 const config=require('../automatic-editorial.json');
 const bootstrap=require('../automatic-bootstrap.json');
 const production=require('../editorial-production45');
+const {createRouter,sealCheckpoint,openCheckpoint}=require('../editorial-provider-router');
 const matches=require('../editorial-match55');
 const {CREDIT}=require('../football-results52');
 const {articleUrl,discoverGdelt}=require('./editorial-discovery53');
@@ -283,7 +284,8 @@ function providerErrorDetails(data){
   :'other';
  return {code:safe(error.code),type:safe(error.type),param:safe(error.param),reason};
 }
-async function complete(messages,{key,model=config.model,fetcher=fetch},task='extraction'){
+async function complete(messages,{key,model=config.model,fetcher=fetch,router},task='extraction'){
+ if(router)return router.complete(messages,{task});
  const strict=task==='revision'&&model==='openai/gpt-oss-120b';
  const format=strict?{...groqEditorialOptions(model,task),response_format:strictRevisionFormat}:groqEditorialOptions(model,task);
  const input=strict?[{...messages[0],content:messages[0].content+' Geef altijd een JSON-object met alle velden skip, headline, standfirst en body. Bij onvoldoende bewijs: skip=true, headline="", standfirst="" en body=[]. Bij een bruikbare tekst: skip=false en alle tekstvelden volledig invullen.'},...messages.slice(1)]:messages;
@@ -748,11 +750,11 @@ function reopenObservedMatchCopyFailure(job,now){
  job.aiMatchCopyRecovery=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
  return true;
 }
-async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,report,focusSourceUrl,expectedRevision=process.env.GITHUB_SHA}={}){
+async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,providerRouter,report,focusSourceUrl,expectedRevision=process.env.GITHUB_SHA}={}){
  if(focusSourceUrl&&!articleUrl(focusSourceUrl,config.newsIndexes))throw Error('Ongeldige gerichte nieuwsbron.');
  if(focusSourceUrl)report.focusSourceUrl=focusSourceUrl;
  if(!config.enabled){report.status='disabled';return report;}
- if(!secret||!groqKey||!githubToken)throw Error('HUB_API_SECRET, GROQ_API_KEY en GitHub-mediatoegang zijn vereist.');
+ if(!secret||!githubToken)throw Error('HUB_API_SECRET en GitHub-mediatoegang zijn vereist.');
  const headers={Authorization:'Bearer '+secret,'Content-Type':'application/json'};
  async function api(endpoint,body){const r=await fetcher(API+endpoint,{headers,signal:AbortSignal.timeout(60000),...(body?{method:'POST',body:JSON.stringify(body)}:{})});const d=await r.json();if(!r.ok)throw Error(endpoint+': HTTP '+r.status+' '+(d.error||''));return d;}
  async function verifyRevision(){
@@ -892,10 +894,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(groups[index])scheduled.push(groups[index]);
   if(matchGroups[index])scheduled.push(matchGroups[index]);
  }
- const ai={key:groqKey,fetcher:pacedGroq((url,options)=>{
-  if(String(url).startsWith('https://api.groq.com/'))report.counts.aiRequests++;
-  return fetcher(url,options);
- },groqIntervalMs)};
+ const router=providerRouter||createRouter({groqKey,fetcher,state:durable.capacity,
+  intervalMs:groqIntervalMs??35000,onState:()=>durable.save(),onAttempt:()=>report.counts.aiRequests++});
+ report.providers=router.configured();report.providerTrace=router.trace;
+ if(!report.providers.some(p=>p.enabled))throw Error('GROQ_API_KEY of bevestigde gratis reserveprovider ontbreekt.');
+ const ai={key:groqKey,fetcher,router,model:config.model};
 
  const imageBudget={remaining:config.maxImageRequestsPerRun||8};
  const jobs=new Map();
@@ -990,10 +993,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  await durable.save();
  report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
  if(!jobs.size)return report;
- report.counts.aiRequests++;
- const models=await fetcher('https://api.groq.com/openai/v1/models',{headers:{Authorization:'Bearer '+groqKey},signal:AbortSignal.timeout(75000)});
- if(!models.ok)throw Error('Beschikbare taalmodellen konden niet worden gecontroleerd: HTTP '+models.status);
- const model=ai.model=selectModel(await models.json());
+ const model=config.model;
  report.model=model;
  report.modelPolicy={extraction:'low',writing:'medium',revision:'high',review:'high'};
  const priorHashes=published.filter(a=>a.imageReview?.mode==='ai-photographic').map(a=>a.imageReview.visualHash).filter(Boolean);
@@ -1005,34 +1005,43 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   let topic=group[0].title,stage='verification';
   report.counts.attempted++;
   try{
+   const evidenceHash=sha(JSON.stringify(group.map(d=>({url:d.url,text:d.text,publishedAt:d.publishedAt}))));
+   const savedCheckpoint=openCheckpoint(job.checkpoint,secret,job.id);
+   const checkpoint=savedCheckpoint?.evidenceHash===evidenceHash&&savedCheckpoint.expiresAt>now?savedCheckpoint:{evidenceHash,expiresAt:now+24*3600000,revisions:0};
+   router.lastWriter=checkpoint.writer||null;router.articleId=job.id;
+   let traceCursor=router.trace.length;
+   const traceStart=traceCursor;
+   async function checkpointStep(values){Object.assign(checkpoint,values,{writer:router.lastWriter,trace:[...(checkpoint.trace||[]),...router.trace.slice(traceCursor)]});traceCursor=router.trace.length;job.checkpoint=sealCheckpoint(checkpoint,secret,job.id);await durable.save();}
    if(matchRecord&&published.some(a=>a.matchId===matchRecord.matchId||
     (a.match?.playedAt===matchRecord.match.playedAt&&normalize(a.match.homeTeam)===normalize(matchRecord.match.homeTeam)&&normalize(a.match.awayTeam)===normalize(matchRecord.match.awayTeam)))){
     durable.queue.finish(job,'duplicate',now);continue;
    }
-   const candidate=matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
-    group.bootstrap?.candidate||group.officialCoachCandidate||await extractCandidate(group,ai,now);
+   const candidate=checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
+    group.bootstrap?.candidate||group.officialCoachCandidate||await extractCandidate(group,ai,now));
    if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage:'verification',category:'journalistic_rejection'});continue;}
    const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
    const sourceIndices=matchRecord?[0]:[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
    const facts=matchRecord?.verifiedFacts||candidate.facts.map(f=>f.text);
    const sources=sourceIndices.map(i=>({url:group[i].url}));
+   await checkpointStep({candidate});
    if(focusSourceUrl)report.focusFacts=facts;
    const compact=M.briefEligible({articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,transferStatus:candidate.transferStatus,verifiedFacts:facts,sources});
    report.counts.selected++;route.selected++;
    stage='generation';
-   let draft;
-   if(matchRecord){
+   let draft=checkpoint.draft;
+   if(!draft&&matchRecord){
     draft=await complete([
      {role:'system',content:'Je bent de Nederlandstalige Veldio-wedstrijdredacteur. Schrijf een origineel kort uitslagbericht uitsluitend uit verifiedFacts. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (1-2 alinea’s van 10-65 woorden). De intro noemt de gecontroleerde eindstand. De body geeft uitsluitend de geverifieerde datum, competitie, speelronde en eventuele ruststand, met expliciete toeschrijving aan sourceName. Verzin geen doelpuntenmakers, kaarten, wissels, spelbeeld, kansen, gevolgen of emoties. Herhaal de eindstand niet als opvulling. Neem geen bronzin letterlijk over. Bij onvoldoende verschillende feiten: {"skip":true}.'},
      {role:'user',content:JSON.stringify({verifiedFacts:facts,match:matchRecord.match,sourceName:sources[0].url===matches.FD?CREDIT:'OpenFootball',sourceUrls:sources.map(s=>s.url)})}
     ],ai,'writing');
     if(draft?.skip)throw Error('Onvoldoende feiten voor een origineel wedstrijdbericht.');
     report.generationOrigin='production_ai';
-   }else{
-    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
+   }else if(!draft){
+    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,timeoutMs:180000});
     report.generationOrigin='production_ai';
    }
+   await checkpointStep({draft});
    report.counts.generated++;route.generated++;
    stage='quality';
    const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks}:{}),
@@ -1043,7 +1052,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
-   for(let revision=0;revision<=2;revision++){
+   for(let revision=checkpoint.revisions||0;revision<=2;revision++){
     if(!matchRecord&&candidate.primaryAuthority==='club_decision'){
      // V71: the same source-copied staff clause appears in both brief and full
      // news articles. The helper only rewrites an explicitly verified fact.
@@ -1090,10 +1099,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(!revised)throw Error('Onvoldoende feiten voor verantwoorde herschrijving.');
     payload.draft=revised;
     draft=revised;
+    await checkpointStep({draft,revisions:revision+1});
    }
    report.counts.approved++;
    payload.editorialScore=assessment.score;
    payload.reviewNotes+=' Redactiescore fase45: '+JSON.stringify(assessment);
+   payload.reviewNotes+=' Providerverantwoording: '+JSON.stringify([...(checkpoint.trace||[]),...router.trace.slice(traceCursor)]);
    stage='artwork';
    Object.assign(payload,await uploadCover(payload,{token:githubToken,fetcher,imageOptions:{secret,budget:imageBudget,priorHashes}}));
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
@@ -1128,7 +1139,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    console.log('Gepubliceerd met afbeelding:',visible.headline);
   }catch(e){durable.queue.fail(job,e,now,{stage});const technical=job.failureCategory!=='journalistic_rejection';
    if(!technical)route.rejected++;
-   (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message,...(e.issues?{issues:e.issues}:{}),...(e.rejectedDraft?{rejectedDraft:e.rejectedDraft}:{})});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(e.code==='GROQ_DAILY_QUOTA'){report.status='provider_daily_limit';break;}}
+   (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message,...(e.issues?{issues:e.issues}:{}),...(e.rejectedDraft?{rejectedDraft:e.rejectedDraft}:{})});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(['GROQ_DAILY_QUOTA','EDITORIAL_AI_UNAVAILABLE'].includes(e.code)){report.status='provider_daily_limit';break;}}
   finally{await durable.save();}
  }
  report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
