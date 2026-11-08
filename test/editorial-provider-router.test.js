@@ -67,7 +67,7 @@ test('duplicate prevention is unchanged before publication',()=>{
  assert.equal(duplicate({draft,sources:[{url:'https://ajax.nl/artikelen/test'}]},[{...draft,sources:[{url:'https://ajax.nl/artikelen/test'}]}]),true);
 });
 test('paid, unknown-price, removed or automatic OpenRouter models never receive generation',async()=>{
- for(const pricing of [{prompt:'0.01',completion:'0'},{prompt:'0'},null,{prompt:'0',completion:'0',request:'1'}]){
+ for(const pricing of [{prompt:'0.01',completion:'0'},{prompt:'0'},null,{prompt:'0',completion:'0',request:'1'},{prompt:null,completion:null},{prompt:'',completion:''}]){
   let calls=0;const router=new EditorialProviderRouter({openrouterKey:'private',intervalMs:0,fetcher:async url=>{if(url.endsWith('/models'))return catalog(pricing);calls++;return response(draft);}});
   await assert.rejects(router.complete(messages));assert.equal(calls,0);
  }

@@ -44,7 +44,7 @@ class EditorialProviderRouter{
    if(!r.ok)return false;
    const model=(await r.json()).data?.find(m=>m.id===MODELS.openrouter);
    // Unknown prices, automatic model routing and paid substitutions are forbidden.
-   if(!model?.pricing||!['prompt','completion'].every(k=>model.pricing[k]!==undefined&&Number(model.pricing[k])===0)||Object.values(model.pricing).some(v=>!Number.isFinite(Number(v))||Number(v)!==0))return false;
+   if(!model?.pricing||!['prompt','completion'].every(k=>model.pricing[k]!==undefined&&Number(model.pricing[k])===0)||Object.values(model.pricing).some(v=>!['string','number'].includes(typeof v)||String(v).trim()===''||!Number.isFinite(Number(v))||Number(v)!==0))return false;
    this.openrouterVerifiedUntil=this.now()+300000;return true;
   }catch{return false;}
  }
@@ -56,7 +56,7 @@ class EditorialProviderRouter{
   const spec=TASKS[task];if(!spec)throw new RangeError('Onbekende redactietaak');
   const attempts=[],estimate=Math.ceil(JSON.stringify(messages).length/3)+spec.budget;
   let order=['groq','gemini','openrouter'];
-  if(task==='review'&&writer)order.sort((a,b)=>((a===writer.provider?2:a==='openrouter'&&writer.family==='gpt-oss'?1:0)-(b===writer.provider?2:b==='openrouter'&&writer.family==='gpt-oss'?1:0)));
+  if(task==='review'&&writer)order.sort((a,b)=>((a===writer.provider?2:(a==='gemini'?'gemini':'gpt-oss')===writer.family?1:0)-(b===writer.provider?2:(b==='gemini'?'gemini':'gpt-oss')===writer.family?1:0)));
   for(const provider of order){
    if(signal?.aborted)throw signal.reason;
    if(!this.keys[provider]||(provider==='gemini'&&!this.geminiFreeTierConfirmed))continue;
