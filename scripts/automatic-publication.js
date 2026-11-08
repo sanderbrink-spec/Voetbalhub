@@ -273,6 +273,34 @@ function selectModel(catalog){
 }
 // The model selects *where* a claim appears; only literal source bytes can
 // become verified facts. A paraphrased extraction is never passed as evidence.
+// A club is an authoritative primary source for its own, explicitly stated
+// coaching appointment. Literal article sentences are safer than asking a
+// language model to reproduce source bytes or decide to skip a clear decision.
+function verifiedOfficialCoachDecision(doc){
+ if(!doc||primaryAuthority(doc)!=='club_decision')return null;
+ const title=normalize(doc.title||''),lead=normalize((doc.text||'').slice(0,550));
+ if(!/\b(?:nieuwe|nieuw|aangesteld|aanstelling|benoemd|benoemt|wordt)\b/.test(title)||
+    !/\b(?:hoofdtrainer|trainer|coach)\b/.test(title)||
+    /\b(?:gerucht|mogelijk|interview|vooruitblik|liveblog|verwacht|speculatie)\b/.test(title)||
+    /\b(?:transfer|huurt|huur|overgenomen)\b/.test(title))return null;
+ if(!/\b(?:aangesteld|benoemd|hoofdtrainer)\b/.test(lead)||
+    !/\b(?:heeft|hebben|bevestigt|maakt bekend|meldt)\b/.test(lead))return null;
+ const sentences=String(doc.text||'').replace(/\s+/g,' ').trim()
+   .split(/(?<=[.!?])\s+(?=[A-ZÀ-Ý“„])/u).map(x=>x.trim());
+ const taken=[],seen=new Set();
+ for(const sentence of sentences){
+  if(sentence.length<30||sentence.length>650||/,,|[“”]/u.test(sentence))continue;
+  if(!/\b(?:aangesteld|benoemd|contract|maandag|assistent|keeperstrainer|stoppen|stopte|2024|2025|keert|keren|terug|leiding|aanstelling|functie)\b/i.test(sentence))continue;
+  const key=normalize(sentence);
+  if(seen.has(key))continue;
+  seen.add(key);taken.push(sentence);
+  if(taken.length>=8)break;
+ }
+ if(taken.length<2||!taken.some(x=>/\b(?:aangesteld|benoemd)\b/i.test(x)))return null;
+ return {kind:'announcement',primaryAuthority:'club_decision',topic:doc.title,
+  category:'clubnieuws',eventDate:'',teams:[],sharedEventEvidence:[],
+  facts:taken.map(text=>({text,evidence:[{source:0,quote:text}]}))};
+}
 function alignPrimaryLiteralFacts(candidate){
  if(!Array.isArray(candidate?.facts))return candidate;
  const stop=new Set('de het een en van voor bij aan om die dat deze dit met zijn haar wordt worden heeft hebben naar over onder uit als ook dan in op tot te der den maar meer vanaf echter sinds tijdens tussen aldus volgens club trainer hoofdtrainer nieuwe nieuw laatste eerste door terug'.split(' '));
@@ -365,6 +393,14 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  if(!asset)throw Error('Geen goedgekeurd bibliotheekbeeld beschikbaar.');
  return library.fields(asset);
 
+}
+function recoverOfficialCoachDecision(job,now){
+ // The model skipped an official appointment despite adequate literal facts.
+ // Run the verified deterministic selector once; all downstream gates stay on.
+ if(job.status!=='review'||job.failureStage!=='verification'||
+    job.failureCategory!=='journalistic_rejection'||job.officialCoachRecoveryV69)return false;
+ job.officialCoachRecoveryV69=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
 }
 function recoverLiteralEvidenceRejection(job,now){
  // The exact formerly rejected model quote can be re-extracted once after
@@ -560,6 +596,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(seenGroups.has(key))continue;
   seenGroups.add(key);
   const job=durable.queue.enqueue(group,now);
+  if(group.length===1&&!group.matchRecord){
+   const officialCoach=verifiedOfficialCoachDecision(group[0]);
+   if(officialCoach){group.officialCoachCandidate=officialCoach;recoverOfficialCoachDecision(job,now);}
+  }
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
    if(!job.matchOutputV5&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
@@ -651,7 +691,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     durable.queue.finish(job,'duplicate',now);continue;
    }
    const candidate=matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
-    group.bootstrap?.candidate||await extractCandidate(group,ai,now);
+    group.bootstrap?.candidate||group.officialCoachCandidate||await extractCandidate(group,ai,now);
    if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage:'verification',category:'journalistic_rejection'});continue;}
    const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
@@ -831,4 +871,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
