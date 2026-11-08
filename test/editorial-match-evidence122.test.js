@@ -27,7 +27,7 @@ test('official scoreboard creates multiple verified scoring facts and a longform
 });
 test('wrong score, invalid sequence, rival source and stale story cannot enrich results',()=>{
  assert.equal(evidence(record,{...official,text:official.text.replace('2-2 (0-1)','3-2 (0-1)')},now),null);
- assert.equal(evidence(record,{...official,text:official.text.replace('66. Bounida 0-2','66. Bounida 1-1')},now),null);
+ assert.equal(evidence(record,{...official,text:official.text.replace('66. Bounida 0-2','66. Bounida 2-0')},now),null);
  assert.equal(evidence(record,{...official,url:'https://random.example/articles/test'},now),null);
  assert.equal(evidence(record,{...official,publishedAt:'2026-10-08T16:00:00Z'},now),null);
  assert.equal(evidence(record,{...official,title:'Ajax Women - FC Twente'},now),null);
