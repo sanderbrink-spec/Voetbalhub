@@ -315,6 +315,14 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
+function recoverEditorialBrief(job,now){
+ // A revised evidence-first generator earns one new full review, never approval.
+ // Never reopen verification failures, match articles or a second V63 rejection.
+ if(job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.compactRecoveryV63)return false;
+ job.compactRecoveryV63=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
 function recoverGeneration(job,now){
  if(job.status!=='review'||job.failureStage!=='generation'||
     job.failureCategory!=='generator_failure'||job.generationRecoveryV61)return false;
@@ -508,6 +516,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      job.failureCategory==='journalistic_rejection'&&!job.rewriteRecoveryV62){
    job.rewriteRecoveryV62=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
   }
+  // Re-evaluate one official decision once after the V63 short-form and fact
+  // whitelist improvement. This does not waive any existing publication gate.
+  if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverEditorialBrief(job,now);
   // Generator failures have their own separate bounded retry path.
   if(!group.matchRecord)recoverGeneration(job,now);
   // The focused trial's recorded packet invented 13 November and merged unrelated
@@ -727,4 +738,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={overlapPhrases,publicationFocus,recoverGeneration,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={overlapPhrases,publicationFocus,recoverGeneration,recoverEditorialBrief,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
