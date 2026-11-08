@@ -17,7 +17,7 @@ function evidence(record,doc,now=Date.now()){
  const header=scorePattern.exec(content);
  if(!header)return null;
  const tail=content.slice(header.index+header[0].length,header.index+header[0].length+1600);
- const pattern=/(?:^|\s)(\d{1,2})(?:\+(\d{1,2}))?\s*[.']\s*([A-Za-zÀ-ž][A-Za-zÀ-ž .()'-]{1,55}?)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})(?=\s|$)/g;
+ const pattern=/(?:^|\s)(\d{1,2})(?:\+(\d{1,2}))?\s*[.']\s*([A-Za-zÀ-ž][A-Za-zÀ-ž .()'-]{1,55}?)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})(?=\s|[.,]|$)/g;
  const events=[];
  for(const match of tail.matchAll(pattern)){
   const minute=Number(match[1]),extra=match[2]?Number(match[2]):0;
