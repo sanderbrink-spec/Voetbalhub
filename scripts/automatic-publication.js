@@ -426,6 +426,13 @@ async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
  return library.fields(asset);
 
 }
+function recoverCompleteBodyV91(job,now){
+ // One bounded generator retry after removing redundant model output fields.
+ if(job.status!=='review'||job.failureStage!=='generation'||
+    job.failureCategory!=='generator_failure'||job.completeBodyRecoveryV91)return false;
+ job.completeBodyRecoveryV91=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
 function editorialSourceLinks(discovered,focusSourceUrl){
  // A targeted official source remains verifiable even after falling out of a
  // homepage's limited latest-news list. Never broaden the focused run.
@@ -735,7 +742,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverRichVerifiedContext(job,now);
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverLiteralEvidenceRejection(job,now);
   // Generator failures have their own separate bounded retry path.
-  if(!group.matchRecord)recoverGeneration(job,now);
+  if(!group.matchRecord){recoverGeneration(job,now);recoverCompleteBodyV91(job,now);}
   // The focused trial's recorded packet invented 13 November and merged unrelated
   // career claims. Re-extract that exact rejected job once under literal checks;
   // never reuse its old copy, scores or approval.
@@ -801,7 +808,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(halftime)body.push('De geregistreerde ruststand was '+halftime.match(/\d+-\d+/)?.[0]+'. Deze tussenstand is afzonderlijk vastgelegd in dezelfde wedstrijdregistratie.');
     draft={headline,standfirst,body};
    }else{
-    draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),primaryAuthority:candidate.primaryAuthority,compact},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
+    draft=group.bootstrap?.draft||await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,timeoutMs:180000});
    }
    report.counts.generated++;route.generated++;
    stage='quality';
@@ -960,4 +967,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
