@@ -9,6 +9,7 @@ on:
       - 'automatic-bootstrap.json'
       - 'scripts/automatic-publication.js'
       - 'editorial-ai.js'
+      - 'editorial-provider-router.js'
       - 'editorial-overlap-repair.js'
       - 'scripts/render-editorial-cover.py'
       - 'scripts/refresh-automatic-covers.js'
@@ -63,6 +64,10 @@ jobs:
           FOCUS_SOURCE_URL: ${{ inputs.source_url }}
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GEMINI_FREE_TIER_CONFIRMED: ${{ vars.GEMINI_FREE_TIER_CONFIRMED }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node scripts/automatic-publication.js

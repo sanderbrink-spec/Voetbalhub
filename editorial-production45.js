@@ -56,7 +56,7 @@ class EditorialQueue {
  fail(job,error,now=Date.now(),{stage='verification'}={}) {
   // Provider capacity is not an unsuccessful editorial attempt. Retain the
   // existing attempt budget and wait until the provider permits another call.
-  if(error?.code==='GROQ_DAILY_QUOTA'){
+  if(['GROQ_DAILY_QUOTA','EDITORIAL_AI_UNAVAILABLE'].includes(error?.code)){
    const seconds=Number(error.retryAfterSeconds);
    job.status='retry';job.updatedAt=now;
    job.nextAttemptAt=now+1000*(Number.isFinite(seconds)&&seconds>0?Math.min(86400,seconds):3600);
@@ -87,16 +87,16 @@ async function openQueue({token,branch,fetcher=fetch}) {
  const endpoint='https://api.github.com/repos/sanderbrink-spec/Voetbalhub/contents/editorial-queue45.json';
  const headers={Authorization:'Bearer '+token,Accept:'application/vnd.github+json','Content-Type':'application/json'};
  const response=await fetcher(endpoint+'?ref='+branch,{headers,signal:AbortSignal.timeout(25000)});
- let sha,records=[];
- if(response.ok){const data=await response.json();sha=data.sha;records=JSON.parse(Buffer.from(data.content,'base64').toString()).records;}
+ let sha,records=[],capacity={};
+ if(response.ok){const data=await response.json();sha=data.sha;const saved=JSON.parse(Buffer.from(data.content,'base64').toString());records=saved.records;capacity=saved.capacity||{};}
  else if(response.status!==404)throw Error('Redactiewachtrij niet beschikbaar: HTTP '+response.status);
  const queue=new EditorialQueue(records);
  async function save(){
   queue.prune();
-  const result=await fetcher(endpoint,{method:'PUT',headers,signal:AbortSignal.timeout(25000),body:JSON.stringify({branch,message:'Checkpoint editorial queue [skip ci]',...(sha?{sha}:{}),content:Buffer.from(JSON.stringify({version:45,records:queue.records})).toString('base64')})});
+  const result=await fetcher(endpoint,{method:'PUT',headers,signal:AbortSignal.timeout(25000),body:JSON.stringify({branch,message:'Checkpoint editorial queue [skip ci]',...(sha?{sha}:{}),content:Buffer.from(JSON.stringify({version:45,records:queue.records,capacity})).toString('base64')})});
   if(!result.ok)throw Error('Redactiewachtrij niet opgeslagen: HTTP '+result.status);
   const data=await result.json();sha=data.content.sha;
  }
- return {queue,save};
+ return {queue,save,capacity};
 }
 module.exports={WEIGHTS,priority,assess,EditorialQueue,openQueue};
