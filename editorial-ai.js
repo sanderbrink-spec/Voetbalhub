@@ -113,7 +113,7 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
 function coachEvidenceSections(facts=[]){
  return {
   intro:facts.filter(f=>/aangesteld|benoemd|contract|verbintenis|zomer 20\d\d/i.test(f)),
-  alinea1_staf:facts.filter(f=>/assistent|keeperstrainer|interim|tijdelijk de leiding/i.test(f)),
+  alinea1_staf:facts.filter(f=>/assistent|keeperstrainer|interim|tijdelijk de leiding/i.test(f)&&!/assistent-bondscoach/i.test(f)),
   alinea2_loopbaan:facts.filter(f=>/\b(?:in )?20\d\d\b.*(?:stop|bondscoach|carri[eè]re|buitenland)/i.test(f)),
   alinea3_toelichting:facts.filter(f=>/licht.*toe|: ,,|: „|: “|verklaar/i.test(f))
  };
