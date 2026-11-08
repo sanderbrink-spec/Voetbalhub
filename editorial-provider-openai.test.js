@@ -18,7 +18,7 @@ test('OpenAI is disabled without a secret and never makes a paid call',async()=>
  assert.equal(router.trace[0].provider,'groq');
 });
 
-test('OpenAI key selects direct API, with JSON mode and bounded output',async()=>{
+test('OpenAI key selects direct API, with strict JSON schema and bounded output',async()=>{
  const requests=[];
  const router=createRouter({env:{OPENAI_API_KEY:'secret-test',GROQ_API_KEY:'groq-test'},fetcher:async(url,options)=>{requests.push({url,options});return fakeResponse},intervalMs:0});
  const result=await router.complete([{role:'user',content:'Write a draft'}],{task:'writing'});
@@ -28,7 +28,8 @@ test('OpenAI key selects direct API, with JSON mode and bounded output',async()=
  assert.equal(requests[0].options.headers.Authorization,'Bearer secret-test');
  const payload=JSON.parse(requests[0].options.body);
  assert.equal(payload.model,'gpt-4.1-mini');
- assert.equal(payload.response_format.type,'json_object');
+ assert.equal(payload.response_format.type,'json_schema');
+ assert.equal(payload.response_format.json_schema.schema.properties.body.type,'array');
  assert.ok(payload.max_completion_tokens<=3600);
  assert.ok(!('provider' in payload));
 });
