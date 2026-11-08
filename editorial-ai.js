@@ -108,6 +108,16 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  }
  return result;
 }
+// Group only literal verified facts for a final, bounded editorial section
+// rebuild. These buckets are assignments, never new factual claims.
+function coachEvidenceSections(facts=[]){
+ return {
+  intro:facts.filter(f=>/aangesteld|benoemd|contract|verbintenis|zomer 20\d\d/i.test(f)),
+  alinea1_staf:facts.filter(f=>/assistent|keeperstrainer|interim|tijdelijk de leiding/i.test(f)&&!/assistent-bondscoach/i.test(f)),
+  alinea2_loopbaan:facts.filter(f=>/\b(?:in )?20\d\d\b.*(?:stop|bondscoach|carri[eè]re|buitenland)/i.test(f)),
+  alinea3_toelichting:facts.filter(f=>/licht.*toe|: ,,|: „|: “|verklaar/i.test(f))
+ };
+}
 // A year is not a competition season, and a named job title must appear
 // literally in the independently verified evidence.
 function unverifiedTimelineAndRoles(draft,facts=[]){
@@ -193,10 +203,15 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // Number and person inventories are supplied separately so the writer cannot
   // infer dates or staff identities from the current date, title or URL.
   const allowedNumbers=[...new Set(facts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
-  const messages=[{role:'system',content:prompt+' De bijgevoegde editorialAssignment is een taakverdeling op basis van bestaande feiten-ID’s. Begin de intro bij leadFactIds. Gebruik voor elke bodyalinea een ander controleerbaar detail uit bodySections en herhaal geen feiten uit de intro als alineaonderwerp. De labels voegen geen feiten toe. Als er te weinig onafhankelijke details zijn voor de gevraagde vorm, geef skip in plaats van opvulling. Elke naam, datum en claim blijft uitsluitend verifieerbaar met facts. Elke genoemde datum, jaartal en getalwaarde moet letterlijk voorkomen in facts. Vul geen jaartal afgeleid van de publicatiedatum in. Controleer persoonsnamen per woordgroep tegen facts; verzin geen trainersstaf, functie of loopbaanfeit.'},{role:'user',content:JSON.stringify({topic,category,facts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
-  // Both writing and its single targeted repair share one 25-second deadline.
-  const signal=AbortSignal.timeout(timeoutMs);
-  for(let attempt=0;attempt<2;attempt++){
+  let messages=[{role:'system',content:prompt+' De bijgevoegde editorialAssignment is een taakverdeling op basis van bestaande feiten-ID’s. Begin de intro bij leadFactIds. Gebruik voor elke bodyalinea een ander controleerbaar detail uit bodySections en herhaal geen feiten uit de intro als alineaonderwerp. De labels voegen geen feiten toe. Als er te weinig onafhankelijke details zijn voor de gevraagde vorm, geef skip in plaats van opvulling. Elke naam, datum en claim blijft uitsluitend verifieerbaar met facts. Elke genoemde datum, jaartal en getalwaarde moet letterlijk voorkomen in facts. Vul geen jaartal afgeleid van de publicatiedatum in. Controleer persoonsnamen per woordgroep tegen facts; verzin geen trainersstaf, functie of loopbaanfeit.'},{role:'user',content:JSON.stringify({topic,category,facts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
+  // A verified coaching packet may receive one final separated-section
+  // recovery after a premature skip AND a demonstrable lead/body repetition.
+  const verifiedSections=coachEvidenceSections(facts);
+  const richEvidenceForSections=automaticPublication&&coachPlan&&officialPublisher&&
+   verifiedSections.intro.length&&verifiedSections.alinea1_staf.length>=1&&
+   verifiedSections.alinea2_loopbaan.length>=1&&verifiedSections.alinea3_toelichting.length>=1;
+  const signal=AbortSignal.timeout(richEvidenceForSections?60000:timeoutMs);
+  for(let attempt=0;attempt<(richEvidenceForSections?3:2);attempt++){
     let data;
     try{
       const response=await fetcher('https://api.groq.com/openai/v1/chat/completions',{
@@ -239,9 +254,23 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      issues.push(...unverifiedTimelineAndRoles(draft,facts));
     }
     if(!issues.length)return {...draft,qualityReview:{automatedTextChecksPassed:true,revisionApplied:attempt===1,attempts:attempt+1,factVerificationRequired:true,autoPublish:false}};
-    if(attempt===1){const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;error.rejectedDraft=draft;throw error;}
+    if(attempt===1&&richEvidenceForSections&&issues.some(x=>x.includes('herhalen te veel dezelfde inhoud'))){
+     // Never feed the rejected repetition back into the writer. Each paragraph
+     // now sees only the exact verified claims belonging to its task.
+     messages=[{role:'system',content:
+      'Je bent de laatste feitengebonden Veldio-redacteur. Schrijf een volledig nieuw en origineel Nederlands nieuwsartikel, uitsluitend met de in elke sectie aangeleverde gecontroleerde feiten. '+
+      'Kop 5-14 woorden. Standfirst 8-35 woorden, bevestigt de benoeming namens de officiële club en noemt eventueel geverifieerd contract. '+
+      'body bevat exact drie alinea’s van minimaal 70 tekens en elk 18-120 woorden. Alinea 1 bevat ALLEEN staf- en assistentwijzigingen. '+
+      'Alinea 2 bevat ALLEEN eerdere loopbaanfuncties en letterlijk genoemde jaartallen. Alinea 3 bevat ALLEEN expliciet aan de juiste bron toegeschreven motivering of verwachtingen. '+
+      'De benoeming en contractduur mogen NOOIT in body terugkomen. Geen nieuwe functie, seizoenscombinatie, context, citaat, gevolg of oordeel. '+
+      'Herschrijf bronfeiten in eigen woorden zonder lange letterlijke woordreeksen. Bronattributie ook in body. '+
+      'Bij onvoldoende feiten voor drie verschillende alinea’s: skip=true. Anders alleen JSON met headline,standfirst,body.'},
+      {role:'user',content:JSON.stringify({officialPublisher,verifiedFacts: facts,sections:verifiedSections,rule:'intro eenmaal; body1 staf; body2 loopbaan; body3 toegeschreven toelichting; alle claims herleidbaar tot eigen sectie'})}];
+     continue;
+    }
+    if(attempt>=1){const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;error.rejectedDraft=draft;throw error;}
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles};
+module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,coachEvidenceSections};
 

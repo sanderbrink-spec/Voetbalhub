@@ -1052,3 +1052,16 @@ test('V107 reopens only the exact rich-evidence skip, never other rejected news'
  assert.equal(reopenPrematureSkipV107({...base,errorHash:'other'},now,url),false);
  assert.equal(reopenPrematureSkipV107({...base},now,'https://ajax.nl/nieuws'),false);
 });
+
+test('V109 only exact source packet with recorded repeated-lead failure gets one recovery',()=>{
+ const {reopenSectionLockedCoachV109}=require('../scripts/automatic-publication');
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const base={urls:[url],status:'review',failureStage:'generation',failureCategory:'generator_failure',errorHash:'38ac2817cd53852c51fffa69f944d3abe9801a423bfb72c2fd9446a2b36ca75d',attempts:1};
+ const record={...base},now=Date.now();
+ assert.equal(reopenSectionLockedCoachV109(record,now,url),true);
+ assert.equal(record.status,'pending');
+ assert.equal(record.attempts,0);
+ assert.equal(reopenSectionLockedCoachV109({...record,status:'review'},now,url),false);
+ assert.equal(reopenSectionLockedCoachV109({...base,errorHash:'not-it'},now,url),false);
+ assert.equal(reopenSectionLockedCoachV109({...base},now,'https://ajax.nl/nieuws'),false);
+});

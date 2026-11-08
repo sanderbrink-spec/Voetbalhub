@@ -302,3 +302,43 @@ test('V107 thin or unverified source never receives a forced writer retry',async
  {apiKey:'fake',model:'openai/gpt-oss-120b',fetcher:async()=>{calls++;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});}}),error=>error.status===422);
  assert.equal(calls,1);
 });
+
+test('V109 final rewrite separates lead, staff, career and attributed quotes without reusing the rejected draft',async()=>{
+ const {createEditorialDraft,coachEvidenceSections}=require('../editorial-ai');
+ const facts=[
+  'PEC Zwolle heeft Alex Pastoor als nieuwe hoofdtrainer aangesteld.',
+  'De 60-jarige trainer begint maandag en heeft een contract tot zomer 2027.',
+  'Dennis van der Ree en Maikel van der Werff keren terug als assistent-trainer.',
+  'Keeperstrainer Diederik Boer helpt de nieuwe hoofdtrainer.',
+  'In 2024 besloot Pastoor voorlopig te stoppen als hoofdtrainer.',
+  'In 2025 werkte hij als assistent-bondscoach van Indonesië.',
+  'Alex Pastoor: ,,Het seizoen bij PEC Zwolle zie ik als een mooie uitdaging.”',
+  'Gerry Hamstra licht de keuze toe: ,,We hebben meerdere opties bekeken.”'
+ ];
+ const sections=coachEvidenceSections(facts);
+ assert.equal(sections.alinea1_staf.length,2);
+ assert.equal(sections.alinea2_loopbaan.length,2);
+ assert.equal(sections.alinea3_toelichting.length,2);
+ const repeated={headline:'Alex Pastoor aangesteld als hoofdtrainer PEC Zwolle tot 2027',
+  standfirst:'PEC Zwolle bevestigt de benoeming van Alex Pastoor tot hoofdtrainer met contract tot zomer 2027.',
+  body:[
+    'PEC Zwolle heeft Alex Pastoor officieel aangesteld als hoofdtrainer, met een contract tot de zomer van 2027. De club bevestigt dit via haar officiële mededeling.',
+    'Volgens de officiële clubbekendmaking keren Dennis van der Ree en Maikel van der Werff terug als assistent-trainers en Diederik Boer blijft keeperstrainer, waarmee zij Pastoor ondersteunen.',
+    'In de officiële mededeling zegt Alex Pastoor dat hij veel zin heeft om te werken aan maximale prestaties en resultaten en dat hij potentie ziet.'
+  ]};
+ let calls=0,lastRequest=null;
+ const fetcher=async(_,opts)=>{
+  calls++;lastRequest=JSON.parse(opts.body);
+  const response=calls===1?{skip:true}:calls===2?repeated:{skip:true};
+  return Response.json({choices:[{message:{content:JSON.stringify(response)}}]});
+ };
+ await assert.rejects(createEditorialDraft({topic:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',category:'clubnieuws',facts,sourceUrls:['https://peczwolle.nl/nieuws/benoeming'],primaryAuthority:'club_decision',automaticPublication:true},
+ {apiKey:'fake',model:'openai/gpt-oss-120b',fetcher,timeoutMs:15000}),e=>e.status===422);
+ assert.equal(calls,3);
+ const finalInput=JSON.parse(lastRequest.messages[1].content);
+ assert.equal(finalInput.sections.alinea1_staf.length,2);
+ assert.equal(finalInput.sections.alinea2_loopbaan.length,2);
+ assert.equal(finalInput.sections.alinea3_toelichting.length,2);
+ assert.equal(JSON.stringify(lastRequest).includes('waarmee zij Pastoor ondersteunen'),false);
+ assert.match(lastRequest.messages[0].content,/Alinea 1 bevat ALLEEN staf-/);
+});

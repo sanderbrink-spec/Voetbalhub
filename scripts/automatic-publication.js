@@ -583,6 +583,17 @@ function recoverCoachStoryline(job,now){
 // failure; only this exact hash gets one fresh trial. No article is auto-approved.
 // One literal-hash-matched retry for a provably fact-rich official packet
 // mistakenly skipped in the generation stage by the previous coach writer.
+// One precise re-test of the documented intro/body repetition, after
+// assigning each independently verified fact to a non-overlapping section.
+function reopenSectionLockedCoachV109(job,now,focusSourceUrl){
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ if(focusSourceUrl!==url||job.status!=='review'||job.failureStage!=='generation'||
+   job.failureCategory!=='generator_failure'||
+   job.errorHash!=='38ac2817cd53852c51fffa69f944d3abe9801a423bfb72c2fd9446a2b36ca75d'||
+   job.urls?.length!==1||job.urls[0]!==url||job.sectionLockedTrialV109)return false;
+ job.sectionLockedTrialV109=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
 function reopenPrematureSkipV107(job,now,focusSourceUrl){
  const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
  if(focusSourceUrl!==url||job.status!=='review'||job.failureStage!=='generation'||
@@ -875,6 +886,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   // Retry the single verified provider-JSON failure once under the fixed code.
   reopenVerifiedJsonFailureV100(job,now,focusSourceUrl);
   reopenPrematureSkipV107(job,now,focusSourceUrl);
+  reopenSectionLockedCoachV109(job,now,focusSourceUrl);
   if(durable.queue.due(job,now)&&!jobs.has(job.id))jobs.set(job.id,{group,job});
   else if(!durable.queue.due(job,now))report.signals.push({route:group.matchRecord?'match':'news',topic:group[0].title,outcome:'queue_'+job.status,reason:job.reason||'legacy_review_without_reason',failureCategory:job.failureCategory||null,stage:job.failureStage||null});
  }
@@ -1093,4 +1105,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reopenSectionLockedCoachV109,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
