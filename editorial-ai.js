@@ -95,7 +95,7 @@ function unsupportedEditorialInferences(draft,facts=[]){
  const patterns=[
   {name:'onbewezen stabiliteit of toekomstvisie',re:/\b(?:stabiliteit|langetermijnvisie|lange.termijnvisie|ruimte voor zijn visie|waarborgt de toekomst)\b/i},
   {name:'onbewezen voorkeur of persoonlijke motivatie',re:/\b(?:meest aantrekkelijke|spreekt hem het meest aan|ziet potentie|kijkt ernaar uit)\b/i},
-  {name:'onbewezen waardering van loopbaan',re:/\b(?:verrijkt zijn profiel|versterkt zijn profiel|biedt de club zekerheid)\b/i}
+  {name:'onbewezen waardering van loopbaan',re:/\b(?:verrijkt zijn profiel|versterkt zijn profiel|(?:zijn |haar )?profiel (?:verder )?verrijkt|biedt de club zekerheid)\b/i}
  ];
  return [...new Set(sentences.flatMap(sentence=>patterns.filter(rule=>
   rule.re.test(sentence)&&!rule.re.test(verified)).map(rule=>
