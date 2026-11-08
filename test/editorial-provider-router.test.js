@@ -72,8 +72,8 @@ test('paid, unknown-price, removed or automatic OpenRouter models never receive 
   await assert.rejects(router.complete(messages));assert.equal(calls,0);
  }
 });
-test('Gemini requires confirmed free-tier project and OpenAI text key is never used',async()=>{
- const router=createRouter({env:{GEMINI_API_KEY:'private',OPENAI_API_KEY:'private'},fetcher:()=>{throw Error('unexpected network');}});
+test('Gemini requires confirmed free-tier project even when OpenAI is independently supported',async()=>{
+ const router=createRouter({env:{GEMINI_API_KEY:'private'},fetcher:()=>{throw Error('unexpected network');}});
  assert.equal(router.configured().some(p=>p.enabled),false);await assert.rejects(router.complete(messages));
 });
 test('capacity reserves requests and tokens for review without weakening quality',async()=>{
