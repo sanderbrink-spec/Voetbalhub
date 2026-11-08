@@ -275,7 +275,7 @@ function providerErrorDetails(data){
  const error=data?.error||{};
  const safe=value=>String(value||'unknown').replace(/[^a-zA-Z0-9_]/g,'').slice(0,48)||'unknown';
  const message=String(error.message||'');
- const reason=/json_validate_failed|failed to generate json|generated json/i.test(message)?'json_generation'
+ const reason=/json_validate_failed/i.test(String(error.code||''))||/json_validate_failed|failed to generate json|generated json/i.test(message)?'json_generation'
   :/response_format|json_schema|structured output/i.test(message)?'response_format'
   :/reasoning_effort|include_reasoning|reasoning_format/i.test(message)?'reasoning_option'
   :/context length|max_completion_tokens|token limit/i.test(message)?'context_budget'
@@ -287,16 +287,27 @@ async function complete(messages,{key,model=config.model,fetcher=fetch},task='ex
  const strict=task==='revision'&&model==='openai/gpt-oss-120b';
  const format=strict?{...groqEditorialOptions(model,task),response_format:strictRevisionFormat}:groqEditorialOptions(model,task);
  const input=strict?[{...messages[0],content:messages[0].content+' Geef altijd een JSON-object met alle velden skip, headline, standfirst en body. Bij onvoldoende bewijs: skip=true, headline="", standfirst="" en body=[]. Bij een bruikbare tekst: skip=false en alle tekstvelden volledig invullen.'},...messages.slice(1)]:messages;
- const r=await fetcher('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},signal:AbortSignal.timeout(180000),body:JSON.stringify({model,messages:input,temperature:0,...format})});
- if(!r.ok){
-  // Keep provider generated text, source contents and credentials out of public
-  // logs. Only controlled non-sensitive error categories are retained.
-  const details=providerErrorDetails(await r.json().catch(()=>null));
-  const err=new Error('Redactionele AI: HTTP '+r.status+' taak='+task+' type='+details.type+' code='+details.code+' param='+details.param+' oorzaak='+details.reason);
-  if(r.status===400)err.code='GROQ_BAD_REQUEST';
-  throw err;
+ for(let attempt=0;attempt<2;attempt++){
+  // A single medium-effort recovery is permitted only after Groq itself
+  // reports failed JSON generation at high effort. Source verification and
+  // editorial scoring are never retried, skipped or loosened here.
+  const recovering=attempt===1;
+  const request={model,messages:input,temperature:0,...format,...(recovering?{reasoning_effort:'medium'}:{})};
+  const r=await fetcher('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},signal:AbortSignal.timeout(180000),body:JSON.stringify(request)});
+  if(!r.ok){
+   const details=providerErrorDetails(await r.json().catch(()=>null));
+   if(!recovering&&r.status===400&&details.code==='json_validate_failed'&&model==='openai/gpt-oss-120b'&&['revision','review'].includes(task)){
+    console.warn('Groq JSON validatie mislukt voor '+task+' bij high; één nieuwe poging bij medium met identieke feiten en ongewijzigde kwaliteitscontroles.');
+    continue;
+   }
+   const err=new Error('Redactionele AI: HTTP '+r.status+' taak='+task+' type='+details.type+' code='+details.code+' param='+details.param+' oorzaak='+details.reason);
+   if(r.status===400)err.code='GROQ_BAD_REQUEST';
+   throw err;
+  }
+  const data=await r.json();
+  return JSON.parse(String(data.choices?.[0]?.message?.content||'').replace(/^```(?:json)?\s*|\s*```$/g,''));
  }
- const data=await r.json();return JSON.parse(String(data.choices?.[0]?.message?.content||'').replace(/^```(?:json)?\s*|\s*```$/g,''));
+ throw Error('Redactionele AI: een geldige JSON-uitvoer bleef uit.');
 }
 function selectModel(catalog){
  const available=new Set((catalog.data||[]).filter(x=>x.active!==false).map(x=>x.id));
