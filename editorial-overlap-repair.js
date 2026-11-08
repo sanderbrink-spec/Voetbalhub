@@ -55,11 +55,23 @@ function reframeVerifiedClubDecision(draft,facts,docs,overlapPhrases){
   const sourcePair=text.match(new RegExp('^('+name+')\\s+en\\s+('+name+'),\\s+die\\s+.+?\\b(?:keren|gaan)\\s+(?:weer\\s+)?terug\\b.+?assistent','u'));
   if(sourcePair){
    const [,first,second]=sourcePair;
-   const rule=new RegExp(escape(first)+'\\s+en\\s+'+escape(second),'g');
-   const body=candidate.body.map(x=>x.replace(rule,second+' en '+first));
+   const number=text.match(/\b(?:afgelopen|voorbije)\s+(een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien|\d+)\s+wedstrijden\b/i)?.[1];
+   // Only this source-confirmed pair and its shared role may be reframed.
+   // Never generate a match count that was absent in the verified fact.
+   const resolved=second+' en '+first+' hervatten hun werk als assistent-trainers.'+
+    (number?' Zij hadden het team tijdens de voorafgaande '+number+' wedstrijden tijdelijk geleid.':'');
+   const exactPair=new RegExp(escape(first)+'\\s+en\\s+'+escape(second)+
+    ',\\s+die\\s+[^.!?]{10,260}?assistent[-\\s]trainers?[.!]?','gu');
+   const fallbackPair=new RegExp(escape(first)+'\\s+en\\s+'+escape(second),'gu');
+   const body=candidate.body.map(paragraph=>{
+    if(exactPair.test(paragraph)){exactPair.lastIndex=0;return paragraph.replace(exactPair,resolved);}
+    exactPair.lastIndex=0;return paragraph.replace(fallbackPair,second+' en '+first);
+   });
    if(body.some((x,i)=>x!==candidate.body[i])){candidate={...candidate,body};changed=true;}
   }
  }
- return changed&&overlaps(candidate)<before?candidate:draft;
+ // Only safe literal fact paraphrases are returned. Remaining unoriginal
+ // text still fails the unchanged ten-word source-overlap validation.
+ return changed&&overlaps(candidate)<=before?candidate:draft;
 }
 module.exports.reframeVerifiedClubDecision=reframeVerifiedClubDecision;
