@@ -615,3 +615,28 @@ test('new coaching-storyline review is bounded and never overrides verification 
  assert.equal(recoverCoachStoryline(job,now),false);
  assert.equal(recoverCoachStoryline({...job,coachStoryRecoveryV70:false,failureStage:'verification'},now),false);
 });
+
+test('verified assistant-pair overlap repair also works on full three-paragraph articles',()=>{
+ const {reframeVerifiedStaffPair,overlapPhrases}=require('../scripts/automatic-publication');
+ const copied='Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden overgenomen, keren weer terug in hun functie van assistent-trainer.';
+ const doc={text:'PEC Zwolle bevestigt Alex Pastoor als nieuwe hoofdtrainer. '+copied};
+ const draft={headline:'PEC Zwolle benoemt nieuwe hoofdtrainer voor het komende seizoen',
+ standfirst:'De club bevestigt de trainersbenoeming en de gewijzigde staf.',
+ body:['De nieuwe trainer begint maandag en tekent tot de zomer van 2027.',
+ 'Pastoor werkte na een tijdelijke onderbreking in 2025 als assistent-bondscoach in Indonesië.',
+ 'Dennis van der Ree en Maikel van der Werff, die de afgelopen vijf wedstrijden tijdelijk de leiding hadden, keren terug naar hun functie als assistent-trainer.']};
+ assert.ok(overlapPhrases(doc.text,draft).length);
+ const result=reframeVerifiedStaffPair(draft,[copied],[doc]);
+ assert.equal(result.body.length,3);
+ assert.equal(result.body[0],draft.body[0]);
+ assert.equal(result.body[1],draft.body[1]);
+ assert.match(result.body[2],/^Maikel van der Werff en Dennis van der Ree keren terug/);
+ assert.deepEqual(overlapPhrases(doc.text,result),[]);
+});
+test('full-story anti-copy retry is bounded and excludes other failures',()=>{
+ const {recoverFullStoryOverlap}=require('../scripts/automatic-publication');
+ const job={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:1};
+ assert.equal(recoverFullStoryOverlap(job,now),true);
+ job.status='review';assert.equal(recoverFullStoryOverlap(job,now),false);
+ assert.equal(recoverFullStoryOverlap({...job,fullStoryOverlapV71:false,failureStage:'verification'},now),false);
+});
