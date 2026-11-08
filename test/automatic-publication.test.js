@@ -510,3 +510,27 @@ test('V66 factual richness retries one rejected official packet and never bypass
  sources:[{url:'https://peczwolle.nl/nieuws/aanstelling'}],verifiedFacts:['een','twee','drie','vier'],
  draft:{headline:'Te korte kop',standfirst:'Ook te kort',body:['een']}}).length>0);
 });
+
+
+test('primary source extraction aligns paraphrases to exact cited sentences without inventing facts',()=>{
+ const {alignPrimaryLiteralFacts,validateEvidence}=require('../scripts/automatic-publication');
+ const source='PEC Zwolle heeft Alex Pastoor aangesteld als nieuwe hoofdtrainer. Hij staat vanaf maandag voor de groep en heeft een contract tot de zomer van 2027. Dennis van der Ree en Maikel van der Werff keren terug als assistent-trainers.';
+ const doc={url:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',
+ title:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',text:source,publishedAt:'2026-11-07T10:14:00+01:00'};
+ const input={kind:'announcement',primaryAuthority:'club_decision',sharedEventEvidence:[],facts:[
+ {text:'PEC Zwolle heeft Alex Pastoor als hoofdtrainer benoemd.',evidence:[{source:0,quote:source}]},
+ {text:'De overeenkomst loopt bij Zwolle tot de zomer van 2027.',evidence:[{source:0,quote:source}]}
+ ]};
+ const result=alignPrimaryLiteralFacts(input);
+ assert.equal(result.facts.length,2);
+ for(const f of result.facts)assert.ok(source.includes(f.text));
+ assert.deepEqual(validateEvidence(result,[doc],Date.parse('2026-11-08T10:00:00Z')),[]);
+});
+test('primary literal alignment never accepts numbers or passages outside cited official evidence',()=>{
+ const {alignPrimaryLiteralFacts}=require('../scripts/automatic-publication');
+ const source='PEC Zwolle heeft Alex Pastoor als hoofdtrainer aangesteld en meldt een contract tot 2027.';
+ const bad={facts:[{text:'PEC Zwolle verlengt het contract met Alex Pastoor tot 2030.',evidence:[{source:0,quote:source}]}]};
+ const aligned=alignPrimaryLiteralFacts(bad);
+ assert.equal(aligned.facts[0].text,bad.facts[0].text);
+ assert.ok(!source.includes(aligned.facts[0].text));
+});
