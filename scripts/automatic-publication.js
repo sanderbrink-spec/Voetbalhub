@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const crypto=require('node:crypto');
 const M=require('../editorial-desk-model');
 const {reframeVerifiedStaffPair,reframeVerifiedClubDecision}=require('../editorial-overlap-repair');
-const {generationIssues,createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues}=require('../editorial-ai');
+const {generationIssues,createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,unsupportedEditorialInferences}=require('../editorial-ai');
 const {fingerprint}=require('../editorial-drafts');
 const config=require('../automatic-editorial.json');
 const bootstrap=require('../automatic-bootstrap.json');
@@ -937,6 +937,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(!matchRecord){
      issues.push(...generationIssues(draft,facts,null,compact));
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority:candidate.primaryAuthority,sourceUrls:sources.map(x=>x.url),facts}));
+     issues.push(...unsupportedEditorialInferences(draft,facts));
      if(M.needsMatch(draft)||M.requiresFlashscore(draft))issues.push('Niet-geverifieerde wedstrijdclaim.');
      const copied=[...new Set(group.flatMap(d=>overlapPhrases(d.text,draft)))].slice(0,6);
      if(copied.length)issues.push('Woordelijke bronoverlap. Herschrijf deze letterlijke reeksen met eigen zinsbouw: '+JSON.stringify(copied)+'. Behoud alle namen en feiten, maar verander de woordvolgorde; alleen andere leestekens helpen niet.');
