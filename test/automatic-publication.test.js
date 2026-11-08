@@ -1030,3 +1030,25 @@ test('V105 independent coach revision uses compact three-part facts-only briefin
  assert.match(sent[0].content,/Body 1: de concrete staf-/);
  assert.equal(JSON.parse(sent[1].content).draft,undefined);
 });
+
+test('V107 blocks fabricated season labels and unsupported executive titles',()=>{
+ const {unverifiedTimelineAndRoles}=require('../editorial-ai');
+ const facts=['PEC Zwolle heeft de coach aangesteld.','Pastoor stopte in 2024.','In 2025 werkte hij bij Indonesië.','Gerry Hamstra licht de keuze toe.'];
+ const draft={headline:'PEC Zwolle kiest voor nieuwe hoofdtrainer',standfirst:'De club bevestigt het besluit.',body:['Hij keert terug in het 2024/2025-seizoen.','Clubdirecteur Gerry Hamstra reageert.']};
+ const findings=unverifiedTimelineAndRoles(draft,facts);
+ assert.equal(findings.length,2);
+ assert.match(findings.join(' '),/2024\/2025/);
+ assert.match(findings.join(' '),/clubdirecteur/);
+ assert.deepEqual(unverifiedTimelineAndRoles({headline:'Feiten',standfirst:'PEC Zwolle bevestigt.',body:['Gerry Hamstra reageert.']},facts),[]);
+});
+test('V107 reopens only the exact rich-evidence skip, never other rejected news',()=>{
+ const {reopenPrematureSkipV107}=require('../scripts/automatic-publication');
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const base={urls:[url],status:'review',attempts:1,failureStage:'generation',failureCategory:'generator_failure',errorHash:'235b9a004c20c01180bc71375746bbe14f9b423fb3c43bbc3c9233e2eda27b13'};
+ const job={...base},now=Date.now();
+ assert.equal(reopenPrematureSkipV107(job,now,url),true);
+ assert.equal(job.status,'pending');
+ assert.equal(reopenPrematureSkipV107({...job,status:'review'},now,url),false);
+ assert.equal(reopenPrematureSkipV107({...base,errorHash:'other'},now,url),false);
+ assert.equal(reopenPrematureSkipV107({...base},now,'https://ajax.nl/nieuws'),false);
+});
