@@ -777,7 +777,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     report.sourceErrors.push({url,error:error.message});
     // Restore only the exact 8 passages already verified in the prior recorded
     // production run. Never claim they were fetched live and never revive stale news.
-    const recovered=/\\bHTTP 403\\b/.test(error.message)
+    const recovered=error.message.includes('HTTP 403')
       ?preservedOfficialPecEvidence(url,focusSourceUrl,now):null;
     if(recovered){
      report.signals.push({url,outcome:'archived_verified_primary_evidence',
