@@ -121,3 +121,33 @@ test('a quota during internal draft repair resumes that repair without a new fir
  const result=await createEditorialDraft(input,{apiKey:'x',model:MODELS.groq,router:restored,resume:saved});
  assert.equal(resumedCalls,1);assert.equal(restored.trace[0].task,'revision');assert.deepEqual(result.body,draft.body);assert.equal(result.qualityReview.attempts,2);assert.equal(result.qualityReview.autoPublish,false);
 });
+
+
+test('OpenAI and Groq writer require a typed paragraph array in strict JSON schema',async()=>{
+ const calls=[];
+ const router=new EditorialProviderRouter({openaiKey:'test-openai',groqKey:'test-groq',intervalMs:0,fetcher:async(url,opt)=>{
+  const req=JSON.parse(opt.body);calls.push({url,format:req.response_format});
+  return response({...draft,skip:false});
+ }});
+ const result=await router.complete(messages,{task:'writing'});
+ assert.deepEqual(result,{...draft,skip:false});
+ assert.equal(calls.length,1);
+ assert.match(calls[0].url,/openai.com/);
+ const format=calls[0].format;
+ assert.equal(format.type,'json_schema');
+ assert.equal(format.json_schema.strict,true);
+ assert.equal(format.json_schema.schema.properties.body.type,'array');
+ assert.deepEqual(format.json_schema.schema.required,['skip','headline','standfirst','body']);
+ const fallback=new EditorialProviderRouter({groqKey:'test-groq',intervalMs:0,fetcher:async(_,opt)=>{
+  const schema=JSON.parse(opt.body).response_format;
+  assert.equal(schema.type,'json_schema');
+  assert.equal(schema.json_schema.schema.properties.body.type,'array');
+  return response({...draft,skip:false});
+ }});
+ assert.equal((await fallback.complete(messages,{task:'writing'})).body.length,1);
+});
+test('typed schema never converts invalid body strings into approved articles',async()=>{
+ const router=new EditorialProviderRouter({openaiKey:'test-openai',groqKey:'test-groq',intervalMs:0,fetcher:async()=>response({...draft,body:'One paragraph is not an array',skip:false})});
+ await assert.rejects(router.complete(messages,{task:'writing'}),{code:'EDITORIAL_AI_UNAVAILABLE'});
+ assert.deepEqual(router.trace.map(t=>t.outcome),['invalid_json','invalid_json']);
+});
