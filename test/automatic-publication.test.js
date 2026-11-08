@@ -1014,3 +1014,43 @@ test('V103 independent revision never sees rejected hallucinated draft or whole 
  assert.equal(JSON.stringify(user).includes('ORIGINELE-BRONPAGINA'),false);
  assert.match(messages[0].content,/Als coachPlan waar is/);
 });
+
+test('V105 blocks invented season labels and unverified leadership titles',()=>{
+ const {unverifiedTimelineAndRoles}=require('../editorial-ai');
+ const facts=['PEC Zwolle meldt dat Pastoor in 2024 stopte als hoofdtrainer.','In 2025 werkte hij bij Indonesië.','Technisch directeur Gerry Hamstra licht de benoeming toe.'];
+ const bad={headline:'Pastoor wordt trainer bij PEC Zwolle',standfirst:'De club bevestigt zijn komst.',body:['Pastoor keerde terug in het 2024/2025-seizoen.','Clubdirecteur Gerry Hamstra licht het besluit toe.']};
+ const found=unverifiedTimelineAndRoles(bad,facts);
+ assert.equal(found.length,2);
+ assert.match(found.join(' '),/2024\/2025/);
+ assert.match(found.join(' '),/clubdirecteur/);
+ assert.deepEqual(unverifiedTimelineAndRoles({headline:'Feitelijk',standfirst:'PEC Zwolle bevestigt de benoeming.',body:['Technisch directeur Gerry Hamstra licht de keuze toe.']},facts),[]);
+ assert.deepEqual(unverifiedTimelineAndRoles(bad,[...facts,'De club noemt 2024/2025 als seizoen.','Clubdirecteur Gerry Hamstra reageert.']),[]);
+});
+test('V105 strict coach redraft uses fact-locked short system prompt, no rejected copy',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ let messages;
+ const facts=['PEC Zwolle benoemt Alex Pastoor tot hoofdtrainer.','De assistenten keren terug.','In 2025 werkte de coach bij Indonesië.','Technisch directeur Gerry Hamstra licht dit toe.'];
+ await reviseDraft({draft:{headline:'AFGEKEURDE-KOP',standfirst:'Verzonnen stabiliteit',body:['AFGEKEURDE-KOP']},verifiedFacts:facts,articleKind:'announcement',primaryAuthority:'club_decision'},
+ {topic:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',kind:'announcement',primaryAuthority:'club_decision'},
+ [{url:'https://peczwolle.nl/nieuws/besluit',title:'Besluit',publishedAt:'2026-11-08',text:'ORIGINELE-BRON-NIET-MEESTUREN'}],
+ 'Vermoedens over 2024/2025-seizoen',
+ {key:'fake',model:'test-model',fetcher:async(_,opts)=>{messages=JSON.parse(opts.body).messages;return Response.json({choices:[{message:{content:'{"skip":true}'}}]});}});
+ assert.match(messages[0].content,/Als coachPlan waar is/);
+ assert.match(messages[0].content,/2024 en 2025 apart bewijzen nooit seizoen 2024\/2025/);
+ assert.match(messages[0].content,/Technisch directeur is geen clubdirecteur/);
+ assert.match(messages[0].content,/Bij officialPublisher moet de intro/);
+ assert.ok(!JSON.stringify(messages).includes('AFGEKEURDE-KOP'));
+ assert.ok(!JSON.stringify(messages).includes('ORIGINELE-BRON-NIET-MEESTUREN'));
+});
+test('V105 reopens only one exact recorded journalistic failure',()=>{
+ const {reopenFactLockedCoachV105}=require('../scripts/automatic-publication');
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const original={urls:[url],status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',errorHash:'546a310aa7ffb6f215d5caffd3abb64512ed9fd16d7265e6550056daeae34993',attempts:1};
+ const job={...original},now=Date.now();
+ assert.equal(reopenFactLockedCoachV105(job,now,url),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ assert.equal(reopenFactLockedCoachV105({...job,status:'review'},now,url),false);
+ assert.equal(reopenFactLockedCoachV105({...original,errorHash:'different'},now,url),false);
+ assert.equal(reopenFactLockedCoachV105({...original},now,'https://ajax.nl/nieuws'),false);
+});
