@@ -22,7 +22,12 @@ function validateResult(value,task){
  return value;
 }
 class ProviderUnavailable extends Error{
- constructor(attempts,retryAfterSeconds=3600){super('Geen geschikte redactionele AI-capaciteit beschikbaar; taak blijft bewaard.');this.code='EDITORIAL_AI_UNAVAILABLE';this.retryAfterSeconds=retryAfterSeconds;this.attempts=attempts;}
+ constructor(attempts,retryAfterSeconds=3600){
+  const reasons=attempts.map(a=>a.reason);
+  const category=reasons.includes('invalid_json')?'invalid_response':reasons.includes('authentication')?'authentication':reasons.some(r=>['daily_quota','rate_limit','capacity','cooldown'].includes(r))?'capacity':'unavailable';
+  super(category==='invalid_response'?'Redactionele AI gaf geen geldige gestructureerde uitvoer; taak blijft bewaard.':category==='authentication'?'Redactionele AI-toegang geweigerd; taak blijft bewaard.':'Geen geschikte redactionele AI-capaciteit beschikbaar; taak blijft bewaard.');
+  this.code='EDITORIAL_AI_UNAVAILABLE';this.availabilityCategory=category;this.retryAfterSeconds=retryAfterSeconds;this.attempts=attempts;
+ }
 }
 class EditorialProviderRouter{
  constructor({groqKey,geminiKey,openrouterKey,geminiFreeTierConfirmed=false,fetcher=fetch,now=Date.now,state={},onState=async()=>{},onAttempt=()=>{},intervalMs=35000,timeoutMs=180000,limits={}}={}){
@@ -61,13 +66,14 @@ class EditorialProviderRouter{
    if(signal?.aborted)throw signal.reason;
    if(!this.keys[provider]||(provider==='gemini'&&!this.geminiFreeTierConfirmed))continue;
    const slot=this.slot(provider),limit=this.limits[provider],reserve=task==='review'?0:2;
-   if(slot.blockedUntil>this.now()||slot.requests+1+reserve>limit.requests||slot.tokens+estimate+(task==='review'?0:10000)>limit.tokens){attempts.push({provider,reason:'capacity'});continue;}
+   if(slot.blockedUntil>this.now()){attempts.push({provider,reason:slot.blockReason||'cooldown'});continue;}
+   if(slot.requests+1+reserve>limit.requests||slot.tokens+estimate+(task==='review'?0:10000)>limit.tokens){attempts.push({provider,reason:'capacity'});continue;}
    if(provider==='openrouter'&&!await this.verifyOpenrouter()){attempts.push({provider,reason:'free_endpoint_unconfirmed'});continue;}
    const wait=Math.max(0,(slot.nextAt||0)-this.now());
    // Long Retry-After delays are persisted, not slept through during a round.
    if(wait>60000){attempts.push({provider,reason:'cooldown'});continue;}
    if(wait)await new Promise((resolve,reject)=>{const timer=setTimeout(resolve,wait);signal?.addEventListener('abort',()=>{clearTimeout(timer);reject(signal.reason);},{once:true});});
-   let result,kind='temporary',delay=60000;
+   let result,kind='temporary',delay=60000,outputShape;
    for(let jsonAttempt=0;jsonAttempt<2;jsonAttempt++){
     if(slot.requests+1+reserve>limit.requests||slot.tokens+estimate+(task==='review'?0:10000)>limit.tokens){kind='capacity';delay=3600000;break;}
     const budget=Math.min(requestOptions.max_completion_tokens||spec.budget,spec.budget);
@@ -97,14 +103,15 @@ class EditorialProviderRouter{
      }
      try{
       const text=provider==='gemini'?data?.candidates?.[0]?.content?.parts?.filter(p=>!p.thought).map(p=>p.text||'').join(''):data?.choices?.[0]?.message?.content;
-      result=validateResult(parseObject(text),task);kind='success';
+      const parsed=parseObject(text);outputShape={headline:typeof parsed.headline,standfirst:typeof parsed.standfirst,body:Array.isArray(parsed.body)?'array':typeof parsed.body,skip:parsed.skip===true,finishReason:['stop','length','content_filter'].includes(data?.choices?.[0]?.finish_reason)?data.choices[0].finish_reason:'unknown'};
+      result=validateResult(parsed,task);kind='success';
      }catch{kind='invalid_json';delay=60000;}
      const usage=Number(data?.usage?.total_tokens??data?.usageMetadata?.totalTokenCount);
      if(Number.isFinite(usage)&&usage>=0)slot.tokens=Math.max(0,slot.tokens-estimate+usage);
      break;
     }catch(error){if(signal?.aborted)throw signal.reason;kind=['TimeoutError','AbortError'].includes(error?.name)?'timeout':'temporary';break;}
    }
-   const record={provider,model:MODELS[provider],family:provider==='gemini'?'gemini':'gpt-oss',task,outcome:kind,articleId,at:new Date(this.now()).toISOString()};
+   const record={provider,model:MODELS[provider],family:provider==='gemini'?'gemini':'gpt-oss',task,outcome:kind,...(kind==='invalid_json'?{outputShape:outputShape||{parseableObject:false}}:{}),articleId,at:new Date(this.now()).toISOString()};
    this.trace.push(record);
    if(kind==='success'){
     if(['writing','revision'].includes(task)&&result.skip!==true)this.lastWriter={provider,model:MODELS[provider],family:record.family};

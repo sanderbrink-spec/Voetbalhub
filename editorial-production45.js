@@ -49,6 +49,7 @@ class EditorialQueue {
  }
  due(job,now=Date.now()) {return ['pending','retry'].includes(job.status)&&job.attempts<4&&job.nextAttemptAt<=now;}
  finish(job,status,now=Date.now(),diagnostic={}) {job.status=status;job.updatedAt=now;
+  if(!['pending','retry'].includes(status))delete job.checkpoint;
   if(diagnostic.reason)job.reason=diagnostic.reason;
   if(diagnostic.stage)job.failureStage=diagnostic.stage;
   if(diagnostic.category)job.failureCategory=diagnostic.category;
@@ -56,12 +57,20 @@ class EditorialQueue {
  fail(job,error,now=Date.now(),{stage='verification'}={}) {
   // Provider capacity is not an unsuccessful editorial attempt. Retain the
   // existing attempt budget and wait until the provider permits another call.
-  if(['GROQ_DAILY_QUOTA','EDITORIAL_AI_UNAVAILABLE'].includes(error?.code)){
+  if(error?.code==='GROQ_DAILY_QUOTA'||(error?.code==='EDITORIAL_AI_UNAVAILABLE'&&error.availabilityCategory==='capacity')){
    const seconds=Number(error.retryAfterSeconds);
    job.status='retry';job.updatedAt=now;
    job.nextAttemptAt=now+1000*(Number.isFinite(seconds)&&seconds>0?Math.min(86400,seconds):3600);
    job.failureStage=stage;job.failureCategory='provider_quota';job.reason='provider_daily_limit';
    job.errorHash=crypto.createHash('sha256').update(error.code).digest('hex');
+   return;
+  }
+  if(error?.code==='EDITORIAL_AI_UNAVAILABLE'){
+   job.attempts++;job.updatedAt=now;job.status=job.attempts<4?'retry':'review';
+   job.nextAttemptAt=now+1000*Math.max(60,Number(error.retryAfterSeconds)||3600);
+   job.failureStage=stage;job.failureCategory='provider_'+(error.availabilityCategory||'unavailable');
+   job.reason=error.availabilityCategory==='invalid_response'?'invalid_provider_json':error.availabilityCategory==='authentication'?'provider_authentication_failed':'external_service_unavailable';
+   job.errorHash=crypto.createHash('sha256').update(error.code+job.reason).digest('hex');
    return;
   }
   job.attempts++;job.updatedAt=now;
@@ -81,7 +90,7 @@ class EditorialQueue {
   // Hash links the detailed artifact error without publishing source text or secrets.
   job.errorHash=crypto.createHash('sha256').update(String(error?.message||'')).digest('hex');
  }
- prune(now=Date.now()) {this.records=this.records.filter(j=>now-(j.updatedAt||j.createdAt)<7*86400000).slice(-500);}
+ prune(now=Date.now()) {for(const job of this.records)if(!['pending','retry'].includes(job.status)||now-(job.updatedAt||job.createdAt)>86400000)delete job.checkpoint;this.records=this.records.filter(j=>now-(j.updatedAt||j.createdAt)<7*86400000).slice(-500);}
 }
 async function openQueue({token,branch,fetcher=fetch}) {
  const endpoint='https://api.github.com/repos/sanderbrink-spec/Voetbalhub/contents/editorial-queue45.json';
