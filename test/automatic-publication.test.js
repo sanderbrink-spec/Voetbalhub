@@ -593,3 +593,25 @@ test('previously skipped verified coaching decision gets exactly one strict new 
  assert.equal(recoverOfficialCoachDecision(job,now),false);
  assert.equal(recoverOfficialCoachDecision({...job,officialCoachRecoveryV69:false,failureStage:'quality'},now),false);
 });
+
+
+test('verified coaching article writer receives a distinct source-grounded storyline',async()=>{
+ const {createEditorialDraft}=require('../editorial-ai');
+ let request;
+ await assert.rejects(createEditorialDraft({
+  topic:'Alex Pastoor nieuwe hoofdtrainer PEC Zwolle',category:'clubnieuws',primaryAuthority:'club_decision',
+  facts:['PEC Zwolle stelt Alex Pastoor als nieuwe hoofdtrainer aan.','De overeenkomst duurt tot de zomer van 2027.',
+  'Dennis van der Ree en Maikel van der Werff hadden vijf wedstrijden tijdelijk de leiding.',
+  'De club meldt dat het duo als assistent terugkeert.'],sourceUrls:['https://peczwolle.nl/nieuws/nieuw']
+ },{apiKey:'test',model:'test',fetcher:async(_,opts)=>{request=JSON.parse(opts.body);return Response.json({choices:[{message:{content:'{"skip":true}'}}]});}}),/Onvoldoende gecontroleerde feiten/);
+ assert.match(request.messages[0].content,/interim-leiding/);
+ assert.match(request.messages[0].content,/tijdelijk assistent/);
+});
+test('new coaching-storyline review is bounded and never overrides verification errors',()=>{
+ const {recoverCoachStoryline}=require('../scripts/automatic-publication');
+ const job={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:1};
+ assert.equal(recoverCoachStoryline(job,now),true);
+ job.status='review';
+ assert.equal(recoverCoachStoryline(job,now),false);
+ assert.equal(recoverCoachStoryline({...job,coachStoryRecoveryV70:false,failureStage:'verification'},now),false);
+});
