@@ -8,6 +8,8 @@ function officialUrl(value){
 function evidence(record,doc,now=Date.now()){
  if(!record?.match||!doc||!officialUrl(doc.url)||typeof doc.text!=='string'||doc.text.length<120||doc.text.length>20000)return null;
  const time=Date.parse(doc.publishedAt||''),matchTime=Date.parse(record.publishedAt||'');
+ // Unknown dates are ordinary rejected evidence, never a fatal DateTimeFormat error.
+ if(!Number.isFinite(time)||!Number.isFinite(matchTime))return null;
  const dateOnly=/^\d{4}-\d{2}-\d{2}$/.test(doc.publishedAt||'');
  const sourceDay=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(time));
  const matchDay=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(matchTime));

@@ -56,3 +56,12 @@ test('explicit English Ajax publication date is extracted from first-party artic
  const page=extractPage(html,official.url);
  assert.equal(page.publishedAt,'2026-11-08');
 });
+
+
+test('undated and invalid-date official documents are skipped instead of aborting autonomous discovery',()=>{
+ for(const publishedAt of ['',null,'unparseable','2026-14-42']){
+  assert.doesNotThrow(()=>evidence(record,{...official,publishedAt},now));
+  assert.equal(evidence(record,{...official,publishedAt},now),null);
+ }
+ assert.equal(evidence(record,{...official,publishedAt:'2026-11-08'},now)?.events.length,4);
+});
