@@ -1162,3 +1162,10 @@ test('Previously verified PEC evidence survives a temporary HTTP 403 only in the
  assert.equal(preservedOfficialPecEvidence(url,'https://ajax.nl/nieuws/anders',now),null);
  assert.equal(preservedOfficialPecEvidence('https://www.peczwolle.nl/nieuws/anders','https://www.peczwolle.nl/nieuws/anders',now),null);
 });
+
+test('Focused publication never reports green when nothing was published',()=>{
+ const {runExitCode}=require('../scripts/automatic-publication');
+ assert.equal(runExitCode({status:'no_new_verified_articles',counts:{published:0}}),0);
+ assert.equal(runExitCode({status:'no_new_verified_articles',focusSourceUrl:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',counts:{published:0}}),1);
+ assert.equal(runExitCode({status:'completed',focusSourceUrl:'https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle',counts:{published:1}}),0);
+});
