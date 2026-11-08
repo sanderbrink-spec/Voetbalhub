@@ -5,6 +5,25 @@ const {assess,priority,EditorialQueue,openQueue,WEIGHTS}=require('../editorial-p
 const now=Date.parse('2026-11-04T12:00:00Z');
 const docs=[{url:'https://ajax.nl/a',title:'Ajax bevestigt transfer',text:'Officiële bevestiging',publishedAt:'2026-11-04T10:00:00Z'}];
 const review={approved:true,issues:[],scores:Object.fromEntries(Object.keys(WEIGHTS).map(k=>[k,95]))};
+test('journalism must independently reach 85 even when the weighted score is high',()=>{
+ const weak={...review,scores:{...review.scores,journalism:84}};
+ const result=assess({review:weak,docs,now});
+ assert.ok(result.score>=85);assert.equal(result.approved,false);
+ assert.ok(result.reasons.includes('Journalistieke kwaliteit lager dan 85.'));
+ assert.equal(assess({review:{...weak,scores:{...weak.scores,journalism:85}},docs,now}).approved,true);
+});
+test('daily quota waits survive restart without exhausting the article attempt budget',()=>{
+ let q=new EditorialQueue(),job=q.enqueue(docs,now);
+ const error=Object.assign(new Error('sensitive provider detail'),{code:'GROQ_DAILY_QUOTA',retryAfterSeconds:7200});
+ for(let i=0;i<6;i++){
+  q.fail(job,error,now+i*7200000,{stage:'quality'});
+  q=new EditorialQueue(JSON.parse(JSON.stringify(q.records)));job=q.records[0];
+  assert.equal(job.attempts,0);assert.equal(job.failureCategory,'provider_quota');
+  assert.equal(q.due(job,now+(i+1)*7200000-1),false);
+  assert.equal(q.due(job,now+(i+1)*7200000),true);
+ }
+ assert.ok(!JSON.stringify(job).includes(error.message));
+});
 test('balanced editorial assessment passes only with evidence, current dates and a complete second review',()=>{
  assert.equal(assess({review,docs,now}).approved,true);
  for(const change of [{evidenceIssues:['Ontbrekend bronbewijs']},{duplicate:true},{copied:true},{docs:[{...docs[0],publishedAt:''}]},{review:{...review,scores:{...review.scores,reliability:89}}},{review:{...review,scores:{...review.scores,originality:101}}},{review:{...review,approved:false}},{review:{...review,issues:undefined}},{review:{...review,scores:{...review.scores,journalism:60}}}]){

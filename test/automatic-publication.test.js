@@ -1028,6 +1028,7 @@ test('V105 independent coach revision uses compact three-part facts-only briefin
  assert.ok(sent[0].content.length<2600);
  assert.match(sent[0].content,/Het vorige concept is bewust weggelaten/);
  assert.match(sent[0].content,/Body 1: de concrete staf-/);
+ assert.match(sent[0].content,/uitsluitend in natuurlijk Nederlands/);
  assert.equal(JSON.parse(sent[1].content).draft,undefined);
 });
 

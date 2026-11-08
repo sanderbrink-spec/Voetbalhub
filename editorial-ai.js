@@ -160,6 +160,13 @@ function normalizeDraft(text) {
 function generationIssues(draft,facts,match=null,compact=false) {
   if(!draft)return ['Geef uitsluitend een geldig JSON-object met kop, intro en body.'];
   const issues=draftIssues(draft,compact);
+  // A conservative preflight for the observed English rewrite. Names and
+  // isolated foreign football terms do not qualify as a language failure.
+  const words=[draft.headline,draft.standfirst,...(Array.isArray(draft.body)?draft.body:[])].join(' ').toLowerCase().match(/[a-zà-ÿ]+/g)||[];
+  const english=new Set('the and with from according will who his their which for by this has was its while been into includes'.split(' '));
+  const dutch=new Set('de het een en van voor met dat die zijn wordt volgens heeft als deze door bij op'.split(' '));
+  const en=words.filter(word=>english.has(word)).length,nl=words.filter(word=>dutch.has(word)).length;
+  if(en>=8&&en>2*nl)issues.push('Het artikel is Engelstalig. Schrijf kop, intro en alle alinea’s in natuurlijk Nederlands met dezelfde geverifieerde feiten.');
   if(headlineContradictions(draft))issues.push('De kop noemt tegenstrijdige wedstrijdresultaten. Gebruik alleen het aangeleverde resultaat.');
   issues.push(...require('./editorial-facts').evidenceIssues(draft,facts,match));
   return [...new Set(issues)];
