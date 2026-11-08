@@ -955,3 +955,25 @@ test('V99 never retries unsupported provider 400 and caps repeated JSON failures
  await assert.rejects(complete([{role:'user',content:'JSON'}],{key:'fake',model:'openai/gpt-oss-120b',fetcher:invalid},'review'),e=>e.code==='GROQ_BAD_REQUEST'&&/oorzaak=json_generation/.test(e.message));
  assert.equal(calls,2);
 });
+
+test('V100 reopens only the recorded Groq JSON provider failure once for the focused official story',()=>{
+ const {reopenVerifiedJsonFailureV100}=require('../scripts/automatic-publication');
+ const url='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const hash='2c2fdf91ef88a0b461b05ad54077f20cc3305a85e54ee601e93ba9c2b463d173';
+ const original={urls:[url],status:'review',attempts:1,nextAttemptAt:99999999,failureStage:'quality',
+  failureCategory:'journalistic_rejection',errorHash:hash};
+ const now=Date.now();
+ const job={...original};
+ assert.equal(reopenVerifiedJsonFailureV100(job,now,url),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ assert.equal(job.nextAttemptAt,now);
+ assert.equal(job.jsonFailureRecoveryV100,true);
+ job.status='review';
+ assert.equal(reopenVerifiedJsonFailureV100(job,now,url),false);
+ for(const diff of [
+  {errorHash:'other'},{failureCategory:'generator_failure'},{failureStage:'verification'},
+  {urls:['https://ajax.nl/artikelen/anders']},{status:'published'},
+  {jsonFailureRecoveryV100:true}])assert.equal(reopenVerifiedJsonFailureV100({...original,...diff},now,url),false);
+ assert.equal(reopenVerifiedJsonFailureV100({...original},now,'https://ajax.nl/artikelen/andere'),false);
+});
