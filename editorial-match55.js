@@ -43,8 +43,14 @@ function candidate(fixture, now) {
 
 function matchesRegistration(payload, fixtures, now) {
  const record = candidate(fixtures.find(f => f.id === payload.matchId) || {}, now);
- return Boolean(record && ['articleKind','category','match','verifiedFacts','sources'].every(key =>
-  JSON.stringify(record[key]) === JSON.stringify(payload[key])));
+ if(!record)return false;
+ const verified=payload.matchEvidence
+  ? require('./editorial-match-evidence122').attach(record,{
+     url:payload.matchEvidence.url,publishedAt:payload.matchEvidence.publishedAt,
+     title:payload.matchEvidence.title,text:payload.matchEvidence.text
+    },now):record;
+ return Boolean(verified&&['articleKind','category','match','verifiedFacts','sources'].every(key=>
+  JSON.stringify(verified[key]) === JSON.stringify(payload[key])));
 }
 function europeanRegistry({fetcher = fetch, token, clock = Date.now} = {}) {
  let cache, inFlight;
