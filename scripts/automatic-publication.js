@@ -1038,10 +1038,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(draft?.skip)throw Error('Onvoldoende feiten voor een origineel wedstrijdbericht.');
     report.generationOrigin='production_ai';
    }else if(!draft){
-    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,timeoutMs:180000});
+    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
     report.generationOrigin='production_ai';
    }
-   await checkpointStep({draft});
+   await checkpointStep({draft,generation:null});
    report.counts.generated++;route.generated++;
    stage='quality';
    const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks}:{}),

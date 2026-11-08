@@ -111,3 +111,13 @@ test('terminal and expired queue entries discard encrypted working copies',()=>{
  const queue=new EditorialQueue(),job=queue.enqueue([{url:'https://ajax.nl/a',text:'Evidence'}],0);job.checkpoint={data:'opaque'};queue.finish(job,'published',1);assert.equal(job.checkpoint,undefined);
  job.status='retry';job.checkpoint={data:'opaque'};queue.prune(86400002);assert.equal(job.checkpoint,undefined);
 });
+test('a quota during internal draft repair resumes that repair without a new first-writer call',async()=>{
+ const input={topic:'Ajax clubbesluit',category:'Voetbal',facts:[draft.headline,draft.standfirst,...draft.body],sourceUrls:['https://ajax.nl/artikelen/test'],compact:true,automaticPublication:true};
+ let calls=0,saved;
+ const router=new EditorialProviderRouter({groqKey:'x',intervalMs:0,fetcher:async()=>++calls===1?response({...draft,body:['te kort']}):quota()});
+ await assert.rejects(createEditorialDraft(input,{apiKey:'x',model:MODELS.groq,router,onProgress:value=>{saved=structuredClone(value);}}),{code:'EDITORIAL_AI_UNAVAILABLE'});
+ assert.equal(calls,2);assert.equal(saved.attempt,1);assert.equal(saved.messages[2].role,'assistant');assert.ok(saved.messages[2].content.includes('te kort'));
+ let resumedCalls=0;const restored=new EditorialProviderRouter({groqKey:'x',intervalMs:0,fetcher:async(_,opt)=>{resumedCalls++;assert.deepEqual(JSON.parse(opt.body).messages,saved.messages);return response(draft);}});
+ const result=await createEditorialDraft(input,{apiKey:'x',model:MODELS.groq,router:restored,resume:saved});
+ assert.equal(resumedCalls,1);assert.equal(restored.trace[0].task,'revision');assert.deepEqual(result.body,draft.body);assert.equal(result.qualityReview.attempts,2);assert.equal(result.qualityReview.autoPublish,false);
+});
