@@ -150,3 +150,32 @@ test('V95 writer receives a deterministic reporting assignment alongside the ori
  assert.ok(supplied.editorialAssignment.leadFactIds.length>0);
  assert.ok(request.messages[0].content.includes('labels voegen geen feiten toe'));
 });
+
+test('V96 official club authority survives writer planning and reaches Groq unchanged',async()=>{
+ let request;
+ const mock=async(_,options)=>{request=JSON.parse(options.body);return reply(good);};
+ const facts=[good.headline,good.standfirst,...good.body];
+ await createEditorialDraft({...input,topic:'PEC Zwolle benoemt hoofdtrainer',facts,primaryAuthority:'club_decision',automaticPublication:true},{...config,fetcher:mock});
+ const supplied=JSON.parse(request.messages[1].content);
+ assert.equal(supplied.primaryAuthority,'club_decision');
+ assert.match(request.messages[0].content,/Voor deze officieel aangekondigde trainersbenoeming/);
+ await createEditorialDraft({...input,primaryAuthority:null,automaticPublication:true},{...config,fetcher:mock});
+ assert.equal(JSON.parse(request.messages[1].content).primaryAuthority,null);
+});
+test('V96 reporter removes only identical meaningful facts and preserves different career/staff claims',()=>{
+ const facts=[
+  'Dennis van der Ree en Maikel van der Werff keren terug als assistent-trainers.',
+  'Maikel van der Werff en Dennis van der Ree keren terug als assistent-trainers.',
+  'Dennis van der Ree en Maikel van der Werff blijven tijdelijk hoofdtrainers.',
+  'Alex Pastoor werkte in 2024 als hoofdtrainer in Nederland.',
+  'Alex Pastoor werkte in 2025 als hoofdtrainer in Nederland.',
+  'PEC Zwolle bevestigt Alex Pastoor als hoofdtrainer.'
+ ];
+ const plan=editorialAssignment(facts);
+ const ids=[...plan.leadFactIds,...plan.bodySections.flatMap(s=>s.factIds)].sort();
+ assert.equal(new Set(ids).size,ids.length);
+ assert.deepEqual(ids,['F1','F3','F4','F5','F6']);
+ assert.equal(plan.leadFactIds[0],'F6');
+ const different=editorialAssignment(['PSV wint de finale van Ajax','PSV verliest de finale van Ajax']);
+ assert.equal(different.bodySections.length,1);
+});
