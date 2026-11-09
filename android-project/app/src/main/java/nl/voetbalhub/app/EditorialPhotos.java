@@ -21,6 +21,18 @@ public final class EditorialPhotos {
  private EditorialPhotos(){}
  public static boolean safeAsset(String path){return path!=null&&path.matches("news-photos/[a-z0-9-]+\\.webp");}
  public static Bitmap bitmap(Activity activity,JSONObject article,int width){Bitmap approved43=EditorialImages43.bitmap(activity,article,width);if(approved43!=null)return approved43;Bitmap approved42=EditorialIllustrations42.bitmap(activity,article,width);if(approved42!=null)return approved42;if(article.optBoolean("uniqueFallback39"))return TopicArtwork39.bitmap(article,width);String path=article.optString("imageAsset");if(!safeAsset(path))return null;try(InputStream in=activity.getAssets().open(path)){return EditorialBitmap.read(in,width);}catch(Exception ignored){return null;}}
+ private static final String MATCH_ASSET_ORIGIN = "https://voetbalhub-redactie.onrender.com/match-rotations65/";
+ /** APK-packaged reviewed artwork takes priority and works without network access. */
+ private static Bitmap bundledMatch(Activity activity, String url, int width) {
+  if (!url.startsWith(MATCH_ASSET_ORIGIN)) return null;
+  String name = url.substring(MATCH_ASSET_ORIGIN.length());
+  if (!name.matches("veldio-[a-z0-9-]+\\.webp")) return null;
+  try (InputStream in = activity.getAssets().open("match-rotations65/" + name)) {
+   return EditorialBitmap.read(in, width);
+  } catch (Exception missing) {
+   return null; // Production can still provide later variants that were not bundled.
+  }
+ }
  private static final ExecutorService NETWORK = Executors.newFixedThreadPool(3);
  private static final LruCache<String, Bitmap> CACHE = new LruCache<String, Bitmap>(8192) {
   @Override protected int sizeOf(String key, Bitmap image) { return Math.max(1, image.getByteCount() / 1024); }
@@ -38,15 +50,22 @@ public final class EditorialPhotos {
   JSONObject review = article.optJSONObject("imageReview");
   view.setContentDescription((review != null && review.optBoolean("generated") ? "AI-illustratie bij " :
    "Afbeelding bij ") + article.optString("headline", "het artikel"));
-  // API-approved rotating artwork takes priority over legacy packaged snapshots.
-  // The server has already validated the exact fixture, time of day, rights and SHA-256.
+  // A server-reviewed image must never be overwritten by a stale, packaged legacy cover.
   JSONObject rotation = article.optJSONObject("imageRotation");
+  boolean approvedLibrary = review != null && "approved-library49".equals(review.optString("method"));
   boolean approvedRotation = rotation != null
    && "approved-exact-topic-v65".equals(rotation.optString("method"))
-   && review != null && "approved-library49".equals(review.optString("method"))
-   && article.optJSONArray("imageVariants") != null
+   && approvedLibrary && article.optJSONArray("imageVariants") != null
    && url.startsWith("https://voetbalhub-redactie.onrender.com/");
-  Bitmap local = approvedRotation ? null : bitmap(activity, article, width);
+  boolean approvedServer = approvedLibrary && url.startsWith("https://voetbalhub-redactie.onrender.com/");
+  if (approvedServer && ("cleared".equals(rights) || "licensed".equals(rights))) {
+   Bitmap offline = bundledMatch(activity, url, width);
+   if (offline != null) {
+    view.setImageBitmap(offline);
+    return;
+   }
+  }
+  Bitmap local = (approvedServer || approvedRotation) ? null : bitmap(activity, article, width);
   if (local != null) {
    view.setImageBitmap(local);
    return;

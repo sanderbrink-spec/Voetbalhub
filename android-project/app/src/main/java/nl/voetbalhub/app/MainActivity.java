@@ -294,46 +294,9 @@ public class MainActivity extends AppCompatActivity {
         content.removeAllViews();contactView=new ContactView(this,contactDraft,this::onBackPressed,EDITORIAL_API_URL);content.addView(contactView,new android.widget.FrameLayout.LayoutParams(-1,-1));
     }
 
-    /** Approved match artwork samples, separate from reporting so no wrong fixture is implied. */
+    /** Native gallery shares the same ten reviewed assets with the real landing screen. */
     private View matchArtworkPreview67() {
-        LinearLayout wrapper=new LinearLayout(this);
-        wrapper.setOrientation(LinearLayout.VERTICAL);
-        TextView note=tv("Originele AI-illustraties. Alleen bij exact passende wedstrijden gebruikt.",11,C.MUTED,false);
-        note.setPadding(dp(10),0,dp(10),dp(8));
-        wrapper.addView(note);
-        HorizontalScrollView strip=new HorizontalScrollView(this);
-        strip.setHorizontalScrollBarEnabled(false);
-        LinearLayout items=new LinearLayout(this);
-        items.setOrientation(LinearLayout.HORIZONTAL);
-        String[][] covers={
-          {"FC Groningen – Ajax","veldio-fc-groningen-ajax-01.webp"},
-          {"PSV – FC Twente","veldio-psv-fc-twente-01.webp"},
-          {"Feyenoord – AZ","veldio-feyenoord-az-01.webp"}
-        };
-        for(String[] cover:covers){
-            LinearLayout tile=new LinearLayout(this);
-            tile.setOrientation(LinearLayout.VERTICAL);
-            tile.setPadding(dp(5),dp(4),dp(5),dp(6));
-            ImageView image=new ImageView(this);
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            tile.addView(image,new LinearLayout.LayoutParams(dp(228),dp(128)));
-            TextView label=tv(cover[0],13,C.TEXT,true);
-            label.setPadding(dp(3),dp(7),0,0);
-            tile.addView(label);
-            try {
-                JSONObject approved=new JSONObject();
-                approved.put("headline",cover[0]).put("imageRights","cleared");
-                approved.put("imageUrl",EDITORIAL_API_URL+"/match-rotations65/"+cover[1]);
-                approved.put("imageReview",new JSONObject().put("generated",true));
-                EditorialPhotos.bind(this,image,approved,700);
-            } catch(Exception ignored){}
-            tile.setOnClickListener(v->openArticle(EDITORIAL_API_URL+"/beeldcollectie","Veldio wedstrijdbeelden"));
-            tile.setContentDescription("Bekijk originele Veldio AI-wedstrijdillustraties: "+cover[0]);
-            items.addView(tile,new LinearLayout.LayoutParams(dp(238),-2));
-        }
-        strip.addView(items);
-        wrapper.addView(strip);
-        return wrapper;
+        return MatchArtworkGallery68.preview(this,false);
     }
 
     private void showNews() {
@@ -363,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
             list.addView(new FeedPanel(this,active,false,this::showEditorialArticle,0,3));
             list.addView(new MatchStrip40(this,()->showDestination39("fixtures")),
                     new LinearLayout.LayoutParams(-1,dp(142)));
-            list.addView(sectionHeader("Nieuwe Veldio wedstrijdbeelden","BEKIJK ALLE 10",()->openArticle(EDITORIAL_API_URL+"/beeldcollectie","Veldio wedstrijdbeelden")));
+            list.addView(sectionHeader("Nieuwe Veldio wedstrijdbeelden","BEKIJK ALLE 10",()->MatchArtworkGallery68.open(this)));
             list.addView(matchArtworkPreview67());
             list.addView(sectionHeader("Laatste voetbalnieuws","ALLE NIEUWS",()->{
                 active="Laatste nieuws";buildChips();showNews();
