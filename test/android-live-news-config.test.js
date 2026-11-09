@@ -32,8 +32,8 @@ test('Signed Android build version and source checksums match current package',(
   const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');
   assert.equal(source.files[name],actual, file+' provenance hash');
  }
- assert.match(gradle,/versionCode\s*=\s*92/);
- assert.match(gradle,/versionName\s*=\s*"4\.52b-test"/);
- assert.match(workflow,/versionCode='92'\.\*versionName='4\.52b-test'/);
- assert.match(workflow,/name: Veldio-52B/);
+ assert.match(gradle,/versionCode\s*=\s*93/);
+ assert.match(gradle,/versionName\s*=\s*"4\.53"/);
+ assert.match(workflow,/versionCode='93'\.\*versionName='4\.53'/);
+ assert.match(workflow,/name: Veldio-53/);
 });

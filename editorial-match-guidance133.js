@@ -40,8 +40,9 @@ function paragraphPlan(record = {}) {
 // Facts are allocated to separate verified paragraphs. Flag an event quoted in
 // the wrong paragraph; do not invent missing events or change the article score.
 function paragraphChronologyIssues(record = {},draft = {}) {
+ const halfTimeIssues=require('./editorial-chronology139').halfTimeNarrativeIssues(record,draft);
  const plan=paragraphPlan(record);
- if(plan.format!=='rich'||!Array.isArray(draft.body)||draft.body.length!==plan.body.length)return [];
+ if(plan.format!=='rich'||!Array.isArray(draft.body)||draft.body.length!==plan.body.length)return halfTimeIssues;
  const facts=Array.isArray(record.verifiedFacts)?record.verifiedFacts:[];
  const minutes=text=>[...String(text||'').matchAll(/\bminuut\s+(\d{1,2})(?:\+(\d{1,2}))?\b/gi)]
   .map(m=>m[1]+(m[2]?'+'+m[2]:''));
@@ -54,7 +55,7 @@ function paragraphChronologyIssues(record = {},draft = {}) {
    if(known.has(minute)&&!allowed.has(minute))
     issues.push('Geverifieerde minuut '+minute+' staat in de verkeerde bodyalinea. Houd de toegewezen doelpuntenchronologie aan.');
  });
- return [...new Set(issues)];
+ return [...new Set([...issues,...halfTimeIssues])];
 }
 function writingPrompt(record = {}) {
  const rich = isRichMatch(record);
@@ -78,6 +79,7 @@ function writingPrompt(record = {}) {
   'Volg de drie afzonderlijke bodysecties in paragraphPlan: 1 context en eventueel ruststand, 2 eerdere gedocumenteerde doelpunten, 3 latere gedocumenteerde doelpunten. Elke alinea behandelt uitsluitend de aldaar toegewezen feiten. Schrijf geen vierde of vijfde alinea. Als een sectie onvoldoende feiten bevat voor 18 zinvolle woorden is skip verplicht.',
   'Een goal-timeline bewijst uitsluitend de genoemde minuut, speler, soort doelpunt en direct daarbij geregistreerde stand. Een ruststand bewijst niets over kansen of spelbeeld. Verbind gebeurtenissen niet met fictieve causaliteit.',
   'Schrijf in ten minste één bodyalinea ondubbelzinnig: volgens de Sportmonks-wedstrijdregistratie, als Sportmonks de bron is. Herhaal die bron niet na iedere doelpuntzin. Noem uitsluitend de expliciet geregistreerde momenten en scores, en herschik zinnen zelfstandig zonder de vaste bronzin "viel in minuut ... waarna de stand ... was" over te nemen.',
+  'Een gebeurtenis op 45+3 valt vóór de rust en een gebeurtenis op 47 valt ná de rust. Schrijf bij die overgang expliciet dat de rust tussendoor viel, nooit dat beide gebeurtenissen twee minuten na elkaar plaatsvonden. De ruststand is een harde chronologische grens.',
   'Gebruik NOOIT een berekend tijdsverschil als "drie minuten later", "zes minuten daarna" of "vlak daarna". Verbind gebeurtenissen alleen met afzonderlijk vastgelegde minuten. Een twee-doelpunten-achterstand en het ombuigen daarvan mogen uitsluitend worden beschreven als een aparte afgeleide verificatiefact in verifiedFacts dat uit een complete gecontroleerde doelpuntenreeks is opgesteld. Anders geen achterstand- of comebacktaal.'
  ] : [
   'Schrijf een compact uitslagbericht: body bevat EXACT ÉÉN inhoudelijke alinea van 10-65 woorden, mits dit zonder herhaling of fictie kan. Dit is GEEN langwedstrijdverslag.',

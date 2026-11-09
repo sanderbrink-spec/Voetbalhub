@@ -39,6 +39,16 @@ public final class NewsListCard extends LinearLayout {
   boolean column="column".equalsIgnoreCase(article.optString("type"))||"de derde helft".equalsIgnoreCase(article.optString("category"))||"column".equalsIgnoreCase(article.optString("category"));
   image.setImageDrawable(column?new EditorialArtwork(activity,true):new TopicArtwork39(article));
   if(column){image.setContentDescription("Sander Brink, auteur van De Derde Helft");return;}
+  // A generic approved library illustration is not a match-specific photograph.
+  // Keep the original, club-colour scarf fallback for reports unless the
+  // approved asset explicitly names both participant clubs.
+  JSONObject imageReview=article.optJSONObject("imageReview");
+  if(article.optJSONObject("match")!=null&&imageReview!=null&&
+     "approved-library49".equals(imageReview.optString("method"))&&
+     (imageReview.optJSONArray("clubs")==null||imageReview.optJSONArray("clubs").length()!=2)){
+    image.setContentDescription("Originele clubkleurenillustratie bij de wedstrijd, geen wedstrijdfoto");
+    return;
+  }
 
   Bitmap local=EditorialPhotos.bitmap(activity,article,512);if(local!=null){image.setImageBitmap(local);return;}
   String url=article.optString("imageUrl",""),rights=article.optString("imageRights","");if(!url.startsWith("https://")||!("cleared".equals(rights)||"licensed".equals(rights)))return;
