@@ -60,7 +60,7 @@ test('unapproved or incomplete image rights are excluded',()=>{
  ]),[]);
 });
 test('neutral topic images rotate only within the same non-match subject class',()=>{
- const article={id:'news-1',status:'published',headline:'Nieuwe trainer in gesprek',category:'Voetbal',articleKind:'club'};
+ const article={id:'news-1',status:'published',headline:'De club presenteert een nieuwe huisstijl',category:'Voetbal',articleKind:'club'};
  const rows=[asset('topic1',{clubs:[],categories:['club'],competitions:[]}),
  asset('topic2',{clubs:[],categories:['club'],competitions:[]}),
  asset('match',{categories:['club']})];
