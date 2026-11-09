@@ -53,3 +53,25 @@ test('legacy team_id remains usable only when verified and does not override v3 
  const fixture=Sportmonks.parseFixture({...base,events:legacy},'eredivisie',now);
  assert.equal(fixture.goalTimeline.length,4);
 });
+
+test('a stale cache from the old Sportmonks goal parser cannot hide the corrected match evidence',async()=>{
+ const Football=require('../football-data47');
+ const oldSnapshot={rightsExpiresAt:now+5*3600000,sourceDetails:{name:'Sportmonks Football API'},
+  source:'Sportmonks Football API',fixtures:[],status:'available'};
+ let calls=0;
+ const api=Football.create({
+  clock:()=>now,sportmonksToken:'test-token',
+  redis:{isReady:true,get:async()=>JSON.stringify(oldSnapshot)},
+  fetcher:async url=>{
+   calls++;
+   assert.match(url,/api.sportmonks.com/);
+   const rows=Array.from({length:30},(_,i)=>({...base,id:calls*100+i,events}));
+   return {ok:true,text:async()=>JSON.stringify({data:rows,pagination:{has_more:false}})};
+  }
+ });
+ const value=await api.get('eredivisie');
+ assert.equal(value.sourceDetails.eventParserRevision,136);
+ assert.equal(value.fixtures.length,120);
+ assert.equal(value.fixtures[0].goalTimeline.length,4);
+ assert.equal(calls,4);
+});
