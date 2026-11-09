@@ -9,6 +9,7 @@ const { readCover, withArticleCover } = require("./article-covers");
 
 const PORT = Number(process.env.PORT || 10000);
 let imageGenerationInProgress = false;
+let imagePresentationCycle65 = 0;
 const API_SECRET = process.env.HUB_API_SECRET || "";
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const editorialRouter=require("./editorial-provider-router").createRouter();
@@ -444,7 +445,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const id = url.searchParams.get("id");
       const feed = await runtime.withDeadline(() => getArticles(view), 9000);
       const articles = id ? feed.filter(article => article.id === id) : feed;
-      res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, view === "all" ? {count:articles.length,articles} : require("./feed-policy").articleEnvelope(articles)); }
+       const rotation = imagePresentationCycle65++ % 6;
+       const presented = articles.map(article => require("./image-rotation65").present(article, {round:rotation}));
+      res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, view === "all" ? {count:presented.length,articles:presented} : require("./feed-policy").articleEnvelope(presented)); }
     catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
