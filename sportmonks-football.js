@@ -23,8 +23,8 @@ function parseFixture(row,competition,now){
  }
  const halftime=score('1ST_HALF');
  const rawRound=String(row.round?.name||'').trim();
- const round=/^\\d{1,2}$/.test(rawRound)?'Speelronde '+rawRound:
-   /^(?:Speelronde|Round)\\s+(\\d{1,2})$/i.test(rawRound)?'Speelronde '+rawRound.match(/\\d{1,2}/)[0]:'';
+ const round=/^\d{1,2}$/.test(rawRound)?'Speelronde '+rawRound:
+   /^(?:Speelronde|Round)\s+(\d{1,2})$/i.test(rawRound)?'Speelronde '+rawRound.match(/\d{1,2}/)[0]:'';
  return {id:'sm-'+row.id,competition,date:new Date(kickoff).toISOString(),round, status,
   home:{id:'sm-'+home.id,name:home.name},away:{id:'sm-'+away.id,name:away.name},goals,
   ...(status==='FT'&&halftime&&[halftime.home,halftime.away].every(Number.isInteger)&&halftime.home<=goals.home&&halftime.away<=goals.away?{halfTime:halftime}:{}),
