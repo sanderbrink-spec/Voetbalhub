@@ -1,10 +1,10 @@
 'use strict';
 const I=require('./editorial-image44');
-async function create(payload,{client,key=process.env.OPENAI_API_KEY,remaining=2,priorHashes=[],fetcher=fetch,renderer=I.render,now=Date.now()}={}){
- const library=require('./image-library49'),asset=await library.select(payload,{client,now});
+async function create(payload){
+ const images=require('./image-rotation65'),asset=images.eligible({...payload, ...payload.draft})[0];
  if(!asset)throw Error('Geen goedgekeurd bibliotheekbeeld beschikbaar.');
  const bytes=require('node:fs').readFileSync(require('node:path').join(__dirname,asset.file));
- return {plan:I.classify(payload),mode:'approved-library',assetId:asset.id,base64:bytes.toString('base64'),assetSha256:asset.sha256,attempts:0,reused:true,...library.fields(asset)};
+ return {plan:I.classify(payload),mode:'approved-library',assetId:asset.id,base64:bytes.toString('base64'),assetSha256:asset.sha256,attempts:0,reused:true,...images.assetFields(asset)};
 }
 
 async function remote(payload,{secret,fetcher=fetch,budget={remaining:2},priorHashes=[]}={}){

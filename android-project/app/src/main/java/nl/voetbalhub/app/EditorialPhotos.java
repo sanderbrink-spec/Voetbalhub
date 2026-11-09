@@ -21,16 +21,21 @@ public final class EditorialPhotos {
  private EditorialPhotos(){}
  public static boolean safeAsset(String path){return path!=null&&path.matches("news-photos/[a-z0-9-]+\\.webp");}
  public static Bitmap bitmap(Activity activity,JSONObject article,int width){Bitmap approved43=EditorialImages43.bitmap(activity,article,width);if(approved43!=null)return approved43;Bitmap approved42=EditorialIllustrations42.bitmap(activity,article,width);if(approved42!=null)return approved42;if(article.optBoolean("uniqueFallback39"))return TopicArtwork39.bitmap(article,width);String path=article.optString("imageAsset");if(!safeAsset(path))return null;try(InputStream in=activity.getAssets().open(path)){return EditorialBitmap.read(in,width);}catch(Exception ignored){return null;}}
- private static final String MATCH_ASSET_ORIGIN = "https://voetbalhub-redactie.onrender.com/match-rotations65/";
- /** APK-packaged reviewed artwork takes priority and works without network access. */
- private static Bitmap bundledMatch(Activity activity, String url, int width) {
-  if (!url.startsWith(MATCH_ASSET_ORIGIN)) return null;
-  String name = url.substring(MATCH_ASSET_ORIGIN.length());
-  if (!name.matches("veldio-[a-z0-9-]+\\.webp")) return null;
-  try (InputStream in = activity.getAssets().open("match-rotations65/" + name)) {
-   return EditorialBitmap.read(in, width);
+ private static Bitmap bundledArticle(Activity activity, String url, String sha, int width) {
+  String origin = "https://voetbalhub-redactie.onrender.com/";
+  if (!url.startsWith(origin)) return null;
+  String path = url.substring(origin.length());
+  if (!path.matches("(match-rotations65|article-art69|news43)/[a-z0-9-]+\\.webp")) return null;
+  try (InputStream in = activity.getAssets().open(path)) {
+   byte[] bytes = BoundedInput.read(in, 2_000_000);
+   byte[] digest = java.security.MessageDigest.getInstance("SHA-256").digest(bytes);
+   StringBuilder actual = new StringBuilder(64);
+   for (byte value : digest) actual.append(Character.forDigit((value >>> 4) & 15, 16))
+       .append(Character.forDigit(value & 15, 16));
+   if (!sha.contentEquals(actual)) return null;
+   return EditorialBitmap.read(new java.io.ByteArrayInputStream(bytes), width);
   } catch (Exception missing) {
-   return null; // Production can still provide later variants that were not bundled.
+   return null;
   }
  }
  private static final ExecutorService NETWORK = Executors.newFixedThreadPool(3);
@@ -41,42 +46,37 @@ public final class EditorialPhotos {
  public static void bind(Activity activity, ImageView view, JSONObject article, int width) {
   Object request = new Object();
   view.setTag(request);
-  view.setImageDrawable(new TopicArtwork39(article));
   String url = article.optString("imageUrl"), rights = article.optString("imageRights");
-  if (isGenericMatchCover(article, url)) {
-   view.setContentDescription("Illustratie in de clubkleuren, geen wedstrijdfoto");
-   return;
-  }
+  boolean central = ArticleArtwork.approved(article);
   JSONObject review = article.optJSONObject("imageReview");
-  view.setContentDescription((review != null && review.optBoolean("generated") ? "AI-illustratie bij " :
-   "Afbeelding bij ") + article.optString("headline", "het artikel"));
-  // A server-reviewed image must never be overwritten by a stale, packaged legacy cover.
-  JSONObject rotation = article.optJSONObject("imageRotation");
-  boolean approvedLibrary = review != null && "approved-library49".equals(review.optString("method"));
-  boolean approvedRotation = rotation != null
-   && "approved-exact-topic-v65".equals(rotation.optString("method"))
-   && approvedLibrary && article.optJSONArray("imageVariants") != null
-   && url.startsWith("https://voetbalhub-redactie.onrender.com/");
-  boolean approvedServer = approvedLibrary && url.startsWith("https://voetbalhub-redactie.onrender.com/");
-  if (approvedServer && ("cleared".equals(rights) || "licensed".equals(rights))) {
-   Bitmap offline = bundledMatch(activity, url, width);
-   if (offline != null) {
-    view.setImageBitmap(offline);
-    return;
-   }
-  }
-  Bitmap local = (approvedServer || approvedRotation) ? null : bitmap(activity, article, width);
-  if (local != null) {
-   view.setImageBitmap(local);
-   return;
-  }
-  if (!url.startsWith("https://") || !("cleared".equals(rights) || "licensed".equals(rights))) return;
-  String cacheKey = url + "|" + width;
+  String description = (review != null && review.optBoolean("generated") ? "AI-illustratie bij " :
+   "Afbeelding bij ") + article.optString("headline", "het artikel");
+  view.setContentDescription(central ? null : description);
+  String sha = review == null ? "" : review.optString("assetSha256");
+  String cacheKey = url + "|" + sha + "|" + width;
   Bitmap cached = CACHE.get(cacheKey);
   if (cached != null) {
    view.setImageBitmap(cached);
+   view.setContentDescription(description);
    return;
   }
+  if (central) {
+   Bitmap bundled = bundledArticle(activity, url, sha, width);
+   if (bundled != null) {
+    CACHE.put(cacheKey, bundled);
+    view.setImageBitmap(bundled);
+    view.setContentDescription(description);
+    return;
+   }
+  } else {
+   view.setImageDrawable(new TopicArtwork39(article));
+   Bitmap local = bitmap(activity, article, width);
+   if (local != null) {
+    view.setImageBitmap(local);
+    return;
+   }
+  }
+  if (!url.startsWith("https://") || !("cleared".equals(rights) || "licensed".equals(rights))) return;
   NETWORK.execute(() -> {
    HttpURLConnection connection = null;
    try {
@@ -93,7 +93,10 @@ public final class EditorialPhotos {
       if (image == null) return;
       CACHE.put(cacheKey, image);
       activity.runOnUiThread(() -> {
-       if (view.getTag() == request && view.isAttachedToWindow() && !activity.isFinishing()) view.setImageBitmap(image);
+       if (view.getTag() == request && view.isAttachedToWindow() && !activity.isFinishing()) {
+        view.setImageBitmap(image);
+        view.setContentDescription(description);
+       }
       });
      }
     }
@@ -129,7 +132,7 @@ public final class EditorialPhotos {
  public static JSONObject clubArticle(Activity activity,String name){try{JSONArray list=clubs(activity);for(int i=0;i<list.length();i++){JSONObject c=list.getJSONObject(i);if(!name.equals(c.getString("name")))continue;
   return new JSONObject().put("id","club-portret-"+name.toLowerCase(java.util.Locale.ROOT)).put("status","published").put("type","club_profile").put("category","Clubportret").put("author","Veldio Redactie").put("headline",name+" in de spotlight").put("standfirst","Een blik op de club en haar stadion.").put("body",c.getJSONObject("profile").getJSONArray("body")).put("sources",new JSONArray().put(new JSONObject().put("url",c.getJSONObject("profile").getString("source")))).put("imageUrl",c.getString("imageUrl")).put("imageAsset",c.getString("cover")).put("imageRights","licensed").put("imageCredit",c.getString("credit")).put("imageSource",c.getString("sourcePage")).put("imageLicenseUrl",c.getString("licenseUrl")).put("imageCaption",c.getString("caption"));
  }}catch(Exception ignored){}return null;}
- public static TextView credit(Activity a,JSONObject article){TextView t=new TextView(a);String credit=article.optString("imageCredit"),caption=article.optString("imageCaption"),source=article.optString("imageSource"),license=article.optString("imageLicenseUrl");if(isGenericMatchCover(article,article.optString("imageUrl"))){
+ public static TextView credit(Activity a,JSONObject article){TextView t=new TextView(a);String credit=article.optString("imageCredit"),caption=article.optString("imageCaption"),source=article.optString("imageSource"),license=article.optString("imageLicenseUrl");if(!ArticleArtwork.approved(article)&&isGenericMatchCover(article,article.optString("imageUrl"))){
   credit="Veldio · illustratie in de clubkleuren";caption="";source="";license="";
  }String text=(caption.isEmpty()?"":caption+"\n")+credit;
   SpannableString linked=new SpannableString(text+(source.startsWith("https://")?" · Bron":"")+(license.startsWith("https://")?" · Licentie":""));

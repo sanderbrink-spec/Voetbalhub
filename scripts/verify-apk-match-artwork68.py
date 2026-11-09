@@ -11,14 +11,13 @@ if len(sys.argv) != 2:
 root = Path(__file__).resolve().parents[1]
 rows = json.loads((root / "image-library49.json").read_text(encoding="utf-8"))["assets"]
 approved = [a for a in rows if a["approval"] == "approved"
-            and a["file"].startswith("public/match-rotations65/")
-            and len(a["clubs"]) == 2
+            and a["file"].startswith(("public/match-rotations65/", "public/article-art69/"))
             and a["rights"] == "original-ai"]
 if len(approved) < 10:
     raise SystemExit(f"Not enough reviewed original images: {len(approved)}")
 with zipfile.ZipFile(sys.argv[1]) as apk:
     for asset in approved:
-        name = "assets/match-rotations65/" + Path(asset["file"]).name
+        name = "assets/" + asset["file"].removeprefix("public/")
         try:
             content = apk.read(name)
         except KeyError as exc:

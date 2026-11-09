@@ -134,7 +134,7 @@ test('partial outages keep discovery running without AI calls or article writes 
  assert.equal(calls.some(([url,method])=>method==='POST'||url.includes('api.groq.com')),false);
 });
 
-test('archived official cup evidence reaches the non-bootstrap writer and the public feed',async()=>{
+test('archived official cup evidence reaches the writer but publication waits for matching artwork',async()=>{
  const {fingerprint}=require('../editorial-drafts');
  const {candidate,draft,sourceUrls}=require('../automatic-bootstrap.json').find(entry=>entry.key==='hoek-az-bekerprogramma-2026-11-06');
  const config=require('../automatic-editorial.json');
@@ -182,14 +182,19 @@ test('archived official cup evidence reaches the non-bootstrap writer and the pu
   if(index)return new Response(pages.filter(page=>new URL(page.url).hostname===new URL(url).hostname).map(page=>'<a href="'+page.url+'">Bekerprogramma</a>').join(''));
   return new Response(null,{status:404});
  }});
- assert.equal(report.status,'completed',JSON.stringify(report));
- assert.deepEqual([report.counts.selected,report.counts.generated,report.counts.stored,report.counts.published],[1,1,1,1]);
+ assert.equal(report.status,'no_new_verified_articles',JSON.stringify(report));
+ assert.equal(report.skipped.find(item=>item.stage==='artwork')?.reason,'Geen passend goedgekeurd artikelbeeld beschikbaar.');
+ assert.deepEqual([report.counts.selected,report.counts.generated,report.counts.stored,report.counts.published],[1,1,0,0]);
  assert.equal(report.sources.gdelt.status,'unavailable');
  assert.equal(report.assessments[0].threshold,85);
  assert.equal(modelResponses.length,0);
 });
 
-for(const hasHalf of [true,false])test('registered match uses compact format with halftime='+hasHalf+' during source outage and recovers legacy queue once',async()=>{
+for(const hasHalf of [true,false])test('registered match uses compact format with halftime='+hasHalf+' during source outage and recovers legacy queue once',async t=>{
+ const library=require('../image-library49');
+ const rows=library.catalog();
+ const example=rows.find(asset=>asset.id==='groningen43');
+ t.mock.method(library,'catalog',()=>[...rows,{...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV']}]);
  const {fingerprint}=require('../editorial-drafts');
  const config=require('../automatic-editorial.json');
  const match={

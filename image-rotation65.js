@@ -1,63 +1,90 @@
 'use strict';
-// Conservative image variation: approved, file-hash-checked library entries only.
-// No football artwork may be reused for an unrelated pair of teams.
-const crypto = require('node:crypto');
-const library = require('./image-library49');
-const ORIGIN = 'https://voetbalhub-redactie.onrender.com';
-const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
-const hash = value => parseInt(crypto.createHash('sha256').update(String(value)).digest('hex').slice(0,8),16);
 
-function kind(article) {
- const k = String(article.articleKind || article.imageCategory || '').toLowerCase();
- if (['match_report','score_update','report'].includes(k)) return 'report';
- if (['preview','match_preview'].includes(k)) return 'preview';
- if (article.match) return 'report';
- return library.context(article).category;
+const library = require('./image-library49');
+const reviewed = require('./article-image-migration69.json');
+const {contentHash} = require('./article-covers');
+const reviewFor = article => reviewed[article.id] || reviewed[contentHash(article)];
+const METHOD = 'approved-article-v69';
+const MATCH_CATEGORIES = ['report','preview','match-analysis','recap'];
+const normalize = value => {
+  const key = String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  return key === 'azalkmaar' ? 'az' : key;
+};
+
+function context(article) {
+  const legacy = reviewFor(article);
+  const source = article.fixture || article.match || {};
+  const clubs = source.homeTeam && source.awayTeam ? [source.homeTeam, source.awayTeam] : legacy?.clubs || [];
+  const requested = article.imageCategory || article.articleKind;
+  const explicit = requested === 'analysis' && clubs.length === 2 ? 'match_analysis' : requested;
+  const fixtureAnnouncement = /\b(?:bekerduel|competitieduel|wedstrijd|duel)\b.*\b(?:datum|verplaatst|aftrap|speelschema)\b/i.test(article.headline || '');
+  const category = legacy?.category || (article.type === 'column' ? 'column' :
+    ({match_report:'report', score_update:'report', match_preview:'preview', match_analysis:'match-analysis', recap:'recap'})[explicit] ||
+    (library.categories.includes(explicit) ? explicit : clubs.length === 2 ? 'report' : fixtureAnnouncement ? 'preview' : library.context(article).category));
+  return {category, clubs:MATCH_CATEGORIES.includes(category) ? clubs : [], fixtureId:article.matchId || '', competition:article.category || '',
+    daypart:library.daypart(legacy?.kickoff && (!legacy.matchId || legacy.matchId === article.matchId) ? legacy.kickoff : source), ...(legacy?.venueId ? {venueId:legacy.venueId} : {})};
 }
-function isProtected(article) {
- if (article.imageRights === 'licensed') return true;
- if (article.imageReview?.contentHash) return true;
- // A manually reviewed image must not be displaced by automatic rotation.
- if (article.imageReview?.reviewedAt && article.imageReview?.method !== 'approved-library49') return true;
- return false;
+
+function eligible(article, rows = library.catalog(), ctx = context(article)) {
+  const ids = new Set();
+  const legacy = reviewFor(article);
+  const matches = MATCH_CATEGORIES.includes(ctx.category);
+  if (legacy?.exclude || (matches && ctx.clubs.length !== 2)) return [];
+  return rows.filter(asset => asset.approval === 'approved' && asset.reviewer && asset.sha256 && asset.rightsEvidence &&
+    (['original-ai','original-vector'].includes(asset.rights) ||
+      (asset.rights === 'licensed' && asset.credit && asset.source && /^https:\/\//.test(asset.licenseUrl))) &&
+    (asset.categories.includes(ctx.category) || legacy?.approvedAsset === asset.id) &&
+    (!asset.fixtureId || asset.fixtureId === ctx.fixtureId) &&
+    (!asset.competitions.length || asset.competitions.includes(ctx.competition)) &&
+    (asset.daypart === 'neutral' || asset.daypart === ctx.daypart) &&
+    (!asset.venueId || asset.venueId === ctx.venueId) &&
+    (matches ? asset.clubs.length === 2 && asset.clubs.every((club,i) => normalize(club) === normalize(ctx.clubs[i])) :
+      !asset.fixtureId && !asset.clubs.length) &&
+    !asset.file.startsWith('public/match-covers64/'))
+    .sort((a,b) => Number(Boolean(b.fixtureId)) - Number(Boolean(a.fixtureId)) ||
+      (Date.parse(b.approvedAt) || 0) - (Date.parse(a.approvedAt) || 0) || a.id.localeCompare(b.id))
+    .filter(asset => { if (ids.has(asset.sha256)) return false; ids.add(asset.sha256); return true; }).slice(0,6);
 }
-function eligible(article, rows = library.catalog()) {
- if (!article || article.status !== 'published' || /^column$/i.test(String(article.type || '')) ||
-     /^(column|de derde helft)$/i.test(String(article.category || ''))) return [];
- const match = article.match;
- const isMatch = Boolean(match?.homeTeam && match?.awayTeam);
- const category = kind(article);
- if (isMatch && !['preview','report'].includes(category)) return [];
- if (!isMatch && (!library.categories.includes(category) || category === 'quiz' || category === 'neutral')) return [];
- const ctx = library.context(article);
- return rows.filter(asset => {
-  if (asset.approval !== 'approved' || !['original-ai','original-vector','licensed'].includes(asset.rights) ||
-      !asset.reviewer || !asset.sha256 || !asset.rightsEvidence || !asset.categories.includes(category)) return false;
-  if (asset.competitions?.length && !asset.competitions.includes(article.category)) return false;
-  if (asset.fixtureId && asset.fixtureId !== article.matchId) return false;
-  // Only a verified kick-off and venue can justify a daypart-specific image.
-  if (asset.daypart !== 'neutral' && asset.daypart !== ctx.daypart) return false;
-  if (isMatch) return asset.clubs?.length === 2 &&
-   normalize(asset.clubs[0]) === normalize(match.homeTeam) &&
-   normalize(asset.clubs[1]) === normalize(match.awayTeam);
-  // Non-match pieces may rotate only category-neutral, not match-branded artwork.
-  return Array.isArray(asset.clubs) && asset.clubs.length === 0 && !asset.fixtureId;
- }).sort((a,b) => Number(Boolean(b.fixtureId)) - Number(Boolean(a.fixtureId)) || a.id.localeCompare(b.id)).slice(0,6);
+
+function assetFields(asset) {
+  const fields = library.fields(asset);
+  if (asset.rights !== 'licensed') return {...fields, imageCredit:'Veldio'};
+  return {...fields, imageRights:'licensed', imageCredit:asset.credit, imageSource:asset.source, imageLicenseUrl:asset.licenseUrl};
 }
-function present(article, {round = 0, rows} = {}) {
- if (isProtected(article)) return article;
- const options = eligible(article, rows);
- if (!options.length) return article;
- const selectedIndex = ((Math.trunc(round) || 0) + hash(article.id || article.headline || '') % options.length) % options.length;
- const asset = options[selectedIndex < 0 ? selectedIndex + options.length : selectedIndex];
- const fields = library.fields(asset);
- return {
-  ...article, ...fields,
-  imageVariants: options.map(item => ({id:item.id, url:ORIGIN + '/' + item.file.slice(7), caption:item.caption})),
-  imageRotation: {method:'approved-exact-topic-v65',count:options.length,slot:selectedIndex + 1,maximum:6},
-  imageCaption: asset.caption,
-  imageReview: {...fields.imageReview, generated:asset.rights === 'original-ai', noDocumentaryClaim:true,
-   rotationPolicy:'exact-team-pair-or-neutral-topic', rotationVersion:65}
- };
+
+function resolve(article, {rows} = {}) {
+  const ctx = context(article);
+  const options = eligible(article, rows, ctx);
+  const reason = options.length ? (ctx.clubs.length ? 'ordered-fixture' : 'exact-topic') :
+    reviewFor(article)?.exclude || 'Geen goedgekeurd passend artikelbeeld';
+  const assignment = {version:69, state:options.length ? 'approved' : 'unpublished_image_quality',
+    context:ctx, assetIds:options.map(asset => asset.id), reason};
+  if (!options.length) return {assignment, article:null};
+  const {imageAsset, imageLicenseUrl, imageVariants, imageRotation, ...content} = article;
+  const selected = options[0];
+  const fields = assetFields(selected);
+  return {assignment, article:{...content, ...fields, imageCaption:selected.caption,
+    imageVariants:options.map(asset => {
+      const variant = assetFields(asset);
+      return {id:asset.id, url:variant.imageUrl, caption:asset.caption, credit:variant.imageCredit, source:variant.imageSource,
+        rights:variant.imageRights, licenseUrl:variant.imageLicenseUrl, review:variant.imageReview};
+    }),
+    imageRotation:{method:METHOD, count:options.length, maximum:6, selectedId:selected.id, context:ctx, reason}}};
 }
-module.exports = {eligible,present,kind,isProtected,normalize};
+
+async function migrate(client, articles) {
+  const key = 'editorial:article-image-assignments:v69';
+  const previous = await client.hGetAll(key);
+  const changes = Object.create(null);
+  const visible = [];
+  for (const article of articles) {
+    const result = resolve(article);
+    const encoded = JSON.stringify(result.assignment);
+    if (previous[article.id] !== encoded) changes[article.id] = encoded;
+    if (result.article) visible.push(result.article);
+  }
+  if (Object.keys(changes).length) await client.hSet(key, changes);
+  return visible;
+}
+
+module.exports = {eligible, resolve, migrate, context, assetFields};

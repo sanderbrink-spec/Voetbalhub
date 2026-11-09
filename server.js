@@ -5,11 +5,11 @@ const runtime = require("./runtime-health");
 const { createClient } = require("redis");
 const { auditClaims, editorialQuality, headlineContradictions } = require("./editorial-quality");
 const { normalizeEditorialResponse } = require("./editorial-response");
-const { readCover, withArticleCover } = require("./article-covers");
+const { readCover } = require("./article-covers");
 
 const PORT = Number(process.env.PORT || 10000);
 let imageGenerationInProgress = false;
-let imagePresentationCycle65 = 0;
+const articleImages = require("./image-rotation65");
 const API_SECRET = process.env.HUB_API_SECRET || "";
 const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const editorialRouter=require("./editorial-provider-router").createRouter();
@@ -273,16 +273,8 @@ async function getArticles(view = "current") {
   if (!client?.isReady) throw new Error("REDIS_UNAVAILABLE");
   const keys = await client.keys("article:*");
   const candidates=await require("./article-storage").readPublished(client,keys);
-  const articles=[];
-  for (const article of candidates) {
-    try {
-      const decorated = require("./media43").apply(require("./brand").article(withArticleCover(article)));
-      articles.push(require("./image-library49").applyFixtureCover(decorated));
-    } catch (error) {
-      console.error("Article presentation failed:", article.id, error.message);
-    }
-  }
-  articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
+  const visible = await articleImages.migrate(client, candidates);
+  const articles = visible.map(article => require("./brand").article(article));
   return require("./feed-policy").selectFeed(articles, {view});
 }
 const football47=require("./football-data47").create({redis:client});
@@ -329,13 +321,8 @@ async function handle(req, res) {
     const key=url.searchParams.get('competition')||'eredivisie';
     try{return send(res,200,await (url.searchParams.get("view")==="veldio50"?(key==="eredivisie"?football47.overview():football47.getSelected(key)):football47.get(key)));}catch{return send(res,400,{error:'Onbekende competitie.'});}
   }
-  if(req.method==="GET"&&url.pathname==="/beeldcollectie"){
-    const escapeHtml=value=>String(value||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-    const approved=require("./image-library49").catalog().filter(a=>a.file.startsWith("public/match-rotations65/")&&a.clubs.length===2);
-    const tiles=approved.map(a=>'<figure><img loading="lazy" src="/'+escapeHtml(a.file.slice(7))+'" alt="'+escapeHtml(a.caption)+'"><figcaption><strong>'+escapeHtml(a.subject)+'</strong><small>Originele AI-illustratie · '+escapeHtml(a.daypart==='night'?'avond':a.daypart==='twilight'?'schemering':a.daypart==='day'?'dag':'neutraal')+'</small></figcaption></figure>').join('');
-    res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Content-Security-Policy":"default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; base-uri 'none'"});
-    return res.end('<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Veldio · Wedstrijdbeelden</title><style>*{box-sizing:border-box}body{margin:0;background:#07100b;color:#f0f6f2;font:16px system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:20px}h1{font-size:26px;color:#c0ff66}p{color:#becdc2;line-height:1.5}section{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}figure{margin:0;background:#101c15;border:1px solid #365044;border-radius:14px;overflow:hidden}img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}figcaption{padding:12px 14px}strong,small{display:block}small{color:#b3c1b7;font-size:12px;margin-top:5px}</style><main><h1>Veldio wedstrijdbeelden</h1><p>Deze '+approved.length+' goedgekeurde originele AI-illustraties zijn ontwerpbeelden, geen foto’s of uitslagen van gespeelde wedstrijden. Bij artikelen verschijnt een beeld uitsluitend wanneer de clubs en omstandigheden overeenkomen.</p><section>'+tiles+'</section></main></html>');
-  }
+  if (req.method === "GET" && url.pathname === "/beeldcollectie")
+    return send(res, 410, {error:"De illustraties verschijnen bij Veldio-artikelen."});
   if(require("./image-library49").serve(req,res,url.pathname))return;
   if(require("./media43").serve(req,res,url.pathname))return;
   if(await quizHandler(req,res))return;
@@ -402,7 +389,7 @@ async function handle(req, res) {
       gitBranch: process.env.RENDER_GIT_BRANCH || null,
       deploymentVerified: Boolean(process.env.RENDER_GIT_COMMIT),
       sourcePolicy: "trusted-three-sources",
-      automaticImagePublication: "reviewed_match_covers",
+      automaticImagePublication: "approved-article-v69",
       autoPublishing: false
     });
   }
@@ -452,9 +439,8 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       const id = url.searchParams.get("id");
       const feed = await runtime.withDeadline(() => getArticles(view), 9000);
       const articles = id ? feed.filter(article => article.id === id) : feed;
-       const rotation = imagePresentationCycle65++ % 6;
-       const presented = articles.map(article => require("./image-rotation65").present(article, {round:rotation}));
-      res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1)); return send(res, 200, view === "all" ? {count:presented.length,articles:presented} : require("./feed-policy").articleEnvelope(presented)); }
+      res.setHeader("Server-Timing","articles;dur="+(Date.now()-started).toFixed(1));
+      return send(res, 200, {...require("./feed-policy").articleEnvelope(articles), imagePolicyVersion:69}); }
     catch { return send(res, 503, { error: "Artikelen tijdelijk niet beschikbaar. Probeer het later opnieuw." }); }
   }
   if (req.method === "GET" && url.pathname === "/editorial-drafts") {
@@ -831,30 +817,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (body.approved !== true) return send(res, 400, { error: "Expliciete goedkeuring ontbreekt." });
     const id = typeof body.articleId === "string" ? body.articleId.trim() : "";
     if (!/^[0-9a-f-]{36}$/i.test(id)) return send(res, 400, { error: "Ongeldig artikel-ID." });
-    const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim() : "";
-    const imageSource = typeof body.imageSource === "string" ? body.imageSource.trim() : "";
-    const imageCredit = typeof body.imageCredit === "string" ? body.imageCredit.trim() : "";
-    const imageRights = body.imageRights;
-    const review = body.imageReview || {};
-    if (imageUrl.length > 1000 || imageSource.length > 300 || imageCredit.length > 200 ||
-        !/^https:\/\//i.test(imageUrl) || !imageSource || !imageCredit ||
-        !["cleared","licensed"].includes(imageRights) ||
-        review.kitVerified !== true || review.playerIdentityVerified !== true ||
-        review.aiDisclosureVerified !== true)
-      return send(res, 400, { error: "Controleer afbeeldingslink, bron, credits, rechten, tenues, spelers en AI-vermelding." });
-    const key = "article:" + id;
-    const raw = await client.get(key);
-    if (!raw) return send(res, 404, { error: "Artikel niet gevonden." });
-    let article;
-    try { article = JSON.parse(raw); } catch { return send(res, 500, { error: "Artikelgegevens ongeldig." }); }
-    if (article.status !== "published" || article.id !== id) return send(res, 404, { error: "Gepubliceerd artikel niet gevonden." });
-    article.imageUrl = imageUrl;
-    article.imageSource = imageSource;
-    article.imageCredit = imageCredit;
-    article.imageRights = imageRights;
-    article.imageReview = { ...review, reviewedAt: new Date().toISOString() };
-    await client.set(key, JSON.stringify(article));
-    return send(res, 200, { updated: true, article: { id: article.id, headline: article.headline, imageUrl: article.imageUrl } });
+    return send(res, 409, {error:"Keur het bestand en de onderwerpcontext goed in de centrale beeldcatalogus."});
   }
   if (url.pathname === "/publish") {
     if (!client?.isReady) return send(res, 503, { error: "Opslag niet verbonden. Controleer REDIS_URL en de Redis-verbinding in Render." });
@@ -876,8 +839,9 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       return send(res,400,{error:"Automatische publicatie vereist een goedgekeurd concept."});
     const automaticIssue = await automaticEvidenceIssue(body);
     if (automaticIssue) return send(res,400,{error:automaticIssue});
-    // Reviewed match artwork travels with automatic and manual publication alike.
-    body=withArticleCover(body);
+    const cover = articleImages.resolve({...body, ...body.draft}).article;
+    if (cover) body = {...body, imageUrl:cover.imageUrl, imageSource:cover.imageSource,
+      imageCredit:cover.imageCredit, imageRights:cover.imageRights, imageReview:cover.imageReview};
     let feedLifecycle;
     try { feedLifecycle = require("./feed-policy").publicationLifecycle(body.feedLifecycle); }
     catch(error) { return send(res,400,{error:error.message}); }
@@ -923,10 +887,11 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         return send(res, 409, { error: "Dubbele publicatie geblokkeerd: een vrijwel identiek artikel bestaat al.", existingArticleId: existing.id });
       }
     }
+    if (!cover) return send(res, 422, {error:"Publicatie geblokkeerd: geen passend goedgekeurd artikelbeeld."});
     const compactVerified = reviewedDraft && publishBody.length < 3 && imageUrl &&
       (body.matchId || require("./editorial-desk-model").briefEligible(body));
     const now = new Date().toISOString();
-    const article = { ...(compactVerified ? {compactVerified:true} : {}), ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? publicationId(reviewedDraft) : crypto.randomUUID(), ...(body.matchId ? {matchId:body.matchId, articleKind:body.articleKind} : {}), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
+    const article = { ...(compactVerified ? {compactVerified:true} : {}), ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? publicationId(reviewedDraft) : crypto.randomUUID(), ...(body.matchId ? {matchId:body.matchId} : {}), ...(body.articleKind ? {articleKind:body.articleKind} : {}), ...(body.imageCategory ? {imageCategory:body.imageCategory} : {}), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
     const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
     if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
     if(reviewedDraft) { try {await require("./editorial-drafts").markPublished(client,reviewedDraft,article.id);} catch {console.warn("Published article retained; draft status update deferred.");} }
@@ -941,6 +906,7 @@ async function start() {
       require("./editorial-revisions64").apply(client, async () =>
         (await football47.get("eredivisie")).fixtures || []
       ).catch(error => console.error("Editorial revisions 64 could not run:", error.message));
+      getArticles("all").catch(error => console.error("Article image migration:", error.message));
     });
     client.connect().then(() => console.log("Redis connected"))
       .catch(() => console.error("Redis connection unavailable; background reconnect enabled."));

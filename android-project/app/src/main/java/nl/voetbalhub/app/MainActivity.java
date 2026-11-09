@@ -294,11 +294,6 @@ public class MainActivity extends AppCompatActivity {
         content.removeAllViews();contactView=new ContactView(this,contactDraft,this::onBackPressed,EDITORIAL_API_URL);content.addView(contactView,new android.widget.FrameLayout.LayoutParams(-1,-1));
     }
 
-    /** Native gallery shares the same ten reviewed assets with the real landing screen. */
-    private View matchArtworkPreview67() {
-        return MatchArtworkGallery68.preview(this,false);
-    }
-
     private void showNews() {
         final String category=active;enterScreen("news:"+category,()->{active=category;buildChips();showNews();});
         personalHubVisible = false; personalHub = null;
@@ -326,8 +321,6 @@ public class MainActivity extends AppCompatActivity {
             list.addView(new FeedPanel(this,active,false,this::showEditorialArticle,0,3));
             list.addView(new MatchStrip40(this,()->showDestination39("fixtures")),
                     new LinearLayout.LayoutParams(-1,dp(142)));
-            list.addView(sectionHeader("Nieuwe Veldio wedstrijdbeelden","BEKIJK ALLE 10",()->MatchArtworkGallery68.open(this)));
-            list.addView(matchArtworkPreview67());
             list.addView(sectionHeader("Laatste voetbalnieuws","ALLE NIEUWS",()->{
                 active="Laatste nieuws";buildChips();showNews();
             }));
@@ -1112,12 +1105,8 @@ private void showScores() {
 
     private void showEditorialArticle(org.json.JSONObject article) {
         Branding.article(article);
-        // Preload a new server-approved variant for the next open, without changing
-        // the currently displayed article or triggering an uncontrolled refresh loop.
-        if (article.optJSONObject("imageRotation") != null) {
-            FeedRepository.configure(this, EDITORIAL_API_URL);
-            FeedRepository.refresh(true);
-        }
+        if (!ArticleArtwork.approved(article)) return;
+        ArticleArtwork.recordOpen(this, article);
         screenHistory.resetExit();
         if (homeFeature != null) homeFeature.pauseVideo();
         if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
@@ -1157,7 +1146,7 @@ private void showScores() {
         try {dateLabel = java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy · HH:mm", new java.util.Locale("nl","NL")).withZone(java.time.ZoneId.of("Europe/Amsterdam")).format(java.time.Instant.parse(published));} catch(Exception ignored) {}
         int words = 0;org.json.JSONArray readBody = article.optJSONArray("body");if(readBody!=null)for(int i=0;i<readBody.length();i++)words+=readBody.optString(i, "").trim().split("\\s+").length;
         TextView metadata = tv((dateLabel.isEmpty()?"":dateLabel+" · ")+Math.max(1,(words+199)/200)+" min leestijd", 11, C.MUTED, false);metadata.setPadding(0,0,0,dp(10));page.addView(metadata);
-        if (!isColumnReader) {
+        {
             android.widget.ImageView cover = new android.widget.ImageView(this) {
                 @Override protected void onMeasure(int widthSpec, int heightSpec) {
                     int width = MeasureSpec.getSize(widthSpec);
@@ -1221,7 +1210,7 @@ private void showScores() {
         editorialDialog = new android.app.Dialog(this);
         editorialDialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
         editorialDialog.setContentView(root);
-        editorialDialog.setOnDismissListener(dialog -> { editorialArticleOpen = false; editorialDialog = null;if(personalHub!=null)personalHub.refreshSaved(); });
+        editorialDialog.setOnDismissListener(dialog -> { editorialArticleOpen = false; editorialDialog = null;FeedRepository.artworkChanged();if(personalHub!=null)personalHub.refreshSaved(); });
         editorialDialog.show();
         scroll.requestFocus();
         android.view.Window articleWindow = editorialDialog.getWindow();

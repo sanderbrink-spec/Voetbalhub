@@ -50,7 +50,7 @@ test('provider failures do not blindly retry; visually repeated images fail clos
 });
 test('automatic covers use approved library metadata without a paid call',async()=>{
  const {uploadCover}=require('../scripts/automatic-publication');
- const image=await uploadCover(article,{token:'test',fetcher:()=>{throw Error('No network for library selection');}});
+ const image=await uploadCover({articleKind:'transfer',draft:{headline:'Club rondt transfer af'}},{token:'test',fetcher:()=>{throw Error('No network for library selection');}});
  assert.equal(image.imageReview.mode,'approved-library');assert.equal(image.imageRights,'cleared');
 });
 
