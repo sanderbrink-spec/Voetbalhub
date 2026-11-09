@@ -1104,11 +1104,13 @@ private void showScores() {
         TextView larger = tv("A+", 17, C.TEXT, true); larger.setGravity(Gravity.CENTER); tools.addView(larger, new LinearLayout.LayoutParams(dp(44),dp(44)));larger.setContentDescription("Grotere artikeltekst");
         android.view.View.OnClickListener resize = v -> {int size = Math.max(15, Math.min(23, prefs.getInt("readerFontSize",17) + (v == larger ? 1 : -1)));prefs.edit().putInt("readerFontSize",size).apply();for(TextView paragraph : readingText)paragraph.setTextSize(size);};smaller.setOnClickListener(resize);larger.setOnClickListener(resize);
         TextView share = tv("Delen", 12, C.MUTED, true);share.setGravity(Gravity.CENTER);tools.addView(share,new LinearLayout.LayoutParams(dp(52),dp(44)));share.setOnClickListener(v -> {Intent send = new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_SUBJECT,article.optString("headline"));send.putExtra(Intent.EXTRA_TEXT,article.optString("headline")+"\n\n"+article.optString("standfirst")+"\n\nVeldio · Alles voetbal. Eén plek.");try{startActivity(Intent.createChooser(send,"Artikel delen"));}catch(Exception ignored){}});
-        VeldioEditorial.styleTools(this, tools); LinearLayout.LayoutParams toolsLp=new LinearLayout.LayoutParams(-1,-2);toolsLp.setMargins(dp(12),dp(8),dp(12),dp(6));root.addView(tools,toolsLp);
+        VeldioEditorial.styleTools(this, tools); LinearLayout.LayoutParams toolsLp=new LinearLayout.LayoutParams(-1,-2);toolsLp.setMargins(0,dp(6),0,dp(14));
         ScrollView scroll = new ScrollView(this);
         LinearLayout page = new LinearLayout(this);
         page.setOrientation(LinearLayout.VERTICAL);
         page.setPadding(dp(16), dp(8), dp(16), dp(28));
+        // Reader actions scroll with the article. No text can be hidden behind a fixed bar.
+        page.addView(tools,toolsLp);
         boolean isColumnReader = "column".equalsIgnoreCase(article.optString("type", "")) ||
             "de derde helft".equalsIgnoreCase(article.optString("category", ""));
         if (isColumnReader) {
