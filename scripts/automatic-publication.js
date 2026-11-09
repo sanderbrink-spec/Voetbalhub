@@ -8,7 +8,7 @@ const {fingerprint}=require('../editorial-drafts');
 const config=require('../automatic-editorial.json');
 const bootstrap=require('../automatic-bootstrap.json');
 const production=require('../editorial-production45');
-const {createRouter,sealCheckpoint,openCheckpoint}=require('../editorial-provider-router');
+const {createRouter,sealCheckpoint,openCheckpoint,ProviderUnavailable}=require('../editorial-provider-router');
 const matches=require('../editorial-match55');
 const matchGuidance=require('../editorial-match-guidance133');
 // Match reports with verified goal timelines need the full article format.
@@ -793,6 +793,13 @@ function reopenObservedMatchCopyFailure(job,now){
  job.aiMatchCopyRecovery=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
  return true;
 }
+function reusableCheckpointPriority(job,group,secret,now=Date.now()){
+ const prior=openCheckpoint(job?.checkpoint,secret,job?.id);
+ if(!prior||prior.expiresAt<=now)return 0;
+ const evidenceHash=sha(JSON.stringify(group.map(d=>({url:d.url,text:d.text,publishedAt:d.publishedAt}))));
+ if(prior.evidenceHash!==evidenceHash)return 0;
+ return prior.draft?2:prior.candidate?1:0;
+}
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,providerRouter,report,focusSourceUrl,expectedRevision=process.env.GITHUB_SHA}={}){
  if(focusSourceUrl&&!articleUrl(focusSourceUrl,config.newsIndexes))throw Error('Ongeldige gerichte nieuwsbron.');
  if(focusSourceUrl)report.focusSourceUrl=focusSourceUrl;
@@ -1072,7 +1079,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.modelPolicy={extraction:'low',writing:'medium',revision:'high',review:'high'};
  const priorHashes=published.filter(a=>a.imageReview?.mode==='ai-photographic').map(a=>a.imageReview.visualHash).filter(Boolean);
  report.target=limit;report.imageProviderConfigured=Boolean(process.env.OPENAI_API_KEY);
- for(const {group,job} of [...jobs.values()].slice(0,8)){
+ // Resume valid, already-written drafts before spending more provider capacity
+ // on entirely new topics. Freshness and exact evidence hashes remain mandatory.
+ const runnable=[...jobs.values()].sort((a,b)=>
+  reusableCheckpointPriority(b.job,b.group,secret,now)-
+  reusableCheckpointPriority(a.job,a.group,secret,now));
+ for(const {group,job} of runnable.slice(0,8)){
   if(report.published.length>=limit)break;
   const matchRecord=group.matchRecord;
   const route=matchRecord?report.routes.match:report.routes.news;
@@ -1103,6 +1115,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const compact=M.briefEligible({articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,transferStatus:candidate.transferStatus,verifiedFacts:facts,sources});
    report.counts.selected++;route.selected++;
    stage='generation';
+   if(typeof router.hasReviewCapacity==='function'&&!router.hasReviewCapacity()){
+    report.signals.push({route:matchRecord?'match':'news',topic,outcome:'awaiting_reviewer_capacity'});
+    throw new ProviderUnavailable([{provider:'independent_review',reason:'capacity'}],3600);
+   }
    let draft=checkpoint.draft;
    if(!draft&&matchRecord){
     draft=await complete([
@@ -1312,4 +1328,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
