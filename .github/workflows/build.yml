@@ -51,6 +51,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Require matching healthy Render revision before main APK build
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/render-sync-guard.js verify
       - name: Validate models; mobile browser checks already passed on this source
         run: node --test test/subpages46.test.js test/football47.test.js
       - uses: actions/setup-java@v5
