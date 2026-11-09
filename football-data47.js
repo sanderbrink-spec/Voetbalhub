@@ -40,7 +40,7 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
     if(redis?.isReady){
      try{
       const raw=await require('./runtime-health').withDeadline(()=>redis.get('football47:'+key),1500);
-      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&key==='eredivisie'&&value.sourceDetails?.name!=='Sportmonks Football API')){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
+      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&key==='eredivisie'&&(value.sourceDetails?.name!=='Sportmonks Football API'||value.sourceDetails?.eventParserRevision!==136))){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
      }catch{storageFailed=true;}
     }
     if(key==='eredivisie'){

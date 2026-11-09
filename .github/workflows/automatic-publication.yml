@@ -8,6 +8,8 @@ on:
       - 'editorial-match55.js'
       - 'editorial-match-evidence122.js'
       - 'editorial-match-guidance133.js'
+      - 'editorial-recovery136.js'
+      - 'editorial-facts.js'
       - 'automatic-bootstrap.json'
       - 'scripts/automatic-publication.js'
       - 'editorial-ai.js'
