@@ -75,17 +75,7 @@
       "articlePath": "^/articles/[^/]+/?$"
     }
   ],
-  "sourceGroups": [
-    [
-      "https://www.ajax.nl/fans/fc-twente-ajax/",
-      "https://www.ajax.nl/wedstrijden/",
-      "https://fctwente.nl/wedstrijden/eerste-selectie"
-    ],
-    [
-      "https://www.az.nl/inside-az/nieuws/2026/oktober/az-start-nieuw-bekeravontuur-tegen-hsv-hoek",
-      "https://www.eurojackpotknvbbeker.nl/nieuws/eurojackpot-knvb-beker/tweede-ronde-eurojackpot-knvb-beker-ingepland-dit-zijn-de-speeldagen-0"
-    ]
-  ],
+  "sourceGroups": [],
   "qualityThreshold": 85,
   "maxImageRequestsPerRun": 8
 }
