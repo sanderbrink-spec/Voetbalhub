@@ -20,7 +20,16 @@ assert 'PremiumDesign40.polish' in main
 if len(sys.argv)>1:
  apk=Path(sys.argv[1])
  with zipfile.ZipFile(apk) as z:
-  assert set(n for n in z.namelist() if n.startswith('assets/') and not n.endswith('/'))==set(p['assets']), 'APK asset set changed'
+  apk_assets=set(n for n in z.namelist() if n.startswith('assets/') and not n.endswith('/'))
+  expected_assets=set(p['assets'])
+  additional_assets=apk_assets-expected_assets
+  missing_assets=expected_assets-apk_assets
+  # AGP inserts dexopt baseline profiles in signed release APKs; they are generated
+  # Android metadata, not user-controlled premium assets. All premium assets must
+  # still match the approved provenance byte-for-byte.
+  allowed_generated={'assets/dexopt/baseline.prof','assets/dexopt/baseline.profm'}
+  if missing_assets or additional_assets-allowed_generated:
+   raise AssertionError(f'APK asset set changed; missing={sorted(missing_assets)}, extra={sorted(additional_assets)}')
   for name,sha in p['assets'].items():assert digest(z.read(name))==sha, f'APK asset mismatch: {name}'
  p.update(source_commit=os.environ.get('GITHUB_SHA','local'),apk_sha256=digest(apk.read_bytes()),legacy_archive_fallback=False)
  Path('Veldio-build-provenance.json').write_text(json.dumps(p,indent=2)+'\n')
