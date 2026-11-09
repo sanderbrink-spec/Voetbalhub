@@ -1105,6 +1105,12 @@ private void showScores() {
 
     private void showEditorialArticle(org.json.JSONObject article) {
         Branding.article(article);
+        // Preload a new server-approved variant for the next open, without changing
+        // the currently displayed article or triggering an uncontrolled refresh loop.
+        if (article.optJSONObject("imageRotation") != null) {
+            FeedRepository.configure(this, EDITORIAL_API_URL);
+            FeedRepository.refresh(true);
+        }
         screenHistory.resetExit();
         if (homeFeature != null) homeFeature.pauseVideo();
         if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
