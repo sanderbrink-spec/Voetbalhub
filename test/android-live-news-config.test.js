@@ -34,8 +34,8 @@ test('Signed Android build version and source checksums match current package',(
  }
  assert.match(gradle,/versionCode\s*=\s*96/);
  assert.match(gradle,/versionName\s*=\s*"4\.56"/);
- assert.match(workflow,/versionCode='96'\.\*versionName='4\.56'/);
- assert.match(workflow,/name: Veldio-56/);
+ assert.match(workflow,/versionCode='97'\.\*versionName='4\.56'/);
+ assert.match(workflow,/name: Veldio-57/);
 });
 
 test('Nieuws is de startpagina en behoudt alle redactionele artikelen',()=>{
