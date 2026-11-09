@@ -3,6 +3,7 @@
 const DAY = new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Amsterdam'});
 const OPEN = 'https://github.com/openfootball/football.json';
 const FD = 'https://www.football-data.org/';
+const SM = 'https://www.sportmonks.com/football-api/';
 const {CREDIT} = require('./football-results52');
 const {sourceBody} = require('./football-data47');
 const EURO = require('./match-selection50');
@@ -13,7 +14,8 @@ function candidate(fixture, now) {
  const kickoff = Date.parse(fixture.date);
  const {home, away} = fixture.goals || {};
  const championsLeague = fixture.competition === 'championsleague' && /^fd-cl-\d+$/.test(fixture.id);
- if (!(championsLeague || fixture.competition === 'eredivisie' && /^of-nl-\d{4}-[a-z0-9-]+$/.test(fixture.id)) ||
+ const sportmonks = fixture.competition === 'eredivisie' && /^sm-\d+$/.test(fixture.id) && fixture.resultSource === 'Sportmonks Football API';
+ if (!(championsLeague || sportmonks || fixture.competition === 'eredivisie' && /^of-nl-\d{4}-[a-z0-9-]+$/.test(fixture.id)) ||
      fixture.status !== 'FT' ||
      !(kickoff < now && now - kickoff <= MAX_AGE_MS) ||
      !fixture.home?.name || !fixture.away?.name || ![home, away].every(validScore)) return null;
@@ -35,8 +37,16 @@ function candidate(fixture, now) {
   category + ', ' + round.toLowerCase() + ', gespeeld op ' + match.playedAt + '.'
  ];
  if (hasHalf) verifiedFacts.push('Ruststand ' + half.home + '-' + half.away + '.');
- const sources = [{url:supplemented ? FD : OPEN}];
- const articleKind = hasHalf ? 'match_report' : 'score_update';
+ const timeline=sportmonks&&Array.isArray(fixture.goalTimeline)&&fixture.goalTimeline.length===home+away&&home+away>=2?fixture.goalTimeline:[];
+ if(timeline.length){
+  for(const event of timeline){
+   const time=String(event.minute)+(event.extra?'+'+event.extra:'');
+   const label=event.kind==='own_goal'?'een eigen doelpunt van ':event.kind==='penalty'?'een benutte strafschop van ':'een doelpunt van ';
+   verifiedFacts.push('Volgens de Sportmonks-wedstrijdregistratie viel in minuut '+time+' '+label+event.player+', waarna de stand '+event.home+'-'+event.away+' was.');
+  }
+ }
+ const sources = [{url:sportmonks?SM:supplemented?FD:OPEN}];
+ const articleKind = hasHalf||timeline.length>=2 ? 'match_report' : 'score_update';
  return {topic, category, matchId:fixture.id, match, verifiedFacts, sources, articleKind,
   publishedAt:fixture.date, factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}};
 }
@@ -97,4 +107,4 @@ function europeanRegistry({fetcher = fetch, token, clock = Date.now} = {}) {
   } finally { inFlight = null; }
  };
 }
-module.exports = {candidate, matchesRegistration, europeanRegistry, MAX_AGE_MS, OPEN, FD};
+module.exports = {candidate, matchesRegistration, europeanRegistry, MAX_AGE_MS, OPEN, FD, SM};
