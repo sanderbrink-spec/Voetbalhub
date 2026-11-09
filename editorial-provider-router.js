@@ -2,6 +2,7 @@
 const crypto=require('node:crypto');
 const MODELS=Object.freeze({groq:'openai/gpt-oss-120b',openai:'gpt-4.1-mini',gemini:'gemini-2.5-pro',openrouter:'openai/gpt-oss-120b:free'});
 const TASKS=Object.freeze({extraction:{budget:2400,effort:'low'},writing:{budget:3600,effort:'medium'},revision:{budget:4200,effort:'high'},review:{budget:4200,effort:'high'}});
+const REVIEW_RESERVE=Object.freeze({openai:{requests:6,tokens:40000}});
 const ENDPOINTS={groq:'https://api.groq.com/openai/v1/chat/completions',openai:'https://api.openai.com/v1/chat/completions',gemini:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',openrouter:'https://openrouter.ai/api/v1/chat/completions'};
 // Force paragraph arrays at generation time. Reject incompatible output rather
 // than silently splitting, rewriting or approving unverified AI copy.
@@ -62,8 +63,9 @@ class EditorialProviderRouter{
   return Object.entries(this.keys).some(([provider,key])=>{
    if(!key||(provider==='gemini'&&!this.geminiFreeTierConfirmed))return false;
    const slot=this.slot(provider),limit=this.limits[provider];
-   return slot.blockedUntil<=this.now()&&slot.requests+1<=limit.requests&&
-    slot.tokens+estimatedTokens<=limit.tokens;
+   const reserve=REVIEW_RESERVE[provider]||{requests:0,tokens:0};
+   return slot.blockedUntil<=this.now()&&slot.requests+1<=limit.requests+reserve.requests&&
+    slot.tokens+estimatedTokens<=limit.tokens+reserve.tokens;
   });
  }
  complete(messages,options={}){
@@ -81,8 +83,13 @@ class EditorialProviderRouter{
    if(signal?.aborted)throw signal.reason;
    if(!this.keys[provider]||(provider==='gemini'&&!this.geminiFreeTierConfirmed))continue;
    const slot=this.slot(provider),limit=this.limits[provider],reserve=task==='review'?0:2;
+   // Previously a shared daily 80-request allowance was consumed before any
+   // independent review could run. Keep normal writing/extraction budgets fixed
+   // and allow ONLY review tasks a small, bounded reserve on existing OpenAI.
+   const reviewAllowance=task==='review'?(REVIEW_RESERVE[provider]||{requests:0,tokens:0}):{requests:0,tokens:0};
+   const requestLimit=limit.requests+reviewAllowance.requests,tokenLimit=limit.tokens+reviewAllowance.tokens;
    if(slot.blockedUntil>this.now()){attempts.push({provider,reason:slot.blockReason||'cooldown'});continue;}
-   if(slot.requests+1+reserve>limit.requests||slot.tokens+estimate+(task==='review'?0:10000)>limit.tokens){attempts.push({provider,reason:'capacity'});continue;}
+   if(slot.requests+1+reserve>requestLimit||slot.tokens+estimate+(task==='review'?0:10000)>tokenLimit){attempts.push({provider,reason:'capacity'});continue;}
    if(provider==='openrouter'&&!await this.verifyOpenrouter()){attempts.push({provider,reason:'free_endpoint_unconfirmed'});continue;}
    const wait=Math.max(0,(slot.nextAt||0)-this.now());
    // Long Retry-After delays are persisted, not slept through during a round.
@@ -90,7 +97,7 @@ class EditorialProviderRouter{
    if(wait)await new Promise((resolve,reject)=>{const timer=setTimeout(resolve,wait);signal?.addEventListener('abort',()=>{clearTimeout(timer);reject(signal.reason);},{once:true});});
    let result,kind='temporary',delay=60000,outputShape;
    for(let jsonAttempt=0;jsonAttempt<2;jsonAttempt++){
-    if(slot.requests+1+reserve>limit.requests||slot.tokens+estimate+(task==='review'?0:10000)>limit.tokens){kind='capacity';delay=3600000;break;}
+    if(slot.requests+1+reserve>requestLimit||slot.tokens+estimate+(task==='review'?0:10000)>tokenLimit){kind='capacity';delay=3600000;break;}
     const budget=Math.min(requestOptions.max_completion_tokens||spec.budget,spec.budget);
     let body,headers={'Content-Type':'application/json'};
     if(provider==='gemini'){
