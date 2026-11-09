@@ -21,13 +21,19 @@ public final class EditorialPhotos {
  private EditorialPhotos(){}
  public static boolean safeAsset(String path){return path!=null&&path.matches("news-photos/[a-z0-9-]+\\.webp");}
  public static Bitmap bitmap(Activity activity,JSONObject article,int width){Bitmap approved43=EditorialImages43.bitmap(activity,article,width);if(approved43!=null)return approved43;Bitmap approved42=EditorialIllustrations42.bitmap(activity,article,width);if(approved42!=null)return approved42;if(article.optBoolean("uniqueFallback39"))return TopicArtwork39.bitmap(article,width);String path=article.optString("imageAsset");if(!safeAsset(path))return null;try(InputStream in=activity.getAssets().open(path)){return EditorialBitmap.read(in,width);}catch(Exception ignored){return null;}}
- private static Bitmap bundledArticle(Activity activity, String url, int width) {
+ private static Bitmap bundledArticle(Activity activity, String url, String sha, int width) {
   String origin = "https://voetbalhub-redactie.onrender.com/";
   if (!url.startsWith(origin)) return null;
   String path = url.substring(origin.length());
   if (!path.matches("(match-rotations65|article-art69|news43)/[a-z0-9-]+\\.webp")) return null;
   try (InputStream in = activity.getAssets().open(path)) {
-   return EditorialBitmap.read(in, width);
+   byte[] bytes = BoundedInput.read(in, 2_000_000);
+   byte[] digest = java.security.MessageDigest.getInstance("SHA-256").digest(bytes);
+   StringBuilder actual = new StringBuilder(64);
+   for (byte value : digest) actual.append(Character.forDigit((value >>> 4) & 15, 16))
+       .append(Character.forDigit(value & 15, 16));
+   if (!sha.contentEquals(actual)) return null;
+   return EditorialBitmap.read(new java.io.ByteArrayInputStream(bytes), width);
   } catch (Exception missing) {
    return null;
   }
@@ -43,12 +49,23 @@ public final class EditorialPhotos {
   String url = article.optString("imageUrl"), rights = article.optString("imageRights");
   boolean central = ArticleArtwork.approved(article);
   JSONObject review = article.optJSONObject("imageReview");
-  view.setContentDescription((review != null && review.optBoolean("generated") ? "AI-illustratie bij " :
-   "Afbeelding bij ") + article.optString("headline", "het artikel"));
+  String description = (review != null && review.optBoolean("generated") ? "AI-illustratie bij " :
+   "Afbeelding bij ") + article.optString("headline", "het artikel");
+  view.setContentDescription(central ? null : description);
+  String sha = review == null ? "" : review.optString("assetSha256");
+  String cacheKey = url + "|" + sha + "|" + width;
+  Bitmap cached = CACHE.get(cacheKey);
+  if (cached != null) {
+   view.setImageBitmap(cached);
+   view.setContentDescription(description);
+   return;
+  }
   if (central) {
-   Bitmap bundled = bundledArticle(activity, url, width);
+   Bitmap bundled = bundledArticle(activity, url, sha, width);
    if (bundled != null) {
+    CACHE.put(cacheKey, bundled);
     view.setImageBitmap(bundled);
+    view.setContentDescription(description);
     return;
    }
   } else {
@@ -60,12 +77,6 @@ public final class EditorialPhotos {
    }
   }
   if (!url.startsWith("https://") || !("cleared".equals(rights) || "licensed".equals(rights))) return;
-  String cacheKey = url + "|" + width;
-  Bitmap cached = CACHE.get(cacheKey);
-  if (cached != null) {
-   view.setImageBitmap(cached);
-   return;
-  }
   NETWORK.execute(() -> {
    HttpURLConnection connection = null;
    try {
@@ -82,7 +93,10 @@ public final class EditorialPhotos {
       if (image == null) return;
       CACHE.put(cacheKey, image);
       activity.runOnUiThread(() -> {
-       if (view.getTag() == request && view.isAttachedToWindow() && !activity.isFinishing()) view.setImageBitmap(image);
+       if (view.getTag() == request && view.isAttachedToWindow() && !activity.isFinishing()) {
+        view.setImageBitmap(image);
+        view.setContentDescription(description);
+       }
       });
      }
     }

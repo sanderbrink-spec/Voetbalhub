@@ -10,6 +10,8 @@ import re
 import subprocess
 import sys
 import time
+import urllib.request
+import xml.etree.ElementTree as ET
 
 import uiautomator2 as u2
 
@@ -94,7 +96,12 @@ def artwork_rotation(device):
         raise AssertionError("De losse beeldgalerij is nog zichtbaar")
     capture(device, "ado-sparta-kaart")
     observed = []
-    for i in range(2):
+    for i in range(3):
+        if i == 2:
+            adb("shell", "am", "force-stop", PACKAGE)
+            adb("shell", "am", "start", "-W", "-n", PACKAGE + "/" + ACTIVITY)
+            if not card.wait(timeout=35):
+                raise AssertionError("ADO–Sparta ontbreekt na app-herstart")
         card.click()
         cover = device(description="AI-illustratie bij " + headline)
         if not cover.wait(timeout=10):
@@ -106,9 +113,46 @@ def artwork_rotation(device):
             raise AssertionError("Geen artikelbeeldselectie gelogd")
         observed.append(entries[-1].split("2cb1e3f7-fa9c-5615-a76d-65a1b0f2eb07 ", 1)[1].split()[0])
         device(description="Terug naar de vorige pagina").click()
-    if observed[0] == observed[1]:
-        raise AssertionError("Opnieuw openen koos dezelfde variant: " + str(observed))
+    if len(set(observed)) != len(observed):
+        raise AssertionError("Heropening of herstart koos opnieuw hetzelfde beeld: " + str(observed))
+    return observed
 
+
+def news_cover_inventory(device):
+    url = "https://voetbalhub-redactie.onrender.com/articles"
+    with urllib.request.urlopen(url, timeout=25) as response:
+        articles = json.load(response)["articles"]
+    def cover_descriptions(rows):
+        return {("AI-illustratie bij " if row["imageReview"].get("generated") else "Afbeelding bij ")
+                + row["headline"] for row in rows}
+
+    def verify_visible(required):
+        observed = set()
+        for _ in range(24):
+            tree = ET.fromstring(device.dump_hierarchy())
+            observed.update(node.get("content-desc") for node in tree.iter("node"))
+            if required <= observed:
+                return
+            device.swipe_ext("up", scale=0.56)
+        raise AssertionError("Published articles missing rendered Android images: " + repr(required - observed))
+
+    news = cover_descriptions(row for row in articles if row.get("type") != "column")
+    columns = cover_descriptions(row for row in articles if row.get("type") == "column")
+    if not news:
+        raise AssertionError("No published news to verify on Android")
+    device(text="Nieuws").click()
+    verify_visible(news)
+    if columns:
+        column_entry = device(text="De Derde Helft")
+        for _ in range(8):
+            if column_entry.wait(timeout=1):
+                break
+            device.swipe_ext("up", scale=0.6)
+        else:
+            raise AssertionError("Column navigation missing")
+        column_entry.click()
+        verify_visible(columns)
+    return len(news) + len(columns)
 
 checks = []
 try:
@@ -185,8 +229,10 @@ try:
     finally:
         adb("shell", "settings", "put", "system", "font_scale", "1.0")
 
-    artwork_rotation(device)
-    checks.append("ADO–Sparta article-card and reader screenshots, two different approved variants, no gallery")
+    variants = artwork_rotation(device)
+    checks.append("ADO–Sparta article-card and reader screenshots; three distinct variants across reopen and app restart")
+    rendered_news = news_cover_inventory(device)
+    checks.append(f"Rendered Android covers for all {rendered_news} current articles and columns")
 
     log = adb("logcat", "-d", "-t", "2000")
     if re.search(r"FATAL EXCEPTION:[\s\S]{0,600}Process: " + re.escape(PACKAGE), log):
@@ -200,9 +246,11 @@ try:
         "version": "4.59",
         "androidApi": 36,
         "checks": checks,
+        "adoVariants": variants,
+        "renderedNewsCovers": rendered_news,
         "limits": [
             "Android emulator, not a physical Samsung S23",
-            "Reader coverage is limited to the corrected Heerenveen report",
+            "Reader coverage includes Heerenveen–Feyenoord and ADO–Sparta",
             "Legacy differently signed app cannot be updated in place",
         ],
     }

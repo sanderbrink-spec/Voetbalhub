@@ -37,7 +37,7 @@ public final class HomeFeatureView extends FrameLayout {
     private JSONObject articles=new JSONObject(),stats=new JSONObject(),videos=new JSONObject();
     private boolean ready,disposed,loading=true,videoLoading=true;
     private final Runnable weeklyRefresh=new Runnable(){public void run(){if(disposed)return;fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);postDelayed(this,60000);}};
-    private final FeedRepository.Listener feedListener=(data,busy,failed)->{if(disposed)return;loading=busy;if(data!=null)articles=data;deliver();};
+    private final FeedRepository.Listener feedListener=(data,busy,failed)->{if(disposed)return;loading=busy;articles=data==null?new JSONObject():data;deliver();};
     private float startX,startY;
     private int dp(float n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
     public HomeFeatureView(Activity activity,OpenArticle article,OpenMatch match,Runnable column,OpenStadium stadium,Runnable quiz){
@@ -93,10 +93,10 @@ public final class HomeFeatureView extends FrameLayout {
             JSONObject feature=data.optJSONObject("featured");if(feature==null)feature=data.optJSONObject("nextFeatured");JSONObject text=feature==null?null:feature.optJSONObject("report".equals(feature.optString("phase"))?"report":"preview");
             if(text==null||text.optJSONObject("fixture")==null||text.optJSONArray("body")==null||text.getJSONArray("body").length()<3||!feature.optString("imageUrl").startsWith("https://"))throw new Exception("Keep last published weekly feature");
         }
-        if(kind==0&&data.optJSONArray("articles")==null||kind==1&&(data.optInt("schemaVersion")!=1||data.optJSONObject("league")==null||data.getJSONObject("league").optInt("id")!=88)||kind==2&&(data.optInt("schemaVersion")!=1||data.optJSONArray("videos")==null))throw new Exception("Invalid snapshot");result=data;
+        if(kind==1&&(data.optInt("schemaVersion")!=1||data.optJSONObject("league")==null||data.getJSONObject("league").optInt("id")!=88)||kind==2&&(data.optInt("schemaVersion")!=1||data.optJSONArray("videos")==null))throw new Exception("Invalid snapshot");result=data;
     }catch(Exception ignored){}finally{if(conn!=null)conn.disconnect();}
         final JSONObject data=result;activity.runOnUiThread(()->{if(disposed||activity.isFinishing())return;
-            if(kind==0)loading=false;if(kind==2)videoLoading=false;
+            if(kind==2)videoLoading=false;
             if(data!=null){if(kind==1){stats=data;activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",data.toString()).apply();}else{videos=data;activity.getSharedPreferences(PREFS,0).edit().putString("youtube_videos",data.toString()).apply();}}deliver();
         });
     });}
