@@ -157,7 +157,7 @@ function normalizeDraft(text) {
   if(value.skip===true||String(value.editorialDecision||value.editorial_decision||'').toLowerCase()==='skip')return {skip:true};
   return {...value,headline:typeof value.headline==='string'?value.headline.trim():'',standfirst:typeof value.standfirst==='string'?value.standfirst.trim():'',body:paragraphs(value).map(p=>p.trim())};
 }
-function generationIssues(draft,facts,match=null,compact=false) {
+function generationIssues(draft,facts,match=null,compact=false,sourceName='') {
   if(!draft)return ['Geef uitsluitend een geldig JSON-object met kop, intro en body.'];
   const issues=draftIssues(draft,compact);
   // A conservative preflight for the observed English rewrite. Names and
@@ -168,7 +168,7 @@ function generationIssues(draft,facts,match=null,compact=false) {
   const en=words.filter(word=>english.has(word)).length,nl=words.filter(word=>dutch.has(word)).length;
   if(en>=8&&en>2*nl)issues.push('Het artikel is Engelstalig. Schrijf kop, intro en alle alinea’s in natuurlijk Nederlands met dezelfde geverifieerde feiten.');
   if(headlineContradictions(draft))issues.push('De kop noemt tegenstrijdige wedstrijdresultaten. Gebruik alleen het aangeleverde resultaat.');
-  issues.push(...require('./editorial-facts').evidenceIssues(draft,facts,match));
+  issues.push(...require('./editorial-facts').evidenceIssues(draft,facts,match,sourceName));
   return [...new Set(issues)];
 }
 // Delegate the single known structural overlap to the specialist editor.
