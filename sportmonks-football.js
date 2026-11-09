@@ -1,7 +1,8 @@
 'use strict';
 // Sportmonks is the first-choice football provider only for leagues explicitly configured here.
 // Never log the token, API URL with token, or raw provider errors.
-const LEAGUES={eredivisie:271};
+// The Eredivisie is league 72; 271 is Denmark's Superliga. Verify against provider catalog.
+const LEAGUES={eredivisie:72};
 const CREDIT='Sportmonks Football API';
 const SOURCE={name:CREDIT,url:'https://www.sportmonks.com/football-api/',license:'Sportmonks subscription; commercial display rights subject to contract',commercial:null,cost:'trial/subscription',refreshMinutes:15,databaseDownload:null};
 const finalStates=new Set([5,7,8]);
@@ -21,11 +22,44 @@ function parseFixture(row,competition,now){
    else goals=current;
  }
  const halftime=score('1ST_HALF');
- return {id:'sm-'+row.id,competition,date:new Date(kickoff).toISOString(),round:row.round?.name||'Speelronde',status,
+ const rawRound=String(row.round?.name||'').trim();
+ const round=/^\d{1,2}$/.test(rawRound)?'Speelronde '+rawRound:
+   /^(?:Speelronde|Round)\s+(\d{1,2})$/i.test(rawRound)?'Speelronde '+rawRound.match(/\d{1,2}/)[0]:'';
+ return {id:'sm-'+row.id,competition,date:new Date(kickoff).toISOString(),round, status,
   home:{id:'sm-'+home.id,name:home.name},away:{id:'sm-'+away.id,name:away.name},goals,
   ...(status==='FT'&&halftime&&[halftime.home,halftime.away].every(Number.isInteger)&&halftime.home<=goals.home&&halftime.away<=goals.away?{halfTime:halftime}:{}),
-  checkedAt:new Date(now).toISOString(),resultSource:CREDIT};
+  checkedAt:new Date(now).toISOString(),resultSource:CREDIT,
+  ...(status==='FT'?{resultExpiresAt:now+36*3600000,goalTimeline:confirmedGoals(row,goals)}:{})};
 }
+// Do not turn unverified or incomplete live events into newspaper facts.
+function confirmedGoals(row,final){
+ const total=final.home+final.away;
+ if(!Number.isInteger(total)||total<2||total>15||!Array.isArray(row.events)||row.events.length>150)return [];
+ const raw=row.events.filter(e=>[14,15,16].includes(e?.type_id));
+ if(raw.length!==total||!raw.every(e=>Number.isInteger(e.sort_order)&&Number.isInteger(e.minute)&&e.minute>=1&&e.minute<=130&&
+   (e.extra_minute==null||Number.isInteger(e.extra_minute)&&e.extra_minute>=0&&e.extra_minute<=30)&&
+   typeof e.player_name==='string'&&/^[\p{L} .'-]{3,75}$/u.test(e.player_name.trim())&&
+   /^\d{1,2}\s*[-:]\s*\d{1,2}$/.test(String(e.result||''))))return [];
+ const sorted=[...raw].sort((a,b)=>a.sort_order-b.sort_order);
+ if(new Set(sorted.map(e=>e.sort_order)).size!==sorted.length)return [];
+ let previous={home:0,away:0};
+ const events=[];
+ for(const e of sorted){
+  const m=String(e.result).match(/^(\d{1,2})\s*[-:]\s*(\d{1,2})$/),next={home:Number(m[1]),away:Number(m[2])};
+  const goalSide=next.home-previous.home===1&&next.away===previous.away?'home':
+    next.away-previous.away===1&&next.home===previous.home?'away':null;
+  if(!goalSide)return [];
+  // An ordinary goal or penalty must belong to the team whose total increased.
+  const scorerId=goalSide==='home'?row.participants.find(p=>p.meta?.location==='home')?.id:
+    row.participants.find(p=>p.meta?.location==='away')?.id;
+  if(e.type_id!==15&&e.team_id!==scorerId)return [];
+  events.push({minute:e.minute,extra:e.extra_minute||0,player:e.player_name.trim(),
+   kind:e.type_id===15?'own_goal':e.type_id===16?'penalty':'goal',home:next.home,away:next.away});
+  previous=next;
+ }
+ return previous.home===final.home&&previous.away===final.away?events:[];
+}
+
 async function load({fetcher,token,now,sourceBody,competition='eredivisie'}){
  if(!token||!Object.hasOwn(LEAGUES,competition))throw Error('Sportmonks niet geconfigureerd');
  const year=new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear();
@@ -38,7 +72,7 @@ async function load({fetcher,token,now,sourceBody,competition='eredivisie'}){
   for(let page=1;page<=10;page++){
    const url=new URL('https://api.sportmonks.com/v3/football/fixtures/between/'+day(start)+'/'+day(end));
    url.searchParams.set('api_token',token);
-   url.searchParams.set('include','participants;scores;round');
+   url.searchParams.set('include','participants;scores;round;events');
    url.searchParams.set('filters','fixtureLeagues:'+LEAGUES[competition]);
    url.searchParams.set('per_page','50');url.searchParams.set('page',String(page));
    let response;
@@ -57,4 +91,4 @@ async function load({fetcher,token,now,sourceBody,competition='eredivisie'}){
  if(all.size<100||all.size>500)throw Error('Sportmonks onvolledige seizoensdekking');
  return [...all.values()].sort((a,b)=>a.date.localeCompare(b.date));
 }
-module.exports={LEAGUES,CREDIT,SOURCE,parseFixture,load};
+module.exports={LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,load};

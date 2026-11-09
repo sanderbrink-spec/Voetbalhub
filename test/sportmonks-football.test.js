@@ -3,7 +3,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const SM=require('../sportmonks-football'),Football=require('../football-data47');
 const now=Date.parse('2026-11-09T12:00:00Z');
 function match(id,state=5){
- return {id,league_id:271,state_id:state,starting_at_timestamp:Math.floor(Date.parse('2026-11-01T12:00:00Z')/1000),
+ return {id,league_id:72,state_id:state,starting_at_timestamp:Math.floor(Date.parse('2026-11-01T12:00:00Z')/1000),
  participants:[{id:1,name:'Ajax',meta:{location:'home'}},{id:2,name:'FC Twente',meta:{location:'away'}}],
  scores:[{description:'CURRENT',score:{participant:'home',goals:2}},{description:'CURRENT',score:{participant:'away',goals:2}}],
  round:{name:'Speelronde 11'}};
@@ -11,9 +11,10 @@ function match(id,state=5){
 test('Sportmonks parser verifies home/away and final scores; in-play never counts as final',()=>{
  const f=SM.parseFixture(match(1),'eredivisie',now);
  assert.equal(f.status,'FT');assert.deepEqual(f.goals,{home:2,away:2});
+ assert.equal(SM.LEAGUES.eredivisie,72);assert.equal(SM.parseFixture({...match(5),round:{name:'12'}},'eredivisie',now).round,'Speelronde 12');
  assert.equal(SM.parseFixture(match(2,2),'eredivisie',now).status,'AWAITING');
  assert.equal(SM.parseFixture({...match(3),scores:[]},'eredivisie',now).status,'AWAITING');
- assert.throws(()=>SM.parseFixture({...match(4),league_id:88},'eredivisie',now));
+ assert.throws(()=>SM.parseFixture({...match(4),league_id:271},'eredivisie',now));
 });
 test('Sportmonks takes priority and does not call public fallbacks when season response is complete',async()=>{
  let calls=0;const rows=Array.from({length:120},(_,i)=>match(i+1));
