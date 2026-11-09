@@ -4,6 +4,7 @@ const matches=require('../editorial-match55');
 const guidance=require('../editorial-match-guidance133');
 const recovery=require('../editorial-recovery136');
 const desk=require('../editorial-desk-model');
+const production=require('../scripts/automatic-publication');
 const now=Date.parse('2026-11-09T10:00:00Z');
 const base=()=>({
  id:'sm-19714597',competition:'eredivisie',resultSource:'Sportmonks Football API',
@@ -20,6 +21,7 @@ const timeline=[
 test('half-time alone produces only a compact score update, never fabricated match depth',()=>{
  const record=matches.candidate(base(),now);
  assert.equal(record.articleKind,'score_update');
+ assert.equal(production.matchGenerationIsCompact(record),true);
  assert.equal(record.verifiedFacts.length,3);
  const plan=guidance.paragraphPlan(record);
  assert.equal(plan.format,'compact');
@@ -35,6 +37,7 @@ test('half-time alone produces only a compact score update, never fabricated mat
 test('a verified four-goal sequence supports a three-section detailed plan',()=>{
  const record=matches.candidate({...base(),goalTimeline:timeline},now);
  assert.equal(record.articleKind,'match_report');
+ assert.equal(production.matchGenerationIsCompact(record),false);
  assert.equal(record.verifiedFacts.length,7);
  const plan=guidance.paragraphPlan(record);
  assert.equal(plan.format,'rich');
@@ -58,4 +61,9 @@ test('a prior v136 rejection receives one genuine new v137 review only while rec
  assert.equal(recovery.reopenVerifiedMatch(job,record,now),false);
  assert.equal(recovery.reopenVerifiedMatch({...job,writerRecoveryRevision:'match-writer-136'},
   {...record,publishedAt:'2026-10-30T12:00:00Z'},now),false);
+});
+
+test('non-match news retains its existing compact policy',()=>{
+ assert.equal(production.matchGenerationIsCompact(null,true),true);
+ assert.equal(production.matchGenerationIsCompact(null,false),false);
 });
