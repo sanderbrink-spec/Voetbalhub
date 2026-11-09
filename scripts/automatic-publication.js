@@ -1127,7 +1127,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const nameRepaired=repairUniqueVerifiedNameTypo(draft,facts);
     if(nameRepaired!==draft){draft=nameRepaired;payload.draft=draft;}
     const issues=M.publicationIssues(payload);
-    issues.push(...generationIssues(draft,facts,matchRecord?.match||null,Boolean(matchRecord)||compact));
+    issues.push(...generationIssues(draft,facts,matchRecord?.match||null,Boolean(matchRecord)||compact,matchRecord?.sources?.[0]?.url===matches.SM?'Sportmonks Football API':matchRecord?.sources?.[0]?.url===matches.OPEN?'OpenFootball':matchRecord?.sources?.[0]?.url===matches.FD?'football-data.org':''));
     if(!matchRecord){
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority:candidate.primaryAuthority,sourceUrls:sources.map(x=>x.url),facts}));
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority:candidate.primaryAuthority,facts}));
