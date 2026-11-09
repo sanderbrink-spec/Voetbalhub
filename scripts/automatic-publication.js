@@ -846,6 +846,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   for(const fixture of fixtures){
    const record=matches.candidate(fixture,now);
    if(!record){report.routes.match.rejected++;report.signals.push({route:'match',matchId:fixture.id,outcome:'insufficient_or_low_impact_result'});continue;}
+   // Quantify the coverage of live verified match facts without exposing
+   // the source body or any provider credentials in the public run report.
+   report.signals.push({route:'match',matchId:record.matchId,outcome:'match_evidence_inventory',
+    facts:record.verifiedFacts.length,goalEvents:fixture.goalTimeline?.length||0,
+    articleKind:record.articleKind});
    const text=record.verifiedFacts.join(' ');
    matchGroups.push(Object.assign([{url:record.sources[0].url,title:record.topic,text,publishedAt:record.publishedAt}],{matchRecord:record}));
   }
