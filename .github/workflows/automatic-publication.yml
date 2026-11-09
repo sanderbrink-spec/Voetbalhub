@@ -98,6 +98,9 @@ jobs:
             const existing = issues.find(issue => issue.title === title);
             const unexplained = report && report.counts.selected > 0 && report.counts.published === 0 && !report.skipped.length && !report.processingErrors.length;
             const failed = !report || report.outcome === 'error' || unexplained;
+            if (report?.outcome === 'partial_success' && report.counts.published > 0) {
+              core.warning('Artikel gepubliceerd en in publieke feed geverifieerd; resterende taak blijft in de wachtrij wegens beperkte AI-capaciteit.');
+            }
             if (failed) {
               const body = ['Technische controle vereist. Kwaliteitsgrens blijft minimaal 85.',
                 'Run: '+context.serverUrl+'/'+owner+'/'+repo+'/actions/runs/'+context.runId,

@@ -18,6 +18,8 @@ test('rich registered match gets the complete evidence-led report, not a compact
  assert.match(prompt,/18-120 woorden/);
  assert.match(prompt,/geen ongedocumenteerde kansen/i);
  assert.match(prompt,/tussenstanden alleen letterlijk/i);
+ assert.match(prompt,/eigen nieuwsfeit en nieuwe bewijsplaats/i);
+ assert.match(guide.revisionPrompt(rich),/Repareer lage journalistieke kwaliteit/i);
  assert.doesNotMatch(prompt,/body bevat 1-2 alinea’s/);
 });
 test('bare score update stays compact and cannot invent details',()=>{
