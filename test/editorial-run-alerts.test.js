@@ -16,3 +16,18 @@ for(const scenario of ['quiet','rejected','technical','published'])test('publica
  if(scenario==='rejected')assert.match(mutations[0].body,/Score 73/);
  if(scenario==='published')assert.equal(mutations[0].state,'closed');
 });
+
+test('partial success records the verified publication and warns about deferred AI work without false total failure',async()=>{
+ const report={outcome:'partial_success',counts:{selected:2,generated:2,published:1},
+  skipped:[],signals:[{outcome:'deferred_provider_capacity'}],
+  processingErrors:[{stage:'quality',reason:'provider capacity'}]};
+ const mutations=[],failures=[],warnings=[];
+ const github={rest:{issues:{listForRepo:async()=>({data:[]}),create:async a=>mutations.push(a),update:async a=>mutations.push(a)}}};
+ await execute(()=>({existsSync:()=>true,readFileSync:()=>JSON.stringify(report)}),
+  github,{repo:{owner:'owner',repo:'repo'},serverUrl:'https://github.com',runId:1},
+  {setFailed:x=>failures.push(x),warning:x=>warnings.push(x)});
+ assert.equal(failures.length,0);
+ assert.equal(warnings.length,1);
+ assert.match(warnings[0],/Artikel gepubliceerd/);
+ assert.equal(mutations.length,0);
+});
