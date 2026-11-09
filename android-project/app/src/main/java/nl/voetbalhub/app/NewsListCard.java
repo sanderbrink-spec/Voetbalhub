@@ -29,7 +29,7 @@ public final class NewsListCard extends LinearLayout {
   if(column){
    image.setImageDrawable(new EditorialArtwork(activity,true));
    image.setContentDescription("Sander Brink, auteur van De Derde Helft");
-  }else EditorialPhotos.bind(activity,image,640);
+  }else EditorialPhotos.bind(activity,image,article,640);
  }
  @Override protected void onMeasure(int widthSpec,int heightSpec){
   if(thumbnail==null||articleCopy==null){super.onMeasure(widthSpec,heightSpec);return;}

@@ -33,7 +33,7 @@ test('updated signed APK advances versionCode to allow a same-certificate update
 
 test('reader and news cards share cover selection and reject generic match imagery',()=>{
  const photos=fs.readFileSync(path+'EditorialPhotos.java','utf8');
- assert.match(cards,/EditorialPhotos\.bind/);
+ assert.match(cards,/EditorialPhotos\.bind\(activity,image,article,640\)/);
  assert.match(reader,/EditorialPhotos\.bind/);
  assert.match(photos,/approved-library49/);
  assert.match(photos,/optJSONArray\("clubs"\)/);

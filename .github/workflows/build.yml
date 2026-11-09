@@ -144,7 +144,7 @@ jobs:
     # Separate package remains installable beside the old differently signed app.
     # Main uses the new pinned certificate for fresh installations only.
     needs: validate49
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -161,6 +161,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'
+      - name: Compile release Java on pull requests
+        if: github.event_name == 'pull_request'
+        working-directory: android-project
+        run: gradle :app:compileReleaseJavaWithJavac --no-daemon
       - name: Prepare persistent release signing for separate preview
         if: github.ref == 'refs/heads/main'
         env:

@@ -35,6 +35,28 @@ function goalSequenceIssues(record, events) {
   issues.push('De doelpunten komen niet overeen met de eindstand.');
  return issues;
 }
+function narrativeOrderIssue(body, events) {
+ if (!Array.isArray(body)) return false;
+ let previous = -1;
+ for (const paragraph of body) {
+  if (typeof paragraph !== 'string') continue;
+  for (const sentence of paragraph.split(/(?<=[.!?])\s+/u)) {
+   const text = sentence.toLocaleLowerCase('nl');
+   const times = text.matchAll(/\b(?:minuut\s+(\d{1,3})(?:\+(\d{1,2}))?|(\d{1,3})(?:e|ste|de)\s+minuut|(\d{1,3})\+(\d{1,2}))\b/gu);
+   for (const time of times) {
+    const minute = Number(time[1] || time[3] || time[4]), extra = Number(time[2] || time[5] || 0);
+    const goal = events.find(e => e.minute === minute && e.extra === extra &&
+     (text.includes(e.player.toLocaleLowerCase('nl')) ||
+      new RegExp('(?<![\\d])' + e.home + '[-\\u2010-\\u2013]' + e.away + '(?![\\d])', 'u').test(text)));
+    if (!goal) continue;
+    const at = minute * 100 + extra;
+    if (at < previous) return true;
+    previous = at;
+   }
+  }
+ }
+ return false;
+}
 function halfTimeNarrativeIssues(record={},draft={}) {
  if(record.articleKind!=='match_report')return [];
  const goals=goalFacts(record);
@@ -42,6 +64,8 @@ function halfTimeNarrativeIssues(record={},draft={}) {
  const primary=goals.length>0&&factsFrom(record).some(f=>/Sportmonks-wedstrijdregistratie viel in minuut/i.test(f));
  const events=primary?goalFacts({verifiedFacts:factsFrom(record).filter(f=>/Sportmonks-wedstrijdregistratie viel in minuut/i.test(f))}):goals;
  const issues=goalSequenceIssues(record,events);
+ if(narrativeOrderIssue(draft.body,events))
+   issues.push('De doelpunten in de artikeltekst staan buiten wedstrijdvolgorde.');
  const paragraphs=[draft.headline,draft.standfirst,...(Array.isArray(draft.body)?draft.body:[])].filter(x=>typeof x==='string');
  if(paragraphs.some(p=>relativeInterval.test(p)))
    issues.push('Niet-geverifieerd tijdsverschil tussen doelpunten. Reken nooit blessuretijd door over de rust.');
