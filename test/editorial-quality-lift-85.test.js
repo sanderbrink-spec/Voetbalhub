@@ -59,6 +59,9 @@ test('reviewer preflight respects both provider cooldowns and local quotas witho
  now=10001;
  assert.equal(router.hasReviewCapacity(8000),true);
  state.groq.tokens=20000;state.openai.tokens=20000;
+ // The bounded OpenAI reviewer-only reserve is intentionally still eligible.
+ assert.equal(router.hasReviewCapacity(8000),true);
+ state.openai.requests=96;
  assert.equal(router.hasReviewCapacity(8000),false);
  assert.equal(fetches,0);
 });

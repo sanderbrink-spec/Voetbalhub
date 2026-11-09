@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "maxPerRun": 5,
+  "maxPerRun": 10,
   "maxPerDay": 15,
   "maxAgeHours": 72,
   "previewHorizonDays": 7,
@@ -77,5 +77,5 @@
   ],
   "sourceGroups": [],
   "qualityThreshold": 85,
-  "maxImageRequestsPerRun": 8
+  "maxImageRequestsPerRun": 12
 }
