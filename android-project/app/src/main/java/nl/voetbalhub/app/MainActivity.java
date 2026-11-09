@@ -1435,7 +1435,7 @@ private void showScores() {
         if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
         scoresPageVisible = false; weeklyPreviewVisible = false; eredivisieStatisticsVisible = false;
         personalHubVisible = true;
-        currentBottomTab = "favorites".equals(mode) || "profile".equals(mode) ? "Mijn Clubs" : "Nieuws";
+        currentBottomTab = "saved".equals(mode) ? "Meer" : ("favorites".equals(mode) || "profile".equals(mode) ? "Mijn Clubs" : "Nieuws");
         buildNav(); findViewById(R.id.header).setVisibility(android.view.View.GONE);findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
         content.removeAllViews();personalHub = new PersonalHubView(this, mode, query, this::showEditorialArticle, this::onBackPressed,restoredState);
         content.addView(personalHub, new android.widget.FrameLayout.LayoutParams(-1, -1));
