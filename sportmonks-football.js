@@ -1,7 +1,8 @@
 'use strict';
 // Sportmonks is the first-choice football provider only for leagues explicitly configured here.
 // Never log the token, API URL with token, or raw provider errors.
-const LEAGUES={eredivisie:271};
+// The Eredivisie is league 72; 271 is Denmark's Superliga. Verify against provider catalog.
+const LEAGUES={eredivisie:72};
 const CREDIT='Sportmonks Football API';
 const SOURCE={name:CREDIT,url:'https://www.sportmonks.com/football-api/',license:'Sportmonks subscription; commercial display rights subject to contract',commercial:null,cost:'trial/subscription',refreshMinutes:15,databaseDownload:null};
 const finalStates=new Set([5,7,8]);
@@ -21,7 +22,10 @@ function parseFixture(row,competition,now){
    else goals=current;
  }
  const halftime=score('1ST_HALF');
- return {id:'sm-'+row.id,competition,date:new Date(kickoff).toISOString(),round:row.round?.name||'Speelronde',status,
+ const rawRound=String(row.round?.name||'').trim();
+ const round=/^\\d{1,2}$/.test(rawRound)?'Speelronde '+rawRound:
+   /^(?:Speelronde|Round)\\s+(\\d{1,2})$/i.test(rawRound)?'Speelronde '+rawRound.match(/\\d{1,2}/)[0]:'';
+ return {id:'sm-'+row.id,competition,date:new Date(kickoff).toISOString(),round, status,
   home:{id:'sm-'+home.id,name:home.name},away:{id:'sm-'+away.id,name:away.name},goals,
   ...(status==='FT'&&halftime&&[halftime.home,halftime.away].every(Number.isInteger)&&halftime.home<=goals.home&&halftime.away<=goals.away?{halfTime:halftime}:{}),
   checkedAt:new Date(now).toISOString(),resultSource:CREDIT};
