@@ -8,7 +8,7 @@ test('v66 native news prioritizes server-approved rotating artwork over legacy p
  assert.match(photos, /"approved-exact-topic-v65"\.equals\(rotation\.optString\("method"\)\)/);
  assert.match(photos, /"approved-library49"\.equals\(review\.optString\("method"\)\)/);
  assert.match(photos, /url\.startsWith\("https:\/\/voetbalhub-redactie\.onrender\.com\/"\)/);
- assert.match(photos, /Bitmap local = approvedRotation \? null : bitmap\(activity, article, width\)/);
+ assert.match(photos, /Bitmap local = \(approvedServer \|\| approvedRotation\) \? null : bitmap\(activity, article, width\)/);
 });
 test('v66 newly opened approved image starts an asynchronous feed update for subsequent opens', () => {
  const main = fs.readFileSync('android-project/app/src/main/java/nl/voetbalhub/app/MainActivity.java','utf8');
@@ -18,7 +18,7 @@ test('v66 APK build uses increased Android release version and release certifica
  const gradle = fs.readFileSync('android-project/app/build.gradle.kts','utf8');
  const yaml = fs.readFileSync('.github/workflows/build.yml','utf8');
  assert.match(gradle,/versionCode = 98/);
- assert.match(gradle,/versionName = "4\.57"/);
+ assert.match(gradle,/versionName = "4\.58"/);
  assert.match(yaml,/Veldio-58\.apk/);
  assert.match(yaml,/versionCode='98'/);
  assert.match(yaml,/apksigner" verify --verbose --print-certs/);
