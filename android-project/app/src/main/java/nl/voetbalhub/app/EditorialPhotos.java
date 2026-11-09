@@ -38,7 +38,15 @@ public final class EditorialPhotos {
   JSONObject review = article.optJSONObject("imageReview");
   view.setContentDescription((review != null && review.optBoolean("generated") ? "AI-illustratie bij " :
    "Afbeelding bij ") + article.optString("headline", "het artikel"));
-  Bitmap local = bitmap(activity, article, width);
+  // API-approved rotating artwork takes priority over legacy packaged snapshots.
+  // The server has already validated the exact fixture, time of day, rights and SHA-256.
+  JSONObject rotation = article.optJSONObject("imageRotation");
+  boolean approvedRotation = rotation != null
+   && "approved-exact-topic-v65".equals(rotation.optString("method"))
+   && review != null && "approved-library49".equals(review.optString("method"))
+   && article.optJSONArray("imageVariants") != null
+   && url.startsWith("https://voetbalhub-redactie.onrender.com/");
+  Bitmap local = approvedRotation ? null : bitmap(activity, article, width);
   if (local != null) {
    view.setImageBitmap(local);
    return;
