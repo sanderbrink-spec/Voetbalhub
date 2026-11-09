@@ -1266,6 +1266,8 @@ async function run(options={}){
     'Verificatie: '+uniqueGroups+' groepen, '+queued+' klaar, '+attempted+' geprobeerd, '+selected+' geselecteerd.',
     'Artikelen: '+generated+' geschreven, '+approved+' goedgekeurd, '+stored+' opgeslagen, '+published+' gepubliceerd uit '+report.counts.publicationAttempts+' publicatiepogingen, '+report.skipped.length+' afgewezen.',
     'Per route: '+JSON.stringify(report.routes),
+    ...report.published.map(item=>'- Openbaar gecontroleerd: '+item.headline+' · redactie '+item.score+'/100 · '+item.url),
+    ...(report.status==='completed_with_deferred_work'?['Gedeeltelijk geslaagd: '+report.counts.published+' artikel(en) gepubliceerd; '+(report.queue?.retry||0)+' redactionele taak/taken bewaard voor een volgende ronde wegens AI-capaciteit.']:[]),
     ...report.skipped.map(({topic,stage,reason})=>'- Afgewezen ('+(stage||'duplicaat')+'): '+topic+' · '+reason),
     ...report.sourceErrors.map(({source,url,error})=>'- Bron: '+(source||url)+' · '+error),
     ...report.processingErrors.map(({topic,stage,reason})=>'- Verwerkingsfout ('+stage+'): '+topic+' · '+reason),
