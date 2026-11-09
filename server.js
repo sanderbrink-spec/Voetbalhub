@@ -273,7 +273,13 @@ async function getArticles(view = "current") {
   const keys = await client.keys("article:*");
   const candidates=await require("./article-storage").readPublished(client,keys);
   const articles=[];
-  for(const article of candidates)try{const decorated=require("./media43").apply(require("./brand").article(withArticleCover(article)));articles.push(require("./editorial-chronology139").correctConfirmedPublishedArticle(decorated));}catch{}
+  for (const article of candidates) {
+    try {
+      articles.push(require("./media43").apply(require("./brand").article(withArticleCover(article))));
+    } catch (error) {
+      console.error("Article presentation failed:", article.id, error.message);
+    }
+  }
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return require("./feed-policy").selectFeed(articles, {view});
 }
@@ -293,6 +299,8 @@ async function automaticEvidenceIssue(payload) {
   if (!Number.isInteger(payload.editorialScore) || payload.editorialScore < 85 || payload.editorialScore > 100)
     return 'Automatische publicatie vereist een redactionele score van minimaal 85.';
   if (payload.matchId) {
+    const chronology = require('./editorial-chronology139').halfTimeNarrativeIssues(payload, payload.draft);
+    if (chronology.length) return chronology.join(' ');
     if (typeof payload.matchId !== 'string') return 'Ongeldig wedstrijd-ID.';
     const snapshot = await (payload.matchId.startsWith('fd-cl-') ? europeanEditorial() : football47.get('eredivisie'));
     if (!require('./editorial-match55').matchesRegistration(payload, snapshot.fixtures || [], Date.now()))
@@ -918,6 +926,11 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
 async function start() {
   if (client) {
     // Listen immediately; storage routes report 503 while Redis reconnects.
+    client.on("ready", () => {
+      require("./editorial-revisions64").apply(client, async () =>
+        (await football47.get("eredivisie")).fixtures || []
+      ).catch(error => console.error("Editorial revisions 64 could not run:", error.message));
+    });
     client.connect().then(() => console.log("Redis connected"))
       .catch(() => console.error("Redis connection unavailable; background reconnect enabled."));
   } else {

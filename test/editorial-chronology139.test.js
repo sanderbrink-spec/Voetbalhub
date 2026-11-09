@@ -31,21 +31,12 @@ test('accepts correctly distinguished stoppage time and restart without inventin
  const draft={standfirst:'Heerenveen wint',body:[record.body[0],newSentence,record.body[2]]};
  assert.deepEqual(chronology.halfTimeNarrativeIssues(record,draft),[]);
 });
-test('applies one factual, display-only correction to matching verified published story',()=>{
- const changed=chronology.correctConfirmedPublishedArticle(record);
- assert.notEqual(changed,record);
- assert.equal(changed.body[1],newSentence);
- assert.equal(changed.body.length,3);
- assert.equal(changed.match.homeScore,5);
- assert.equal(changed.match.awayScore,3);
- assert.equal(chronology.correctConfirmedPublishedArticle(changed),changed);
- assert.equal(record.body[1],oldSentence);
+test('rejects an unsupported interval even without goal evidence',()=>{
+ assert.match(chronology.halfTimeNarrativeIssues({...record,verifiedFacts:facts.slice(0,3)},{body:[oldSentence]}).join(' '),/tijdsverschil/);
 });
-test('cannot correct another article, an unverified story, or any different match',()=>{
- assert.equal(chronology.correctConfirmedPublishedArticle({...record,verifiedFacts:facts.slice(0,3)}).body[1],oldSentence);
- assert.equal(chronology.correctConfirmedPublishedArticle({...record,match:{...record.match,playedAt:'2026-11-07'}}).body[1],oldSentence);
- assert.equal(chronology.correctConfirmedPublishedArticle({...record,body:['Andere tekst']}).body[0],'Andere tekst');
-});
-test('does not claim a cross-half interval without verified 45+ injury-time and 47 minute source facts',()=>{
- assert.deepEqual(chronology.halfTimeNarrativeIssues({...record,verifiedFacts:facts.slice(0,3)},{body:[oldSentence]}),[]);
+test('rejects a timeline with a false half-time score and out-of-order goals',()=>{
+ const reversed=[...facts];
+ [reversed[5],reversed[6]]=[reversed[6],reversed[5]];
+ reversed[2]='Ruststand 0-2.';
+ assert.match(chronology.halfTimeNarrativeIssues({...record,verifiedFacts:reversed},{body:[newSentence]}).join(' '),/chronologie.*ruststand/);
 });
