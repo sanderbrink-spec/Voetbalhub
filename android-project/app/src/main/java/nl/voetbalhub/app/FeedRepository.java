@@ -25,7 +25,13 @@ public final class FeedRepository {
  private static Context context;
  private static String endpoint="https://voetbalhub-redactie.onrender.com/articles";
  private FeedRepository(){}
- public static void configure(Context c,String address){context=c.getApplicationContext();endpoint=address;}
+ public static void configure(Context c,String address){
+  context=c.getApplicationContext();
+  if(address==null)return;
+  String root=address.trim().replaceAll("/+$","");
+  if(!root.startsWith("https://"))return;
+  endpoint=root.endsWith("/articles")?root:root+"/articles";
+ }
  public static void subscribe(Context c,Listener listener){
   if(context==null)context=c.getApplicationContext();
   if(snapshot==null)try{snapshot=Branding.response(FeedVisibility.filter(PublicationPolicy.articleFeed(new JSONObject(context.getSharedPreferences("voetbalhub_editorial",0).getString("last_articles","{}")))));}catch(Exception ignored){}
