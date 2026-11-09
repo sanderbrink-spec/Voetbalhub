@@ -1222,11 +1222,23 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
  return report;
 }
+function reconcileDeferredPublications(report){
+ // A quota/capacity stop after a verified publication is not a total outage.
+ // Keep the unfinished item in the durable retry queue and expose the warning.
+ if(report.counts?.published>0&&['providers_unavailable','provider_daily_limit'].includes(report.status)){
+  const reason=report.status;
+  report.signals.push({route:'editorial',outcome:'deferred_provider_capacity',reason,
+   pending:report.queue?.retry||0,published:report.counts.published});
+  report.status='completed_with_deferred_work';
+ }
+ return report;
+}
 async function run(options={}){
  const report={startedAt:new Date(options.now||Date.now()).toISOString(),commit:process.env.GITHUB_SHA||null,published:[],skipped:[],sourceErrors:[],processingErrors:[],signals:[],assessments:[],sources:{},routes:Object.fromEntries(['news','match'].map(key=>[key,{found:0,selected:0,generated:0,rejected:0,published:0}])),counts:{found:0,readable:0,stale:0,current:0,relevant:0,eligible:0,noCorroboration:0,uniqueGroups:0,queued:0,attempted:0,selected:0,aiRequests:0,generated:0,approved:0,stored:0,publicationAttempts:0,published:0}};
  Object.defineProperty(report,'draftSnapshots',{value:[],enumerable:false});
  try{
   await execute({...options,report});
+  reconcileDeferredPublications(report);
   if(!report.status){
    const sourcesUnavailable=report.sources.gdelt?.status==='unavailable'&&
     report.sources.match.status==='unavailable'&&report.sources.officialIndexes.every(source=>source.status==='unavailable')&&!report.counts.readable;
@@ -1237,7 +1249,7 @@ async function run(options={}){
   return report;
  }catch(error){report.status='failed';report.error=error.message;throw error;}
  finally{
-  report.outcome=report.status==='completed'?'success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected'].includes(report.status)?'editorial_blocked':'error';
+  report.outcome=report.status==='completed'?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected'].includes(report.status)?'editorial_blocked':'error';
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
   fs.writeFileSync('.automatic-output/draft-review.json',JSON.stringify({
@@ -1267,7 +1279,7 @@ function runExitCode(report){
  // A normally empty scheduled news hour is healthy; an explicitly focused
  // production attempt is not successful until its article is actually visible.
  if(report.focusSourceUrl&&report.counts?.published===0)return 1;
- return ['completed','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
+ return ['completed','completed_with_deferred_work','no_new_verified_articles','daily_limit'].includes(report.status)?0:1;
 }
 async function focusedProductionRun(options){
  const report=await run(options);
@@ -1290,4 +1302,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={matchGenerationIsCompact,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reconcileDeferredPublications,matchGenerationIsCompact,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
