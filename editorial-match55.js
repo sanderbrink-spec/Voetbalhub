@@ -10,6 +10,28 @@ const EURO = require('./match-selection50');
 const MAX_AGE_MS = 48 * 3600000;
 const validScore = value => Number.isInteger(value) && value >= 0 && value <= 99;
 
+// Only a complete, chronologically consistent registered scoring sequence
+// can substantiate the match-changing context of a two-goal comeback.
+function verifiedComebackFact(timeline, match, finalHome, finalAway) {
+ if(!Array.isArray(timeline)||!timeline.length||finalHome===finalAway)return null;
+ let priorHome=0,priorAway=0,priorMinute=-1,priorExtra=-1,best=null;
+ const winner=finalHome>finalAway?match.homeTeam:match.awayTeam;
+ for(const event of timeline){
+  if(![event.minute,event.extra||0,event.home,event.away].every(Number.isInteger)||
+   event.minute<0||event.minute>120||(event.extra||0)<0||(event.extra||0)>30||
+   event.minute<priorMinute||(event.minute===priorMinute&&(event.extra||0)<priorExtra)||
+   event.home<0||event.away<0||
+   !((event.home===priorHome+1&&event.away===priorAway)||
+     (event.away===priorAway+1&&event.home===priorHome)))return null;
+  priorHome=event.home;priorAway=event.away;priorMinute=event.minute;priorExtra=event.extra||0;
+  const deficit=finalHome>finalAway?event.away-event.home:event.home-event.away;
+  if(deficit>=2&&(!best||deficit>best.deficit))best={deficit,home:event.home,away:event.away,minute:event.minute,extra:event.extra||0};
+ }
+ if(priorHome!==finalHome||priorAway!==finalAway||!best)return null;
+ const minute=best.minute+(best.extra?'+'+best.extra:'');
+ return 'Volgens de volledige geverifieerde doelpuntenreeks is de '+best.home+'-'+best.away+
+  '-achterstand in minuut '+minute+' door '+winner+' omgebogen naar een '+finalHome+'-'+finalAway+'-zege.';
+}
 function candidate(fixture, now) {
  const kickoff = Date.parse(fixture.date);
  const {home, away} = fixture.goals || {};
@@ -44,6 +66,8 @@ function candidate(fixture, now) {
    const label=event.kind==='own_goal'?'een eigen doelpunt van ':event.kind==='penalty'?'een benutte strafschop van ':'een doelpunt van ';
    verifiedFacts.push('Volgens de Sportmonks-wedstrijdregistratie viel in minuut '+time+' '+label+event.player+', waarna de stand '+event.home+'-'+event.away+' was.');
   }
+  const comeback=verifiedComebackFact(timeline,match,home,away);
+  if(comeback)verifiedFacts.push(comeback);
  }
  const sources = [{url:sportmonks?SM:supplemented?FD:OPEN}];
  // A half-time score alone does not establish an editorially rich match report.
@@ -110,4 +134,4 @@ function europeanRegistry({fetcher = fetch, token, clock = Date.now} = {}) {
   } finally { inFlight = null; }
  };
 }
-module.exports = {candidate, matchesRegistration, europeanRegistry, MAX_AGE_MS, OPEN, FD, SM};
+module.exports = {candidate, verifiedComebackFact, matchesRegistration, europeanRegistry, MAX_AGE_MS, OPEN, FD, SM};
