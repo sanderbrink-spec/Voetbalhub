@@ -13,7 +13,8 @@ permissions:
   actions: read
 jobs:
   publication:
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    # Inspect even failed editorial runs: a verified publication can precede an unrelated provider outage.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure'))
     runs-on: ubuntu-24.04
     outputs:
       article_id: ${{ steps.report.outputs.article_id }}
@@ -29,7 +30,7 @@ jobs:
           python3 - <<'PY'
           import json,os
           r=json.load(open('report/report.json'))
-          if r['outcome']=='success' and r['counts']['published']>0:
+          if r['counts']['published']>0 and r.get('published') and r['published'][0].get('id'):
               with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('article_id='+r['published'][0]['id']+'\n')
           else:print('Geen productieartikel om op Android te valideren.')
           PY
