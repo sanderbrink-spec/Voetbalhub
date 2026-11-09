@@ -27,7 +27,7 @@ async function sourceBody(response, limit=2000000) {
  for await(const chunk of response.body){size+=chunk.byteLength;if(size>limit)throw Error('Bronantwoord te groot');chunks.push(Buffer.from(chunk));}
  return Buffer.concat(chunks,size).toString('utf8');
 }
-function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOOTBALL_DATA_API_KEY?.trim()||process.env.FOOTBALL_DATA_TOKEN?.trim()}={}){
+function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOOTBALL_DATA_API_KEY?.trim()||process.env.FOOTBALL_DATA_TOKEN?.trim(),sportmonksToken=process.env.SPORTMONKS_API_TOKEN?.trim()}={}){
  const cache=new Map(),pending=new Map();
  async function get(key){
   if(!Object.hasOwn(CATALOG,key))throw Error('Onbekende competitie');
@@ -40,10 +40,23 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
     if(redis?.isReady){
      try{
       const raw=await require('./runtime-health').withDeadline(()=>redis.get('football47:'+key),1500);
-      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
+      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&key==='eredivisie'&&value.sourceDetails?.name!=='Sportmonks Football API')){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
      }catch{storageFailed=true;}
     }
     if(key==='eredivisie'){
+     // Sportmonks is the first provider. An outage or incomplete season falls back
+     // to the existing public schedule and Football-Data.org results.
+     if(sportmonksToken){
+      try{
+       const provider=require('./sportmonks-football');
+       const fixtures=await provider.load({fetcher,token:sportmonksToken,now,sourceBody});
+       const value=envelope(key,fixtures,now,provider.SOURCE);
+       if(fixtures.some(f=>f.status==='AWAITING'&&Date.parse(f.date)<now)){
+        value.standings=[];value.standingsNote='Niet alle eindstanden zijn bevestigd; stand tijdelijk verborgen.';
+       }
+       cache.set(key,{at:now,value,ttl:15*60000});return value;
+      }catch(error){console.warn('football47 Sportmonks fallback:',error.message);}
+     }
      const season=new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear();
      const r=await fetcher('https://raw.githubusercontent.com/openfootball/football.json/master/'+season+'-'+String(season+1).slice(-2)+'/nl.1.json',{headers:{'User-Agent':'Veldio/50 (redactie.veldio@gmail.com)'},signal:AbortSignal.timeout(12000)});
      if(!r.ok)throw Error('Eredivisiebron HTTP '+r.status);
