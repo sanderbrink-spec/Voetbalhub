@@ -37,7 +37,9 @@ class EditorialProviderRouter{
  constructor({groqKey,openaiKey,openaiModel,geminiKey,openrouterKey,geminiFreeTierConfirmed=false,fetcher=fetch,now=Date.now,state={},onState=async()=>{},onAttempt=()=>{},intervalMs=35000,timeoutMs=180000,limits={}}={}){
   this.keys={groq:groqKey,openai:openaiKey,gemini:geminiKey,openrouter:openrouterKey};this.models={...MODELS,openai:openaiModel||MODELS.openai};
   this.geminiFreeTierConfirmed=geminiFreeTierConfirmed;this.fetcher=fetcher;this.now=now;this.state=state;this.onState=onState;this.onAttempt=onAttempt;this.intervalMs=intervalMs;this.timeoutMs=timeoutMs;this.trace=[];this.lastWriter=null;
-  this.limits={groq:{requests:80,tokens:150000},openai:{requests:80,tokens:150000},gemini:{requests:20,tokens:100000},openrouter:{requests:45,tokens:150000},...limits};
+  // A bounded twenty-call, 110k-token extension for the existing configured OpenAI writer.
+  // Groq retains its limits; the independently reserved review budget is separate.
+  this.limits={groq:{requests:80,tokens:150000},openai:{requests:100,tokens:260000},gemini:{requests:20,tokens:100000},openrouter:{requests:45,tokens:150000},...limits};
   this.openrouterVerifiedUntil=0;this.pending=Promise.resolve();
  }
  configured(){return Object.entries(this.keys).map(([provider,key])=>({provider,model:this.models[provider],keyPresent:Boolean(key),enabled:Boolean(key)&&(provider!=='gemini'||this.geminiFreeTierConfirmed),reason:!key?'missing_key':provider==='gemini'&&!this.geminiFreeTierConfirmed?'free_project_not_confirmed':provider==='openrouter'?'requires_live_zero_price_check':'configured'}));}
