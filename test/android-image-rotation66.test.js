@@ -17,9 +17,12 @@ test('v66 newly opened approved image starts an asynchronous feed update for sub
 test('v66 APK build uses increased Android release version and release certificate checks', () => {
  const gradle = fs.readFileSync('android-project/app/build.gradle.kts','utf8');
  const yaml = fs.readFileSync('.github/workflows/build.yml','utf8');
- assert.match(gradle,/versionCode = 96/);
+ assert.match(gradle,/versionCode = 97/);
  assert.match(gradle,/versionName = "4\.56"/);
- assert.match(yaml,/Veldio-56\.apk/);
- assert.match(yaml,/versionCode='96'/);
+ assert.match(yaml,/Veldio-57\.apk/);
+ assert.match(yaml,/versionCode='97'/);
  assert.match(yaml,/apksigner" verify --verbose --print-certs/);
 });
+
+// New artwork is visible on the news page without associating unrelated clubs with an article.
+test('v67 shows reviewed gallery previews on the home feed',()=>{const main=fs.readFileSync('android-project/app/src/main/java/nl/voetbalhub/app/MainActivity.java','utf8');const server=fs.readFileSync('server.js','utf8');assert.match(main,/matchArtworkPreview67\(\)/);assert.match(main,/Nieuwe Veldio wedstrijdbeelden/);assert.match(server,/url\.pathname==="\/beeldcollectie"/);});
