@@ -816,6 +816,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   return attempts.get(url);
  }
  const groups=[];
+ // Publish up to the configured limit only when each independent quality gate passes.
+ // Verified Sportmonks goal timelines may enrich match writing; no quota target bypasses review.
  const matchGroups=[];
  for(const [competition, endpoint] of [
   ['eredivisie','/integrations/football?competition=eredivisie'],
