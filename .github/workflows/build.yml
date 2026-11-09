@@ -134,25 +134,75 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'
-      - name: Compile separate Veldio preview package
-        working-directory: android-project
-        run: gradle :app:assembleDebug -PveldioPreview51=true --no-daemon
-      - name: Verify isolated package and APK safety
+      - name: Prepare persistent release signing for separate preview
+        if: github.ref == 'refs/heads/main'
+        env:
+          SIGNING_KEYSTORE_BASE64: ${{ secrets.VELDIO_RELEASE_KEYSTORE_BASE64 }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.VELDIO_RELEASE_KEYSTORE_PASSWORD }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.VELDIO_RELEASE_KEY_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.VELDIO_RELEASE_KEY_ALIAS }}
         run: |
           set -euo pipefail
-          cp android-project/app/build/outputs/apk/debug/app-debug.apk Veldio-52B-preview.apk
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-52B-preview.apk > preview-signature.txt
-          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-52B-preview.apk > preview-manifest.txt
+          python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+
+          names = ('SIGNING_KEYSTORE_BASE64', 'SIGNING_STORE_PASSWORD', 'SIGNING_KEY_PASSWORD', 'SIGNING_KEY_ALIAS')
+          missing = [name for name in names if not os.environ.get(name)]
+          if missing:
+              raise SystemExit('GitHub Actions signing secrets missing: ' + ', '.join(missing))
+
+          def java_property(value):
+              return (value.replace('\\', '\\\\').replace('\n', '\\n')
+                           .replace('\r', '\\r').replace('=', '\\=').replace(':', '\\:'))
+
+          root = Path('android-project')
+          try:
+              decoded = base64.b64decode(''.join(os.environ['SIGNING_KEYSTORE_BASE64'].split()), validate=True)
+          except Exception:
+              raise SystemExit('VELDIO_RELEASE_KEYSTORE_BASE64 is not valid Base64 data')
+          if len(decoded) < 1000:
+              raise SystemExit('The release keystore is unexpectedly small')
+          keystore = root / 'veldio-release.jks'
+          keystore.write_bytes(decoded)
+          keystore.chmod(0o600)
+          properties = root / 'keystore.properties'
+          properties.write_text(
+              'storeFile=veldio-release.jks\n'
+              + 'storePassword=' + java_property(os.environ['SIGNING_STORE_PASSWORD']) + '\n'
+              + 'keyAlias=' + java_property(os.environ['SIGNING_KEY_ALIAS']) + '\n'
+              + 'keyPassword=' + java_property(os.environ['SIGNING_KEY_PASSWORD']) + '\n',
+              encoding='utf-8'
+          )
+          properties.chmod(0o600)
+          print('Release signing material prepared (values not logged).')
+          PY
+      - name: Compile separately signed Veldio preview APK
+        if: github.ref == 'refs/heads/main'
+        working-directory: android-project
+        run: gradle :app:assembleRelease -PveldioPreview51=true --no-daemon
+      - name: Remove signing material after compilation
+        if: always()
+        run: rm -f android-project/keystore.properties android-project/veldio-release.jks
+      - name: Verify isolated package and APK safety
+        if: github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          cp android-project/app/build/outputs/apk/release/app-release.apk Veldio-52B-preview-release.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-52B-preview-release.apk > preview-signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-52B-preview-release.apk > preview-manifest.txt
           grep -q "package: name='nl.voetbalhub.preview51'.*versionCode='92'.*versionName='4.52b-test'" preview-manifest.txt
           grep -q "application-label:'Veldio 52B Test'" preview-manifest.txt
-          python3 scripts/apk-secret-scan.py Veldio-52B-preview.apk
-          python3 scripts/verify-android-source.py Veldio-52B-preview.apk
-          sha256sum Veldio-52B-preview.apk > preview-sha256.txt
+          python3 scripts/apk-secret-scan.py Veldio-52B-preview-release.apk
+          python3 scripts/verify-android-source.py Veldio-52B-preview-release.apk
+          sha256sum Veldio-52B-preview-release.apk > preview-sha256.txt
       - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main'
         with:
-          name: Veldio-52B-preview
+          name: Veldio-52B-preview-release
           path: |
-            Veldio-52B-preview.apk
+            Veldio-52B-preview-release.apk
             preview-signature.txt
             preview-manifest.txt
             preview-sha256.txt
