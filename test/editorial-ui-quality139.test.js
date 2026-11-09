@@ -27,13 +27,17 @@ test('news fallback never prints headlines or fabricated club badges into thumbn
 });
 
 test('updated signed APK advances versionCode to allow a same-certificate update',()=>{
- assert.match(gradle,/versionCode\s*=\s*93\b/);
- assert.match(gradle,/versionName\s*=\s*"4\.53"/);
+ assert.match(gradle,/versionCode\s*=\s*94\b/);
+ assert.match(gradle,/versionName\s*=\s*"4\.54"/);
 });
 
-test('a generic approved cover cannot replace a match-specific article visual',()=>{
- assert.match(cards,/approved-library49/);
- assert.match(cards,/optJSONArray\("clubs"\)/);
- assert.match(cards,/new TopicArtwork39\(article\)/);
- assert.match(cards,/length\(\)!=2/);
+test('reader and news cards share cover selection and reject generic match imagery',()=>{
+ const photos=fs.readFileSync(path+'EditorialPhotos.java','utf8');
+ assert.match(cards,/EditorialPhotos\.bind/);
+ assert.match(reader,/EditorialPhotos\.bind/);
+ assert.match(photos,/approved-library49/);
+ assert.match(photos,/optJSONArray\("clubs"\)/);
+ assert.match(photos,/new TopicArtwork39\(article\)/);
+ assert.match(photos,/length\(\) != 2/);
+ assert.match(reader,/WindowInsetsCompat\.Type\.displayCutout/);
 });

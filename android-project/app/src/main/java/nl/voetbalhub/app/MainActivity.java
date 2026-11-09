@@ -1089,28 +1089,29 @@ private void showScores() {
         Branding.article(article);
         screenHistory.resetExit();
         if (homeFeature != null) homeFeature.pauseVideo();
-        editorialArticleOpen = true;
         if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
         if (editorialDialog != null && editorialDialog.isShowing()) editorialDialog.dismiss();
+        editorialArticleOpen = true;
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(VeldioEditorial.INK);
         root.addView(VeldioEditorial.readerHeader(this, "column".equalsIgnoreCase(article.optString("type")) || "de derde helft".equalsIgnoreCase(article.optString("category")), this::closeEditorialArticle));
         final java.util.ArrayList<TextView> readingText = new java.util.ArrayList<>();
         LinearLayout tools = new LinearLayout(this); tools.setGravity(Gravity.CENTER_VERTICAL);tools.setPadding(dp(14), dp(4), dp(14), dp(8));
         TextView save = tv(EditorialStore.contains(this, article) ? "★ Bewaard" : "☆ Bewaren", 13, C.GREEN, true);
-        save.setGravity(Gravity.CENTER_VERTICAL); tools.addView(save, new LinearLayout.LayoutParams(0, dp(44), 1));
+        save.setGravity(Gravity.CENTER_VERTICAL); save.setMinHeight(dp(44)); tools.addView(save, new LinearLayout.LayoutParams(0, -2, 1));
         save.setOnClickListener(v -> { boolean stored = EditorialStore.toggle(this, article); save.setText(stored ? "★ Bewaard" : "☆ Bewaren"); Toast.makeText(this, stored ? "Artikel bewaard op dit apparaat" : "Artikel uit leeslijst verwijderd", Toast.LENGTH_SHORT).show(); });
         TextView smaller = tv("A−", 14, C.TEXT, true); smaller.setGravity(Gravity.CENTER); tools.addView(smaller, new LinearLayout.LayoutParams(dp(44),dp(44)));smaller.setContentDescription("Kleinere artikeltekst");
         TextView larger = tv("A+", 17, C.TEXT, true); larger.setGravity(Gravity.CENTER); tools.addView(larger, new LinearLayout.LayoutParams(dp(44),dp(44)));larger.setContentDescription("Grotere artikeltekst");
         android.view.View.OnClickListener resize = v -> {int size = Math.max(15, Math.min(23, prefs.getInt("readerFontSize",17) + (v == larger ? 1 : -1)));prefs.edit().putInt("readerFontSize",size).apply();for(TextView paragraph : readingText)paragraph.setTextSize(size);};smaller.setOnClickListener(resize);larger.setOnClickListener(resize);
-        TextView share = tv("Delen", 12, C.MUTED, true);share.setGravity(Gravity.CENTER);tools.addView(share,new LinearLayout.LayoutParams(dp(52),dp(44)));share.setOnClickListener(v -> {Intent send = new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_SUBJECT,article.optString("headline"));send.putExtra(Intent.EXTRA_TEXT,article.optString("headline")+"\n\n"+article.optString("standfirst")+"\n\nVeldio · Alles voetbal. Eén plek.");try{startActivity(Intent.createChooser(send,"Artikel delen"));}catch(Exception ignored){}});
+        TextView share = tv("Delen", 12, C.MUTED, true);share.setGravity(Gravity.CENTER);share.setMinHeight(dp(44));share.setPadding(dp(4),0,dp(4),0);tools.addView(share,new LinearLayout.LayoutParams(-2,-2));share.setOnClickListener(v -> {Intent send = new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_SUBJECT,article.optString("headline"));send.putExtra(Intent.EXTRA_TEXT,article.optString("headline")+"\n\n"+article.optString("standfirst")+"\n\nVeldio · Alles voetbal. Eén plek.");try{startActivity(Intent.createChooser(send,"Artikel delen"));}catch(Exception ignored){}});
         VeldioEditorial.styleTools(this, tools); LinearLayout.LayoutParams toolsLp=new LinearLayout.LayoutParams(-1,-2);toolsLp.setMargins(0,dp(6),0,dp(14));
         ScrollView scroll = new ScrollView(this);
         LinearLayout page = new LinearLayout(this);
         page.setOrientation(LinearLayout.VERTICAL);
         page.setPadding(dp(16), dp(8), dp(16), dp(28));
-        // Reader actions scroll with the article. No text can be hidden behind a fixed bar.
-        page.addView(tools,toolsLp);
+        scroll.setClipToPadding(true);
+        scroll.setFocusableInTouchMode(true);
+        scroll.setDescendantFocusability(android.view.ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         boolean isColumnReader = "column".equalsIgnoreCase(article.optString("type", "")) ||
             "de derde helft".equalsIgnoreCase(article.optString("category", ""));
         if (isColumnReader) {
@@ -1125,55 +1126,22 @@ private void showScores() {
         try {dateLabel = java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy · HH:mm", new java.util.Locale("nl","NL")).withZone(java.time.ZoneId.of("Europe/Amsterdam")).format(java.time.Instant.parse(published));} catch(Exception ignored) {}
         int words = 0;org.json.JSONArray readBody = article.optJSONArray("body");if(readBody!=null)for(int i=0;i<readBody.length();i++)words+=readBody.optString(i, "").trim().split("\\s+").length;
         TextView metadata = tv((dateLabel.isEmpty()?"":dateLabel+" · ")+Math.max(1,(words+199)/200)+" min leestijd", 11, C.MUTED, false);metadata.setPadding(0,0,0,dp(10));page.addView(metadata);
-        TextView originalArt = VeldioEditorial.artwork(this);
-        originalArt.setGravity(android.view.Gravity.CENTER);
-        android.graphics.drawable.GradientDrawable artBackground = new android.graphics.drawable.GradientDrawable(
-            android.graphics.drawable.GradientDrawable.Orientation.TL_BR,
-            new int[]{0xFF145B36, 0xFF091C14});
-        artBackground.setCornerRadius(dp(14));
-        VeldioEditorial.styleArtwork(this,originalArt);
-        LinearLayout.LayoutParams artParams = new LinearLayout.LayoutParams(-1, Math.round((getResources().getDisplayMetrics().widthPixels-dp(32))*9f/16f));
-        artParams.setMargins(0, dp(10), 0, dp(14));
-        page.addView(originalArt, artParams);if(isColumnReader)originalArt.setVisibility(android.view.View.GONE);
-        String coverUrl = article.optString("imageUrl", "").trim();
-        page.addView(EditorialPhotos.credit(this,article));
-                  String coverRights = article.optString("imageRights", "").trim().toLowerCase(java.util.Locale.ROOT);
-        if (!isColumnReader && coverUrl.startsWith("https://") && ("cleared".equals(coverRights) || "licensed".equals(coverRights))) {
-            android.widget.ImageView cover = new android.widget.ImageView(this);
-            cover.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);cover.setAdjustViewBounds(true);
-            cover.setContentDescription("Afbeelding bij artikel"); VeldioEditorial.styleCover(this,cover);
-            LinearLayout.LayoutParams coverLp = new LinearLayout.LayoutParams(-1, -2);
-            coverLp.setMargins(0, dp(8), 0, dp(14));
-            page.addView(cover, coverLp);
-            cover.setVisibility(android.view.View.GONE);
-            executor.execute(() -> {
-                android.graphics.Bitmap localPhoto=EditorialPhotos.bitmap(this,article,1600);if(localPhoto!=null){runOnUiThread(()->{cover.setImageBitmap(localPhoto);cover.setVisibility(android.view.View.VISIBLE);originalArt.setVisibility(android.view.View.GONE);});return;}
-                HttpURLConnection imageConn = null;
-                try {
-                    imageConn = (HttpURLConnection) new URL(coverUrl).openConnection();
-                    imageConn.setConnectTimeout(10000);
-                    imageConn.setReadTimeout(12000);
-                    imageConn.setInstanceFollowRedirects(false);
-                    int length = imageConn.getContentLength();
-                    String type = imageConn.getContentType();
-                    if (imageConn.getResponseCode() != 200 || type == null ||
-                        !type.toLowerCase(java.util.Locale.ROOT).startsWith("image/") ||
-                        length > 5000000) throw new java.io.IOException("Invalid image");
-                    android.graphics.Bitmap bitmap;
-                    try (InputStream stream = imageConn.getInputStream()) {
-                        bitmap = EditorialBitmap.read(stream,1600);
-                    }
-                    if (bitmap == null) throw new java.io.IOException("Invalid bitmap");
-                    runOnUiThread(() -> {cover.setImageBitmap(bitmap);cover.setVisibility(android.view.View.VISIBLE);originalArt.setVisibility(android.view.View.GONE);});
-                } catch (Exception ignored) {
-                    runOnUiThread(() -> {
-                        cover.setVisibility(android.view.View.GONE);
-                        originalArt.setVisibility(android.view.View.VISIBLE);
-                    });
-                } finally {
-                    if (imageConn != null) imageConn.disconnect();
+        if (!isColumnReader) {
+            android.widget.ImageView cover = new android.widget.ImageView(this) {
+                @Override protected void onMeasure(int widthSpec, int heightSpec) {
+                    int width = MeasureSpec.getSize(widthSpec);
+                    super.onMeasure(widthSpec, MeasureSpec.makeMeasureSpec(Math.round(width * 9f / 16f), MeasureSpec.EXACTLY));
                 }
-            });
+            };
+            cover.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            VeldioEditorial.styleCover(this, cover);
+            LinearLayout.LayoutParams coverLp = new LinearLayout.LayoutParams(-1, -2);
+            coverLp.setMargins(0, dp(8), 0, dp(4));
+            page.addView(cover, coverLp);
+            EditorialPhotos.bind(this, cover, article, 1280);
+            page.addView(EditorialPhotos.credit(this, article));
+            TextView sources = EditorialPhotos.sources(this, article);
+            if (sources != null) page.addView(sources);
         }
         String intro = article.optString("standfirst", "").trim();
         if (!intro.isEmpty()) {
@@ -1181,11 +1149,10 @@ private void showScores() {
             introText.setPadding(0, 0, 0, dp(12));
             page.addView(introText);
         }
-        // Original articles use the local licensed Veldio banner only.
-        // No remote image slot or image credit is created in this reader.
         TextView byline = tv(article.optString("author", "Veldio Redactie"), 11, C.MUTED, false);
         byline.setPadding(0, 0, 0, dp(12));
         page.addView(byline);
+        page.addView(tools,toolsLp);
         org.json.JSONArray paragraphs = article.optJSONArray("body");
         if (paragraphs != null) {
             for (int i = 0; i < paragraphs.length(); i++) {
@@ -1215,15 +1182,23 @@ private void showScores() {
         page.addView(VeldioEditorial.footer(this));
         scroll.addView(page);
         root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
+        ViewCompat.setOnApplyWindowInsetsListener(root, (view, insets) -> {
+            androidx.core.graphics.Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
+        });
         editorialDialog = new android.app.Dialog(this);
         editorialDialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
         editorialDialog.setContentView(root);
         editorialDialog.setOnDismissListener(dialog -> { editorialArticleOpen = false; editorialDialog = null;if(personalHub!=null)personalHub.refreshSaved(); });
         editorialDialog.show();
+        scroll.requestFocus();
         android.view.Window articleWindow = editorialDialog.getWindow();
         if (articleWindow != null) {
             articleWindow.setBackgroundDrawableResource(android.R.color.black);
             articleWindow.setLayout(-1, -1);
+            WindowCompat.setDecorFitsSystemWindows(articleWindow, false);
+            ViewCompat.requestApplyInsets(root);
         }
     }
 

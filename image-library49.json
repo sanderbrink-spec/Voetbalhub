@@ -342,6 +342,99 @@
         "rules49-goal-height"
       ],
       "answerSafe": true
+    },
+    {
+      "id": "match64-sm-19714595",
+      "file": "public/match-covers64/sm-19714595.webp",
+      "fixtureId": "sm-19714595",
+      "categories": [
+        "report"
+      ],
+      "subject": "FC Twente – Ajax",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "neutral",
+      "keywords": [
+        "supporterssjaals",
+        "day"
+      ],
+      "questionIds": [],
+      "variant": "stadion-en-sjaals",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio fase 64",
+      "lastUsed": null,
+      "sha256": "3fcfdf04a7894e90bea45de06e516720c4f1eea4ca57a863e8db7f450f72e20d",
+      "caption": "AI-illustratie van FC Twente en Ajax in een fictief stadion."
+    },
+    {
+      "id": "match64-sm-19714596",
+      "file": "public/match-covers64/sm-19714596.webp",
+      "fixtureId": "sm-19714596",
+      "categories": [
+        "report"
+      ],
+      "subject": "SC Heerenveen – Feyenoord",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "neutral",
+      "keywords": [
+        "supporterssjaals",
+        "day"
+      ],
+      "questionIds": [],
+      "variant": "stadion-en-sjaals",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio fase 64",
+      "lastUsed": null,
+      "sha256": "4ddd5187fd656c585594b872ff42aefb8e0e987b1bb80d82b5f6a8797b99ead6",
+      "caption": "AI-illustratie van SC Heerenveen en Feyenoord in een fictief stadion."
+    },
+    {
+      "id": "match64-sm-19714597",
+      "file": "public/match-covers64/sm-19714597.webp",
+      "fixtureId": "sm-19714597",
+      "categories": [
+        "report"
+      ],
+      "subject": "ADO Den Haag – Sparta Rotterdam",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "neutral",
+      "keywords": [
+        "supporterssjaals",
+        "twilight"
+      ],
+      "questionIds": [],
+      "variant": "stadion-en-sjaals",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio fase 64",
+      "lastUsed": null,
+      "sha256": "76d88206f12b6a4378c94c9cb4c3b212ef2523b9cddef26fd1a9aa10c1914600",
+      "caption": "AI-illustratie van ADO Den Haag en Sparta Rotterdam in een fictief stadion."
     }
   ]
 }

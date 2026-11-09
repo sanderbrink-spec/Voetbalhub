@@ -275,7 +275,8 @@ async function getArticles(view = "current") {
   const articles=[];
   for (const article of candidates) {
     try {
-      articles.push(require("./media43").apply(require("./brand").article(withArticleCover(article))));
+      const decorated = require("./media43").apply(require("./brand").article(withArticleCover(article)));
+      articles.push(require("./image-library49").applyFixtureCover(decorated));
     } catch (error) {
       console.error("Article presentation failed:", article.id, error.message);
     }

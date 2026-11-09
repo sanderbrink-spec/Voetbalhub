@@ -26,6 +26,59 @@ def adb(*args, timeout=45):
     )
 
 
+def capture(device, label):
+    (OUT / (label + ".xml")).write_text(device.dump_hierarchy(), encoding="utf-8")
+    path = OUT / (label + ".png")
+    path.write_bytes(subprocess.check_output(["adb", "exec-out", "screencap", "-p"], timeout=30))
+    if path.stat().st_size < 6000:
+        raise AssertionError("Blank or truncated screenshot: " + label)
+
+
+def article_reader(device, suffix):
+    headline = "Meerveld schiet Heerenveen met hattrick langs Feyenoord"
+    if not device(text="Nieuws").wait(timeout=25):
+        raise AssertionError("News navigation missing")
+    device(text="Nieuws").click()
+    if device(text="Laatste nieuws").wait(timeout=8):
+        device(text="Laatste nieuws").click()
+    refresh = device(textMatches="(?i)ververs(?:en)?")
+    if refresh.wait(timeout=12):
+        refresh.click()
+    card = device(text=headline)
+    for _ in range(8):
+        if card.wait(timeout=4):
+            break
+        device.swipe_ext("up", scale=0.6)
+    else:
+        raise AssertionError("Corrected live article not visible in Android news")
+    capture(device, "news-" + suffix)
+    card.click()
+    title = device(text=headline)
+    back = device(description="Terug naar de vorige pagina")
+    if not back.wait(timeout=10) or not title.wait(timeout=10):
+        raise AssertionError("Reader header or full article headline missing")
+    if title.info["bounds"]["top"] < back.info["bounds"]["bottom"]:
+        raise AssertionError("Headline overlaps the fixed back control")
+    capture(device, "reader-top-" + suffix)
+
+    paragraphs = device(textStartsWith="Na rust maakte Levi Smans in de 47e minuut gelijk.")
+    for _ in range(10):
+        if paragraphs.exists and paragraphs.info["bounds"]["top"] >= back.info["bounds"]["bottom"]:
+            break
+        device.swipe_ext("up", scale=0.50)
+    else:
+        raise AssertionError("Verified halftime transition not visible below the reader header")
+    capture(device, "reader-middle-" + suffix)
+    for _ in range(10):
+        if device(textStartsWith="VELDIO  /").exists:
+            break
+        device.swipe_ext("up", scale=0.68)
+    else:
+        raise AssertionError("Cannot reach end of article")
+    capture(device, "reader-bottom-" + suffix)
+    back.click()
+
+
 checks = []
 try:
     if not APK.is_file():
@@ -41,8 +94,8 @@ try:
     )
     if not all(token in manifest for token in (
         "package: name='" + PACKAGE + "'",
-        "versionCode='93'",
-        "versionName='4.53'",
+        "versionCode='94'",
+        "versionName='4.54'",
     )):
         raise AssertionError("Unexpected production package or version")
     if "application-debuggable" in manifest:
@@ -90,6 +143,17 @@ try:
         raise AssertionError("Android screenshot blank or truncated")
     checks.append("Rendered activity UI and saved real emulator screenshot")
 
+    article_reader(device, "normal")
+    checks.append("Live corrected report, reader header, body and footer at standard font size")
+    adb("shell", "settings", "put", "system", "font_scale", "1.60")
+    try:
+        adb("shell", "am", "force-stop", PACKAGE)
+        adb("shell", "am", "start", "-W", "-n", PACKAGE + "/" + ACTIVITY)
+        article_reader(device, "large")
+        checks.append("Live article reader and scroll at 160% system font size")
+    finally:
+        adb("shell", "settings", "put", "system", "font_scale", "1.0")
+
     log = adb("logcat", "-d", "-t", "2000")
     if re.search(r"FATAL EXCEPTION:[\s\S]{0,600}Process: " + re.escape(PACKAGE), log):
         raise AssertionError("Veldio crashed during the smoke test")
@@ -99,12 +163,12 @@ try:
         "status": "PASS",
         "apk": str(APK),
         "package": PACKAGE,
-        "version": "4.53",
+        "version": "4.54",
         "androidApi": 36,
         "checks": checks,
         "limits": [
             "Android emulator, not a physical Samsung S23",
-            "Smoke test verifies install and UI launch, not ten published articles",
+            "Reader coverage is limited to the corrected Heerenveen report",
             "Legacy differently signed app cannot be updated in place",
         ],
     }
