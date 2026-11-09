@@ -1075,7 +1075,7 @@ private void showScores() {
     private void addApiFootballEuropeanSection(LinearLayout parent) { /* disabled pending rights confirmation */ }
 
 
-    private static final String EDITORIAL_API_URL = "https://voetbalhub-redactie-api.onrender.com";
+    private static final String EDITORIAL_API_URL = "https://voetbalhub-redactie.onrender.com";
 
     private boolean editorialArticleOpen = false;
     private android.app.Dialog editorialDialog;
