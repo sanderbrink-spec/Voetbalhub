@@ -11,6 +11,7 @@ const production=require('../editorial-production45');
 const {createRouter,sealCheckpoint,openCheckpoint}=require('../editorial-provider-router');
 const matches=require('../editorial-match55');
 const matchGuidance=require('../editorial-match-guidance133');
+const editorialRecovery136=require('../editorial-recovery136');
 const matchEvidence122=require('../editorial-match-evidence122');
 const {CREDIT}=require('../football-results52');
 const {articleUrl,discoverGdelt}=require('./editorial-discovery53');
@@ -961,6 +962,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
    reopenObservedMatchCopyFailure(job,now);
+   // The original verified match evidence is recomputed from the live fixture.
+   // Old rejected drafts and scores are discarded. At most one new attempt
+   // per exact job under this corrected writer; never re-open stale matches.
+   if(editorialRecovery136.reopenVerifiedMatch(job,group.matchRecord,now)){
+    report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_match_writer_recovery_v136'});
+   }
    reopenRichSportmonksV132(job,group.matchRecord,now);
    if(!job.matchOutputV5&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
    job.matchOutputV5=true;
@@ -1204,12 +1211,14 @@ async function run(options={}){
   if(!report.status){
    const sourcesUnavailable=report.sources.gdelt?.status==='unavailable'&&
     report.sources.match.status==='unavailable'&&report.sources.officialIndexes.every(source=>source.status==='unavailable')&&!report.counts.readable;
-   report.status=report.processingErrors.length||report.queue?.technicalReview?'processing_errors':report.published.length?'completed':sourcesUnavailable?'sources_unavailable':'no_new_verified_articles';
+   const editorialBlocker=editorialRecovery136.publicationBlocker(report);
+   if(editorialBlocker)report.signals.push({route:'editorial',outcome:editorialBlocker,reason:'Goedkeuring niet bereikt; verlaag geen kwaliteitsnormen.'});
+   report.status=report.processingErrors.length||report.queue?.technicalReview?'processing_errors':report.published.length?'completed':editorialBlocker|| (sourcesUnavailable?'sources_unavailable':'no_new_verified_articles');
   }
   return report;
  }catch(error){report.status='failed';report.error=error.message;throw error;}
  finally{
-  report.outcome=report.status==='completed'?'success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':'error';
+  report.outcome=report.status==='completed'?'success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected'].includes(report.status)?'editorial_blocked':'error';
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
   fs.writeFileSync('.automatic-output/draft-review.json',JSON.stringify({
