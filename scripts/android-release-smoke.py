@@ -79,6 +79,37 @@ def article_reader(device, suffix):
     back.click()
 
 
+def artwork_gallery(device):
+    """Confirm the reviewed, offline-packaged illustrations are visible in the real Android UI."""
+    news = device(text="Nieuws")
+    if not news.wait(timeout=10):
+        raise AssertionError("Nieuws navigation unavailable before artwork check")
+    news.click()
+    heading = device(text="Nieuwe Veldio wedstrijdbeelden")
+    for _ in range(14):
+        if heading.exists:
+            bounds = heading.info.get("bounds", {})
+            if 0 < bounds.get("top", -1) < 2000:
+                break
+        device.swipe_ext("up", scale=0.5)
+    else:
+        raise AssertionError("New match artwork section not visible in real Android news feed")
+    action = device(text="BEKIJK ALLE 10")
+    if not action.wait(timeout=10):
+        raise AssertionError("All-ten artwork gallery action missing")
+    capture(device, "match-artwork-feed")
+    action.click()
+    if not device(text="Veldio · 10 wedstrijdbeelden").wait(timeout=10):
+        raise AssertionError("Native ten-image artwork gallery did not open")
+    if not device(text="FC Groningen – Ajax").wait(timeout=8):
+        raise AssertionError("Native gallery is missing reviewed Groningen artwork")
+    capture(device, "match-artwork-gallery")
+    close = device(text="SLUITEN")
+    if not close.exists:
+        raise AssertionError("Image gallery cannot be closed")
+    close.click()
+
+
 checks = []
 try:
     if not APK.is_file():
@@ -94,8 +125,8 @@ try:
     )
     if not all(token in manifest for token in (
         "package: name='" + PACKAGE + "'",
-        "versionCode='97'",
-        "versionName='4.57'",
+        "versionCode='98'",
+        "versionName='4.58'",
     )):
         raise AssertionError("Unexpected production package or version")
     if "application-debuggable" in manifest:
@@ -154,6 +185,9 @@ try:
     finally:
         adb("shell", "settings", "put", "system", "font_scale", "1.0")
 
+    artwork_gallery(device)
+    checks.append("Ten reviewed match illustrations visible in news and native gallery")
+
     log = adb("logcat", "-d", "-t", "2000")
     if re.search(r"FATAL EXCEPTION:[\s\S]{0,600}Process: " + re.escape(PACKAGE), log):
         raise AssertionError("Veldio crashed during the smoke test")
@@ -163,7 +197,7 @@ try:
         "status": "PASS",
         "apk": str(APK),
         "package": PACKAGE,
-        "version": "4.57",
+        "version": "4.58",
         "androidApi": 36,
         "checks": checks,
         "limits": [
