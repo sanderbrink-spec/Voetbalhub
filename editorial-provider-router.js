@@ -63,7 +63,9 @@ class EditorialProviderRouter{
  async _complete(messages,{task='extraction',requestOptions={},signal,writer=this.lastWriter,articleId=this.articleId||null}={}){
   const spec=TASKS[task];if(!spec)throw new RangeError('Onbekende redactietaak');
   const attempts=[],estimate=Math.ceil(JSON.stringify(messages).length/3)+spec.budget;
-  let order=this.keys.openai?['openai','groq','gemini','openrouter']:['groq','gemini','openrouter'];
+  // Prefer the existing stronger GPT-OSS writer; reserve OpenAI where possible
+  // for a different-family factual review. Any provider remains a fallback.
+  let order=task==='review'?['openai','groq','gemini','openrouter']:['groq','openai','gemini','openrouter'];
   if(task==='review'&&writer)order.sort((a,b)=>((a===writer.provider?2:(a==='gemini'?'gemini':a==='openai'?'openai':'gpt-oss')===writer.family?1:0)-(b===writer.provider?2:(b==='gemini'?'gemini':b==='openai'?'openai':'gpt-oss')===writer.family?1:0)));
   for(const provider of order){
    if(signal?.aborted)throw signal.reason;
