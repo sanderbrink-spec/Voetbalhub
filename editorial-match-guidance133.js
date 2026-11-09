@@ -37,6 +37,25 @@ function paragraphPlan(record = {}) {
   events:event.length
  };
 }
+// Facts are allocated to separate verified paragraphs. Flag an event quoted in
+// the wrong paragraph; do not invent missing events or change the article score.
+function paragraphChronologyIssues(record = {},draft = {}) {
+ const plan=paragraphPlan(record);
+ if(plan.format!=='rich'||!Array.isArray(draft.body)||draft.body.length!==plan.body.length)return [];
+ const facts=Array.isArray(record.verifiedFacts)?record.verifiedFacts:[];
+ const minutes=text=>[...String(text||'').matchAll(/\bminuut\s+(\d{1,2})(?:\+(\d{1,2}))?\b/gi)]
+  .map(m=>m[1]+(m[2]?'+'+m[2]:''));
+ const minutesFor=part=>part.factIds.flatMap(id=>minutes(facts[Number(id.slice(1))-1]));
+ const known=new Set(plan.body.flatMap(minutesFor));
+ const issues=[];
+ plan.body.forEach((part,index)=>{
+  const allowed=new Set(minutesFor(part));
+  for(const minute of minutes(draft.body[index]))
+   if(known.has(minute)&&!allowed.has(minute))
+    issues.push('Geverifieerde minuut '+minute+' staat in de verkeerde bodyalinea. Houd de toegewezen doelpuntenchronologie aan.');
+ });
+ return [...new Set(issues)];
+}
 function writingPrompt(record = {}) {
  const rich = isRichMatch(record);
  const common = [
@@ -69,4 +88,4 @@ function writingPrompt(record = {}) {
 function revisionPrompt(record = {}) {
  return writingPrompt(record) + ' Dit is een VOLLEDIGE NIEUWE VERSIE na een afkeuring. Het afgekeurde concept is bewust niet beschikbaar. Gebruik rejection uitsluitend als waarschuwing over eerdere fouten, nooit als bron voor nieuwe feiten. Repareer lage journalistieke kwaliteit met afzonderlijke bewezen feiten per alinea. Repareer lage originaliteit met een nieuwe eigen informatievolgorde en zinsbouw, nooit met verzonnen analyse, extra feit of bronkop. Controleer alle numerieke claims en tussenstanden vóór het antwoord opnieuw tegen verifiedFacts en allowedScores. Behoud het juiste rijke of compacte formaat. Neem geen eerdere beoordeling of goedkeuringsscore over. Als de afwijzing niet zonder nieuwe feiten te herstellen is: {"skip":true}.';
 }
-module.exports = {isRichMatch,allowedNumbers,allowedScores,paragraphPlan,writingPrompt,revisionPrompt};
+module.exports = {isRichMatch,allowedNumbers,allowedScores,paragraphPlan,paragraphChronologyIssues,writingPrompt,revisionPrompt};
