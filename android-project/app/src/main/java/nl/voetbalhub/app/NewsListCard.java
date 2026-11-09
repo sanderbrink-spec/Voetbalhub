@@ -25,11 +25,7 @@ public final class NewsListCard extends LinearLayout {
   LinearLayout meta=new LinearLayout(activity);meta.setGravity(Gravity.CENTER_VERTICAL);TextView category=text(article.optString("category","Voetbal").toUpperCase(new Locale("nl","NL")),9,0xFFA9FF35,true);if(article.optJSONObject("imageReview")!=null&&article.optJSONObject("imageReview").optBoolean("generated"))category.append(" · AI");category.setMaxLines(1);category.setEllipsize(android.text.TextUtils.TruncateAt.END);meta.addView(category,new LayoutParams(0,-2,1));TextView time=text(age(article.optString("publishedAt","")),9,0xFF94A49B,false);time.setPadding(dp(6),0,0,0);meta.addView(time);copy.addView(meta);
   TextView title=text(article.optString("headline","Voetbalnieuws"),feature40?21:16,0xFFF5F8F5,true);title.setLineSpacing(dp(2),1f);LayoutParams headline=new LayoutParams(-1,-2);headline.topMargin=dp(7);copy.addView(title,headline);
   setFocusable(true);setContentDescription(article.optString("headline","Voetbalnieuws"));setOnClickListener(v->open.run());
-  boolean column="column".equalsIgnoreCase(article.optString("type"))||"de derde helft".equalsIgnoreCase(article.optString("category"))||"column".equalsIgnoreCase(article.optString("category"));
-  if(column){
-   image.setImageDrawable(new EditorialArtwork(activity,true));
-   image.setContentDescription("Sander Brink, auteur van De Derde Helft");
-  }else EditorialPhotos.bind(activity,image,article,640);
+  EditorialPhotos.bind(activity,image,article,640);
  }
  @Override protected void onMeasure(int widthSpec,int heightSpec){
   if(thumbnail==null||articleCopy==null){super.onMeasure(widthSpec,heightSpec);return;}

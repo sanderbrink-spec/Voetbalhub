@@ -1,0 +1,145 @@
+{
+  "f43dc560-a720-4ea7-ac3d-29dcc9e553d3": {
+    "category": "club"
+  },
+  "7609658d-10fa-40fa-99cd-f5fd78350f6a": {
+    "category": "report",
+    "approvedAsset": "heerenveen43"
+  },
+  "7c1be307-7bdf-4e90-b2b0-392d047d941a": {
+    "category": "report",
+    "approvedAsset": "feyenoord43"
+  },
+  "a89b6005-6433-482d-a33b-7710b3f72170": {
+    "category": "report",
+    "approvedAsset": "ajax43"
+  },
+  "a3fae7b9-f58f-4ee8-afee-025f48e3dea3": {
+    "category": "report",
+    "approvedAsset": "psv43"
+  },
+  "eec60ce3-7054-470d-bd22-71910f58dde5": {
+    "category": "preview",
+    "clubs": [
+      "PSV",
+      "Willem II"
+    ],
+    "approvedAsset": "psv43"
+  },
+  "537721a2-3e83-4848-8710-53f7d6353f37": {
+    "category": "preview",
+    "clubs": [
+      "Ajax",
+      "AZ"
+    ],
+    "approvedAsset": "ajax43"
+  },
+  "7c536565-5ef1-43fb-9a34-7bf775d9af48": {
+    "category": "preview",
+    "clubs": [
+      "FC Midtjylland",
+      "Ajax"
+    ],
+    "kickoff": {
+      "date": "2026-11-05T17:45:00Z",
+      "venue": {
+        "latitude": 56.118,
+        "longitude": 8.952
+      }
+    }
+  },
+  "79ef5b4d-cb4f-4575-98a6-d13e0ca6544f": {
+    "category": "preview",
+    "clubs": [
+      "Willem II",
+      "PEC Zwolle"
+    ],
+    "approvedAsset": "willem43"
+  },
+  "fca0bd67-45a0-4891-8415-b8f62e64eb34": {
+    "category": "preview",
+    "clubs": [
+      "FC Emmen",
+      "FC Den Bosch"
+    ],
+    "approvedAsset": "emmen43"
+  },
+  "92c3f8b4-8a1e-4afc-9353-c136eb19a896": {
+    "category": "report",
+    "clubs": [
+      "FC Groningen",
+      "FC Emmen"
+    ]
+  },
+  "1406b2e4-ce33-4372-9964-ea485bbadf61": {
+    "category": "report",
+    "clubs": [
+      "NEC",
+      "FC Groningen"
+    ]
+  },
+  "a911d7bc-6de0-40c1-b71e-dd516b274d1c": {
+    "exclude": "Dubbele publicatie zonder goedgekeurd artikelbeeld"
+  },
+  "0cc1e2c0-3484-4da3-aa72-663a4840bc4d": {
+    "exclude": "Dubbele publicatie met externe beeldlink zonder bewezen rechten"
+  },
+  "85abcf58-379d-442f-8d1f-0faed548d9d3": {
+    "exclude": "Dubbele publicatie zonder goedgekeurd artikelbeeld"
+  },
+  "a54bac8f-d6db-536c-a8b1-904f10879c7e": {
+    "matchId": "sm-19714593",
+    "kickoff": {
+      "date": "2026-11-08T15:45:00Z",
+      "venue": {
+        "latitude": 52.613,
+        "longitude": 4.742
+      }
+    }
+  },
+  "a382473f-c3c1-58ab-ad13-7b3dd6bb9761": {
+    "matchId": "sm-19714595",
+    "kickoff": {
+      "date": "2026-11-08T13:30:00Z",
+      "venue": {
+        "latitude": 52.237,
+        "longitude": 6.837
+      }
+    }
+  },
+  "2cb1e3f7-fa9c-5615-a76d-65a1b0f2eb07": {
+    "matchId": "sm-19714597",
+    "kickoff": {
+      "date": "2026-11-07T17:45:00Z",
+      "venue": {
+        "latitude": 52.063,
+        "longitude": 4.384
+      }
+    }
+  },
+  "cd4f2374-b1e3-5f9d-a64f-d26fdf273384": {
+    "matchId": "sm-19714596",
+    "kickoff": {
+      "date": "2026-11-08T11:15:00Z",
+      "venue": {
+        "latitude": 52.958,
+        "longitude": 5.937
+      }
+    }
+  },
+  "1d1a32b4476b49f4fcefa607d50a029d051fd962277c833031181dd22c5b5fa4": {
+    "category": "preview",
+    "clubs": [
+      "FC Emmen",
+      "FC Den Bosch"
+    ],
+    "approvedAsset": "emmen43"
+  },
+  "dafd457c92a778b23fcda16a44f5fb89de1d4a49092d38887f9e0ac1ad713adb": {
+    "category": "report",
+    "clubs": [
+      "FC Groningen",
+      "FC Emmen"
+    ]
+  }
+}

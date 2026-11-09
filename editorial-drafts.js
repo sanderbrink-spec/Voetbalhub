@@ -18,6 +18,7 @@ function cleanPayload(value={}){
  return {
   draft:{headline:String(d.headline||'').trim().slice(0,200),standfirst:String(d.standfirst||'').trim().slice(0,700),body:Array.isArray(d.body)?d.body.filter(x=>typeof x==='string').map(x=>x.trim().slice(0,6000)).filter(Boolean).slice(0,5):[],why_it_matters:String(d.why_it_matters||'').slice(0,1000)},
   ...(value.matchId ? {matchId:String(value.matchId).slice(0,150)} : {}),
+  ...(value.imageCategory ? {imageCategory:String(value.imageCategory).slice(0,30)} : {}),
   ...(value.articleKind ? {articleKind:String(value.articleKind).slice(0,30)} : {}),
   ...(Number.isInteger(value.editorialScore) ? {editorialScore:value.editorialScore} : {}),
   ...(value.primaryAuthority ? {primaryAuthority:String(value.primaryAuthority).slice(0,30)} : {}),

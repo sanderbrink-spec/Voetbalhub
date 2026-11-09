@@ -12,7 +12,6 @@ public final class HomeMenu39 extends ScrollView {
   float heroHeight=Math.min(390,Math.max(245,getResources().getDisplayMetrics().widthPixels/getResources().getDisplayMetrics().density*.62f))+Math.max(0,getResources().getConfiguration().fontScale-1)*180;
   page.addView(new HomeSlideshow40(a,open,()->route.open("news")),new LinearLayout.LayoutParams(-1,dp(heroHeight)));
   // The current landing screen must show the approved artwork, not just the separate news page.
-  page.addView(MatchArtworkGallery68.preview(a,true),new LinearLayout.LayoutParams(-1,-2));
 
   LinearLayout highlights = new LinearLayout(a);
   LinearLayout.LayoutParams highlightRow = new LinearLayout.LayoutParams(-1, -2);

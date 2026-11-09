@@ -79,35 +79,35 @@ def article_reader(device, suffix):
     back.click()
 
 
-def artwork_gallery(device):
-    """Confirm the reviewed, offline-packaged illustrations are visible in the real Android UI."""
-    news = device(text="Nieuws")
-    if not news.wait(timeout=10):
-        raise AssertionError("Nieuws navigation unavailable before artwork check")
-    news.click()
-    heading = device(text="Nieuwe Veldio wedstrijdbeelden")
-    for _ in range(14):
-        if heading.exists:
-            bounds = heading.info.get("bounds", {})
-            if 0 < bounds.get("top", -1) < 2000:
-                break
-        device.swipe_ext("up", scale=0.5)
+def artwork_rotation(device):
+    headline = "Van Mieghem beslist duel met Sparta voor ADO"
+    device(text="Nieuws").click()
+    card = device(text=headline)
+    for _ in range(8):
+        if card.wait(timeout=5):
+            break
+        device.swipe_ext("up", scale=0.55)
     else:
-        raise AssertionError("New match artwork section not visible in real Android news feed")
-    action = device(text="BEKIJK ALLE 10")
-    if not action.wait(timeout=10):
-        raise AssertionError("All-ten artwork gallery action missing")
-    capture(device, "match-artwork-feed")
-    action.click()
-    if not device(text="Veldio · 10 wedstrijdbeelden").wait(timeout=10):
-        raise AssertionError("Native ten-image artwork gallery did not open")
-    if not device(text="FC Groningen – Ajax").wait(timeout=8):
-        raise AssertionError("Native gallery is missing reviewed Groningen artwork")
-    capture(device, "match-artwork-gallery")
-    close = device(text="SLUITEN")
-    if not close.exists:
-        raise AssertionError("Image gallery cannot be closed")
-    close.click()
+        raise AssertionError("ADO–Sparta ontbreekt in het nieuws")
+    hierarchy = device.dump_hierarchy()
+    if "Nieuwe Veldio wedstrijdbeelden" in hierarchy or "BEKIJK ALLE 10" in hierarchy:
+        raise AssertionError("De losse beeldgalerij is nog zichtbaar")
+    capture(device, "ado-sparta-kaart")
+    observed = []
+    for i in range(2):
+        card.click()
+        cover = device(description="AI-illustratie bij " + headline)
+        if not cover.wait(timeout=10):
+            raise AssertionError("Goedgekeurd ADO–Sparta-beeld ontbreekt")
+        capture(device, "ado-sparta-artikel-" + str(i + 1))
+        entries = [line for line in adb("logcat", "-d", "-s", "VeldioArtwork:I").splitlines()
+                   if "2cb1e3f7-fa9c-5615-a76d-65a1b0f2eb07" in line]
+        if not entries:
+            raise AssertionError("Geen artikelbeeldselectie gelogd")
+        observed.append(entries[-1].split("2cb1e3f7-fa9c-5615-a76d-65a1b0f2eb07 ", 1)[1].split()[0])
+        device(description="Terug naar de vorige pagina").click()
+    if observed[0] == observed[1]:
+        raise AssertionError("Opnieuw openen koos dezelfde variant: " + str(observed))
 
 
 checks = []
@@ -125,8 +125,8 @@ try:
     )
     if not all(token in manifest for token in (
         "package: name='" + PACKAGE + "'",
-        "versionCode='98'",
-        "versionName='4.58'",
+        "versionCode='99'",
+        "versionName='4.59'",
     )):
         raise AssertionError("Unexpected production package or version")
     if "application-debuggable" in manifest:
@@ -185,8 +185,8 @@ try:
     finally:
         adb("shell", "settings", "put", "system", "font_scale", "1.0")
 
-    artwork_gallery(device)
-    checks.append("Ten reviewed match illustrations visible in news and native gallery")
+    artwork_rotation(device)
+    checks.append("ADO–Sparta article-card and reader screenshots, two different approved variants, no gallery")
 
     log = adb("logcat", "-d", "-t", "2000")
     if re.search(r"FATAL EXCEPTION:[\s\S]{0,600}Process: " + re.escape(PACKAGE), log):
@@ -197,7 +197,7 @@ try:
         "status": "PASS",
         "apk": str(APK),
         "package": PACKAGE,
-        "version": "4.58",
+        "version": "4.59",
         "androidApi": 36,
         "checks": checks,
         "limits": [

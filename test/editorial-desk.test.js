@@ -46,13 +46,20 @@ test('queue preserves undated/news leads and distinguishes draft body shapes',()
 });
 let server,base,store,redisOptions;
 test.before(async()=>{
-  store=new Map();const redis={isReady:true,on(){},get:async key=>store.get(key)||null,set:async(key,value,options)=>{if(options?.NX&&store.has(key))return null;store.set(key,value);return 'OK';},
+  store=new Map();const imageAssignments={};const redis={isReady:true,on(){},hGetAll:async()=>({...imageAssignments}),hSet:async(key,changes)=>Object.assign(imageAssignments,changes),get:async key=>store.get(key)||null,set:async(key,value,options)=>{if(options?.NX&&store.has(key))return null;store.set(key,value);return 'OK';},
   eval:async(script,options)=>{
     assert.match(script,/record.revision/);
     const key=options.keys[0],current=store.get(key),expected=Number(options.arguments[0]);
     if(current?JSON.parse(current).revision!==expected:expected!==0)return 0;
     store.set(key,options.arguments[1]);return 1;
   },keys:async pattern=>[...store.keys()].filter(k=>k.startsWith(pattern.slice(0,-1)))};
+  const library=require('../image-library49');
+  const catalog=library.catalog();
+  const example=catalog.find(asset=>asset.id==='groningen43');
+  test.mock.method(library,'catalog',()=>[...catalog,
+    {...example,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax']},
+    {...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV']}
+  ]);
   const serverPath=path.join(__dirname,'../server.js'),realRequire=createRequire(serverPath);
   const context={require:id=>id==='redis'?{createClient:options=>{redisOptions=options;return redis;}}:realRequire(id),process:{env:{HUB_API_SECRET:'test-only',REDIS_URL:'test://mock'}},console,URL,Buffer,crypto:require('node:crypto'),__dirname:path.dirname(serverPath),module:{exports:{}},fetch};
   const source=fs.readFileSync(serverPath,'utf8').replace(/start\(\);\s*$/,'module.exports={handle};');
@@ -124,7 +131,7 @@ test('the browser preflight and publication server both reject repeated paragrap
 });
 
 function ownPayload(){
- const p=valid();p.draft={headline:'Club bespreekt nieuwe plannen voor supporters rond het stadion',standfirst:'Vertegenwoordigers van de club overleggen met supporters over de bereikbaarheid van het stadion en de ontvangst tijdens toekomstige evenementen.',body:[
+ const p=valid();p.articleKind='supporters';p.draft={headline:'Club bespreekt nieuwe plannen voor supporters rond het stadion',standfirst:'Vertegenwoordigers van de club overleggen met supporters over de bereikbaarheid van het stadion en de ontvangst tijdens toekomstige evenementen.',body:[
  'De directie verzamelde tijdens een bijeenkomst voorstellen van bezoekers over de toegangswegen en besprak welke praktische verbeteringen op korte termijn onderzocht kunnen worden.',
  'Medewerkers van verschillende afdelingen spraken vervolgens over afspraken voor de ontvangst van gezinnen waarbij duidelijke informatie op de toegangsbewijzen een belangrijk aandachtspunt vormde.',
  'Een werkgroep neemt de verzamelde reacties mee naar een volgend overleg en zal per voorstel bekijken welke betrokken partijen verantwoordelijk zijn voor verdere uitwerking.'
@@ -187,7 +194,7 @@ test('existing published articles gain reviewed covers in the public feed withou
  const before=store.size;
  const feed=await (await fetch(base+'/articles')).json();
  const linked=feed.articles.find(a=>a.id===article.id);
- assert.match(linked.imageUrl,/groningen-emmen-2026-10-29\.webp$/);
+ assert.match(linked.imageUrl,/article-art69\/groningen-1\.webp$/);
  assert.equal(linked.imageRights,'cleared');
  assert.equal(store.size,before);
  assert.equal(JSON.parse(store.get('article:'+article.id)).imageUrl,undefined);
@@ -201,7 +208,7 @@ test('approved publication carries the reviewed image and public image URL respo
  const result=await publish({...p,approved:true,editorialDraftId:record.id,expectedRevision:record.revision});
  assert.equal(result.status,200,await result.clone().text());
  const article=(await result.json()).article;
- assert.match(article.imageUrl,/emmen-den-bosch-2026-11-01\.webp$/);
+ assert.match(article.imageUrl,/news43\/emmen43\.webp$/);
  assert.equal(JSON.parse(store.get('article:'+article.id)).imageUrl,article.imageUrl);
  const image=await fetch(base+'/article-covers/emmen-den-bosch-2026-11-01.webp',{redirect:'manual'});
  assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/webp');

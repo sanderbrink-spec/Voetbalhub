@@ -530,13 +530,10 @@ async function reviseDraft(payload,candidate,docs,reason,options,published=[],re
  if(!revised||typeof revised.headline!=='string'||typeof revised.standfirst!=='string'||!Array.isArray(revised.body))throw Error('Herschrijving heeft geen geldige artikelstructuur.');
  return {headline:revised.headline,standfirst:revised.standfirst,body:revised.body};
 }
-async function uploadCover(payload,{token,fetcher=fetch,imageOptions={}}){
- const library=require('../image-library49');
- if(imageOptions.secret){try{const r=await require('../editorial-image44-service').remote(payload,{secret:imageOptions.secret,fetcher,budget:{remaining:0}});if(r.mode==='approved-library')return Object.fromEntries(Object.entries(r).filter(([key])=>key.startsWith('image')));}catch{/* Approved local fallback remains available during backend outages. */}}
- const asset=await library.select(payload);
- if(!asset)throw Error('Geen goedgekeurd bibliotheekbeeld beschikbaar.');
- return library.fields(asset);
-
+async function uploadCover(payload){
+ const image=require('../image-rotation65').resolve({...payload, ...payload.draft}).article;
+ if (!image) throw Error('Geen passend goedgekeurd artikelbeeld beschikbaar.');
+ return Object.fromEntries(Object.entries(image).filter(([key])=>key.startsWith('image')));
 }
 function recoverCompleteBodyV91(job,now){
  // One bounded generator retry after removing redundant model output fields.
@@ -974,7 +971,6 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  if(!report.providers.some(p=>p.enabled))throw Error('GROQ_API_KEY of bevestigde gratis reserveprovider ontbreekt.');
  const ai={key:groqKey,fetcher,router,model:config.model};
 
- const imageBudget={remaining:config.maxImageRequestsPerRun||8};
  const jobs=new Map();
  const seenGroups=new Set();
  let recoveredReviews=0;
@@ -1077,7 +1073,6 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const model=config.model;
  report.model=model;
  report.modelPolicy={extraction:'low',writing:'medium',revision:'high',review:'high'};
- const priorHashes=published.filter(a=>a.imageReview?.mode==='ai-photographic').map(a=>a.imageReview.visualHash).filter(Boolean);
  report.target=limit;report.imageProviderConfigured=Boolean(process.env.OPENAI_API_KEY);
  // Resume valid, already-written drafts before spending more provider capacity
  // on entirely new topics. Freshness and exact evidence hashes remain mandatory.
@@ -1207,7 +1202,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    payload.reviewNotes+=' Redactiescore fase45: '+JSON.stringify(assessment);
    payload.reviewNotes+=' Providerverantwoording: '+JSON.stringify([...(checkpoint.trace||[]),...router.trace.slice(traceCursor)]);
    stage='artwork';
-   Object.assign(payload,await uploadCover(payload,{token:githubToken,fetcher,imageOptions:{secret,budget:imageBudget,priorHashes}}));
+   Object.assign(payload,await uploadCover(payload));
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
    // Refresh before the only publication write to avoid a concurrent/manual duplicate.
    published=(await api('/articles?view=all')).articles;
@@ -1233,7 +1228,6 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(!visible||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(draft.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
    const repeatedResponse=await fetcher(API+'/articles',{signal:AbortSignal.timeout(60000),cache:'no-store'});
    if(!repeatedResponse.ok||!(await repeatedResponse.json()).articles?.some(article=>article.id===visible.id))throw Error('Gepubliceerd artikel niet opnieuw opvraagbaar.');
-   if(payload.imageReview.mode==='ai-photographic')priorHashes.push(payload.imageReview.visualHash);
    report.counts.published++;route.published++;
    report.published.push({route:matchRecord?'match':'news',id:visible.id,url:API+'/articles?id='+encodeURIComponent(visible.id),headline:visible.headline,score:assessment.score,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.category,imageMode:payload.imageReview.mode});published.push(visible);
    durable.queue.finish(job,'published',now);

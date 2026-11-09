@@ -23,7 +23,10 @@ function prepareColumn(request,now=new Date().toISOString()){
   authorApproval:{explicit:true,method:'author_supplied_manuscript',approvedAt:now,contentHash},verificationStatus:'author_supplied_not_independently_audited'};
 }
 async function publishColumn(client,request,now){
- const article=prepareColumn(request,now),key='article:'+article.id,existing=await client.get(key);
+ const prepared=prepareColumn(request,now);
+ const {article}=require('./image-rotation65').resolve(prepared);
+ if(!article)reject('Geen goedgekeurd beeld voor deze column.',422);
+ const key='article:'+article.id,existing=await client.get(key);
  if(existing){const previous=JSON.parse(existing);if(previous.contentHash!==article.contentHash)reject('Opgeslagen column komt niet overeen met het manuscript.',409);return {status:'published',article:previous,alreadyPublished:true};}
  const normalize=s=>String(s||'').normalize('NFKC').toLocaleLowerCase('nl').replace(/\s+/g,' ').trim();
  for(const k of await client.keys('article:*')){const raw=await client.get(k);if(!raw)continue;let previous;try{previous=JSON.parse(raw);}catch{continue;}if(previous.status==='published'&&normalize(previous.headline)===normalize(article.headline))reject('Deze columnkop is al gepubliceerd. Gebruik een afzonderlijke bewerking om de bestaande column te wijzigen.',409);}
