@@ -28,7 +28,7 @@ function candidate(fixture, now) {
  const category = championsLeague ? 'Champions League' : 'Eredivisie';
  // With only a score, report exceptional margins or a meeting of leading clubs.
  const leading = /^(Ajax|Feyenoord|PSV|AZ|FC Twente)$/i;
- if (!hasHalf && !championsLeague && Math.abs(home - away) < 3 &&
+ if (!hasHalf && !(sportmonks && fixture.goalTimeline?.length === home + away && home + away >= 2) && !championsLeague && Math.abs(home - away) < 3 &&
      !(leading.test(fixture.home.name) && leading.test(fixture.away.name))) return null;
  const match = {homeTeam:fixture.home.name, awayTeam:fixture.away.name, homeScore:home, awayScore:away, playedAt:DAY.format(new Date(kickoff))};
  const topic = match.homeTeam + ' – ' + match.awayTeam;
