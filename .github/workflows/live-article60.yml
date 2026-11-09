@@ -48,26 +48,36 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const fs = require('node:fs');
             const {owner, repo} = context.repo;
-            const {data} = await github.rest.actions.listWorkflowRuns({owner, repo, workflow_id: 'phase51.yml', status: 'success', per_page: 30});
+            const expected = JSON.parse(fs.readFileSync('android-project/source-provenance.json', 'utf8'));
+            const suffix = /^4\.(\d+)$/.exec(expected.version);
+            if (!suffix) return core.setFailed('Onbekende productieversie in Android-bronmanifest.');
+            const name = 'Veldio-' + suffix[1];
+            const {data} = await github.rest.actions.listWorkflowRuns({owner, repo, workflow_id: 'build.yml', branch: 'main', status: 'success', per_page: 30});
             for (const run of data.workflow_runs) {
               const {data: artifacts} = await github.rest.actions.listWorkflowRunArtifacts({owner, repo, run_id: run.id});
-              if (artifacts.artifacts.some(a => a.name === 'Veldio-52B' && !a.expired)) {
-                core.setOutput('run_id', String(run.id));
-                return;
-              }
+              if (!artifacts.artifacts.some(a => a.name === name && !a.expired)) continue;
+              const {data: source} = await github.rest.repos.getContent({owner, repo, ref: run.head_sha, path: 'android-project/source-provenance.json'});
+              const built = JSON.parse(Buffer.from(source.content, 'base64'));
+              if (JSON.stringify(built.files) !== JSON.stringify(expected.files)) continue;
+              core.setOutput('run_id', String(run.id));
+              core.setOutput('name', name);
+              return;
             }
-            core.setFailed('Geen actuele premium APK beschikbaar; Android-publicatiebewijs ontbreekt.');
+            core.setFailed('Geen gevalideerde ondertekende APK voor deze Android-bronversie.');
       - uses: actions/download-artifact@v4
         with:
-          name: Veldio-52B
+          name: ${{ steps.apk.outputs.name }}
           path: apk
           run-id: ${{ steps.apk.outputs.run_id }}
           github-token: ${{ github.token }}
       - name: Require APK provenance to match the production source
+        env:
+          APK_NAME: ${{ steps.apk.outputs.name }}
         run: |
           (cd apk && sha256sum -c sha256.txt)
-          python3 scripts/verify-android-source.py apk/Veldio-52B.apk
+          python3 scripts/verify-android-source.py "apk/$APK_NAME.apk"
           python3 - <<'PY'
           import json
           expected=json.load(open('android-project/source-provenance.json'))
@@ -83,15 +93,16 @@ jobs:
       - uses: reactivecircus/android-emulator-runner@v2
         env:
           ARTICLE_ID: ${{ needs.publication.outputs.article_id }}
+          APK_NAME: ${{ steps.apk.outputs.name }}
         with:
           api-level: 36
           target: google_apis
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/verify-live-article60.py apk/Veldio-52B.apk "$ARTICLE_ID"
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/verify-live-article60.py "apk/$APK_NAME.apk" "$ARTICLE_ID"
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && hashFiles('.android-smoke/*') != ''
         with:
           name: Veldio-production-article-Android16
           path: .android-smoke/
