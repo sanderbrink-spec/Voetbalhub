@@ -52,7 +52,15 @@ function confirmedGoals(row,final){
   // An ordinary goal or penalty must belong to the team whose total increased.
   const scorerId=goalSide==='home'?row.participants.find(p=>p.meta?.location==='home')?.id:
     row.participants.find(p=>p.meta?.location==='away')?.id;
-  if(e.type_id!==15&&e.team_id!==scorerId)return [];
+  // Sportmonks API v3 reports the event's team as participant_id.
+  // Legacy fixtures may have team_id instead. A contradiction invalidates
+  // the complete chronology, rather than silently attributing the goal.
+  if(e.participant_id!=null&&e.team_id!=null&&e.participant_id!==e.team_id)return [];
+  const eventTeam=e.participant_id??e.team_id;
+  if(e.type_id!==15&&eventTeam!==scorerId)return [];
+  // For own goals, the event belongs to the conceding player/team, not the
+  // side that gained a goal. A known same-side attribution is inconsistent.
+  if(e.type_id===15&&eventTeam===scorerId)return [];
   events.push({minute:e.minute,extra:e.extra_minute||0,player:e.player_name.trim(),
    kind:e.type_id===15?'own_goal':e.type_id===16?'penalty':'goal',home:next.home,away:next.away});
   previous=next;
