@@ -40,3 +40,11 @@ test('rejects a timeline with a false half-time score and out-of-order goals',()
  reversed[2]='Ruststand 0-2.';
  assert.match(chronology.halfTimeNarrativeIssues({...record,verifiedFacts:reversed},{body:[newSentence]}).join(' '),/chronologie.*ruststand/);
 });
+
+test('recognizes ordinal minutes and rejects reversed goal paragraphs in the draft',()=>{
+ const draft={body:[
+  'Na rust maakte Levi Smans in de 47e minuut gelijk op 2-2.',
+  'Maas Willemsen bracht Heerenveen in minuut 45+3 op 1‑2.'
+ ]};
+ assert.match(chronology.halfTimeNarrativeIssues(record,draft).join(' '),/buiten wedstrijdvolgorde/);
+});
