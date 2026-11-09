@@ -224,7 +224,7 @@ for(const hasHalf of [true,false])test('registered match uses compact format wit
    }
    if(url.endsWith('/editorial-drafts')){
     saved=JSON.parse(options.body).payload;
-    assert.equal(saved.articleKind,hasHalf?'match_report':'score_update');
+    assert.equal(saved.articleKind,'score_update'); // half-time alone is not a rich match report
     assert.equal(saved.draft.body.length,hasHalf?2:1);
     if(hasHalf)assert.match(saved.draft.body[1],/ruststand was 1-0/);
     else assert.ok(!saved.draft.body.join(' ').includes('ruststand'));

@@ -1,8 +1,8 @@
 'use strict';
 
-// A bounded recovery for the explicitly documented November 9 match-writing
-// failures. Never reuse a rejected article, reset standards or retry stale data.
-const REVISION='match-writer-136';
+// One bounded recovery after fixing the observed November 9 evidence-plan and
+// rich-versus-compact article classification failures. Never reuse a rejected article, reset standards or retry stale data.
+const REVISION='match-evidence-plan-137';
 function reopenVerifiedMatch(job,record,now=Date.now()){
  if(!job||!record||!/^sm-\d+$/.test(record.matchId||'')||
   job.matchId!==record.matchId||

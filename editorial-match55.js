@@ -46,7 +46,10 @@ function candidate(fixture, now) {
   }
  }
  const sources = [{url:sportmonks?SM:supplemented?FD:OPEN}];
- const articleKind = hasHalf||timeline.length>=2 ? 'match_report' : 'score_update';
+ // A half-time score alone does not establish an editorially rich match report.
+ // Only a complete, checked goal sequence or independently verified event
+ // narrative justifies the long-form article gate; source augmentation may upgrade it.
+ const articleKind = timeline.length>=2 ? 'match_report' : 'score_update';
  return {topic, category, matchId:fixture.id, match, verifiedFacts, sources, articleKind,
   publishedAt:fixture.date, factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}};
 }
