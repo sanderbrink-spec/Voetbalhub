@@ -56,6 +56,16 @@ class EditorialProviderRouter{
    this.openrouterVerifiedUntil=this.now()+300000;return true;
   }catch{return false;}
  }
+ hasReviewCapacity(estimatedTokens=8000){
+  // Conservative local preflight. No paid API request, no optimistic reset of
+  // provider cooldowns, and no bypass of the independent factual review.
+  return Object.entries(this.keys).some(([provider,key])=>{
+   if(!key||(provider==='gemini'&&!this.geminiFreeTierConfirmed))return false;
+   const slot=this.slot(provider),limit=this.limits[provider];
+   return slot.blockedUntil<=this.now()&&slot.requests+1<=limit.requests&&
+    slot.tokens+estimatedTokens<=limit.tokens;
+  });
+ }
  complete(messages,options={}){
   // Serialize callers sharing a capacity ledger; reserve before issuing I/O.
   const next=this.pending.then(()=>this._complete(messages,options));this.pending=next.catch(()=>{});return next;
