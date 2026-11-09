@@ -14,7 +14,7 @@ const rich={articleKind:'match_report',matchId:'sm-19714597',
 test('rich registered match gets the complete evidence-led report, not a compact summary',()=>{
  assert.equal(guide.isRichMatch(rich),true);
  const prompt=guide.writingPrompt(rich);
- assert.match(prompt,/3-5 verschillende bodyalinea’s/);
+ assert.match(prompt,/EXACT DRIE bodyalinea’s/);
  assert.match(prompt,/18-120 woorden/);
  assert.match(prompt,/geen ongedocumenteerde kansen/i);
  assert.match(prompt,/tussenstanden alleen letterlijk/i);
@@ -23,8 +23,8 @@ test('rich registered match gets the complete evidence-led report, not a compact
 test('bare score update stays compact and cannot invent details',()=>{
  const short={articleKind:'score_update',verifiedFacts:rich.verifiedFacts.slice(0,2)};
  assert.equal(guide.isRichMatch(short),false);
- assert.match(guide.writingPrompt(short),/1-2 alinea’s van elk 10-65 woorden/);
- assert.doesNotMatch(guide.writingPrompt(short),/3-5 verschillende bodyalinea’s/);
+ assert.match(guide.writingPrompt(short),/EXACT ÉÉN inhoudelijke alinea van 10-65 woorden/);
+ assert.doesNotMatch(guide.writingPrompt(short),/EXACT DRIE bodyalinea’s/);
 });
 test('source-backed rich matchEvidence still demands a full article',()=>{
  assert.equal(guide.isRichMatch({...rich,verifiedFacts:rich.verifiedFacts.slice(0,2),matchEvidence:{url:'https://example.org/match'}}),true);
@@ -36,10 +36,10 @@ test('numeric whitelist is derived only from evidence, never fabricated',()=>{
 });
 test('rewrite guidance retains the correct format and explicitly discards old draft',()=>{
  const prompt=guide.revisionPrompt(rich);
- assert.match(prompt,/3-5 verschillende bodyalinea’s/);
+ assert.match(prompt,/EXACT DRIE bodyalinea’s/);
  assert.match(prompt,/afgekeurde concept is bewust niet beschikbaar/i);
  assert.match(prompt,/allowedScores/);
- assert.match(guide.revisionPrompt({articleKind:'score_update',verifiedFacts:rich.verifiedFacts.slice(0,2)}),/1-2 alinea’s/);
+ assert.match(guide.revisionPrompt({articleKind:'score_update',verifiedFacts:rich.verifiedFacts.slice(0,2)}),/EXACT ÉÉN inhoudelijke alinea/);
 });
 
 test('the independent facts audit must never treat an ISO date as a football score',()=>{
