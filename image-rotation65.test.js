@@ -68,3 +68,32 @@ test('neutral topic images rotate only within the same non-match subject class',
  assert.equal(result.imageVariants.length,2);
  assert.ok(!result.imageVariants.some(v=>v.id==='match'));
 });
+
+
+test('new approved API artwork replaces old offline article bitmap binding',()=>{
+ const article={...match,imageAsset:'news43/groningen43.webp',imageAssetId:'news43/groningen43.webp',imageUrl:'https://example.com/old.webp',imageRights:'cleared'};
+ const result=present(article,{rows:[asset('one')],round:0});
+ assert.ok(!Object.hasOwn(result,'imageAsset'));
+ assert.equal(result.imageAssetId,'one');
+ assert.ok(result.imageUrl.endsWith('/one.webp'));
+ assert.equal(article.imageAsset,'news43/groningen43.webp');
+});
+test('registered production image variants have exactly matching approved file-hashes',()=>{
+ const pairs=[
+ ['FC Groningen','Ajax'],['PSV','FC Twente'],['Feyenoord','AZ'],
+ ['FC Utrecht','sc Heerenveen'],['Go Ahead Eagles','NEC'],['Ajax','PSV'],
+ ['AZ','FC Groningen'],['FC Twente','Feyenoord'],
+ ['sc Heerenveen','PEC Zwolle'],['NEC','FC Utrecht']
+ ];
+ const assets=require('./image-library49').catalog().filter(a=>a.id.startsWith('veldio-')&&a.id.endsWith('-01'));
+ assert.equal(assets.length,10);
+ for(const a of assets){
+  assert.deepEqual(a.categories,['preview','report']);
+  assert.ok(pairs.some(pair=>JSON.stringify(pair)===JSON.stringify(a.clubs)));
+  assert.match(a.caption,/AI-illustratie/);
+  assert.ok(a.sha256.length===64);
+  const article={...match,id:'check-'+a.id,match:{homeTeam:a.clubs[0],awayTeam:a.clubs[1]}};
+  const accepted=eligible(article,[a]);
+  assert.equal(accepted.length,1,a.id);
+ }
+});
