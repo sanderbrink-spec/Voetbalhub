@@ -46,7 +46,12 @@
     const issues = [], d = payload.draft || {};
     const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+|sm-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
     const brief = briefEligible(payload);
-    issues.push(...draftIssues(d, registeredMatch || brief));
+    // Rich reports supported by a complete verified goal timeline or an
+    // official score-consistent event record must meet the full article format.
+    // Bare results and half-time-only updates retain the compact standard.
+    const richMatch = registeredMatch && payload.articleKind === 'match_report' &&
+      (Boolean(payload.matchEvidence) || (payload.verifiedFacts || []).length >= 5);
+    issues.push(...draftIssues(d, (registeredMatch && !richMatch) || brief));
     issues.push(...factAudit.audit(payload));
     if (!Array.isArray(payload.verifiedFacts) || payload.verifiedFacts.filter(x => typeof x === 'string' && x.trim()).length < (brief ? 1 : 2)) issues.push(brief ? 'Vul het gecontroleerde besluit in.' : 'Vul twee zelf gecontroleerde feiten in.');
     const sources = Array.isArray(payload.sources) ? payload.sources : [];
