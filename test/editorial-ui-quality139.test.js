@@ -5,6 +5,7 @@ const fs=require('node:fs');
 const path='android-project/app/src/main/java/nl/voetbalhub/app/';
 const reader=fs.readFileSync(path+'MainActivity.java','utf8');
 const fallback=fs.readFileSync(path+'TopicArtwork39.java','utf8');
+const cards=fs.readFileSync(path+'NewsListCard.java','utf8');
 const gradle=fs.readFileSync('android-project/app/build.gradle.kts','utf8');
 
 test('article toolbar scrolls with content rather than masking paragraph lines',()=>{
@@ -28,4 +29,11 @@ test('news fallback never prints headlines or fabricated club badges into thumbn
 test('updated signed APK advances versionCode to allow a same-certificate update',()=>{
  assert.match(gradle,/versionCode\s*=\s*93\b/);
  assert.match(gradle,/versionName\s*=\s*"4\.53"/);
+});
+
+test('a generic approved cover cannot replace a match-specific article visual',()=>{
+ assert.match(cards,/approved-library49/);
+ assert.match(cards,/optJSONArray\("clubs"\)/);
+ assert.match(cards,/new TopicArtwork39\(article\)/);
+ assert.match(cards,/length\(\)!=2/);
 });
