@@ -10,12 +10,12 @@ test('Sportmonks-led production may attempt ten articles, never above editorial 
  assert.ok(config.maxImageRequestsPerRun>=10);
  assert.ok(config.qualityThreshold>=85);
 });
-test('exhausted writer allowance leaves bounded independent review reserve intact',async()=>{
+test('exhausted bounded writer allowance leaves independent review reserve intact',async()=>{
  let calls=0;
  const router=new EditorialProviderRouter({
   openaiKey:'existing-credential',
   intervalMs:0,
-  state:{openai:{day:'2026-11-09',requests:80,tokens:135878,blockedUntil:0,nextAt:0}},
+  state:{openai:{day:'2026-11-09',requests:99,tokens:135878,blockedUntil:0,nextAt:0}},
   now:()=>Date.parse('2026-11-09T16:00:00Z'),
   fetcher:async()=>{calls++;return response({approved:true,issues:[],scores});}
  });
@@ -31,7 +31,7 @@ test('review reserve has a hard cap and cannot be spent on new extraction',async
  const r=new EditorialProviderRouter({
   openaiKey:'existing-credential',
   intervalMs:0,
-  state:{openai:{day:'2026-11-09',requests:96,tokens:140000,blockedUntil:0,nextAt:0}},
+  state:{openai:{day:'2026-11-09',requests:116,tokens:140000,blockedUntil:0,nextAt:0}},
   now:()=>Date.parse('2026-11-09T16:00:00Z'),
   fetcher:async()=>{called++;return response({approved:true,issues:[],scores});}
  });
