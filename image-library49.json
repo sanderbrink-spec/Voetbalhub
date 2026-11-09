@@ -435,6 +435,326 @@
       "lastUsed": null,
       "sha256": "76d88206f12b6a4378c94c9cb4c3b212ef2523b9cddef26fd1a9aa10c1914600",
       "caption": "AI-illustratie van ADO Den Haag en Sparta Rotterdam in een fictief stadion."
+    },
+    {
+      "id": "veldio-fc-groningen-ajax-01",
+      "file": "public/match-rotations65/veldio-fc-groningen-ajax-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: FC Groningen tegen Ajax",
+      "clubs": [
+        "FC Groningen",
+        "Ajax"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "night",
+        "fictief",
+        "Euroborg"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "d193a26a8778d60e895828805abbdbfb9c5b3c29f8e9af84d1edfca37df4904f",
+      "caption": "AI-illustratie: FC Groningen tegen Ajax, stadion geïnspireerd op Euroborg. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-psv-fc-twente-01",
+      "file": "public/match-rotations65/veldio-psv-fc-twente-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: PSV tegen FC Twente",
+      "clubs": [
+        "PSV",
+        "FC Twente"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "night",
+        "fictief",
+        "Philips Stadion"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "29f23bdf1bd940a1592764962473285ba947fe6a5a52658dd194270c1aaa6208",
+      "caption": "AI-illustratie: PSV tegen FC Twente, stadion geïnspireerd op Philips Stadion. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-feyenoord-az-01",
+      "file": "public/match-rotations65/veldio-feyenoord-az-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: Feyenoord tegen AZ",
+      "clubs": [
+        "Feyenoord",
+        "AZ"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "twilight",
+        "fictief",
+        "De Kuip"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "2c550a6e3c72d2b8fede3f2459d898d4ae564dc63459ae32282c929a16587a6b",
+      "caption": "AI-illustratie: Feyenoord tegen AZ, stadion geïnspireerd op De Kuip. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-fc-utrecht-sc-heerenveen-01",
+      "file": "public/match-rotations65/veldio-fc-utrecht-sc-heerenveen-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: FC Utrecht tegen sc Heerenveen",
+      "clubs": [
+        "FC Utrecht",
+        "sc Heerenveen"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "night",
+        "fictief",
+        "Stadion Galgenwaard"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "f3aff9f2ddeb01bee1fdacba2bfffe59d16be796c0cbf40334fbfed4451050ec",
+      "caption": "AI-illustratie: FC Utrecht tegen sc Heerenveen, stadion geïnspireerd op Stadion Galgenwaard. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-go-ahead-eagles-nec-01",
+      "file": "public/match-rotations65/veldio-go-ahead-eagles-nec-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: Go Ahead Eagles tegen NEC",
+      "clubs": [
+        "Go Ahead Eagles",
+        "NEC"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "twilight",
+        "fictief",
+        "De Adelaarshorst"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "c6e6a6e127c2d52f9af64e4627ff27e082be32170247f7b85c28a4c67eff3591",
+      "caption": "AI-illustratie: Go Ahead Eagles tegen NEC, stadion geïnspireerd op De Adelaarshorst. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-ajax-psv-01",
+      "file": "public/match-rotations65/veldio-ajax-psv-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: Ajax tegen PSV",
+      "clubs": [
+        "Ajax",
+        "PSV"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "night",
+        "fictief",
+        "Johan Cruijff Arena"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "b398ad7252fc383cd342dbef024ba17c5fe986f38872aef4ca540661dd7dc637",
+      "caption": "AI-illustratie: Ajax tegen PSV, stadion geïnspireerd op Johan Cruijff Arena. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-az-fc-groningen-01",
+      "file": "public/match-rotations65/veldio-az-fc-groningen-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: AZ tegen FC Groningen",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "day",
+        "fictief",
+        "AFAS Stadion"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "086435d412f4396290649fa87198b2713e9b01fc8fc5c63cc749a4e69d1b5ba4",
+      "caption": "AI-illustratie: AZ tegen FC Groningen, stadion geïnspireerd op AFAS Stadion. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-fc-twente-feyenoord-01",
+      "file": "public/match-rotations65/veldio-fc-twente-feyenoord-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: FC Twente tegen Feyenoord",
+      "clubs": [
+        "FC Twente",
+        "Feyenoord"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "night",
+        "fictief",
+        "De Grolsch Veste"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "6e7332e6bdd673866c42cb56b8249c54d00228610dda393b47bc833c86ae3954",
+      "caption": "AI-illustratie: FC Twente tegen Feyenoord, stadion geïnspireerd op De Grolsch Veste. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-sc-heerenveen-pec-zwolle-01",
+      "file": "public/match-rotations65/veldio-sc-heerenveen-pec-zwolle-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: sc Heerenveen tegen PEC Zwolle",
+      "clubs": [
+        "sc Heerenveen",
+        "PEC Zwolle"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "twilight",
+        "fictief",
+        "Abe Lenstra Stadion"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "1387aee9cfa3334cf798d33b6437da17875eb82bb89f318de160bbd2ac0c0380",
+      "caption": "AI-illustratie: sc Heerenveen tegen PEC Zwolle, stadion geïnspireerd op Abe Lenstra Stadion. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
+    },
+    {
+      "id": "veldio-nec-fc-utrecht-01",
+      "file": "public/match-rotations65/veldio-nec-fc-utrecht-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Fictieve wedstrijdillustratie: NEC tegen FC Utrecht",
+      "clubs": [
+        "NEC",
+        "FC Utrecht"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "duel",
+        "stadion",
+        "night",
+        "fictief",
+        "Goffertstadion"
+      ],
+      "variant": "Veldio Premium 3.0 stadium-action-01",
+      "origin": "OpenAI ChatGPT imagegen, Veldio original generation 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "User-approved original AI artwork 2026-11-09; file sha256 and generated Veldio assets ZIP manifest",
+      "approval": "approved",
+      "reviewer": "Veldio design accepted 2026-11-09; AI-illustration not documentary",
+      "lastUsed": null,
+      "sha256": "19ebf1fad1080f68b01ea4ecebaded9019738962886dfefbe49d00704912c2b3",
+      "caption": "AI-illustratie: NEC tegen FC Utrecht, stadion geïnspireerd op Goffertstadion. Dagdeel en weer zijn sfeerbeeld, geen opname van de werkelijke wedstrijd of spelers.",
+      "questionIds": []
     }
   ]
 }
