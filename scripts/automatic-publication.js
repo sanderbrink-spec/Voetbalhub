@@ -1062,7 +1062,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    stage='generation';
    let draft=checkpoint.draft;
    if(!draft&&matchRecord){
-    const rich=Boolean(matchRecord.matchEvidence);
+    const rich=Boolean(matchRecord.matchEvidence)||
+      (sources[0]?.url===matches.SM && facts.length>=5);
      draft=await complete([
       {role:'system',content:rich
        ? 'Je bent de onafhankelijke Nederlandstalige Veldio-wedstrijdredacteur. Schrijf uitsluitend op basis van verifiedFacts een origineel verslag met headline, standfirst en body (3-5 inhoudelijke alinea’s). Leg de ontwikkelingen in het scoreverloop helder uit. Voeg geen feiten, assists, kansen, VAR-ingrepen, tactisch wedstrijdbeeld, dominantie, wissels, quotes of ranglijstgevolgen toe die niet uit verifiedFacts volgen. De officiële clubbron is alleen feitenbewijs, geen over te schrijven voorbeeldartikel. Vermeld de bron duidelijk. Bij te weinig feiten: {"skip":true}. Retourneer uitsluitend JSON.'
