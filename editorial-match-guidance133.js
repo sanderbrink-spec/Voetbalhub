@@ -11,7 +11,7 @@ function allowedNumbers(facts = []) {
  return [...new Set(facts.flatMap(f => String(f).match(/\d+(?:[.,]\d+)?/g) || []))];
 }
 function allowedScores(facts = []) {
- return [...new Set(facts.flatMap(f => [...String(f).matchAll(/\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b/g)]
+ return [...new Set(facts.flatMap(f => [...String(f).matchAll(/(?<![\d-])\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b(?![-–]\d)/g)]
   .map(m => Number(m[1])+'-'+Number(m[2]))))];
 }
 function writingPrompt(record = {}) {
