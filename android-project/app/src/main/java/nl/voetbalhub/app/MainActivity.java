@@ -189,24 +189,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void buildChips() {
         chips.removeAllViews();
-        String[] labels = {"Voor jou", "Laatste nieuws", "Transfers", "Eredivisie", "Buitenland", "Video"};
-        for (String label : labels) {
-            TextView b = tv(label, 13, label.equals(active) ? C.BG : C.TEXT, false);
+        String[][] tabs={{"Topnieuws","Voor jou"},{"Laatste","Laatste nieuws"},
+                {"Eredivisie","Eredivisie"},{"Transfers","Transfers"},
+                {"Europa","Buitenland"},{"Video","Video"}};
+        for(String[] tab:tabs){
+            String label=tab[0],target=tab[1];
+            boolean selected=target.equals(active)&&!"Video".equals(target);
+            TextView b=tv(label,13,selected?C.BG:C.TEXT,selected);
             b.setGravity(Gravity.CENTER);
-            b.setPadding(dp(13), 0, dp(13), 0);
-            b.setBackground(ContextCompat.getDrawable(this, label.equals(active) ? R.drawable.rounded_active : R.drawable.rounded_chip));
-            VeldioChrome.chip(this,b,label,label.equals(active));
-            b.setOnClickListener(v -> {
-                active = label;
-                articleDisplayLimit = 20;
-                buildChips();
-                if (label.equals("Voor jou")) showHome39();
-                else if (label.equals("Video")) showVideos();
-                else showNews();
+            b.setPadding(dp(13),0,dp(13),0);
+            b.setBackground(ContextCompat.getDrawable(this,selected?R.drawable.rounded_active:R.drawable.rounded_chip));
+            VeldioChrome.chip(this,b,label,selected);
+            b.setOnClickListener(v->{
+                articleDisplayLimit=20;
+                if("Video".equals(target)){showVideos();return;}
+                active=target;buildChips();showNews();
             });
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-2, dp(38));
-            lp.setMargins(0, 0, dp(8), 0);
-            chips.addView(b, lp);
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-2,dp(38));
+            lp.setMargins(0,0,dp(8),0);
+            chips.addView(b,lp);
         }
     }
 
@@ -312,12 +313,28 @@ public class MainActivity extends AppCompatActivity {
         if (loading || !newsStatusMessage.isEmpty()) root.addView(status);
         ScrollView scroll = new RefreshScrollView(this,()->FeedRepository.refresh(true));
         LinearLayout list = new LinearLayout(this);
-        addEditorialNewsSection(list, false);
         list.setOrientation(LinearLayout.VERTICAL);
-        list.setPadding(0, 0, 0, dp(18));
-        if (active.equals("Voor jou") || active.equals("Eredivisie")) {
-            addEredivisieLiveBlock(list);
-        }
+        list.setPadding(dp(8),0,dp(8),dp(18));
+        if("Voor jou".equals(active)){
+            // Headline news comes first. The carousel and promotional tiles no longer open the app.
+            list.addView(sectionHeader("Topnieuws","VERVERS",this::refreshNews));
+            list.addView(new FeedPanel(this,active,false,this::showEditorialArticle,0,3));
+            list.addView(new MatchStrip40(this,()->showDestination39("fixtures")),
+                    new LinearLayout.LayoutParams(-1,dp(142)));
+            list.addView(sectionHeader("Laatste voetbalnieuws","ALLE NIEUWS",()->{
+                active="Laatste nieuws";buildChips();showNews();
+            }));
+            list.addView(new FeedPanel(this,active,false,this::showEditorialArticle,3,60));
+            list.addView(sectionHeader("Meer Veldio"));
+            PremiumDesign40.menuRow(list,"Column","De Derde Helft",
+                    "Wekelijkse column van Sander Brink",this::showColumn);
+            PremiumDesign40.menuRow(list,"Video","Videohighlights",
+                    "Officiële samenvattingen en interviews",this::showVideos);
+            PremiumDesign40.menuRow(list,"Stadion","Stadion van de Week",
+                    "Stadions en hun verhalen",()->showStadiums(""));
+        }else{
+            addEditorialNewsSection(list,false);
+            if(active.equals("Eredivisie"))addEredivisieLiveBlock(list);
         List<Article> filtered = filterArticles(active);
         shown.clear(); shown.addAll(filtered);
         if (filtered.isEmpty()) {
@@ -352,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (filtered.size() > 20) {
                 list.addView(tv("Alle beschikbare berichten geladen", 11, C.MUTED, false));
             }
+        }
         }
         scroll.addView(list);
         root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
@@ -1024,7 +1042,7 @@ private void showColumn() {
         eredivisieStatisticsVisible = false; weeklyPreviewVisible = false;
         findViewById(R.id.header).setVisibility(android.view.View.VISIBLE);
         findViewById(R.id.chipsScroll).setVisibility(android.view.View.GONE);
-        currentBottomTab = "Nieuws";
+        currentBottomTab = "Meer";
         buildNav();
     if (liveScoresRefresh != null) main.removeCallbacks(liveScoresRefresh);
     scoresPageVisible = false;
@@ -1469,7 +1487,7 @@ private void showScores() {
         if(!subtitle.equals(title)){TextView small=tv(subtitle,10,0xFFB1C8B5,false);small.setGravity(android.view.Gravity.CENTER);small.setMaxLines(2);tile.addView(small);}
         android.util.TypedValue feedback=new android.util.TypedValue();getTheme().resolveAttribute(android.R.attr.selectableItemBackground,feedback,true);tile.setForeground(getDrawable(feedback.resourceId));tile.setFocusable(true);tile.setClickable(true);tile.setOnClickListener(v->action.run());android.widget.GridLayout.LayoutParams gp=new android.widget.GridLayout.LayoutParams();gp.width=0;gp.height=dp(127);gp.columnSpec=android.widget.GridLayout.spec(android.widget.GridLayout.UNDEFINED,1f);gp.setMargins(dp(5),dp(5),dp(5),dp(5));grid.addView(tile,gp);
     }
-    private void showHome39(){showDestination39("home");}
+    private void showHome39(){active="Voor jou";articleDisplayLimit=20;buildChips();showNews();}
     private void openDestination39(String id){
         if(id.startsWith("competitionNews:")){String key=id.substring(16);try{org.json.JSONObject names=new org.json.JSONObject(new String(BoundedInput.read(getAssets().open("competition-names47.json"),10000),java.nio.charset.StandardCharsets.UTF_8));showPersonalHub("competition",names.optString(key,key));}catch(Exception ignored){}return;}
         switch(id){
@@ -1525,13 +1543,20 @@ private void showScores() {
         list.setPadding(dp(16), dp(16), dp(16), dp(26));
         list.addView(tv("Meer", 26, C.TEXT, true));
         list.addView(tv("Instellingen, informatie en extra onderdelen", 14, C.MUTED, false));
-        moreSection(list, "Veldio");
-        PremiumDesign40.menuRow(list, "Info", "Over Veldio", "Alles voetbal. Eén plek.", this::showAbout);
-        PremiumDesign40.menuRow(list, "Clubquiz", "Voetbalquiz", "Kies uit zeven categorieën", this::showClubQuiz);
-        PremiumDesign40.menuRow(list, "Contact", "Contact", "Neem contact op met de redactie", this::showContact);
-        PremiumDesign40.menuRow(list, "Nieuws", "Nieuws vernieuwen", "Haal het laatste voetbalnieuws op", this::refreshNews);
-        PremiumDesign40.menuRow(list, "Mijn Clubs", "Favorieten beheren", "Bekijk en wijzig je favoriete clubs", this::showFavorites);
-        PremiumDesign40.menuRow(list, "Info", "Bronnen en beeldgebruik", "Herkomst van informatie en beelden", this::showLegalInfo);
+        moreSection(list,"Ontdekken");
+        addMoreFeature(list,"Video","Video's","Officiële samenvattingen en interviews","videos",this::showVideos);
+        addMoreFeature(list,"Column","De Derde Helft","Wekelijkse column van Sander Brink","column",this::showColumn);
+        addMoreFeature(list,"Clubquiz","Voetbalquiz","Test je voetbalkennis","quiz",this::showClubQuiz);
+        addMoreFeature(list,"Stadion","Stadion van de Week","Ontdek stadions en hun verhalen","stadium",()->showStadiums(""));
+        moreSection(list,"Mijn Veldio");
+        PremiumDesign40.menuRow(list,"Nieuws","Zoeken","Nieuws, clubs en onderwerpen",this::showSearch);
+        PremiumDesign40.menuRow(list,"Nieuws","Leeslijst","Bewaarde artikelen teruglezen",()->showPersonalHub("saved",""));
+        PremiumDesign40.menuRow(list,"Mijn Clubs","Favorieten beheren","Volg jouw favoriete clubs",this::showFavorites);
+        PremiumDesign40.menuRow(list,"Competities","Competities en standen","Wedstrijden en beschikbare statistieken",this::showCompetitions);
+        moreSection(list,"Veldio");
+        PremiumDesign40.menuRow(list,"Info","Over Veldio","Alles voetbal. Eén plek.",this::showAbout);
+        PremiumDesign40.menuRow(list,"Contact","Contact","Neem contact op met de redactie",this::showContact);
+        PremiumDesign40.menuRow(list,"Info","Bronnen en beeldgebruik","Herkomst van informatie en beelden",this::showLegalInfo);
         moreSection(list, "Instellingen");
         PremiumDesign40.menuRow(list, "Instellingen", "App-instellingen", "Open het Veldio-snelmenu", this::showSettings);
         PremiumDesign40.menuRow(list, "Meldingen", "Meldingen", "Bekijk de bestaande meldingsinstellingen", () -> showDestination39("notifications"));
@@ -1543,6 +1568,39 @@ private void showScores() {
     }
 
     private void openExternal42(String url){try{startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(url)));}catch(android.content.ActivityNotFoundException e){android.widget.Toast.makeText(this,"Geen browser beschikbaar",android.widget.Toast.LENGTH_SHORT).show();}}
+
+    private void addMoreFeature(LinearLayout list,String icon,String title,String detail,
+                                String artwork,Runnable action){
+        FrameLayout tile=new FrameLayout(this);
+        PremiumDesign40.card(tile,PremiumDesign40.EDGE);
+        PremiumDesign40.touch(tile);
+        ImageView picture=new ImageView(this);
+        picture.setImageBitmap(PremiumDesign40.artwork(this,artwork));
+        picture.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        picture.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        tile.addView(picture,new FrameLayout.LayoutParams(-1,-1));
+        View shade=new View(this);
+        shade.setBackground(new android.graphics.drawable.GradientDrawable(
+                android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{0xFA06140C,0xDF07180E,0x87040B07}));
+        tile.addView(shade,new FrameLayout.LayoutParams(-1,-1));
+        LinearLayout row=new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(dp(14),dp(12),dp(12),dp(12));
+        row.addView(new NavIconView(this,icon,true),new LinearLayout.LayoutParams(dp(30),dp(30)));
+        LinearLayout labels=new LinearLayout(this);
+        labels.setOrientation(LinearLayout.VERTICAL);
+        labels.setPadding(dp(12),0,dp(6),0);
+        labels.addView(tv(title,18,C.TEXT,true));
+        labels.addView(tv(detail,12,C.MUTED,false));
+        row.addView(labels,new LinearLayout.LayoutParams(0,-2,1));
+        row.addView(tv("›",24,C.GREEN,true));
+        tile.addView(row,new FrameLayout.LayoutParams(-1,-1));
+        tile.setContentDescription(title+". "+detail);
+        tile.setOnClickListener(v->action.run());
+        LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,dp(106));
+        lp.bottomMargin=dp(10);list.addView(tile,lp);
+    }
 
     private void moreSection(LinearLayout list, String title) {
         TextView heading = tv(title.toUpperCase(java.util.Locale.ROOT), 12, C.GREEN, true);
