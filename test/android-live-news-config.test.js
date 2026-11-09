@@ -32,8 +32,21 @@ test('Signed Android build version and source checksums match current package',(
   const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');
   assert.equal(source.files[name],actual, file+' provenance hash');
  }
- assert.match(gradle,/versionCode\s*=\s*94/);
- assert.match(gradle,/versionName\s*=\s*"4\.54"/);
- assert.match(workflow,/versionCode='94'\.\*versionName='4\.54'/);
- assert.match(workflow,/name: Veldio-54/);
+ assert.match(gradle,/versionCode\s*=\s*95/);
+ assert.match(gradle,/versionName\s*=\s*"4\.55"/);
+ assert.match(workflow,/versionCode='95'\.\*versionName='4\.55'/);
+ assert.match(workflow,/name: Veldio-55/);
+});
+
+test('Nieuws is de startpagina en behoudt alle redactionele artikelen',()=>{
+ const activity=read(activityPath);
+ const panel=read('android-project/app/src/main/java/nl/voetbalhub/app/FeedPanel.java');
+ assert.ok(activity.includes('private void showHome39(){active="Voor jou";articleDisplayLimit=20;buildChips();showNews();}'));
+ assert.ok(activity.includes('new FeedPanel(this,active,false,this::showEditorialArticle,0,3)'));
+ assert.ok(activity.includes('new FeedPanel(this,active,false,this::showEditorialArticle,3,60)'));
+ assert.ok(activity.includes('new MatchStrip40(this'));
+ assert.ok(panel.includes('presentationIndex<startIndex'));
+ assert.ok(activity.includes('addMoreFeature(list,"Video"'));
+ assert.ok(activity.includes('addMoreFeature(list,"Column"'));
+ assert.ok(activity.includes('addMoreFeature(list,"Clubquiz"'));
 });
