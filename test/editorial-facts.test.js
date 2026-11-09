@@ -19,3 +19,11 @@ test('sentence starters before club names do not become invented people',()=>{
  assert.deepEqual(evidenceIssues({headline:'Voor Ajax staat een Europese reis gepland',standfirst:'Volgens FC Midtjylland is de wedstrijd toegankelijk met een geldig kaartje.',body:[]},['Ajax speelt tegen FC Midtjylland in een Europese competitie. De wedstrijd is toegankelijk met een geldig kaartje.']),[]);
  assert.ok(evidenceIssues({headline:'Ajax benoemt Piet Onbekend tot nieuwe trainer',standfirst:'',body:[]},['Ajax bespreekt plannen.']).some(x=>x.includes('Piet Onbekend')));
 });
+
+test('Eredivisie phrasing is not an invented person, but unverified names still fail',()=>{
+ const p=packet();
+ p.draft.body=['De Eredivisie-wedstrijd tussen FC Groningen en Ajax werd beslist. In de Eredivisie-speelronde speelde FC Groningen thuis.'];
+ assert.ok(!F.audit(p).some(x=>x.includes('De Eredivisie-wedstrijd')||x.includes('In de Eredivisie-speelronde')));
+ p.draft.body.push('Abe Lenstra was bij het duel betrokken.');
+ assert.ok(F.audit(p).some(x=>x.includes('Abe Lenstra')));
+});
