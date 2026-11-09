@@ -39,8 +39,8 @@ def article_reader(device, suffix):
     if not device(text="Nieuws").wait(timeout=25):
         raise AssertionError("News navigation missing")
     device(text="Nieuws").click()
-    if device(text="Laatste nieuws").wait(timeout=8):
-        device(text="Laatste nieuws").click()
+    if device(text="Laatste").wait(timeout=8):
+        device(text="Laatste").click()
     refresh = device(textMatches="(?i)ververs(?:en)?")
     if refresh.wait(timeout=12):
         refresh.click()
@@ -94,8 +94,8 @@ try:
     )
     if not all(token in manifest for token in (
         "package: name='" + PACKAGE + "'",
-        "versionCode='94'",
-        "versionName='4.54'",
+        "versionCode='95'",
+        "versionName='4.55'",
     )):
         raise AssertionError("Unexpected production package or version")
     if "application-debuggable" in manifest:
@@ -163,7 +163,7 @@ try:
         "status": "PASS",
         "apk": str(APK),
         "package": PACKAGE,
-        "version": "4.54",
+        "version": "4.55",
         "androidApi": 36,
         "checks": checks,
         "limits": [
