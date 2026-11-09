@@ -39,10 +39,11 @@ try:
     manifest = subprocess.check_output(
         [str(aapt), "dump", "badging", str(APK)], text=True
     )
-    if not re.search(
-        r"package: name='nl\\.voetbalhub\\.app1'.*versionCode='92'.*versionName='4\\.52b-test'",
-        manifest,
-    ):
+    if not all(token in manifest for token in (
+        "package: name='" + PACKAGE + "'",
+        "versionCode='92'",
+        "versionName='4.52b-test'",
+    )):
         raise AssertionError("Unexpected production package or version")
     if "application-debuggable" in manifest:
         raise AssertionError("Production release must not be debuggable")
@@ -90,7 +91,7 @@ try:
     checks.append("Rendered activity UI and saved real emulator screenshot")
 
     log = adb("logcat", "-d", "-t", "2000")
-    if re.search(r"FATAL EXCEPTION:[\\s\\S]{0,600}Process: " + re.escape(PACKAGE), log):
+    if re.search(r"FATAL EXCEPTION:[\s\S]{0,600}Process: " + re.escape(PACKAGE), log):
         raise AssertionError("Veldio crashed during the smoke test")
     checks.append("No Veldio fatal exception during launch")
 
