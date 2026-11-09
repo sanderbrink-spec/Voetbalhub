@@ -749,6 +749,18 @@ function recoverGeneration(job,now){
  job.generationRecoveryV61=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
  return true;
 }
+// One new attempt for the exact recorded PEC Zwolle generator failure after
+// the provider and input recovery changes. Do not replay journalistic rejections.
+function recoverCurrentVerifiedDecisionV131(job,now){
+ const target='https://peczwolle.nl/nieuws/alex-pastoor-nieuwe-hoofdtrainer-pec-zwolle';
+ const failure='cca468fff929f372db064198f29dbb34d882c76c0cdb283ef810f55d72505c12';
+ if(job.urls?.length!==1||job.urls[0]!==target||job.status!=='review'||
+   job.failureStage!=='generation'||job.failureCategory!=='generator_failure'||
+   job.errorHash!==failure||job.verifiedDecisionRecoveryV131)return false;
+ job.verifiedDecisionRecoveryV131=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ return true;
+}
+
 function reopenObservedMatchCopyFailure(job,now){
  const reason='Kwaliteitscontrole na 0 herschrijvingen: Tweede feitencontrole: Zeer weinig originaliteit; tekst is bijna letterlijk gekopieerd van bron; Ontbrekende expliciete bronattributie in tweede zin';
  if(!job.matchId||job.status!=='review'||job.failureStage!=='quality'||job.failureCategory!=='journalistic_rejection'||job.aiMatchCopyRecovery||job.errorHash!==sha(reason))return false;
@@ -981,7 +993,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverRichVerifiedContext(job,now);
   if(group.length===1&&!group.matchRecord&&primaryAuthority(group[0]))recoverLiteralEvidenceRejection(job,now);
   // Generator failures have their own separate bounded retry path.
-  if(!group.matchRecord){recoverGeneration(job,now);recoverCompleteBodyV91(job,now);}
+  if(!group.matchRecord){recoverGeneration(job,now);recoverCompleteBodyV91(job,now);recoverCurrentVerifiedDecisionV131(job,now);}
   // The focused trial's recorded packet invented 13 November and merged unrelated
   // career claims. Re-extract that exact rejected job once under literal checks;
   // never reuse its old copy, scores or approval.
@@ -1053,7 +1065,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
       {role:'system',content:rich
        ? 'Je bent de onafhankelijke Nederlandstalige Veldio-wedstrijdredacteur. Schrijf uitsluitend op basis van verifiedFacts een origineel verslag met headline, standfirst en body (3-5 inhoudelijke alinea’s). Leg de ontwikkelingen in het scoreverloop helder uit. Voeg geen feiten, assists, kansen, VAR-ingrepen, tactisch wedstrijdbeeld, dominantie, wissels, quotes of ranglijstgevolgen toe die niet uit verifiedFacts volgen. De officiële clubbron is alleen feitenbewijs, geen over te schrijven voorbeeldartikel. Vermeld de bron duidelijk. Bij te weinig feiten: {"skip":true}. Retourneer uitsluitend JSON.'
        : 'Je bent de Nederlandstalige Veldio-wedstrijdredacteur. Schrijf een origineel kort uitslagbericht uitsluitend uit verifiedFacts. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (1-2 alinea’s van 10-65 woorden). De intro noemt de gecontroleerde eindstand. De body geeft uitsluitend de geverifieerde datum, competitie, speelronde en eventuele ruststand, met expliciete toeschrijving aan sourceName. Verzin geen doelpuntenmakers, kaarten, wissels, spelbeeld, kansen, gevolgen of emoties. Herhaal de eindstand niet als opvulling. Neem geen bronzin letterlijk over. Bij onvoldoende verschillende feiten: {"skip":true}.'},
-      {role:'user',content:JSON.stringify({verifiedFacts:facts,match:matchRecord.match,sourceName:sources[0].url===matches.FD?CREDIT:'OpenFootball',sourceUrls:sources.map(s=>s.url)})}
+      {role:'user',content:JSON.stringify({verifiedFacts:facts,match:matchRecord.match,sourceName:sources[0].url===matches.FD?CREDIT:sources[0].url===matches.SM?'Sportmonks Football API':'OpenFootball',sourceUrls:sources.map(s=>s.url)})}
      ],ai,'writing');
     if(draft?.skip)throw Error('Onvoldoende feiten voor een origineel wedstrijdbericht.');
     report.generationOrigin='production_ai';
