@@ -18,7 +18,7 @@ test('v66 APK build uses increased Android release version and release certifica
  const gradle = fs.readFileSync('android-project/app/build.gradle.kts','utf8');
  const yaml = fs.readFileSync('.github/workflows/build.yml','utf8');
  assert.match(gradle,/versionCode = 97/);
- assert.match(gradle,/versionName = "4\.56"/);
+ assert.match(gradle,/versionName = "4\.57"/);
  assert.match(yaml,/Veldio-57\.apk/);
  assert.match(yaml,/versionCode='97'/);
  assert.match(yaml,/apksigner" verify --verbose --print-certs/);
