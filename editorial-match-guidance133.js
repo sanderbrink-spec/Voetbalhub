@@ -14,6 +14,29 @@ function allowedScores(facts = []) {
  return [...new Set(facts.flatMap(f => [...String(f).matchAll(/(?<![\d-])\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b(?![-–]\d)/g)]
   .map(m => Number(m[1])+'-'+Number(m[2]))))];
 }
+// Give the language model a finite evidence allocation, not vague demands
+// for 'more detail'. Fact IDs refer only to original verifiedFacts.
+function paragraphPlan(record = {}) {
+ const facts=Array.isArray(record.verifiedFacts)?record.verifiedFacts:[];
+ const ids=facts.map((text,index)=>({id:'F'+(index+1),text:String(text)}));
+ const event=ids.filter(x=>/Volgens (?:de Sportmonks-wedstrijdregistratie|het officiële wedstrijdverslag)/.test(x.text) &&
+  /\b(?:minuut)\s+\d{1,2}(?:\+\d{1,2})?\b/.test(x.text));
+ const context=ids.filter(x=>!event.includes(x)&&x.id!=='F1');
+ if(!isRichMatch(record)) return {format:'compact',lead:['F1'],body:[{section:1,factIds:context.map(x=>x.id)}],events:event.length};
+ const middle=Math.max(1,Math.ceil(event.length/2));
+ // If structured event coverage is thin, the writer must skip rather than
+ // repeat the final result or fabricate the missing body paragraphs.
+ if(event.length<2) return {format:'insufficient',lead:['F1'],body:[],events:event.length};
+ return {
+  format:'rich',lead:['F1'],
+  body:[
+   {section:1,factIds:context.map(x=>x.id),angle:'Competition, date and verified half-time score; no score repetition'},
+   {section:2,factIds:event.slice(0,middle).map(x=>x.id),angle:'Earlier documented goals in source order'},
+   {section:3,factIds:event.slice(middle).map(x=>x.id),angle:'Later documented goals in source order'}
+  ],
+  events:event.length
+ };
+}
 function writingPrompt(record = {}) {
  const rich = isRichMatch(record);
  const common = [
@@ -25,15 +48,17 @@ function writingPrompt(record = {}) {
   'Beschrijf uitsluitend aantoonbare gebeurtenissen. Geen ongedocumenteerde kansen, assists, kaarten, wissels, tactiek, dominantie, blessure, VAR, supporters, ranglijstgevolgen, gevoelens, comeback of kwalificaties als verdiend, overtuigend of spectaculair.',
   'Vermeld broninformatie natuurlijk als "volgens de wedstrijdregistratie" waar dit bij een feit past. Presenteer niet alsof Veldio ter plaatse was. Geen letterlijk overgenomen brontekst, nepquotes of bronkoppen.',
   'De kop heeft 5-14 woorden. De intro heeft 8-35 woorden, noemt de gecontroleerde wedstrijd en uitslag en voegt geen onbewezen duiding toe. Introduceer iedere alinea met een ander geverifieerd detail. Vermijd herhaling van het scorefeit uit de intro en generieke slotzinnen.',
-  'Bedenk intern vóór het schrijven een feitenplan: kop en intro voor de uitkomst, afzonderlijke feiten voor iedere bodyalinea. Controleer intern iedere zin tegen verifiedFacts en verwijder iedere onbewezen naam, cijfer, tijdsaanduiding of oorzaak. Geef het feitenplan niet uit als JSON.',
+  'De door Veldio berekende paragraphPlan verdeelt uitsluitend bewezen F1/F2-feiten over de body. Gebruik de toegewezen factIds als harde grens voor iedere alinea. De planlabels zijn instructies, GEEN bewijsmateriaal. Een feit uit een andere sectie mag niet herhaald worden om lengte te maken.',
+  'Schrijf uitsluitend wat in de feiten staat, niet wat typisch tijdens een wedstrijd kan zijn gebeurd. Een gelijke eindstand bewijst een gelijkspel; niet dat beide ploegen dominant waren. Een laatste doelpunt bewijst niet dat er daarna niet meer is aangevallen. Omschrijf niet dat iets tot minuut 90 onveranderd bleef zonder bron.',
+  'Bedenk intern vóór het schrijven de feiten per alinea. Controleer iedere zin tegen verifiedFacts en verwijder iedere onbewezen naam, cijfer, tijdsaanduiding of oorzaak. Geef het feitenplan niet uit als JSON.',
   'Bij onvoldoende onafhankelijke feiten voor het vereiste formaat is skip verplicht. Maak het artikel niet langer met speculatie of opvulling. Verlaag nooit redactionele normen. Publiceer niet zelf.'
  ];
  const form = rich ? [
-  'Schrijf een inhoudelijk rijk wedstrijdverslag met 3-5 verschillende bodyalinea’s, ieder 18-120 woorden en minimaal 70 tekens. Dit is GEEN compact uitslagbericht.',
-  'Kies uitsluitend indien gedekt door de feiten: alinea 1 zet datum, competitie, ronde of geverifieerde openingsfase uiteen; alinea 2 volgt afzonderlijke geverifieerde doelpunten en standen in bewezen volgorde; alinea 3 geeft een ander aantoonbaar deel van het scoreverloop of het vastgestelde slot. Vierde of vijfde alinea alleen wanneer er werkelijk extra onafhankelijke gebeurtenissen bestaan.',
+  'Schrijf een inhoudelijk rijk wedstrijdverslag met EXACT DRIE bodyalinea’s, ieder 18-120 woorden en minimaal 70 tekens. Dit is GEEN compact uitslagbericht. Gebruik een eigen zakelijke nieuwsstijl, geen sjabloonachtige vulzinnen.',
+  'Volg de drie afzonderlijke bodysecties in paragraphPlan: 1 context en eventueel ruststand, 2 eerdere gedocumenteerde doelpunten, 3 latere gedocumenteerde doelpunten. Elke alinea behandelt uitsluitend de aldaar toegewezen feiten. Schrijf geen vierde of vijfde alinea. Als een sectie onvoldoende feiten bevat voor 18 zinvolle woorden is skip verplicht.',
   'Een goal-timeline bewijst uitsluitend de genoemde minuut, speler, soort doelpunt en direct daarbij geregistreerde stand. Een ruststand bewijst niets over kansen of spelbeeld. Verbind gebeurtenissen niet met fictieve causaliteit.'
  ] : [
-  'Schrijf een compact uitslagbericht: body bevat 1-2 alinea’s van elk 10-65 woorden. Dit is GEEN langwedstrijdverslag.',
+  'Schrijf een compact uitslagbericht: body bevat EXACT ÉÉN inhoudelijke alinea van 10-65 woorden, mits dit zonder herhaling of fictie kan. Dit is GEEN langwedstrijdverslag.',
   'Gebruik de body alleen voor geverifieerde datum, competitie, speelronde en een expliciet bevestigde ruststand. Zonder zulke aanvullende feiten: {"skip":true}.'
  ];
  return [...common,...form].join(' ');
@@ -41,4 +66,4 @@ function writingPrompt(record = {}) {
 function revisionPrompt(record = {}) {
  return writingPrompt(record) + ' Dit is een VOLLEDIGE NIEUWE VERSIE na een afkeuring. Het afgekeurde concept is bewust niet beschikbaar. Gebruik rejection uitsluitend als waarschuwing over eerdere fouten, nooit als bron voor nieuwe feiten. Controleer alle numerieke claims en tussenstanden vóór het antwoord opnieuw tegen verifiedFacts en allowedScores. Behoud het juiste rijke of compacte formaat. Neem geen eerdere beoordeling of goedkeuringsscore over. Als de afwijzing niet zonder nieuwe feiten te herstellen is: {"skip":true}.';
 }
-module.exports = {isRichMatch,allowedNumbers,allowedScores,writingPrompt,revisionPrompt};
+module.exports = {isRichMatch,allowedNumbers,allowedScores,paragraphPlan,writingPrompt,revisionPrompt};
