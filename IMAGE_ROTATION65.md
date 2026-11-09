@@ -39,3 +39,6 @@ De beelden zitten in het aparte overdraagbare ZIP-pakket **Veldio_matchbeelden_1
 
 ## Volgende veilige importstap
 Plaats de tien WebP's vanuit de ZIP onder `public/match-rotations65/`. Voeg per bestand een exact `image-library49.json`-record toe met `file`, `sha256`, `categories: ['preview','report']`, `clubs`, `daypart`, `reviewer`, `rightsEvidence`, `caption` en `approval: 'approved'` **pas na** beoordeling. Noem de afbeelding een AI-illustratie, geen authentiek fotoverslag. Test de exacte clubkoppeling en verversing in de API en op het Android-toestel voordat de nieuwe app-build als GO wordt gemeld.
+
+## Import uitgevoerd op 9 november 2026 (vervolg)
+Tien oorspronkelijke 1280×720 WebP-afbeeldingen zijn met onveranderde binaire Git-blob, gecontroleerde SHA-256 en afzonderlijke catalogusmetadata aan `public/match-rotations65/` toegevoegd. De reeks bevat **één variant voor tien verschillende wedstrijden**, niet zes beelden per combinatie. Visuele beoordeling betreft gegenereerde vorm, clubnamen, V-bal, illustratievermelding en algemene beeldcontext. Er is geen garantie op uitsluiting van alle intellectuele-eigendomsrisico's. De exacte wedstrijd-, competitie- en dagdeelcontroles blijven verplicht; ongeschikte beelden worden niet getoond. De resterende vijf beeldvarianten per combinatie en meer categoriebeelden vallen buiten deze import.
