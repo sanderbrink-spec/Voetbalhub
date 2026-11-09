@@ -1,0 +1,271 @@
+[
+  {
+    "id": "cd4f2374-b1e3-5f9d-a64f-d26fdf273384",
+    "matchId": "sm-19714596",
+    "match": {
+      "homeTeam": "SC Heerenveen",
+      "awayTeam": "Feyenoord",
+      "homeScore": 5,
+      "awayScore": 3,
+      "playedAt": "2026-11-08"
+    },
+    "category": "Eredivisie",
+    "registration": {
+      "date": "2026-11-08T11:15:00.000Z",
+      "round": "Speelronde 12",
+      "halfTime": {
+        "away": 2,
+        "home": 1
+      },
+      "goalTimeline": [
+        {
+          "minute": 25,
+          "extra": 0,
+          "player": "Anis Hadj Moussa",
+          "kind": "goal",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "minute": 31,
+          "extra": 0,
+          "player": "Nacho Ferri",
+          "kind": "penalty",
+          "home": 0,
+          "away": 2
+        },
+        {
+          "minute": 45,
+          "extra": 3,
+          "player": "Maas Willemsen",
+          "kind": "goal",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "minute": 47,
+          "extra": 0,
+          "player": "Levi Smans",
+          "kind": "goal",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "minute": 61,
+          "extra": 0,
+          "player": "Ringo Meerveld",
+          "kind": "goal",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "minute": 69,
+          "extra": 0,
+          "player": "Sem Steijn",
+          "kind": "goal",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "minute": 84,
+          "extra": 0,
+          "player": "Ringo Meerveld",
+          "kind": "goal",
+          "home": 4,
+          "away": 3
+        },
+        {
+          "minute": 90,
+          "extra": 3,
+          "player": "Ringo Meerveld",
+          "kind": "goal",
+          "home": 5,
+          "away": 3
+        }
+      ]
+    },
+    "previousCopy": "d8471f776f4955d4c60f0985ea6482d9f72d569ed6f86cb3172326355d39faac",
+    "draft": {
+      "headline": "Meerveld schiet Heerenveen met hattrick langs Feyenoord",
+      "standfirst": "Ringo Meerveld maakte na rust drie doelpunten voor sc Heerenveen. Feyenoord verspeelde een voorsprong van twee doelpunten en verloor het Eredivisieduel met 5-3.",
+      "body": [
+        "Anis Hadj Moussa zette Feyenoord in de 25e minuut op voorsprong. Nacho Ferri benutte in de 31e minuut een strafschop. Maas Willemsen maakte in de derde minuut van de blessuretijd de 1-2. Dat was de ruststand.",
+        "Na rust maakte Levi Smans in de 47e minuut gelijk. In de 61e minuut zette Ringo Meerveld Heerenveen voor het eerst op voorsprong. Sem Steijn bracht Feyenoord in de 69e minuut weer op gelijke hoogte.",
+        "Meerveld maakte in de 84e minuut de 4-3 en bepaalde in de derde minuut van de blessuretijd de eindstand op 5-3. Hij werd daarmee de eerste invaller met een hattrick voor Heerenveen in de Eredivisie."
+      ]
+    },
+    "verifiedFacts": [
+      "SC Heerenveen – Feyenoord eindigde in 5-3.",
+      "Eredivisie, speelronde 12, gespeeld op 2026-11-08.",
+      "Ruststand 1-2.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 25 een doelpunt van Anis Hadj Moussa, waarna de stand 0-1 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 31 een benutte strafschop van Nacho Ferri, waarna de stand 0-2 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 45+3 een doelpunt van Maas Willemsen, waarna de stand 1-2 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 47 een doelpunt van Levi Smans, waarna de stand 2-2 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 61 een doelpunt van Ringo Meerveld, waarna de stand 3-2 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 69 een doelpunt van Sem Steijn, waarna de stand 3-3 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 84 een doelpunt van Ringo Meerveld, waarna de stand 4-3 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 90+3 een doelpunt van Ringo Meerveld, waarna de stand 5-3 was.",
+      "Feyenoord verloor voor het eerst dit Eredivisieseizoen.",
+      "Ringo Meerveld kwam als invaller binnen de lijnen en maakte drie doelpunten.",
+      "Feyenoord kwam 0-2 voor voordat sc Heerenveen met 5-3 won.",
+      "Ringo Meerveld werd de eerste invaller met een Eredivisie-hattrick voor sc Heerenveen."
+    ],
+    "sources": [
+      {
+        "url": "https://www.sportmonks.com/football-api/"
+      },
+      {
+        "url": "https://www.sc-heerenveen.nl/nieuws/sc-heerenveen-wint-knotsgek-voetbalgevecht-van-koploper-feyenoord-en-scoort-vijf-keer"
+      },
+      {
+        "url": "https://eredivisie.nl/nieuws/terugblik-speelronde-12/"
+      },
+      {
+        "url": "https://www.sofascore.com/nl/football/match/sc-heerenveen-feyenoord/jjbsojb"
+      }
+    ]
+  },
+  {
+    "id": "2cb1e3f7-fa9c-5615-a76d-65a1b0f2eb07",
+    "matchId": "sm-19714597",
+    "match": {
+      "homeTeam": "ADO Den Haag",
+      "awayTeam": "Sparta Rotterdam",
+      "homeScore": 3,
+      "awayScore": 1,
+      "playedAt": "2026-11-07"
+    },
+    "category": "Eredivisie",
+    "registration": {
+      "date": "2026-11-07T17:45:00.000Z",
+      "round": "Speelronde 12",
+      "halfTime": {
+        "away": 0,
+        "home": 1
+      },
+      "goalTimeline": [
+        {
+          "minute": 22,
+          "extra": 0,
+          "player": "Juho Kilo",
+          "kind": "goal",
+          "home": 1,
+          "away": 0
+        },
+        {
+          "minute": 50,
+          "extra": 0,
+          "player": "Bas Kuipers",
+          "kind": "goal",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "minute": 57,
+          "extra": 0,
+          "player": "Nigel Thomas",
+          "kind": "goal",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "minute": 79,
+          "extra": 0,
+          "player": "Daryl van Mieghem",
+          "kind": "goal",
+          "home": 3,
+          "away": 1
+        }
+      ]
+    },
+    "previousCopy": "c723c236fcc1acabcc39826bbb5285206adf2961abffe0d3da59b5baa7694c71",
+    "draft": {
+      "headline": "Van Mieghem beslist duel met Sparta voor ADO",
+      "standfirst": "ADO Den Haag won bij het Eredivisiedebuut van interim-trainer Levi Schwiebbe met 3-1 van Sparta Rotterdam. Daryl van Mieghem maakte de beslissende derde treffer.",
+      "body": [
+        "Juho Kilo opende de score in de 22e minuut. Daarmee ging ADO in het WerkTalent Stadion met een 1-0 voorsprong de rust in.",
+        "Bas Kuipers maakte in de 50e minuut gelijk voor Sparta. Nigel Thomas zette ADO in de 57e minuut opnieuw op voorsprong.",
+        "Daryl van Mieghem bepaalde de eindstand in de 79e minuut op 3-1. De aanvoerder maakte zo het derde doelpunt voor ADO, dat in de eerste competitiewedstrijd onder Schwiebbe drie punten pakte."
+      ]
+    },
+    "verifiedFacts": [
+      "ADO Den Haag – Sparta Rotterdam eindigde in 3-1.",
+      "Eredivisie, speelronde 12, gespeeld op 2026-11-07.",
+      "Ruststand 1-0.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 22 een doelpunt van Juho Kilo, waarna de stand 1-0 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 50 een doelpunt van Bas Kuipers, waarna de stand 1-1 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 57 een doelpunt van Nigel Thomas, waarna de stand 2-1 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 79 een doelpunt van Daryl van Mieghem, waarna de stand 3-1 was.",
+      "ADO Den Haag speelde thuis in het WerkTalent Stadion.",
+      "Levi Schwiebbe debuteerde als interim-hoofdtrainer in de Eredivisie.",
+      "Daryl van Mieghem was aanvoerder van ADO Den Haag.",
+      "ADO Den Haag kreeg drie punten voor de overwinning."
+    ],
+    "sources": [
+      {
+        "url": "https://www.sportmonks.com/football-api/"
+      },
+      {
+        "url": "https://adodenhaag.nl/nl/teams/1e-elftal/resultaten/ado-den-haag-sparta-rotterdam-1333"
+      },
+      {
+        "url": "https://www.sparta-rotterdam.nl/ticketinformatie-26-27-ado-den-haag-sparta-rotterdam/"
+      }
+    ]
+  },
+  {
+    "id": "a382473f-c3c1-58ab-ad13-7b3dd6bb9761",
+    "matchId": "sm-19714595",
+    "match": {
+      "homeTeam": "FC Twente",
+      "awayTeam": "Ajax",
+      "homeScore": 2,
+      "awayScore": 2,
+      "playedAt": "2026-11-08"
+    },
+    "category": "Eredivisie",
+    "registration": {
+      "date": "2026-11-08T13:30:00.000Z",
+      "round": "Speelronde 12",
+      "halfTime": {
+        "home": 0,
+        "away": 1
+      },
+      "goalTimeline": []
+    },
+    "previousCopy": "d0463a2cc4dec5df467903bd7ce5fc2da15da1f79815edee8423c22d8eff98bb",
+    "draft": {
+      "headline": "Weghorst bezorgt FC Twente laat gelijkspel tegen Ajax",
+      "standfirst": "Wout Weghorst benutte diep in blessuretijd een strafschop tegen zijn oude club. FC Twente kwam daarmee terug van 0-2 en hield Ajax in Enschede op 2-2.",
+      "body": [
+        "Tolu kopte Ajax in de derde minuut op voorsprong. Dat was het enige doelpunt voor rust. Rayane Bounida viel in en verdubbelde de voorsprong in de 66e minuut.",
+        "Ajax hield de marge van twee doelpunten kort vast. In de 68e minuut kopte Dies Janse bij een hoekschop in zijn eigen doel en stond het 1-2.",
+        "In de vijfde minuut van de blessuretijd kreeg Twente na ingrijpen van de VAR een strafschop. Weghorst benutte die en zette de eindstand op 2-2."
+      ]
+    },
+    "verifiedFacts": [
+      "FC Twente – Ajax eindigde in 2-2.",
+      "Eredivisie, speelronde 12, gespeeld op 2026-11-08.",
+      "Ruststand 0-1.",
+      "Volgens het officiële wedstrijdverslag veranderde de stand in minuut 3 door Tolu naar 0-1.",
+      "Volgens het officiële wedstrijdverslag veranderde de stand in minuut 66 door Rayane Bounida naar 0-2.",
+      "Volgens het officiële wedstrijdverslag veranderde de stand in minuut 68 door Dies Janse naar 1-2.",
+      "Volgens het officiële wedstrijdverslag veranderde de stand in minuut 90+5 door Wout Weghorst naar 2-2.",
+      "Tolu kopte de openingstreffer binnen en Rayane Bounida was invaller.",
+      "Dies Janse kopte uit een hoekschop in zijn eigen doel.",
+      "Twente kreeg een strafschop na ingrijpen van de VAR en voormalig Ajacied Wout Weghorst benutte die."
+    ],
+    "sources": [
+      {
+        "url": "https://www.sportmonks.com/football-api/"
+      },
+      {
+        "url": "https://english.ajax.nl/articles/late-equaliser-denies-ajax-victory-in-enschede/"
+      },
+      {
+        "url": "https://eredivisie.nl/nieuws/terugblik-speelronde-12/"
+      }
+    ]
+  }
+]
