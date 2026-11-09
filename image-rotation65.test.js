@@ -68,3 +68,23 @@ test('neutral topic images rotate only within the same non-match subject class',
  assert.equal(result.imageVariants.length,2);
  assert.ok(!result.imageVariants.some(v=>v.id==='match'));
 });
+
+test('imported v65 WebP artworks have verified catalog metadata and exact club/daypart eligibility',()=>{
+ const library=require('./image-library49');
+ const catalog=library.catalog();
+ const v65=catalog.filter(a=>a.id.startsWith('veldio-')&&a.file.startsWith('public/match-rotations65/'));
+ assert.equal(v65.length,10);
+ for(const a of v65){
+  assert.equal(a.clubs.length,2);
+  assert.equal(a.categories.includes('report'),true);
+  assert.equal(a.categories.includes('preview'),true);
+  assert.match(a.sha256,/^[a-f0-9]{64}$/);
+  assert.ok(a.caption.includes('AI-illustratie'));
+  const fixture={id:a.id,status:'published',articleKind:'match_report',category:'Eredivisie',match:{homeTeam:a.clubs[0],awayTeam:a.clubs[1]}};
+  assert.equal(eligible(fixture).some(b=>b.id===a.id),false,'must not display daypart-specific art without kickoff + venue');
+ }
+ const evening={id:'review-fixture',status:'published',articleKind:'match_report',category:'Eredivisie',
+  match:{homeTeam:'Ajax',awayTeam:'PSV',playedAt:'2026-11-09T19:00:00Z',venue:{latitude:52.314,longitude:4.941}}};
+ assert.equal(eligible(evening).some(a=>a.id==='veldio-ajax-psv-01'),true);
+ assert.equal(eligible({...evening,match:{...evening.match,awayTeam:'FC Groningen'}}).some(a=>a.id==='veldio-ajax-psv-01'),false);
+});

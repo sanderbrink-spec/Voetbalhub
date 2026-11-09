@@ -435,6 +435,316 @@
       "lastUsed": null,
       "sha256": "76d88206f12b6a4378c94c9cb4c3b212ef2523b9cddef26fd1a9aa10c1914600",
       "caption": "AI-illustratie van ADO Den Haag en Sparta Rotterdam in een fictief stadion."
+    },
+    {
+      "id": "veldio-fc-groningen-ajax-01",
+      "file": "public/match-rotations65/veldio-fc-groningen-ajax-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "FC Groningen – Ajax",
+      "clubs": [
+        "FC Groningen",
+        "Ajax"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "night",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "d193a26a8778d60e895828805abbdbfb9c5b3c29f8e9af84d1edfca37df4904f",
+      "caption": "AI-illustratie: FC Groningen tegen Ajax; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-psv-fc-twente-01",
+      "file": "public/match-rotations65/veldio-psv-fc-twente-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "PSV – FC Twente",
+      "clubs": [
+        "PSV",
+        "FC Twente"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "night",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "29f23bdf1bd940a1592764962473285ba947fe6a5a52658dd194270c1aaa6208",
+      "caption": "AI-illustratie: PSV tegen FC Twente; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-feyenoord-az-01",
+      "file": "public/match-rotations65/veldio-feyenoord-az-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Feyenoord – AZ",
+      "clubs": [
+        "Feyenoord",
+        "AZ"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "twilight",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "2c550a6e3c72d2b8fede3f2459d898d4ae564dc63459ae32282c929a16587a6b",
+      "caption": "AI-illustratie: Feyenoord tegen AZ; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-fc-utrecht-sc-heerenveen-01",
+      "file": "public/match-rotations65/veldio-fc-utrecht-sc-heerenveen-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "FC Utrecht – sc Heerenveen",
+      "clubs": [
+        "FC Utrecht",
+        "sc Heerenveen"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "night",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "f3aff9f2ddeb01bee1fdacba2bfffe59d16be796c0cbf40334fbfed4451050ec",
+      "caption": "AI-illustratie: FC Utrecht tegen sc Heerenveen; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-go-ahead-eagles-nec-01",
+      "file": "public/match-rotations65/veldio-go-ahead-eagles-nec-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Go Ahead Eagles – NEC",
+      "clubs": [
+        "Go Ahead Eagles",
+        "NEC"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "twilight",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "c6e6a6e127c2d52f9af64e4627ff27e082be32170247f7b85c28a4c67eff3591",
+      "caption": "AI-illustratie: Go Ahead Eagles tegen NEC; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-ajax-psv-01",
+      "file": "public/match-rotations65/veldio-ajax-psv-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "Ajax – PSV",
+      "clubs": [
+        "Ajax",
+        "PSV"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "night",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "b398ad7252fc383cd342dbef024ba17c5fe986f38872aef4ca540661dd7dc637",
+      "caption": "AI-illustratie: Ajax tegen PSV; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-az-fc-groningen-01",
+      "file": "public/match-rotations65/veldio-az-fc-groningen-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "AZ – FC Groningen",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "day",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "086435d412f4396290649fa87198b2713e9b01fc8fc5c63cc749a4e69d1b5ba4",
+      "caption": "AI-illustratie: AZ tegen FC Groningen; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-fc-twente-feyenoord-01",
+      "file": "public/match-rotations65/veldio-fc-twente-feyenoord-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "FC Twente – Feyenoord",
+      "clubs": [
+        "FC Twente",
+        "Feyenoord"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "night",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "6e7332e6bdd673866c42cb56b8249c54d00228610dda393b47bc833c86ae3954",
+      "caption": "AI-illustratie: FC Twente tegen Feyenoord; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-sc-heerenveen-pec-zwolle-01",
+      "file": "public/match-rotations65/veldio-sc-heerenveen-pec-zwolle-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "sc Heerenveen – PEC Zwolle",
+      "clubs": [
+        "sc Heerenveen",
+        "PEC Zwolle"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "twilight",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "1387aee9cfa3334cf798d33b6437da17875eb82bb89f318de160bbd2ac0c0380",
+      "caption": "AI-illustratie: sc Heerenveen tegen PEC Zwolle; geen foto van de werkelijke wedstrijd, spelers of stadion."
+    },
+    {
+      "id": "veldio-nec-fc-utrecht-01",
+      "file": "public/match-rotations65/veldio-nec-fc-utrecht-01.webp",
+      "categories": [
+        "preview",
+        "report"
+      ],
+      "subject": "NEC – FC Utrecht",
+      "clubs": [
+        "NEC",
+        "FC Utrecht"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "night",
+      "keywords": [
+        "wedstrijdillustratie",
+        "Veldio"
+      ],
+      "questionIds": [],
+      "variant": "original-v65-01",
+      "origin": "ChatGPT imagegen, Veldio original artwork 2026-11-09",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio image-generation package Veldio_matchbeelden_10_en_rotatieregels.zip (manifest.json, SHA-256); https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "Veldio visual/editorial review, 2026-11-09",
+      "lastUsed": null,
+      "sha256": "19ebf1fad1080f68b01ea4ecebaded9019738962886dfefbe49d00704912c2b3",
+      "caption": "AI-illustratie: NEC tegen FC Utrecht; geen foto van de werkelijke wedstrijd, spelers of stadion."
     }
   ]
 }
