@@ -7,13 +7,16 @@ import java.util.*;
 
 /** Updates the article rows in place, without rebuilding the screen or carousel. */
 public final class FeedPanel extends LinearLayout implements FeedRepository.Listener {
- private final Activity activity;private final LinearLayout rows;private final TextView status;private final ProgressBar spinner;private final HomeFeatureView.OpenArticle open;private final String category;private final boolean column;
+ private final Activity activity;private final LinearLayout rows;private final TextView status;private final ProgressBar spinner;private final HomeFeatureView.OpenArticle open;private final String category;private final boolean column;private final int startIndex,maxItems;
  private Button retry;
  private String rendered="";private boolean attached;
  private final Runnable poll=new Runnable(){public void run(){if(!attached||getWindowVisibility()!=VISIBLE)return;FeedRepository.refresh(false);postDelayed(this,60000);}};
  private int dp(int n){return Math.round(n*getResources().getDisplayMetrics().density);}
  public FeedPanel(Activity a,String category,boolean column,HomeFeatureView.OpenArticle open){
-  super(a);activity=a;this.category=category;this.column=column;this.open=open;setOrientation(VERTICAL);
+  this(a,category,column,open,0,Integer.MAX_VALUE);
+ }
+ public FeedPanel(Activity a,String category,boolean column,HomeFeatureView.OpenArticle open,int start,int limit){
+  super(a);activity=a;this.category=category;this.column=column;this.open=open;this.startIndex=Math.max(0,start);this.maxItems=Math.max(1,limit);setOrientation(VERTICAL);
   LinearLayout bar=new LinearLayout(a);bar.setGravity(android.view.Gravity.CENTER_VERTICAL);bar.setPadding(dp(10),dp(6),dp(10),dp(6));
   status=new TextView(a);status.setTextSize(11);status.setTextColor(0xFFB5C9BB);bar.addView(status,new LayoutParams(0,-2,1));
   spinner=new ProgressBar(a);spinner.setIndeterminateTintList(android.content.res.ColorStateList.valueOf(0xFF25F06B));bar.addView(spinner,new LayoutParams(dp(20),dp(20)));
@@ -30,16 +33,20 @@ public final class FeedPanel extends LinearLayout implements FeedRepository.List
   String anchor=null;int offset=0;if(sc!=null&&sc.getScrollY()>0)for(int i=0;i<rows.getChildCount();i++){View child=rows.getChildAt(i);int[] pos=new int[2],sp=new int[2];child.getLocationOnScreen(pos);sc.getLocationOnScreen(sp);if(pos[1]+child.getHeight()>sp[1]&&pos[1]<sp[1]+sc.getHeight()){anchor=String.valueOf(child.getTag());offset=pos[1]-sp[1];break;}}
   rows.removeAllViews();JSONArray list=data.optJSONArray("articles");ArrayList<JSONObject> sorted=new ArrayList<>();for(int i=0;i<list.length();i++){JSONObject row=list.optJSONObject(i);if(row!=null)sorted.add(row);}sorted.sort((x,y)->y.optString("publishedAt").compareTo(x.optString("publishedAt")));HashSet<String> ids=new HashSet<>(),headlines=new HashSet<>();
   ImageRegistry39.Session images=new ImageRegistry39.Session();
+  int matching=0;
 
   for(JSONObject original:sorted){JSONObject row;try{row=new JSONObject(original.toString());}catch(Exception ignored){continue;}boolean isColumn="column".equalsIgnoreCase(row.optString("type"))||"column".equalsIgnoreCase(row.optString("category"))||"de derde helft".equalsIgnoreCase(row.optString("category"));if(column!=isColumn||!ids.add(row.optString("id"))||!headlines.add(row.optString("headline").trim().toLowerCase(Locale.ROOT)))continue;
    String cat=row.optString("category").toLowerCase(Locale.ROOT),title=row.optString("headline").toLowerCase(Locale.ROOT);if(!column&&"Transfers".equals(category)&&!cat.contains("transfer")&&!title.matches(".*(transfer|contract|versterking|vertrek).*"))continue;
    if(!column&&"Eredivisie".equals(category)&&!cat.contains("eredivisie"))continue;
    if(!column&&"Buitenland".equals(category)&&!cat.matches(".*(buitenland|premier league|bundesliga|serie a|la liga|champions|europa|conference).*"))continue;
+   int presentationIndex=matching++;
+   if(presentationIndex<startIndex)continue;
+   if(presentationIndex-startIndex>=maxItems)break;
    if(!images.claim(row))try{row.put("uniqueFallback39",true);}catch(Exception ignored){}
-   try{row.put("presentationIndex40",rows.getChildCount());}catch(Exception ignored){}
+   try{row.put("presentationIndex40",presentationIndex);}catch(Exception ignored){}
    NewsListCard card=new NewsListCard(activity,row,()->open.open(row));card.setTag(row.optString("id"));LayoutParams lp=new LayoutParams(-1,-2);lp.setMargins(dp(6),dp(4),dp(6),dp(5));rows.addView(card,lp);
   }
-  if(rows.getChildCount()==0){TextView empty=new TextView(activity);empty.setText("Er zijn nog geen berichten in deze rubriek.");empty.setTextColor(0xFFB5C9BB);empty.setPadding(dp(12),dp(12),dp(12),dp(12));rows.addView(empty);}
+  if(rows.getChildCount()==0&&startIndex==0){TextView empty=new TextView(activity);empty.setText("Er zijn nog geen berichten in deze rubriek.");empty.setTextColor(0xFFB5C9BB);empty.setPadding(dp(12),dp(12),dp(12),dp(12));rows.addView(empty);}
   final String keep=anchor;final int dy=offset;if(sc!=null&&keep!=null)rows.post(()->{for(int i=0;i<rows.getChildCount();i++){View child=rows.getChildAt(i);if(keep.equals(child.getTag())){int[] cp=new int[2],sp=new int[2];child.getLocationOnScreen(cp);sc.getLocationOnScreen(sp);sc.scrollBy(0,cp[1]-sp[1]-dy);break;}}});
  }
 }
