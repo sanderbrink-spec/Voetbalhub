@@ -18,6 +18,20 @@ test('primary writer uses GPT-OSS 120B and preserves exact verified facts',async
  let calls=0;const router=new EditorialProviderRouter({...options,fetcher:mock(async(url,opt)=>{calls++;assert.match(url,/groq/);assert.deepEqual(JSON.parse(opt.body).messages,messages);return response(draft);})});
  assert.deepEqual(await router.complete(messages,{task:'writing'}),draft);assert.equal(calls,1);assert.equal(router.lastWriter.model,MODELS.groq);
 });
+test('writer prefers GPT-OSS, independent review uses different OpenAI model when configured',async()=>{
+ const calls=[];
+ const router=new EditorialProviderRouter({groqKey:'existing-groq',openaiKey:'existing-openai',
+  intervalMs:0,fetcher:async(url,opt)=>{
+   const body=JSON.parse(opt.body);
+   calls.push({url,model:body.model,messages:body.messages});
+   return response(url.includes('openai.com')?review:{...draft,skip:false});
+  }});
+ assert.deepEqual(await router.complete(messages,{task:'writing'}),{...draft,skip:false});
+ assert.deepEqual(await router.complete(messages,{task:'review'}),review);
+ assert.deepEqual(calls.map(c=>c.model),[MODELS.groq,MODELS.openai]);
+ assert.ok(calls.every(c=>JSON.stringify(c.messages)===JSON.stringify(messages)));
+ assert.notEqual(router.trace[0].family,router.trace[1].family);
+});
 test('daily Groq quota switches only this task to verified zero-price OpenRouter with identical evidence',async()=>{
  let groq=0,backup=0;const router=new EditorialProviderRouter({...options,fetcher:mock(async(url,opt)=>{const body=JSON.parse(opt.body);assert.deepEqual(body.messages,messages);if(url.includes('groq')){groq++;return quota();}backup++;assert.equal(body.model,MODELS.openrouter);assert.deepEqual(body.provider.max_price,{prompt:0,completion:0});assert.equal(body.provider.allow_fallbacks,false);return response(draft);})});
  assert.deepEqual(await complete(messages,{router},'writing'),draft);await router.complete(messages,{task:'revision'});assert.equal(groq,1);assert.equal(backup,2);assert.equal(router.trace[0].outcome,'daily_quota');
