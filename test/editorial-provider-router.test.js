@@ -132,7 +132,7 @@ test('OpenAI and Groq writer require a typed paragraph array in strict JSON sche
  const result=await router.complete(messages,{task:'writing'});
  assert.deepEqual(result,{...draft,skip:false});
  assert.equal(calls.length,1);
- assert.match(calls[0].url,/openai.com/);
+ assert.match(calls[0].url,/groq.com/);
  const format=calls[0].format;
  assert.equal(format.type,'json_schema');
  assert.equal(format.json_schema.strict,true);
