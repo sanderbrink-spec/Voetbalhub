@@ -37,7 +37,7 @@ public final class FeedPanel extends LinearLayout implements FeedRepository.List
    if(!column&&"Buitenland".equals(category)&&!cat.matches(".*(buitenland|premier league|bundesliga|serie a|la liga|champions|europa|conference).*"))continue;
    if(!images.claim(row))try{row.put("uniqueFallback39",true);}catch(Exception ignored){}
    try{row.put("presentationIndex40",rows.getChildCount());}catch(Exception ignored){}
-   NewsListCard card=new NewsListCard(activity,row,()->open.open(row),images);card.setTag(row.optString("id"));LayoutParams lp=new LayoutParams(-1,-2);lp.setMargins(dp(6),dp(4),dp(6),dp(5));rows.addView(card,lp);
+   NewsListCard card=new NewsListCard(activity,row,()->open.open(row));card.setTag(row.optString("id"));LayoutParams lp=new LayoutParams(-1,-2);lp.setMargins(dp(6),dp(4),dp(6),dp(5));rows.addView(card,lp);
   }
   if(rows.getChildCount()==0){TextView empty=new TextView(activity);empty.setText("Er zijn nog geen berichten in deze rubriek.");empty.setTextColor(0xFFB5C9BB);empty.setPadding(dp(12),dp(12),dp(12),dp(12));rows.addView(empty);}
   final String keep=anchor;final int dy=offset;if(sc!=null&&keep!=null)rows.post(()->{for(int i=0;i<rows.getChildCount();i++){View child=rows.getChildAt(i);if(keep.equals(child.getTag())){int[] cp=new int[2],sp=new int[2];child.getLocationOnScreen(cp);sc.getLocationOnScreen(sp);sc.scrollBy(0,cp[1]-sp[1]-dy);break;}}});

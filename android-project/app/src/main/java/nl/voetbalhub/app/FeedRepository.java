@@ -55,7 +55,7 @@ public final class FeedRepository {
      if(!url.equals(address)&&snapshot!=null&&snapshot.optJSONArray("articles")!=null&&snapshot.optJSONArray("articles").length()>0){long mirrored=java.time.Instant.parse(raw.getString("mirroredAt")).toEpochMilli(),fetched=context.getSharedPreferences("voetbalhub_editorial",0).getLong("last_fetch_at",0);if(mirrored<fetched||newest(checked)<newest(snapshot))throw new Exception("Fallback predates cached news");}
      result=checked;if(result!=null)break;}catch(Exception error){android.util.Log.w("VeldioFeed",(url.equals(address)?"API":"Mirror")+": "+error.getClass().getSimpleName()+" "+error.getMessage());}
    }
-   final JSONObject data=result;UI.post(()->{if(request!=generation)return;UI.removeCallbacks(expired);loading=false;failed=data==null;if(data!=null){snapshot=Branding.response(data);context.getSharedPreferences("voetbalhub_editorial",0).edit().putString("last_articles",snapshot.toString()).putLong("last_fetch_at",System.currentTimeMillis()).apply();}notifyListeners();});
+   final JSONObject data=result;UI.post(()->{if(request!=generation)return;UI.removeCallbacks(expired);loading=false;failed=data==null;if(data!=null){snapshot=Branding.response(data);EditorialStore.refreshSaved(context,snapshot.optJSONArray("articles"));context.getSharedPreferences("voetbalhub_editorial",0).edit().putString("last_articles",snapshot.toString()).putLong("last_fetch_at",System.currentTimeMillis()).apply();}notifyListeners();});
   });
  }
 }
