@@ -2,7 +2,7 @@
 const crypto=require('node:crypto');
 const MODELS=Object.freeze({groq:'openai/gpt-oss-120b',openai:'gpt-4.1-mini',gemini:'gemini-2.5-pro',openrouter:'openai/gpt-oss-120b:free'});
 const TASKS=Object.freeze({extraction:{budget:2400,effort:'low'},writing:{budget:3600,effort:'medium'},revision:{budget:4200,effort:'high'},review:{budget:4200,effort:'high'}});
-const REVIEW_RESERVE=Object.freeze({openai:{requests:6,tokens:40000}});
+const REVIEW_RESERVE=Object.freeze({openai:{requests:16,tokens:100000}});
 const ENDPOINTS={groq:'https://api.groq.com/openai/v1/chat/completions',openai:'https://api.openai.com/v1/chat/completions',gemini:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',openrouter:'https://openrouter.ai/api/v1/chat/completions'};
 // Force paragraph arrays at generation time. Reject incompatible output rather
 // than silently splitting, rewriting or approving unverified AI copy.
