@@ -273,7 +273,7 @@ async function getArticles(view = "current") {
   const keys = await client.keys("article:*");
   const candidates=await require("./article-storage").readPublished(client,keys);
   const articles=[];
-  for(const article of candidates)try{articles.push(require("./media43").apply(require("./brand").article(withArticleCover(article))));}catch{}
+  for(const article of candidates)try{const decorated=require("./media43").apply(require("./brand").article(withArticleCover(article)));articles.push(require("./editorial-chronology139").correctConfirmedPublishedArticle(decorated));}catch{}
   articles.sort((a,b) => String(b.publishedAt || "").localeCompare(String(a.publishedAt || "")));
   return require("./feed-policy").selectFeed(articles, {view});
 }
