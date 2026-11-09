@@ -5,14 +5,28 @@
  const scores=value=>[...String(value||'').matchAll(/(?<![\d-])\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b(?![-–]\d)/g)].map(m=>Number(m[1])+'-'+Number(m[2]));
  const needsMatch=d=>scores(text(d)).length>0||/\b(?:verslaat|versloeg|gelijkspel|puntendeling|eindstand|ruststand)\b/i.test(text(d))||(/\b(?:wint|won|overwinning)\b/i.test(text(d))&&/\b(?:wedstrijd|duel|speelronde|slotfase|eredivisie|competitie)\b/i.test(text(d)));
  const validDate=value=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(value||''))return false;const d=new Date(value+'T12:00:00Z');return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===value;};
- function evidenceIssues(draft,facts=[],match=null){
+ function evidenceIssues(draft,facts=[],match=null,sourceName=''){
   const article=text(draft),evidence=facts.filter(x=>typeof x==='string').join(' '),issues=[];
   const anchored=match&&String(match.homeTeam||'').trim()&&String(match.awayTeam||'').trim()&&Number.isInteger(match.homeScore)&&Number.isInteger(match.awayScore);
   const anchor=anchored?`${match.homeTeam} ${match.awayTeam} ${match.homeScore}-${match.awayScore} ${match.playedAt||''}`:'';
-  const supported=evidence+' '+anchor;
+  // Known source attribution is metadata, never proof of match events.
+  const publisher=['Sportmonks Football API','OpenFootball','football-data.org'].includes(sourceName)?sourceName:'';
+  const supported=evidence+' '+anchor+' '+publisher;
   const numbers=value=>(String(value).match(/\d+(?:[.,]\d+)?/g)||[]).map(x=>x.replace(',','.'));
   const allowedNumbers=new Set(numbers(supported));
-  const unknownNumbers=[...new Set(numbers(article))].filter(x=>!allowedNumbers.has(x));
+  // The checked date 2026-11-08 proves "8 november", but never
+  // an unrelated bare numeral eight or an invented scoreline.
+  const months=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+  const verifiedDates=[...supported.matchAll(/\b(\d{4})-(\d{2})-(\d{2})\b/g)]
+   .map(m=>({month:Number(m[2]),day:Number(m[3])}))
+   .filter(d=>d.month>=1&&d.month<=12&&d.day>=1&&d.day<=31);
+  const verifiedCalendarDay=m=>verifiedDates.some(d=>
+   m[0]===String(d.day)&&new RegExp('^\\s+'+months[d.month-1]+'\\b','i')
+    .test(article.slice(m.index+m[0].length)));
+  const unknownNumbers=[...new Set([...article.matchAll(/\d+(?:[.,]\d+)?/g)]
+   .filter(m=>!allowedNumbers.has(m[0].replace(',','.'))&&!verifiedCalendarDay(m))
+   .map(m=>m[0].replace(',','.')))];
+
   if(unknownNumbers.length)issues.push('Cijfers ontbreken in de gecontroleerde feiten: '+unknownNumbers.join(', ')+'.');
   const allowedScores=new Set(scores(supported));
   const unknownScores=[...new Set(scores(article))].filter(x=>!allowedScores.has(x));
@@ -63,7 +77,11 @@
   return [...new Set(issues)];
  }
  function audit(payload){
-  const draft=payload.draft||{},match=payload.match||null,issues=evidenceIssues(draft,payload.verifiedFacts||[],match);
+  const draft=payload.draft||{},match=payload.match||null;
+  const publisher=payload.sources?.[0]?.url==='https://www.sportmonks.com/football-api/'?'Sportmonks Football API':
+   payload.sources?.[0]?.url==='https://www.football-data.org/'?'football-data.org':
+   payload.sources?.[0]?.url==='https://github.com/openfootball/football.json'?'OpenFootball':'';
+  const issues=evidenceIssues(draft,payload.verifiedFacts||[],match,publisher);
   if(needsMatch(draft)||match){
    if(!match||!String(match.homeTeam||'').trim()||!String(match.awayTeam||'').trim()||normalize(match.homeTeam)===normalize(match.awayTeam)||![match.homeScore,match.awayScore].every(x=>Number.isInteger(x)&&x>=0&&x<=99)||!validDate(match.playedAt))
     issues.push('Wedstrijdverslag: leg thuisploeg, uitploeg, eindstand thuis-uit en wedstrijddatum vast.');
