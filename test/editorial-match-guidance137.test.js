@@ -67,3 +67,19 @@ test('non-match news retains its existing compact policy',()=>{
  assert.equal(production.matchGenerationIsCompact(null,true),true);
  assert.equal(production.matchGenerationIsCompact(null,false),false);
 });
+
+test('v138 repairs the previously rejected v137 packet once and never bypasses freshness or verdict',()=>{
+ const record=matches.candidate({...base(),goalTimeline:timeline},now);
+ const job={status:'review',matchId:record.matchId,attempts:3,failureStage:'quality',failureCategory:'journalistic_rejection',writerRecoveryRevision:'match-evidence-plan-137',checkpoint:{draft:{headline:'rejected'}}};
+ assert.equal(recovery.reopenVerifiedMatch(job,record,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ assert.equal(job.checkpoint,undefined);
+ assert.equal(job.writerRecoveryRevision,recovery.REVISION);
+ job.status='review';
+ assert.equal(recovery.reopenVerifiedMatch(job,record,now),false);
+ const rejected={...job,writerRecoveryRevision:'match-evidence-plan-137',failureCategory:'temporary_source_failure'};
+ assert.equal(recovery.reopenVerifiedMatch(rejected,record,now),false);
+ const stale={...job,writerRecoveryRevision:'match-evidence-plan-137'};
+ assert.equal(recovery.reopenVerifiedMatch(stale,{...record,publishedAt:'2026-11-06T11:00:00Z'},now),false);
+});
