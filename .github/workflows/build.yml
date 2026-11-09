@@ -114,6 +114,50 @@ jobs:
             manifest.txt
             sha256.txt
           if-no-files-found: error
+  preview:
+    # A distinct package is safe to install beside the existing app when the
+    # original update signing key is unavailable. Never sign app1 with a new key.
+    needs: validate49
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify versioned source
+        run: python3 scripts/verify-android-source.py
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Compile separate Veldio preview package
+        working-directory: android-project
+        run: gradle :app:assembleDebug -PveldioPreview51=true --no-daemon
+      - name: Verify isolated package and APK safety
+        run: |
+          set -euo pipefail
+          cp android-project/app/build/outputs/apk/debug/app-debug.apk Veldio-52B-preview.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-52B-preview.apk > preview-signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-52B-preview.apk > preview-manifest.txt
+          grep -q "package: name='nl.voetbalhub.preview51'.*versionCode='92'.*versionName='4.52b-test'" preview-manifest.txt
+          grep -q "application-label:'Veldio 52B Test'" preview-manifest.txt
+          python3 scripts/apk-secret-scan.py Veldio-52B-preview.apk
+          python3 scripts/verify-android-source.py Veldio-52B-preview.apk
+          sha256sum Veldio-52B-preview.apk > preview-sha256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-52B-preview
+          path: |
+            Veldio-52B-preview.apk
+            preview-signature.txt
+            preview-manifest.txt
+            preview-sha256.txt
+          if-no-files-found: error
+
   android16:
     needs: build
     runs-on: ubuntu-24.04
