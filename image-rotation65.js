@@ -51,8 +51,11 @@ function present(article, {round = 0, rows} = {}) {
  const selectedIndex = ((Math.trunc(round) || 0) + hash(article.id || article.headline || '') % options.length) % options.length;
  const asset = options[selectedIndex < 0 ? selectedIndex + options.length : selectedIndex];
  const fields = library.fields(asset);
+ // Remove old packaged artwork: Android would otherwise prefer a stale local
+ // bitmap over the exact newly approved remote match illustration.
+ const {imageAsset: _oldOfflineCover, ...visibleArticle} = article;
  return {
-  ...article, ...fields,
+  ...visibleArticle, ...fields,
   imageVariants: options.map(item => ({id:item.id, url:ORIGIN + '/' + item.file.slice(7), caption:item.caption})),
   imageRotation: {method:'approved-exact-topic-v65',count:options.length,slot:selectedIndex + 1,maximum:6},
   imageCaption: asset.caption,
