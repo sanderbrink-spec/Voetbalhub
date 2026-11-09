@@ -35,5 +35,5 @@ test('Signed Android build version and source checksums match current package',(
  assert.match(gradle,/versionCode\s*=\s*92/);
  assert.match(gradle,/versionName\s*=\s*"4\.52b-test"/);
  assert.match(workflow,/versionCode='92'\.\*versionName='4\.52b-test'/);
- assert.match(workflow,/name: Veldio-52B/);
+ assert.match(workflow,/name: Veldio-53/);
 });
