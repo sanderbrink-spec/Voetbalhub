@@ -13,8 +13,8 @@ android {
         manifestPlaceholders["appLabel"] = if (providers.gradleProperty("veldioPreview51").orNull == "true") "Veldio 54 Test" else "Veldio"
         minSdk = 24
         targetSdk = 36
-        versionCode = 94
-        versionName = "4.54"
+        versionCode = 95
+        versionName = "4.55"
 
     }
 
