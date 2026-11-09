@@ -41,3 +41,13 @@ test('rewrite guidance retains the correct format and explicitly discards old dr
  assert.match(prompt,/allowedScores/);
  assert.match(guide.revisionPrompt({articleKind:'score_update',verifiedFacts:rich.verifiedFacts.slice(0,2)}),/1-2 alinea’s/);
 });
+
+test('the independent facts audit must never treat an ISO date as a football score',()=>{
+ const facts=require('../editorial-facts');
+ const issues=facts.evidenceIssues({
+  headline:'FC Twente en Ajax delen punten na doelpunten',
+  standfirst:'FC Twente en Ajax eindigden met 11-8 volgens de registratie.',
+  body:['De wedstrijd is gespeeld op de genoemde datum.']
+ },rich.verifiedFacts);
+ assert.ok(issues.some(x=>x.includes('Uitslag of tussenstand wijkt af')),issues.join(' | '));
+});
