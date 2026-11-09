@@ -1,6 +1,122 @@
 {
-  "count": 10,
+  "rightsPolicyVersion": 26,
+  "rightsExpiresAt": 1794379953730,
+  "count": 12,
   "articles": [
+    {
+      "id": "2cb1e3f7-fa9c-5615-a76d-65a1b0f2eb07",
+      "matchId": "sm-19714597",
+      "articleKind": "match_report",
+      "status": "published",
+      "author": "Veldio Redactie",
+      "headline": "ADO Den Haag verslaat Sparta Rotterdam met 3-1 in Eredivisie",
+      "standfirst": "In speelronde 12 van de Eredivisie op 7 november 2026 won ADO Den Haag met 3-1 van Sparta Rotterdam. De ruststand was 1-0 in het voordeel van de thuisploeg.",
+      "body": [
+        "De Eredivisie-wedstrijd tussen ADO Den Haag en Sparta Rotterdam vond plaats op 7 november 2026 en eindigde in een 3-1 overwinning voor ADO Den Haag. Bij rust stond het 1-0, waarmee de thuisploeg een voorsprong had opgebouwd volgens de wedstrijdregistratie van Sportmonks.",
+        "In de 22e minuut opende Juho Kilo de score voor ADO Den Haag, waarmee de thuisploeg op voorsprong kwam. Sparta Rotterdam wist in de 50e minuut te reageren met een doelpunt van Bas Kuipers, waardoor de stand gelijk werd op 1-1.",
+        "Na de gelijkmaker nam ADO Den Haag opnieuw het initiatief. Nigel Thomas bracht zijn team in de 57e minuut weer op voorsprong met de 2-1. Later in de wedstrijd maakte Daryl van Mieghem in de 79e minuut het derde doelpunt voor ADO Den Haag, waarmee de eindstand op 3-1 kwam te staan."
+      ],
+      "why_it_matters": "",
+      "category": "Eredivisie",
+      "publishedAt": "2026-11-09T16:01:14.671Z",
+      "match": {
+        "homeTeam": "ADO Den Haag",
+        "awayTeam": "Sparta Rotterdam",
+        "homeScore": 3,
+        "awayScore": 1,
+        "playedAt": "2026-11-07"
+      },
+      "verifiedFacts": [
+        "ADO Den Haag – Sparta Rotterdam eindigde in 3-1.",
+        "Eredivisie, speelronde 12, gespeeld op 2026-11-07.",
+        "Ruststand 1-0.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 22 een doelpunt van Juho Kilo, waarna de stand 1-0 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 50 een doelpunt van Bas Kuipers, waarna de stand 1-1 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 57 een doelpunt van Nigel Thomas, waarna de stand 2-1 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 79 een doelpunt van Daryl van Mieghem, waarna de stand 3-1 was."
+      ],
+      "sources": [
+        {
+          "url": "https://www.sportmonks.com/football-api/"
+        }
+      ],
+      "editorialChecks": {
+        "originalSourceReviewed": true,
+        "claimsIndependentlyChecked": true,
+        "duplicateChecked": true,
+        "languageChecked": true
+      },
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/editorial/veldio-arena.webp",
+      "imageSource": "Veldio · illustratie",
+      "imageCredit": "AI-sfeerillustratie; geen foto van een werkelijk stadion, wedstrijd of persoon.",
+      "imageRights": "cleared",
+      "imageReview": {
+        "kitVerified": true,
+        "playerIdentityVerified": true,
+        "aiDisclosureVerified": true
+      },
+      "autoPublish": false,
+      "feedState": "current"
+    },
+    {
+      "id": "cd4f2374-b1e3-5f9d-a64f-d26fdf273384",
+      "matchId": "sm-19714596",
+      "articleKind": "match_report",
+      "status": "published",
+      "author": "Veldio Redactie",
+      "headline": "Heerenveen keert verlies om in 5-3 overwinning op Feyenoord",
+      "standfirst": "SC Heerenveen versloeg Feyenoord met 5-3 in de Eredivisie, speelronde 12 op 8 november 2026.",
+      "body": [
+        "De wedstrijd maakte deel uit van de Eredivisie, speelronde twaalf, en werd op 8 november 2026 gespeeld tussen SC Heerenveen en Feyenoord. Na de eerste helft stond het resultaat 1‑2.",
+        "In de 25e minuut opende Anis Hadj Moussa de score voor Feyenoord, waarna de stand 0‑1 werd. Zes minuten later zette Nacho Ferri de voorsprong uit een strafschop uit op 0‑2. In blessuretijd van de eerste helft bracht Maas Willemsen Heerenveen op 1‑2, en twee minuten later maakte Levi Smans gelijk op 2‑2.",
+        "Na rust kwam Ringo Meerveld in de 61e minuut op het scorespoor voor Heerenveen, waardoor de stand 3‑2 werd. Sem Steijn herstelde Feyenoord in de 69e minuut tot 3‑3. Meerveld vond opnieuw de treffer in de 84e minuut, 4‑3, en zette de eindstand met een doelpunt in blessuretijd (90+3) op 5‑3."
+      ],
+      "why_it_matters": "",
+      "category": "Eredivisie",
+      "publishedAt": "2026-11-09T11:39:28.479Z",
+      "match": {
+        "homeTeam": "SC Heerenveen",
+        "awayTeam": "Feyenoord",
+        "homeScore": 5,
+        "awayScore": 3,
+        "playedAt": "2026-11-08"
+      },
+      "verifiedFacts": [
+        "SC Heerenveen – Feyenoord eindigde in 5-3.",
+        "Eredivisie, speelronde 12, gespeeld op 2026-11-08.",
+        "Ruststand 1-2.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 25 een doelpunt van Anis Hadj Moussa, waarna de stand 0-1 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 31 een benutte strafschop van Nacho Ferri, waarna de stand 0-2 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 45+3 een doelpunt van Maas Willemsen, waarna de stand 1-2 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 47 een doelpunt van Levi Smans, waarna de stand 2-2 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 61 een doelpunt van Ringo Meerveld, waarna de stand 3-2 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 69 een doelpunt van Sem Steijn, waarna de stand 3-3 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 84 een doelpunt van Ringo Meerveld, waarna de stand 4-3 was.",
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 90+3 een doelpunt van Ringo Meerveld, waarna de stand 5-3 was."
+      ],
+      "sources": [
+        {
+          "url": "https://www.sportmonks.com/football-api/"
+        }
+      ],
+      "editorialChecks": {
+        "originalSourceReviewed": true,
+        "claimsIndependentlyChecked": true,
+        "duplicateChecked": true,
+        "languageChecked": true
+      },
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/editorial/veldio-arena.webp",
+      "imageSource": "Veldio · illustratie",
+      "imageCredit": "AI-sfeerillustratie; geen foto van een werkelijk stadion, wedstrijd of persoon.",
+      "imageRights": "cleared",
+      "imageReview": {
+        "kitVerified": true,
+        "playerIdentityVerified": true,
+        "aiDisclosureVerified": true
+      },
+      "autoPublish": false,
+      "feedState": "current"
+    },
     {
       "id": "f6ae76d3-5a0a-5847-888f-2a59738c6196",
       "status": "published",
@@ -900,6 +1016,6 @@
       "feedState": "current"
     }
   ],
-  "mirroredAt": "2026-11-07T06:06:06.506Z",
+  "mirroredAt": "2026-11-09T18:52:33.492Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
