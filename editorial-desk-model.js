@@ -44,7 +44,7 @@
   }
   function publicationIssues(payload) {
     const issues = [], d = payload.draft || {};
-    const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
+    const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+|sm-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
     const brief = briefEligible(payload);
     issues.push(...draftIssues(d, registeredMatch || brief));
     issues.push(...factAudit.audit(payload));
@@ -53,8 +53,21 @@
     const hosts = sources.map(s => host(s?.url));
     const primary = payload.articleKind === 'announcement' && sources.length === 1 &&
       ['club_decision','association_decision'].includes(payload.primaryAuthority) && Boolean(hosts[0]);
-    const matchSource = registeredMatch && sources.length === 1 &&
-      ['https://github.com/openfootball/football.json','https://www.football-data.org/'].includes(sources[0]?.url);
+    const matchRegistry = [
+      'https://github.com/openfootball/football.json',
+      'https://www.football-data.org/',
+      'https://www.sportmonks.com/football-api/'
+    ];
+    // A verified official event timeline is extra evidence, not a reason to
+    // demand an unrelated third-party scoreboard. The server separately
+    // reconstructs matchEvidence from the official source before accepting it.
+    const officialMatchEvidence = registeredMatch && sources.length === 2 &&
+      payload.matchEvidence?.url === sources[1]?.url &&
+      typeof payload.matchEvidence?.text === 'string' && payload.matchEvidence.text.length >= 120 &&
+      Number.isFinite(Date.parse(payload.matchEvidence?.publishedAt || '')) &&
+      hosts[0] !== hosts[1];
+    const matchSource = registeredMatch && matchRegistry.includes(sources[0]?.url) &&
+      (sources.length === 1 || officialMatchEvidence);
     if (!primary && !matchSource && (sources.length < 2 || hosts.some(h => !h) || new Set(hosts.filter(Boolean)).size < 2)) issues.push('Voeg twee geldige HTTPS-bronnen van verschillende websites toe.');
     if (!matchSource && requiresFlashscore(d) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
     const missing = checks.filter(key => payload.editorialChecks?.[key] !== true);
