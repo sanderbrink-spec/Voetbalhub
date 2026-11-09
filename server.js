@@ -329,6 +329,13 @@ async function handle(req, res) {
     const key=url.searchParams.get('competition')||'eredivisie';
     try{return send(res,200,await (url.searchParams.get("view")==="veldio50"?(key==="eredivisie"?football47.overview():football47.getSelected(key)):football47.get(key)));}catch{return send(res,400,{error:'Onbekende competitie.'});}
   }
+  if(req.method==="GET"&&url.pathname==="/beeldcollectie"){
+    const escapeHtml=value=>String(value||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const approved=require("./image-library49").catalog().filter(a=>a.file.startsWith("public/match-rotations65/")&&a.clubs.length===2);
+    const tiles=approved.map(a=>'<figure><img loading="lazy" src="/'+escapeHtml(a.file.slice(7))+'" alt="'+escapeHtml(a.caption)+'"><figcaption><strong>'+escapeHtml(a.subject)+'</strong><small>Originele AI-illustratie · '+escapeHtml(a.daypart==='night'?'avond':a.daypart==='twilight'?'schemering':a.daypart==='day'?'dag':'neutraal')+'</small></figcaption></figure>').join('');
+    res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Content-Security-Policy":"default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; base-uri 'none'"});
+    return res.end('<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Veldio · Wedstrijdbeelden</title><style>*{box-sizing:border-box}body{margin:0;background:#07100b;color:#f0f6f2;font:16px system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:20px}h1{font-size:26px;color:#c0ff66}p{color:#becdc2;line-height:1.5}section{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}figure{margin:0;background:#101c15;border:1px solid #365044;border-radius:14px;overflow:hidden}img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}figcaption{padding:12px 14px}strong,small{display:block}small{color:#b3c1b7;font-size:12px;margin-top:5px}</style><main><h1>Veldio wedstrijdbeelden</h1><p>Deze '+approved.length+' goedgekeurde originele AI-illustraties zijn ontwerpbeelden, geen foto’s of uitslagen van gespeelde wedstrijden. Bij artikelen verschijnt een beeld uitsluitend wanneer de clubs en omstandigheden overeenkomen.</p><section>'+tiles+'</section></main></html>');
+  }
   if(require("./image-library49").serve(req,res,url.pathname))return;
   if(require("./media43").serve(req,res,url.pathname))return;
   if(await quizHandler(req,res))return;
