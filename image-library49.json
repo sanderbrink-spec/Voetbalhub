@@ -2209,7 +2209,7 @@
       "origin": "Veldio original vector composition, no third-party photographic input",
       "rights": "original-vector",
       "rightsEvidence": "Original source-authored vector graphic; no third-party photos, logos or recognizable people. Match-specific names, full stands and colors visually reviewed; fictional stadium disclosed.",
-      "approval": "approved",
+      "approval": "rejected",
       "reviewer": "Veldio phase71 visual image inspection",
       "lastUsed": null,
       "sha256": "a31c74ac718732885b083e63644bb271fd8a8e59c48580eeb337508599ddb7db",
@@ -2219,7 +2219,14 @@
       "approvedAt": "2026-11-10",
       "imageKind": "report",
       "stadiumOccupancy": "full",
-      "stadiumIdentity": "home:fcutrecht"
+      "stadiumIdentity": "home:fcutrecht",
+      "retirementReason": "Fase 72: eigenaar heeft deze platte vectorwedstrijdillustratie visueel afgekeurd. Geen publicatie als premium beeld.",
+      "visualReview": {
+        "score": 3,
+        "style": "flat-vector",
+        "reviewer": "Veldio redactionele beeldbeoordeling",
+        "reviewedAt": "2026-11-11"
+      }
     }
   ]
 }
