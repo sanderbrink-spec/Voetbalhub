@@ -153,8 +153,27 @@ function repairUnsupportedDecisionTimestamp(draft,facts=[],sourceUrl='',authorit
  if(!Array.isArray(draft?.body)||!Array.isArray(facts)||
     !['club_decision','association_decision'].includes(authority))return draft;
  const {evidenceIssues,officialPublisherName:trustedPublisher}=require('./editorial-facts');
- if(!trustedPublisher(sourceUrl)||!facts.some(f=>/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(f))||
-    !evidenceIssues(draft,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip')))return draft;
+ const publisher=trustedPublisher(sourceUrl);
+ if(!publisher||!facts.some(f=>/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(f)))return draft;
+ // A source-page publication timestamp does not establish when a club
+ // accepted the disciplinary decision. Live run 42868192728 generated a
+ // timestamped "Op maandag 9 november ... maakte FC Groningen bekend" even
+ // after revision. Strip only this unsupported leading metadata clause.
+ // Keep the underlying claim intact and rerun every normal quality gate.
+ const namePattern=publisher.replace(/[^a-zA-Z0-9 ]/g,'\\ if(!trustedPublisher(sourceUrl)||!facts.some(f=>/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(f))||
+    !evidenceIssues(draft,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip')))return draft;').replace(/ /g,'\\s+');
+ const timestampPattern='(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\\s+\\d{1,2}\\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\\s+20\\d{2}\\s+om\\s+(?:[01]?\\d|2[0-3])[.:][0-5]\\d';
+ const leadingDate=new RegExp('^\\s*Op\\s+'+timestampPattern+'\\s+maakte\\s+'+namePattern+'\\s+(officieel\\s+)?bekend\\s+dat\\s+','i');
+ let dateRemoved=false;
+ const withoutUnverifiedDate=draft.body.map(paragraph=>{
+  if(typeof paragraph!=='string')return paragraph;
+  const match=paragraph.match(leadingDate);
+  if(!match)return paragraph;
+  dateRemoved=true;
+  return publisher+' maakte '+(match[1]||'')+'bekend dat '+paragraph.slice(match[0].length);
+ });
+ if(dateRemoved)draft={...draft,body:withoutUnverifiedDate};
+ if(!evidenceIssues(draft,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip')))return draft;
  // Only a leading Dutch absolute date+clock, inverted verb, known subject.
  // Non-matching claims remain blocked rather than silently changed.
  const form=/^\s*(?:Op\s+)?(?:(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\s+)?\d{1,2}\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+20\d{2}\s+om\s+(?:[01]?\d|2[0-3])[.:][0-5]\d\s+(hebben|heeft)\s+(zowel de club als de speler|de club|de speler|de bond|het bestuur)\s+(.+)$/i;
