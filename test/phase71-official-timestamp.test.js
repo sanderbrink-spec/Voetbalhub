@@ -56,3 +56,18 @@ test('fase 71: a historically rejected Hateboer item gets exactly one fresh full
  assert.equal(reopenVerifiedHateboerDateV71(other,group,now,72),false);
  assert.equal(reopenVerifiedHateboerDateV71({...job,status:'review',hateboerPublicationClockRecoveryV71:false},group,now+100*3600000,72),false);
 });
+
+
+test('fase 71: independent revision is audited for the same unverified decision clock',()=>{
+ const {finalizeCheckedRevision}=require('../scripts/automatic-publication');
+ const payload={verifiedFacts:facts};
+ const candidate={primaryAuthority:'club_decision'};
+ const docs=[{url:SOURCE}];
+ const revised=finalizeCheckedRevision(draft,payload,candidate,docs);
+ assert.match(revised.body[0],/^FC Groningen maakte officieel bekend dat /);
+ assert.doesNotMatch(revised.body[0],/\b9 november\b|\b14:40\b/);
+ assert.deepEqual(revised.body[1],draft.body[1]);
+ assert.deepEqual(finalizeCheckedRevision(draft,payload,{primaryAuthority:'preview'},docs),draft);
+ assert.deepEqual(finalizeCheckedRevision(draft,payload,candidate,[...docs,...docs]),draft);
+ assert.equal(finalizeCheckedRevision({skip:true},payload,candidate,docs),null);
+});
