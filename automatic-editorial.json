@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "maxPerRun": 10,
+  "maxPerRun": 5,
   "maxPerDay": 15,
   "maxAgeHours": 72,
   "previewHorizonDays": 7,
