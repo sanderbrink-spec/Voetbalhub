@@ -24,7 +24,7 @@ test('blokkeert verslag dat rode kaarten VAR en strafschop uit gecontroleerde fe
  assert.ok(issues.some(x=>x.includes('penalty')));
 });
 test('volledige incidentendekking heft de blokkade op zonder normverlaging',()=>{
- const revised={...draft,body:[...draft.body,'Hateboer kreeg een rode kaart en Vaessen zijn tweede gele kaart. De VAR beoordeelde het strafschopmoment.']};
+ const revised={...draft,body:[...draft.body,'Hans Hateboer kreeg een rode kaart en Etienne Vaessen zijn tweede gele kaart. De VAR beoordeelde het strafschopmoment.']};
  assert.deepEqual(guidance.verifiedIncidentCoverageIssues(record,revised),[]);
 });
 test('zonder geverifieerde incidentfeiten geen incidenten verzinnen',()=>{
