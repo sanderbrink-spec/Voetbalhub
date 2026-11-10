@@ -119,7 +119,7 @@ function attachVerifiedOfficialAttribution(draft,{primaryAuthority=null,sourceUr
  if(!issues.some(issue=>issue.startsWith('Noem '+publisher+' ')))return draft;
  const intro=String(draft.standfirst||'').trim();
  const attribution='Dat meldt '+publisher+'.';
- if(!/[.!?]$/.test(intro)||intro.split(/\\s+/).length+attribution.split(/\\s+/).length>35)return draft;
+ if(!/[.!?]$/.test(intro)||intro.split(/\s+/).length+attribution.split(/\s+/).length>35)return draft;
  return {...draft,standfirst:intro+' '+attribution};
 }
 // A year is not a competition season, and a named job title must appear
