@@ -16,7 +16,10 @@ function repairReversedVerifiedScores(draft,record){
  const supported=new Set([...facts.matchAll(SCORE)].map(m=>normalized(m[1],m[2])));
  const final=record.match;
  const finalScore=normalized(final?.homeScore,final?.awayScore);
- if(!supported.has(finalScore)||!Number.isInteger(final?.homeScore)||!Number.isInteger(final?.awayScore))
+ const certifiedResult=String(record.verifiedFacts[0]||'');
+ const finalReceipt=new RegExp('\\beindigde\\s+in\\s+'+final?.homeScore+'\\s*[-–]\\s*'+final?.awayScore+'\\b','i');
+ if(!supported.has(finalScore)||!Number.isInteger(final?.homeScore)||!Number.isInteger(final?.awayScore)||
+    !finalReceipt.test(certifiedResult))
   return draft;
  const flipped=new Map();
  for(const score of supported){
