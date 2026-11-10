@@ -4,8 +4,8 @@
   "approved_apk_run": 41719319572,
   "approved_apk_artifact": 13272705387,
   "approved_apk_sha256": "bce258f0931f55f517aa4114bf3f54a896e1d53478a347fd40be5cbdd55e1243",
-  "version": "4.59",
-  "version_code": 99,
+  "version": "4.60",
+  "version_code": 100,
   "package": "nl.voetbalhub.app1",
   "asset_count": 210,
   "assets": {
