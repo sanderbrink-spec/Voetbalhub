@@ -220,6 +220,23 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Noem geen andere namen, functies, datums of cijfers dan in facts. Zie URL of publicatiedatum niet als bewijs voor een claim. '+
     'Als onvoldoende feitelijke stof bestaat, antwoord alleen met JSON {"skip":true}. Publiceer nooit zelf.';
   }
+  // A verified short first-party decision cannot be served by a generic
+  // long-form coaching brief. This is a writing instruction, not an approval:
+  // the fact audit, source-overlap check and independent 85/90 review still run.
+  if(automaticPublication&&compact&&officialPublisher&&!coachPlan){
+   prompt=[
+    'Je bent de onafhankelijke Nederlandstalige nieuwsredacteur van Veldio.',
+    'Dit is een kort officieel clubbesluit met uitsluitend letterlijk gecontroleerde facts.',
+    'Schrijf alleen een zelfstandig, origineel nieuwsbericht in JSON met headline (5-14 woorden), standfirst (8-35 woorden), body als array van één of twee alinea’s van elk 10-65 woorden.',
+    'De standfirst meldt het geverifieerde besluit en noemt '+officialPublisher+' als de organisatie die het zelf bekendmaakt.',
+    'Behandel in de body uitsluitend andere bewezen details uit editorialAssignment.bodySections: bijvoorbeeld de feitelijke aanleiding en het aantoonbare gevolg, als deze aanwezig zijn.',
+    'Gebruik geen kunstmatige extra alinea, analyse, gevolgen, niet genoemde functies, vermoedens of een afgeleide straf.',
+    'Herhaal het kernbesluit niet in iedere alinea. Gebruik originele woordvolgorde en geen lange letterlijke bronpassages.',
+    'Gebruik alleen personen, clubs, speeldata en cijfers die letterlijk in facts voorkomen. De bronlink is geen inhoudelijk bewijs.',
+    'Geef uitsluitend de velden headline, standfirst en body. Publiceer nooit zelf.',
+    'Als zelfs één echte informatieve bodyalinea niet uit de facts kan worden onderbouwd, geef dan {"skip":true}.'
+   ].join(' ');
+  }
   // Number and person inventories are supplied separately so the writer cannot
   // infer dates or staff identities from the current date, title or URL.
   const allowedNumbers=[...new Set(facts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
@@ -260,10 +277,15 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
       facts.some(x=>/licht.*toe|verklaar|: ,,|: “|: „/i.test(x));
      // A rich official packet gets at most one second writer attempt, not
      // an automatic approval or a relaxation of any source/quality gate.
-     if(attempt===0&&sufficientCoachEvidence){
-      messages.push({role:'assistant',content:'{"skip":true}'},{
-       role:'user',content:'Controleer of je skip ten onrechte hebt gekozen. De officiële feiten bevatten aantoonbaar een besluit, stafrollen, eerdere loopbaanstappen en expliciete toegeschreven toelichting. Schrijf een nieuw, kort, origineel artikel met precies drie afzonderlijke bodyalinea’s uitsluitend uit die bestaande facts. De intro bevestigt het besluit namens officialPublisher. Voeg geen zelfbedachte seizoenen, nieuwe functietitels, gevolgen of persoonlijke oordelen toe. Indien een deel toch geen feitelijke grond heeft, laat uitsluitend dat detail weg en gebruik een ander geverifieerd feit. Bij echt onvoldoende bewijs blijft skip toegestaan.'
-      });
+     const verifiedShortDecision=automaticPublication&&compact&&!coachPlan&&
+      Boolean(officialPublisher)&&facts.length>=3&&assignment.bodySections.length>=1;
+     // One extra writing attempt only when a verified first-party decision
+     // provides distinct facts. Do not automatically accept the second answer.
+     if(attempt===0&&(sufficientCoachEvidence||verifiedShortDecision)){
+      const feedback=verifiedShortDecision?
+       'Controleer of skip werkelijk noodzakelijk is. Er is een officieel bevestigd besluit plus afzonderlijke brongetrouwe facts. Gebruik het besluit uitsluitend voor de intro en maak één of twee korte bodyalinea’s over concrete andere facts uit editorialAssignment.bodySections. Geen opvulling, bronkopie, verzonnen consequenties, cijfers of extra context. Geef een volledig JSON-concept als de feiten dit toelaten; geef uitsluitend skip als ook het korte formaat onvoldoende onderbouwd is.':
+       'Controleer of je skip ten onrechte hebt gekozen. De officiële feiten bevatten aantoonbaar een besluit, stafrollen, eerdere loopbaanstappen en expliciete toegeschreven toelichting. Schrijf een nieuw, kort, origineel artikel met precies drie afzonderlijke bodyalinea’s uitsluitend uit die bestaande facts. De intro bevestigt het besluit namens officialPublisher. Voeg geen zelfbedachte seizoenen, nieuwe functietitels, gevolgen of persoonlijke oordelen toe. Indien een deel toch geen feitelijke grond heeft, laat uitsluitend dat detail weg en gebruik een ander geverifieerd feit. Bij echt onvoldoende bewijs blijft skip toegestaan.';
+      messages.push({role:'assistant',content:'{"skip":true}'},{role:'user',content:feedback});
       continue;
      }
      throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.');
