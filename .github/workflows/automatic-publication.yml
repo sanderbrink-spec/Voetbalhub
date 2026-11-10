@@ -20,6 +20,10 @@ on:
       - 'scripts/refresh-automatic-covers.js'
       - 'editorial-image44.js'
       - 'editorial-image44-service.js'
+      - 'image-library49.js'
+      - 'image-library49.json'
+      - 'image-rotation65.js'
+      - 'public/article-art71/**'
       - '.github/workflows/automatic-publication.yml'
   schedule:
     - cron: '23 * * * *'

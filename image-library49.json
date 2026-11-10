@@ -2188,6 +2188,38 @@
       "imageKind": "preview",
       "stadiumOccupancy": "empty",
       "stadiumIdentity": "home:fcemmen"
+    },
+    {
+      "id": "veldio71-utrecht-nec-report",
+      "file": "public/article-art71/utrecht-nec-report.svg",
+      "categories": [
+        "report"
+      ],
+      "subject": "FC Utrecht - NEC Nijmegen",
+      "clubs": [
+        "FC Utrecht",
+        "NEC Nijmegen"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "neutral",
+      "keywords": [],
+      "variant": "utrecht-nec",
+      "origin": "Veldio original vector composition, no third-party photographic input",
+      "rights": "original-vector",
+      "rightsEvidence": "Original source-authored vector graphic; no third-party photos, logos or recognizable people. Match-specific names, full stands and colors visually reviewed; fictional stadium disclosed.",
+      "approval": "approved",
+      "reviewer": "Veldio phase71 visual image inspection",
+      "lastUsed": null,
+      "sha256": "a31c74ac718732885b083e63644bb271fd8a8e59c48580eeb337508599ddb7db",
+      "caption": "Veldio - eigen illustratie bij FC Utrecht - NEC Nijmegen. Geen foto van de wedstrijd of het echte stadion.",
+      "questionIds": [],
+      "fixtureId": "sm-19714594",
+      "approvedAt": "2026-11-10",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:fcutrecht"
     }
   ]
 }
