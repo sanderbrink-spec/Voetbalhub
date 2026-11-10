@@ -147,6 +147,36 @@ function unsupportedInterpretationIssues(draft,facts=[]){
  return risks.filter(([claim,required])=>content.includes(claim)&&!evidence.includes(required))
   .map(([claim])=>'Onbewezen interpretatie: '+claim+'. Verwijder dit gevolg of deze persoonlijke voorkeur; een contract of clubquote bewijst het niet.');
 }
+// Remove an unsupported event clock from an official decision sentence
+// without changing its source-proven facts or bypassing editorial review.
+function repairUnsupportedDecisionTimestamp(draft,facts=[],sourceUrl='',authority=''){
+ if(!Array.isArray(draft?.body)||!Array.isArray(facts)||
+    !['club_decision','association_decision'].includes(authority))return draft;
+ const {evidenceIssues,officialPublisherName:trustedPublisher}=require('../editorial-facts');
+ if(!trustedPublisher(sourceUrl)||!facts.some(f=>/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(f))||
+    !evidenceIssues(draft,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip')))return draft;
+ // Only a leading Dutch absolute date+clock, inverted verb, known subject.
+ // Non-matching claims remain blocked rather than silently changed.
+ const form=/^\s*(?:Op\s+)?(?:(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\s+)?\d{1,2}\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+20\d{2}\s+om\s+(?:[01]?\d|2[0-3])[.:][0-5]\d\s+(hebben|heeft)\s+(zowel de club als de speler|de club|de speler|de bond|het bestuur)\s+(.+)$/i;
+ let changed=false;
+ const body=draft.body.map(paragraph=>{
+  if(typeof paragraph!=='string')return paragraph;
+  const match=paragraph.match(form);
+  if(!match||!/\b(?:aanvaard\w*|geaccepteerd|accepteer\w*|ingestem\w*)\b/i.test(match[3]))return paragraph;
+  // Singular subject takes 'heeft'; a combined subject takes 'hebben'.
+  // Never turn 'de club en de speler' into an ungrammatical invented claim.
+  if((match[1].toLowerCase()==='hebben')!==/^zowel /i.test(match[2])||/^(?:en|of)\b/i.test(match[3]))return paragraph;
+  // Preserve exact subject, tense and decision, delete only the invented
+  // timestamp with grammatical word-order repair.
+  changed=true;
+  const subject=match[2];
+  return subject[0].toUpperCase()+subject.slice(1)+' '+match[1]+' '+match[3];
+ });
+ if(!changed)return draft;
+ const candidate={...draft,body};
+ return evidenceIssues(candidate,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip'))?draft:candidate;
+}
+
 class DraftError extends Error {
   constructor(status, message, retryAfter) { super(message); this.status=status; this.retryAfter=retryAfter; }
 }
@@ -259,7 +289,9 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     }
     const text=data?.choices?.[0]?.message?.content||'';
     const rawDraft=normalizeDraft(text);
-    const draft=rawDraft?.skip?rawDraft:attachVerifiedOfficialAttribution(rawDraft,{primaryAuthority,sourceUrls,facts});
+    let draft=rawDraft?.skip?rawDraft:attachVerifiedOfficialAttribution(rawDraft,{primaryAuthority,sourceUrls,facts});
+    if(automaticPublication&&officialPublisher&&!draft?.skip)
+     draft=repairUnsupportedDecisionTimestamp(draft,facts,sourceUrls[0],primaryAuthority);
     if(draft?.skip){
      const sufficientCoachEvidence=automaticPublication&&coachPlan&&officialPublisher&&facts.length>=7&&
       facts.some(x=>/assistent|keeperstrainer/i.test(x))&&facts.some(x=>/\b20\d\d\b/.test(x))&&
@@ -294,5 +326,5 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={attachVerifiedOfficialAttribution,createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
+module.exports={repairUnsupportedDecisionTimestamp,attachVerifiedOfficialAttribution,createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
 

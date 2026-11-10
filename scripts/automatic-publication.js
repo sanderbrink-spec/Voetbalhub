@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const crypto=require('node:crypto');
 const M=require('../editorial-desk-model');
 const {reframeVerifiedStaffPair,reframeVerifiedClubDecision}=require('../editorial-overlap-repair');
-const {generationIssues,createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles}=require('../editorial-ai');
+const {repairUnsupportedDecisionTimestamp,generationIssues,createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles}=require('../editorial-ai');
 const {fingerprint}=require('../editorial-drafts');
 const config=require('../automatic-editorial.json');
 const bootstrap=require('../automatic-bootstrap.json');
@@ -16,33 +16,6 @@ const matchGuidance=require('../editorial-match-guidance133');
 function matchGenerationIsCompact(matchRecord,newsCompact=false){
  return matchRecord?!matchGuidance.isRichMatch(matchRecord):newsCompact;
 }
-// Remove an unsupported event clock from an official decision sentence
-// without changing its source-proven facts or bypassing editorial review.
-function repairUnsupportedDecisionTimestamp(draft,facts=[],sourceUrl='',authority=''){
- if(!Array.isArray(draft?.body)||!Array.isArray(facts)||
-    !['club_decision','association_decision'].includes(authority))return draft;
- const {evidenceIssues,officialPublisherName:trustedPublisher}=require('../editorial-facts');
- if(!trustedPublisher(sourceUrl)||!facts.some(f=>/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(f))||
-    !evidenceIssues(draft,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip')))return draft;
- // Only a leading Dutch absolute date+clock, inverted verb, known subject.
- // Non-matching claims remain blocked rather than silently changed.
- const form=/^\s*(?:Op\s+)?(?:(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\s+)?\d{1,2}\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+20\d{2}\s+om\s+(?:[01]?\d|2[0-3])[.:][0-5]\d\s+(hebben|heeft)\s+(zowel de club als de speler|de club|de speler|de bond|het bestuur)\s+(.+)$/i;
- let changed=false;
- const body=draft.body.map(paragraph=>{
-  if(typeof paragraph!=='string')return paragraph;
-  const match=paragraph.match(form);
-  if(!match||!/\b(?:aanvaard\w*|geaccepteerd|accepteer\w*|ingestem\w*)\b/i.test(match[3]))return paragraph;
-  // Preserve exact subject, tense and decision, delete only the invented
-  // timestamp with grammatical word-order repair.
-  changed=true;
-  const subject=match[2];
-  return subject[0].toUpperCase()+subject.slice(1)+' '+match[1]+' '+match[3];
- });
- if(!changed)return draft;
- const candidate={...draft,body};
- return evidenceIssues(candidate,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip'))?draft:candidate;
-}
-
 const editorialRecovery136=require('../editorial-recovery136');
 const {verifiedOfficialDisciplinaryDecision}=require('../editorial-official-decisions71');
 const {reopenVerifiedOfficialBrief,reopenVerifiedOfficialPublisher}=require('../editorial-brief-recovery71');

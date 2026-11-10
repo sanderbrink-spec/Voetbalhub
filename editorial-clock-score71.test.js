@@ -61,3 +61,13 @@ test('bewezen besluitmoment wordt niet herschreven',()=>{
  const draft={headline:'FC Groningen bevestigt een besluit',standfirst:'Het schikkingsvoorstel is geaccepteerd.',body:[exact]};
  assert.equal(repairUnsupportedDecisionTimestamp(draft,[...facts,exact],url,'club_decision'),draft);
 });
+
+
+test('losse club is enkelvoud en samengesteld onderwerp blijft onaangeraakt',()=>{
+ const {repairUnsupportedDecisionTimestamp}=require('./editorial-ai');
+ const core={headline:'FC Groningen maakt besluit bekend',standfirst:'De club aanvaardt het schikkingsvoorstel.'};
+ const single={...core,body:['Op maandag 09 november 2026 om 14:40 heeft de club het schikkingsvoorstel aanvaard.']};
+ assert.equal(repairUnsupportedDecisionTimestamp(single,facts,url,'club_decision').body[0],'De club heeft het schikkingsvoorstel aanvaard.');
+ const split={...core,body:['Op maandag 09 november 2026 om 14:40 hebben de club en de speler het schikkingsvoorstel aanvaard.']};
+ assert.equal(repairUnsupportedDecisionTimestamp(split,facts,url,'club_decision'),split);
+});
