@@ -31,9 +31,11 @@ try:
         if d(text='Nieuws bijwerken…').exists:time.sleep(1)
         else:d.swipe(.5,.8,.5,.3,.3);time.sleep(.5)
     else:raise AssertionError('Production article card missing')
-    seen=''
+    reader_back=d(description='Terug naar de vorige pagina')
+    assert reader_back.wait(timeout=20),'Article reader did not open'
+    assert d(text=article['headline']).wait(timeout=15),'Reader headline missing at the top'
     for i in range(16):
-        tree=d.dump_hierarchy();seen+=tree
+        tree=d.dump_hierarchy()
         (OUT/('article60-'+str(i)+'.xml')).write_text(tree)
         d.screenshot(str(OUT/('article60-'+str(i)+'.png')))
         d.swipe(.5,.8,.5,.3,.3);time.sleep(.4)

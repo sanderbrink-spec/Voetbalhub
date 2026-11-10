@@ -2,7 +2,7 @@ name: Veldio production article Android16 proof
 on:
   push:
     branches: [main]
-    paths: ['editorial-evidence/reviewed-revisions71.json', '.github/workflows/live-article60.yml']
+    paths: ['editorial-evidence/reviewed-revisions71.json', '.github/workflows/live-article60.yml', 'scripts/verify-live-article60.py']
   workflow_run:
     workflows: ['Automatic verified news and images']
     types: [completed]
