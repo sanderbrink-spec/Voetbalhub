@@ -67,13 +67,6 @@ function verifiedIncidentCoverageIssues(record={},draft={}){
  }
  return [...new Set(issues)];
 }
-// Facts are allocated'),'i');
-  const entire=String(text);
-  if(!named.test(entire)||!/(rode kaart|tweede gele kaart|rood)/i.test(entire))
-   issues.push('Geverifieerde kaart van '+item.person+' ontbreekt in het wedstrijdverslag.');
- }
- return [...new Set(issues)];
-}
 // Facts are allocated to separate verified paragraphs. Flag an event quoted in
 // the wrong paragraph; do not invent missing events or change the article score.
 function paragraphChronologyIssues(record = {},draft = {}) {
