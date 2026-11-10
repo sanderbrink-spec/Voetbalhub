@@ -16,6 +16,33 @@ const matchGuidance=require('../editorial-match-guidance133');
 function matchGenerationIsCompact(matchRecord,newsCompact=false){
  return matchRecord?!matchGuidance.isRichMatch(matchRecord):newsCompact;
 }
+// Remove an unsupported event clock from an official decision sentence
+// without changing its source-proven facts or bypassing editorial review.
+function repairUnsupportedDecisionTimestamp(draft,facts=[],sourceUrl='',authority=''){
+ if(!Array.isArray(draft?.body)||!Array.isArray(facts)||
+    !['club_decision','association_decision'].includes(authority))return draft;
+ const {evidenceIssues,officialPublisherName:trustedPublisher}=require('../editorial-facts');
+ if(!trustedPublisher(sourceUrl)||!facts.some(f=>/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(f))||
+    !evidenceIssues(draft,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip')))return draft;
+ // Only a leading Dutch absolute date+clock, inverted verb, known subject.
+ // Non-matching claims remain blocked rather than silently changed.
+ const form=/^\s*(?:Op\s+)?(?:(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\s+)?\d{1,2}\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+20\d{2}\s+om\s+(?:[01]?\d|2[0-3])[.:][0-5]\d\s+(hebben|heeft)\s+(zowel de club als de speler|de club|de speler|de bond|het bestuur)\s+(.+)$/i;
+ let changed=false;
+ const body=draft.body.map(paragraph=>{
+  if(typeof paragraph!=='string')return paragraph;
+  const match=paragraph.match(form);
+  if(!match||!/\b(?:aanvaard\w*|geaccepteerd|accepteer\w*|ingestem\w*)\b/i.test(match[3]))return paragraph;
+  // Preserve exact subject, tense and decision, delete only the invented
+  // timestamp with grammatical word-order repair.
+  changed=true;
+  const subject=match[2];
+  return subject[0].toUpperCase()+subject.slice(1)+' '+match[1]+' '+match[3];
+ });
+ if(!changed)return draft;
+ const candidate={...draft,body};
+ return evidenceIssues(candidate,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip'))?draft:candidate;
+}
+
 const editorialRecovery136=require('../editorial-recovery136');
 const {verifiedOfficialDisciplinaryDecision}=require('../editorial-official-decisions71');
 const {reopenVerifiedOfficialBrief,reopenVerifiedOfficialPublisher}=require('../editorial-brief-recovery71');
@@ -1218,7 +1245,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      // news articles. The helper only rewrites an explicitly verified fact.
      const reframed=reframeVerifiedStaffPair(draft,facts,group,overlapPhrases);
      const corrected=reframeVerifiedClubDecision(reframed,facts,group,overlapPhrases);
-     if(corrected!==draft){draft=corrected;payload.draft=corrected;}
+     const timeSafe=repairUnsupportedDecisionTimestamp(corrected,facts,sources[0]?.url,candidate.primaryAuthority);
+     if(timeSafe!==draft){draft=timeSafe;payload.draft=draft;}
     }
     // Store complete AI copy for the owner's review as a separate Actions artifact,
     // not as publicly printed job logs or a queue field.
@@ -1393,4 +1421,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
