@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {occupancyFor}=require('./match-image-context');
+const premium=require('./premium-match-images72');
 const ROOT=__dirname,ORIGIN='https://voetbalhub-redactie.onrender.com';
 const categories=['preview','report','transfer','rumour','contract','club','injury','tactics','competition','championship','analysis','interview','youth','supporters','suspension','international','history','quiz','neutral'];
 const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
@@ -29,7 +30,7 @@ function validate(rows,{root=ROOT}={}){
  }return rows;
 }
 let checked=null;
-function catalog(){if(!checked)checked=validate(require('./image-library49.json').assets).filter(a=>a.approval==='approved');return checked;}
+function catalog(){if(!checked)checked=validate(require('./image-library49.json').assets).filter(premium.accepted);return checked;}
 function context(payload){const I=require('./editorial-image44'),p=I.classify(payload),d=payload.draft||payload,text=[d.headline,d.standfirst].join(' ').toLowerCase();let category=payload.imageCategory||payload.articleKind;
  if(['match_report','score_update'].includes(category))category='report';
  if(!categories.includes(category))category=p.category==='match'?'preview':p.category==='transfer'?(/gerucht|mogelijk|interesse/.test(text)?'rumour':'transfer'):'club';
@@ -38,7 +39,7 @@ function context(payload){const I=require('./editorial-image44'),p=I.classify(pa
 }
 // Solar elevation uses verified venue coordinates and an absolute kickoff; otherwise neutral.
 function daypart(f){const stamp=f.date||f.playedAt,lat=f.venue?.latitude,lon=f.venue?.longitude;if(!/(Z|[+-]\d\d:\d\d)$/.test(stamp||'')||!Number.isFinite(Date.parse(stamp))||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return 'neutral';const t=new Date(stamp),n=Math.floor((Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate())-Date.UTC(t.getUTCFullYear(),0,0))/86400000),g=2*Math.PI/365*(n-1+(t.getUTCHours()-12)/24),eq=229.18*(.000075+.001868*Math.cos(g)-.032077*Math.sin(g)-.014615*Math.cos(2*g)-.040849*Math.sin(2*g)),dec=.006918-.399912*Math.cos(g)+.070257*Math.sin(g)-.006758*Math.cos(2*g)+.000907*Math.sin(2*g)-.002697*Math.cos(3*g)+.00148*Math.sin(3*g),ha=((t.getUTCHours()*60+t.getUTCMinutes()+eq+4*lon)/4-180)*Math.PI/180,phi=lat*Math.PI/180,elevation=Math.asin(Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(ha))*180/Math.PI;return elevation>6?'day':elevation>=-6?'twilight':'night';}
-function choose(ctx,rows=catalog(),usage={}){let candidates=rows.filter(a=>a.approval==='approved'&&a.categories.includes(ctx.category)&&(!a.fixtureId||a.fixtureId===ctx.fixtureId)&&(!a.competitions.length||a.competitions.includes(ctx.competition))&&(!a.clubs.length||a.clubs.length===(ctx.clubs||[]).length&&a.clubs.every((c,i)=>norm(c)===norm(ctx.clubs[i])))&&(a.daypart==='neutral'||a.daypart===ctx.daypart));if(ctx.category==='quiz')candidates=candidates.filter(a=>a.questionIds.includes(ctx.questionId)&&a.answerSafe===true);if(!candidates.length&&ctx.category!=='quiz')candidates=rows.filter(a=>a.approval==='approved'&&a.categories.includes('neutral')&&!a.clubs.length&&a.daypart==='neutral');return candidates.sort((a,b)=>Number(Boolean(b.fixtureId))-Number(Boolean(a.fixtureId))||Number(Boolean(b.clubs.length))-Number(Boolean(a.clubs.length))||Number(b.daypart===ctx.daypart)-Number(a.daypart===ctx.daypart)||(Date.parse(usage[a.id]||a.lastUsed)||0)-(Date.parse(usage[b.id]||b.lastUsed)||0)||sha(ctx.articleId+':'+a.id).localeCompare(sha(ctx.articleId+':'+b.id)))[0]||null;}
+function choose(ctx,rows=catalog(),usage={}){let candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes(ctx.category)&&(!a.fixtureId||a.fixtureId===ctx.fixtureId)&&(!a.competitions.length||a.competitions.includes(ctx.competition))&&(!a.clubs.length||a.clubs.length===(ctx.clubs||[]).length&&a.clubs.every((c,i)=>norm(c)===norm(ctx.clubs[i])))&&(a.daypart==='neutral'||a.daypart===ctx.daypart));if(ctx.category==='quiz')candidates=candidates.filter(a=>a.questionIds.includes(ctx.questionId)&&a.answerSafe===true);if(!candidates.length&&!['quiz','preview','report','match-analysis','recap'].includes(ctx.category))candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes('neutral')&&!a.clubs.length&&a.daypart==='neutral');return candidates.sort((a,b)=>Number(Boolean(b.fixtureId))-Number(Boolean(a.fixtureId))||Number(Boolean(b.clubs.length))-Number(Boolean(a.clubs.length))||Number(b.daypart===ctx.daypart)-Number(a.daypart===ctx.daypart)||(Date.parse(usage[a.id]||a.lastUsed)||0)-(Date.parse(usage[b.id]||b.lastUsed)||0)||sha(ctx.articleId+':'+a.id).localeCompare(sha(ctx.articleId+':'+b.id)))[0]||null;}
 function fields(a, context){
  return {
   imageUrl:ORIGIN+'/'+a.file.slice(7).replace(/\.svg$/,'.webp'), imageAssetId:a.id, imageRights:'cleared',
@@ -49,6 +50,7 @@ function fields(a, context){
    ...(a.imageKind?{imageKind:a.imageKind,stadiumOccupancy:a.stadiumOccupancy,stadiumIdentity:a.stadiumIdentity,
      ...(context?.imageIdentity?{imageIdentity:context.imageIdentity}:{})}:{}),
    generated:a.rights==='original-ai',qualityTier:a.fixtureId?'reviewed-fixture':'contextual-illustration',
+   ...(premium.isMatch(a)?a.visualReview?{visualQualityScore:a.visualReview.score,visualQualityStatus:'premium-reviewed'}:{visualQualityStatus:'legacy-raster-awaiting-rescore'}:{}),
    ...(a.fixtureId?{fixtureId:a.fixtureId,noOfficialLogos:true,noRecognizablePeople:true,noDocumentaryClaim:true}:{})}
  };
 }
@@ -56,10 +58,18 @@ function applyFixtureCover(article,rows=catalog()){
  const match=article.match;
  if(!match||!article.matchId||article.status!=='published'||!['match_report','score_update'].includes(article.articleKind))return article;
  // Existing individually reviewed artwork takes precedence over a generic upgrade.
- if(article.imageUrl&&!article.imageUrl.endsWith('/veldio-arena.webp')&&article.imageReview?.qualityTier!=='contextual-illustration')return article;
- const asset=rows.find(a=>a.fixtureId===article.matchId&&a.approval==='approved'&&
-  a.competitions.includes(article.category)&&norm(a.clubs[0])===norm(match.homeTeam)&&norm(a.clubs[1])===norm(match.awayTeam));
- if(!asset)return article;
+ const retired=premium.isRetiredReference(article,require('./image-library49.json').assets);
+ if(!retired&&article.imageUrl&&!article.imageUrl.endsWith('/veldio-arena.webp')&&article.imageReview?.qualityTier!=='contextual-illustration')return article;
+ const asset=rows.filter(a=>a.fixtureId===article.matchId&&premium.accepted(a)&&
+  a.imageKind==='report'&&a.stadiumOccupancy==='full'&&
+  a.competitions.includes(article.category)&&norm(a.clubs[0])===norm(match.homeTeam)&&norm(a.clubs[1])===norm(match.awayTeam))
+  .sort((a,b)=>(Date.parse(b.approvedAt)||0)-(Date.parse(a.approvedAt)||0))[0];
+ if(!asset){
+  if(!retired)return article;
+  const cleared={...article,imageQualityStatus:'awaiting-premium-replacement'};
+  for(const key of ['imageUrl','imageAssetId','imageReview','imageCaption','imageVariants','imageRotation','imageSource','imageCredit'])delete cleared[key];
+  return cleared;
+ }
  return {...article,...fields(asset),imageAsset:undefined,imageCaption:undefined};
 }
 async function select(payload,{client,now=Date.now()}={}){const ctx=context(payload);let usage={};if(client?.isReady){const fixtureCover=choose(ctx,catalog().filter(a=>a.fixtureId===ctx.fixtureId&&a.fixtureId));if(fixtureCover)return fixtureCover;const fixed=await client.get('images49:article:'+ctx.articleId);const prior=catalog().find(a=>a.id===fixed);if(prior&&choose(ctx,[prior]))return prior;usage=await client.hGetAll('images49:usage');}const a=choose(ctx,undefined,usage);if(a&&client?.isReady){await client.set('images49:article:'+ctx.articleId,a.id,{EX:90*86400});await client.hSet('images49:usage',a.id,new Date(now).toISOString());}return a;}
