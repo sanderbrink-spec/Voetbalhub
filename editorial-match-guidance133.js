@@ -42,7 +42,7 @@ function paragraphPlan(record = {}) {
 const significantIncidentPatterns=[
  {type:'red_card',evidence:/\b(?:rode kaart|tweede gele kaart|rood gekregen|met tien man|met negen man|van het veld gestuurd)\b/i,copy:/\b(?:rode kaart|tweede gele kaart|rood|van het veld gestuurd|weggestuurd)\b/i},
  {type:'var',evidence:/\b(?:VAR|videoscheidsrechter|videoarbitrage)\b/i,copy:/\b(?:VAR|videoscheidsrechter|videoarbitrage)\b/i},
- {type:'penalty',evidence:/\b(?:strafschop(?:moment)?|penalty)\b/i,copy:/\b(?:strafschop|penalty)\b/i}
+ {type:'penalty',evidence:/\b(?:strafschop(?:moment)?|penalty)\b/i,copy:/\b(?:strafschop(?:moment)?|penalty)\b/i}
 ];
 function verifiedIncidentCoverageIssues(record={},draft={}){
  if(record.articleKind!=='match_report')return [];
