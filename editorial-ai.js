@@ -152,7 +152,7 @@ function unsupportedInterpretationIssues(draft,facts=[]){
 function repairUnsupportedDecisionTimestamp(draft,facts=[],sourceUrl='',authority=''){
  if(!Array.isArray(draft?.body)||!Array.isArray(facts)||
     !['club_decision','association_decision'].includes(authority))return draft;
- const {evidenceIssues,officialPublisherName:trustedPublisher}=require('../editorial-facts');
+ const {evidenceIssues,officialPublisherName:trustedPublisher}=require('./editorial-facts');
  if(!trustedPublisher(sourceUrl)||!facts.some(f=>/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(f))||
     !evidenceIssues(draft,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip')))return draft;
  // Only a leading Dutch absolute date+clock, inverted verb, known subject.
