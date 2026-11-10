@@ -27,7 +27,13 @@ function paragraphPlan(record = {}) {
  const eventIds=new Set(event.map(fact=>fact.id));
  const context=ids.filter(x=>!eventIds.has(x.id)&&x.id!=='F1');
  if(!isRichMatch(record)) return {format:'compact',lead:['F1'],body:[{section:1,factIds:context.map(x=>x.id)}],events:event.length};
- const middle=Math.max(1,Math.ceil(event.length/2));
+ // A verified halftime boundary takes priority over a numerical split.
+ // 45+3 belongs before the break; minute 46 onwards belongs after it.
+ // Do not send minute 56 into the first-half paragraph just because there
+ // are three second-half goals and only two first-half goals.
+ const firstAfterBreak=event.findIndex(item=>item.order>=46*100);
+ const middle=firstAfterBreak>0&&firstAfterBreak<event.length
+  ?firstAfterBreak:Math.max(1,Math.ceil(event.length/2));
  // If structured event coverage is thin, the writer must skip rather than
  // repeat the final result or fabricate the missing body paragraphs.
  if(event.length<2) return {format:'insufficient',lead:['F1'],body:[],events:event.length};
