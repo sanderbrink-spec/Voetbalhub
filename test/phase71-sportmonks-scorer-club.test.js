@@ -72,3 +72,16 @@ test('Fase 71: exact rejected reviewer error gets only one full review with new 
  assert.equal(reopenUtrechtNecScorerClubV71({...job,status:'review',utrechtNecScorerClubRecoveryV71:false,errorHash:'wrong'},record,now),false);
  assert.equal(reopenUtrechtNecScorerClubV71({...job,status:'review',utrechtNecScorerClubRecoveryV71:false},record,now+96*3600000),false);
 });
+
+test('Fase 71: exact verified match may complete its last review after 48 hours, but not after 72',()=>{
+ const checked=parseFixture(fixture(),'eredivisie',now);
+ const late=Date.parse('2026-11-10T19:05:00Z');
+ const exact=candidate(checked,late);
+ assert.ok(exact);
+ assert.equal(exact.matchId,'sm-19714594');
+ assert.equal(candidate(checked,Date.parse('2026-11-11T20:00:00Z')),null);
+ const other={...checked,id:'sm-19714595'};
+ assert.equal(candidate(other,late),null);
+ const unidentified={...checked,goalTimeline:checked.goalTimeline.map(e=>({...e,scorerSide:null}))};
+ assert.equal(candidate(unidentified,late),null);
+});
