@@ -320,3 +320,20 @@ test('English rewrite is rejected while Dutch reporting with foreign club names 
  const dutch={headline:'PEC Zwolle bevestigt de komst van Alex Pastoor',standfirst:'De club meldt dat de trainer maandag begint.',body:['Volgens de club keren de assistenten terug in hun eigen functie. De club heeft de verdeling van de taken bekendgemaakt. Liverpool en Manchester City worden hier alleen als clubnamen genoemd.']};
  assert.ok(!generationIssues(dutch,[]).some(issue=>issue.includes('Engelstalig')));
 });
+
+test('first-party source attribution can be restored without changing official facts or accepting invented names',()=>{
+ const {attachVerifiedOfficialAttribution,editorialAttributionIssues,generationIssues}=require('../editorial-ai');
+ const sourceUrls=['https://www.fcgroningen.nl/nieuws/schikkingsvoorstel-voor-hateboer-geaccepteerd/'];
+ const facts=['FC Groningen meldt dat de club een schikkingsvoorstel heeft geaccepteerd.'];
+ const draft={headline:'Club accepteert voorstel voor een speler',standfirst:'De club heeft het voorstel voor een speler geaccepteerd.',body:['Het voorstel is geaccepteerd en de club heeft dit officieel bekendgemaakt.']};
+ const options={primaryAuthority:'club_decision',sourceUrls,facts};
+ assert.equal(editorialAttributionIssues(draft,options).length,1);
+ const fixed=attachVerifiedOfficialAttribution(draft,options);
+ assert.equal(fixed.standfirst,'De club heeft het voorstel voor een speler geaccepteerd. Dat meldt FC Groningen.');
+ assert.deepEqual(editorialAttributionIssues(fixed,options),[]);
+ assert.deepEqual(generationIssues(fixed,facts),[]);
+ assert.equal(draft.standfirst,'De club heeft het voorstel voor een speler geaccepteerd.');
+ assert.equal(attachVerifiedOfficialAttribution(draft,{...options,facts:['Het voorstel is geaccepteerd.']}),draft);
+ assert.equal(attachVerifiedOfficialAttribution(draft,{...options,primaryAuthority:null}),draft);
+ assert.equal(attachVerifiedOfficialAttribution(draft,{...options,sourceUrls:['https://untrusted.example/news']}),draft);
+});
