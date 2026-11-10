@@ -1195,3 +1195,25 @@ test('only the observed registered match copy rejection earns one reassessment w
  Object.assign(job,{status:'review'});assert.equal(reopenObservedMatchCopyFailure(job,1235),false);
  for(const change of [{matchId:undefined},{errorHash:'other-failure'},{failureStage:'verification'},{status:'published'}])assert.equal(reopenObservedMatchCopyFailure({...original,...change},1234),false);
 });
+
+test('first-party acceptance of a disciplinary proposal is checked as a club decision, not an uncorroborated rumor',()=>{
+ const {primaryAuthority}=require('../scripts/automatic-publication');
+ const evidence='FC Groningen bevestigt dat de club het schikkingsvoorstel voor de betrokken speler heeft geaccepteerd.';
+ const doc={
+  url:'https://www.fcgroningen.nl/nieuws/schikkingsvoorstel-voor-hateboer-geaccepteerd/',
+  title:'Schikkingsvoorstel voor Hateboer geaccepteerd',
+  text:evidence,
+  publishedAt:'2026-11-09T13:40:58+00:00'
+ };
+ assert.equal(primaryAuthority(doc),'club_decision');
+ assert.deepEqual(validateEvidence({
+  kind:'announcement',primaryAuthority:'club_decision',sharedEventEvidence:[],
+  facts:[{text:evidence,evidence:[{source:0,quote:evidence}]}]
+ },[doc],Date.parse('2026-11-10T12:00:00Z')),[]);
+ assert.equal(primaryAuthority({...doc,title:'Schikkingsvoorstel voor Hateboer mogelijk geaccepteerd'}),'');
+ assert.equal(primaryAuthority({...doc,title:'Kaartverkoop voor volgende thuiswedstrijd'}),'');
+ assert.ok(validateEvidence({
+  kind:'announcement',primaryAuthority:'club_decision',transferStatus:'confirmed',
+  sharedEventEvidence:[],facts:[{text:evidence,evidence:[{source:0,quote:evidence}]}]
+ },[doc],Date.parse('2026-11-10T12:00:00Z')).length);
+});
