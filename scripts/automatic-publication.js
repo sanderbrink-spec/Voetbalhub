@@ -12,6 +12,7 @@ const {createRouter,sealCheckpoint,openCheckpoint,ProviderUnavailable}=require('
 const matches=require('../editorial-match55');
 const matchGuidance=require('../editorial-match-guidance133');
 const {repairReversedVerifiedScores}=require('../editorial-score-orientation71');
+const {repairUnverifiedMatchComeback}=require('../editorial-match-narrative71');
 // Match reports with verified goal timelines need the full article format.
 // A short score update is compact; news briefs retain their existing policy.
 function matchGenerationIsCompact(matchRecord,newsCompact=false){
@@ -1294,7 +1295,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     // The AI writer still cannot invent goals, moments, names or match dynamics.
     if(matchRecord){
      const scoreSafe=repairReversedVerifiedScores(draft,matchRecord);
-     if(scoreSafe!==draft){draft=scoreSafe;payload.draft=draft;}
+     const narrativeSafe=repairUnverifiedMatchComeback(scoreSafe,matchRecord);
+     if(narrativeSafe!==draft){draft=narrativeSafe;payload.draft=draft;}
     }
     // Store complete AI copy for the owner's review as a separate Actions artifact,
     // not as publicly printed job logs or a queue field.
