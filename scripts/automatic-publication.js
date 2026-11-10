@@ -999,14 +999,22 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     group.officialDisciplinaryCandidate=disciplinary;
     const observedSkip='Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.';
     const date=Date.parse(group[0].publishedAt||'');
-    if(['review','retry'].includes(job.status)&&job.failureStage==='generation'&&
-       job.failureCategory==='generator_failure'&&job.errorHash===sha(observedSkip)&&
-       !job.officialDisciplinaryEvidenceV71&&Number.isFinite(date)&&date<=now&&
-       now-date<=config.maxAgeHours*3600000){
-     job.officialDisciplinaryEvidenceV71=true;
+    const originalTechnicalSkip=['review','retry'].includes(job.status)&&
+      job.failureStage==='generation'&&job.failureCategory==='generator_failure'&&
+      !job.officialDisciplinaryEvidenceV71;
+    const reviewedFactSkip=job.status==='review'&&job.failureStage==='generation'&&
+      job.failureCategory==='journalistic_rejection'&&job.reason==='insufficient_verified_facts'&&
+      job.officialDisciplinaryEvidenceV71&&!job.officialDisciplinaryBriefV71;
+    if((originalTechnicalSkip||reviewedFactSkip)&&job.errorHash===sha(observedSkip)&&
+       Number.isFinite(date)&&date<=now&&now-date<=config.maxAgeHours*3600000){
+     // Exactly one further attempt with a legitimate three-fact brief.
+     // Rejections remain authoritative; no score, text or evidence is reused.
+     if(originalTechnicalSkip)job.officialDisciplinaryEvidenceV71=true;
+     if(reviewedFactSkip)job.officialDisciplinaryBriefV71=true;
      job.status='pending';job.attempts=0;job.nextAttemptAt=now;
      delete job.checkpoint;
-     report.signals.push({route:'news',topic:group[0].title,outcome:'verified_disciplinary_evidence_v71',
+     report.signals.push({route:'news',topic:group[0].title,
+      outcome:reviewedFactSkip?'verified_disciplinary_brief_v71':'verified_disciplinary_evidence_v71',
       factCount:disciplinary.facts.length});
     }
    }
