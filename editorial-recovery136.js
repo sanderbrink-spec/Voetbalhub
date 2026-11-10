@@ -78,6 +78,23 @@ function reopenUtrechtNecHalfTimeV71(job,record,now=Date.now()){
  return true;
 }
 
+// Exact logged rejection after the proven halftime fix: no editorial gate is
+// bypassed, only one fresh manuscript is allowed for this known match.
+function reopenUtrechtNecVerifiedWordingV71(job,record,now=Date.now()){
+ const observed='e6d65c46095e7da26e5ffa5f80463c05343faabe60d43ac2ca274f9289b88e03';
+ const at=Date.parse(record?.publishedAt||'');
+ if(!job||!record||record.matchId!=='sm-19714594'||job.matchId!==record.matchId||
+    record.articleKind!=='match_report'||!Array.isArray(record.verifiedFacts)||
+    record.verifiedFacts.length<5||!Number.isFinite(at)||at>now||now-at>72*3600000||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.errorHash!==observed||
+    job.utrechtNecVerifiedWordingRecoveryV71)return false;
+ job.utrechtNecVerifiedWordingRecoveryV71=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.checkpoint;
+ return true;
+}
+
 function publicationBlocker(report){
  const c=report?.counts||{};
  if(c.published>0)return null;
@@ -87,4 +104,4 @@ function publicationBlocker(report){
   return 'editorial_rejected';
  return null;
 }
-module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,publicationBlocker};
+module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecVerifiedWordingV71,publicationBlocker};
