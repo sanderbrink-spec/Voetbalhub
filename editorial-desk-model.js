@@ -22,6 +22,9 @@
     const d = payload?.draft || {};
     const body = [d.headline,d.standfirst,...(Array.isArray(d.body)?d.body:[])].join(' ');
     const facts = (payload?.verifiedFacts||[]).join(' ');
+    // An explicit clock ("om 14:40") is not a football score. Its date
+    // and time still fail the separate fact audit when not in verifiedFacts.
+    const withoutClock=body.replace(/\bom\s+\d{1,2}:\d{2}\b/gi,'om [tijdstip]');
     const realStats = /\b(?:\d+\s*[-–:]\s*\d+|uitslag|eindstand|ruststand|ranglijst|klassement|standen?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|xg|expected goals|doelpuntenmaker|scoreverloop)\b/i;
     return payload?.articleKind==='announcement'&&
       ['club_decision','association_decision'].includes(payload?.primaryAuthority)&&
@@ -29,7 +32,7 @@
       /\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(facts)&&
       /\b(?:geaccepteerd|aanvaard|aanvaardt|accepteert)\b/i.test(facts)&&
       /\b(?:gele kaart|gele kaarten|rode kaart|rode kaarten|hands)\b/i.test(facts)&&
-      !realStats.test(body);
+      !realStats.test(withoutClock);
   }
   const briefEligible = payload => payload.articleKind === 'announcement' &&
     ['club_decision','association_decision'].includes(payload.primaryAuthority) &&
