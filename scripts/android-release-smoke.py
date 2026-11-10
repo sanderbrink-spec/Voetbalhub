@@ -169,8 +169,8 @@ try:
     )
     if not all(token in manifest for token in (
         "package: name='" + PACKAGE + "'",
-        "versionCode='99'",
-        "versionName='4.59'",
+        "versionCode='100'",
+        "versionName='4.60'",
     )):
         raise AssertionError("Unexpected production package or version")
     if "application-debuggable" in manifest:
@@ -243,7 +243,7 @@ try:
         "status": "PASS",
         "apk": str(APK),
         "package": PACKAGE,
-        "version": "4.59",
+        "version": "4.60",
         "androidApi": 36,
         "checks": checks,
         "adoVariants": variants,
