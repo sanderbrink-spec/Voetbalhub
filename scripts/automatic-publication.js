@@ -169,6 +169,11 @@ function primaryAuthority(doc){
  const title=normalize(doc.title);
  if(/\b(gerucht|mogelijk|liveblog|samenvatting|highlights)\b/.test(title))return '';
  if(owner(url)==='knvb.nl'&&/\b(besluit|loting|schorsing|vastgesteld|speeldagen|ingepland)\b/.test(title))return 'association_decision';
+ // An official club can confirm its own acceptance of a disciplinary settlement.
+ // This does not establish the sanction's external legal status or any allegation.
+ if(owner(url)!=='knvb.nl'&&/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/.test(title)&&
+    /\b(?:geaccepteerd|accepteert|aanvaard|aanvaardt)\b/.test(title)&&
+    /\b(?:schikkingsvoorstel|tuchtvoorstel)\b/.test(normalize((doc.text||'').slice(0,3000))))return 'club_decision';
  if(/\b(contract|contractverlenging|tekent|verlengt|verlengd|benoemd|aangesteld|hoofdtrainer|vertrek|vertrekt|ontslag|huur|huurt|director of football|head coach)\b/.test(title))return 'club_decision';
  return '';
 }
