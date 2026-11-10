@@ -108,6 +108,20 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  }
  return result;
 }
+// The trusted first-party source identity is provenance, not a new claim.
+// Add only a missing explicit attribution if that club is itself present in
+// verified facts. All factual, originality and independent review gates remain.
+function attachVerifiedOfficialAttribution(draft,{primaryAuthority=null,sourceUrls=[],facts=[]}={}){
+ if(!['club_decision','association_decision'].includes(primaryAuthority)||sourceUrls.length!==1||!draft)return draft;
+ const publisher=officialPublisherName(sourceUrls[0]);
+ if(!publisher||!facts.some(f=>String(f).toLocaleLowerCase('nl').includes(publisher.toLocaleLowerCase('nl'))))return draft;
+ const issues=editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts});
+ if(!issues.some(issue=>issue.startsWith('Noem '+publisher+' ')))return draft;
+ const intro=String(draft.standfirst||'').trim();
+ const attribution='Dat meldt '+publisher+'.';
+ if(!/[.!?]$/.test(intro)||intro.split(/\s+/).length+attribution.split(/\s+/).length>35)return draft;
+ return {...draft,standfirst:intro+' '+attribution};
+}
 // A year is not a competition season, and a named job title must appear
 // literally in the independently verified evidence.
 function unverifiedTimelineAndRoles(draft,facts=[]){
@@ -238,7 +252,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
       throw new DraftError(502,'Geen bruikbaar antwoord van de AI-dienst. Je invoer blijft bewaard.');
     }
     const text=data?.choices?.[0]?.message?.content||'';
-    const draft=normalizeDraft(text);
+    const rawDraft=normalizeDraft(text);
+    const draft=rawDraft?.skip?rawDraft:attachVerifiedOfficialAttribution(rawDraft,{primaryAuthority,sourceUrls,facts});
     if(draft?.skip){
      const sufficientCoachEvidence=automaticPublication&&coachPlan&&officialPublisher&&facts.length>=7&&
       facts.some(x=>/assistent|keeperstrainer/i.test(x))&&facts.some(x=>/\b20\d\d\b/.test(x))&&
@@ -268,5 +283,5 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
+module.exports={attachVerifiedOfficialAttribution,createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
 
