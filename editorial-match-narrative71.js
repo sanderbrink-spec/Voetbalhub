@@ -52,11 +52,6 @@ function repairUnverifiedMatchComeback(draft,record){
     changed=true;
     return 'Na rust scoorde '+player+' voor '+club+' in minuut '+minute;
    });
-  // The writer must not calculate a minute interval from a pair of moments.
-  // Keep the known sequence but do not assert elapsed time.
-  result=result.replace(/\b(?:\d+|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien)\s+minuten?\s+later\b/giu,()=>{
-   changed=true;return 'Daarna';
-  });
   return result;
  });
  return changed?{...draft,body}:draft;
