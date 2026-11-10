@@ -69,22 +69,7 @@ function editorialAssignment(facts,{compact=false}={}){
  return {leadFactIds:[lead.id],bodySections:angles};
 }
 // A publisher identity comes from a trusted official HTTPS host, not AI prose.
-function officialPublisherName(url){
- const names={
-  'peczwolle.nl':'PEC Zwolle','ajax.nl':'Ajax','psv.nl':'PSV','feyenoord.com':'Feyenoord',
-  'fctwente.nl':'FC Twente','az.nl':'AZ','fcgroningen.nl':'FC Groningen',
-  'fortunasittard.nl':'Fortuna Sittard','willem-ii.nl':'Willem II',
-  'fcemmen.nl':'FC Emmen','fcdenbosch.nl':'FC Den Bosch',
-  'knvb.nl':'KNVB','eurojackpotknvbbeker.nl':'KNVB Beker','eredivisie.nl':'Eredivisie',
-  'inter.it':'Inter','clubbrugge.be':'Club Brugge','liverpoolfc.com':'Liverpool',
-  'fcm.dk':'FC Midtjylland','keukenkampioendivisie.nl':'Keuken Kampioen Divisie'
- };
- try{
-  const value=new URL(url);
-  if(value.protocol!=='https:'||value.username||value.password)return null;
-  return names[value.hostname.toLowerCase().replace(/^www\./,'')]||null;
- }catch{return null;}
-}
+const officialPublisherName=require('./editorial-facts').officialPublisherName;
 // Attribute both the decision and its contextual claims. This is an
 // additional preflight rejection, never a substitute for independent review.
 function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],facts=[]}={}){
@@ -114,7 +99,9 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
 function attachVerifiedOfficialAttribution(draft,{primaryAuthority=null,sourceUrls=[],facts=[]}={}){
  if(!['club_decision','association_decision'].includes(primaryAuthority)||sourceUrls.length!==1||!draft)return draft;
  const publisher=officialPublisherName(sourceUrls[0]);
- if(!publisher||!facts.some(f=>String(f).toLocaleLowerCase('nl').includes(publisher.toLocaleLowerCase('nl'))))return draft;
+ // The authenticated first-party HTTPS URL proves who published the news.
+ // Source attribution does not add a new fact about the underlying decision.
+ if(!publisher)return draft;
  const issues=editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts});
  if(!issues.some(issue=>issue.startsWith('Noem '+publisher+' ')))return draft;
  const intro=String(draft.standfirst||'').trim();
@@ -290,7 +277,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      }
      throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.');
     }
-    const issues=generationIssues(draft,facts,match,compact);
+    const issues=generationIssues(draft,facts,match,compact,officialPublisher?sourceUrls[0]:'');
     if(automaticPublication){
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts}));
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority,facts}));
