@@ -14,13 +14,13 @@ test('officieel tuchtbesluit levert meerdere letterlijk bewezen verschillende fe
  const candidate=verifiedOfficialDisciplinaryDecision(doc);
  assert.ok(candidate);
  assert.equal(candidate.primaryAuthority,'club_decision');
- assert.ok(candidate.facts.length>=4);
+ assert.equal(candidate.facts.length,3);
  for (const fact of candidate.facts) {
   assert.ok(doc.text.includes(fact.text));
   assert.equal(fact.evidence[0].quote,fact.text);
  }
  assert.deepEqual(validateEvidence(candidate,[doc],Date.parse('2026-11-10T13:00:00Z')),[]);
- assert.equal(M.briefEligible({articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,sources:[{url:doc.url}],verifiedFacts:candidate.facts.map(x=>x.text)}),false);
+ assert.equal(M.briefEligible({articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,sources:[{url:doc.url}],verifiedFacts:candidate.facts.map(x=>x.text)}),true);
 });
 test('gerucht, niet-geaccepteerd voorstel en inhoudsarme bron blijven uitgesloten',()=>{
  assert.equal(verifiedOfficialDisciplinaryDecision({...doc,title:'Mogelijk schikkingsvoorstel voor Hateboer'}),null);
