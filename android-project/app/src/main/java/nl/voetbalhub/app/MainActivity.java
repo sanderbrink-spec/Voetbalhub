@@ -1123,7 +1123,7 @@ private void showScores() {
         TextView smaller = tv("A−", 14, C.TEXT, true); smaller.setGravity(Gravity.CENTER); tools.addView(smaller, new LinearLayout.LayoutParams(dp(44),dp(44)));smaller.setContentDescription("Kleinere artikeltekst");
         TextView larger = tv("A+", 17, C.TEXT, true); larger.setGravity(Gravity.CENTER); tools.addView(larger, new LinearLayout.LayoutParams(dp(44),dp(44)));larger.setContentDescription("Grotere artikeltekst");
         android.view.View.OnClickListener resize = v -> {int size = Math.max(15, Math.min(23, prefs.getInt("readerFontSize",17) + (v == larger ? 1 : -1)));prefs.edit().putInt("readerFontSize",size).apply();for(TextView paragraph : readingText)paragraph.setTextSize(size);};smaller.setOnClickListener(resize);larger.setOnClickListener(resize);
-        TextView share = tv("Delen", 12, C.MUTED, true);share.setGravity(Gravity.CENTER);share.setMinHeight(dp(44));share.setPadding(dp(4),0,dp(4),0);tools.addView(share,new LinearLayout.LayoutParams(-2,-2));share.setOnClickListener(v -> {Intent send = new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_SUBJECT,article.optString("headline"));send.putExtra(Intent.EXTRA_TEXT,article.optString("headline")+"\n\n"+article.optString("standfirst")+"\n\nVeldio · Alles voetbal. Eén plek.");try{startActivity(Intent.createChooser(send,"Artikel delen"));}catch(Exception ignored){}});
+        TextView share = tv("Delen", 12, C.MUTED, true);share.setContentDescription("Deel dit artikel");share.setGravity(Gravity.CENTER);share.setMinHeight(dp(44));share.setPadding(dp(4),0,dp(4),0);tools.addView(share,new LinearLayout.LayoutParams(-2,-2));share.setOnClickListener(v -> {Intent send = new Intent(Intent.ACTION_SEND);send.setType("text/plain");send.putExtra(Intent.EXTRA_SUBJECT,article.optString("headline"));send.putExtra(Intent.EXTRA_TEXT,article.optString("headline")+"\n\n"+article.optString("standfirst")+"\n\nVeldio · Alles voetbal. Eén plek.");try{startActivity(Intent.createChooser(send,"Artikel delen"));}catch(Exception ignored){}});
         VeldioEditorial.styleTools(this, tools); LinearLayout.LayoutParams toolsLp=new LinearLayout.LayoutParams(-1,-2);toolsLp.setMargins(0,dp(6),0,dp(14));
         ScrollView scroll = new ScrollView(this);
         LinearLayout page = new LinearLayout(this);
@@ -1139,13 +1139,19 @@ private void showScores() {
         } else {
             page.addView(VeldioEditorial.category(this, article.optString("category", "VOETBAL").toUpperCase(java.util.Locale.ROOT)));
         }
-        TextView title = tv(article.optString("headline", "Voetbalnieuws"), 30, VeldioEditorial.SILVER, true);
-        title.setPadding(0, dp(8), 0, dp(10));
+        int titleSize = getResources().getConfiguration().screenWidthDp < 360 ? 26 : 29;
+        TextView title = tv(article.optString("headline", "Voetbalnieuws"), titleSize, VeldioEditorial.SILVER, true);
+        title.setLineSpacing(dp(2), 1.04f);
+        title.setPadding(0, dp(10), 0, dp(12));
         page.addView(title);
         String published = article.optString("publishedAt", "");String dateLabel = "";
         try {dateLabel = java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy · HH:mm", new java.util.Locale("nl","NL")).withZone(java.time.ZoneId.of("Europe/Amsterdam")).format(java.time.Instant.parse(published));} catch(Exception ignored) {}
         int words = 0;org.json.JSONArray readBody = article.optJSONArray("body");if(readBody!=null)for(int i=0;i<readBody.length();i++)words+=readBody.optString(i, "").trim().split("\\s+").length;
-        TextView metadata = tv((dateLabel.isEmpty()?"":dateLabel+" · ")+Math.max(1,(words+199)/200)+" min leestijd", 11, C.MUTED, false);metadata.setPadding(0,0,0,dp(10));page.addView(metadata);
+        TextView metadata = tv((dateLabel.isEmpty()?"":dateLabel+" · ")+Math.max(1,(words+199)/200)+" min leestijd", 11, C.MUTED, false);metadata.setPadding(0,0,0,dp(5));page.addView(metadata);
+        String authorName = article.optString("author", "Veldio Redactie").trim();
+        if (authorName.isEmpty()) authorName = "Veldio Redactie";
+        TextView byline = tv(authorName.regionMatches(true, 0, "Door ", 0, 5) ? authorName : "Door " + authorName, 12, C.MUTED, false);
+        byline.setPadding(0,0,0,dp(14));page.addView(byline);
         {
             android.widget.ImageView cover = new android.widget.ImageView(this) {
                 @Override protected void onMeasure(int widthSpec, int heightSpec) {
@@ -1160,26 +1166,22 @@ private void showScores() {
             page.addView(cover, coverLp);
             EditorialPhotos.bind(this, cover, article, 1280);
             page.addView(EditorialPhotos.credit(this, article));
-            TextView sources = EditorialPhotos.sources(this, article);
-            if (sources != null) page.addView(sources);
         }
         String intro = article.optString("standfirst", "").trim();
         if (!intro.isEmpty()) {
-            TextView introText = tv(intro, 16, 0xFFCDDDD2, false); introText.setLineSpacing(dp(4),1f);
-            introText.setPadding(0, 0, 0, dp(12));
+            TextView introText = tv(intro, 16, 0xFFCDDDD2, false); introText.setLineSpacing(dp(5),1.06f);
+            introText.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
+            introText.setPadding(0, dp(7), 0, dp(13));
             page.addView(introText);
         }
-        TextView byline = tv(article.optString("author", "Veldio Redactie"), 11, C.MUTED, false);
-        byline.setPadding(0, 0, 0, dp(12));
-        page.addView(byline);
         page.addView(tools,toolsLp);
         org.json.JSONArray paragraphs = article.optJSONArray("body");
         if (paragraphs != null) {
             for (int i = 0; i < paragraphs.length(); i++) {
                 String paragraph = paragraphs.optString(i, "").trim();
                 if (!paragraph.isEmpty()) {
-                    TextView bodyText = tv(paragraph, prefs.getInt("readerFontSize",17), C.TEXT, false);bodyText.setLineSpacing(dp(5),1f);bodyText.setTextIsSelectable(true);readingText.add(bodyText);
-                    bodyText.setPadding(0, 0, 0, dp(14));
+                    TextView bodyText = tv(paragraph, prefs.getInt("readerFontSize",17), C.TEXT, false);bodyText.setLineSpacing(dp(6),1.04f);bodyText.setTextIsSelectable(true);readingText.add(bodyText);
+                    bodyText.setPadding(0, 0, 0, dp(18));
                     page.addView(bodyText);
                 }
             }
@@ -1196,6 +1198,15 @@ private void showScores() {
         LinearLayout.LayoutParams lineLp = new LinearLayout.LayoutParams(-1, dp(1));
         lineLp.setMargins(0, dp(8), 0, dp(12));
         page.addView(line, lineLp);
+        TextView sources = EditorialPhotos.sources(this, article);
+        if (sources != null) {
+            TextView sourcesHeading = tv("BRONNEN", 11, C.GREEN, true);
+            sourcesHeading.setLetterSpacing(0.08f);
+            sourcesHeading.setPadding(0, dp(8), 0, dp(6));
+            page.addView(sourcesHeading);
+            sources.setPadding(0,0,0,dp(18));
+            page.addView(sources);
+        }
         String disclosure=article.optString("aiDisclosure", "");
         if(!disclosure.isEmpty()){TextView disclosureView=tv(disclosure,11,C.MUTED,false);disclosureView.setPadding(0,dp(8),0,dp(8));page.addView(disclosureView);}
         page.addView(ads().slot("reader"),new LinearLayout.LayoutParams(-1,-2));
