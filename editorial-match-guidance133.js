@@ -56,15 +56,16 @@ function verifiedIncidentCoverageIssues(record={},draft={}){
   if(incident&&!rule.copy.test(text))
    issues.push('Bepalend geverifieerd wedstrijdincident ontbreekt in het artikel: '+rule.type+'. Beschrijf alleen de gecontroleerde gebeurtenis en de juiste bron.');
  }
- // Requiring merely the words 'rode kaart' is insufficient if two
- // different players were sent off. Cover each specifically named decision.
- const disciplinary=evidence.flatMap(f=>{
-  const m=String(f).match(/\bkreeg\s+([A-ZÀ-Ž][\\p{L}-]+(?:\\s+[A-ZÀ-Ž][\\p{L}-]+){0,3})\s+(een directe rode kaart|een rode kaart|een tweede gele kaart)\b/u)
-    ||String(f).match(/\b(?:wedstrijdverslag|wedstrijdregistratie) kreeg\s+([A-ZÀ-Ž][\\p{L}-]+(?:\\s+[A-ZÀ-Ž][\\p{L}-]+){0,3})\s+(een directe rode kaart|een rode kaart|een tweede gele kaart)\b/u);
-  return m?[{person:m[1],type:m[2]}]:[];
- });
- for(const item of disciplinary){
-  const named=new RegExp(item.person.replace(/[.*+?^$()|[\\]{}]/g,'\\\\ return issues;
+ // Check each named incident, not just a generic mention of a red card.
+ for(const fact of evidence){
+  const m=String(fact).match(/\bkreeg\s+([A-ZÀ-Ž][\p{L}-]+(?:\s+[A-ZÀ-Ž][\p{L}-]+){0,3})\s+(een directe rode kaart|een rode kaart|een tweede gele kaart)\b/iu);
+  if(!m)continue;
+  const name=m[1];
+  const normalized=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  if(!normalized(text).includes(normalized(name)))
+   issues.push('Geverifieerde kaart van '+name+' ontbreekt in het wedstrijdverslag.');
+ }
+ return [...new Set(issues)];
 }
 // Facts are allocated'),'i');
   const entire=String(text);
