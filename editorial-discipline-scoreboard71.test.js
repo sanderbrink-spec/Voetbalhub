@@ -17,7 +17,7 @@ const base={
  }
 };
 test('geverifieerd officieel tuchtbericht heeft geen externe scorebron nodig',()=>{
- assert.equal(M.requiresFlashscore(base.draft),true);
+ assert.equal(M.requiresFlashscore(base.draft),false);
  assert.equal(M.officialDisciplinaryCardNotice(base),true);
  assert.ok(!M.publicationIssues({...base,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true]))})
   .some(x=>/Flashscore|Niet-geverifieerde wedstrijdclaim/.test(x)));
