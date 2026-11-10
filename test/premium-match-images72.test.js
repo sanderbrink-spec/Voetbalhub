@@ -32,7 +32,7 @@ test('Fase 72: the premiere image gate verifies preview/report occupancy and ord
  assert.equal(gate.accepted(newAsset({stadiumIdentity:'unknown'})),false);
  assert.equal(gate.accepted(newAsset({clubs:['FC Twente']})),false);
  const exact={category:'report',fixtureId:original.fixtureId,clubs:original.clubs,
-  competition:'Eredivisie',daypart:'neutral'};
+  competition:'Eredivisie',daypart:original.daypart};
  assert.equal(library.choose(exact,[newAsset()]).id,'new-premium-fixture');
  assert.equal(library.choose({...exact,clubs:[...original.clubs].reverse()},[newAsset()]),null);
  assert.equal(library.choose({...exact,category:'preview'},[newAsset()]),null);
