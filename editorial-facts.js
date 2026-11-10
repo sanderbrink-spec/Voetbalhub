@@ -67,12 +67,18 @@
   // club accepted or signed a decision. Only an explicit source claim about
   // the event time can justify such a timestamp in the generated narrative.
   if(officialPublisherName(sourceName)&&!match){
-   const eventAt=/\b(?:op\s+)?(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\s+\d{1,2}\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+20\d{2}\s+om\s+\d{1,2}[.:]\d{2}\s+(?:accepteer\w*|aanvaard\w*|beslo\w*|benoem\w*|tekend\w*|tekende\w*)/gi;
-   for(const claim of article.matchAll(eventAt))
-    if(!facts.some(f=>normalize(f).includes(normalize(claim[0])))){
+   const eventAt=/\b(?:op\s+)?(?:(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\s+)?\d{1,2}\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+20\d{2}\s+om\s+\d{1,2}[.:]\d{2}\b/gi;
+   const decisionVerb=/\b(?:accepteer\w*|aanvaard\w*|aanvaardt|beslo\w*|benoem\w*|benoemd|tekend\w*|tekende\w*|ingestemd|instem\w*)\b/i;
+   for(const claim of article.matchAll(eventAt)){
+    // The decision verb may be separated from the claimed time by the
+    // subject and object: "om 14:40 heeft de club ... geaccepteerd".
+    const rest=article.slice(claim.index+claim[0].length).split(/[.!?]/,1)[0];
+    if(!decisionVerb.test(rest))continue;
+    if(!facts.some(f=>normalize(f).includes(normalize(claim[0]))&&decisionVerb.test(f))){
      issues.push('Het publicatietijdstip is geen bewezen tijdstip van het clubbesluit. Verwijder de afgeleide datum of tijd.');
      break;
     }
+   }
   }
 
   if(needsMatch(draft)){
