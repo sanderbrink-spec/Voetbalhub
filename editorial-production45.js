@@ -78,15 +78,19 @@ class EditorialQueue {
   // HTTP/provider outage inside a rejected quality assessment.
   const qualityRejection=stage==='quality'&&/^Kwaliteitscontrole na \d+ herschrijvingen:/.test(String(error?.message||''));
   const invalidRequest=error?.code==='GROQ_BAD_REQUEST'||/HTTP 400\b/.test(String(error?.message||''));
+  // An explicit evidence-based writer skip is a journalistic decision, not a
+  // broken service. It must never be mistaken for an approved article.
+  const insufficientFacts=stage==='generation'&&error?.status===422&&
+   /^Onvoldoende gecontroleerde feiten voor een inhoudelijk concept\./.test(String(error?.message||''));
   const transient=!qualityRejection&&!invalidRequest&&(error?.code==='GROQ_DAILY_QUOTA'||/HTTP (429|5\d\d)|timeout|timed out|fetch failed|network|tijdelijk|onbereikbaar|niet beschikbaar/i.test(error?.message||''));
   job.status=transient&&job.attempts<4?'retry':'review';
   job.nextAttemptAt=now+Math.min(24*3600000,3600000*2**(job.attempts-1));
   // Public queue stores URLs and machine status only, never source text, tokens or model output.
   const software=error instanceof ReferenceError||error instanceof TypeError||error instanceof SyntaxError;
   job.failureStage=stage;
-  job.failureCategory=transient?'temporary_source_failure':stage==='storage'?'storage_failure':stage==='publication'?'publication_failure':software||stage==='generation'?'generator_failure':'journalistic_rejection';
+  job.failureCategory=transient?'temporary_source_failure':stage==='storage'?'storage_failure':stage==='publication'?'publication_failure':insufficientFacts?'journalistic_rejection':software||stage==='generation'?'generator_failure':'journalistic_rejection';
   if(software&&stage==='quality')job.failureCategory='quality_control_failure';
-  job.reason=transient?'external_service_unavailable':software?'software_error':stage==='storage'?'storage_error':stage==='publication'?'publication_error':stage==='generation'?'generation_error':'editorial_review_required';
+  job.reason=transient?'external_service_unavailable':software?'software_error':stage==='storage'?'storage_error':stage==='publication'?'publication_error':insufficientFacts?'insufficient_verified_facts':stage==='generation'?'generation_error':'editorial_review_required';
   // Hash links the detailed artifact error without publishing source text or secrets.
   job.errorHash=crypto.createHash('sha256').update(String(error?.message||'')).digest('hex');
  }
