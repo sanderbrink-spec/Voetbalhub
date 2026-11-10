@@ -11,6 +11,7 @@ const production=require('../editorial-production45');
 const {createRouter,sealCheckpoint,openCheckpoint,ProviderUnavailable}=require('../editorial-provider-router');
 const matches=require('../editorial-match55');
 const matchGuidance=require('../editorial-match-guidance133');
+const {repairReversedVerifiedScores}=require('../editorial-score-orientation71');
 // Match reports with verified goal timelines need the full article format.
 // A short score update is compact; news briefs retain their existing policy.
 function matchGenerationIsCompact(matchRecord,newsCompact=false){
@@ -1124,6 +1125,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    // per exact job under this corrected writer; never re-open stale matches.
    if(editorialRecovery136.reopenUtrechtNecAfterChronologyV71(job,group.matchRecord,now))
     report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_verified_incident_chronology_retry_v71'});
+   if(editorialRecovery136.reopenUtrechtNecScoreOrientationV71(job,group.matchRecord,now))
+    report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_verified_score_orientation_retry_v71'});
    if(editorialRecovery136.reopenVerifiedMatch(job,group.matchRecord,now)){
     report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_match_writer_recovery_v136'});
    }
@@ -1286,6 +1289,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      const corrected=reframeVerifiedClubDecision(reframed,facts,group,overlapPhrases);
      const timeSafe=repairUnsupportedDecisionTimestamp(corrected,facts,sources[0]?.url,candidate.primaryAuthority);
      if(timeSafe!==draft){draft=timeSafe;payload.draft=draft;}
+    }
+    // Numeric home-away normalization uses only exact proven Sportmonks scores.
+    // The AI writer still cannot invent goals, moments, names or match dynamics.
+    if(matchRecord){
+     const scoreSafe=repairReversedVerifiedScores(draft,matchRecord);
+     if(scoreSafe!==draft){draft=scoreSafe;payload.draft=draft;}
     }
     // Store complete AI copy for the owner's review as a separate Actions artifact,
     // not as publicly printed job logs or a queue field.
