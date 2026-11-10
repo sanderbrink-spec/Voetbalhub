@@ -1134,6 +1134,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_passive_language_retry_v71'});
    if(editorialRecovery136.reopenUtrechtNecScorerClubV71(job,group.matchRecord,now))
     report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_verified_scorer_club_retry_v71'});
+   if(editorialRecovery136.reopenUtrechtNecDualScorerV71(job,group.matchRecord,now))
+    report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_dual_scorer_narrative_retry_v71'});
    if(editorialRecovery136.reopenVerifiedMatch(job,group.matchRecord,now)){
     report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_match_writer_recovery_v136'});
    }
