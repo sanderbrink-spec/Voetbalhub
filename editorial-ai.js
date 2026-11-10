@@ -114,7 +114,7 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
 function attachVerifiedOfficialAttribution(draft,{primaryAuthority=null,sourceUrls=[],facts=[]}={}){
  if(!['club_decision','association_decision'].includes(primaryAuthority)||sourceUrls.length!==1||!draft)return draft;
  const publisher=officialPublisherName(sourceUrls[0]);
- if(!publisher||!facts.some(f=>normalize(f).includes(normalize(publisher))))return draft;
+ if(!publisher||!facts.some(f=>String(f).toLocaleLowerCase('nl').includes(publisher.toLocaleLowerCase('nl'))))return draft;
  const issues=editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts});
  if(!issues.some(issue=>issue.startsWith('Noem '+publisher+' ')))return draft;
  const intro=String(draft.standfirst||'').trim();
