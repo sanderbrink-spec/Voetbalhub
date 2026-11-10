@@ -2,7 +2,7 @@ name: Veldio production article Android16 proof
 on:
   push:
     branches: [main]
-    paths: ['editorial-evidence/reviewed-revisions71.json']
+    paths: ['editorial-evidence/reviewed-revisions71.json', '.github/workflows/live-article60.yml']
   workflow_run:
     workflows: ['Automatic verified news and images']
     types: [completed]
@@ -107,6 +107,8 @@ jobs:
           path: apk
           run-id: ${{ steps.apk.outputs.run_id }}
           github-token: ${{ github.token }}
+      - name: Restore the same approved offline artwork as the APK build
+        run: python3 scripts/bundle-match-artwork68.py
       - name: Require APK provenance to match the production source
         env:
           APK_NAME: ${{ steps.apk.outputs.name }}
