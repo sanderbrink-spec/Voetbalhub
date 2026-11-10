@@ -26,7 +26,8 @@
       "id": "heerenveen43",
       "file": "public/news43/heerenveen43.webp",
       "categories": [
-        "owner-reviewed-legacy"
+        "owner-reviewed-legacy",
+        "report"
       ],
       "subject": "sc Heerenveen / NEC",
       "clubs": [
@@ -47,13 +48,17 @@
       "lastUsed": null,
       "sha256": "f005717efb788dc10730a0ff39e026eebc4702ba8f6330d34e0c5c1e727c3f51",
       "caption": "AI-illustratie: sc Heerenveen en NEC, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "questionIds": []
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:scheerenveen"
     },
     {
       "id": "feyenoord43",
       "file": "public/news43/feyenoord43.webp",
       "categories": [
-        "owner-reviewed-legacy"
+        "owner-reviewed-legacy",
+        "report"
       ],
       "subject": "Feyenoord / Fortuna Sittard",
       "clubs": [
@@ -74,13 +79,17 @@
       "lastUsed": null,
       "sha256": "8e3ddf291ee355d6dec7bf2b43f22ee7f0c86354e20a2fd30756a63bb9e61ed3",
       "caption": "AI-illustratie: Feyenoord en Fortuna Sittard, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "questionIds": []
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:feyenoord"
     },
     {
       "id": "ajax43",
       "file": "public/news43/ajax43.webp",
       "categories": [
-        "owner-reviewed-legacy"
+        "owner-reviewed-legacy",
+        "report"
       ],
       "subject": "Ajax / AZ",
       "clubs": [
@@ -101,13 +110,17 @@
       "lastUsed": null,
       "sha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
       "caption": "AI-illustratie: Ajax en AZ, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "questionIds": []
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:ajax"
     },
     {
       "id": "psv43",
       "file": "public/news43/psv43.webp",
       "categories": [
-        "owner-reviewed-legacy"
+        "owner-reviewed-legacy",
+        "report"
       ],
       "subject": "PSV / Willem II",
       "clubs": [
@@ -128,7 +141,10 @@
       "lastUsed": null,
       "sha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
       "caption": "AI-illustratie: PSV en Willem II, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "questionIds": []
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:psv"
     },
     {
       "id": "midtjylland43",
@@ -1164,7 +1180,10 @@
       "sha256": "6e1b91257956a24fd7efc02d838c0234b2a1a3b942919a673bb204d11512dafa",
       "caption": "Veldio · AI-illustratie bij FC Midtjylland – Ajax. Geen foto van de wedstrijd of gebeurtenis.",
       "questionIds": [],
-      "approvedAt": "2026-11-10"
+      "approvedAt": "2026-11-10",
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:fcmidtjylland"
     },
     {
       "id": "veldio69-groningen-1",
@@ -1979,6 +1998,196 @@
       "caption": "Veldio · AI-illustratie bij analyse en statistieken.",
       "questionIds": [],
       "approvedAt": "2026-11-10"
+    },
+    {
+      "id": "veldio71-az-groningen-report",
+      "file": "public/article-art71/az-groningen-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "AZ – FC Groningen",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "twilight",
+      "keywords": [],
+      "variant": "az-groningen",
+      "origin": "ChatGPT ImageGen, original editorial illustration created for Veldio",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio AI illustration edited and visually reviewed for visible stadium occupancy, with no official branding or identifiable people.",
+      "approval": "approved",
+      "reviewer": "Veldio stadium occupancy visual review",
+      "lastUsed": null,
+      "sha256": "95e630e0ead899c933b9298de086c4f66b5a5b5c2f3d5fbf7eff5b5d70b6d3d5",
+      "caption": "Veldio · AI-illustratie bij AZ – FC Groningen. Geen foto van de wedstrijd of gebeurtenis.",
+      "questionIds": [],
+      "fixtureId": "sm-19714593",
+      "approvedAt": "2026-11-10",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:az"
+    },
+    {
+      "id": "veldio71-twente-ajax-report",
+      "file": "public/article-art71/twente-ajax-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "FC Twente – Ajax",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "day",
+      "keywords": [],
+      "variant": "twente-ajax",
+      "origin": "ChatGPT ImageGen, original editorial illustration created for Veldio",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio AI illustration edited and visually reviewed for visible stadium occupancy, with no official branding or identifiable people.",
+      "approval": "approved",
+      "reviewer": "Veldio stadium occupancy visual review",
+      "lastUsed": null,
+      "sha256": "5301898c31b055a7efd1fdecc0fc8f4b887e4e9d85e387e1f165348ac3f120e0",
+      "caption": "Veldio · AI-illustratie bij FC Twente – Ajax. Geen foto van de wedstrijd of gebeurtenis.",
+      "questionIds": [],
+      "fixtureId": "sm-19714595",
+      "approvedAt": "2026-11-10",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:fctwente"
+    },
+    {
+      "id": "veldio71-ado-sparta-report",
+      "file": "public/article-art71/ado-sparta-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "ADO Den Haag – Sparta Rotterdam",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "night",
+      "keywords": [],
+      "variant": "ado-sparta",
+      "origin": "ChatGPT ImageGen, original editorial illustration created for Veldio",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio AI illustration edited and visually reviewed for visible stadium occupancy, with no official branding or identifiable people.",
+      "approval": "approved",
+      "reviewer": "Veldio stadium occupancy visual review",
+      "lastUsed": null,
+      "sha256": "47b90fc169afeb389bd2b3b7dbcc1ff5ac76e622ab4bc385bced2bb91c58e3f0",
+      "caption": "Veldio · AI-illustratie bij ADO Den Haag – Sparta Rotterdam. Geen foto van de wedstrijd of gebeurtenis.",
+      "questionIds": [],
+      "fixtureId": "sm-19714597",
+      "approvedAt": "2026-11-10",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:adodenhaag"
+    },
+    {
+      "id": "veldio71-heerenveen-feyenoord-report",
+      "file": "public/article-art71/heerenveen-feyenoord-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "SC Heerenveen – Feyenoord",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "day",
+      "keywords": [],
+      "variant": "heerenveen-feyenoord",
+      "origin": "ChatGPT ImageGen, original editorial illustration created for Veldio",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio AI illustration edited and visually reviewed for visible stadium occupancy, with no official branding or identifiable people.",
+      "approval": "approved",
+      "reviewer": "Veldio stadium occupancy visual review",
+      "lastUsed": null,
+      "sha256": "ed5c353fd065b8cc719c8d24d8c8455a3a648cf9ca2841a0818f8916e13d5a3f",
+      "caption": "Veldio · AI-illustratie bij SC Heerenveen – Feyenoord. Geen foto van de wedstrijd of gebeurtenis.",
+      "questionIds": [],
+      "fixtureId": "sm-19714596",
+      "approvedAt": "2026-11-10",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:scheerenveen"
+    },
+    {
+      "id": "veldio71-willem-ii-pec-zwolle-preview",
+      "file": "public/article-art71/willem-ii-pec-zwolle-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "Willem II / PEC Zwolle",
+      "clubs": [
+        "Willem II",
+        "PEC Zwolle"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "preview"
+      ],
+      "variant": "willem-ii-pec-zwolle",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio AI illustration edited and visually reviewed for visible stadium occupancy, with no official branding or identifiable people.",
+      "approval": "approved",
+      "reviewer": "Veldio stadium occupancy visual review",
+      "lastUsed": null,
+      "sha256": "fd494587a3956e929124ab1ebc6acf827d6a11b7372cc80bde875bb6868c8394",
+      "caption": "AI-illustratie: Willem II en PEC Zwolle, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": [],
+      "approvedAt": "2026-11-10",
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:willemii"
+    },
+    {
+      "id": "veldio71-emmen-den-bosch-preview",
+      "file": "public/article-art71/emmen-den-bosch-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "FC Emmen / FC Den Bosch",
+      "clubs": [
+        "FC Emmen",
+        "FC Den Bosch"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "keywords": [
+        "preview"
+      ],
+      "variant": "emmen-den-bosch",
+      "origin": "ChatGPT imagegen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio AI illustration edited and visually reviewed for visible stadium occupancy, with no official branding or identifiable people.",
+      "approval": "approved",
+      "reviewer": "Veldio stadium occupancy visual review",
+      "lastUsed": null,
+      "sha256": "82f327ad15966ce15640935e442c4cf04c7d71fbf61c6671f491e9f61bb74a0c",
+      "caption": "AI-illustratie: FC Emmen en FC Den Bosch, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
+      "questionIds": [],
+      "approvedAt": "2026-11-10",
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:fcemmen"
     }
   ]
 }

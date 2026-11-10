@@ -8,7 +8,7 @@ const match = {id:'article-1',status:'published',articleKind:'match_report',cate
 
 function asset(id, extras = {}) {
   return {id,file:'public/article-art69/'+id+'.webp',categories:['report'],clubs:['FC Groningen','Ajax'],
-    competitions:[],daypart:'neutral',approval:'approved',rights:'original-ai',reviewer:'Veldio',
+    imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fcgroningen',competitions:[],daypart:'neutral',approval:'approved',rights:'original-ai',reviewer:'Veldio',
     sha256:id,rightsEvidence:'Original illustration',caption:'AI-illustratie',...extras};
 }
 test('approved variants are distinct, bounded and served in a stable order', () => {
@@ -51,4 +51,22 @@ test('migration stores decisions separately and only writes changed assignments'
   await migrate(redis,[article,unavailable]);
   assert.equal(writes,1);
   assert.equal(JSON.stringify([article,unavailable]),original);
+});
+
+test('preview and report reject unreviewed, mismatched or wrong-stadium artwork', () => {
+  const preview = {...match,articleKind:'match_preview'};
+  const report = asset('full', {categories:['preview','report']});
+  const empty = asset('empty', {categories:['preview','report'],imageKind:'preview',stadiumOccupancy:'empty'});
+  const rows = [report,empty,asset('old',{imageKind:undefined,stadiumOccupancy:undefined}),
+    asset('wrong-stadium',{stadiumIdentity:'venue:other'}),
+    asset('wrong-occupancy',{stadiumOccupancy:'empty'})];
+  const reportArticle = resolve(match,{rows}).article;
+  const previewArticle = resolve(preview,{rows}).article;
+  assert.deepEqual(reportArticle.imageVariants.map(v=>v.id),['full']);
+  assert.deepEqual(previewArticle.imageVariants.map(v=>v.id),['empty']);
+  assert.equal(previewArticle.imageReview.imageKind,'preview');
+  assert.equal(previewArticle.imageVariants[0].review.stadiumOccupancy,'empty');
+  assert.equal(reportArticle.imageReview.stadiumOccupancy,'full');
+  assert.notEqual(reportArticle.imageReview.imageIdentity,previewArticle.imageReview.imageIdentity);
+  assert.equal(resolve(preview,{rows:[report]}).article,null);
 });

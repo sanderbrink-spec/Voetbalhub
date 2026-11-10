@@ -194,7 +194,8 @@ for(const hasHalf of [true,false])test('registered match uses compact format wit
  const library=require('../image-library49');
  const rows=library.catalog();
  const example=rows.find(asset=>asset.id==='groningen43');
- t.mock.method(library,'catalog',()=>[...rows,{...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV']}]);
+ t.mock.method(library,'catalog',()=>[...rows,{...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
+  imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fctwente'}]);
  const {fingerprint}=require('../editorial-drafts');
  const config=require('../automatic-editorial.json');
  const match={

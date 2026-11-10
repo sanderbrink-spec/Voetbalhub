@@ -57,8 +57,10 @@ test.before(async()=>{
   const catalog=library.catalog();
   const example=catalog.find(asset=>asset.id==='groningen43');
   test.mock.method(library,'catalog',()=>[...catalog,
-    {...example,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax']},
-    {...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV']}
+    {...example,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax'],
+      imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fcgroningen'},
+    {...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
+      imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fctwente'}
   ]);
   const serverPath=path.join(__dirname,'../server.js'),realRequire=createRequire(serverPath);
   const context={require:id=>id==='redis'?{createClient:options=>{redisOptions=options;return redis;}}:realRequire(id),process:{env:{HUB_API_SECRET:'test-only',REDIS_URL:'test://mock'}},console,URL,Buffer,crypto:require('node:crypto'),__dirname:path.dirname(serverPath),module:{exports:{}},fetch};
@@ -187,12 +189,12 @@ test('unsupported match narrative cannot be approved just by ticking all control
  const r=await saveOwn({payload:p,approve:true});assert.equal(r.status,400);assert.match((await r.json()).error,/Niet aangeleverd wedstrijdverloop/);
 });
 
-test('existing published articles gain reviewed covers in the public feed without duplicate writes',async()=>{
+test('existing archived articles retain reviewed covers in the archive feed without duplicate writes',async()=>{
  const packet=require('../redactie/curated/articles.json')[0];
- const article={...packet.payload.draft,id:'cover-feed-test',status:'published',publishedAt:new Date().toISOString()};
+ const article={...packet.payload.draft,id:'92c3f8b4-8a1e-4afc-9353-c136eb19a896',status:'published',publishedAt:new Date().toISOString()};
  store.set('article:'+article.id,JSON.stringify(article));
  const before=store.size;
- const feed=await (await fetch(base+'/articles')).json();
+ const feed=await (await fetch(base+'/articles?view=archive')).json();
  const linked=feed.articles.find(a=>a.id===article.id);
  assert.match(linked.imageUrl,/article-art69\/groningen-1\.webp$/);
  assert.equal(linked.imageRights,'cleared');
@@ -208,7 +210,14 @@ test('approved publication carries the reviewed image and public image URL respo
  const result=await publish({...p,approved:true,editorialDraftId:record.id,expectedRevision:record.revision});
  assert.equal(result.status,200,await result.clone().text());
  const article=(await result.json()).article;
- assert.match(article.imageUrl,/news43\/emmen43\.webp$/);
+ assert.match(article.imageUrl,/article-art71\/emmen-den-bosch-preview\.webp$/);
+ assert.equal(article.imageReview.stadiumOccupancy,'empty');
+ const feed=await (await fetch(base+'/articles?id='+article.id)).json();
+ assert.equal(feed.imagePolicyVersion,69);
+ assert.equal(feed.articles[0].imageRotation.method,'approved-article-v69');
+ assert.equal(feed.articles[0].imageVariants[0].url,article.imageUrl);
+ assert.deepEqual(feed.articles[0].imageVariants[0].review,article.imageReview);
+ assert.equal((await fetch(base+new URL(article.imageUrl).pathname)).status,200);
  assert.equal(JSON.parse(store.get('article:'+article.id)).imageUrl,article.imageUrl);
  const image=await fetch(base+'/article-covers/emmen-den-bosch-2026-11-01.webp',{redirect:'manual'});
  assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/webp');
