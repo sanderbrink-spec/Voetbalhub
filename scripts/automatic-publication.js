@@ -1125,6 +1125,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    // per exact job under this corrected writer; never re-open stale matches.
    if(editorialRecovery136.reopenUtrechtNecAfterChronologyV71(job,group.matchRecord,now))
     report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_verified_incident_chronology_retry_v71'});
+   if(editorialRecovery136.reopenUtrechtNecScoreOrientationV71(job,group.matchRecord,now))
+    report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_verified_score_orientation_retry_v71'});
    if(editorialRecovery136.reopenVerifiedMatch(job,group.matchRecord,now)){
     report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_match_writer_recovery_v136'});
    }
