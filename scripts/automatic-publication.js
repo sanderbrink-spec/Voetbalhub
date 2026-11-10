@@ -1036,6 +1036,22 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     outcome:'verified_official_publisher_recovery_v71',
     factCount:group.officialDisciplinaryCandidate.facts.length});
   }
+  // Fase 71: one source-scoped retry after fixing the observed false
+  // scoreboard check and explicit date/source-overlap writing guidance.
+  // Never re-use an old rejected draft, scores or approval.
+  if(group.length===1&&!group.matchRecord&&
+     group[0].url==='https://www.fcgroningen.nl/nieuws/schikkingsvoorstel-voor-hateboer-geaccepteerd/'&&
+     group.officialDisciplinaryCandidate&&job.status==='review'&&
+     job.failureStage==='quality'&&job.failureCategory==='journalistic_rejection'&&
+     !job.disciplinaryScoreboardRecoveryV71&&
+     Number.isFinite(Date.parse(group[0].publishedAt||''))&&
+     now-Date.parse(group[0].publishedAt)<=config.maxAgeHours*3600000){
+    job.disciplinaryScoreboardRecoveryV71=true;
+    job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+    delete job.checkpoint;
+    report.signals.push({route:'news',topic:group[0].title,
+     outcome:'verified_disciplinary_scoreboard_recovery_v71'});
+  }
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
    reopenObservedMatchCopyFailure(job,now);
