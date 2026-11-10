@@ -95,6 +95,25 @@ function reopenUtrechtNecPassiveLanguageV71(job,record,now=Date.now()){
  return true;
 }
 
+// The current Sportmonks scorer/team facts were not included in the previous
+// independent review. A new reviewed manuscript is permitted for the exact
+// rejected match only after the verified event IDs supply club attribution.
+function reopenUtrechtNecScorerClubV71(job,record,now=Date.now()){
+ const observed='45005172fee74f9622f64cd26f286956971683b3ba944a2e408cd4da979c5f5c';
+ const at=Date.parse(record?.publishedAt||'');
+ if(!job||!record||record.matchId!=='sm-19714594'||job.matchId!==record.matchId||
+    record.articleKind!=='match_report'||!Array.isArray(record.verifiedFacts)||
+    !record.verifiedFacts.some(f=>String(f).includes('Sportmonks-participantregistratie koppelt'))||
+    !Number.isFinite(at)||at>now||now-at>72*3600000||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.errorHash!==observed||
+    job.utrechtNecScorerClubRecoveryV71)return false;
+ job.utrechtNecScorerClubRecoveryV71=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.checkpoint;
+ return true;
+}
+
 function publicationBlocker(report){
  const c=report?.counts||{};
  if(c.published>0)return null;
@@ -104,4 +123,4 @@ function publicationBlocker(report){
   return 'editorial_rejected';
  return null;
 }
-module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,publicationBlocker};
+module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,publicationBlocker};
