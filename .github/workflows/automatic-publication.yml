@@ -10,6 +10,7 @@ on:
       - 'editorial-match-guidance133.js'
       - 'editorial-recovery136.js'
       - 'editorial-facts.js'
+      - 'editorial-desk-model.js'
       - 'automatic-bootstrap.json'
       - 'scripts/automatic-publication.js'
       - 'editorial-ai.js'
@@ -33,7 +34,9 @@ permissions:
   issues: write
 concurrency:
   group: automatic-verified-editorial-publication
-  cancel-in-progress: false
+  # Een nieuwe main-commit vervangt alleen verouderde push-publicatieproeven.
+  # Geplande controles blijven buiten deze annuleringsregel.
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 jobs:
   publish:
     # Start a push run only when the commit explicitly requests a verified editorial run.
