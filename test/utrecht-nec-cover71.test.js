@@ -65,3 +65,34 @@ test('Fase 71: original SVG serves rasterized WEBP to Android, including HEAD an
  assert.equal(head.headers['Content-Length'],image.body.length);
  assert.equal(L.serve({method:'POST'},{},url),false);
 });
+
+test('Fase 71: only the real prior artwork rejection reopens after matching reviewed art arrives',()=>{
+ const {EditorialQueue}=require('../editorial-production45');
+ const {reopenReviewedMatchArtworkV71}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-10T20:05:00Z');
+ const record={matchId:fixture.matchId,match:fixture.match,
+  category:fixture.category,articleKind:fixture.articleKind};
+ const queue=new EditorialQueue();
+ const blocked=queue.enqueue([{url:'https://sportmonks.com/verified-match/19714594'}],now);
+ queue.fail(blocked,Error('Geen passend goedgekeurd artikelbeeld beschikbaar.'),now,{stage:'artwork'});
+ assert.equal(blocked.status,'review');
+ assert.equal(blocked.failureStage,'artwork');
+ assert.equal(blocked.failureCategory,'journalistic_rejection');
+ assert.equal(reopenReviewedMatchArtworkV71(blocked,record,now),true);
+ assert.equal(blocked.status,'pending');
+ assert.equal(blocked.attempts,0);
+ assert.equal(blocked.reviewedArtworkRecoveryV71,true);
+ assert.equal(reopenReviewedMatchArtworkV71(blocked,record,now),false);
+ for(const changed of [
+  {record:{...record,match:{...record.match,homeTeam:'NEC Nijmegen',awayTeam:'FC Utrecht'}}},
+  {record:{...record,match:{...record.match,awayTeam:'Ajax'}}},
+  {job:{failureStage:'quality'}},
+  {job:{errorHash:'unknown'}},
+  {job:{status:'published'}},
+  {now:Date.parse('2026-11-12T00:00:00Z')}
+ ]){
+  const attempt={...blocked,status:'review',reviewedArtworkRecoveryV71:false,attempts:1,
+   ...changed.job};
+  assert.equal(reopenReviewedMatchArtworkV71(attempt,changed.record||record,changed.now||now),false);
+ }
+});
