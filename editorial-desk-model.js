@@ -12,8 +12,12 @@
     } catch { return ''; }
   }
   function requiresFlashscore(draft) {
-    return /\b(?:\d+\s*[-–:]\s*\d+|uitslag|eindstand|ruststand|ranglijst|klassement|standen?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|gele kaarten|rode kaarten|xg|expected goals|doelpuntenmaker|scoreverloop)\b/i
-      .test([draft.headline, draft.standfirst, ...(Array.isArray(draft.body) ? draft.body : [])].join(' '));
+    // A publication clock (14:40, 08:45) is not a football score.
+    // Strip only valid two-digit 24-hour times; 2:1, 1-2, and real
+    // score/statistic claims still require the existing source check.
+    const text=[draft.headline,draft.standfirst,...(Array.isArray(draft.body)?draft.body:[])]
+      .join(' ').replace(/\b(?:[01]\d|2[0-3]):[0-5]\d\b/g,' ');
+    return /\b(?:\d+\s*[-–:]\s*\d+|uitslag|eindstand|ruststand|ranglijst|klassement|standen?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|gele kaarten|rode kaarten|xg|expected goals|doelpuntenmaker|scoreverloop)\b/i.test(text);
   }
   const briefEligible = payload => payload.articleKind === 'announcement' &&
     ['club_decision','association_decision'].includes(payload.primaryAuthority) &&
