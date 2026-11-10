@@ -1,0 +1,36 @@
+'use strict';
+// Remove only unsupported generic "comeback" language while preserving every
+// verified goal, scorer and scoreboard receipt. This is a preflight cleanup,
+// not a waiver of the independent factual or 85/90 editorial review.
+const SCORE=/(?<![\d-])\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b(?![-–]\d)/g;
+function repairUnverifiedMatchComeback(draft,record){
+ if(!draft||!Array.isArray(draft.body)||!record?.matchId||
+    !['match_report','score_update'].includes(record.articleKind)||
+    !Array.isArray(record.verifiedFacts)||!record.match)return draft;
+ const facts=record.verifiedFacts.filter(f=>typeof f==='string');
+ if(facts.some(f=>/\b(?:achterstand|comeback|terugknok\w*|sterk terug)\b/i.test(f)))return draft;
+ const teams=[record.match.homeTeam,record.match.awayTeam].filter(Boolean);
+ if(teams.length!==2)return draft;
+ const known=new Set([...facts.join(' ').matchAll(SCORE)].map(m=>Number(m[1])+'-'+Number(m[2])));
+ let changed=false;
+ const body=draft.body.map(paragraph=>{
+  if(typeof paragraph!=='string')return paragraph;
+  let result=paragraph;
+  for(const team of teams){
+   const lead='Na de rust kwam '+team+' sterk terug.';
+   if(result.startsWith(lead)){result=result.slice(lead.length).trimStart();changed=true;}
+   const redundant=', waarmee '+team+' de achterstand verkleinde';
+   if(result.includes(redundant)){result=result.split(redundant).join('');changed=true;}
+  }
+  result=result.replace(/\bde achterstand te verkleinen tot\s+(\d{1,2})\s*[-–]\s*(\d{1,2})\b/gi,
+   (phrase,h,a)=>{
+    const value=Number(h)+'-'+Number(a);
+    if(!known.has(value))return phrase;
+    changed=true;
+    return 'de '+value+' te maken';
+   });
+  return result;
+ });
+ return changed?{...draft,body}:draft;
+}
+module.exports={repairUnverifiedMatchComeback};
