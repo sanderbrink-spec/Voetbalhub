@@ -1,5 +1,8 @@
 name: Veldio production article Android16 proof
 on:
+  push:
+    branches: [main]
+    paths: ['editorial-evidence/reviewed-revisions71.json']
   workflow_run:
     workflows: ['Automatic verified news and images']
     types: [completed]
@@ -14,29 +17,61 @@ permissions:
 jobs:
   publication:
     # Inspect even failed editorial runs: a verified publication can precede an unrelated provider outage.
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure'))
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure'))
     runs-on: ubuntu-24.04
+    timeout-minutes: 12
     outputs:
-      article_id: ${{ steps.report.outputs.article_id }}
+      article_ids: ${{ steps.report.outputs.article_ids || steps.revisions.outputs.article_ids }}
     steps:
+      - uses: actions/checkout@v4
+        if: github.event_name == 'push'
+      - id: revisions
+        if: github.event_name == 'push'
+        run: |
+          python3 - <<'PYTHON'
+          import json, os, time, urllib.request
+          base = 'https://voetbalhub-redactie.onrender.com'
+          rows = json.load(open('editorial-evidence/reviewed-revisions71.json'))
+          for _ in range(30):
+              try:
+                  with urllib.request.urlopen(base+'/ready', timeout=10) as res:
+                      revision = json.load(res)['revision']
+                  with urllib.request.urlopen(base+'/articles', timeout=12) as res:
+                      articles = json.load(res)['articles']
+                  if revision == os.environ['GITHUB_SHA'] and all(
+                      len([a for a in articles if a.get('matchId') == row['matchId']]) == 1
+                      and any(a['id'] == row['id'] and all(a.get(k) == row['draft'][k]
+                          for k in ('headline', 'standfirst', 'body')) for a in articles)
+                      for row in rows):
+                      with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+                          print('article_ids='+' '.join(row['id'] for row in rows), file=out)
+                      break
+              except (OSError, ValueError, KeyError):
+                  pass
+              time.sleep(15)
+          else:
+              raise SystemExit('De twee revisies zijn nog niet op de actieve productiecommit zichtbaar.')
+          PYTHON
       - uses: actions/download-artifact@v4
+        if: github.event_name != 'push'
         with:
           name: automatic-editorial-report
           path: report
           run-id: ${{ inputs.run_id || github.event.workflow_run.id }}
           github-token: ${{ github.token }}
       - id: report
+        if: github.event_name != 'push'
         run: |
           python3 - <<'PY'
           import json,os
           r=json.load(open('report/report.json'))
           if r['counts']['published']>0 and r.get('published') and r['published'][0].get('id'):
-              with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('article_id='+r['published'][0]['id']+'\n')
+              with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('article_ids='+r['published'][0]['id']+'\n')
           else:print('Geen productieartikel om op Android te valideren.')
           PY
   android16:
     needs: publication
-    if: needs.publication.outputs.article_id != ''
+    if: needs.publication.outputs.article_ids != ''
     runs-on: ubuntu-24.04
     timeout-minutes: 18
     steps:
@@ -92,7 +127,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - uses: reactivecircus/android-emulator-runner@v2
         env:
-          ARTICLE_ID: ${{ needs.publication.outputs.article_id }}
+          ARTICLE_IDS: ${{ needs.publication.outputs.article_ids }}
           APK_NAME: ${{ steps.apk.outputs.name }}
         with:
           api-level: 36
@@ -100,11 +135,23 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/verify-live-article60.py "apk/$APK_NAME.apk" "$ARTICLE_ID"
+          script: |
+            set -e
+            adb shell wm size 1080x2340
+            adb shell wm density 440
+            mkdir -p .android-proof
+            for article_id in $ARTICLE_IDS; do
+              adb shell am force-stop nl.voetbalhub.app1
+              python3 scripts/verify-live-article60.py "apk/$APK_NAME.apk" "$article_id" || {
+                mv .android-smoke ".android-proof/$article_id"
+                exit 1
+              }
+              mv .android-smoke ".android-proof/$article_id"
+            done
       - uses: actions/upload-artifact@v4
-        if: always() && hashFiles('.android-smoke/*') != ''
+        if: always() && hashFiles('.android-proof/**/*') != ''
         with:
           name: Veldio-production-article-Android16
-          path: .android-smoke/
+          path: .android-proof/
           include-hidden-files: true
           if-no-files-found: error
