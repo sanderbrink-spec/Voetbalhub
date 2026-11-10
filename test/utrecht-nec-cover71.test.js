@@ -73,7 +73,7 @@ test('Fase 71: only the real prior artwork rejection reopens after matching revi
  const record={matchId:fixture.matchId,match:fixture.match,
   category:fixture.category,articleKind:fixture.articleKind};
  const queue=new EditorialQueue();
- const blocked=queue.enqueue([{url:'https://sportmonks.com/verified-match/19714594'}],now);
+ const blocked={id:'exact-previous-artwork-failure',status:'pending',attempts:0,createdAt:now,nextAttemptAt:now};
  queue.fail(blocked,Error('Geen passend goedgekeurd artikelbeeld beschikbaar.'),now,{stage:'artwork'});
  assert.equal(blocked.status,'review');
  assert.equal(blocked.failureStage,'artwork');
