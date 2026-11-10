@@ -15,6 +15,25 @@
     return /\b(?:\d+\s*[-–:]\s*\d+|uitslag|eindstand|ruststand|ranglijst|klassement|standen?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|gele kaarten|rode kaarten|xg|expected goals|doelpuntenmaker|scoreverloop)\b/i
       .test([draft.headline, draft.standfirst, ...(Array.isArray(draft.body) ? draft.body : [])].join(' '));
   }
+  // A verified club disciplinary announcement may mention a red or yellow
+  // card as the cause of a suspension. This is not a scoreboard/statistics
+  // article. The exemption never applies to scores, standings or match stats.
+  function officialDisciplinaryCardNotice(payload) {
+    const d = payload?.draft || {};
+    const body = [d.headline,d.standfirst,...(Array.isArray(d.body)?d.body:[])].join(' ');
+    const facts = (payload?.verifiedFacts||[]).join(' ');
+    // An explicit clock ("om 14:40") is not a football score. Its date
+    // and time still fail the separate fact audit when not in verifiedFacts.
+    const withoutClock=body.replace(/\bom\s+\d{1,2}:\d{2}\b/gi,'om [tijdstip]');
+    const realStats = /\b(?:\d+\s*[-–:]\s*\d+|uitslag|eindstand|ruststand|ranglijst|klassement|standen?|positie op de ranglijst|puntenaantal|doelsaldo|balbezit|schoten op doel|doelpogingen|hoekschoppen|xg|expected goals|doelpuntenmaker|scoreverloop)\b/i;
+    return payload?.articleKind==='announcement'&&
+      ['club_decision','association_decision'].includes(payload?.primaryAuthority)&&
+      payload?.sources?.length===1&&Boolean(host(payload.sources[0]?.url))&&
+      /\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(facts)&&
+      /\b(?:geaccepteerd|aanvaard|aanvaardt|accepteert)\b/i.test(facts)&&
+      /\b(?:gele kaart|gele kaarten|rode kaart|rode kaarten|hands)\b/i.test(facts)&&
+      !realStats.test(withoutClock);
+  }
   const briefEligible = payload => payload.articleKind === 'announcement' &&
     ['club_decision','association_decision'].includes(payload.primaryAuthority) &&
     payload.sources?.length === 1 && Boolean(host(payload.sources[0]?.url)) &&
@@ -74,7 +93,7 @@
     const matchSource = registeredMatch && matchRegistry.includes(sources[0]?.url) &&
       (sources.length === 1 || officialMatchEvidence);
     if (!primary && !matchSource && (sources.length < 2 || hosts.some(h => !h) || new Set(hosts.filter(Boolean)).size < 2)) issues.push('Voeg twee geldige HTTPS-bronnen van verschillende websites toe.');
-    if (!matchSource && requiresFlashscore(d) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
+    if (!matchSource && requiresFlashscore(d) && !officialDisciplinaryCardNotice(payload) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
     const missing = checks.filter(key => payload.editorialChecks?.[key] !== true);
     if (missing.length) issues.push('Rond alle vier redactionele controles af.');
     if (payload.imageUrl && (!host(payload.imageUrl) || !payload.imageSource?.trim() || !payload.imageCredit?.trim() || !['cleared','licensed'].includes(payload.imageRights) || !['kitVerified','playerIdentityVerified','aiDisclosureVerified'].every(k => payload.imageReview?.[k] === true))) issues.push('Rond de beeldgegevens en alle drie beeldcontroles af.');
@@ -111,5 +130,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

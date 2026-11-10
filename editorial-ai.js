@@ -220,6 +220,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Gebruik geen kunstmatige extra alinea, analyse, gevolgen, niet genoemde functies, vermoedens of een afgeleide straf.',
     'Herhaal het kernbesluit niet in iedere alinea. Gebruik originele woordvolgorde en geen lange letterlijke bronpassages.',
     'Gebruik alleen personen, clubs, speeldata en cijfers die letterlijk in facts voorkomen. De bronlink is geen inhoudelijk bewijs.',
+    'Noem NOOIT de publicatiedatum of publicatietijd van de clubpagina als tijdstip van het besluit. Schrijf geen datum, tijd, jaartal of cijfer dat niet letterlijk in facts staat. Dus geen maandag 9 november en geen 14:40 als deze niet als gebeurtenis in facts zijn bevestigd.',
+    'Parafraseer volledig: kopieer geen reeks van tien opeenvolgende woorden uit de officiële bron. Zeg bijvoorbeeld niet automatisch de volledige bronformule over de eerstvolgende competitiewedstrijd na, maar beschrijf uitsluitend de bewezen concrete afwezigheid in eigen zinsbouw.',
     'Geef uitsluitend de velden headline, standfirst en body. Publiceer nooit zelf.',
     'Als zelfs één echte informatieve bodyalinea niet uit de facts kan worden onderbouwd, geef dan {"skip":true}.'
    ].join(' ');

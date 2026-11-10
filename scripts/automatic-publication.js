@@ -1036,6 +1036,22 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     outcome:'verified_official_publisher_recovery_v71',
     factCount:group.officialDisciplinaryCandidate.facts.length});
   }
+  // Fase 71: one source-scoped retry after fixing the observed false
+  // scoreboard check and explicit date/source-overlap writing guidance.
+  // Never re-use an old rejected draft, scores or approval.
+  if(group.length===1&&!group.matchRecord&&
+     group[0].url==='https://www.fcgroningen.nl/nieuws/schikkingsvoorstel-voor-hateboer-geaccepteerd/'&&
+     group.officialDisciplinaryCandidate&&job.status==='review'&&
+     job.failureStage==='quality'&&job.failureCategory==='journalistic_rejection'&&
+     !job.disciplinaryScoreboardRecoveryV71&&
+     Number.isFinite(Date.parse(group[0].publishedAt||''))&&
+     now-Date.parse(group[0].publishedAt)<=config.maxAgeHours*3600000){
+    job.disciplinaryScoreboardRecoveryV71=true;
+    job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+    delete job.checkpoint;
+    report.signals.push({route:'news',topic:group[0].title,
+     outcome:'verified_disciplinary_scoreboard_recovery_v71'});
+  }
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
    reopenObservedMatchCopyFailure(job,now);
@@ -1223,7 +1239,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority:candidate.primaryAuthority,facts}));
      issues.push(...unsupportedInterpretationIssues(draft,facts));
      issues.push(...unverifiedTimelineAndRoles(draft,facts));
-     if(M.needsMatch(draft)||M.requiresFlashscore(draft))issues.push('Niet-geverifieerde wedstrijdclaim.');
+     if(M.needsMatch(draft)||(M.requiresFlashscore(draft)&&!M.officialDisciplinaryCardNotice(payload)))issues.push('Niet-geverifieerde wedstrijdclaim.');
      const copied=[...new Set(group.flatMap(d=>overlapPhrases(d.text,draft)))].slice(0,6);
      if(copied.length)issues.push('Woordelijke bronoverlap. Herschrijf deze letterlijke reeksen met eigen zinsbouw: '+JSON.stringify(copied)+'. Behoud alle namen en feiten, maar verander de woordvolgorde; alleen andere leestekens helpen niet.');
     }
