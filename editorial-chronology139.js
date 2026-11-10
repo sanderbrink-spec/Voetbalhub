@@ -71,8 +71,15 @@ function halfTimeNarrativeIssues(record={},draft={}) {
    issues.push('Niet-geverifieerd tijdsverschil tussen doelpunten. Reken nooit blessuretijd door over de rust.');
  for(const sentence of paragraphs.join(' ').split(/(?<=[.!?])\s+/u)){
    if(!firstHalf.test(sentence)||secondHalf.test(sentence))continue;
-   if(events.some(e=>e.minute>=46&&sentence.toLocaleLowerCase('nl').includes(e.player.toLocaleLowerCase('nl'))))
-     issues.push('Een doelpunt na rust wordt zonder rustovergang als onderdeel van de eerste helft beschreven.');
+   // A player may score in *both* halves (as Dusan Tadic did here).
+   // A first-half reference to that player's first goal is not evidence that
+   // the second-half goal was wrongly moved across the interval.
+   if(events.some(e=>{
+    if(e.minute<46||!sentence.toLocaleLowerCase('nl').includes(e.player.toLocaleLowerCase('nl')))return false;
+    const minute=String(e.minute);
+    const exactMoment=new RegExp('\\b(?:minuut\\s+'+minute+'(?:\\+'+e.extra+')?|'+minute+'(?:e|de|ste)\\s+minuut)\\b','iu');
+    return exactMoment.test(sentence);
+   }))issues.push('Een doelpunt na rust wordt zonder rustovergang als onderdeel van de eerste helft beschreven.');
  }
  return [...new Set(issues)];
 }
