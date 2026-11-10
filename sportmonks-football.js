@@ -83,7 +83,10 @@ function confirmedGoals(row,final){
   // side that gained a goal. A known same-side attribution is inconsistent.
   if(e.type_id===15&&eventTeam===scorerId)return [];
   events.push({minute:e.minute,extra:e.extra_minute||0,player:e.player_name.trim(),
-   kind:e.type_id===15?'own_goal':e.type_id===16?'penalty':'goal',home:next.home,away:next.away});
+   kind:e.type_id===15?'own_goal':e.type_id===16?'penalty':'goal',
+   // A club claim is authorized only for an ordinary/penalty goal whose
+   // participant_id was checked against the actual increased score side.
+   scorerSide:e.type_id===15?null:goalSide,home:next.home,away:next.away});
   previous=next;
  }
  return previous.home===final.home&&previous.away===final.away?events:[];
