@@ -1223,7 +1223,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority:candidate.primaryAuthority,facts}));
      issues.push(...unsupportedInterpretationIssues(draft,facts));
      issues.push(...unverifiedTimelineAndRoles(draft,facts));
-     if(M.needsMatch(draft)||M.requiresFlashscore(draft))issues.push('Niet-geverifieerde wedstrijdclaim.');
+     if(M.needsMatch(draft)||(M.requiresFlashscore(draft)&&!M.officialDisciplinaryCardNotice(payload)))issues.push('Niet-geverifieerde wedstrijdclaim.');
      const copied=[...new Set(group.flatMap(d=>overlapPhrases(d.text,draft)))].slice(0,6);
      if(copied.length)issues.push('Woordelijke bronoverlap. Herschrijf deze letterlijke reeksen met eigen zinsbouw: '+JSON.stringify(copied)+'. Behoud alle namen en feiten, maar verander de woordvolgorde; alleen andere leestekens helpen niet.');
     }
