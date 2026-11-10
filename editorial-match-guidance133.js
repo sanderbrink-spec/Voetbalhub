@@ -37,12 +37,42 @@ function paragraphPlan(record = {}) {
   events:event.length
  };
 }
+// Significant incidents are checked only when they are present in verified
+// evidence. We never infer an incident from the final score or a headline.
+const significantIncidentPatterns=[
+ {type:'red_card',evidence:/\b(?:rode kaart|tweede gele kaart|rood gekregen|met tien man|met negen man|van het veld gestuurd)\b/i,copy:/\b(?:rode kaart|tweede gele kaart|rood|van het veld gestuurd|weggestuurd)\b/i},
+ {type:'var',evidence:/\b(?:VAR|videoscheidsrechter|videoarbitrage)\b/i,copy:/\b(?:VAR|videoscheidsrechter|videoarbitrage)\b/i},
+ {type:'penalty',evidence:/\b(?:strafschop(?:moment)?|penalty)\b/i,copy:/\b(?:strafschop(?:moment)?|penalty)\b/i}
+];
+function verifiedIncidentCoverageIssues(record={},draft={}){
+ if(record.articleKind!=='match_report')return [];
+ const evidence=Array.isArray(record.verifiedFacts)?record.verifiedFacts:[];
+ const text=[draft.headline,draft.standfirst,...(Array.isArray(draft.body)?draft.body:[])].filter(x=>typeof x==='string').join(' ');
+ const issues=[];
+ for(const rule of significantIncidentPatterns){
+  // Do not let a bare mention of the VAR or a prospective red-card scenario
+  // create an obligation. Facts should describe actual match incidents.
+  const incident=evidence.some(f=>rule.evidence.test(String(f)));
+  if(incident&&!rule.copy.test(text))
+   issues.push('Bepalend geverifieerd wedstrijdincident ontbreekt in het artikel: '+rule.type+'. Beschrijf alleen de gecontroleerde gebeurtenis en de juiste bron.');
+ }
+ // Check each named incident, not just a generic mention of a red card.
+ for(const fact of evidence){
+  const m=String(fact).match(/\bkreeg\s+([A-ZÀ-Ž][\p{L}-]+(?:\s+[A-ZÀ-Ž][\p{L}-]+){0,3})\s+(?:een directe rode kaart|een rode kaart|(?:een|zijn|haar|de) tweede gele kaart)\b/iu);
+  if(!m)continue;
+  const name=m[1];
+  const normalized=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  if(!normalized(text).includes(normalized(name)))
+   issues.push('Geverifieerde kaart van '+name+' ontbreekt in het wedstrijdverslag.');
+ }
+ return [...new Set(issues)];
+}
 // Facts are allocated to separate verified paragraphs. Flag an event quoted in
 // the wrong paragraph; do not invent missing events or change the article score.
 function paragraphChronologyIssues(record = {},draft = {}) {
  const halfTimeIssues=require('./editorial-chronology139').halfTimeNarrativeIssues(record,draft);
  const plan=paragraphPlan(record);
- if(plan.format!=='rich'||!Array.isArray(draft.body)||draft.body.length!==plan.body.length)return halfTimeIssues;
+ if(plan.format!=='rich'||!Array.isArray(draft.body)||draft.body.length!==plan.body.length)return [...new Set([...halfTimeIssues,...verifiedIncidentCoverageIssues(record,draft)])];
  const facts=Array.isArray(record.verifiedFacts)?record.verifiedFacts:[];
  const minutes=text=>[...String(text||'').matchAll(/\bminuut\s+(\d{1,2})(?:\+(\d{1,2}))?\b/gi)]
   .map(m=>m[1]+(m[2]?'+'+m[2]:''));
@@ -55,7 +85,7 @@ function paragraphChronologyIssues(record = {},draft = {}) {
    if(known.has(minute)&&!allowed.has(minute))
     issues.push('Geverifieerde minuut '+minute+' staat in de verkeerde bodyalinea. Houd de toegewezen doelpuntenchronologie aan.');
  });
- return [...new Set([...issues,...halfTimeIssues])];
+ return [...new Set([...issues,...halfTimeIssues,...verifiedIncidentCoverageIssues(record,draft)])];
 }
 function writingPrompt(record = {}) {
  const rich = isRichMatch(record);
@@ -65,7 +95,7 @@ function writingPrompt(record = {}) {
   'Controleer vóór het schrijven thuisploeg, uitploeg, eindstand en eventuele ruststand. Neem uitslagen en tussenstanden alleen letterlijk en in exact dezelfde thuis-uit-volgorde over uit verifiedFacts; reconstrueer nooit ontbrekende tussenstanden.',
   'Alle getallen, minuten, blessuretijd, jaartallen en rangnummers moeten letterlijk in verifiedFacts staan. allowedNumbers en allowedScores zijn slechts toegestane schrijfwijzen, geen extra bewijs voor een claim. Geen afgeleide minuut, bijvoorbeeld 7e of 8e, zonder dat deze expliciet is aangetoond.',
   'Gebruik alleen de exacte club- en spelersnamen die verifiedFacts vermeldt. Vermijd kunstmatige hoofdlettercombinaties, zelfbedachte afkortingen en namen zoals Het Eredivisieduel. Schrijf bijvoorbeeld "de wedstrijd" of "de ontmoeting".',
-  'Beschrijf uitsluitend aantoonbare gebeurtenissen. Geen ongedocumenteerde kansen, assists, kaarten, wissels, tactiek, dominantie, blessure, VAR, supporters, ranglijstgevolgen, gevoelens, comeback of kwalificaties als verdiend, overtuigend of spectaculair.',
+  'Beschrijf uitsluitend aantoonbare gebeurtenissen. Geen ongedocumenteerde kansen, assists, kaarten, wissels, tactiek, dominantie, blessure, VAR, supporters, ranglijstgevolgen, gevoelens, comeback of kwalificaties als verdiend, overtuigend of spectaculair. Als verifiedFacts wél rode kaarten, strafschoppen, VAR-besluiten of arbitrale incidenten bewijzen, moeten deze bepalende gebeurtenissen juist herkenbaar in het verslag terugkomen. Scheid feiten van kritiek; schrijf nooit dat een aanval zeker een doelpunt was.',
   'Vermeld broninformatie natuurlijk als "volgens de wedstrijdregistratie" waar dit bij een feit past. Presenteer niet alsof Veldio ter plaatse was. Geen letterlijk overgenomen brontekst, nepquotes of bronkoppen.',
   'De kop heeft 5-14 woorden. De intro heeft 8-35 woorden, noemt de gecontroleerde wedstrijd en uitslag en voegt geen onbewezen duiding toe. Introduceer iedere alinea met een ander geverifieerd detail. Vermijd herhaling van het scorefeit uit de intro en generieke slotzinnen.',
   'De door Veldio berekende paragraphPlan verdeelt uitsluitend bewezen F1/F2-feiten over de body. Gebruik de toegewezen factIds als harde grens voor iedere alinea. De planlabels zijn instructies, GEEN bewijsmateriaal. Een feit uit een andere sectie mag niet herhaald worden om lengte te maken.',
@@ -76,7 +106,7 @@ function writingPrompt(record = {}) {
  ];
  const form = rich ? [
   'Schrijf een inhoudelijk rijk wedstrijdverslag met EXACT DRIE bodyalinea’s, ieder 18-120 woorden en minimaal 70 tekens. Dit is GEEN compact uitslagbericht. Gebruik een eigen zakelijke nieuwsstijl, geen sjabloonachtige vulzinnen.',
-  'Volg de drie afzonderlijke bodysecties in paragraphPlan: 1 context en eventueel ruststand, 2 eerdere gedocumenteerde doelpunten, 3 latere gedocumenteerde doelpunten. Elke alinea behandelt uitsluitend de aldaar toegewezen feiten. Schrijf geen vierde of vijfde alinea. Als een sectie onvoldoende feiten bevat voor 18 zinvolle woorden is skip verplicht.',
+  'Volg de drie afzonderlijke bodysecties in paragraphPlan: 1 context, ruststand en expliciet geverifieerde niet-doelpuntincidenten, 2 eerdere gedocumenteerde doelpunten, 3 latere gedocumenteerde doelpunten. Verzwijg geen geverifieerde rode kaart, strafschop of VAR-controverse uit de toegewezen feiten. Elke alinea behandelt uitsluitend de aldaar toegewezen feiten. Schrijf geen vierde of vijfde alinea. Als een sectie onvoldoende feiten bevat voor 18 zinvolle woorden is skip verplicht.',
   'Een goal-timeline bewijst uitsluitend de genoemde minuut, speler, soort doelpunt en direct daarbij geregistreerde stand. Een ruststand bewijst niets over kansen of spelbeeld. Verbind gebeurtenissen niet met fictieve causaliteit.',
   'Schrijf in ten minste één bodyalinea ondubbelzinnig: volgens de Sportmonks-wedstrijdregistratie, als Sportmonks de bron is. Herhaal die bron niet na iedere doelpuntzin. Noem uitsluitend de expliciet geregistreerde momenten en scores, en herschik zinnen zelfstandig zonder de vaste bronzin "viel in minuut ... waarna de stand ... was" over te nemen.',
   'Een gebeurtenis op 45+3 valt vóór de rust en een gebeurtenis op 47 valt ná de rust. Schrijf bij die overgang expliciet dat de rust tussendoor viel, nooit dat beide gebeurtenissen twee minuten na elkaar plaatsvonden. De ruststand is een harde chronologische grens.',
@@ -90,4 +120,4 @@ function writingPrompt(record = {}) {
 function revisionPrompt(record = {}) {
  return writingPrompt(record) + ' Dit is een VOLLEDIGE NIEUWE VERSIE na een afkeuring. Het afgekeurde concept is bewust niet beschikbaar. Gebruik rejection uitsluitend als waarschuwing over eerdere fouten, nooit als bron voor nieuwe feiten. Repareer lage journalistieke kwaliteit met afzonderlijke bewezen feiten per alinea. Repareer lage originaliteit met een nieuwe eigen informatievolgorde en zinsbouw, nooit met verzonnen analyse, extra feit of bronkop. Controleer alle numerieke claims en tussenstanden vóór het antwoord opnieuw tegen verifiedFacts en allowedScores. Behoud het juiste rijke of compacte formaat. Neem geen eerdere beoordeling of goedkeuringsscore over. Als de afwijzing niet zonder nieuwe feiten te herstellen is: {"skip":true}.';
 }
-module.exports = {isRichMatch,allowedNumbers,allowedScores,paragraphPlan,paragraphChronologyIssues,writingPrompt,revisionPrompt};
+module.exports = {isRichMatch,allowedNumbers,allowedScores,paragraphPlan,paragraphChronologyIssues,verifiedIncidentCoverageIssues,writingPrompt,revisionPrompt};
