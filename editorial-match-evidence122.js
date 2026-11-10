@@ -22,7 +22,7 @@ function evidence(record,doc,now=Date.now()){
  if(![homeTeam,awayTeam].every(v=>typeof v==='string'&&v.length>=3)||![homeScore,awayScore].every(Number.isInteger))return null;
  const content=normalized(doc.text),heading=normalized(doc.title);
  if(/\b(women|vrouwen|u23|jong ajax|academy|onder 21)\b/i.test(heading))return null;
- const scorePattern=new RegExp(escape(normalized(homeTeam))+'\\s*[-–]\\s*'+escape(normalized(awayTeam))+'\\s+'+homeScore+'\\s*[-–]\\s*'+awayScore+'(?:\\s|\\()','i');
+ const scorePattern=new RegExp(escape(normalized(homeTeam)).replace(/AZ Alkmaar/i,'AZ(?: Alkmaar)?')+'\\s*[-–]\\s*'+escape(normalized(awayTeam))+'\\s+'+homeScore+'\\s*[-–]\\s*'+awayScore+'(?:\\s|\\()','i');
  const header=scorePattern.exec(content);
  if(!header)return null;
  const tail=content.slice(header.index+header[0].length,header.index+header[0].length+1600);
@@ -77,12 +77,35 @@ function verifiedDisciplinaryFacts(doc,matchRecord){
  }
  return result.slice(0,4);
 }
+function verifiedArbitrationFacts(doc) {
+ const body = normalized(doc.text);
+ // Require an explicit stoppage of a dangerous attack, an actual video review,
+ // and a documented decision. An isolated reference to VAR proves none of these.
+ const stopped = /(?:big chance|promising attack)[^.!?]{0,110}(?:blew his whistle|stopped play)[.!?]/i.exec(body);
+ if (!stopped) return [];
+ const review = body.slice(stopped.index, stopped.index + 650);
+ if (!/called (?:over )?to the monitor/i.test(review) ||
+     !/did not agree with the VAR[^.!?]{0,150}(?:committed a foul|no penalty)/i.test(review)) return [];
+ return ['Volgens het officiële wedstrijdverslag onderbrak de scheidsrechter een kansrijke aanval voor een VAR-beoordeling en gaf hij na het bekijken van de beelden geen strafschop.'];
+}
 function attach(record,doc,now=Date.now()){
  const verified=evidence(record,doc,now);if(!verified)return null;
- return {...record,articleKind:'match_report',verifiedFacts:[...record.verifiedFacts,...verified.facts,...verifiedDisciplinaryFacts(doc,record)],
+ const primaryGoals = record.verifiedFacts.filter(fact => /waarna de stand/.test(fact));
+ if (primaryGoals.length && verified.events.some((event, index) => {
+  const minute = event.minute + (event.extra ? '+'+event.extra : '');
+  return !primaryGoals[index]?.includes('minuut '+minute+' ') ||
+   !primaryGoals[index].endsWith('stand '+event.home+'-'+event.away+' was.');
+ })) return null;
+ const arbitration = verifiedArbitrationFacts(doc);
+ const cards = verifiedDisciplinaryFacts(doc,record);
+ const additional = cards.filter(fact => {
+  const key = fact.replace('Volgens het officiële wedstrijdverslag ', '').replace(/\.$/, '');
+  return !record.verifiedFacts.some(existing => existing.includes(key));
+ });
+ return {...record,articleKind:'match_report',verifiedFacts:[...record.verifiedFacts,...(primaryGoals.length ? [] : verified.facts),...additional,...arbitration],
   sources:[...record.sources,{url:verified.sourceUrl}],matchEvidence:{
    url:verified.sourceUrl,publishedAt:verified.sourcePublishedAt,
-   text:verified.sourceExcerpt,title:doc.title
+   text:doc.text,title:doc.title
   }};
 }
 module.exports={evidence,attach,officialUrl,verifiedDisciplinaryFacts};

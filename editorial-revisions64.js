@@ -4,8 +4,10 @@ const { contentHash } = require('./article-covers');
 const { draftIssues } = require('./editorial-desk-model');
 const { audit } = require('./editorial-facts');
 const { headlineContradictions } = require('./editorial-quality');
+const { verifiedIncidentCoverageIssues } = require('./editorial-match-guidance133');
 const { halfTimeNarrativeIssues } = require('./editorial-chronology139');
 const revisions = require('./editorial-evidence/reviewed-revisions64.json');
+const incidentRevisions = require('./editorial-evidence/reviewed-revisions71.json');
 const day = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Amsterdam' });
 const factChecks = { resultVerified: true, namesVerified: true, dateVerified: true, timelineVerified: true };
 
@@ -37,6 +39,7 @@ function prepare(previous, row, fixture, updatedAt) {
  const { draft, verifiedFacts, sources } = row;
  const payload = { match: row.match, articleKind: 'match_report', verifiedFacts, sources, factChecks, draft };
  const issues = [...draftIssues(draft), ...audit(payload), ...halfTimeNarrativeIssues(payload, draft)];
+ if (incidentRevisions.includes(row)) issues.push(...verifiedIncidentCoverageIssues(payload,draft));
  if (headlineContradictions(draft)) issues.push('Tegenstrijdige kop.');
  if (issues.length) throw Error(issues.join(' '));
 
@@ -55,24 +58,25 @@ return 1
 
 async function apply(client, getFixtures, logger = console) {
  const pending = [];
- for (const row of revisions) {
+ for (const row of [...revisions, ...incidentRevisions]) {
   const key = 'article:' + row.id;
-  const history = 'article-revision:64:' + row.id;
+  const version = incidentRevisions.includes(row) ? 71 : 64;
+  const history = 'article-revision:' + version + ':' + row.id;
   const [raw, prior] = await client.mGet([key, history]);
-  if (raw && !prior) pending.push({ row, key, history, raw });
+  if (raw && !prior) pending.push({ row, key, history, raw, version });
  }
  if (!pending.length) return;
  const fixtures = await getFixtures();
- for (const { row, key, history, raw } of pending) {
+ for (const { row, key, history, raw, version } of pending) {
   let next;
   try {
    next = prepare(JSON.parse(raw), row, fixtures.find(f => f.id === row.matchId), new Date().toISOString());
   } catch (error) {
-   logger.warn('Editorial revision 64 held:', row.matchId, error.message);
+   logger.warn('Editorial revision '+version+' held:', row.matchId, error.message);
    continue;
   }
   const written = await client.eval(writeRevision, { keys: [key, history], arguments: [raw, JSON.stringify(next)] });
-  if (written) logger.info('Editorial revision 64 applied:', row.matchId);
+  if (written) logger.info('Editorial revision '+version+' applied:', row.matchId);
  }
 }
 

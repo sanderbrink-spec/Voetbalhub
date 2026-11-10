@@ -59,3 +59,8 @@ test('expliciete kaarten uit officiële matchbron extraheerbaar, niet uit voorbe
  assert.ok(facts.some(x=>x.includes('Etienne Vaessen')));
  assert.deepEqual(extract({...doc,title:'Voorbeschouwing AZ Groningen'},match),[]);
 });
+
+test('vermelding als doelman vervangt zijn eigen tweede gele kaart niet',()=>{
+ const fake={...draft,body:['Etienne Vaessen stond op doel. Hans Hateboer kreeg een rode kaart. De VAR beoordeelde de strafschop.']};
+ assert.ok(guidance.verifiedIncidentCoverageIssues(record,fake).some(x=>x.includes('Etienne Vaessen')));
+});

@@ -65,3 +65,16 @@ test('undated and invalid-date official documents are skipped instead of abortin
  }
  assert.equal(evidence(record,{...official,publishedAt:'2026-11-08'},now)?.events.length,4);
 });
+
+test('a verified interrupted attack survives receipt validation and is distinct from an awarded penalty',()=>{
+ const {verifiedIncidentCoverageIssues}=require('../editorial-match-guidance133');
+ const body='Following a poor pass the hosts looked set to have a big chance, but the referee blew his whistle. He was called to the monitor for a handball. The referee did not agree with the VAR and felt Ajax had committed a foul. ';
+ const doc={...official,text:body+'Extra wedstrijdcontext. '.repeat(25)+official.text};
+ const article=attach(record,doc,now);
+ assert.ok(matchesRegistration(article,[fixture],now));
+ assert.ok(article.verifiedFacts.some(f=>f.includes('kansrijke aanval')));
+ const generic={body:['De VAR beoordeelde de latere strafschop.']};
+ assert.ok(verifiedIncidentCoverageIssues(article,generic).some(issue=>issue.includes('interrupted_attack')));
+ const inaccurate={...doc,text:doc.text.replace('had committed a foul','was playing well')};
+ assert.ok(!attach(record,inaccurate,now).verifiedFacts.some(f=>f.includes('kansrijke aanval')));
+});

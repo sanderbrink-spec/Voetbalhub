@@ -293,7 +293,7 @@ async function automaticEvidenceIssue(payload) {
   if (!Number.isInteger(payload.editorialScore) || payload.editorialScore < 85 || payload.editorialScore > 100)
     return 'Automatische publicatie vereist een redactionele score van minimaal 85.';
   if (payload.matchId) {
-    const chronology = require('./editorial-chronology139').halfTimeNarrativeIssues(payload, payload.draft);
+    const chronology = require('./editorial-match-guidance133').paragraphChronologyIssues(payload, payload.draft);
     if (chronology.length) return chronology.join(' ');
     if (typeof payload.matchId !== 'string') return 'Ongeldig wedstrijd-ID.';
     const snapshot = await (payload.matchId.startsWith('fd-cl-') ? europeanEditorial() : football47.get('eredivisie'));

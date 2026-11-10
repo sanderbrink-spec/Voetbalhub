@@ -815,10 +815,14 @@ function reopenObservedMatchCopyFailure(job,now){
  job.aiMatchCopyRecovery=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
  return true;
 }
+function groupEvidenceHash(group) {
+ const documents=group.map(d=>({url:d.url,text:d.text,publishedAt:d.publishedAt}));
+ return sha(JSON.stringify(group.matchRecord ? [documents,group.matchRecord.verifiedFacts] : documents));
+}
 function reusableCheckpointPriority(job,group,secret,now=Date.now()){
  const prior=openCheckpoint(job?.checkpoint,secret,job?.id);
  if(!prior||prior.expiresAt<=now)return 0;
- const evidenceHash=sha(JSON.stringify(group.map(d=>({url:d.url,text:d.text,publishedAt:d.publishedAt}))));
+ const evidenceHash=groupEvidenceHash(group);
  if(prior.evidenceHash!==evidenceHash)return 0;
  return prior.draft?2:prior.candidate?1:0;
 }
@@ -969,9 +973,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  // match reports with a complete score-consistent goal timeline.
  for(const group of matchGroups){
   const original=group.matchRecord;
-  for(const doc of discovered){
+  const options=discovered.flatMap(doc=>{
    const enriched=matchEvidence122.attach(original,doc,now);
-   if(!enriched)continue;
+   return enriched?[{doc,enriched}]:[];
+  }).sort((a,b)=>b.enriched.verifiedFacts.length-a.enriched.verifiedFacts.length);
+  for(const {doc,enriched} of options.slice(0,1)){
    group.push(doc);group.matchRecord=enriched;
    report.signals.push({route:'match',matchId:original.matchId,outcome:'official_goal_timeline_verified',sourceUrl:doc.url,events:enriched.verifiedFacts.length-original.verifiedFacts.length});
    break;
@@ -1175,7 +1181,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   let topic=group[0].title,stage='verification';
   report.counts.attempted++;
   try{
-   const evidenceHash=sha(JSON.stringify(group.map(d=>({url:d.url,text:d.text,publishedAt:d.publishedAt}))));
+   const evidenceHash=groupEvidenceHash(group);
    const savedCheckpoint=openCheckpoint(job.checkpoint,secret,job.id);
    const checkpoint=savedCheckpoint?.evidenceHash===evidenceHash&&savedCheckpoint.expiresAt>now?savedCheckpoint:{evidenceHash,expiresAt:now+24*3600000,revisions:0};
    router.lastWriter=checkpoint.writer||null;router.articleId=job.id;

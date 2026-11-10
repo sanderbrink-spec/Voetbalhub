@@ -1,4 +1,5 @@
 'use strict';
+const sportmonks = require('./sportmonks-football');
 const crypto=require('node:crypto');
 const CATALOG={eredivisie:{id:88,name:'Eredivisie',file:'nl.1',zone:'Europe/Amsterdam'},bundesliga:{id:78,name:'Bundesliga',file:'de.1',zone:'Europe/Berlin'},premierleague:{id:39,name:'Premier League',file:'en.1',zone:'Europe/London'},laliga:{id:140,name:'La Liga',file:'es.1',zone:'Europe/Madrid'},seriea:{id:135,name:'Serie A',file:'it.1',zone:'Europe/Rome'},ligue1:{id:61,name:'Ligue 1',file:'fr.1',zone:'Europe/Paris'},kkd:{id:89,name:'Keuken Kampioen Divisie'},championsleague:{id:2,name:'Champions League'},europaleague:{id:3,name:'Europa League'},conferenceleague:{id:848,name:'Conference League'}};
 const PROVIDERS={bundesliga:{shortcut:'bl1',min:250},laliga:{shortcut:'la1',min:300},premierleague:{shortcut:'pl',min:300},championsleague:{shortcut:'ucl',min:100},europaleague:{shortcut:'uel2026',min:100},conferenceleague:{shortcut:'uecl2026',min:100}};
@@ -40,7 +41,7 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
     if(redis?.isReady){
      try{
       const raw=await require('./runtime-health').withDeadline(()=>redis.get('football47:'+key),1500);
-      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&key==='eredivisie'&&(value.sourceDetails?.name!=='Sportmonks Football API'||value.sourceDetails?.eventParserRevision!==136))){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
+      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&key==='eredivisie'&&(value.sourceDetails?.name!=='Sportmonks Football API'||value.sourceDetails?.eventParserRevision!==sportmonks.EVENT_PARSER_REVISION))){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
      }catch{storageFailed=true;}
     }
     if(key==='eredivisie'){
@@ -48,9 +49,8 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
      // to the existing public schedule and Football-Data.org results.
      if(sportmonksToken){
       try{
-       const provider=require('./sportmonks-football');
-       const fixtures=await provider.load({fetcher,token:sportmonksToken,now,sourceBody});
-       const value=envelope(key,fixtures,now,provider.SOURCE);
+       const fixtures=await sportmonks.load({fetcher,token:sportmonksToken,now,sourceBody});
+       const value=envelope(key,fixtures,now,sportmonks.SOURCE);
        if(fixtures.some(f=>f.status==='AWAITING'&&Date.parse(f.date)<now)){
         value.standings=[];value.standingsNote='Niet alle eindstanden zijn bevestigd; stand tijdelijk verborgen.';
        }

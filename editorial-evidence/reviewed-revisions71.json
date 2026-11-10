@@ -1,0 +1,193 @@
+[
+  {
+    "id": "a54bac8f-d6db-536c-a8b1-904f10879c7e",
+    "matchId": "sm-19714593",
+    "match": {
+      "homeTeam": "AZ Alkmaar",
+      "awayTeam": "FC Groningen",
+      "homeScore": 4,
+      "awayScore": 3,
+      "playedAt": "2026-11-08"
+    },
+    "category": "Eredivisie",
+    "registration": {
+      "date": "2026-11-08T15:45:00.000Z",
+      "round": "Speelronde 12",
+      "halfTime": {
+        "home": 1,
+        "away": 1
+      },
+      "goalTimeline": [
+        {
+          "minute": 2,
+          "extra": 0,
+          "player": "Jacob Ondrejka",
+          "kind": "goal",
+          "home": 0,
+          "away": 1
+        },
+        {
+          "minute": 9,
+          "extra": 0,
+          "player": "Mexx Meerdink",
+          "kind": "goal",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "minute": 47,
+          "extra": 0,
+          "player": "Brynjólfur Willumsson",
+          "kind": "goal",
+          "home": 1,
+          "away": 2
+        },
+        {
+          "minute": 54,
+          "extra": 0,
+          "player": "Thom van Bergen",
+          "kind": "goal",
+          "home": 1,
+          "away": 3
+        },
+        {
+          "minute": 61,
+          "extra": 0,
+          "player": "Ayoub Oufkir",
+          "kind": "goal",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "minute": 76,
+          "extra": 0,
+          "player": "Mateo Chávez",
+          "kind": "goal",
+          "home": 3,
+          "away": 3
+        },
+        {
+          "minute": 90,
+          "extra": 1,
+          "player": "Mexx Meerdink",
+          "kind": "penalty",
+          "home": 4,
+          "away": 3
+        }
+      ]
+    },
+    "previousCopy": "bd58c61370f7543f5fd91a89f5f48ac26e2b09f4a05d131ebf25e0904a20ba1d",
+    "draft": {
+      "headline": "Meerdink voltooit ommekeer van AZ tegen negen Groningers",
+      "standfirst": "AZ boog tegen FC Groningen een 1-3-achterstand om in een 4-3-zege. Mexx Meerdink benutte de beslissende strafschop nadat doelman Etienne Vaessen zijn tweede gele kaart had gekregen.",
+      "body": [
+        "Jacob Ondrejka kopte Groningen in de tweede minuut op voorsprong. Volgens de Sportmonks-wedstrijdregistratie maakte Mexx Meerdink in de negende minuut gelijk. Met 1-1 gingen de ploegen rusten.",
+        "Na rust scoorde Brynjólfur Willumsson in de 47e minuut. Thom van Bergen profiteerde in de 54e minuut van een fout van doelman Jari De Busser en maakte er 1-3 van. AZ kreeg na een VAR-beoordeling een strafschop, maar Meerdink schoot over. Ayoub Oufkir bracht AZ in de 61e minuut terug tot 2-3. Mateo Chávez maakte in de 76e minuut gelijk.",
+        "Vaessen haalde Oufkir in het strafschopgebied neer. Hij kreeg geel voor de overtreding en daarna zijn tweede gele kaart toen hij bij scheidsrechter Jannick van der Laan bleef protesteren. Ploeggenoten hielden Vaessen bij de arbiter weg. Meerdink schoot de strafschop in de eerste minuut van de blessuretijd binnen.",
+        "In de blessuretijd kreeg ook Hans Hateboer een directe rode kaart wegens hands. FC Groningen speelde het restant met negen man uit. De KNVB bevestigde dat beide spelers één wedstrijd moesten missen."
+      ]
+    },
+    "verifiedFacts": [
+      "AZ Alkmaar – FC Groningen eindigde in 4-3.",
+      "Eredivisie, speelronde 12, gespeeld op 2026-11-08.",
+      "Ruststand 1-1.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 2 een doelpunt van Jacob Ondrejka, waarna de stand 0-1 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 9 een doelpunt van Mexx Meerdink, waarna de stand 1-1 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 47 een doelpunt van Brynjólfur Willumsson, waarna de stand 1-2 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 54 een doelpunt van Thom van Bergen, waarna de stand 1-3 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 61 een doelpunt van Ayoub Oufkir, waarna de stand 2-3 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 76 een doelpunt van Mateo Chávez, waarna de stand 3-3 was.",
+      "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 90+1 een benutte strafschop van Mexx Meerdink, waarna de stand 4-3 was.",
+      "Volgens de volledige geverifieerde doelpuntenreeks is de 1-3-achterstand in minuut 54 door AZ Alkmaar omgebogen naar een 4-3-zege.",
+      "Jacob Ondrejka kopte de rebound binnen. De ruststand was 1-1; de 1-2 van Brynjólfur Willumsson viel na rust.",
+      "Thom van Bergen benutte een fout van Jari De Busser voor de 1-3.",
+      "Na een VAR-beoordeling kreeg AZ een strafschop. Meerdink schoot die strafschop over.",
+      "Vaessen maakte in het strafschopgebied een overtreding op Ayoub Oufkir. Scheidsrechter Jannick van der Laan gaf een strafschop en een eerste gele kaart.",
+      "Volgens de wedstrijdverslagen kreeg Etienne Vaessen een tweede gele kaart na aanhoudend protest. Ploeggenoten hielden hem bij de scheidsrechter weg.",
+      "Volgens de wedstrijdverslagen kreeg Hans Hateboer een directe rode kaart wegens hands in de blessuretijd. Groningen eindigde met negen man.",
+      "De KNVB bevestigde één wedstrijd uitsluiting voor zowel Etienne Vaessen als Hans Hateboer."
+    ],
+    "sources": [
+      {
+        "url": "https://www.sportmonks.com/football-api/"
+      },
+      {
+        "url": "https://www.az.nl/inside-az/nieuws/2026/november/liveblog-az-fc-groningen"
+      },
+      {
+        "url": "https://www.knvb.nl/nieuws/betaald-voetbal/tuchtzaken/72398/etienne-vaessen-en-hans-hateboer-%C3%A9%C3%A9n-wedstrijd-aan-de-kant"
+      },
+      {
+        "url": "https://www.zeelandnet.nl/nieuws/meerdink-met-twee-treffers-aan-basis-zege-az-op-fc-groningen"
+      },
+      {
+        "url": "https://www.fcupdate.nl/voetbalnieuws/2026/11/vaessen-volledig-door-het-lint-na-rode-kaart-doelman-zoekt-confrontatie-met-scheidsrechter"
+      }
+    ]
+  },
+  {
+    "id": "a382473f-c3c1-58ab-ad13-7b3dd6bb9761",
+    "matchId": "sm-19714595",
+    "match": {
+      "homeTeam": "FC Twente",
+      "awayTeam": "Ajax",
+      "homeScore": 2,
+      "awayScore": 2,
+      "playedAt": "2026-11-08"
+    },
+    "category": "Eredivisie",
+    "registration": {
+      "date": "2026-11-08T13:30:00.000Z",
+      "round": "Speelronde 12",
+      "halfTime": {
+        "home": 0,
+        "away": 1
+      },
+      "goalTimeline": []
+    },
+    "previousCopy": "c2638487a78a48ada7e9ad6f87016835fc8cbb274b99fb500a9100f8a3d49f80",
+    "draft": {
+      "headline": "Weghorst redt punt voor Twente na omstreden VAR-moment",
+      "standfirst": "FC Twente kwam tegen Ajax terug van 0-2 naar 2-2. Joey Kooij legde een kansrijke Twentse aanval stil en zei na afloop dat hij had moeten wachten.",
+      "body": [
+        "Tolu kopte Ajax in de derde minuut op voorsprong. Met 0-1 gingen de ploegen rusten. De ingevallen Rayane Bounida maakte in de 66e minuut de tweede voor Ajax, maar in de 68e minuut kopte Dies Janse uit een hoekschop in eigen doel.",
+        "Bij 1-2 kwam Twente na balverlies van Sofyan Amrabat in kansrijke positie. Joey Kooij floot de aanval af op verzoek van VAR Dennis Higler, die mogelijke hands van Wout Weghorst wilde laten beoordelen. Kooij zag op de beelden een eerdere duw en gaf Ajax geen strafschop. Tegenover ESPN zei de scheidsrechter dat zowel hij als Higler het spel langer had moeten laten doorgaan.",
+        "In de blessuretijd volgde een afzonderlijke VAR-ingreep. Lucas Rosa had Ramiz Zerrouki aan zijn shirt getrokken en ditmaal wees Kooij wel naar de stip, nu voor FC Twente. Wout Weghorst benutte de strafschop in de vijfde minuut van de blessuretijd en maakte daarmee de 2-2."
+      ]
+    },
+    "verifiedFacts": [
+      "FC Twente – Ajax eindigde in 2-2.",
+      "Eredivisie, speelronde 12, gespeeld op 2026-11-08.",
+      "Ruststand 0-1.",
+      "Volgens het officiële wedstrijdverslag veranderde de stand in minuut 3 door Tolu naar 0-1.",
+      "Volgens het officiële wedstrijdverslag veranderde de stand in minuut 66 door Rayane Bounida naar 0-2.",
+      "Volgens het officiële wedstrijdverslag veranderde de stand in minuut 68 door Dies Janse naar 1-2.",
+      "Volgens het officiële wedstrijdverslag veranderde de stand in minuut 90+5 door Wout Weghorst naar 2-2.",
+      "Tolu kopte de openingstreffer binnen en Rayane Bounida was invaller.",
+      "Dies Janse kopte uit een hoekschop in zijn eigen doel.",
+      "Twente kreeg een strafschop na ingrijpen van de VAR en voormalig Ajacied Wout Weghorst benutte die.",
+      "Volgens het officiële wedstrijdverslag onderbrak de scheidsrechter een kansrijke aanval voor een VAR-beoordeling en gaf hij na het bekijken van de beelden geen strafschop.",
+      "Bij 1-2 kreeg FC Twente na balverlies van Sofyan Amrabat uitzicht op een grote kans. Joey Kooij floot op verzoek van VAR Dennis Higler voor beoordeling van mogelijke hands van Wout Weghorst.",
+      "Na het bekijken van de beelden oordeelde Kooij dat aan de handsbal een duw voorafging. Hij gaf Ajax geen strafschop.",
+      "Joey Kooij zei tegenover ESPN dat hij en de VAR hadden moeten wachten tot de aanval voorbij was.",
+      "Bij het tweede VAR-moment trok Lucas Rosa aan het shirt van Ramiz Zerrouki. Joey Kooij wees daarna wel naar de stip, voor FC Twente."
+    ],
+    "sources": [
+      {
+        "url": "https://www.sportmonks.com/football-api/"
+      },
+      {
+        "url": "https://english.ajax.nl/articles/late-equaliser-denies-ajax-victory-in-enschede/"
+      },
+      {
+        "url": "https://eredivisie.nl/nieuws/terugblik-speelronde-12/"
+      },
+      {
+        "url": "https://www.knvb.nl/nieuws/scheidsrechters/aanstellingen/72378/fc-twente-ajax-onder-leiding-van-joey-kooij"
+      },
+      {
+        "url": "https://www.vi.nl/nieuws/kooij-trekt-boetekleed-aan-na-fc-twente-ajax-en-baalt-van-de-var"
+      }
+    ]
+  }
+]
