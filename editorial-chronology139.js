@@ -78,7 +78,11 @@ function halfTimeNarrativeIssues(record={},draft={}) {
     if(e.minute<46||!sentence.toLocaleLowerCase('nl').includes(e.player.toLocaleLowerCase('nl')))return false;
     const minute=String(e.minute);
     const exactMoment=new RegExp('\\b(?:minuut\\s+'+minute+'(?:\\+'+e.extra+')?|'+minute+'(?:e|de|ste)\\s+minuut)\\b','iu');
-    return exactMoment.test(sentence);
+    const samePlayerBeforeBreak=events.some(before=>before.minute<=45&&
+     before.player.toLocaleLowerCase('nl')===e.player.toLocaleLowerCase('nl'));
+    // A computed interval from a first-half event to a uniquely verified
+    // second-half scorer still crosses the break even when no minute is quoted.
+    return exactMoment.test(sentence)||(relativeInterval.test(sentence)&&!samePlayerBeforeBreak);
    }))issues.push('Een doelpunt na rust wordt zonder rustovergang als onderdeel van de eerste helft beschreven.');
  }
  return [...new Set(issues)];
