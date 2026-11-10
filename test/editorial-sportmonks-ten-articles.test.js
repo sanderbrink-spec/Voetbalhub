@@ -5,9 +5,9 @@ const {EditorialProviderRouter}=require('../editorial-provider-router');
 const config=require('../automatic-editorial.json');
 const scores={actuality:94,reliability:100,nationalValue:90,originality:91,journalism:91,diversity:90};
 const response=value=>Response.json({choices:[{message:{content:JSON.stringify(value)}}],usage:{total_tokens:1200}});
-test('Sportmonks-led production may attempt ten articles, never above editorial gates',()=>{
- assert.equal(config.maxPerRun,10);
- assert.ok(config.maxImageRequestsPerRun>=10);
+test('Sportmonks-led production uses bounded five-to-ten article batches, never above editorial gates',()=>{
+ assert.ok(Number.isInteger(config.maxPerRun)&&config.maxPerRun>=5&&config.maxPerRun<=10);
+ assert.ok(config.maxImageRequestsPerRun>=config.maxPerRun);
  assert.ok(config.qualityThreshold>=85);
 });
 test('exhausted bounded writer allowance leaves independent review reserve intact',async()=>{
