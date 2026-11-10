@@ -48,12 +48,41 @@ function evidence(record,doc,now=Date.now()){
  return {sourceUrl:doc.url,sourcePublishedAt:doc.publishedAt,events,facts,
   sourceExcerpt:content.slice(Math.max(0,header.index-160),header.index+header[0].length+1600)};
 }
+// Only positive, explicit descriptions of incidents in a first-party
+// verified *match report* can become facts. Generic discipline references,
+// future suspensions and speculative penalty discussions do not qualify.
+function verifiedDisciplinaryFacts(doc,matchRecord){
+ const home=String(matchRecord?.match?.homeTeam||'').toLowerCase();
+ const away=String(matchRecord?.match?.awayTeam||'').toLowerCase();
+ const body=String(doc?.text||'');
+ if(!home||!away||body.length<120||!officialUrl(doc?.url))return [];
+ const title=normalized(doc?.title||'').toLowerCase();
+ // A club announcement about future bans is not evidence of an incident
+ // in the match being reported.
+ if(/schorsing|schikkingsvoorstel|voorbeschouwing|vooruitblik|preview|tuchtzaak/i.test(title))return [];
+ const lines=body.replace(/\s+/g,' ').split(/(?<=[.!?])\s+(?=[A-ZÀ-Ž])/u);
+ const result=[];
+ for(const line of lines){
+  if(line.length>350||line.length<25||/\b(?:geen|niet|mogelijk|zou|volgende wedstrijd|komende duel|geschorst|beroep)\b/i.test(line))continue;
+  const actor='([A-ZÀ-Ž][a-zà-ž]+(?:\\s+(?:van|de|der|den|[A-ZÀ-Ž][a-zà-ž]+)){0,3})';
+  const direct=new RegExp('\\b'+actor+'\\s+(?:kreeg|ontving|pakte)\\s+(?:een\\s+)?rode kaart\\b','u').exec(line);
+  const second=new RegExp('\\b'+actor+'\\s+(?:kreeg|ontving|pakte)\\s+(?:(?:zijn|haar|de)\\s+)?tweede gele kaart\\b','u').exec(line);
+  const matched=direct||second;
+  if(!matched)continue;
+  const person=matched[1].trim();
+  if(person.length<4||person.length>70)continue;
+  const kind=direct?'een directe rode kaart':'een tweede gele kaart';
+  const fact='Volgens het officiële wedstrijdverslag kreeg '+person+' '+kind+'.';
+  if(!result.includes(fact))result.push(fact);
+ }
+ return result.slice(0,4);
+}
 function attach(record,doc,now=Date.now()){
  const verified=evidence(record,doc,now);if(!verified)return null;
- return {...record,articleKind:'match_report',verifiedFacts:[...record.verifiedFacts,...verified.facts],
+ return {...record,articleKind:'match_report',verifiedFacts:[...record.verifiedFacts,...verified.facts,...verifiedDisciplinaryFacts(doc,record)],
   sources:[...record.sources,{url:verified.sourceUrl}],matchEvidence:{
    url:verified.sourceUrl,publishedAt:verified.sourcePublishedAt,
    text:verified.sourceExcerpt,title:doc.title
   }};
 }
-module.exports={evidence,attach,officialUrl};
+module.exports={evidence,attach,officialUrl,verifiedDisciplinaryFacts};
