@@ -5,6 +5,7 @@ const {parseFixture,confirmedGoals}=require('../sportmonks-football');
 const {candidate}=require('../editorial-match55');
 const {paragraphPlan,paragraphChronologyIssues}=require('../editorial-match-guidance133');
 const {reopenUtrechtNecScorerClubV71}=require('../editorial-recovery136');
+const {selectPublicationFixtures}=require('../scripts/automatic-publication');
 const now=Date.parse('2026-11-10T18:55:00Z');
 function fixture(){
  return {id:19714594,league_id:72,state_id:5,starting_at_timestamp:Math.floor(Date.parse('2026-11-08T19:00:00Z')/1000),
@@ -84,4 +85,15 @@ test('Fase 71: exact verified match may complete its last review after 48 hours,
  assert.equal(candidate(other,late),null);
  const unidentified={...checked,goalTimeline:checked.goalTimeline.map(e=>({...e,scorerSide:null}))};
  assert.equal(candidate(unidentified,late),null);
+});
+
+test('Fase 71: selection does not discard the one verifiable 48-72 hour recovery before candidate validation',()=>{
+ const checked=parseFixture(fixture(),'eredivisie',now);
+ const late=Date.parse('2026-11-10T19:05:00Z');
+ const ordinary={...checked,id:'sm-19714595'};
+ const bad={...checked,goalTimeline:checked.goalTimeline.map(e=>({...e,scorerSide:null}))};
+ assert.deepEqual(selectPublicationFixtures([checked,ordinary,bad],late),[checked]);
+ assert.deepEqual(selectPublicationFixtures([checked],Date.parse('2026-11-11T20:00:00Z')),[]);
+ assert.deepEqual(selectPublicationFixtures([{...checked,status:'AWAITING'}],late),[]);
+ assert.deepEqual(selectPublicationFixtures([ordinary],Date.parse('2026-11-09T19:00:00Z')),[ordinary]);
 });
