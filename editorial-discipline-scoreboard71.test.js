@@ -34,3 +34,11 @@ test('zonder officieel bevestigd schikkingsvoorstel geen uitzondering',()=>{
  assert.equal(M.officialDisciplinaryCardNotice({...base,verifiedFacts:['Een rode kaart was te zien.']}),false);
  assert.equal(M.officialDisciplinaryCardNotice({...base,primaryAuthority:null}),false);
 });
+test('kloktijd uit onbewezen clubbesluit is geen uitslag maar blijft onbewezen cijfer',()=>{
+ const item={...base,draft:{...base.draft,body:['De club aanvaardde het voorstel om 14:40.']}};
+ assert.equal(M.requiresFlashscore(item.draft),true);
+ assert.equal(M.officialDisciplinaryCardNotice(item),true);
+ const issues=M.publicationIssues({...item,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true]))});
+ assert.ok(!issues.some(x=>/Flashscore/.test(x)));
+ assert.ok(issues.some(x=>/Cijfers ontbreken/.test(x)));
+});
