@@ -41,6 +41,25 @@ function reopenUtrechtNecAfterChronologyV71(job,record,now=Date.now()){
  return true;
 }
 
+// The proof run 42873738802 found only two inverse home-away score strings
+// in the twice-revised Utrecht-NEC draft, despite verified 2-3 and 0-2.
+// A code-level orientation repair justifies one new *full* editorial review.
+function reopenUtrechtNecScoreOrientationV71(job,record,now=Date.now()){
+ const observedHash='77eda278e452862d5033b25e7fd1b05e39cc9b965864d446c340a25b7de4197a';
+ const at=Date.parse(record?.publishedAt||'');
+ if(!job||!record||record.matchId!=='sm-19714594'||
+    job.matchId!==record.matchId||record.articleKind!=='match_report'||
+    !Array.isArray(record.verifiedFacts)||record.verifiedFacts.length<5||
+    !Number.isFinite(at)||at>now||now-at>72*3600000||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||
+    job.errorHash!==observedHash||job.utrechtNecScoreOrientationRecoveryV71)return false;
+ job.utrechtNecScoreOrientationRecoveryV71=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.checkpoint;
+ return true;
+}
+
 function publicationBlocker(report){
  const c=report?.counts||{};
  if(c.published>0)return null;
@@ -50,4 +69,4 @@ function publicationBlocker(report){
   return 'editorial_rejected';
  return null;
 }
-module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,publicationBlocker};
+module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,publicationBlocker};
