@@ -33,3 +33,26 @@ test('fase 71: unrelated or unconfirmed timestamps remain for factual review',()
  const input={...draft,body:['Hans Hateboer speelde op maandag 9 november 2026 om 14:40 een wedstrijd.',draft.body[1]]};
  assert.deepEqual(repairUnsupportedDecisionTimestamp(input,facts,SOURCE,'club_decision'),input);
 });
+
+
+test('fase 71: a historically rejected Hateboer item gets exactly one fresh full review',()=>{
+ const {createHash}=require('node:crypto');
+ const {reopenVerifiedHateboerDateV71}=require('../scripts/automatic-publication');
+ const failure='Kwaliteitscontrole na 2 herschrijvingen: Cijfers ontbreken in de gecontroleerde feiten: 9.';
+ const job={
+  status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',
+  urls:[SOURCE],errorHash:createHash('sha256').update(failure).digest('hex'),
+  checkpoint:'rejected-old-manuscript',attempts:2
+ };
+ const group=[{url:SOURCE,publishedAt:'2026-11-09T13:40:58Z',text:'confirmed article'}];
+ group.officialDisciplinaryCandidate={facts:facts.map(text=>({text}))};
+ const now=Date.parse('2026-11-10T18:02:00Z');
+ assert.equal(reopenVerifiedHateboerDateV71(job,group,now,72),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ assert.equal(job.checkpoint,undefined);
+ assert.equal(reopenVerifiedHateboerDateV71(job,group,now,72),false);
+ const other={...job,status:'review',hateboerPublicationClockRecoveryV71:false,errorHash:'invalid'};
+ assert.equal(reopenVerifiedHateboerDateV71(other,group,now,72),false);
+ assert.equal(reopenVerifiedHateboerDateV71({...job,status:'review',hateboerPublicationClockRecoveryV71:false},group,now+100*3600000,72),false);
+});
