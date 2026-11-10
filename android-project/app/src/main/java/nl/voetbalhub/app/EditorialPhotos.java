@@ -134,16 +134,18 @@ public final class EditorialPhotos {
  }}catch(Exception ignored){}return null;}
  public static TextView credit(Activity a,JSONObject article){TextView t=new TextView(a);String credit=article.optString("imageCredit"),caption=article.optString("imageCaption"),source=article.optString("imageSource"),license=article.optString("imageLicenseUrl");if(!ArticleArtwork.approved(article)&&isGenericMatchCover(article,article.optString("imageUrl"))){
   credit="Veldio · illustratie in de clubkleuren";caption="";source="";license="";
- }String text=(caption.isEmpty()?"":caption+"\n")+credit;
+ }String captionText = caption.trim(), creditText = credit.trim();
+  boolean creditAlreadyInCaption = !creditText.isEmpty() && captionText.toLowerCase(java.util.Locale.ROOT).contains(creditText.toLowerCase(java.util.Locale.ROOT));
+  String text = captionText.isEmpty() ? creditText : (creditText.isEmpty() || creditAlreadyInCaption ? captionText : captionText + " · " + creditText);
   SpannableString linked=new SpannableString(text+(source.startsWith("https://")?" · Bron":"")+(license.startsWith("https://")?" · Licentie":""));
   if(source.startsWith("https://")){int start=text.length()+3;linked.setSpan(new URLSpan(source),start,start+4,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);}
   if(license.startsWith("https://")){int start=linked.length()-8;linked.setSpan(new URLSpan(license),start,linked.length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);}
-  t.setText(linked);t.setTextSize(10);t.setTextColor(0xFFA8B8AD);t.setLinkTextColor(0xFFA9FFBE);t.setMovementMethod(LinkMovementMethod.getInstance());int d=Math.round(8*a.getResources().getDisplayMetrics().density);t.setPadding(0,d,0,d);return t;
+  t.setText(linked);t.setTextSize(10);t.setTextColor(0xFFA8B8AD);t.setLinkTextColor(0xFFA9FFBE);t.setMovementMethod(LinkMovementMethod.getInstance());t.setLineSpacing(3,1.04f);int d=Math.round(8*a.getResources().getDisplayMetrics().density);t.setPadding(0,d/2,0,d*2);return t;
  }
  public static TextView sources(Activity activity, JSONObject article) {
   JSONArray sources = article.optJSONArray("sources");
   if (sources == null || sources.length() == 0) return null;
-  android.text.SpannableStringBuilder links = new android.text.SpannableStringBuilder("Wedstrijdbronnen: ");
+  android.text.SpannableStringBuilder links = new android.text.SpannableStringBuilder();
   java.util.Set<String> seen = new java.util.HashSet<>();
   for (int i = 0; i < sources.length(); i++) {
    JSONObject entry = sources.optJSONObject(i);
