@@ -63,7 +63,7 @@ function verifiedIncidentCoverageIssues(record={},draft={}){
 function paragraphChronologyIssues(record = {},draft = {}) {
  const halfTimeIssues=require('./editorial-chronology139').halfTimeNarrativeIssues(record,draft);
  const plan=paragraphPlan(record);
- if(plan.format!=='rich'||!Array.isArray(draft.body)||draft.body.length!==plan.body.length)return halfTimeIssues;
+ if(plan.format!=='rich'||!Array.isArray(draft.body)||draft.body.length!==plan.body.length)return [...new Set([...halfTimeIssues,...verifiedIncidentCoverageIssues(record,draft)])];
  const facts=Array.isArray(record.verifiedFacts)?record.verifiedFacts:[];
  const minutes=text=>[...String(text||'').matchAll(/\bminuut\s+(\d{1,2})(?:\+(\d{1,2}))?\b/gi)]
   .map(m=>m[1]+(m[2]?'+'+m[2]:''));
