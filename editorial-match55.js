@@ -64,7 +64,13 @@ function candidate(fixture, now) {
   for(const event of timeline){
    const time=String(event.minute)+(event.extra?'+'+event.extra:'');
    const label=event.kind==='own_goal'?'een eigen doelpunt van ':event.kind==='penalty'?'een benutte strafschop van ':'een doelpunt van ';
-   verifiedFacts.push('Volgens de Sportmonks-wedstrijdregistratie viel in minuut '+time+' '+label+event.player+', waarna de stand '+event.home+'-'+event.away+' was.');
+   // The scorer's club comes exclusively from a Sportmonks event participant
+   // that the parser checked against the side whose registered score rose.
+   // Never assign an own-goal scorer to the benefiting side.
+   const scorerTeam=event.kind!=='own_goal'&&event.scorerSide==='home'?match.homeTeam:
+    event.kind!=='own_goal'&&event.scorerSide==='away'?match.awayTeam:null;
+   const eventFact='Volgens de Sportmonks-wedstrijdregistratie viel in minuut '+time+' '+label+event.player+', waarna de stand '+event.home+'-'+event.away+' was.';
+   verifiedFacts.push(eventFact+(scorerTeam?' De Sportmonks-participantregistratie koppelt '+event.player+' als doelpuntenmaker aan '+scorerTeam+'.':''));
   }
   const comeback=verifiedComebackFact(timeline,match,home,away);
   if(comeback)verifiedFacts.push(comeback);
