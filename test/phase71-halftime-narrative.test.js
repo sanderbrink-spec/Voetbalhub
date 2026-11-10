@@ -51,3 +51,33 @@ test('Fase 71: only the exact previously rejected match may be retried once',()=
  assert.equal(reopenUtrechtNecHalfTimeV71({...job,status:'review',utrechtNecHalfTimeRecoveryV71:false},record,now+100*3600000),false);
  assert.equal(reopenUtrechtNecHalfTimeV71({...job,status:'review',utrechtNecHalfTimeRecoveryV71:false,errorHash:'other'},record,now),false);
 });
+
+
+test('Fase 71: source-proven goal remains while passive comeback claim is neutralized',()=>{
+ const draft={headline:'NEC wint 2-3 bij FC Utrecht',standfirst:'Na 0-2 ruststand.',
+  body:[
+   'Volgens de registratie stond NEC bij rust met 0-2 voor.',
+   'Na de rust wist FC Utrecht in de 56e minuut te scoren via Yoann Cathline, waarmee de achterstand werd verkleind tot 1-2.',
+   'Vervolgens maakte Dani de Wit in de 64e minuut de 2-3 voor FC Utrecht, maar dit was niet genoeg om de achterstand ongedaan te maken.'
+  ]};
+ const fixed=repairUnverifiedMatchComeback(draft,record);
+ assert.match(fixed.body[1],/waardoor de stand 1-2 werd/);
+ assert.match(fixed.body[1],/Yoann Cathline/);
+ assert.match(fixed.body[2],/Dani de Wit/);
+ assert.doesNotMatch(fixed.body[2],/achterstand/);
+ assert.match(draft.body[1],/achterstand/);
+ const unknown={...draft,body:[draft.body[0],'De achterstand werd verkleind tot 8-9.',draft.body[2]]};
+ const unrepaired=repairUnverifiedMatchComeback(unknown,record);
+ assert.match(unrepaired.body[1],/8-9/);
+});
+test('Fase 71: only exact previously rejected passive-language match retries',()=>{
+ const {reopenUtrechtNecPassiveLanguageV71}=require('../editorial-recovery136');
+ const job={matchId:record.matchId,status:'review',attempts:2,failureStage:'quality',
+  failureCategory:'journalistic_rejection',errorHash:'e6d65c46095e7da26e5ffa5f80463c05343faabe60d43ac2ca274f9289b88e03',checkpoint:'invalid'};
+ const now=Date.parse('2026-11-10T18:43:00Z');
+ assert.equal(reopenUtrechtNecPassiveLanguageV71(job,record,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.checkpoint,undefined);
+ assert.equal(reopenUtrechtNecPassiveLanguageV71({...job,status:'review'},record,now),false);
+ assert.equal(reopenUtrechtNecPassiveLanguageV71({...job,status:'review',utrechtNecPassiveLanguageRecoveryV71:false,errorHash:'wrong'},record,now),false);
+});
