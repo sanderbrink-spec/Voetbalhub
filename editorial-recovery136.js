@@ -60,6 +60,24 @@ function reopenUtrechtNecScoreOrientationV71(job,record,now=Date.now()){
  return true;
 }
 
+// The new end-to-end run rejected only unsupported comeback wording and the
+// artificial 3/2 scoring split. A genuine source-bound half-break repair
+// justifies one more full 85/90 review, never silent acceptance.
+function reopenUtrechtNecHalfTimeV71(job,record,now=Date.now()){
+ const observed='38868ad260058cc8ed3623f523cb24308a0d668fee874e2e4b5a9e2ac73dd6b3';
+ const at=Date.parse(record?.publishedAt||'');
+ if(!job||!record||record.matchId!=='sm-19714594'||job.matchId!==record.matchId||
+    record.articleKind!=='match_report'||!Array.isArray(record.verifiedFacts)||
+    record.verifiedFacts.length<5||!Number.isFinite(at)||at>now||now-at>72*3600000||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.errorHash!==observed||
+    job.utrechtNecHalfTimeRecoveryV71)return false;
+ job.utrechtNecHalfTimeRecoveryV71=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.checkpoint;
+ return true;
+}
+
 function publicationBlocker(report){
  const c=report?.counts||{};
  if(c.published>0)return null;
@@ -69,4 +87,4 @@ function publicationBlocker(report){
   return 'editorial_rejected';
  return null;
 }
-module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,publicationBlocker};
+module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,publicationBlocker};
