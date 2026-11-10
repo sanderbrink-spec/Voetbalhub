@@ -20,6 +20,27 @@ function reopenVerifiedMatch(job,record,now=Date.now()){
  delete job.checkpoint;
  return true;
 }
+// The live Utrecht-NEC reviewer rejected an unsupported 3-2, unproven
+// comeback and minute 58 in the wrong paragraph (run 42649713550).
+// PR #189 subsequently corrected the incident/goal chronology. Permit
+// exactly one NEW review using that verified current record; never reuse
+// the rejected manuscript or lower its factual/independent review gates.
+function reopenUtrechtNecAfterChronologyV71(job,record,now=Date.now()){
+ const observedHash='1c192ff599130a4d8a4d698c0efb797c02796c6a486b5f57021a32599c1b4460';
+ const at=Date.parse(record?.publishedAt||'');
+ if(!job||!record||record.matchId!=='sm-19714594'||
+    job.matchId!==record.matchId||record.articleKind!=='match_report'||
+    !Array.isArray(record.verifiedFacts)||record.verifiedFacts.length<5||
+    !Number.isFinite(at)||at>now||now-at>72*3600000||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||
+    job.errorHash!==observedHash||job.utrechtNecChronologyRecoveryV71)return false;
+ job.utrechtNecChronologyRecoveryV71=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.checkpoint;
+ return true;
+}
+
 function publicationBlocker(report){
  const c=report?.counts||{};
  if(c.published>0)return null;
@@ -29,4 +50,4 @@ function publicationBlocker(report){
   return 'editorial_rejected';
  return null;
 }
-module.exports={REVISION,reopenVerifiedMatch,publicationBlocker};
+module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,publicationBlocker};
