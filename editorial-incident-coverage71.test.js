@@ -40,3 +40,22 @@ test('schrijfopdracht eist incidenten en verbiedt fictieve scoringskansen',()=>{
  assert.match(prompt,/geverifieerde rode kaart/);
  assert.match(prompt,/zeker een doelpunt/);
 });
+
+test('twee rode kaarten: ieder bij naam noemen',()=>{
+ const draftOne={...draft,body:[...draft.body,'Hans Hateboer kreeg een rode kaart. De VAR beoordeelde de strafschop.']};
+ const issues=guidance.verifiedIncidentCoverageIssues(record,draftOne);
+ assert.ok(issues.some(x=>x.includes('Etienne Vaessen')));
+ const draftBoth={...draftOne,body:[...draftOne.body,'Etienne Vaessen kreeg zijn tweede gele kaart.']};
+ assert.deepEqual(guidance.verifiedIncidentCoverageIssues(record,draftBoth),[]);
+});
+test('expliciete kaarten uit officiële matchbron extraheerbaar, niet uit voorbeschouwing',()=>{
+ const extract=require('./editorial-match-evidence122').verifiedDisciplinaryFacts;
+ const match={match:{homeTeam:'AZ',awayTeam:'FC Groningen'}};
+ const doc={url:'https://www.fcgroningen.nl/nieuws/verslag-az-groningen/',title:'Verslag AZ FC Groningen',
+  text:'AZ en Groningen speelden een wedstrijd. Hans Hateboer kreeg een rode kaart in de tweede helft. Etienne Vaessen kreeg zijn tweede gele kaart wegens protest. '+('Het duel was gespeeld. ').repeat(5)};
+ const facts=extract(doc,match);
+ assert.equal(facts.length,2);
+ assert.ok(facts.some(x=>x.includes('Hans Hateboer')));
+ assert.ok(facts.some(x=>x.includes('Etienne Vaessen')));
+ assert.deepEqual(extract({...doc,title:'Voorbeschouwing AZ Groningen'},match),[]);
+});
