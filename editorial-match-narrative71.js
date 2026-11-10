@@ -52,6 +52,21 @@ function repairUnverifiedMatchComeback(draft,record){
     changed=true;
     return 'Na rust scoorde '+player+' voor '+club+' in minuut '+minute;
    });
+  // The 10 November run's final revision added an unsupported 'kept pressing'
+  // and 'reduced the deficit' narrative to a fully verified goal. Rewrite only
+  // this exact construction when a single Sportmonks receipt proves player,
+  // team, minute and resulting score. Otherwise retain it for rejection.
+  result=result.replace(/\b([\p{L}'-]+(?:\s+[\p{L}'-]+){0,3}) bleef aandringen en verkleinde de achterstand in de (\d{1,3})(?:e|de|ste) minuut door een doelpunt van ([\p{L}'-]+(?:\s+[\p{L}'-]+){0,6})(?=[.,;]|$)/giu,
+   (phrase,team,minute,player)=>{
+    if(!teams.includes(team))return phrase;
+    const receipt=facts.find(f=>f.includes('minuut '+minute+' een doelpunt van '+player+', waarna de stand ')&&
+       f.includes('Sportmonks-participantregistratie koppelt '+player+' als doelpuntenmaker aan '+team+'.'));
+    if(!receipt)return phrase;
+    const score=receipt.match(/\bwaarna de stand (\d{1,2})-(\d{1,2}) was\b/i);
+    if(!score||!known.has(Number(score[1])+'-'+Number(score[2])))return phrase;
+    changed=true;
+    return player+' scoorde voor '+team+' in minuut '+minute+', waardoor de stand '+Number(score[1])+'-'+Number(score[2])+' werd';
+   });
   return result;
  });
  return changed?{...draft,body}:draft;
