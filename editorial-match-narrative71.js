@@ -56,7 +56,7 @@ function repairUnverifiedMatchComeback(draft,record){
   // and 'reduced the deficit' narrative to a fully verified goal. Rewrite only
   // this exact construction when a single Sportmonks receipt proves player,
   // team, minute and resulting score. Otherwise retain it for rejection.
-  result=result.replace(/\b([\p{L} .'-]{2,60}?) bleef aandringen en verkleinde de achterstand in de (\d{1,3})(?:e|de|ste) minuut door een doelpunt van ([\p{L}'-]+(?:\s+[\p{L}'-]+){0,6})(?=[.,;]|$)/giu,
+  result=result.replace(/\b([\p{L}'-]+(?:\s+[\p{L}'-]+){0,3}) bleef aandringen en verkleinde de achterstand in de (\d{1,3})(?:e|de|ste) minuut door een doelpunt van ([\p{L}'-]+(?:\s+[\p{L}'-]+){0,6})(?=[.,;]|$)/giu,
    (phrase,team,minute,player)=>{
     if(!teams.includes(team))return phrase;
     const receipt=facts.find(f=>f.includes('minuut '+minute+' een doelpunt van '+player+', waarna de stand ')&&
