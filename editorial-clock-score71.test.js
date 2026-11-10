@@ -71,3 +71,24 @@ test('losse club is enkelvoud en samengesteld onderwerp blijft onaangeraakt',()=
  const split={...core,body:['Op maandag 09 november 2026 om 14:40 hebben de club en de speler het schikkingsvoorstel aanvaard.']};
  assert.equal(repairUnsupportedDecisionTimestamp(split,facts,url,'club_decision'),split);
 });
+
+
+test('exact eerder afgebroken besluit krijgt één herstelpoging, nooit een vrijstelling',()=>{
+ const {reopenUnsupportedDecisionTimeV71}=require('./scripts/automatic-publication');
+ const now=Date.parse('2026-11-10T16:00:00Z');
+ const group=[{url,publishedAt:'2026-11-09T13:40:58Z'}];
+ group.officialDisciplinaryCandidate={facts};
+ const old={status:'review',reason:'generation_error',failureStage:'generation',
+  failureCategory:'generator_failure',attempts:1,checkpoint:'old_discarded',
+  errorHash:'05d0c59dc0303c39c57e3294c2dc535d2db1632860ed2115c1c1ec1d85386b94'};
+ assert.equal(reopenUnsupportedDecisionTimeV71(old,group,now,72),true);
+ assert.equal(old.status,'pending');
+ assert.equal(old.checkpoint,undefined);
+ assert.equal(old.attempts,0);
+ assert.equal(reopenUnsupportedDecisionTimeV71(old,group,now,72),false);
+ const bad={...old,status:'review',unsupportedDecisionTimeRecoveryV71:false,errorHash:'wrong'};
+ assert.equal(reopenUnsupportedDecisionTimeV71(bad,group,now,72),false);
+ const untrusted=[{url:'https://somewhere.example/other',publishedAt:'2026-11-09T13:40:58Z'}];
+ untrusted.officialDisciplinaryCandidate={facts};
+ assert.equal(reopenUnsupportedDecisionTimeV71({...bad,errorHash:'05d0c59dc0303c39c57e3294c2dc535d2db1632860ed2115c1c1ec1d85386b94'},untrusted,now,72),false);
+});
