@@ -29,6 +29,17 @@ function repairUnverifiedMatchComeback(draft,record){
     changed=true;
     return 'de '+value+' te maken';
    });
+  // A verified score (1-2) substantiates the scoreline, not the unquoted
+  // evaluation that the opposition "came back". Preserve the scorer's action.
+  result=result.replace(/\bwaarmee de achterstand werd verkleind tot\s+(\d{1,2})\s*[-–]\s*(\d{1,2})\b/gi,
+   (phrase,h,a)=>{
+    const score=Number(h)+'-'+Number(a);
+    if(!known.has(score))return phrase;
+    changed=true;
+    return 'waardoor de stand '+score+' werd';
+   });
+  const redundantEnding=/,\s*maar dit was niet genoeg om de achterstand ongedaan te maken\b/gi;
+  if(redundantEnding.test(result)){result=result.replace(redundantEnding,'');changed=true;}
   return result;
  });
  return changed?{...draft,body}:draft;
