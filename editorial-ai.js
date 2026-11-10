@@ -160,8 +160,7 @@ function repairUnsupportedDecisionTimestamp(draft,facts=[],sourceUrl='',authorit
  // timestamped "Op maandag 9 november ... maakte FC Groningen bekend" even
  // after revision. Strip only this unsupported leading metadata clause.
  // Keep the underlying claim intact and rerun every normal quality gate.
- const namePattern=publisher.replace(/[^a-zA-Z0-9 ]/g,'\\ if(!trustedPublisher(sourceUrl)||!facts.some(f=>/\b(?:schikkingsvoorstel|tuchtvoorstel)\b/i.test(f))||
-    !evidenceIssues(draft,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip')))return draft;').replace(/ /g,'\\s+');
+ const namePattern=publisher.split(' ').join('\\s+');
  const timestampPattern='(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\\s+\\d{1,2}\\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\\s+20\\d{2}\\s+om\\s+(?:[01]?\\d|2[0-3])[.:][0-5]\\d';
  const leadingDate=new RegExp('^\\s*Op\\s+'+timestampPattern+'\\s+maakte\\s+'+namePattern+'\\s+(officieel\\s+)?bekend\\s+dat\\s+','i');
  let dateRemoved=false;
