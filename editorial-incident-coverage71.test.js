@@ -18,7 +18,7 @@ const record={
 const draft={headline:'AZ wint van Groningen',standfirst:'AZ won met 4-3.',body:['Gedetailleerde wedstrijdcontext zonder beslissingen.','De twee doelpunten uit de openingsfase.','De wedstrijd eindigde in winst voor AZ.']};
 test('blokkeert verslag dat rode kaarten VAR en strafschop uit gecontroleerde feiten verzwijgt',()=>{
  const issues=guidance.verifiedIncidentCoverageIssues(record,draft);
- assert.equal(issues.length,3);
+ assert.equal(issues.length,5);
  assert.ok(issues.some(x=>x.includes('red_card')));
  assert.ok(issues.some(x=>x.includes('var')));
  assert.ok(issues.some(x=>x.includes('penalty')));
