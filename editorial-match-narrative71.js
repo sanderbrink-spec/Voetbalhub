@@ -38,8 +38,25 @@ function repairUnverifiedMatchComeback(draft,record){
     changed=true;
     return 'waardoor de stand '+score+' werd';
    });
-  const redundantEnding=/,\s*maar dit was niet genoeg om de achterstand ongedaan te maken\b/gi;
+  const redundantEnding=/,\s*maar dit was niet genoeg om de achterstand (?:ongedaan te maken|om te buigen)\b/gi;
   if(redundantEnding.test(result)){result=result.replace(redundantEnding,'');changed=true;}
+  // The model repeatedly invents an unverified "comeback" label for a
+  // registered goal. Remove only that label if the same player, exact minute
+  // and scorer's club were independently checked in Sportmonks events.
+  result=result.replace(/\bNa de rust kwam ([\p{L} .'-]{2,60}?) terug in de wedstrijd met een doelpunt van ([\p{L} .'-]{3,70}?) (?:in minuut (\d{1,3})|in de (\d{1,3})(?:e|de|ste) minuut)\b/giu,
+   (phrase,club,player,a,b)=>{
+    const minute=a||b;
+    if(!teams.includes(club)||!facts.some(f=>f.includes('minuut '+minute+' ')&&
+       f.includes('doelpunt van '+player+',')&&
+       f.includes('als doelpuntenmaker aan '+club+'.')))return phrase;
+    changed=true;
+    return 'Na rust scoorde '+player+' voor '+club+' in minuut '+minute;
+   });
+  // The writer must not calculate a minute interval from a pair of moments.
+  // Keep the known sequence but do not assert elapsed time.
+  result=result.replace(/\b(?:\d+|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien)\s+minuten?\s+later\b/giu,()=>{
+   changed=true;return 'Daarna';
+  });
   return result;
  });
  return changed?{...draft,body}:draft;
