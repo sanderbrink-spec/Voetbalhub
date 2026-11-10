@@ -34,6 +34,26 @@ function reopenUnsupportedDecisionTimeV71(job,group,now,maxAgeHours){
  return true;
 }
 
+// The exact November 10 Hateboer news rejection cannot auto-retry while
+// parked as a journalistically rejected queue item. Retry this one source once
+// after the proven timestamp-writer repair, never reusing the rejected draft.
+function reopenVerifiedHateboerDateV71(job,group,now,maxAgeHours){
+ const url='https://www.fcgroningen.nl/nieuws/schikkingsvoorstel-voor-hateboer-geaccepteerd/';
+ const doc=group?.length===1&&!group.matchRecord?group[0]:null;
+ const at=Date.parse(doc?.publishedAt||'');
+ const reason='Kwaliteitscontrole na 2 herschrijvingen: Cijfers ontbreken in de gecontroleerde feiten: 9.';
+ if(!job||!doc||doc.url!==url||job.urls?.length!==1||job.urls[0]!==url||
+    !group.officialDisciplinaryCandidate||group.officialDisciplinaryCandidate.facts?.length!==3||
+    !Number.isFinite(at)||at>now||now-at>Math.min(maxAgeHours,72)*3600000||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.errorHash!==sha(reason)||
+    job.hateboerPublicationClockRecoveryV71)return false;
+ job.hateboerPublicationClockRecoveryV71=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.checkpoint;
+ return true;
+}
+
 const editorialRecovery136=require('../editorial-recovery136');
 const {verifiedOfficialDisciplinaryDecision}=require('../editorial-official-decisions71');
 const {reopenVerifiedOfficialBrief,reopenVerifiedOfficialPublisher}=require('../editorial-brief-recovery71');
@@ -1084,6 +1104,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(reopenUnsupportedDecisionTimeV71(job,group,now,config.maxAgeHours))
    report.signals.push({route:'news',topic:group[0].title,
     outcome:'verified_decision_timestamp_recovery_v71'});
+  if(reopenVerifiedHateboerDateV71(job,group,now,config.maxAgeHours))
+   report.signals.push({route:'news',topic:group[0].title,outcome:'verified_hateboer_publication_clock_recovery_v71'});
   if(group.matchRecord){
    job.matchId=group.matchRecord.matchId;
    reopenObservedMatchCopyFailure(job,now);
@@ -1426,4 +1448,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus()}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
