@@ -1208,7 +1208,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const nameRepaired=repairUniqueVerifiedNameTypo(draft,facts);
     if(nameRepaired!==draft){draft=nameRepaired;payload.draft=draft;}
     const issues=M.publicationIssues(payload);
-    issues.push(...generationIssues(draft,facts,matchRecord?.match||null,matchGenerationIsCompact(matchRecord,compact),matchRecord?.sources?.[0]?.url===matches.SM?'Sportmonks Football API':matchRecord?.sources?.[0]?.url===matches.OPEN?'OpenFootball':matchRecord?.sources?.[0]?.url===matches.FD?'football-data.org':''));
+    issues.push(...generationIssues(draft,facts,matchRecord?.match||null,matchGenerationIsCompact(matchRecord,compact),matchRecord?.sources?.[0]?.url===matches.SM?'Sportmonks Football API':matchRecord?.sources?.[0]?.url===matches.OPEN?'OpenFootball':matchRecord?.sources?.[0]?.url===matches.FD?'football-data.org':candidate.primaryAuthority&&sources.length===1?sources[0].url:''));
     if(matchRecord)issues.push(...matchGuidance.paragraphChronologyIssues(matchRecord,draft));
     if(!matchRecord){
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority:candidate.primaryAuthority,sourceUrls:sources.map(x=>x.url),facts}));

@@ -1,5 +1,24 @@
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.DeskFacts=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){
  const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,' ');
+ // Exact HTTPS host is independently checked provenance, not evidence for
+ // the club's statements. It may support naming the official publisher only.
+ const publisherHosts=Object.freeze({
+  'peczwolle.nl':'PEC Zwolle','ajax.nl':'Ajax','psv.nl':'PSV',
+  'feyenoord.com':'Feyenoord','fctwente.nl':'FC Twente','az.nl':'AZ',
+  'fcgroningen.nl':'FC Groningen','fortunasittard.nl':'Fortuna Sittard',
+  'willem-ii.nl':'Willem II','fcemmen.nl':'FC Emmen','fcdenbosch.nl':'FC Den Bosch',
+  'knvb.nl':'KNVB','eurojackpotknvbbeker.nl':'KNVB Beker',
+  'eredivisie.nl':'Eredivisie','inter.it':'Inter','clubbrugge.be':'Club Brugge',
+  'liverpoolfc.com':'Liverpool','fcm.dk':'FC Midtjylland',
+  'keukenkampioendivisie.nl':'Keuken Kampioen Divisie'
+ });
+ function officialPublisherName(url){
+  try{
+   const u=new URL(url);
+   if(u.protocol!=='https:'||u.username||u.password)return null;
+   return publisherHosts[u.hostname.toLowerCase().replace(/^www\./,'')]||null;
+  }catch{return null;}
+ }
  const blocks=d=>[d?.headline,d?.standfirst,...(Array.isArray(d?.body)?d.body:[])].filter(Boolean);
  const text=d=>blocks(d).join(' ');
  const scores=value=>[...String(value||'').matchAll(/(?<![\d-])\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b(?![-–]\d)/g)].map(m=>Number(m[1])+'-'+Number(m[2]));
@@ -10,7 +29,8 @@
   const anchored=match&&String(match.homeTeam||'').trim()&&String(match.awayTeam||'').trim()&&Number.isInteger(match.homeScore)&&Number.isInteger(match.awayScore);
   const anchor=anchored?`${match.homeTeam} ${match.awayTeam} ${match.homeScore}-${match.awayScore} ${match.playedAt||''}`:'';
   // Known source attribution is metadata, never proof of match events.
-  const publisher=['Sportmonks Football API','OpenFootball','football-data.org'].includes(sourceName)?sourceName:'';
+  const publisher=['Sportmonks Football API','OpenFootball','football-data.org'].includes(sourceName)?
+   sourceName:(officialPublisherName(sourceName)||'');
   const supported=evidence+' '+anchor+' '+publisher;
   const numbers=value=>(String(value).match(/\d+(?:[.,]\d+)?/g)||[]).map(x=>x.replace(',','.'));
   const allowedNumbers=new Set(numbers(supported));
@@ -42,6 +62,19 @@
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
+
+  // The article publication header is not proof of the exact moment that a
+  // club accepted or signed a decision. Only an explicit source claim about
+  // the event time can justify such a timestamp in the generated narrative.
+  if(officialPublisherName(sourceName)&&!match){
+   const eventAt=/\b(?:op\s+)?(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)\s+\d{1,2}\s+(?:januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)\s+20\d{2}\s+om\s+\d{1,2}[.:]\d{2}\s+(?:accepteer\w*|aanvaard\w*|beslo\w*|benoem\w*|tekend\w*|tekende\w*)/gi;
+   for(const claim of article.matchAll(eventAt))
+    if(!facts.some(f=>normalize(f).includes(normalize(claim[0])))){
+     issues.push('Het publicatietijdstip is geen bewezen tijdstip van het clubbesluit. Verwijder de afgeleide datum of tijd.');
+     break;
+    }
+  }
+
   if(needsMatch(draft)){
    const narrative=[
     [/\b(?:voor rust|na rust|eerste helft|tweede helft|ruststand|voor de pauze|na de pauze|na de onderbreking)\b/i,'verloop per helft en ruststand'],
@@ -84,7 +117,9 @@
   const draft=payload.draft||{},match=payload.match||null;
   const publisher=payload.sources?.[0]?.url==='https://www.sportmonks.com/football-api/'?'Sportmonks Football API':
    payload.sources?.[0]?.url==='https://www.football-data.org/'?'football-data.org':
-   payload.sources?.[0]?.url==='https://github.com/openfootball/football.json'?'OpenFootball':'';
+   payload.sources?.[0]?.url==='https://github.com/openfootball/football.json'?'OpenFootball':
+   payload.articleKind==='announcement'&&['club_decision','association_decision'].includes(payload.primaryAuthority)&&payload.sources?.length===1?
+    payload.sources[0].url:'';
   const issues=evidenceIssues(draft,payload.verifiedFacts||[],match,publisher);
   if(needsMatch(draft)||match){
    if(!match||!String(match.homeTeam||'').trim()||!String(match.awayTeam||'').trim()||normalize(match.homeTeam)===normalize(match.awayTeam)||![match.homeScore,match.awayScore].every(x=>Number.isInteger(x)&&x>=0&&x<=99)||!validDate(match.playedAt))
@@ -93,6 +128,6 @@
   }
   return [...new Set(issues)];
  }
- return {audit,evidenceIssues,needsMatch};
+ return {audit,evidenceIssues,needsMatch,officialPublisherName};
 });
 
