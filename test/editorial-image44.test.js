@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const I=require('../editorial-image44');
 const article={draft:{headline:'Voorbeschouwing FC Groningen tegen Sparta Rotterdam',standfirst:'De clubs treffen elkaar in de Eredivisie.',body:['Een eigen analyse.']},topicTeams:['FC Groningen','Sparta Rotterdam']};
-const accepted={relevant:true,coloursCorrect:true,highQuality:true,noLogos:true,noIdentifiablePeople:true,noMisleadingEvent:true,twoScarves:true,namesOnScarves:true,vOnBall:true,onlyVOnBall:true,texts:['FC Groningen','Sparta Rotterdam'],issues:[]};
+const accepted={relevant:true,coloursCorrect:true,highQuality:true,noLogos:true,noIdentifiablePeople:true,noMisleadingEvent:true,standsVisible:true,stadiumOccupancy:'empty',twoScarves:true,namesOnScarves:true,vOnBall:true,onlyVOnBall:true,texts:['FC Groningen','Sparta Rotterdam'],issues:[]};
 async function pixels(){return require('sharp')({create:{width:1536,height:1024,channels:3,background:'#234530'}}).webp().toBuffer();}
 test('match, transfer uncertainty and attributed club developments select distinct scenes',()=>{
  assert.equal(I.classify(article).category,'match');
@@ -62,4 +62,23 @@ test('match logo watermark is composed from the exact bundled Veldio brand image
  const metadata=await sharp(branded).metadata();
  assert.equal(metadata.width,1280);assert.equal(metadata.height,720);
  assert.notEqual(I.sha(branded),I.sha(normal));
+});
+
+test('stadium prompt, pixel review and identity depend on kind, fixture and venue', () => {
+ const fixture={id:'sm-1',home:{name:'FC Groningen'},away:{name:'Sparta Rotterdam'},venue:{id:'1'}};
+ const preview={...article,articleKind:'match_preview',fixture};
+ const empty=I.classify(preview);
+ const full=I.classify({...preview,articleKind:'match_report'});
+ assert.equal(empty.stadiumOccupancy,'empty');
+ assert.equal(full.stadiumOccupancy,'full');
+ assert.match(I.promptFor(empty),/empty stands, no crowd/);
+ assert.match(I.promptFor(full),/filled stands, a clearly visible crowd/);
+ assert.ok(I.qualityIssues(full,accepted).length);
+ assert.ok(I.qualityIssues(empty,{...accepted,standsVisible:false}).length);
+ assert.deepEqual(I.qualityIssues(full,{...accepted,stadiumOccupancy:'full'}),[]);
+ for(const other of [full,I.classify({...preview,fixture:{...fixture,id:'sm-2'}}),
+   I.classify({...preview,fixture:{...fixture,venue:{id:'2'}}})]){
+  assert.notEqual(empty.identity,other.identity);
+  assert.notEqual(empty.imageIdentity,other.imageIdentity);
+ }
 });

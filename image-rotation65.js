@@ -3,6 +3,8 @@
 const library = require('./image-library49');
 const reviewed = require('./article-image-migration69.json');
 const {contentHash} = require('./article-covers');
+const {matchImageContext} = require('./match-image-context');
+const {archived} = require('./feed-policy.json');
 const reviewFor = article => reviewed[article.id] || reviewed[contentHash(article)];
 const METHOD = 'approved-article-v69';
 const MATCH_CATEGORIES = ['report','preview','match-analysis','recap'];
@@ -14,27 +16,38 @@ const normalize = value => {
 function context(article) {
   const legacy = reviewFor(article);
   const source = article.fixture || article.match || {};
-  const clubs = source.homeTeam && source.awayTeam ? [source.homeTeam, source.awayTeam] : legacy?.clubs || [];
-  const requested = article.imageCategory || article.articleKind;
+  const home = source.homeTeam || source.home?.name;
+  const away = source.awayTeam || source.away?.name;
+  const clubs = home && away ? [home, away] : legacy?.clubs || [];
+  const requested = article.imageCategory || article.articleKind || article.feedLifecycle?.kind;
   const explicit = requested === 'analysis' && clubs.length === 2 ? 'match_analysis' : requested;
   const fixtureAnnouncement = /\b(?:bekerduel|competitieduel|wedstrijd|duel)\b.*\b(?:datum|verplaatst|aftrap|speelschema)\b/i.test(article.headline || '');
   const category = legacy?.category || (article.type === 'column' ? 'column' :
     ({match_report:'report', score_update:'report', match_preview:'preview', match_analysis:'match-analysis', recap:'recap'})[explicit] ||
     (library.categories.includes(explicit) ? explicit : clubs.length === 2 ? 'report' : fixtureAnnouncement ? 'preview' : library.context(article).category));
-  return {category, clubs:MATCH_CATEGORIES.includes(category) ? clubs : [], fixtureId:article.matchId || '', competition:article.category || '',
-    daypart:library.daypart(legacy?.kickoff && (!legacy.matchId || legacy.matchId === article.matchId) ? legacy.kickoff : source), ...(legacy?.venueId ? {venueId:legacy.venueId} : {})};
+  const fixtureId = article.matchId || source.id || '';
+  const kickoff = legacy?.kickoff && (!legacy.matchId || legacy.matchId === fixtureId) ? legacy.kickoff : source;
+  const venueId = source.venueId || source.venue?.id || legacy?.venueId;
+  return {category, clubs:MATCH_CATEGORIES.includes(category) ? clubs : [], fixtureId, competition:article.category || '',
+    daypart:library.daypart(kickoff), ...(venueId ? {venueId} : {}),
+    ...matchImageContext({...article, fixture:{...source, venueId}}, category, clubs, kickoff)};
 }
 
 function eligible(article, rows = library.catalog(), ctx = context(article)) {
   const ids = new Set();
   const legacy = reviewFor(article);
   const matches = MATCH_CATEGORIES.includes(ctx.category);
+  // Explicitly archived legacy articles keep their existing editorial artwork.
+  const legacyArchive = article.status === 'published' && Object.hasOwn(archived, article.id);
   if (legacy?.exclude || (matches && ctx.clubs.length !== 2)) return [];
   return rows.filter(asset => asset.approval === 'approved' && asset.reviewer && asset.sha256 && asset.rightsEvidence &&
     (['original-ai','original-vector'].includes(asset.rights) ||
       (asset.rights === 'licensed' && asset.credit && asset.source && /^https:\/\//.test(asset.licenseUrl))) &&
     (asset.categories.includes(ctx.category) || legacy?.approvedAsset === asset.id) &&
     (!asset.fixtureId || asset.fixtureId === ctx.fixtureId) &&
+    (!ctx.imageKind || legacyArchive ||
+      (asset.imageKind === ctx.imageKind && asset.stadiumOccupancy === ctx.stadiumOccupancy &&
+        asset.stadiumIdentity === ctx.stadiumIdentity)) &&
     (!asset.competitions.length || asset.competitions.includes(ctx.competition)) &&
     (asset.daypart === 'neutral' || asset.daypart === ctx.daypart) &&
     (!asset.venueId || asset.venueId === ctx.venueId) &&
@@ -46,8 +59,11 @@ function eligible(article, rows = library.catalog(), ctx = context(article)) {
     .filter(asset => { if (ids.has(asset.sha256)) return false; ids.add(asset.sha256); return true; }).slice(0,6);
 }
 
-function assetFields(asset) {
-  const fields = library.fields(asset);
+function assetFields(asset, context) {
+  const fields = library.fields(asset, context);
+  if (context?.imageKind && context.imageKind !== asset.imageKind) {
+    for (const key of ['imageKind','stadiumOccupancy','stadiumIdentity','imageIdentity']) delete fields.imageReview[key];
+  }
   if (asset.rights !== 'licensed') return {...fields, imageCredit:'Veldio'};
   return {...fields, imageRights:'licensed', imageCredit:asset.credit, imageSource:asset.source, imageLicenseUrl:asset.licenseUrl};
 }
@@ -62,10 +78,10 @@ function resolve(article, {rows} = {}) {
   if (!options.length) return {assignment, article:null};
   const {imageAsset, imageLicenseUrl, imageVariants, imageRotation, ...content} = article;
   const selected = options[0];
-  const fields = assetFields(selected);
+  const fields = assetFields(selected, ctx);
   return {assignment, article:{...content, ...fields, imageCaption:selected.caption,
     imageVariants:options.map(asset => {
-      const variant = assetFields(asset);
+      const variant = assetFields(asset, ctx);
       return {id:asset.id, url:variant.imageUrl, caption:asset.caption, credit:variant.imageCredit, source:variant.imageSource,
         rights:variant.imageRights, licenseUrl:variant.imageLicenseUrl, review:variant.imageReview};
     }),
