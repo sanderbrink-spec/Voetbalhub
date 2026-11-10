@@ -114,6 +114,27 @@ function reopenUtrechtNecScorerClubV71(job,record,now=Date.now()){
  return true;
 }
 
+// 10 November run 42882285648: the revised draft still used unverified
+// "terug in de wedstrijd" and "achterstand om te buigen", plus a false margin.
+// Retry only the exact evidence-backed match and rejection hash once, with a
+// NEW draft and the original 85/90 quality and independent review intact.
+function reopenUtrechtNecNarrativeV71(job,record,now=Date.now()){
+ const observed='e6d65c46095e7da26e5ffa5f80463c05343faabe60d43ac2ca274f9289b88e03';
+ const at=Date.parse(record?.publishedAt||'');
+ if(!job||!record||record.matchId!=='sm-19714594'||job.matchId!==record.matchId||
+    record.articleKind!=='match_report'||!Array.isArray(record.verifiedFacts)||
+    !record.verifiedFacts.some(f=>String(f).includes('minuut 56 een doelpunt van Yoann Cathline'))||
+    !record.verifiedFacts.some(f=>String(f).includes('minuut 64 een doelpunt van Dani de Wit'))||
+    !Number.isFinite(at)||at>now||now-at>72*3600000||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||job.errorHash!==observed||
+    job.utrechtNecNarrativeRecoveryV71)return false;
+ job.utrechtNecNarrativeRecoveryV71=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.checkpoint;
+ return true;
+}
+
 function publicationBlocker(report){
  const c=report?.counts||{};
  if(c.published>0)return null;
@@ -123,4 +144,4 @@ function publicationBlocker(report){
   return 'editorial_rejected';
  return null;
 }
-module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,publicationBlocker};
+module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,reopenUtrechtNecNarrativeV71,publicationBlocker};
