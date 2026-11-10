@@ -1,6 +1,7 @@
 'use strict';
 
 const library = require('./image-library49');
+const premium = require('./premium-match-images72');
 const reviewed = require('./article-image-migration69.json');
 const {contentHash} = require('./article-covers');
 const {matchImageContext} = require('./match-image-context');
@@ -40,7 +41,7 @@ function eligible(article, rows = library.catalog(), ctx = context(article)) {
   // Explicitly archived legacy articles keep their existing editorial artwork.
   const legacyArchive = article.status === 'published' && Object.hasOwn(archived, article.id);
   if (legacy?.exclude || (matches && ctx.clubs.length !== 2)) return [];
-  return rows.filter(asset => asset.approval === 'approved' && asset.reviewer && asset.sha256 && asset.rightsEvidence &&
+  return rows.filter(asset => premium.accepted(asset) && asset.sha256 &&
     (['original-ai','original-vector'].includes(asset.rights) ||
       (asset.rights === 'licensed' && asset.credit && asset.source && /^https:\/\//.test(asset.licenseUrl))) &&
     (asset.categories.includes(ctx.category) || legacy?.approvedAsset === asset.id) &&
@@ -89,7 +90,8 @@ function resolve(article, {rows} = {}) {
 }
 
 async function migrate(client, articles) {
-  const key = 'editorial:article-image-assignments:v69';
+  const key = 'editorial:article-image-assignments:v72';
+  const retired = require('./image-library49.json').assets.filter(a=>a.approval==='rejected' && premium.isMatch(a));
   const previous = await client.hGetAll(key);
   const changes = Object.create(null);
   const visible = [];
@@ -98,6 +100,13 @@ async function migrate(client, articles) {
     const encoded = JSON.stringify(result.assignment);
     if (previous[article.id] !== encoded) changes[article.id] = encoded;
     if (result.article) visible.push(result.article);
+    else if (premium.isRetiredReference(article,retired)) {
+      // Do not erase an already published, fact-checked report simply because
+      // its previously approved image has been withdrawn by the owner.
+      const clean={...article,imageQualityStatus:'awaiting-premium-replacement'};
+      for(const key of ['imageUrl','imageAssetId','imageReview','imageCaption','imageVariants','imageRotation','imageSource','imageCredit'])delete clean[key];
+      visible.push(clean);
+    }
   }
   if (Object.keys(changes).length) await client.hSet(key, changes);
   return visible;
