@@ -34,10 +34,10 @@ test('A repeated scorer in both halves is not a false halftime-chronology reject
   second]));
  assert.ok(invalid.some(x=>/zonder rustovergang/.test(x)),JSON.stringify(invalid));
 });
-test('Original score events stay intact when unverified interval and comeback prose is removed',()=>{
+test('Original score events stay intact when unsupported comeback prose is removed',()=>{
  const original=draft([
   'In de eerste helft scoorde Kevin Kers in minuut 34 de 0-1. Dusan Tadic scoorde in minuut 38 de 0-2.',
-  'Na de rust kwam FC Utrecht terug in de wedstrijd met een doelpunt van Yoann Cathline in de 56e minuut. Twee minuten later, in minuut 58, maakte Dusan Tadic de 1-3. Dani de Wit scoorde in minuut 64 de 2-3, maar dit was niet genoeg om de achterstand om te buigen.'
+  'Na de rust kwam FC Utrecht terug in de wedstrijd met een doelpunt van Yoann Cathline in de 56e minuut. In minuut 58 maakte Dusan Tadic de 1-3. Dani de Wit scoorde in minuut 64 de 2-3, maar dit was niet genoeg om de achterstand om te buigen.'
  ]);
  const clean=repairUnverifiedMatchComeback(original,record);
  assert.doesNotMatch(clean.body.join(' '),/terug in de wedstrijd|achterstand|minuten later/i);
@@ -46,6 +46,9 @@ test('Original score events stay intact when unverified interval and comeback pr
   assert.match(clean.body[1],new RegExp(p));
  assert.deepEqual(halfTimeNarrativeIssues(record,clean),[]);
  assert.match(original.body[1],/achterstand/);
+ const sourceWithInterval=draft(['In de eerste helft scoorde Dusan Tadic in minuut 38.','Twee minuten later scoorde Dusan Tadic in minuut 58.']);
+ assert.ok(halfTimeNarrativeIssues(record,sourceWithInterval).some(x=>/Niet-geverifieerd tijdsverschil/.test(x)));
+ assert.deepEqual(repairUnverifiedMatchComeback(sourceWithInterval,record),sourceWithInterval);
 });
 test('Do not rewrite an unverified scorer-club reference or invented score',()=>{
  const missing={...record,verifiedFacts:facts.map(f=>f.replace('als doelpuntenmaker aan FC Utrecht','zonder bekende club'))};
