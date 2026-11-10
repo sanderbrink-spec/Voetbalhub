@@ -18,7 +18,7 @@ function matchGenerationIsCompact(matchRecord,newsCompact=false){
 }
 const editorialRecovery136=require('../editorial-recovery136');
 const {verifiedOfficialDisciplinaryDecision}=require('../editorial-official-decisions71');
-const {reopenVerifiedOfficialBrief}=require('../editorial-brief-recovery71');
+const {reopenVerifiedOfficialBrief,reopenVerifiedOfficialPublisher}=require('../editorial-brief-recovery71');
 const matchEvidence122=require('../editorial-match-evidence122');
 const {CREDIT}=require('../football-results52');
 const {articleUrl,discoverGdelt}=require('./editorial-discovery53');
@@ -1026,6 +1026,14 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(group.length===1&&!group.matchRecord&&group.officialDisciplinaryCandidate&&
      reopenVerifiedOfficialBrief(job,group.officialDisciplinaryCandidate,group[0],now,config.maxAgeHours)){
    report.signals.push({route:'news',topic:group[0].title,outcome:'verified_brief_writer_recovery_v71',
+    factCount:group.officialDisciplinaryCandidate.facts.length});
+  }
+  // Only the recorded old missing-publisher error is eligible under the new
+  // provenance code. A rejected draft or score is never reused.
+  if(group.length===1&&!group.matchRecord&&group.officialDisciplinaryCandidate&&
+     reopenVerifiedOfficialPublisher(job,group.officialDisciplinaryCandidate,group[0],now,config.maxAgeHours)){
+   report.signals.push({route:'news',topic:group[0].title,
+    outcome:'verified_official_publisher_recovery_v71',
     factCount:group.officialDisciplinaryCandidate.facts.length});
   }
   if(group.matchRecord){

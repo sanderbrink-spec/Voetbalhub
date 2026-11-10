@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {reopenVerifiedOfficialBrief}=require('./editorial-brief-recovery71');
+const {reopenVerifiedOfficialBrief,reopenVerifiedOfficialPublisher}=require('./editorial-brief-recovery71');
 const doc={url:'https://www.fcgroningen.nl/nieuws/voorbeeld/',publishedAt:'2026-11-09T13:40:58Z',
  text:'FC Groningen heeft een officieel besluit bevestigd. Hateboer kreeg tegen AZ een rode kaart wegens hands. De speler mist de thuiswedstrijd tegen sc Heerenveen.'};
 const sentences=doc.text.split('. ').map(x=>x.endsWith('.')?x:x+'.');
@@ -31,4 +31,21 @@ test('geen oude, veranderde, onbewezen of eerder herhaalde nieuwsbron hervatten'
   [candidate,doc,{...job(),status:'published'}],
   [candidate,doc,{...job(),failureStage:'quality'}]
  ])assert.equal(reopenVerifiedOfficialBrief(j,c,d,now,72),false);
+});
+test('oude exacte bronvermeldingsfout verdient één nieuwe volledige kwaliteitscontrole',()=>{
+ const j={...job(),failureCategory:'generator_failure',reason:'generation_error',
+  errorHash:'126283cc132043cfe72f5692e72b6d4d26a0a63433a19f6eb76372e818f72202'};
+ assert.equal(reopenVerifiedOfficialPublisher(j,candidate,doc,now),true);
+ assert.equal(j.status,'pending');
+ assert.equal(j.checkpoint,undefined);
+ assert.equal(j.verifiedPublisherRecoveryV71,true);
+ assert.equal(reopenVerifiedOfficialPublisher(j,candidate,doc,now),false);
+});
+test('afwijkende fout, oude bron en ongecontroleerde feiten mogen niet opnieuw',()=>{
+ const known={...job(),failureCategory:'generator_failure',reason:'generation_error',
+  errorHash:'126283cc132043cfe72f5692e72b6d4d26a0a63433a19f6eb76372e818f72202'};
+ assert.equal(reopenVerifiedOfficialPublisher({...known,errorHash:'different'},candidate,doc,now),false);
+ assert.equal(reopenVerifiedOfficialPublisher({...known},candidate,{...doc,publishedAt:'2026-11-01'},now),false);
+ assert.equal(reopenVerifiedOfficialPublisher({...known},{...candidate,facts:[]},doc,now),false);
+ assert.equal(reopenVerifiedOfficialPublisher({...known,verifiedPublisherRecoveryV71:true},candidate,doc,now),false);
 });
