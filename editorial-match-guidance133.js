@@ -42,10 +42,11 @@ function paragraphPlan(record = {}) {
 const significantIncidentPatterns=[
  {type:'red_card',evidence:/\b(?:rode kaart|tweede gele kaart|rood gekregen|met tien man|met negen man|van het veld gestuurd)\b/i,copy:/\b(?:rode kaart|tweede gele kaart|rood|van het veld gestuurd|weggestuurd)\b/i},
  {type:'var',evidence:/\b(?:VAR|videoscheidsrechter|videoarbitrage)\b/i,copy:/\b(?:VAR|videoscheidsrechter|videoarbitrage)\b/i},
+ {type:'interrupted_attack',evidence:/\bonderbrak (?:de scheidsrechter )?een kansrijke aanval\b/i,copy:/\b(?:onderbrak|stilgelegd|stillegde|floot|afgefloten|onderbroken)\b[^.!?]{0,110}\b(?:aanval|kans)\w*|\b(?:aanval|kans)\w*[^.!?]{0,110}\b(?:onderbrak|stilgelegd|stillegde|floot|afgefloten|onderbroken)\b/i},
  {type:'penalty',evidence:/\b(?:strafschop(?:moment)?|penalty)\b/i,copy:/\b(?:strafschop(?:moment)?|penalty)\b/i}
 ];
 function verifiedIncidentCoverageIssues(record={},draft={}){
- if(record.articleKind!=='match_report')return [];
+ if(!['match_report','score_update'].includes(record.articleKind))return [];
  const evidence=Array.isArray(record.verifiedFacts)?record.verifiedFacts:[];
  const text=[draft.headline,draft.standfirst,...(Array.isArray(draft.body)?draft.body:[])].filter(x=>typeof x==='string').join(' ');
  const issues=[];
@@ -56,14 +57,21 @@ function verifiedIncidentCoverageIssues(record={},draft={}){
   if(incident&&!rule.copy.test(text))
    issues.push('Bepalend geverifieerd wedstrijdincident ontbreekt in het artikel: '+rule.type+'. Beschrijf alleen de gecontroleerde gebeurtenis en de juiste bron.');
  }
- // Check each named incident, not just a generic mention of a red card.
- for(const fact of evidence){
-  const m=String(fact).match(/\bkreeg\s+([A-ZÀ-Ž][\p{L}-]+(?:\s+[A-ZÀ-Ž][\p{L}-]+){0,3})\s+(?:een directe rode kaart|een rode kaart|(?:een|zijn|haar|de) tweede gele kaart)\b/iu);
-  if(!m)continue;
-  const name=m[1];
-  const normalized=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-  if(!normalized(text).includes(normalized(name)))
-   issues.push('Geverifieerde kaart van '+name+' ontbreekt in het wedstrijdverslag.');
+ // Match each actor to the registered action. A scorer mentioned elsewhere
+ // in the article does not cover that player's dismissal or missed penalty.
+ const incidents=evidence.flatMap(fact=>{
+  const card=/\bkreeg\s+([\p{L}.'’-]+(?:\s+[\p{L}.'’-]+){0,4}?)\s+(?:een directe rode kaart|een rode kaart|(?:een|zijn|haar|de) tweede gele kaart)\b/iu.exec(fact);
+  if(card) return [{name:card[1], action:/tweede gele kaart/i.test(card[0]) ?
+   /\b(?:tweede (?:gele kaart|keer geel)|twee (?:gele kaarten|keer geel))\b/i :
+   /\b(?:rode kaart|(?:direct )?rood|weggestuurd|van het veld gestuurd)\b/i, label:'kaart'}];
+  const penalty=/\bmiste\s+([\p{L}.'’-]+(?:\s+[\p{L}.'’-]+){0,4}?)\s+een strafschop\b/iu.exec(fact);
+  return penalty?[{name:penalty[1],action:/\b(?:miste|misgeschoten|onbenut|gekeerd|keerde)\b/i,label:'gemiste strafschop'}]:[];
+ });
+ const normalized=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+ const clauses=normalized(text).split(/[.!?;]|\ben\b(?=[^.!?;]{0,70}\b(?:kreeg|ontving|pakte|miste)\b)/i);
+ for(const {name,action,label} of incidents){
+  if(!clauses.some(clause=>clause.includes(normalized(name))&&action.test(clause)))
+   issues.push('Geverifieerde '+label+' van '+name+' ontbreekt in het wedstrijdverslag.');
  }
  return [...new Set(issues)];
 }
@@ -113,7 +121,7 @@ function writingPrompt(record = {}) {
   'Gebruik NOOIT een berekend tijdsverschil als "drie minuten later", "zes minuten daarna" of "vlak daarna". Verbind gebeurtenissen alleen met afzonderlijk vastgelegde minuten. Een twee-doelpunten-achterstand en het ombuigen daarvan mogen uitsluitend worden beschreven als een aparte afgeleide verificatiefact in verifiedFacts dat uit een complete gecontroleerde doelpuntenreeks is opgesteld. Anders geen achterstand- of comebacktaal.'
  ] : [
   'Schrijf een compact uitslagbericht: body bevat EXACT ÉÉN inhoudelijke alinea van 10-65 woorden, mits dit zonder herhaling of fictie kan. Dit is GEEN langwedstrijdverslag.',
-  'Gebruik de body alleen voor geverifieerde datum, competitie, speelronde en een expliciet bevestigde ruststand. Zonder zulke aanvullende feiten: {"skip":true}.'
+  'Gebruik de body alleen voor geverifieerde datum, competitie, speelronde, een expliciet bevestigde ruststand en bepalende geverifieerde wedstrijdincidenten. Zonder zulke aanvullende feiten: {"skip":true}.'
  ];
  return [...common,...form].join(' ');
 }

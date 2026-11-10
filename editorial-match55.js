@@ -69,6 +69,14 @@ function candidate(fixture, now) {
   const comeback=verifiedComebackFact(timeline,match,home,away);
   if(comeback)verifiedFacts.push(comeback);
  }
+ if (sportmonks) for (const {kind, minute, extra, player} of fixture.incidents || []) {
+  const description = {
+   red_card:'kreeg '+player+' een directe rode kaart',
+   second_yellow:'kreeg '+player+' een tweede gele kaart',
+   missed_penalty:'miste '+player+' een strafschop'
+  }[kind];
+  if (description) verifiedFacts.push('Volgens de Sportmonks-wedstrijdregistratie '+description+' in minuut '+minute+(extra?'+'+extra:'')+'.');
+ }
  const sources = [{url:sportmonks?SM:supplemented?FD:OPEN}];
  // A half-time score alone does not establish an editorially rich match report.
  // Only a complete, checked goal sequence or independently verified event

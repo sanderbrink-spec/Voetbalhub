@@ -70,8 +70,22 @@ test('a stale cache from the old Sportmonks goal parser cannot hide the correcte
   }
  });
  const value=await api.get('eredivisie');
- assert.equal(value.sourceDetails.eventParserRevision,136);
+ assert.equal(value.sourceDetails.eventParserRevision,Sportmonks.EVENT_PARSER_REVISION);
  assert.equal(value.fixtures.length,120);
  assert.equal(value.fixtures[0].goalTimeline.length,4);
  assert.equal(calls,4);
+});
+
+test('registered dismissals and missed penalties are distinct and retain stoppage time',()=>{
+ const direct={type_id:20,minute:90,extra_minute:9,participant_id:102,player_name:'Hans Hateboer'};
+ const second={type_id:21,minute:88,participant_id:102,player_name:'Etienne Vaessen'};
+ const penalty={type_id:17,minute:59,participant_id:101,player_name:'Mexx Meerdink'};
+ const conflicting={...second,player_name:'Onbevestigde Speler',team_id:101};
+ const fixture=Sportmonks.parseFixture({...base,events:[...events,direct,second,penalty,direct,conflicting]},'eredivisie',now);
+ assert.deepEqual(fixture.incidents.map(x=>x.kind),['missed_penalty','second_yellow','red_card']);
+ const record=Matches.candidate(fixture,now);
+ assert.match(record.verifiedFacts.join(' '),/Hans Hateboer een directe rode kaart in minuut 90\+9/);
+ assert.match(record.verifiedFacts.join(' '),/Etienne Vaessen een tweede gele kaart in minuut 88/);
+ assert.match(record.verifiedFacts.join(' '),/miste Mexx Meerdink een strafschop/);
+ assert.doesNotMatch(record.verifiedFacts.join(' '),/Onbevestigde Speler/);
 });
