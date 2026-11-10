@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'automatic-editorial.json'
+      - 'test/editorial-sportmonks-ten-articles.test.js'
       - 'editorial-production45.js'
       - 'editorial-match55.js'
       - 'editorial-match-evidence122.js'
