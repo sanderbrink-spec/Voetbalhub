@@ -64,3 +64,16 @@ test('vermelding als doelman vervangt zijn eigen tweede gele kaart niet',()=>{
  const fake={...draft,body:['Etienne Vaessen stond op doel. Hans Hateboer kreeg een rode kaart. De VAR beoordeelde de strafschop.']};
  assert.ok(guidance.verifiedIncidentCoverageIssues(record,fake).some(x=>x.includes('Etienne Vaessen')));
 });
+
+test('getimede incidenten staan tussen de doelpunten op het juiste moment',()=>{
+ const fixture={...record,verifiedFacts:[
+  ...record.verifiedFacts.slice(0,2),
+  'Volgens de Sportmonks-wedstrijdregistratie viel in minuut 47 een doelpunt.',
+  'Volgens de Sportmonks-wedstrijdregistratie viel in minuut 61 een doelpunt.',
+  'Volgens de Sportmonks-wedstrijdregistratie viel in minuut 90+1 een benutte strafschop.',
+  'Volgens de Sportmonks-wedstrijdregistratie miste Mexx Meerdink een strafschop in minuut 59.',
+  'Volgens de Sportmonks-wedstrijdregistratie kreeg Hans Hateboer een directe rode kaart in minuut 90+10.'
+ ]};
+ const plan=guidance.paragraphPlan(fixture);
+ assert.deepEqual(plan.body.map(part=>part.factIds),[['F2'],['F3','F6','F4'],['F5','F7']]);
+});

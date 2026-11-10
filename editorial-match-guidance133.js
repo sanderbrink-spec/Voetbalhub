@@ -19,9 +19,13 @@ function allowedScores(facts = []) {
 function paragraphPlan(record = {}) {
  const facts=Array.isArray(record.verifiedFacts)?record.verifiedFacts:[];
  const ids=facts.map((text,index)=>({id:'F'+(index+1),text:String(text)}));
- const event=ids.filter(x=>/Volgens (?:de Sportmonks-wedstrijdregistratie|het officiële wedstrijdverslag)/.test(x.text) &&
-  /\b(?:minuut)\s+\d{1,2}(?:\+\d{1,2})?\b/.test(x.text));
- const context=ids.filter(x=>!event.includes(x)&&x.id!=='F1');
+ const event=ids.flatMap(fact=>{
+  const moment=/\bminuut\s+(\d{1,3})(?:\+(\d{1,2}))?\b/.exec(fact.text);
+  const registered=/^Volgens (?:de Sportmonks-wedstrijdregistratie|het officiële wedstrijdverslag)/.test(fact.text);
+  return registered && moment ? [{...fact, order:Number(moment[1])*100+Number(moment[2]||0)}] : [];
+ }).sort((a,b)=>a.order-b.order);
+ const eventIds=new Set(event.map(fact=>fact.id));
+ const context=ids.filter(x=>!eventIds.has(x.id)&&x.id!=='F1');
  if(!isRichMatch(record)) return {format:'compact',lead:['F1'],body:[{section:1,factIds:context.map(x=>x.id)}],events:event.length};
  const middle=Math.max(1,Math.ceil(event.length/2));
  // If structured event coverage is thin, the writer must skip rather than
@@ -31,8 +35,8 @@ function paragraphPlan(record = {}) {
   format:'rich',lead:['F1'],
   body:[
    {section:1,factIds:context.map(x=>x.id),angle:'Competition, date and verified half-time score; no score repetition'},
-   {section:2,factIds:event.slice(0,middle).map(x=>x.id),angle:'Earlier documented goals in source order'},
-   {section:3,factIds:event.slice(middle).map(x=>x.id),angle:'Later documented goals in source order'}
+   {section:2,factIds:event.slice(0,middle).map(x=>x.id),angle:'Earlier verified goals and incidents in chronological order'},
+   {section:3,factIds:event.slice(middle).map(x=>x.id),angle:'Later verified goals and incidents in chronological order'}
   ],
   events:event.length
  };
@@ -91,7 +95,7 @@ function paragraphChronologyIssues(record = {},draft = {}) {
   const allowed=new Set(minutesFor(part));
   for(const minute of minutes(draft.body[index]))
    if(known.has(minute)&&!allowed.has(minute))
-    issues.push('Geverifieerde minuut '+minute+' staat in de verkeerde bodyalinea. Houd de toegewezen doelpuntenchronologie aan.');
+    issues.push('Geverifieerde minuut '+minute+' staat in de verkeerde bodyalinea. Houd de toegewezen wedstrijdchronologie aan.');
  });
  return [...new Set([...issues,...halfTimeIssues,...verifiedIncidentCoverageIssues(record,draft)])];
 }
@@ -114,7 +118,7 @@ function writingPrompt(record = {}) {
  ];
  const form = rich ? [
   'Schrijf een inhoudelijk rijk wedstrijdverslag met EXACT DRIE bodyalinea’s, ieder 18-120 woorden en minimaal 70 tekens. Dit is GEEN compact uitslagbericht. Gebruik een eigen zakelijke nieuwsstijl, geen sjabloonachtige vulzinnen.',
-  'Volg de drie afzonderlijke bodysecties in paragraphPlan: 1 context, ruststand en expliciet geverifieerde niet-doelpuntincidenten, 2 eerdere gedocumenteerde doelpunten, 3 latere gedocumenteerde doelpunten. Verzwijg geen geverifieerde rode kaart, strafschop of VAR-controverse uit de toegewezen feiten. Elke alinea behandelt uitsluitend de aldaar toegewezen feiten. Schrijf geen vierde of vijfde alinea. Als een sectie onvoldoende feiten bevat voor 18 zinvolle woorden is skip verplicht.',
+  'Volg de drie afzonderlijke bodysecties in paragraphPlan: 1 context, ruststand en expliciet geverifieerde niet-doelpuntincidenten, 2 eerdere gedocumenteerde doelpunten en incidenten, 3 latere gedocumenteerde doelpunten en incidenten. Verzwijg geen geverifieerde rode kaart, strafschop of VAR-controverse uit de toegewezen feiten. Elke alinea behandelt uitsluitend de aldaar toegewezen feiten. Schrijf geen vierde of vijfde alinea. Als een sectie onvoldoende feiten bevat voor 18 zinvolle woorden is skip verplicht.',
   'Een goal-timeline bewijst uitsluitend de genoemde minuut, speler, soort doelpunt en direct daarbij geregistreerde stand. Een ruststand bewijst niets over kansen of spelbeeld. Verbind gebeurtenissen niet met fictieve causaliteit.',
   'Schrijf in ten minste één bodyalinea ondubbelzinnig: volgens de Sportmonks-wedstrijdregistratie, als Sportmonks de bron is. Herhaal die bron niet na iedere doelpuntzin. Noem uitsluitend de expliciet geregistreerde momenten en scores, en herschik zinnen zelfstandig zonder de vaste bronzin "viel in minuut ... waarna de stand ... was" over te nemen.',
   'Een gebeurtenis op 45+3 valt vóór de rust en een gebeurtenis op 47 valt ná de rust. Schrijf bij die overgang expliciet dat de rust tussendoor viel, nooit dat beide gebeurtenissen twee minuten na elkaar plaatsvonden. De ruststand is een harde chronologische grens.',
