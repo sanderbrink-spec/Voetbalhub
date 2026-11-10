@@ -54,7 +54,12 @@ function plain(html){
  .replace(/\s+/g,' ').trim();
 }
 function extractPage(html,url){
- const article=html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1];
+ // Ajax puts related <article> cards inside its real <main> report.
+ const ajaxMain = ['ajax.nl','english.ajax.nl'].includes(host(url))
+  ? html.match(/<main\b[^>]*class=["'][^"']*\bfull-article\b[^"']*["'][^>]*>([\s\S]*?)<\/main>/i)?.[1]
+  : undefined;
+ const article=ajaxMain?.split(/<[^>]+class=["'][^"']*full-article__related-articles\b/i,1)[0] ||
+  html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1];
  const title=plain(((article||html).match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)||html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)||[])[1]||'');
  let publishedAt='';
  for(const match of html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)){

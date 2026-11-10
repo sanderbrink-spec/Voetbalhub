@@ -50,11 +50,13 @@ test('first-party match-day date-only source can enrich a fixture without invent
 });
 test('explicit English Ajax publication date is extracted from first-party article text',()=>{
  const {extractPage}=require('../scripts/automatic-publication');
- const html='<html><main><article><h1>Late equaliser denies Ajax victory in Enschede</h1>'+
+ const html='<html><main class="full-article"><h1>Late equaliser denies Ajax victory in Enschede</h1>'+
  '<p>Date: 08.11.2026</p><p>Ajax and FC Twente ended with a draw. '+official.text+'</p>'+
- '</article></main></html>';
+ '<section class="full-article__related-articles"><article>Unrelated story</article></section></main></html>';
  const page=extractPage(html,official.url);
  assert.equal(page.publishedAt,'2026-11-08');
+ assert.match(page.text,/Bounida/);
+ assert.doesNotMatch(page.text,/Unrelated story/);
 });
 
 
