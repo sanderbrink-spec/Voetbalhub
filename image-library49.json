@@ -3079,6 +3079,474 @@
       "stadiumOccupancy": "empty",
       "stadiumIdentity": "home:telstar",
       "homeClubReusable": true
+    },
+    {
+      "id": "veldio75-adodenhaag-report",
+      "file": "public/stadium75/adodenhaag-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "ADO Den Haag, wedstrijdverslag met avondpubliek",
+      "clubs": [
+        "ADO Den Haag",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-adodenhaag-report",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van veldio_nacht_in_een_bruisend_stadion.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "b5f2abb56683bf41477f3fa77cf0204b79aef4cf8b25ce67189f255e7a2d948c",
+      "caption": "Veldio AI-illustratie voor ADO Den Haag. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:adodenhaag",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 1672,
+      "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+    },
+    {
+      "id": "veldio75-fctwente-preview",
+      "file": "public/stadium75/fctwente-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "FC Twente, voorbeschouwing overdag",
+      "clubs": [
+        "FC Twente",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "day",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-fctwente-preview",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_clean_composite_graphic_layout_with_10_stadium_s.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "4d1e64cb880f43bb79f7311889dee75bf4b2162dced924978b7bb21a2747c74e",
+      "caption": "Veldio AI-illustratie voor FC Twente. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:fctwente",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 350,
+      "qualityReviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+    },
+    {
+      "id": "veldio75-feyenoord-report",
+      "file": "public/stadium75/feyenoord-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "Feyenoord, wedstrijdverslag met avondpubliek",
+      "clubs": [
+        "Feyenoord",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-feyenoord-report",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_highly_detailed_sports_stadium_field_scene_in_ve.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "771f570c3a8f35b94017488e11e75cb5f2d743dd098e2fb676607dfb9f9b2304",
+      "caption": "Veldio AI-illustratie voor Feyenoord. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:feyenoord",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 792,
+      "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+    },
+    {
+      "id": "veldio75-fortunasittard-report",
+      "file": "public/stadium75/fortunasittard-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "Fortuna Sittard, wedstrijdverslag met avondpubliek",
+      "clubs": [
+        "Fortuna Sittard",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-fortunasittard-report",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van veldio_in_het_nachtelijke_stadion.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "8a0c7e8378153d1f7a5fd961b2754a2625aedd5f253c2914f56a7ee697f3494a",
+      "caption": "Veldio AI-illustratie voor Fortuna Sittard. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:fortunasittard",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 1672,
+      "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+    },
+    {
+      "id": "veldio75-necnijmegen-report",
+      "file": "public/stadium75/necnijmegen-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "N.E.C. Nijmegen, wedstrijdverslag met avondpubliek",
+      "clubs": [
+        "N.E.C. Nijmegen",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-necnijmegen-report",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_large_composite_poster_image_with_a_grid_of_10_s.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "4abecd9446fb06593628393b6dd305bef9077685d9e1a322dbeafd2e3c491dcf",
+      "caption": "Veldio AI-illustratie voor N.E.C. Nijmegen. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:necnijmegen",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 328,
+      "qualityReviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+    },
+    {
+      "id": "veldio75-psv-preview",
+      "file": "public/stadium75/psv-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "PSV, voorbeschouwing overdag",
+      "clubs": [
+        "PSV",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "day",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-psv-preview",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_highly_detailed_cinematic_stadium_scene_at_the.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "e26d56fff070b9449f850a0d77a35ed231ee4b67fc242567ead7998ea0ded11a",
+      "caption": "Veldio AI-illustratie voor PSV. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:psv",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 759,
+      "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+    },
+    {
+      "id": "veldio75-psv-report",
+      "file": "public/stadium75/psv-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "PSV, wedstrijdverslag met avondpubliek",
+      "clubs": [
+        "PSV",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-psv-report",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_highly_detailed_cinematic_stadium_scene_at_the.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "8a85de39f43d996634caedc3432f3d02d664f86967a496d6760d83f08075e1d9",
+      "caption": "Veldio AI-illustratie voor PSV. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:psv",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 757,
+      "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+    },
+    {
+      "id": "veldio75-sccambuur-preview",
+      "file": "public/stadium75/sccambuur-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "SC Cambuur, voorbeschouwing overdag",
+      "clubs": [
+        "SC Cambuur",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "day",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-sccambuur-preview",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_large_composite_poster_image_with_a_grid_of_10_s.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "ec4f3ecca8cd7071a12ad23b5e4b1b04c653cf5423483d373c73ddd205223db4",
+      "caption": "Veldio AI-illustratie voor SC Cambuur. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:sccambuur",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 320,
+      "qualityReviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+    },
+    {
+      "id": "veldio75-sccambuur-report",
+      "file": "public/stadium75/sccambuur-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "SC Cambuur, wedstrijdverslag met avondpubliek",
+      "clubs": [
+        "SC Cambuur",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-sccambuur-report",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_large_composite_poster_image_with_a_grid_of_10_s.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "296a8f91253e34bcc1536a2a7e9b56ac97e338cc349c0e183dfaf50693a76658",
+      "caption": "Veldio AI-illustratie voor SC Cambuur. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:sccambuur",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 320,
+      "qualityReviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+    },
+    {
+      "id": "veldio75-scheerenveen-preview",
+      "file": "public/stadium75/scheerenveen-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "sc Heerenveen, voorbeschouwing overdag",
+      "clubs": [
+        "sc Heerenveen",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "day",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-scheerenveen-preview",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_cinematic_high_detail_wide_angle_stadium_scene.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "ff98fa290dcd7a1e70e187686184b3e5fead3c17682a5583708d736a681abc42",
+      "caption": "Veldio AI-illustratie voor sc Heerenveen. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:scheerenveen",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 720,
+      "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+    },
+    {
+      "id": "veldio75-scheerenveen-report",
+      "file": "public/stadium75/scheerenveen-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "sc Heerenveen, wedstrijdverslag met avondpubliek",
+      "clubs": [
+        "sc Heerenveen",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-scheerenveen-report",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_cinematic_high_detail_wide_angle_stadium_scene.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "17e6a12ac2f5dbaa75adf791a49d93d2af4c7d03810c52b5352e680e94896152",
+      "caption": "Veldio AI-illustratie voor sc Heerenveen. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:scheerenveen",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 720,
+      "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+    },
+    {
+      "id": "veldio75-spartarotterdam-preview",
+      "file": "public/stadium75/spartarotterdam-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "Sparta Rotterdam, voorbeschouwing overdag",
+      "clubs": [
+        "Sparta Rotterdam",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "day",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-spartarotterdam-preview",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_wide_highly_detailed_composite_poster_infograph.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "b947206e8248769ad8543c567560b88f22fce9627b284a3eaa6e0495d22273d5",
+      "caption": "Veldio AI-illustratie voor Sparta Rotterdam. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:spartarotterdam",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 339,
+      "qualityReviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+    },
+    {
+      "id": "veldio75-spartarotterdam-report",
+      "file": "public/stadium75/spartarotterdam-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "Sparta Rotterdam, wedstrijdverslag met avondpubliek",
+      "clubs": [
+        "Sparta Rotterdam",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "AI-illustratie"
+      ],
+      "variant": "stadium75-spartarotterdam-report",
+      "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_wide_highly_detailed_composite_poster_infograph.png",
+      "rights": "original-ai",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
+      "lastUsed": null,
+      "sha256": "b89594df5a55efe839d434a0568fa6463a42d8aa30e9fd4d8d5f78ea368912f9",
+      "caption": "Veldio AI-illustratie voor Sparta Rotterdam. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:spartarotterdam",
+      "homeClubReusable": true,
+      "sourceNativeCropWidth": 339,
+      "qualityReviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
     }
   ]
 }

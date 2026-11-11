@@ -37,8 +37,8 @@ test('Fase 74: every club has two review slots, pending is not automatically pub
  assert.equal(review.requiredSlots,36);
  const stats=desk.overview();
  assert.equal(stats.slotsTotal,36);
- assert.equal(stats.counts['stored-awaiting-review'],23);
- assert.equal(stats.counts['missing-full-resolution-image'],13);
+ assert.equal(stats.counts['stored-awaiting-review'],36);
+ assert.equal(stats.counts['missing-full-resolution-image']||0,0);
  assert.equal(stats.counts['approved-for-use']||0,0);
  for(const slot of stats.slots)assert.notEqual(slot.state,'approved-for-use');
 });

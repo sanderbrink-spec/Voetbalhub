@@ -20,10 +20,12 @@
           "assetPath": "public/stadium74/adodenhaag-preview.webp"
         },
         "report": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/adodenhaag-report.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
         }
       }
     },
@@ -120,10 +122,12 @@
       "id": "fctwente",
       "slots": {
         "preview": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/fctwente-preview.webp",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
         },
         "report": {
           "state": "repository-pending",
@@ -170,10 +174,12 @@
           "assetPath": "public/stadium74/feyenoord-preview.webp"
         },
         "report": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/feyenoord-report.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
         }
       }
     },
@@ -190,10 +196,12 @@
           "assetPath": "public/stadium74/fortunasittard-preview.webp"
         },
         "report": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/fortunasittard-report.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
         }
       }
     },
@@ -232,10 +240,12 @@
           "assetPath": "public/stadium74/necnijmegen-preview.webp"
         },
         "report": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/necnijmegen-report.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
         }
       }
     },
@@ -266,16 +276,20 @@
       "id": "psv",
       "slots": {
         "preview": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/psv-preview.webp",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
         },
         "report": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/psv-report.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
         }
       }
     },
@@ -284,16 +298,20 @@
       "id": "sccambuur",
       "slots": {
         "preview": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/sccambuur-preview.webp",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
         },
         "report": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/sccambuur-report.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
         }
       }
     },
@@ -302,16 +320,20 @@
       "id": "scheerenveen",
       "slots": {
         "preview": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/scheerenveen-preview.webp",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
         },
         "report": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/scheerenveen-report.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
         }
       }
     },
@@ -320,16 +342,20 @@
       "id": "spartarotterdam",
       "slots": {
         "preview": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/spartarotterdam-preview.webp",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
         },
         "report": {
-          "state": "requires-new-full-resolution-art",
+          "state": "repository-pending",
+          "assetPath": "public/stadium75/spartarotterdam-report.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
         }
       }
     },
