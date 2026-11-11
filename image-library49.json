@@ -2282,6 +2282,123 @@
         "reviewedAt": "2026-11-11",
         "notes": "Gedetailleerde AI-stadionscène met volledig publiek, beide correct gespelde clubsjaals en subtiele V. Galgenwaard-context is artistiek geïnterpreteerd; geen fotografische of bouwkundige exactheid geclaimd."
       }
+    },
+    {
+      "id": "veldio73-telstar-report-evening",
+      "file": "public/club-stadiums73/telstar-report-evening.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "Telstar thuisstadion, wedstrijdverslag",
+      "clubs": [
+        "Telstar",
+        "*"
+      ],
+      "homeClubReusable": true,
+      "homeVenueAliases": [],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "geen officiële clublogo's",
+        "AI-illustratie"
+      ],
+      "variant": "report-night-uitgesneden-stadionconcept-73",
+      "origin": "Veldio / OpenAI ImageGen; per clubsegment uitgesneden uit eerder gegenereerde collage en opgeschaald",
+      "rights": "original-ai",
+      "rightsEvidence": "AI-gegeneerde illustratie uit Veldio-conversatie; geen derde partij-fotografie gebruikt. Copyright-, sponsor- en stadionrecht-eindcontrole staat nog open.",
+      "approval": "pending",
+      "lastUsed": null,
+      "sha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
+      "caption": "Veldio · AI-illustratie bij Telstar. Geen foto van een echte wedstrijd of exacte weergave van het stadion.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:telstar",
+      "intakeStatus": "pending-visual-and-legal-review",
+      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score."
+    },
+    {
+      "id": "veldio73-willem-ii-preview-day",
+      "file": "public/club-stadiums73/willem-ii-preview-day.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "Willem II thuisstadion, voorbeschouwing",
+      "clubs": [
+        "Willem II",
+        "*"
+      ],
+      "homeClubReusable": true,
+      "homeVenueAliases": [],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "neutral",
+      "sceneDaypart": "day",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "geen officiële clublogo's",
+        "AI-illustratie"
+      ],
+      "variant": "preview-day-uitgesneden-stadionconcept-73",
+      "origin": "Veldio / OpenAI ImageGen; per clubsegment uitgesneden uit eerder gegenereerde collage en opgeschaald",
+      "rights": "original-ai",
+      "rightsEvidence": "AI-gegeneerde illustratie uit Veldio-conversatie; geen derde partij-fotografie gebruikt. Copyright-, sponsor- en stadionrecht-eindcontrole staat nog open.",
+      "approval": "pending",
+      "lastUsed": null,
+      "sha256": "bdcea15054bfa71eab70e32e06b79688273b5a0051b160e7e0a8500b88886d9b",
+      "caption": "Veldio · AI-illustratie bij Willem II. Geen foto van een echte wedstrijd of exacte weergave van het stadion.",
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:willemii",
+      "intakeStatus": "pending-visual-and-legal-review",
+      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score."
+    },
+    {
+      "id": "veldio73-willem-ii-report-evening",
+      "file": "public/club-stadiums73/willem-ii-report-evening.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "Willem II thuisstadion, wedstrijdverslag",
+      "clubs": [
+        "Willem II",
+        "*"
+      ],
+      "homeClubReusable": true,
+      "homeVenueAliases": [],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "stadion",
+        "Veldio",
+        "geen officiële clublogo's",
+        "AI-illustratie"
+      ],
+      "variant": "report-night-uitgesneden-stadionconcept-73",
+      "origin": "Veldio / OpenAI ImageGen; per clubsegment uitgesneden uit eerder gegenereerde collage en opgeschaald",
+      "rights": "original-ai",
+      "rightsEvidence": "AI-gegeneerde illustratie uit Veldio-conversatie; geen derde partij-fotografie gebruikt. Copyright-, sponsor- en stadionrecht-eindcontrole staat nog open.",
+      "approval": "pending",
+      "lastUsed": null,
+      "sha256": "83ab3e9e1a74fc01a32a8b0aa254a0e8b6cc708a94c73fa4006e54c0b5c4ac6e",
+      "caption": "Veldio · AI-illustratie bij Willem II. Geen foto van een echte wedstrijd of exacte weergave van het stadion.",
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:willemii",
+      "intakeStatus": "pending-visual-and-legal-review",
+      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score."
     }
   ]
 }
