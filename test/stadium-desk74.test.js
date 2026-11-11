@@ -64,3 +64,31 @@ test('Fase 74: existing approved fixture-specific report remains in the catalogu
  assert.equal(library.choose(ctx,[a])?.id,a.id);
  assert.equal(library.choose({...ctx,stadiumIdentity:'venue:unrelated'},[a]),null);
 });
+
+test('Fase 76: reviewer-only preview serves pending originals with SHA and never exposes approved assets',()=>{
+ const pending=assets.find(a=>a.id==='veldio74-adodenhaag-preview');
+ assert.ok(pending&&pending.approval==='pending');
+ const makeRes=()=>({code:null,headers:null,payload:null,
+   writeHead(code,headers){this.code=code;this.headers=headers;},
+   end(bytes){this.payload=bytes;}});
+ const route='/editorial/stadium-preview74/'+pending.id;
+ const full=makeRes();
+ assert.equal(inventory.servePreview({method:'GET'},full,route),true);
+ assert.equal(full.code,200);
+ assert.equal(full.headers['Content-Type'],'image/webp');
+ assert.equal(full.headers['Cache-Control'],'private, no-store');
+ assert.equal(full.headers['X-Content-Type-Options'],'nosniff');
+ assert.equal(full.payload.length,full.headers['Content-Length']);
+ const head=makeRes();
+ assert.equal(inventory.servePreview({method:'HEAD'},head,route),true);
+ assert.equal(head.payload,undefined);
+ assert.equal(head.headers['Content-Length'],full.payload.length);
+ for(const invalid of [
+  '/editorial/stadium-preview74/../../server.js',
+  '/editorial/stadium-preview74/veldio-not-real',
+  '/editorial/stadium-preview74/veldio72-utrecht-nec-report',
+  '/stadium74/'+pending.id,
+ ])assert.equal(inventory.servePreview({method:'GET'},makeRes(),invalid),false);
+ const slot=inventory.overview().slots.find(s=>s.club==='ADO Den Haag'&&s.kind==='preview');
+ assert.deepEqual(slot.reviewUrls,[route]);
+});
