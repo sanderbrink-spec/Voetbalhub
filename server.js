@@ -321,6 +321,11 @@ async function handle(req, res) {
     const key=url.searchParams.get('competition')||'eredivisie';
     try{return send(res,200,await (url.searchParams.get("view")==="veldio50"?(key==="eredivisie"?football47.overview():football47.getSelected(key)):football47.get(key)));}catch{return send(res,400,{error:'Onbekende competitie.'});}
   }
+  // All 18 clubs / 36 slots in a protected editorial review queue.
+  if (req.method === "GET" && url.pathname === "/editorial/stadium-review74") {
+    if (!authorizeRequest(req,res)) return;
+    return send(res,200,require('./stadium-desk74').overview());
+  }
   if (req.method === "GET" && url.pathname === "/beeldcollectie")
     return send(res, 410, {error:"De illustraties verschijnen bij Veldio-artikelen."});
   if(require("./image-library49").serve(req,res,url.pathname))return;
