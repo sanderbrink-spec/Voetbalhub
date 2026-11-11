@@ -16,7 +16,8 @@ const base=(club,kind='report')=>({
  imageKind:kind,stadiumOccupancy:kind==='report'?'full':'empty',
  stadiumIdentity:'home:'+club.toLowerCase().replace(/[^a-z0-9]/g,''),
  homeVenueAliases:['Stadion '+club],variant:'base-'+kind,
- visualReview:{...source.visualReview,reviewedAt:'2026-11-11'}
+ visualReview:{...source.visualReview,reviewedAt:'2026-11-11',clubScope:'home-only',
+  scopeHome:club.toLowerCase().replace(/[^a-z0-9]/g,''),reviewedStadiumIdentity:'home:'+club.toLowerCase().replace(/[^a-z0-9]/g,'')}
 });
 const article=(home,away,kind='match_report',extra={})=>({
  id:'reuse73-'+home+'-'+away,

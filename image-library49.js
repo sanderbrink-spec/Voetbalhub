@@ -2,9 +2,10 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {occupancyFor}=require('./match-image-context');
 const premium=require('./premium-match-images72');
+const stadium74=require('./stadium-venue74');
 const ROOT=__dirname,ORIGIN='https://voetbalhub-redactie.onrender.com';
 const categories=['preview','report','transfer','rumour','contract','club','injury','tactics','competition','championship','analysis','interview','youth','supporters','suspension','international','history','quiz','neutral'];
-const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const norm=stadium74.norm;
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 function validate(rows,{root=ROOT}={}){
  if(!Array.isArray(rows)||rows.length>2000)throw Error('Maximaal 2000 afbeeldingen.');const ids=new Set();
@@ -39,17 +40,15 @@ function context(payload){const I=require('./editorial-image44'),p=I.classify(pa
  if(['match_report','score_update'].includes(category))category='report';
  if(!categories.includes(category))category=p.category==='match'?'preview':p.category==='transfer'?(/gerucht|mogelijk|interesse/.test(text)?'rumour':'transfer'):'club';
  for(const [re,c] of [[/contractverleng|verlengt/, 'contract'],[/blessur|revalid|geblesseerd/,'injury'],[/trainer|tactiek|formatie/,'tactics'],[/schorsing|geschorst/,'suspension'],[/interview|persconferentie/,'interview'],[/jeugd|talent/,'youth'],[/kampioen|titel/,'championship'],[/statistiek|analyse/,'analysis'],[/supporter|stadion/,'supporters']])if(!['preview','report'].includes(category)&&re.test(text)){category=c;break;}
- const f=payload.fixture||payload.match||{};return {category,fixtureId:payload.matchId,clubs:p.clubs.map(c=>c.name),competition:f.competition||payload.competition||payload.category||'',daypart:daypart(f),articleId:payload.id||d.id||p.identity};
+ const f=payload.fixture||payload.match||{};return {category,fixtureId:payload.matchId,clubs:p.clubs.map(c=>c.name),competition:f.competition||payload.competition||payload.category||'',daypart:daypart(f),
+  stadiumIdentity:require('./match-image-context').stadiumFor(f,p.clubs[0]?.name),
+  venueName:f.venue?.name||f.venueName||'',articleId:payload.id||d.id||p.identity};
 }
 // Solar elevation uses verified venue coordinates and an absolute kickoff; otherwise neutral.
 function daypart(f){const stamp=f.date||f.playedAt,lat=f.venue?.latitude,lon=f.venue?.longitude;if(!/(Z|[+-]\d\d:\d\d)$/.test(stamp||'')||!Number.isFinite(Date.parse(stamp))||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return 'neutral';const t=new Date(stamp),n=Math.floor((Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate())-Date.UTC(t.getUTCFullYear(),0,0))/86400000),g=2*Math.PI/365*(n-1+(t.getUTCHours()-12)/24),eq=229.18*(.000075+.001868*Math.cos(g)-.032077*Math.sin(g)-.014615*Math.cos(2*g)-.040849*Math.sin(2*g)),dec=.006918-.399912*Math.cos(g)+.070257*Math.sin(g)-.006758*Math.cos(2*g)+.000907*Math.sin(2*g)-.002697*Math.cos(3*g)+.00148*Math.sin(3*g),ha=((t.getUTCHours()*60+t.getUTCMinutes()+eq+4*lon)/4-180)*Math.PI/180,phi=lat*Math.PI/180,elevation=Math.asin(Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(ha))*180/Math.PI;return elevation>6?'day':elevation>=-6?'twilight':'night';}
 function choose(ctx,rows=catalog(),usage={}){let candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes(ctx.category)&&(!a.fixtureId||a.fixtureId===ctx.fixtureId)&&(!a.competitions.length||a.competitions.includes(ctx.competition))&&(!a.clubs.length||a.clubs.length===(ctx.clubs||[]).length&&(a.homeClubReusable ? a.clubs[1]==='*' && norm(a.clubs[0])===norm(ctx.clubs[0]) : a.clubs.every((c,i)=>norm(c)===norm(ctx.clubs[i]))))&&(a.daypart==='neutral'||a.daypart===ctx.daypart));
  if(['preview','report','match-analysis','recap'].includes(ctx.category)){
-  const kind=ctx.category==='preview'?'preview':'report';
-  const occupancy=kind==='preview'?'empty':'full';
-  const home='home:'+norm((ctx.clubs||[])[0]);
-  candidates=candidates.filter(a=>a.imageKind===kind&&a.stadiumOccupancy===occupancy&&
-   (a.stadiumIdentity===home||(a.stadiumIdentity?.startsWith('venue:')&&ctx.venueId&&a.venueId===ctx.venueId)));
+  candidates=candidates.filter(a=>stadium74.allowedForMatch(a,{...ctx,category:ctx.category==='preview'?'preview':'report'}));
  }
  if(ctx.category==='quiz')candidates=candidates.filter(a=>a.questionIds.includes(ctx.questionId)&&a.answerSafe===true);if(!candidates.length&&!['quiz','preview','report','match-analysis','recap'].includes(ctx.category))candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes('neutral')&&!a.clubs.length&&a.daypart==='neutral');return candidates.sort((a,b)=>Number(Boolean(b.fixtureId))-Number(Boolean(a.fixtureId))||Number(Boolean(b.clubs.length))-Number(Boolean(a.clubs.length))||Number(b.daypart===ctx.daypart)-Number(a.daypart===ctx.daypart)||(Date.parse(usage[a.id]||a.lastUsed)||0)-(Date.parse(usage[b.id]||b.lastUsed)||0)||sha(ctx.articleId+':'+a.id).localeCompare(sha(ctx.articleId+':'+b.id)))[0]||null;}
 function fields(a, context){

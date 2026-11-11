@@ -1,0 +1,358 @@
+{
+  "version": 74,
+  "season": "2026/27",
+  "qualityMinimum": 8.5,
+  "requiresExplicitArtworkApproval": true,
+  "requiresRightsReview": true,
+  "neverAutoApprove": true,
+  "requiredSlots": 36,
+  "clubs": [
+    {
+      "name": "ADO Den Haag",
+      "id": "adodenhaag",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "a_crisp_photorealistic_wide_angle_stadium_scene.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "Ajax",
+      "id": "ajax",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "veldio-ajax-preview-dag.webp",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-binary-import",
+          "source": "veldio-ajax-verslag-avond.webp",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "AZ",
+      "id": "az",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "a_cinematic_high_detail_sports_stadium_interior_s.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-binary-import",
+          "source": "a_cinematic_high_detail_stadium_interior_scene_in.png",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "Excelsior Rotterdam",
+      "id": "excelsiorrotterdam",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "a_crisp_high_detail_realistic_sports_stadium_sce.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-binary-import",
+          "source": "a_dramatic_ultra_realistic_stadium_night_scene_in.png",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "FC Groningen",
+      "id": "fcgroningen",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "veldio_in_een_groen_wit_stadion.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-binary-import",
+          "source": "veldio_in_een_bruisend_voetbalstadion.png",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "FC Twente",
+      "id": "fctwente",
+      "slots": {
+        "preview": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-binary-import",
+          "source": "a_dramatic_highly_detailed_sports_stadium_scene_f.png",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "FC Utrecht",
+      "id": "fcutrecht",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "veldio-fc-utrecht-preview-dag.webp",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-binary-import",
+          "source": "veldio-fc-utrecht-verslag-avond.webp",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "Feyenoord",
+      "id": "feyenoord",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "a_crisp_realistic_wide_angle_stadium_scene_photo.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "Fortuna Sittard",
+      "id": "fortunasittard",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "veldio_in_een_leeg_fortuna_stadion.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "Go Ahead Eagles",
+      "id": "goaheadeagles",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "veldio_stadion_in_rood_en_geel.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-binary-import",
+          "source": "veldio_onder_de_stadionlichten.png",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "N.E.C. Nijmegen",
+      "id": "necnijmegen",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "a_crisp_photorealistic_wide_angle_view_of_a_footb.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "PEC Zwolle",
+      "id": "peczwolle",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "veldio_stadion_onder_heldere_hemel.png",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-binary-import",
+          "source": "veldio_in_een_bruisend_avondstadion.png",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "PSV",
+      "id": "psv",
+      "slots": {
+        "preview": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "SC Cambuur",
+      "id": "sccambuur",
+      "slots": {
+        "preview": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "sc Heerenveen",
+      "id": "scheerenveen",
+      "slots": {
+        "preview": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "Sparta Rotterdam",
+      "id": "spartarotterdam",
+      "slots": {
+        "preview": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "requires-new-full-resolution-art",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "Telstar",
+      "id": "telstar",
+      "slots": {
+        "preview": {
+          "state": "requires-binary-import",
+          "source": "veldio-telstar-preview-dag-concept.webp",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "repository-pending",
+          "assetPath": "public/club-stadiums73/telstar-report-evening.webp",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    },
+    {
+      "name": "Willem II",
+      "id": "willemii",
+      "slots": {
+        "preview": {
+          "state": "repository-pending",
+          "assetPath": "public/club-stadiums73/willem-ii-preview-day.webp",
+          "kind": "preview",
+          "occupancy": "empty",
+          "productionApproved": false
+        },
+        "report": {
+          "state": "repository-pending",
+          "assetPath": "public/club-stadiums73/willem-ii-report-evening.webp",
+          "kind": "report",
+          "occupancy": "full",
+          "productionApproved": false
+        }
+      }
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 
 const library = require('./image-library49');
 const premium = require('./premium-match-images72');
+const stadium74 = require('./stadium-venue74');
 const reviewed = require('./article-image-migration69.json');
 const {contentHash} = require('./article-covers');
 const {matchImageContext} = require('./match-image-context');
@@ -30,7 +31,7 @@ function context(article) {
   const kickoff = legacy?.kickoff && (!legacy.matchId || legacy.matchId === fixtureId) ? legacy.kickoff : source;
   const venueId = source.venueId || source.venue?.id || legacy?.venueId;
   return {category, clubs:MATCH_CATEGORIES.includes(category) ? clubs : [], fixtureId, competition:article.category || '',
-    daypart:library.daypart(kickoff), ...(venueId ? {venueId} : {}),
+    daypart:library.daypart(kickoff), venueName:source.venue?.name||source.venueName||'', ...(venueId ? {venueId} : {}),
     ...matchImageContext({...article, fixture:{...source, venueId}}, category, clubs, kickoff)};
 }
 
@@ -47,11 +48,7 @@ function eligible(article, rows = library.catalog(), ctx = context(article)) {
     (asset.categories.includes(ctx.category) || legacy?.approvedAsset === asset.id) &&
     (!asset.fixtureId || asset.fixtureId === ctx.fixtureId) &&
     (!ctx.imageKind || legacyArchive ||
-      (asset.imageKind === ctx.imageKind && asset.stadiumOccupancy === ctx.stadiumOccupancy &&
-        (asset.stadiumIdentity === ctx.stadiumIdentity ||
-          (asset.homeClubReusable && ctx.stadiumIdentity?.startsWith('venue:') &&
-           Array.isArray(asset.homeVenueAliases) &&
-           asset.homeVenueAliases.some(name => 'venue:' + normalize(name) === ctx.stadiumIdentity))))) &&
+      stadium74.allowedForMatch(asset,{...ctx,category:ctx.imageKind})) &&
     (!asset.competitions.length || asset.competitions.includes(ctx.competition)) &&
     (asset.daypart === 'neutral' || asset.daypart === ctx.daypart) &&
     (!asset.venueId || asset.venueId === ctx.venueId) &&
