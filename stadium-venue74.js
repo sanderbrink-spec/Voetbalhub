@@ -37,7 +37,12 @@ function allowedForMatch(asset,ctx){
  const kind=ctx.category,occupancy=kind==='report'?'full':'empty';
  const home=ctx.clubs?.[0],away=ctx.clubs?.[1];
  if(!home||!away||asset.imageKind!==kind||asset.stadiumOccupancy!==occupancy)return false;
- if(asset.stadiumIdentity!=='home:'+norm(home)||!safeHomeVenue(home,ctx.stadiumIdentity||'home:'+norm(home),ctx.venueName))return false;
+ const identity=ctx.stadiumIdentity||'home:'+norm(home);
+ const known=safeHomeVenue(home,identity,ctx.venueName);
+ const reviewedAlias=asset.homeClubReusable===true && Array.isArray(asset.homeVenueAliases) &&
+  identity.startsWith('venue:') && asset.homeVenueAliases.some(name=>
+   identity==='venue:'+norm(name)||(ctx.venueName&&norm(ctx.venueName)===norm(name)));
+ if(asset.stadiumIdentity!=='home:'+norm(home)||(!known&&!reviewedAlias))return false;
  if(asset.homeClubReusable===true){
   return !asset.fixtureId&&asset.clubs?.length===2&&asset.clubs[1]==='*'&&norm(asset.clubs[0])===norm(home);
  }
