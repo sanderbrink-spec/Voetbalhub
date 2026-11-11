@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-11-11",
+  "status": "webps-committed-and-registered-pending-review",
+  "rules": "No new image enters published articles without checked binary, right provenance, and image quality >= 8.5",
+  "entries": [
+    {
+      "id": "veldio73-telstar-report-evening",
+      "sourceFile": "veldio-telstar-wedstrijdverslag-avond.webp",
+      "targetFile": "public/club-stadiums73/telstar-report-evening.webp",
+      "sha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
+      "bytes": 211044,
+      "club": "Telstar",
+      "kind": "report",
+      "stadiumOccupancy": "full",
+      "sceneDaypart": "night",
+      "status": "staged-in-github-and-library-pending-visual-and-legal-review",
+      "imageType": "AI-illustratie, geen echte wedstrijdfoto",
+      "source": "Voor Veldio gecreëerde AI-stadionscène; uitgesneden uit gegenereerde collage en vergroot; visuele eindkeuring ontbreekt, oorspronkelijke pixels niet 1280x720",
+      "visualScore": null,
+      "rightsStatus": "needs-final-legal-review",
+      "branding": "Veldio",
+      "artifactPresentInRepo": true
+    },
+    {
+      "id": "veldio73-willem-ii-preview-day",
+      "sourceFile": "veldio-willem-ii-voorbeschouwing-dag.webp",
+      "targetFile": "public/club-stadiums73/willem-ii-preview-day.webp",
+      "sha256": "bdcea15054bfa71eab70e32e06b79688273b5a0051b160e7e0a8500b88886d9b",
+      "bytes": 234980,
+      "club": "Willem II",
+      "kind": "preview",
+      "stadiumOccupancy": "empty",
+      "sceneDaypart": "day",
+      "status": "staged-in-github-and-library-pending-visual-and-legal-review",
+      "imageType": "AI-illustratie, geen echte wedstrijdfoto",
+      "source": "Voor Veldio gecreëerde AI-stadionscène; uitgesneden uit gegenereerde collage en vergroot; visuele eindkeuring ontbreekt, oorspronkelijke pixels niet 1280x720",
+      "visualScore": null,
+      "rightsStatus": "needs-final-legal-review",
+      "branding": "Veldio",
+      "artifactPresentInRepo": true
+    },
+    {
+      "id": "veldio73-willem-ii-report-evening",
+      "sourceFile": "veldio-willem-ii-wedstrijdverslag-avond.webp",
+      "targetFile": "public/club-stadiums73/willem-ii-report-evening.webp",
+      "sha256": "83ab3e9e1a74fc01a32a8b0aa254a0e8b6cc708a94c73fa4006e54c0b5c4ac6e",
+      "bytes": 223480,
+      "club": "Willem II",
+      "kind": "report",
+      "stadiumOccupancy": "full",
+      "sceneDaypart": "night",
+      "status": "staged-in-github-and-library-pending-visual-and-legal-review",
+      "imageType": "AI-illustratie, geen echte wedstrijdfoto",
+      "source": "Voor Veldio gecreëerde AI-stadionscène; uitgesneden uit gegenereerde collage en vergroot; visuele eindkeuring ontbreekt, oorspronkelijke pixels niet 1280x720",
+      "visualScore": null,
+      "rightsStatus": "needs-final-legal-review",
+      "branding": "Veldio",
+      "artifactPresentInRepo": true
+    }
+  ]
+}

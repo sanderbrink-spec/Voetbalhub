@@ -21,7 +21,10 @@ function reviewedPremium(asset) {
    ['preview','report'].includes(asset.imageKind) &&
    asset.stadiumOccupancy===(asset.imageKind==='report'?'full':'empty') &&
    /^(home|venue):[a-z0-9]+$/.test(asset.stadiumIdentity||'') &&
-   Array.isArray(asset.clubs) && asset.clubs.length===2);
+   Array.isArray(asset.clubs) && asset.clubs.length===2 &&
+   (!asset.homeClubReusable || (!asset.fixtureId && asset.clubs[1]==='*' &&
+     asset.stadiumIdentity==='home:'+String(asset.clubs[0]).normalize('NFD')
+       .replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''))));
 }
 function accepted(asset) {
  if(!asset || asset.approval!=='approved' || !asset.reviewer ||
