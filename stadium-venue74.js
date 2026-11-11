@@ -21,7 +21,7 @@ const names={
  'telstar':['711 Stadion','BUKO Stadion','Schoonenberg Stadion'],
  'willemii':['Koning Willem II Stadion','Willem II Stadion']
 };
-const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const norm=s=>{const key=String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');return key==='azalkmaar'?'az':key;};
 const aliases=(club)=>names[norm(club)]||[];
 function safeHomeVenue(club,venueIdentity='',venueName=''){
  const wanted='home:'+norm(club);
