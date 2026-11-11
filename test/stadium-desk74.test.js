@@ -17,7 +17,9 @@ test('Fase 74: editorial intake covers every current Eredivisie stadium in two s
   assert.equal(c.slots.preview.occupancy,'empty');
   assert.equal(c.slots.report.occupancy,'full');
  }
- assert.equal(a.counts['stored-awaiting-review'],3);
+ assert.equal(a.counts['stored-awaiting-review'],36);
+ assert.equal(assets.filter(row=>row.homeClubReusable===true && row.approval==='pending').length,36);
+ assert.equal(assets.filter(row=>row.homeClubReusable===true && row.approval==='approved').length,0);
  assert.ok(a.slots.every(s=>s.assetIds.length===0));
  assert.ok(a.slots.every(s=>!s.state.includes('auto-approved')));
 });
