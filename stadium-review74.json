@@ -13,11 +13,15 @@
       "slots": {
         "preview": {
           "state": "repository-pending",
-          "source": "a_crisp_photorealistic_wide_angle_stadium_scene.png",
+          "source": "veldio_stadion_in_groen_en_geel.png",
           "kind": "preview",
           "occupancy": "empty",
           "productionApproved": false,
-          "assetPath": "public/stadium74/adodenhaag-preview.webp"
+          "assetPath": "public/stadium74/adodenhaag-preview.webp",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required"
         },
         "report": {
           "state": "repository-pending",
@@ -25,7 +29,12 @@
           "kind": "report",
           "occupancy": "full",
           "productionApproved": false,
-          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required",
+          "source": "nachtelijke_voetbalavond_met_veldio_glow.png"
         }
       }
     },
@@ -127,15 +136,24 @@
           "kind": "preview",
           "occupancy": "empty",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen.",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required",
+          "source": "leeg_voetbalstadion_met_groene_veldio_branding.png"
         },
         "report": {
           "state": "repository-pending",
-          "source": "a_dramatic_highly_detailed_sports_stadium_scene_f.png",
+          "source": "veldio_stadion_onder_stormlucht.png",
           "kind": "report",
           "occupancy": "full",
           "productionApproved": false,
-          "assetPath": "public/stadium74/fctwente-report.webp"
+          "assetPath": "public/stadium74/fctwente-report.webp",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required"
         }
       }
     },
@@ -167,11 +185,15 @@
       "slots": {
         "preview": {
           "state": "repository-pending",
-          "source": "a_crisp_realistic_wide_angle_stadium_scene_photo.png",
+          "source": "veldio_in_een_lege_voetbaltempel.png",
           "kind": "preview",
           "occupancy": "empty",
           "productionApproved": false,
-          "assetPath": "public/stadium74/feyenoord-preview.webp"
+          "assetPath": "public/stadium74/feyenoord-preview.webp",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required"
         },
         "report": {
           "state": "repository-pending",
@@ -179,7 +201,12 @@
           "kind": "report",
           "occupancy": "full",
           "productionApproved": false,
-          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required",
+          "source": "neonverlicht_veldio_stadion_bij_avondlicht.png"
         }
       }
     },
@@ -281,7 +308,12 @@
           "kind": "preview",
           "occupancy": "empty",
           "productionApproved": false,
-          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required",
+          "source": "veldio_in_een_modern_voetbalstadion.png"
         },
         "report": {
           "state": "repository-pending",
@@ -289,7 +321,12 @@
           "kind": "report",
           "occupancy": "full",
           "productionApproved": false,
-          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt."
+          "reviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required",
+          "source": "neonlicht_in_het_veldio_stadion.png"
         }
       }
     },
@@ -347,7 +384,12 @@
           "kind": "preview",
           "occupancy": "empty",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen.",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required",
+          "source": "veldio_in_het_kasteel.png"
         },
         "report": {
           "state": "repository-pending",
@@ -355,7 +397,12 @@
           "kind": "report",
           "occupancy": "full",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen.",
+          "revision": 76,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true,
+          "scoreClaim": "No score generated in revised base image; separate visual verification required",
+          "source": "neonverlichte_voetbalavond_in_veldio_stadion.png"
         }
       }
     },
