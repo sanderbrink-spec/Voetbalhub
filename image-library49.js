@@ -5,7 +5,7 @@ const premium=require('./premium-match-images72');
 const stadium74=require('./stadium-venue74');
 const ROOT=__dirname,ORIGIN='https://voetbalhub-redactie.onrender.com';
 const categories=['preview','report','transfer','rumour','contract','club','injury','tactics','competition','championship','analysis','interview','youth','supporters','suspension','international','history','quiz','neutral'];
-const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const norm=stadium74.norm;
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 function validate(rows,{root=ROOT}={}){
  if(!Array.isArray(rows)||rows.length>2000)throw Error('Maximaal 2000 afbeeldingen.');const ids=new Set();
