@@ -18,6 +18,10 @@ function validate(rows,{root=ROOT}={}){
     !a.categories.includes(a.imageKind) || a.clubs.length!==2 ||
     !/^(home|venue):[a-z0-9]+$/.test(a.stadiumIdentity||'')))throw Error('Ongeldige stadionbezetting: '+a.id);
  if(a.fixtureId&&(!/^sm-\d+$/.test(a.fixtureId)||a.clubs.length!==2||!a.categories.some(c=>c==='report'||c==='preview')))throw Error('Ongeldig wedstrijdbestand.');
+ if(a.homeClubReusable && (a.clubs?.length!==2 || a.clubs[1]!=='*' || a.fixtureId ||
+    !a.stadiumIdentity || a.stadiumIdentity!=='home:'+norm(a.clubs[0]) ||
+    !Array.isArray(a.homeVenueAliases) || a.homeVenueAliases.some(s=>typeof s!=='string'||s.length>100)))
+    throw Error('Ongeldige generieke thuisstadion-asset: '+a.id);
  if(a.approval==='approved'&&(!a.reviewer||!['original-ai','original-vector','licensed'].includes(a.rights)||!a.rightsEvidence))throw Error('Goedkeuring en rechtenbewijs vereist.');
  const full=path.resolve(root,a.file);if(!full.startsWith(path.resolve(root)+path.sep)||!fs.existsSync(full)||fs.statSync(full).size>2000000||sha(fs.readFileSync(full))!==a.sha256)throw Error('Bestand ontbreekt, te groot of hash ongeldig: '+a.id);
  if(a.file.endsWith('.svg')){
