@@ -12,7 +12,11 @@ const isRetiredVector = asset => Boolean(isMatch(asset) &&
 function reviewedPremium(asset) {
  const q=asset?.visualReview;
  return Boolean(q && Number.isFinite(q.score) && q.score>=MIN_SCORE && q.score<=10 &&
-   q.style==='photorealistic' && typeof q.reviewer==='string' && q.reviewer.trim().length>=3 &&
+   q.style==='photorealistic' && q.assetSha256===asset.sha256 &&
+   q.checked?.photorealism===true && q.checked?.clubNames===true &&
+   q.checked?.stadiumContext===true && q.checked?.rights===true &&
+   q.checked?.aiNotDocumentary===true &&
+   typeof q.reviewer==='string' && q.reviewer.trim().length>=3 &&
    /^20\d\d-\d\d-\d\d$/.test(q.reviewedAt||'') && Number.isFinite(Date.parse(q.reviewedAt)) &&
    ['preview','report'].includes(asset.imageKind) &&
    asset.stadiumOccupancy===(asset.imageKind==='report'?'full':'empty') &&

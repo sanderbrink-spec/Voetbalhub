@@ -9,7 +9,7 @@ const match = {id:'article-1',status:'published',articleKind:'match_report',cate
 function asset(id, extras = {}) {
   return {id,file:'public/article-art69/'+id+'.webp',categories:['report'],clubs:['FC Groningen','Ajax'],
     imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fcgroningen',competitions:[],daypart:'neutral',approval:'approved',rights:'original-ai',reviewer:'Veldio',
-    sha256:id,rightsEvidence:'Original illustration',caption:'AI-illustratie',visualReview:{score:9,style:'photorealistic',reviewer:'Visual regression tester',reviewedAt:'2026-11-11'},...extras};
+    sha256:id,rightsEvidence:'Original illustration',caption:'AI-illustratie',visualReview:{score:9,style:'photorealistic',reviewer:'Visual regression tester',reviewedAt:'2026-11-11'},...extras,visualReview:{score:9,style:'photorealistic',assetSha256:extras.sha256||id,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Visual regression tester',reviewedAt:'2026-11-11'}};
 }
 test('approved variants are distinct, bounded and served in a stable order', () => {
   const rows = Array.from({length:8}, (_,i) => asset('v'+i, {sha256:'digest'+Math.max(1,i)}));

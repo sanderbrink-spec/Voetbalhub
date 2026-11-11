@@ -59,10 +59,10 @@ test.before(async()=>{
   test.mock.method(library,'catalog',()=>[...catalog,
     {...example,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax'],
       imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fcgroningen',
-      visualReview:{score:9.2,style:'photorealistic',reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}},
+      visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}},
     {...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
       imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fctwente',
-      visualReview:{score:9.2,style:'photorealistic',reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}}
+      visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}}
   ]);
   const serverPath=path.join(__dirname,'../server.js'),realRequire=createRequire(serverPath);
   const context={require:id=>id==='redis'?{createClient:options=>{redisOptions=options;return redis;}}:realRequire(id),process:{env:{HUB_API_SECRET:'test-only',REDIS_URL:'test://mock'}},console,URL,Buffer,crypto:require('node:crypto'),__dirname:path.dirname(serverPath),module:{exports:{}},fetch};

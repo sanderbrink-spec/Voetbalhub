@@ -6,7 +6,7 @@ const library=require('../image-library49');
 const rows=require('../image-library49.json').assets;
 const original=rows.find(a=>a.id==='veldio71-twente-ajax-report');
 const newAsset=(changes={})=>({...original,id:'new-premium-fixture',visualReview:{
- score:9.1,style:'photorealistic',reviewer:'Veldio independent visual reviewer',reviewedAt:'2026-11-11'
+ score:9.1,style:'photorealistic',assetSha256:original.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Veldio independent visual reviewer',reviewedAt:'2026-11-11'
 },...changes});
 test('Fase 72: previously approved raster requires original SHA; flattened SVG is never accepted',()=>{
  assert.ok(original && gate.accepted(original));
