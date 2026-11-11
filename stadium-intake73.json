@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-11-11",
-  "status": "staging-only-not-live",
+  "status": "webps-committed-and-registered-pending-review",
   "rules": "No new image enters published articles without checked binary, right provenance, and image quality >= 8.5",
   "entries": [
     {
@@ -14,12 +14,13 @@
       "kind": "report",
       "stadiumOccupancy": "full",
       "sceneDaypart": "night",
-      "status": "pending-binary-import-and-visual-review",
+      "status": "staged-in-github-and-library-pending-visual-and-legal-review",
       "imageType": "AI-illustratie, geen echte wedstrijdfoto",
       "source": "Voor Veldio gecreëerde AI-stadionscène; uitgesneden uit gegenereerde collage en vergroot; visuele eindkeuring ontbreekt, oorspronkelijke pixels niet 1280x720",
       "visualScore": null,
       "rightsStatus": "needs-final-legal-review",
-      "branding": "Veldio"
+      "branding": "Veldio",
+      "artifactPresentInRepo": true
     },
     {
       "id": "veldio73-willem-ii-preview-day",
@@ -31,12 +32,13 @@
       "kind": "preview",
       "stadiumOccupancy": "empty",
       "sceneDaypart": "day",
-      "status": "pending-binary-import-and-visual-review",
+      "status": "staged-in-github-and-library-pending-visual-and-legal-review",
       "imageType": "AI-illustratie, geen echte wedstrijdfoto",
       "source": "Voor Veldio gecreëerde AI-stadionscène; uitgesneden uit gegenereerde collage en vergroot; visuele eindkeuring ontbreekt, oorspronkelijke pixels niet 1280x720",
       "visualScore": null,
       "rightsStatus": "needs-final-legal-review",
-      "branding": "Veldio"
+      "branding": "Veldio",
+      "artifactPresentInRepo": true
     },
     {
       "id": "veldio73-willem-ii-report-evening",
@@ -48,12 +50,13 @@
       "kind": "report",
       "stadiumOccupancy": "full",
       "sceneDaypart": "night",
-      "status": "pending-binary-import-and-visual-review",
+      "status": "staged-in-github-and-library-pending-visual-and-legal-review",
       "imageType": "AI-illustratie, geen echte wedstrijdfoto",
       "source": "Voor Veldio gecreëerde AI-stadionscène; uitgesneden uit gegenereerde collage en vergroot; visuele eindkeuring ontbreekt, oorspronkelijke pixels niet 1280x720",
       "visualScore": null,
       "rightsStatus": "needs-final-legal-review",
-      "branding": "Veldio"
+      "branding": "Veldio",
+      "artifactPresentInRepo": true
     }
   ]
 }
