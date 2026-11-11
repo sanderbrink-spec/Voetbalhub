@@ -48,11 +48,16 @@ function eligible(article, rows = library.catalog(), ctx = context(article)) {
     (!asset.fixtureId || asset.fixtureId === ctx.fixtureId) &&
     (!ctx.imageKind || legacyArchive ||
       (asset.imageKind === ctx.imageKind && asset.stadiumOccupancy === ctx.stadiumOccupancy &&
-        asset.stadiumIdentity === ctx.stadiumIdentity)) &&
+        (asset.stadiumIdentity === ctx.stadiumIdentity ||
+          (asset.homeClubReusable && ctx.stadiumIdentity?.startsWith('venue:') &&
+           Array.isArray(asset.homeVenueAliases) &&
+           asset.homeVenueAliases.some(name => 'venue:' + normalize(name) === ctx.stadiumIdentity))))) &&
     (!asset.competitions.length || asset.competitions.includes(ctx.competition)) &&
     (asset.daypart === 'neutral' || asset.daypart === ctx.daypart) &&
     (!asset.venueId || asset.venueId === ctx.venueId) &&
-    (matches ? asset.clubs.length === 2 && asset.clubs.every((club,i) => normalize(club) === normalize(ctx.clubs[i])) :
+    (matches ? asset.clubs.length === 2 &&
+      (asset.homeClubReusable ? (asset.clubs[1] === '*' && normalize(asset.clubs[0]) === normalize(ctx.clubs[0])) :
+       asset.clubs.every((club,i) => normalize(club) === normalize(ctx.clubs[i]))) :
       !asset.fixtureId && !asset.clubs.length) &&
     !asset.file.startsWith('public/match-covers64/'))
     .sort((a,b) => Number(Boolean(b.fixtureId)) - Number(Boolean(a.fixtureId)) ||
