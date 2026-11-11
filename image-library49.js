@@ -39,7 +39,7 @@ function context(payload){const I=require('./editorial-image44'),p=I.classify(pa
 }
 // Solar elevation uses verified venue coordinates and an absolute kickoff; otherwise neutral.
 function daypart(f){const stamp=f.date||f.playedAt,lat=f.venue?.latitude,lon=f.venue?.longitude;if(!/(Z|[+-]\d\d:\d\d)$/.test(stamp||'')||!Number.isFinite(Date.parse(stamp))||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return 'neutral';const t=new Date(stamp),n=Math.floor((Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate())-Date.UTC(t.getUTCFullYear(),0,0))/86400000),g=2*Math.PI/365*(n-1+(t.getUTCHours()-12)/24),eq=229.18*(.000075+.001868*Math.cos(g)-.032077*Math.sin(g)-.014615*Math.cos(2*g)-.040849*Math.sin(2*g)),dec=.006918-.399912*Math.cos(g)+.070257*Math.sin(g)-.006758*Math.cos(2*g)+.000907*Math.sin(2*g)-.002697*Math.cos(3*g)+.00148*Math.sin(3*g),ha=((t.getUTCHours()*60+t.getUTCMinutes()+eq+4*lon)/4-180)*Math.PI/180,phi=lat*Math.PI/180,elevation=Math.asin(Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(ha))*180/Math.PI;return elevation>6?'day':elevation>=-6?'twilight':'night';}
-function choose(ctx,rows=catalog(),usage={}){let candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes(ctx.category)&&(!a.fixtureId||a.fixtureId===ctx.fixtureId)&&(!a.competitions.length||a.competitions.includes(ctx.competition))&&(!a.clubs.length||a.clubs.length===(ctx.clubs||[]).length&&a.clubs.every((c,i)=>norm(c)===norm(ctx.clubs[i])))&&(a.daypart==='neutral'||a.daypart===ctx.daypart));
+function choose(ctx,rows=catalog(),usage={}){let candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes(ctx.category)&&(!a.fixtureId||a.fixtureId===ctx.fixtureId)&&(!a.competitions.length||a.competitions.includes(ctx.competition))&&(!a.clubs.length||a.clubs.length===(ctx.clubs||[]).length&&(a.homeClubReusable ? a.clubs[1]==='*' && norm(a.clubs[0])===norm(ctx.clubs[0]) : a.clubs.every((c,i)=>norm(c)===norm(ctx.clubs[i]))))&&(a.daypart==='neutral'||a.daypart===ctx.daypart));
  if(['preview','report','match-analysis','recap'].includes(ctx.category)){
   const kind=ctx.category==='preview'?'preview':'report';
   const occupancy=kind==='preview'?'empty':'full';
@@ -56,6 +56,7 @@ function fields(a, context){
   imageReview:{method:'approved-library49',mode:'approved-library',pipelineVersion:49,
    assetSha256:a.sha256,kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,clubs:a.clubs,
    ...(a.imageKind?{imageKind:a.imageKind,stadiumOccupancy:a.stadiumOccupancy,stadiumIdentity:a.stadiumIdentity,
+     ...(a.homeClubReusable?{homeClubReusable:true}:{}),
      ...(context?.imageIdentity?{imageIdentity:context.imageIdentity}:{})}:{}),
    generated:a.rights==='original-ai',qualityTier:a.fixtureId?'reviewed-fixture':'contextual-illustration',
    ...(premium.isMatch(a)?a.visualReview?{visualQualityScore:a.visualReview.score,visualQualityStatus:'premium-reviewed'}:{visualQualityStatus:'legacy-raster-awaiting-rescore'}:{}),
