@@ -78,7 +78,7 @@ function applyFixtureCover(article,rows=catalog()){
   for(const key of ['imageUrl','imageAssetId','imageReview','imageCaption','imageVariants','imageRotation','imageSource','imageCredit'])delete cleared[key];
   return cleared;
  }
- return {...article,...fields(asset),imageAsset:undefined,imageCaption:undefined};
+ return {...article,...fields(asset),imageAsset:undefined,imageCaption:asset.caption};
 }
 async function select(payload,{client,now=Date.now()}={}){const ctx=context(payload);let usage={};if(client?.isReady){const fixtureCover=choose(ctx,catalog().filter(a=>a.fixtureId===ctx.fixtureId&&a.fixtureId));if(fixtureCover)return fixtureCover;const fixed=await client.get('images49:article:'+ctx.articleId);const prior=catalog().find(a=>a.id===fixed);if(prior&&choose(ctx,[prior]))return prior;usage=await client.hGetAll('images49:usage');}const a=choose(ctx,undefined,usage);if(a&&client?.isReady){await client.set('images49:article:'+ctx.articleId,a.id,{EX:90*86400});await client.hSet('images49:usage',a.id,new Date(now).toISOString());}return a;}
 const vectorRenderCache=new Map();

@@ -2227,6 +2227,61 @@
         "reviewer": "Veldio redactionele beeldbeoordeling",
         "reviewedAt": "2026-11-11"
       }
+    },
+    {
+      "id": "veldio72-utrecht-nec-report",
+      "file": "public/article-art72/utrecht-nec-report.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "FC Utrecht – NEC Nijmegen, wedstrijdverslag 8 november 2026",
+      "clubs": [
+        "FC Utrecht",
+        "NEC Nijmegen"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "verifiedKickoff": "2026-11-08T20:00:00+01:00",
+      "kickoffReference": "https://www.fcutrecht.nl/teams/selectie/programma/fc-utrecht-nec-vriendenloterij-eredivisie-2026-2027/",
+      "keywords": [
+        "uitverkocht stadion",
+        "avondwedstrijd",
+        "Veldio",
+        "clubsjaals"
+      ],
+      "variant": "premium-avondreport-01",
+      "origin": "OpenAI ImageGen, originele redactionele AI-illustratie voor Veldio, 11 november 2026",
+      "rights": "original-ai",
+      "rightsEvidence": "Originele voor Veldio gegenereerde ImageGen-illustratie; geen externe foto of bestaand beschermd wedstrijdbeeld gebruikt; geen officiële clublogo's of herkenbare spelers. Redactionele namen op sjaals.",
+      "approval": "approved",
+      "reviewer": "ChatGPT visuele QA op verzoek van Veldio-eigenaar",
+      "lastUsed": null,
+      "sha256": "b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e",
+      "caption": "Veldio · originele AI-illustratie bij FC Utrecht – NEC Nijmegen. Geen foto van deze wedstrijd of exacte documentaire afbeelding van Stadion Galgenwaard.",
+      "questionIds": [],
+      "fixtureId": "sm-19714594",
+      "approvedAt": "2026-11-11",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:fcutrecht",
+      "visualReview": {
+        "score": 8.7,
+        "style": "photorealistic",
+        "assetSha256": "b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        },
+        "reviewer": "ChatGPT visuele QA, niet onafhankelijke menselijke audit",
+        "reviewedAt": "2026-11-11",
+        "notes": "Gedetailleerde AI-stadionscène met volledig publiek, beide correct gespelde clubsjaals en subtiele V. Galgenwaard-context is artistiek geïnterpreteerd; geen fotografische of bouwkundige exactheid geclaimd."
+      }
     }
   ]
 }
