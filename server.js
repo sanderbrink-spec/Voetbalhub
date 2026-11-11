@@ -326,6 +326,12 @@ async function handle(req, res) {
     if (!authorizeRequest(req,res)) return;
     return send(res,200,require('./stadium-desk74').overview());
   }
+  // Authenticated reviewer-only pixel access. Pending assets are never public article images.
+  if (['GET','HEAD'].includes(req.method) && url.pathname.startsWith('/editorial/stadium-preview74/')) {
+    if (!authorizeRequest(req,res)) return;
+    if (require('./stadium-desk74').servePreview(req,res,url.pathname)) return;
+    return send(res,404,{error:'Stadionbeeld niet beschikbaar voor beoordeling.'});
+  }
   if (req.method === "GET" && url.pathname === "/beeldcollectie")
     return send(res, 410, {error:"De illustraties verschijnen bij Veldio-artikelen."});
   if(require("./image-library49").serve(req,res,url.pathname))return;
