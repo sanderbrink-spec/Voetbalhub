@@ -24,12 +24,26 @@ const article=(home,away,kind='match_report',extra={})=>({
  headline:'Test verslag',match:{homeTeam:home,awayTeam:away,...extra}
 });
 
-test('Fase 73: three requested files stay staged and do not override the image quality gate',()=>{
+test('Fase 73: three requested binaries are in repository and image desk, but remain unpublished pending review',()=>{
+ const fs=require('node:fs'),crypto=require('node:crypto');
  assert.equal(intake.entries.length,3);
- assert.ok(intake.entries.every(e=>e.status==='pending-binary-import-and-visual-review'));
- assert.ok(intake.entries.every(e=>e.visualScore===null && /^[a-f0-9]{64}$/.test(e.sha256)));
- for(const row of intake.entries)
-  assert.equal(require('../image-library49.json').assets.some(a=>a.id===row.id),false);
+ assert.ok(intake.entries.every(e=>e.status==='staged-in-github-and-library-pending-visual-and-legal-review'));
+ assert.ok(intake.entries.every(e=>e.visualScore===null && e.artifactPresentInRepo===true));
+ const rows=require('../image-library49.json').assets;
+ for(const row of intake.entries){
+  const a=rows.find(x=>x.id===row.id);
+  assert.ok(a,'missing registered intake asset '+row.id);
+  assert.equal(a.file,row.targetFile);
+  assert.equal(a.approval,'pending');
+  assert.equal(a.sha256,row.sha256);
+  assert.equal(a.homeClubReusable,true);
+  assert.equal(a.clubs[1],'*');
+  assert.equal(a.fixtureId,undefined);
+  assert.equal(crypto.createHash('sha256').update(fs.readFileSync(a.file)).digest('hex'),a.sha256);
+  assert.equal(premium.accepted(a),false);
+  assert.equal(library.catalog().some(x=>x.id===a.id),false);
+ }
+ assert.doesNotThrow(()=>library.validate(rows));
 });
 test('Fase 73: a reviewed home-only artwork safely serves more than one opponent',()=>{
  const image=base('Telstar');
