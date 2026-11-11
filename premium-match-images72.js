@@ -24,7 +24,10 @@ function reviewedPremium(asset) {
    Array.isArray(asset.clubs) && asset.clubs.length===2 &&
    (!asset.homeClubReusable || (!asset.fixtureId && asset.clubs[1]==='*' &&
      asset.stadiumIdentity==='home:'+String(asset.clubs[0]).normalize('NFD')
-       .replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''))));
+       .replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'') &&
+     q.clubScope==='home-only' && q.scopeHome===String(asset.clubs[0]).normalize('NFD')
+       .replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'') &&
+     q.reviewedStadiumIdentity===asset.stadiumIdentity)));
 }
 function accepted(asset) {
  if(!asset || asset.approval!=='approved' || !asset.reviewer ||
