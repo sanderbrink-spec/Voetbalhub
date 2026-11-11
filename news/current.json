@@ -1,6 +1,6 @@
 {
   "rightsPolicyVersion": 26,
-  "rightsExpiresAt": 1794476972561,
+  "rightsExpiresAt": 1794508509978,
   "count": 15,
   "articles": [
     {
@@ -48,90 +48,9 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/utrecht-nec-report.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
       "imageRights": "cleared",
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "a31c74ac718732885b083e63644bb271fd8a8e59c48580eeb337508599ddb7db",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "FC Utrecht",
-          "NEC Nijmegen"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:fcutrecht",
-        "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a",
-        "generated": false,
-        "qualityTier": "reviewed-fixture",
-        "fixtureId": "sm-19714594",
-        "noOfficialLogos": true,
-        "noRecognizablePeople": true,
-        "noDocumentaryClaim": true
-      },
       "autoPublish": false,
-      "imageAssetId": "veldio71-utrecht-nec-report",
-      "imageCaption": "Veldio - eigen illustratie bij FC Utrecht - NEC Nijmegen. Geen foto van de wedstrijd of het echte stadion.",
-      "imageVariants": [
-        {
-          "id": "veldio71-utrecht-nec-report",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art71/utrecht-nec-report.webp",
-          "caption": "Veldio - eigen illustratie bij FC Utrecht - NEC Nijmegen. Geen foto van de wedstrijd of het echte stadion.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "a31c74ac718732885b083e63644bb271fd8a8e59c48580eeb337508599ddb7db",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "FC Utrecht",
-              "NEC Nijmegen"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:fcutrecht",
-            "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a",
-            "generated": false,
-            "qualityTier": "reviewed-fixture",
-            "fixtureId": "sm-19714594",
-            "noOfficialLogos": true,
-            "noRecognizablePeople": true,
-            "noDocumentaryClaim": true
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "veldio71-utrecht-nec-report",
-        "context": {
-          "category": "report",
-          "clubs": [
-            "FC Utrecht",
-            "NEC Nijmegen"
-          ],
-          "fixtureId": "sm-19714594",
-          "competition": "Eredivisie",
-          "daypart": "neutral",
-          "imageKind": "report",
-          "stadiumOccupancy": "full",
-          "stadiumIdentity": "home:fcutrecht",
-          "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a"
-        },
-        "reason": "ordered-fixture"
-      },
+      "imageQualityStatus": "awaiting-premium-replacement",
       "feedState": "current"
     },
     {
@@ -223,6 +142,7 @@
         "imageIdentity": "a3ed57e44606ef1a3ca4259c140761997828361a78567a0806edaabdd6d8eb69",
         "generated": true,
         "qualityTier": "reviewed-fixture",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore",
         "fixtureId": "sm-19714593",
         "noOfficialLogos": true,
         "noRecognizablePeople": true,
@@ -259,6 +179,7 @@
             "imageIdentity": "a3ed57e44606ef1a3ca4259c140761997828361a78567a0806edaabdd6d8eb69",
             "generated": true,
             "qualityTier": "reviewed-fixture",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore",
             "fixtureId": "sm-19714593",
             "noOfficialLogos": true,
             "noRecognizablePeople": true,
@@ -374,6 +295,7 @@
         "imageIdentity": "75eb9bad0c3257746688c6447f0ef1b38a3858168334cac080a22870cbc0552b",
         "generated": true,
         "qualityTier": "reviewed-fixture",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore",
         "fixtureId": "sm-19714595",
         "noOfficialLogos": true,
         "noRecognizablePeople": true,
@@ -410,6 +332,7 @@
             "imageIdentity": "75eb9bad0c3257746688c6447f0ef1b38a3858168334cac080a22870cbc0552b",
             "generated": true,
             "qualityTier": "reviewed-fixture",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore",
             "fixtureId": "sm-19714595",
             "noOfficialLogos": true,
             "noRecognizablePeople": true,
@@ -515,6 +438,7 @@
         "imageIdentity": "1ca3c51ba670bbfb5eaeb317081d63b37d050f5ae4f010e90f538b18c319c10c",
         "generated": true,
         "qualityTier": "reviewed-fixture",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore",
         "fixtureId": "sm-19714597",
         "noOfficialLogos": true,
         "noRecognizablePeople": true,
@@ -551,6 +475,7 @@
             "imageIdentity": "1ca3c51ba670bbfb5eaeb317081d63b37d050f5ae4f010e90f538b18c319c10c",
             "generated": true,
             "qualityTier": "reviewed-fixture",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore",
             "fixtureId": "sm-19714597",
             "noOfficialLogos": true,
             "noRecognizablePeople": true,
@@ -663,6 +588,7 @@
         "imageIdentity": "b39809a92ac282072e44c0487c693c68a91f0787c9728de06f186b69479cdd31",
         "generated": true,
         "qualityTier": "reviewed-fixture",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore",
         "fixtureId": "sm-19714596",
         "noOfficialLogos": true,
         "noRecognizablePeople": true,
@@ -699,6 +625,7 @@
             "imageIdentity": "b39809a92ac282072e44c0487c693c68a91f0787c9728de06f186b69479cdd31",
             "generated": true,
             "qualityTier": "reviewed-fixture",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore",
             "fixtureId": "sm-19714596",
             "noOfficialLogos": true,
             "noRecognizablePeople": true,
@@ -1116,7 +1043,8 @@
         "stadiumIdentity": "home:scheerenveen",
         "imageIdentity": "a4abbc8b89b74e09c5e32045643dadc03f32e850fe388649b4903b84dfd7bebb",
         "generated": true,
-        "qualityTier": "contextual-illustration"
+        "qualityTier": "contextual-illustration",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore"
       },
       "autoPublish": false,
       "imageAssetId": "heerenveen43",
@@ -1146,7 +1074,8 @@
             "stadiumIdentity": "home:scheerenveen",
             "imageIdentity": "a4abbc8b89b74e09c5e32045643dadc03f32e850fe388649b4903b84dfd7bebb",
             "generated": true,
-            "qualityTier": "contextual-illustration"
+            "qualityTier": "contextual-illustration",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore"
           }
         }
       ],
@@ -1241,7 +1170,8 @@
         "stadiumIdentity": "home:feyenoord",
         "imageIdentity": "8e26372b2f787df7ab7679984fbf9453e90058b926c0b4a179cf486e0608dcc7",
         "generated": true,
-        "qualityTier": "contextual-illustration"
+        "qualityTier": "contextual-illustration",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore"
       },
       "autoPublish": false,
       "imageAssetId": "feyenoord43",
@@ -1271,7 +1201,8 @@
             "stadiumIdentity": "home:feyenoord",
             "imageIdentity": "8e26372b2f787df7ab7679984fbf9453e90058b926c0b4a179cf486e0608dcc7",
             "generated": true,
-            "qualityTier": "contextual-illustration"
+            "qualityTier": "contextual-illustration",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore"
           }
         }
       ],
@@ -1365,7 +1296,8 @@
         "stadiumIdentity": "home:ajax",
         "imageIdentity": "9c4c28d20da434864ec0f77b881480bcbcbac3917662239b7a08742de9a7d454",
         "generated": true,
-        "qualityTier": "contextual-illustration"
+        "qualityTier": "contextual-illustration",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore"
       },
       "autoPublish": false,
       "imageAssetId": "ajax43",
@@ -1395,7 +1327,8 @@
             "stadiumIdentity": "home:ajax",
             "imageIdentity": "9c4c28d20da434864ec0f77b881480bcbcbac3917662239b7a08742de9a7d454",
             "generated": true,
-            "qualityTier": "contextual-illustration"
+            "qualityTier": "contextual-illustration",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore"
           }
         }
       ],
@@ -1488,7 +1421,8 @@
         "stadiumIdentity": "home:psv",
         "imageIdentity": "330ac8f2bbf71239584c4f2a94303d437a5ec9074dbfaa3bc3f6f4ad54502382",
         "generated": true,
-        "qualityTier": "contextual-illustration"
+        "qualityTier": "contextual-illustration",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore"
       },
       "autoPublish": false,
       "imageAssetId": "psv43",
@@ -1518,7 +1452,8 @@
             "stadiumIdentity": "home:psv",
             "imageIdentity": "330ac8f2bbf71239584c4f2a94303d437a5ec9074dbfaa3bc3f6f4ad54502382",
             "generated": true,
-            "qualityTier": "contextual-illustration"
+            "qualityTier": "contextual-illustration",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore"
           }
         }
       ],
@@ -1965,7 +1900,8 @@
         "stadiumIdentity": "home:fcmidtjylland",
         "imageIdentity": "320ecec03054d4c148b97811786bbb5a9b91f292b9eaf07b6e7711b5e3a96a90",
         "generated": true,
-        "qualityTier": "contextual-illustration"
+        "qualityTier": "contextual-illustration",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore"
       },
       "imageAssetId": "veldio69-midtjylland-1",
       "imageCaption": "Veldio · AI-illustratie bij FC Midtjylland – Ajax. Geen foto van de wedstrijd of gebeurtenis.",
@@ -1994,7 +1930,8 @@
             "stadiumIdentity": "home:fcmidtjylland",
             "imageIdentity": "320ecec03054d4c148b97811786bbb5a9b91f292b9eaf07b6e7711b5e3a96a90",
             "generated": true,
-            "qualityTier": "contextual-illustration"
+            "qualityTier": "contextual-illustration",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore"
           }
         }
       ],
@@ -2077,7 +2014,8 @@
         "stadiumIdentity": "home:willemii",
         "imageIdentity": "eb7ef243a118ad2ba924024789e974fe93661596087aa2e2c3f81ed860c9eadd",
         "generated": true,
-        "qualityTier": "contextual-illustration"
+        "qualityTier": "contextual-illustration",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore"
       },
       "imageAssetId": "veldio71-willem-ii-pec-zwolle-preview",
       "imageCaption": "AI-illustratie: Willem II en PEC Zwolle, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
@@ -2106,7 +2044,8 @@
             "stadiumIdentity": "home:willemii",
             "imageIdentity": "eb7ef243a118ad2ba924024789e974fe93661596087aa2e2c3f81ed860c9eadd",
             "generated": true,
-            "qualityTier": "contextual-illustration"
+            "qualityTier": "contextual-illustration",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore"
           }
         }
       ],
@@ -2191,7 +2130,8 @@
         "stadiumIdentity": "home:fcemmen",
         "imageIdentity": "4dcd87d1364b10cb126a1f3ee3754392a2ae8b978cf9f3e7a589f89b0ff656af",
         "generated": true,
-        "qualityTier": "contextual-illustration"
+        "qualityTier": "contextual-illustration",
+        "visualQualityStatus": "legacy-raster-awaiting-rescore"
       },
       "imageAssetId": "veldio71-emmen-den-bosch-preview",
       "imageCaption": "AI-illustratie: FC Emmen en FC Den Bosch, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
@@ -2220,7 +2160,8 @@
             "stadiumIdentity": "home:fcemmen",
             "imageIdentity": "4dcd87d1364b10cb126a1f3ee3754392a2ae8b978cf9f3e7a589f89b0ff656af",
             "generated": true,
-            "qualityTier": "contextual-illustration"
+            "qualityTier": "contextual-illustration",
+            "visualQualityStatus": "legacy-raster-awaiting-rescore"
           }
         }
       ],
@@ -2249,6 +2190,6 @@
     }
   ],
   "imagePolicyVersion": 69,
-  "mirroredAt": "2026-11-10T21:49:32.033Z",
+  "mirroredAt": "2026-11-11T06:35:09.738Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
