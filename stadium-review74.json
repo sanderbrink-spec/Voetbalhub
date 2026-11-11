@@ -12,11 +12,12 @@
       "id": "adodenhaag",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "a_crisp_photorealistic_wide_angle_stadium_scene.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/adodenhaag-preview.webp"
         },
         "report": {
           "state": "requires-new-full-resolution-art",
@@ -31,18 +32,20 @@
       "id": "ajax",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio-ajax-preview-dag.webp",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/ajax-preview.webp"
         },
         "report": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio-ajax-verslag-avond.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/ajax-report.webp"
         }
       }
     },
@@ -51,18 +54,20 @@
       "id": "az",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "a_cinematic_high_detail_sports_stadium_interior_s.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/az-preview.webp"
         },
         "report": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "a_cinematic_high_detail_stadium_interior_scene_in.png",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/az-report.webp"
         }
       }
     },
@@ -71,18 +76,20 @@
       "id": "excelsiorrotterdam",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "a_crisp_high_detail_realistic_sports_stadium_sce.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/excelsiorrotterdam-preview.webp"
         },
         "report": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "a_dramatic_ultra_realistic_stadium_night_scene_in.png",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/excelsiorrotterdam-report.webp"
         }
       }
     },
@@ -91,18 +98,20 @@
       "id": "fcgroningen",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio_in_een_groen_wit_stadion.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/fcgroningen-preview.webp"
         },
         "report": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio_in_een_bruisend_voetbalstadion.png",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/fcgroningen-report.webp"
         }
       }
     },
@@ -117,11 +126,12 @@
           "productionApproved": false
         },
         "report": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "a_dramatic_highly_detailed_sports_stadium_scene_f.png",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/fctwente-report.webp"
         }
       }
     },
@@ -130,18 +140,20 @@
       "id": "fcutrecht",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio-fc-utrecht-preview-dag.webp",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/fcutrecht-preview.webp"
         },
         "report": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio-fc-utrecht-verslag-avond.webp",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/fcutrecht-report.webp"
         }
       }
     },
@@ -150,11 +162,12 @@
       "id": "feyenoord",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "a_crisp_realistic_wide_angle_stadium_scene_photo.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/feyenoord-preview.webp"
         },
         "report": {
           "state": "requires-new-full-resolution-art",
@@ -169,11 +182,12 @@
       "id": "fortunasittard",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio_in_een_leeg_fortuna_stadion.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/fortunasittard-preview.webp"
         },
         "report": {
           "state": "requires-new-full-resolution-art",
@@ -188,18 +202,20 @@
       "id": "goaheadeagles",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio_stadion_in_rood_en_geel.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/goaheadeagles-preview.webp"
         },
         "report": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio_onder_de_stadionlichten.png",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/goaheadeagles-report.webp"
         }
       }
     },
@@ -208,11 +224,12 @@
       "id": "necnijmegen",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "a_crisp_photorealistic_wide_angle_view_of_a_footb.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/necnijmegen-preview.webp"
         },
         "report": {
           "state": "requires-new-full-resolution-art",
@@ -227,18 +244,20 @@
       "id": "peczwolle",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio_stadion_onder_heldere_hemel.png",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/peczwolle-preview.webp"
         },
         "report": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio_in_een_bruisend_avondstadion.png",
           "kind": "report",
           "occupancy": "full",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/peczwolle-report.webp"
         }
       }
     },
@@ -319,11 +338,12 @@
       "id": "telstar",
       "slots": {
         "preview": {
-          "state": "requires-binary-import",
+          "state": "repository-pending",
           "source": "veldio-telstar-preview-dag-concept.webp",
           "kind": "preview",
           "occupancy": "empty",
-          "productionApproved": false
+          "productionApproved": false,
+          "assetPath": "public/stadium74/telstar-preview.webp"
         },
         "report": {
           "state": "repository-pending",
