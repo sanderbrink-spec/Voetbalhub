@@ -17,6 +17,11 @@ function overview(){
     declared.state==='requires-binary-import'?'chat-file-not-uploaded':'missing-full-resolution-image';
   return {club:club.name,kind,occupancy:declared.occupancy,state,
    assetIds:available.map(x=>x.id),pendingAssetIds:staged.map(x=>x.id),
+   pendingImages:staged.map(a=>({id:a.id,sha256:a.sha256,
+    reviewUrl:'/editorial/stadium-review74/'+a.id+'/image',
+    originalSourceWidth:a.sourceNativeCropWidth||null,
+    qualityStatus:'requires-independent-review',rightsStatus:'requires-independent-review',
+    minQualityScore:8.5})),
    ...(declared.source?{conversationFile:declared.source}:{})};
  }));
  const counts=slots.reduce((out,slot)=>(out[slot.state]=(out[slot.state]||0)+1,out),{});

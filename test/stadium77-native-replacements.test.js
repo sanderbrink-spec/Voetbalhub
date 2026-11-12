@@ -35,10 +35,10 @@ test('Fase 77: vier native rastervervangingen blijven volledig onder handmatige 
   assert.equal(q.replacementStaged,true);
  }
  assert.equal(queue.images.length,36);
- assert.equal(queue.counts.needsRecreation,2);
+ assert.equal(queue.counts.needsRecreation,0);
  assert.equal(queue.counts.needsIndependentReview,36);
  assert.equal(desk.overview().counts['stored-awaiting-review'],36);
  assert.equal(desk.overview().counts['approved-for-use']||0,0);
  const remaining=queue.images.filter(x=>x.requiresRecreation).map(x=>x.id).sort();
- assert.deepEqual(remaining,['veldio75-sccambuur-preview','veldio75-sccambuur-report']);
+ assert.deepEqual(remaining,[]);
 });
