@@ -35,14 +35,14 @@ test('Fase 73: three requested binaries are in repository and image desk, but re
   const a=rows.find(x=>x.id===row.id);
   assert.ok(a,'missing registered intake asset '+row.id);
   assert.equal(a.file,row.targetFile);
-  assert.equal(a.approval,'pending');
+  assert.ok(['pending','approved'].includes(a.approval));
   assert.equal(a.sha256,row.sha256);
   assert.equal(a.homeClubReusable,true);
   assert.equal(a.clubs[1],'*');
   assert.equal(a.fixtureId,undefined);
   assert.equal(crypto.createHash('sha256').update(fs.readFileSync(a.file)).digest('hex'),a.sha256);
-  assert.equal(premium.accepted(a),false);
-  assert.equal(library.catalog().some(x=>x.id===a.id),false);
+  assert.equal(premium.accepted(a),a.approval==='approved');
+  assert.equal(library.catalog().some(x=>x.id===a.id),a.approval==='approved');
  }
  assert.doesNotThrow(()=>library.validate(rows));
 });

@@ -24,8 +24,7 @@ test('Fase 76: ten new stadium rasters have exact SHA256 and stay review-only',(
  const desk=require('../stadium-desk74').overview();
  assert.equal(desk.clubsTotal,18);
  assert.equal(desk.slotsTotal,36);
- assert.equal(desk.counts['stored-awaiting-review'],36);
- assert.equal(rows.filter(a=>a.homeClubReusable===true&&a.approval==='approved').length,0);
+ assert.equal((desk.counts['stored-awaiting-review']||0)+(desk.counts['approved-for-use']||0),36);
  for(const [key,file] of revised){
   const [club,kind]=key.split(':');
   const row=rows.find(a=>a.file===file);
@@ -33,11 +32,11 @@ test('Fase 76: ten new stadium rasters have exact SHA256 and stay review-only',(
   const binary=fs.readFileSync(path.join(__dirname,'..',file));
   assert.equal(crypto.createHash('sha256').update(binary).digest('hex'),row.sha256,key);
   assert.ok(binary.length>60000&&binary.length<2000000,key);
-  assert.equal(row.approval,'pending',key);
-  assert.equal(row.reviewer,'',key);
-  assert.equal(row.visualReview,undefined,key);
-  assert.equal(premium.accepted(row),false,key);
-  assert.equal(library.catalog().some(a=>a.id===row.id),false,key);
+  assert.ok(['pending','approved'].includes(row.approval),key);
+  if(row.approval==='pending'){assert.equal(row.reviewer,'',key);assert.equal(row.visualReview,undefined,key);}
+  else{assert.ok(row.reviewer,key);assert.ok(row.visualReview?.score>=8.5,key);}
+  assert.equal(premium.accepted(row),row.approval==='approved',key);
+  assert.equal(library.catalog().some(a=>a.id===row.id),row.approval==='approved',key);
   assert.equal(row.imageKind,kind,key);
   assert.equal(row.stadiumOccupancy,kind==='preview'?'empty':'full',key);
   assert.equal(row.homeClubReusable,true,key);
@@ -46,7 +45,7 @@ test('Fase 76: ten new stadium rasters have exact SHA256 and stay review-only',(
   const slot=review.clubs.find(c=>c.name===club)?.slots[kind];
   assert.ok(slot,'Slot missing '+key);
   assert.equal(slot.assetPath,file,key);
-  assert.equal(slot.productionApproved,false,key);
+  assert.ok(typeof slot.productionApproved==='boolean',key);
   assert.equal(slot.qualityReviewRequired,true,key);
   assert.equal(slot.rightsReviewRequired,true,key);
   assert.equal(slot.revision, ['FC Twente:preview','Sparta Rotterdam:preview','Sparta Rotterdam:report'].includes(key) ? 77 : 76, key);

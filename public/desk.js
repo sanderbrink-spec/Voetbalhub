@@ -275,6 +275,69 @@ $('saveServerDraft').onclick=()=>persistReviewedDraft(false);
 $('approveServerDraft').onclick=()=>persistReviewedDraft(true);
 
 
+
+// Deze handmatige intake maakt uitsluitend een SHA-gebonden beoordelingsdossier.
+// Zonder GitHub-review, CI en nieuwe Render-release komt geen pending beeld in de app.
+function addStadiumReviewExport(card,asset,image,slot){
+ const details=document.createElement('details');
+ const summary=document.createElement('summary');
+ summary.textContent='Beoordeling vastleggen voor individuele vrijgave';details.appendChild(summary);
+ const instructions=document.createElement('p');instructions.className='muted';
+ instructions.textContent='Bekijk het volledige beeld. Vul een score, controlebevindingen en concrete rechtenonderbouwing in. Download het JSON-dossier voor gecontroleerde GitHub-vrijgave. Dit geeft nog niets automatisch vrij.';
+ details.appendChild(instructions);
+ const field=(label,type='text')=>{
+  const lbl=document.createElement('label');lbl.textContent=label;
+  const input=document.createElement(type==='textarea'?'textarea':'input');
+  if(type!=='textarea')input.type=type;
+  lbl.appendChild(input);details.appendChild(lbl);return input;
+ };
+ const reviewer=field('Naam van de onafhankelijke reviewer');
+ const reviewedAt=field('Datum van beoordeling','date');
+ const score=field('Beeldkwaliteit (8,5 tot 10)','number');
+ score.min='8.5';score.max='10';score.step='0.1';score.placeholder='8.5';
+ const notes=field('Beeldspecifieke bevindingen: stadion, publiek, context, spelling','textarea');
+ const rights=field('Rechtenbewijs: herkomst, commercieel gebruik, merken/sponsors','textarea');
+ const flags=[
+  ['photorealism','Fotorealistische kwaliteit persoonlijk gecontroleerd'],
+  ['clubNames','Clubnamen en spelling gecontroleerd'],
+  ['stadiumContext','Thuisstadion, daglicht/publiek en wedstrijdcontext gecontroleerd'],
+  ['rights','Afbeeldingsrechten, logo’s en sponsoren gecontroleerd'],
+  ['aiNotDocumentary','AI-illustratie wordt niet als echte wedstrijdfoto gepresenteerd']
+ ];
+ const checks={};
+ for(const [id,caption] of flags){
+  const lbl=document.createElement('label');const cb=document.createElement('input');
+  cb.type='checkbox';cb.style.width='auto';checks[id]=cb;
+  lbl.appendChild(cb);lbl.appendChild(document.createTextNode(' '+caption));details.appendChild(lbl);
+ }
+ const confirmation=field('Typ letterlijk: Ik heb dit exacte beeld zelf gecontroleerd');
+ const button=document.createElement('button');button.type='button';button.className='secondary';
+ button.textContent='Download beoordelingsdossier (.json)';
+ details.appendChild(button);
+ const feedback=document.createElement('p');feedback.className='muted';feedback.setAttribute('role','status');
+ details.appendChild(feedback);
+ button.onclick=()=>{
+  const rating=Number(score.value);
+  const done=Object.values(checks).every(c=>c.checked);
+  if(!image.dataset.previewUrl||!score.value||!Number.isFinite(rating)||rating<8.5||rating>10||
+    reviewer.value.trim().length<3||!reviewedAt.value||
+    notes.value.trim().length<30||rights.value.trim().length<40||!done||
+    confirmation.value.trim()!=='Ik heb dit exacte beeld zelf gecontroleerd'){
+   feedback.textContent='Niet compleet. Bekijk eerst het beveiligde beeld, controleer alle punten en vul concrete bewijsgegevens in.';return;
+  }
+  const review={assetId:asset.id,assetSha256:asset.sha256,club:slot.club,kind:slot.kind,
+   score:rating,reviewer:reviewer.value.trim(),reviewedAt:reviewedAt.value,
+   notes:notes.value.trim(),rightsEvidence:rights.value.trim(),
+   humanConfirmation:confirmation.value.trim(),
+   checked:Object.fromEntries(Object.entries(checks).map(([k,c])=>[k,c.checked]))};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(review,null,2)+'\n'],{type:'application/json'}));
+  const a=document.createElement('a');a.href=url;a.download='veldio-review-'+asset.id+'.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  feedback.textContent='Dossier gedownload. De redactie moet dit nog afzonderlijk in GitHub vrijgeven. Geen automatische goedkeuring.';
+ };
+ card.appendChild(details);
+}
+
 // Fase 78: protected staging-gallery. Pending files are never linked publicly.
 const stadiumPreviewObjectUrls=new Set();
 function clearStadiumPreviews(){
@@ -291,11 +354,12 @@ $('loadStadiumReview').onclick=async()=>{
   const data=await request('/editorial/stadium-review74',{headers:{Authorization:'Bearer '+key}});
   const slots=Array.isArray(data.slots)?data.slots:[];
   if(slots.length!==36)throw Error('Onvolledige redactiebeeldbibliotheek; geen beelden vrijgeven.');
-  status.textContent=slots.length+' beeldvarianten. Eerst '+(data.reviewPlan?.firstReview||0)+' ter beoordeling, '+(data.reviewPlan?.repairFirst||0)+' apart voor herstel. Geen automatische goedkeuring.';
+  status.textContent=slots.length+' beeldvarianten: '+(data.reviewPlan?.firstReview||0)+' ter beoordeling, '+(data.reviewPlan?.repairFirst||0)+' voor herstel en '+(data.reviewPlan?.approved||0)+' afzonderlijk vrijgegeven. Geen automatische goedkeuring.';
   const reviewNow=slots.filter(s=>s.pendingImages?.some(a=>a.reviewPriority==='first-review'));
   const repairLater=slots.filter(s=>s.pendingImages?.some(a=>a.reviewPriority==='repair-first'));
-  if(reviewNow.length+repairLater.length!==slots.length)throw Error('Onvolledige fasering; geen vrijgave toegestaan.');
-  for(const [groupName,group] of [['Prioriteit 1: afzonderlijk beoordelen',reviewNow],['Prioriteit 2: eerst herstellen',repairLater]]){
+  const released=slots.filter(s=>s.state==='approved-for-use'&&s.approvedImages?.length);
+  if(reviewNow.length+repairLater.length+released.length!==slots.length)throw Error('Onvolledige fasering; geen vrijgave toegestaan.');
+  for(const [groupName,group] of [['Prioriteit 1: afzonderlijk beoordelen',reviewNow],['Prioriteit 2: eerst herstellen',repairLater],['Afzonderlijk goedgekeurd voor publicatie',released]]){
    const groupHeading=document.createElement('h3');groupHeading.textContent=groupName+' ('+group.length+')';grid.appendChild(groupHeading);
    for(const slot of group){
    const card=document.createElement('article');card.className='card';
@@ -318,6 +382,7 @@ $('loadStadiumReview').onclick=async()=>{
     const image=document.createElement('img');image.alt='AI-stadionillustratie voor '+slot.club+', '+slot.kind;image.loading='lazy';
     image.style.cssText='width:100%;max-height:240px;object-fit:cover;border-radius:10px;display:none';
     card.appendChild(image);
+    if(asset.canRequestApproval)addStadiumReviewExport(card,asset,image,slot);
     const message=document.createElement('p');message.className='muted';message.setAttribute('role','status');card.appendChild(message);
     show.onclick=async()=>{
      const secret=$('secret').value.trim();if(!secret){message.textContent='Redactiesleutel ontbreekt.';return;}
@@ -334,6 +399,14 @@ $('loadStadiumReview').onclick=async()=>{
      }catch(error){message.textContent=error.message||'Beeld niet beschikbaar.';}
      finally{show.disabled=false;}
     };
+   }else if(slot.approvedImages?.length){
+    const ready=slot.approvedImages[0];
+    const stamp=document.createElement('p');stamp.className='good';
+    stamp.textContent='Individueel vrijgegeven na controle · score '+ready.visualScore+' / 10 · '+ready.reviewer;
+    card.appendChild(stamp);
+    const pic=document.createElement('img');pic.alt='Vrijgegeven Veldio-illustratie '+slot.club;
+    pic.loading='lazy';pic.src=ready.publicImageUrl;
+    pic.style.cssText='width:100%;max-height:240px;object-fit:cover;border-radius:10px';card.appendChild(pic);
    }else{
     const msg=document.createElement('p');msg.className='warn';msg.textContent='Geen beeld beschikbaar voor controle.';card.appendChild(msg);
    }

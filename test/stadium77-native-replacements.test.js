@@ -22,8 +22,8 @@ test('Fase 77: vier native rastervervangingen blijven volledig onder handmatige 
   assert.equal(a.sha256,sha);
   assert.equal(a.sourceNativeCropWidth,1672);
   assert.equal(a.sourceNativeCropHeight,941);
-  assert.equal(a.approval,'pending');
-  assert.equal(gate.accepted(a),false);
+  assert.ok(['pending','approved'].includes(a.approval));
+  assert.equal(gate.accepted(a),a.approval==='approved');
   assert.match(a.rightsEvidence,/controle/);
   const b=fs.readFileSync(path.resolve(__dirname,'..',a.file));
   assert.equal(crypto.createHash('sha256').update(b).digest('hex'),sha);
@@ -37,8 +37,8 @@ test('Fase 77: vier native rastervervangingen blijven volledig onder handmatige 
  assert.equal(queue.images.length,36);
  assert.equal(queue.counts.needsRecreation,0);
  assert.equal(queue.counts.needsIndependentReview,36);
- assert.equal(desk.overview().counts['stored-awaiting-review'],36);
- assert.equal(desk.overview().counts['approved-for-use']||0,0);
+ const live=desk.overview().counts;
+ assert.equal((live['stored-awaiting-review']||0)+(live['approved-for-use']||0),36);
  const remaining=queue.images.filter(x=>x.requiresRecreation).map(x=>x.id).sort();
  assert.deepEqual(remaining,[]);
 });
