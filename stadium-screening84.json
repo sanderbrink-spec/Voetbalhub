@@ -112,7 +112,15 @@
         "commercial-rights-evidence",
         "accurate-club-context",
         "independent-score-at-least-8.5"
-      ]
+      ],
+      "fullResolutionAssessment": {
+        "date": "2026-11-12",
+        "score": 7.8,
+        "referenceUrl": "https://www.oogtv.nl/2024/05/de-eredivisie-kleurt-weer-groen-wit-avondje-euroborg-in-fotos/",
+        "visualNote": "Lege tribunes en leesbaar AI-onderschrift. Scherp gras en geloofwaardig daglicht. Groen-witte stoelen en twee ringen passen bij de club, maar de grote lichtmast en schermwand geven onvoldoende overeenkomst met de Euroborg. Alleen Veldio-merken zichtbaar.",
+        "rightsNote": "AI-herkomst staat in het register. Verifieerbare koppeling van het originele bronbestand en eventuele invoerbeelden aan bewijs voor commercieel gebruik ontbreekt.",
+        "decision": "pending"
+      }
     },
     {
       "id": "veldio74-fcgroningen-report",
@@ -134,7 +142,15 @@
         "commercial-rights-evidence",
         "accurate-club-context",
         "independent-score-at-least-8.5"
-      ]
+      ],
+      "fullResolutionAssessment": {
+        "date": "2026-11-12",
+        "score": 8.0,
+        "referenceUrl": "https://www.oogtv.nl/2024/05/de-eredivisie-kleurt-weer-groen-wit-avondje-euroborg-in-fotos/",
+        "visualNote": "Drukbezochte tribunes en leesbaar AI-onderschrift. Overtuigende veldverlichting en supporterssfeer. De groene wand, het hangende scherm en de aansluiting op de bovenring wijken af van het referentiebeeld. Alleen Veldio-merken zichtbaar.",
+        "rightsNote": "AI-herkomst staat in het register. Verifieerbare koppeling van het originele bronbestand en eventuele invoerbeelden aan bewijs voor commercieel gebruik ontbreekt.",
+        "decision": "pending"
+      }
     },
     {
       "id": "veldio74-fctwente-report",
@@ -508,7 +524,15 @@
         "commercial-rights-evidence",
         "accurate-club-context",
         "independent-score-at-least-8.5"
-      ]
+      ],
+      "fullResolutionAssessment": {
+        "date": "2026-11-12",
+        "score": 8.2,
+        "referenceUrl": "https://www.cambuur.nl/de-club/kooi-stadion/",
+        "visualNote": "Lege blauw-gele tribunes, natuurlijk daglicht en leesbaar AI-onderschrift. Losse tribunes dicht op het veld passen bij het Kooi Stadion. De vakindeling en hoge lichtmasten komen onvoldoende overeen met de clubfoto. Alleen Veldio-merken zichtbaar.",
+        "rightsNote": "AI-herkomst staat in het register. Verifieerbare koppeling van het originele bronbestand en eventuele invoerbeelden aan bewijs voor commercieel gebruik ontbreekt.",
+        "decision": "pending"
+      }
     },
     {
       "id": "veldio75-sccambuur-report",
@@ -530,7 +554,15 @@
         "commercial-rights-evidence",
         "accurate-club-context",
         "independent-score-at-least-8.5"
-      ]
+      ],
+      "fullResolutionAssessment": {
+        "date": "2026-11-12",
+        "score": 7.5,
+        "referenceUrl": "https://www.cambuur.nl/de-club/kooi-stadion/",
+        "visualNote": "Zichtbaar publiek en leesbaar AI-onderschrift. De tribunevorm, lichtmast en dakrand komen onvoldoende overeen met de clubfoto. De grote clubnaam is correct, maar verderop staat een vervormde tweede clubnaam. Geen herkenbaar officieel clublogo of externe sponsor.",
+        "rightsNote": "AI-herkomst staat in het register. Verifieerbare koppeling van het originele bronbestand en eventuele invoerbeelden aan bewijs voor commercieel gebruik ontbreekt.",
+        "decision": "pending"
+      }
     },
     {
       "id": "veldio75-scheerenveen-preview",
