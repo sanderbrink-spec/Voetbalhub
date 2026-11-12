@@ -1,0 +1,64 @@
+/* Veldio UI 86: compact, accessible match and prediction surfaces. Original imagery only. */
+:root{--ui86-accent:#a9ff35;--ui86-line:#375943;--ui86-bg:#07140d}
+body[data-section="fixtures"] main,body.predictions86 main{padding:12px 12px 28px;max-width:720px;margin:auto}
+.fixtures-hero86,.prediction-intro{background:linear-gradient(90deg,#05130eea,#05130e80),url('premium40/fixtures.webp') center/cover;border:1px solid var(--ui86-line);border-radius:17px;padding:16px 17px;margin:0 0 14px;min-height:98px}
+.prediction-intro{background-image:linear-gradient(90deg,#05130eeb,#05130e8c),url('premium40/predictions.webp')}
+.fixtures-hero86 h1,.prediction-intro h1{font-size:28px;margin:0 0 6px;line-height:1.1}
+.fixtures-hero86 p,.prediction-intro p{font-size:13px;margin:0;color:#d3e2d6;line-height:1.45}
+body[data-section="fixtures"] .filters50{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 12px;padding:0}
+body[data-section="fixtures"] .filters50 button{border-radius:13px;padding:10px 2px;min-height:48px;font-size:13px;font-weight:650}
+body[data-section="fixtures"] .round50{margin:9px 0 12px;grid-template-columns:48px minmax(0,1fr) 48px}
+body[data-section="fixtures"] .round50 button{min-height:48px}
+body[data-section="fixtures"] .round50 select{font-size:15px;min-height:48px}
+.match-filter86{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 12px}
+.match-filter86 button{min-width:0;padding:10px 2px;border-radius:13px;border:1px solid var(--ui86-line);background:#102118;color:#e9f3ed;font-size:13px;min-height:48px}
+.match-filter86 button[aria-pressed="true"]{background:var(--ui86-accent);border-color:var(--ui86-accent);color:#092006;font-weight:800}
+body[data-section="fixtures"] .match-list50{border:0;background:transparent}
+body[data-section="fixtures"] .match50{border:1px solid var(--ui86-line);border-radius:15px;background:linear-gradient(120deg,#112a1b,#06140e);margin-bottom:9px;padding:10px 9px;min-height:78px;box-shadow:none}
+body[data-section="fixtures"] .match50 .when{font-size:13px;font-weight:750}
+body[data-section="fixtures"] .match50 .when small{font-size:10px;font-weight:500;line-height:1.3;margin-top:4px}
+body[data-section="fixtures"] .match50 .club-shirt{width:38px;height:52px}
+body[data-section="fixtures"] .fixtures-tools86{margin:7px 0 12px}
+body[data-section="fixtures"] .fixtures-tools86 summary{min-height:46px;padding:10px 4px;font-size:13px}
+body[data-section="fixtures"] .section50{background:linear-gradient(90deg,#17301d,#08170d);margin:16px 0 8px;font-size:16px}
+body[data-section="fixtures"] .notice50{border:1px solid var(--ui86-line);border-radius:13px;padding:12px;margin:0}
+.source-details86{margin:14px 0;color:#b4c7b9;font-size:12px}
+.source-details86 summary{padding:8px 2px;font-size:12px}
+.source-details86 p{overflow-wrap:anywhere}
+body.predictions86 #game .filters{display:block}
+body.predictions86 .round50{margin:12px 0}
+body.predictions86 .round50 select{font-size:15px}
+.pred-stats86{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+.pred-stat86{border:1px solid var(--ui86-line);border-radius:14px;background:linear-gradient(140deg,#112c1b,#08140d);padding:12px 8px;min-height:78px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.pred-stat86 small{color:#c3d5c8;font-size:11px;margin:0;line-height:1.3}
+.pred-stat86 strong{color:var(--ui86-accent);font-size:19px;font-variant-numeric:tabular-nums}
+.pred-round86{background:linear-gradient(105deg,#15321ee8,#07190dcc),url('veldio-arena.webp') center/cover;border:1px solid #6b9b35;border-radius:16px;padding:12px 15px;margin:12px 0}
+.pred-round86 strong{font-size:19px}
+.pred-round86 p{margin:4px 0 0;color:#d9e5db;font-size:12px}
+.pred-choices86 h2{margin:18px 0 10px;font-size:18px}
+.pred-choices86 #fixtureSelector{max-height:none;overflow:visible;border:none;background:transparent}
+.pred-choices86 #fixtureSelector .match50{width:100%;border:1px solid var(--ui86-line);border-radius:14px;background:#0b1f13;margin-bottom:8px;min-height:70px}
+.pred-choices86 #fixtureSelector .match50[aria-current="true"]{border-color:var(--ui86-accent);background:#18321e}
+.pred-choices86 #fixtureSelector .match50 .club-shirt{width:34px;height:45px}
+.pred-choices86 #fixtureSelector .when{font-size:12px;font-weight:750}
+body.predictions86 .fixture{margin:16px 0 10px;border-color:#658d43;box-shadow:none;background:#0b1c11}
+body.predictions86 .fixture header{padding:10px 10px 0}
+body.predictions86 .shirt-stage{padding:9px 15px 12px;background:linear-gradient(#071409e8,#061009e8),url('veldio-arena.webp') center/cover}
+body.predictions86 .shirt-stage .club-shirt{width:50px;height:67px}
+body.predictions86 .shirt-stage strong{font-size:13px;margin-top:4px;overflow-wrap:anywhere}
+body.predictions86 .fixture h2{font-size:17px;margin:11px}
+body.predictions86 #scoreForm .choices{margin:9px 13px}
+body.predictions86 #scoreForm input{font-size:22px;font-weight:750;font-variant-numeric:tabular-nums;min-height:50px}
+body.predictions86 .save50{width:calc(100% - 24px);max-width:none;margin:13px 12px 4px;border-radius:12px;min-height:52px}
+body.predictions86 .saved{font-size:12px}
+body.predictions86 .quiz50{padding:12px 14px;min-height:60px}
+body.predictions86 #rules{font-size:12px;line-height:1.5}
+body.predictions86 .history50{margin-top:18px}
+body.predictions86 .history50 summary,body.predictions86 details>summary{min-height:48px}
+body.predictions86 .score50{display:none}
+@media(max-width:359px){
+ body[data-section="fixtures"] .filters50 button,.match-filter86 button{font-size:11px}
+ .pred-stat86 strong{font-size:16px}
+ body[data-section="fixtures"] .match50{grid-template-columns:minmax(0,1fr) 30px 57px 30px minmax(0,1fr);gap:3px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
