@@ -32,10 +32,10 @@ test('Signed Android build version and source checksums match current package',(
   const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');
   assert.equal(source.files[name],actual, file+' provenance hash');
  }
- assert.match(gradle,/versionCode\s*=\s*104/);
- assert.match(gradle,/versionName\s*=\s*"4\.64"/);
- assert.match(workflow,/versionCode='104'\.\*versionName='4\.64'/);
- assert.match(workflow,/name: Veldio-64/);
+ assert.match(gradle,/versionCode\s*=\s*105/);
+ assert.match(gradle,/versionName\s*=\s*"4\.65"/);
+ assert.match(workflow,/versionCode='105'\.\*versionName='4\.65'/);
+ assert.match(workflow,/name: Veldio-65/);
 });
 
 test('Nieuws is de startpagina en behoudt alle redactionele artikelen',()=>{
@@ -61,7 +61,7 @@ test('Veldio 4.62 bundles the approved compact competition and match UI',()=>{
  assert.match(fixtures,/\['conferenceleague','UCL','UEFA Conference League'\]/);
  assert.match(fixtures,/match-filter86/);
  assert.match(fixtures,/team87-home/);
- assert.match(fixtures,/aria-label="Veldio versie 4\.64"/);
- assert.match(predictions,/aria-label="Veldio versie 4\.64"/);
+ assert.match(fixtures,/aria-label="Veldio versie 4\.65"/);
+ assert.match(predictions,/aria-label="Veldio versie 4\.65"/);
  assert.match(style,/grid-template-columns:minmax\(0,1fr\) minmax\(72px,80px\) minmax\(0,1fr\)/);
 });
