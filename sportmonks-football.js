@@ -4,7 +4,7 @@
 // The Eredivisie is league 72; 271 is Denmark's Superliga. Verify against provider catalog.
 const LEAGUES={eredivisie:72};
 const CREDIT='Sportmonks Football API';
-const EVENT_PARSER_REVISION=137;
+const EVENT_PARSER_REVISION=138;
 const SOURCE={name:CREDIT,eventParserRevision:EVENT_PARSER_REVISION,url:'https://www.sportmonks.com/football-api/',license:'Sportmonks subscription; commercial display rights subject to contract',commercial:null,cost:'trial/subscription',refreshMinutes:15,databaseDownload:null};
 const finalStates=new Set([5,7,8]);
 function parseFixture(row,competition,now){
@@ -30,7 +30,7 @@ function parseFixture(row,competition,now){
   home:{id:'sm-'+home.id,name:home.name},away:{id:'sm-'+away.id,name:away.name},goals,
   ...(status==='FT'&&halftime&&[halftime.home,halftime.away].every(Number.isInteger)&&halftime.home<=goals.home&&halftime.away<=goals.away?{halfTime:halftime}:{}),
   checkedAt:new Date(now).toISOString(),resultSource:CREDIT,
-  ...(status==='FT'?{resultExpiresAt:now+36*3600000,goalTimeline:confirmedGoals(row,goals),incidents:confirmedIncidents(row,home.id,away.id)}:{})};
+  ...(status==='FT'?{resultExpiresAt:now+36*3600000,goalTimeline:confirmedGoals(row,goals),incidents:confirmedIncidents(row,home.id,away.id),eventCoverage:Array.isArray(row.events)&&row.events.length<=150?'sportmonks':'unavailable',matchEvents:verifiedMatchEvents(row,home.id,away.id,goals)}:{})};
 }
 // Sportmonks v3 event types: missed penalty, direct red and second yellow.
 const decisiveEventTypes = {17:'missed_penalty',20:'red_card',21:'second_yellow'};
@@ -55,7 +55,7 @@ function confirmedIncidents(row, homeId, awayId) {
 // Do not turn unverified or incomplete live events into newspaper facts.
 function confirmedGoals(row,final){
  const total=final.home+final.away;
- if(!Number.isInteger(total)||total<2||total>15||!Array.isArray(row.events)||row.events.length>150)return [];
+ if(!Number.isInteger(total)||total<1||total>15||!Array.isArray(row.events)||row.events.length>150)return [];
  const raw=row.events.filter(e=>[14,15,16].includes(e?.type_id));
  if(raw.length!==total||!raw.every(e=>Number.isInteger(e.sort_order)&&Number.isInteger(e.minute)&&e.minute>=1&&e.minute<=130&&
    (e.extra_minute==null||Number.isInteger(e.extra_minute)&&e.extra_minute>=0&&e.extra_minute<=30)&&
@@ -92,6 +92,46 @@ function confirmedGoals(row,final){
  return previous.home===final.home&&previous.away===final.away?events:[];
 }
 
+
+/** Strict incident display: same subscribed events include, no extra API calls. */
+function verifiedMatchEvents(row,homeId,awayId,final){
+ if(!Array.isArray(row.events)||row.events.length>150||!final||
+   !Number.isInteger(final.home)||!Number.isInteger(final.away))return [];
+ const goals=confirmedGoals(row,final);
+ const rawGoals=row.events.filter(e=>[14,15,16].includes(e?.type_id)).sort((a,b)=>a.sort_order-b.sort_order);
+ const result=[];
+ // Only publish scorer identities if the complete goal sequence matches the final score.
+ if(goals.length===final.home+final.away&&goals.length===rawGoals.length){
+  for(let i=0;i<goals.length;i++){
+   const g=goals[i],source=rawGoals[i],teamId=source.participant_id??source.team_id;
+   result.push({kind:g.kind,minute:g.minute,extra:g.extra,sortOrder:source.sort_order,
+    side:g.kind==='own_goal'?(teamId===homeId?'home':'away'):g.scorerSide,
+    player:g.player,score:String(g.home)+' – '+String(g.away)});
+  }
+ }
+ const kinds={18:'substitution',19:'yellow_card',20:'red_card',21:'second_yellow',83:'red_card'};
+ const isName=x=>typeof x==='string'&&x.trim().length>=2&&x.trim().length<=90&&
+   /^[\p{L}\p{M} .'\u2019-]+$/u.test(x.trim());
+ const seen=new Set();
+ for(const e of row.events){
+  const kind=kinds[e?.type_id];
+  if(!kind||e.rescinded===true)continue;
+  if(e.participant_id!=null&&e.team_id!=null&&e.participant_id!==e.team_id)continue;
+  const teamId=e.participant_id??e.team_id;
+  if(teamId!==homeId&&teamId!==awayId)continue;
+  const minute=e.minute,extra=e.extra_minute??0,sortOrder=e.sort_order;
+  if(!Number.isInteger(minute)||minute<1||minute>130||!Number.isInteger(extra)||extra<0||
+     extra>30||!Number.isInteger(sortOrder)||sortOrder<0||!isName(e.player_name))continue;
+  if(kind==='substitution'&&!isName(e.related_player_name))continue;
+  const id=Number.isSafeInteger(e.id)?'id:'+e.id:JSON.stringify([sortOrder,kind,minute,extra,teamId,e.player_name,e.related_player_name]);
+  if(seen.has(id))continue;
+  seen.add(id);
+  result.push({kind,minute,extra,sortOrder,side:teamId===homeId?'home':'away',
+   player:e.player_name.trim(),...(kind==='substitution'?{relatedPlayer:e.related_player_name.trim()}:{})});
+ }
+ return result.sort((a,b)=>a.sortOrder-b.sortOrder||a.minute-b.minute||a.extra-b.extra).slice(0,100);
+}
+
 async function load({fetcher,token,now,sourceBody,competition='eredivisie'}){
  if(!token||!Object.hasOwn(LEAGUES,competition))throw Error('Sportmonks niet geconfigureerd');
  const year=new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear();
@@ -123,4 +163,4 @@ async function load({fetcher,token,now,sourceBody,competition='eredivisie'}){
  if(all.size<100||all.size>500)throw Error('Sportmonks onvolledige seizoensdekking');
  return [...all.values()].sort((a,b)=>a.date.localeCompare(b.date));
 }
-module.exports={EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,load};
+module.exports={EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load};
