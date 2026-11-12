@@ -27,7 +27,7 @@ test('Fase 80: goedgekeurde stadionbeelden zijn per thuisclub en beeldtype selec
    competition:'Eredivisie',stadiumIdentity:'home:'+norm(club),articleId:'synthetic-'+a.id};
   const selected=library.choose(ctx,reviewed);
   assert.equal(selected?.id,a.id,a.id);
-  assert.equal(library.choose({...ctx,clubs:[opponent,club],stadiumIdentity:'home:'+norm(opponent)},[a]),null,'No away club reuse '+a.id);
+  assert.equal(library.choose({...ctx,clubs:[opponent,club],stadiumIdentity:'home:'+norm(opponent)},[reviewed.find(x=>x.id===a.id)]),null,'No away club reuse '+a.id);
   assert.equal(library.choose({...ctx,category:a.imageKind==='preview'?'report':'preview'},[reviewed.find(x=>x.id===a.id)]),null,'Wrong kind '+a.id);
   assert.equal(library.choose(ctx,[a]),null,'Pending must never publish '+a.id);
  }
