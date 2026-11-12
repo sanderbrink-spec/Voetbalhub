@@ -393,7 +393,7 @@
     "app/src/main/java/nl/voetbalhub/app/DestinationView39.java": "d87b812b127fe22f3ddd72323d8c2b78dddb34eb42c67e8989cf99057137a7ba",
     "app/src/main/java/nl/voetbalhub/app/NewsNotifications39.java": "1749c5a6c82181396ef19aa38148dfc1bd3a2deeebd010f47706f2eaf44134f4",
     "app/src/main/java/nl/voetbalhub/app/AdSettings.java": "0964a64025995ba62260d842f13e61a43b6800c3eb67d91e5951bc1e95fdf4d0",
-    "app/src/main/java/nl/voetbalhub/app/MainActivity.java": "b174033bd8a5c47553e6560b30a25136c5256fdbd807679a0457d9fd32276d04",
+    "app/src/main/java/nl/voetbalhub/app/MainActivity.java": "3925f5ca04d7b0188d0771775cdd59ad539b2feba7c782d129497e5063373f07",
     "app/src/main/java/nl/voetbalhub/app/EditorialArtwork.java": "9352d38f4e5ac07343b491a4406502d2fb4e2f73684b93a4e3c609d556786e6f",
     "app/src/main/java/nl/voetbalhub/app/HomeMenu39.java": "9e36853d36ea84ca7debd43ed25a9122aab54a735c105a92f05471f86826a301",
     "app/src/main/java/nl/voetbalhub/app/ClubQuizView.java": "2d1b37aaf56e535f1466a398dd5aace66f41012439de556250e5d68824add5e0",
@@ -501,7 +501,8 @@
     "app/src/main/assets/article-art69/twente-4.webp": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
     "app/src/main/assets/article-art69/twente-5.webp": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
     "app/src/main/assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
-    "app/src/main/assets/veldio-ui86.css": "d2d9ed814b3b229f646d43b1f8cebda69be96e66ea46b62d8cd57f939287c422"
+    "app/src/main/assets/veldio-ui86.css": "d2d9ed814b3b229f646d43b1f8cebda69be96e66ea46b62d8cd57f939287c422",
+    "app/src/main/java/nl/voetbalhub/app/VeldioIntroBackdrop.java": "9c460f63150f12769371b3a1c0078014525c2ee335d7ed272d57fd22a883fb85"
   },
   "backend_image_pipeline": "phase44 retained from main",
   "build_source": "android-project; no archive extraction or build-time UI patching",
