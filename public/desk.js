@@ -291,7 +291,7 @@ $('loadStadiumReview').onclick=async()=>{
   const data=await request('/editorial/stadium-review74',{headers:{Authorization:'Bearer '+key}});
   const slots=Array.isArray(data.slots)?data.slots:[];
   if(slots.length!==36)throw Error('Onvolledige redactiebeeldbibliotheek; geen beelden vrijgeven.');
-  status.textContent=slots.length+' beeldvarianten. '+(data.counts?.['stored-awaiting-review']||0)+' in beoordeling. Geen automatische goedkeuring.';
+  status.textContent=slots.length+' beeldvarianten. '+(data.counts?.['stored-awaiting-review']||0)+' in beoordeling. '+(data.issuesForExtraReview||0)+' beelden met bekende herstelpunten. Geen automatische goedkeuring.';
   for(const slot of slots){
    const card=document.createElement('article');card.className='card';
    const heading=document.createElement('strong');heading.textContent=slot.club+' · '+(slot.kind==='preview'?'Voorbeschouwing':'Wedstrijdverslag');card.appendChild(heading);
@@ -301,6 +301,11 @@ $('loadStadiumReview').onclick=async()=>{
     const info=document.createElement('p');info.className='muted';
     info.textContent='Beeldscore minimaal '+asset.minQualityScore+' · rechtencontrole vereist';
     card.appendChild(info);
+    if(asset.knownIssue){
+     const warning=document.createElement('p');warning.className='warn';
+     warning.textContent='Extra controle ('+asset.knownIssue.level+'): '+asset.knownIssue.reason;
+     card.appendChild(warning);
+    }
     const show=document.createElement('button');show.type='button';show.className='secondary';show.textContent='Bekijk beveiligd beeld';card.appendChild(show);
     const image=document.createElement('img');image.alt='AI-stadionillustratie voor '+slot.club+', '+slot.kind;image.loading='lazy';
     image.style.cssText='width:100%;max-height:240px;object-fit:cover;border-radius:10px;display:none';
