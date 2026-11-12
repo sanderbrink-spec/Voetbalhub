@@ -62,3 +62,27 @@ body.predictions86 .score50{display:none}
  body[data-section="fixtures"] .match50{grid-template-columns:minmax(0,1fr) 30px 57px 30px minmax(0,1fr);gap:3px;font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* Veldio 4.62: deliberately visible release and denser three-column match rows. */
+.hero-head87{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.hero-head87 h1{margin:0}
+.release87{font-size:11px;letter-spacing:.02em;color:#bad6bd;background:#10241b;border:1px solid #4c7957;border-radius:7px;padding:4px 7px;flex:none}
+.fixtures-hero86{padding:13px 15px;min-height:76px;margin-bottom:11px}
+.fixture-counter87{margin:4px 2px 8px!important;color:#b4cabb!important;font-size:12px!important;line-height:1.3!important}
+body[data-section="fixtures"] .match50{display:grid;grid-template-columns:minmax(0,1fr) minmax(72px,80px) minmax(0,1fr);gap:4px;min-height:66px;padding:8px 9px;margin-bottom:7px;border-radius:12px}
+body[data-section="fixtures"] .match50 .team87{display:flex;align-items:center;min-width:0;gap:5px;font-size:12px;font-weight:650;line-height:1.25}
+body[data-section="fixtures"] .match50 .team87 span{min-width:0;overflow-wrap:normal;word-break:normal;hyphens:auto}
+body[data-section="fixtures"] .match50 .team87-home{text-align:left}
+body[data-section="fixtures"] .match50 .team87-away{text-align:right;justify-content:flex-end}
+body[data-section="fixtures"] .match50 .team87 .club-shirt{width:27px;height:37px;flex:none}
+body[data-section="fixtures"] .match50 .when{font-size:14px;font-weight:800;line-height:1.2}
+body[data-section="fixtures"] .match50 .when small{font-size:10px;line-height:1.25;white-space:normal;margin-top:3px}
+body[data-section="fixtures"] .filters50{margin-bottom:9px}
+body[data-section="fixtures"] .round50{margin:7px 0 9px}
+body[data-section="fixtures"] .match-filter86{margin-bottom:8px}
+@media(max-width:359px){
+ body[data-section="fixtures"] .match50{grid-template-columns:minmax(0,1fr) 67px minmax(0,1fr);gap:3px;padding:7px}
+ body[data-section="fixtures"] .match50 .team87{font-size:11px;gap:3px}
+ body[data-section="fixtures"] .match50 .team87 .club-shirt{width:23px;height:32px}
+ body[data-section="fixtures"] .match50 .when{font-size:13px}
+}

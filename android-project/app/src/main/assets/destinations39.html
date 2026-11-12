@@ -60,17 +60,17 @@ function fixtures50(){
   const result=(finished||live)&&hasScore?esc(goals.home+' – '+goals.away):f.status==='TBD'?'Tijd volgt':esc(date(f.date));
   const status=live?'Live'+(Number.isInteger(f.minute)?' · '+f.minute+"'":''):finished?'Afgelopen':f.status==='PST'?'Uitgesteld':f.status==='CANC'?'Afgelast':f.status==='NS'&&Date.parse(f.date)>Date.now()?'Nog te voorspellen':f.status==='AWAITING'?'Uitslag nog niet bevestigd':'Niet beschikbaar';
   const upcoming=f.status==='NS'&&Date.parse(f.date)>Date.now();
-  const content='<span>'+esc(f.home.name)+'</span>'+Football47.shirt(f.home)+'<span class="when">'+result+'<small>'+esc(status)+'</small></span>'+Football47.shirt(f.away)+'<span class="away">'+esc(f.away.name)+'</span>';
+  const content='<span class="team87 team87-home">'+Football47.shirt(f.home)+'<span>'+esc(f.home.name)+'</span></span><span class="when">'+result+'<small>'+esc(status)+'</small></span><span class="team87 team87-away"><span>'+esc(f.away.name)+'</span>'+Football47.shirt(f.away)+'</span>';
   return upcoming?'<button class="match50" data-route="predictions" aria-label="Voorspel '+esc(f.home.name+' tegen '+f.away.name)+'">'+content+'</button>':'<div class="match50" role="listitem">'+content+'</div>';
  };
- let h='<section class="fixtures-hero86"><h1>Wedstrijden</h1><p>Programma, live en uitslagen.</p></section>';
+ let h='<section class="fixtures-hero86"><div class="hero-head87"><h1>Wedstrijden</h1><span class="release87" aria-label="Veldio versie 4.62">4.62</span></div><p>Programma, live en uitslagen.</p></section>';
  h+='<div class="filters50" role="group" aria-label="Competitie kiezen">'+comps.map(([id,label,full])=>'<button data-comp50="'+id+'" title="'+full+'" aria-label="'+full+'" aria-pressed="'+(state.competition===id)+'">'+label+'</button>').join('')+'</div>';
  h+='<div class="round50"><button data-round50="'+esc(rounds[index-1]||'')+'" '+(index<=0?'disabled':'')+' aria-label="Vorige speelronde">‹</button><select id="round50" aria-label="Speelronde">'+(rounds.length?rounds.map(r=>'<option '+(r===round50?'selected':'')+'>'+esc(r)+'</option>').join(''):'<option>Geen speelronde</option>')+'</select><button data-round50="'+esc(rounds[index+1]||'')+'" '+(index<0||index>=rounds.length-1?'disabled':'')+' aria-label="Volgende speelronde">›</button></div>';
  const statuses=[['all','Alle'],['live','Live'],['upcoming','Programma'],['results','Uitslagen']];
  h+='<div class="match-filter86" role="group" aria-label="Wedstrijden filteren">'+statuses.map(([id,label])=>'<button data-filter86="'+id+'" aria-pressed="'+(filter===id)+'">'+label+'</button>').join('')+'</div>';
  h+='<details class="fixtures-tools86"><summary>Meer filters</summary><label class="toggle">Alleen mijn clubs<input id="favoriteOnly" type="checkbox" '+(favoriteOnly?'checked':'')+'></label></details>';
  const visible=rows.filter(f=>f.round===round50);
- h+=visible.length?'<div class="match-list50" role="list">'+visible.map(match).join('')+'</div>':unavailable(state.loading?'Wedstrijden laden':filter==='live'?'Geen livewedstrijden':filter==='upcoming'?'Geen geplande wedstrijden':'Geen gecontroleerde wedstrijden',state.stats.message||'Voor deze selectie zijn momenteel geen gecontroleerde duels beschikbaar.');
+ h+='<p class="fixture-counter87" role="status">'+visible.length+' '+(visible.length===1?'wedstrijd':'wedstrijden')+' in deze selectie</p>';h+=visible.length?'<div class="match-list50" role="list">'+visible.map(match).join('')+'</div>':unavailable(state.loading?'Wedstrijden laden':filter==='live'?'Geen livewedstrijden':filter==='upcoming'?'Geen geplande wedstrijden':'Geen gecontroleerde wedstrijden',state.stats.message||'Voor deze selectie zijn momenteel geen gecontroleerde duels beschikbaar.');
  if(state.competition==='eredivisie'&&filter==='all'){
   const europe=state.stats.europeanFixtures||[],next=europe.filter(f=>Date.parse(f.date)>Date.now()-86400000&&Date.parse(f.date)<Date.now()+7*86400000);
   if(next.length)h+='<h2 class="section50">Grote wedstrijden Europa</h2><div class="match-list50" role="list">'+next.map(match).join('')+'</div>';
