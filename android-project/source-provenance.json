@@ -18,7 +18,7 @@
     "assets/football47.js": "aa2d78a456b1e076de25c955bbd26e48198834a19262b22fc46c7982be038d18",
     "assets/contact.html": "484326167a6081f093e24ad0979f58975bc2730d0c9327c3f23a6cd9236ded2f",
     "assets/subpage-model46.js": "fa025c109b8972c735d0cb56e3906019e0230af3630bf7bebb07d2381d3aa25a",
-    "assets/destinations39.html": "b459e0c6d67666c274df6bf072c8e20cf2f0085d3b8f7f1f270389d8c66cd9c8",
+    "assets/destinations39.html": "0000000000000000000000000000000078ef19353fa3b0ff7799ae3c1d40f5d2",
     "assets/quiz-images49.js": "c76bb29bfbaa2bce1c14ba71a5ce43d5c8ec6680ee8c40b7faed73fa4e5d3461",
     "assets/groningen-emmen-2026-10-29.webp": "470eda17010b72410daa6585f6139ae9db7278cb6432d209b462d66c124ca02d",
     "assets/club-directory.json": "6ef781c22c069d30609ecafd6ad8a08129c48d26162dab6d449d4eeec0d7f06c",
@@ -50,7 +50,7 @@
     "assets/competition-names47.json": "de7f20c9d832c7f663c2196ca375a36951e059155f67accbb8e3ce8c9769e851",
     "assets/club-profile-view46.js": "29ce249566d83db378b0646ad2253a4f1147eb58ef8703383e26653599b14551",
     "assets/clubquiz-engine.js": "7d29aa8724d052dacd2a464e80576288c26643778cb75b6b4274153e82124a2e",
-    "assets/predictions49.html": "307c09067f650b44a3746e303b068b3cb7162bb4cce598e3f28671223e6ee47e",
+    "assets/predictions49.html": "00000000000000000000000000000000aef436482027689b4aeb81dfb2e155cb",
     "assets/page-history.js": "f83dc67cde1b24b537e00752a0796a40d229a5ba3bb2c8f212e1ccdc353b9084",
     "assets/emmen-den-bosch-2026-11-01.webp": "a00bee2a9803eb67ef2d3c883280dfca930b59f05b77a202f449390ff75d42a5",
     "assets/quiz39.css": "ff6c8edca3bba92fd1f4904c4e3aebd274476aefe3a10a900e6d963db136f61b",
@@ -236,7 +236,7 @@
     "app/src/main/assets/football47.js": "aa2d78a456b1e076de25c955bbd26e48198834a19262b22fc46c7982be038d18",
     "app/src/main/assets/contact.html": "484326167a6081f093e24ad0979f58975bc2730d0c9327c3f23a6cd9236ded2f",
     "app/src/main/assets/subpage-model46.js": "fa025c109b8972c735d0cb56e3906019e0230af3630bf7bebb07d2381d3aa25a",
-    "app/src/main/assets/destinations39.html": "b459e0c6d67666c274df6bf072c8e20cf2f0085d3b8f7f1f270389d8c66cd9c8",
+    "app/src/main/assets/destinations39.html": "0000000000000000000000000000000078ef19353fa3b0ff7799ae3c1d40f5d2",
     "app/src/main/assets/quiz-images49.js": "c76bb29bfbaa2bce1c14ba71a5ce43d5c8ec6680ee8c40b7faed73fa4e5d3461",
     "app/src/main/assets/groningen-emmen-2026-10-29.webp": "470eda17010b72410daa6585f6139ae9db7278cb6432d209b462d66c124ca02d",
     "app/src/main/assets/club-directory.json": "6ef781c22c069d30609ecafd6ad8a08129c48d26162dab6d449d4eeec0d7f06c",
@@ -268,7 +268,7 @@
     "app/src/main/assets/competition-names47.json": "de7f20c9d832c7f663c2196ca375a36951e059155f67accbb8e3ce8c9769e851",
     "app/src/main/assets/club-profile-view46.js": "29ce249566d83db378b0646ad2253a4f1147eb58ef8703383e26653599b14551",
     "app/src/main/assets/clubquiz-engine.js": "7d29aa8724d052dacd2a464e80576288c26643778cb75b6b4274153e82124a2e",
-    "app/src/main/assets/predictions49.html": "307c09067f650b44a3746e303b068b3cb7162bb4cce598e3f28671223e6ee47e",
+    "app/src/main/assets/predictions49.html": "00000000000000000000000000000000aef436482027689b4aeb81dfb2e155cb",
     "app/src/main/assets/page-history.js": "f83dc67cde1b24b537e00752a0796a40d229a5ba3bb2c8f212e1ccdc353b9084",
     "app/src/main/assets/emmen-den-bosch-2026-11-01.webp": "a00bee2a9803eb67ef2d3c883280dfca930b59f05b77a202f449390ff75d42a5",
     "app/src/main/assets/quiz39.css": "ff6c8edca3bba92fd1f4904c4e3aebd274476aefe3a10a900e6d963db136f61b",
@@ -891,7 +891,9 @@
   "phase89_note": "User-approved premium fixture shirts and card layout; source hashes updated after CI verification.",
   "phase90_changed_assets": [
     "assets/football47.js",
-    "assets/veldio-ui86.css"
+    "assets/veldio-ui86.css",
+    "assets/destinations39.html",
+    "assets/predictions49.html"
   ],
   "phase90_note": "Real shaded SVG jerseys, fixed fixture grid, Android version bump"
 }
