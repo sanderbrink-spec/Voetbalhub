@@ -4,18 +4,14 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RadialGradient;
-import android.graphics.RectF;
-import android.graphics.Shader;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 /**
- * Original Veldio splash atmosphere. Motion stays behind the logo and loader:
- * no third-party artwork, no club crests and no external image requests.
+ * Original subtle Veldio motion layer above the approved portrait bitmap.
+ * It is transparent and stops when the splash disappears.
  */
 final class VeldioIntroBackdrop extends View {
     private static final int GREEN = 0xFF25F06B;
@@ -59,17 +55,8 @@ final class VeldioIntroBackdrop extends View {
         super.onDraw(canvas);
         float width = getWidth(), height = getHeight();
         if (width <= 0 || height <= 0) return;
-        canvas.drawColor(0xFF020804);
         canvas.save();
         canvas.scale(width / 1080f, height / 1920f);
-
-        // Deep green atmospheric light behind, never a bright rectangle.
-        paint.setStyle(Paint.Style.FILL);
-        paint.setShader(new RadialGradient(540, 720, 990,
-                new int[]{0x502AF76B, 0x18167932, 0x00000602},
-                new float[]{0f, 0.42f, 1f}, Shader.TileMode.CLAMP));
-        canvas.drawRect(0, 0, 1080, 1920, paint);
-        paint.setShader(null);
 
         // Two subdued travelling light ribbons.
         float drift = (float)Math.sin(phase * Math.PI * 2.0) * 28f;
@@ -87,26 +74,6 @@ final class VeldioIntroBackdrop extends View {
             canvas.drawCircle(x, y + (float)Math.sin(phase * 6.283 + i) * 6f, i % 9 == 0 ? 2.7f : 1.4f, paint);
         }
 
-        // Pitch center circle at the foot of the image, with depth fade.
-        paint.setShader(new LinearGradient(0, 1460, 0, 1920,
-                new int[]{0x0024E65C, 0x35109B43, 0x06051508}, null, Shader.TileMode.CLAMP));
-        canvas.drawRect(0, 1410, 1080, 1920, paint);
-        paint.setShader(null);
-        stroke.clearShadowLayer();
-        stroke.setStyle(Paint.Style.STROKE);
-        stroke.setColor(0x665BEB7F);
-        stroke.setStrokeWidth(3f);
-        canvas.drawOval(new RectF(90, 1500, 990, 1700), stroke);
-        canvas.drawLine(540, 1480, 540, 1920, stroke);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(GREEN);
-        canvas.drawCircle(540, 1595, 4, paint);
-
-        // Black corners and top keep Android status/navigation legible.
-        paint.setShader(new LinearGradient(0, 0, 0, 350,
-                new int[]{0xD9000503, 0x00000503}, null, Shader.TileMode.CLAMP));
-        canvas.drawRect(0, 0, 1080, 350, paint);
-        paint.setShader(null);
         canvas.restore();
     }
 
