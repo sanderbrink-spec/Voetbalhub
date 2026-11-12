@@ -4,6 +4,7 @@
 const list=require('./stadium-review74.json');
 const rows=require('./image-library49.json').assets;
 const findings=require('./stadium-review-findings79.json').findings;
+const screenings=new Map(require('./stadium-screening84.json').candidates.map(x=>[x.id,x]));
 const {norm}=require('./stadium-venue74');
 function overview(){
  const slots=list.clubs.flatMap(club=>['preview','report'].map(kind=>{
@@ -26,7 +27,12 @@ function overview(){
     qualityStatus:'requires-independent-review',rightsStatus:'requires-independent-review',
     minQualityScore:8.5,knownIssue:findings[a.id]||null,
     reviewPriority:findings[a.id]?'repair-first':'first-review',
-    canRequestApproval:!findings[a.id]})),
+    canRequestApproval:!findings[a.id],
+    preliminaryScreening:screenings.get(a.id)?{
+     note:screenings.get(a.id).preliminaryVisualNote,
+     fullResolutionReviewDone:screenings.get(a.id).hasExactRasterPersonalReview,
+     independentScore:screenings.get(a.id).qualityScore,
+     rightsReleased:screenings.get(a.id).rightsReleased}:null})),
    ...(declared.source?{conversationFile:declared.source}:{})};
  }));
  slots.sort((a,b)=>{const tier=s=>s.state==='approved-for-use'?2:s.pendingImages.some(x=>x.knownIssue)?1:0;
