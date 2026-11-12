@@ -38,7 +38,7 @@ function verify(review,{assets=require(manifestPath).assets,base=root}={}){
   !Number.isFinite(Date.parse(review.reviewedAt))||new Date(review.reviewedAt).toISOString().slice(0,10)!==review.reviewedAt||
   Date.parse(review.reviewedAt)>Date.now()+86400_000)throw Error('Datum van de werkelijk uitgevoerde beoordeling ongeldig.');
  // Synthetic test dossiers and placeholders must never be accepted as real reviews.
- const syntheticMarker=/\\b(?:synthetisch(?:e)?|synthetic|qa[- ]?test|testdossier|dummy|placeholder|fictief|niet geschikt voor werkelijke|not for production)\\b/i;
+ const syntheticMarker=/\b(?:synthetisch(?:e)?|synthetic|qa[- ]?test|testdossier|dummy|placeholder|fictief|niet geschikt voor werkelijke|not for production)\b/i;
  if(syntheticMarker.test([review.reviewer,review.notes,review.rightsEvidence].join(' ')))
   throw Error('Synthetische of testbeoordeling is geen geldige commerciële vrijgave.');
  if(typeof review.notes!=='string'||review.notes.trim().length<30||review.notes.length>4000)
