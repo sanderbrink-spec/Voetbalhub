@@ -22,9 +22,12 @@ function overview(){
     reviewUrl:'/editorial/stadium-review74/'+a.id+'/image',
     originalSourceWidth:a.sourceNativeCropWidth||null,
     qualityStatus:'requires-independent-review',rightsStatus:'requires-independent-review',
-    minQualityScore:8.5,knownIssue:findings[a.id]||null})),
+    minQualityScore:8.5,knownIssue:findings[a.id]||null,
+    reviewPriority:findings[a.id]?'repair-first':'first-review',
+    canRequestApproval:!findings[a.id]})),
    ...(declared.source?{conversationFile:declared.source}:{})};
  }));
+ slots.sort((a,b)=>Number(Boolean(a.pendingImages.some(x=>x.knownIssue)))-Number(Boolean(b.pendingImages.some(x=>x.knownIssue))) || a.club.localeCompare(b.club,'nl') || (a.kind==='preview'?-1:1));
  const counts=slots.reduce((out,slot)=>(out[slot.state]=(out[slot.state]||0)+1,out),{});
  const riskCounts=slots.flatMap(s=>s.pendingImages||[]).reduce((out,item)=>{
   if(item.knownIssue)out[item.knownIssue.level]=(out[item.knownIssue.level]||0)+1;
@@ -32,6 +35,9 @@ function overview(){
  },{});
  return {version:74,season:list.season,slotsTotal:slots.length,clubsTotal:list.clubs.length,
   releasePolicy:'pending does not mean approved; quality >= 8.5 and rights review are mandatory',
-  counts,riskCounts,issuesForExtraReview:Object.values(riskCounts).reduce((n,x)=>n+x,0),slots};
+  counts,riskCounts,reviewPlan:{firstReview:slots.filter(s=>s.pendingImages.some(a=>a.reviewPriority==='first-review')).length,
+  repairFirst:slots.filter(s=>s.pendingImages.some(a=>a.reviewPriority==='repair-first')).length,
+  rule:'Geen groepsvrijgave: individuele beoordeling en minimaal 8,5, bewijs van beeldrechten en expliciete goedkeuring verplicht.'},
+  issuesForExtraReview:Object.values(riskCounts).reduce((n,x)=>n+x,0),slots};
 }
 module.exports={overview};
