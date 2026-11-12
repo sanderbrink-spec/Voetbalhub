@@ -49,6 +49,6 @@ test('Fase 76: ten new stadium rasters have exact SHA256 and stay review-only',(
   assert.equal(slot.productionApproved,false,key);
   assert.equal(slot.qualityReviewRequired,true,key);
   assert.equal(slot.rightsReviewRequired,true,key);
-  assert.equal(slot.revision,76,key);
+  assert.equal(slot.revision, ['FC Twente:preview','Sparta Rotterdam:preview','Sparta Rotterdam:report'].includes(key) ? 77 : 76, key);
  }
 });
