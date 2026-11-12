@@ -322,6 +322,16 @@ async function handle(req, res) {
     try{return send(res,200,await (url.searchParams.get("view")==="veldio50"?(key==="eredivisie"?football47.overview():football47.getSelected(key)):football47.get(key)));}catch{return send(res,400,{error:'Onbekende competitie.'});}
   }
   // All 18 clubs / 36 slots in a protected editorial review queue.
+  // Protected review-only image bytes. Never add these files to the public catalogue.
+  const stadiumReviewImage=url.pathname.match(/^\/editorial\/stadium-review74\/([a-z0-9-]{1,80})\/image$/);
+  if(stadiumReviewImage && (req.method==='GET'||req.method==='HEAD')){
+    if(!authorizeRequest(req,res))return;
+    const candidate=require('./stadium-review78').readCandidate(stadiumReviewImage[1]);
+    if(candidate.status!==200)return send(res,candidate.status,{error:candidate.error});
+    res.writeHead(200,{'Content-Type':'image/webp','Cache-Control':'private, no-store, max-age=0',
+      'Content-Length':candidate.bytes.length,'X-Content-Type-Options':'nosniff','Vary':'Authorization'});
+    return req.method==='HEAD'?res.end():res.end(candidate.bytes);
+  }
   if (req.method === "GET" && url.pathname === "/editorial/stadium-review74") {
     if (!authorizeRequest(req,res)) return;
     return send(res,200,require('./stadium-desk74').overview());

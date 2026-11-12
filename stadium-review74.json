@@ -347,7 +347,11 @@
           "kind": "preview",
           "occupancy": "empty",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+          "reviewNote": "Nieuwe full-resolution Veldio kandidaat; fotorealistische score, stadionidentiteit en rechten nog niet onafhankelijk beoordeeld.",
+          "source": "a_crisp_ultra_realistic_wide_angle_stadium_scene.png",
+          "revision": 78,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true
         },
         "report": {
           "state": "repository-pending",
@@ -355,7 +359,11 @@
           "kind": "report",
           "occupancy": "full",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+          "reviewNote": "Nieuwe full-resolution Veldio kandidaat; fotorealistische score, stadionidentiteit en rechten nog niet onafhankelijk beoordeeld.",
+          "source": "a_wide_cinematic_high_detail_sports_stadium_scen.png",
+          "revision": 78,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true
         }
       }
     },

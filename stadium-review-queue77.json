@@ -4,10 +4,10 @@
   "releasePolicy": "No auto approval. Independent visual, stadium, and commercial rights review required. Score >= 8.5.",
   "counts": {
     "total": 36,
-    "needsRecreation": 2,
+    "needsRecreation": 0,
     "needsIndependentReview": 36,
     "approved": 0,
-    "replacementsStaged": 4
+    "replacementsStaged": 6
   },
   "images": [
     {
@@ -713,12 +713,12 @@
       "club": "SC Cambuur",
       "kind": "preview",
       "path": "public/stadium75/sccambuur-preview.webp",
-      "sha256": "ec4f3ecca8cd7071a12ad23b5e4b1b04c653cf5423483d373c73ddd205223db4",
-      "sourceNativeCropWidth": 320,
+      "sha256": "9f68d0d22bc48d1e76b4a8e32cf38d8fee8738cfba965aad3491945cdba9b871",
+      "sourceNativeCropWidth": 1672,
       "reviewStatus": "pending",
       "reviewer": null,
       "visualReview": null,
-      "requiresRecreation": true,
+      "requiresRecreation": false,
       "checklist": [
         "exact-home-stadium",
         "correct-stand-architecture",
@@ -729,19 +729,22 @@
         "original-veldio-branding",
         "rights-evidence",
         "independent-visual-score-at-least-8.5"
-      ]
+      ],
+      "sourceNativeCropHeight": 941,
+      "replacementStaged": true,
+      "qualityReviewNote": "Nieuwe full-resolution Veldio kandidaat; fotorealistische score, stadionidentiteit en rechten nog niet onafhankelijk beoordeeld."
     },
     {
       "id": "veldio75-sccambuur-report",
       "club": "SC Cambuur",
       "kind": "report",
       "path": "public/stadium75/sccambuur-report.webp",
-      "sha256": "296a8f91253e34bcc1536a2a7e9b56ac97e338cc349c0e183dfaf50693a76658",
-      "sourceNativeCropWidth": 320,
+      "sha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
+      "sourceNativeCropWidth": 1672,
       "reviewStatus": "pending",
       "reviewer": null,
       "visualReview": null,
-      "requiresRecreation": true,
+      "requiresRecreation": false,
       "checklist": [
         "exact-home-stadium",
         "correct-stand-architecture",
@@ -752,7 +755,10 @@
         "original-veldio-branding",
         "rights-evidence",
         "independent-visual-score-at-least-8.5"
-      ]
+      ],
+      "sourceNativeCropHeight": 941,
+      "replacementStaged": true,
+      "qualityReviewNote": "Nieuwe full-resolution Veldio kandidaat; fotorealistische score, stadionidentiteit en rechten nog niet onafhankelijk beoordeeld."
     },
     {
       "id": "veldio75-scheerenveen-preview",
