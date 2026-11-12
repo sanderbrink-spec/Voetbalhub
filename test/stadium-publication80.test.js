@@ -21,7 +21,8 @@ test('Fase 80: goedgekeurde stadionbeelden zijn per thuisclub en beeldtype selec
  const reviewed=staged.map(syntheticApproved);
  for(const a of reviewed)assert.equal(premium.accepted(a),true,a.id);
  for(const a of staged){
-  assert.equal(premium.accepted(a),false,a.id);
+  const pending={...a,approval:'pending',reviewer:'',visualReview:undefined};
+  assert.equal(premium.accepted(pending),false,a.id);
   const club=a.clubs[0],opponent=norm(club)==='ajax'?'PSV':'Ajax';
   const ctx={category:a.imageKind,clubs:[club,opponent],daypart:'neutral',
    competition:'Eredivisie',stadiumIdentity:'home:'+norm(club),articleId:'synthetic-'+a.id};
@@ -29,6 +30,6 @@ test('Fase 80: goedgekeurde stadionbeelden zijn per thuisclub en beeldtype selec
   assert.equal(selected?.id,a.id,a.id);
   assert.equal(library.choose({...ctx,clubs:[opponent,club],stadiumIdentity:'home:'+norm(opponent)},[reviewed.find(x=>x.id===a.id)]),null,'No away club reuse '+a.id);
   assert.equal(library.choose({...ctx,category:a.imageKind==='preview'?'report':'preview'},[reviewed.find(x=>x.id===a.id)]),null,'Wrong kind '+a.id);
-  assert.equal(library.choose(ctx,[a]),null,'Pending must never publish '+a.id);
+  assert.equal(library.choose(ctx,[pending]),null,'Pending must never publish '+a.id);
  }
 });
