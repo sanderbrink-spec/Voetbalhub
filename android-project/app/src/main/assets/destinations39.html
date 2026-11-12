@@ -48,35 +48,53 @@ else if(state.mode==='notifications'){const n=state.notifications||{};h='<h1>Mel
 const openMatches88=new Set([...document.querySelectorAll('details.fixture-expand88[open]')].map(el=>el.dataset.matchId));document.querySelector('#app').innerHTML=(state.networkStatus?'<p role="status">'+esc(state.networkStatus)+'</p>':'')+h;document.querySelectorAll('details.fixture-expand88').forEach(el=>{if(openMatches88.has(el.dataset.matchId))el.open=true;});document.querySelector('#fixture')?.addEventListener('change',loadPrediction47);loadPrediction47();document.querySelectorAll('[data-route]').forEach(b=>b.onclick=()=>bridge('open',b.dataset.route));document.querySelectorAll('[data-club]').forEach(b=>b.onclick=()=>bridge('clubNews',b.dataset.club));document.querySelectorAll('[data-club-news]').forEach(b=>b.onclick=()=>bridge('clubNews',b.dataset.clubNews));document.querySelector('#competitionFilter')?.addEventListener('change',e=>{bridge('competition',e.target.value);});document.querySelector('#fixtureFilter')?.addEventListener('change',e=>{filter=e.target.value;render();});document.querySelector('#favoriteOnly')?.addEventListener('change',e=>{favoriteOnly=e.target.checked;render();});document.querySelectorAll('[data-source47]').forEach(b=>b.onclick=()=>bridge('external',b.dataset.source47));document.querySelector('#refresh')?.addEventListener('click',()=>bridge('refresh'));document.querySelector('#permission')?.addEventListener('click',()=>bridge('permission'));document.querySelector('#saveNotifications')?.addEventListener('click',()=>bridge('notifications',{clubNews:document.querySelector('#clubNews').checked,columns:document.querySelector('#columns').checked}));document.querySelector('#prediction')?.addEventListener('submit',e=>{e.preventDefault();bridge('predict',{fixtureId:document.querySelector('#fixture').value,home:Number(document.querySelector('#homeGoals').value),away:Number(document.querySelector('#awayGoals').value)});});}
 
 
+const eventIcons88={
+ goal:'<circle cx="12" cy="12" r="9"/><path d="m12 8 3.8 2.8-1.5 4.5H9.7l-1.5-4.5L12 8Zm0 0V3m3.8 7.8 4.8-1.6m-6.3 6.1 3 4.1m-7.6-4.1-3 4.1m1.5-8.6L3.4 9.2"/>',
+ cards:'<rect x="5" y="4" width="10" height="14" rx="1.5"/><path d="M19 8v11a2 2 0 0 1-2 2h-7"/>',
+ substitution:'<path class="swap-in88" d="M4 8h15m-4-4 4 4-4 4"/><path class="swap-out88" d="M20 16H5m4-4-4 4 4 4"/>'
+};
+const eventGroups88=[
+ {label:'Doelpunten',icon:'goal',kinds:['goal','penalty','own_goal'],empty:'Geen doelpuntengegevens beschikbaar.'},
+ {label:'Gele en rode kaarten',icon:'cards',kinds:['yellow_card','red_card','second_yellow'],empty:'Geen kaartgegevens beschikbaar.'},
+ {label:'Wissels',icon:'substitution',kinds:['substitution'],empty:'Geen wisselgegevens beschikbaar.'}
+];
+const eventLabels88={
+ own_goal:'Eigen doelpunt',penalty:'Strafschop',yellow_card:'Gele kaart',red_card:'Rode kaart',
+ second_yellow:'Tweede gele kaart'
+};
+
+function eventIcon88(icon){
+ return '<svg class="event-icon88" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+eventIcons88[icon]+'</svg>';
+}
+
+function eventRow88(f,e,group){
+ const side=e.side==='home'?f.home.name:e.side==='away'?f.away.name:'Club onbekend';
+ const minute=Number.isInteger(e.minute)&&e.minute>0&&e.minute<=130?
+  e.minute+(Number.isInteger(e.extra)&&e.extra>0?'+'+e.extra:'')+'′':'–';
+ const label=eventLabels88[e.kind];
+ const marker=group==='cards'?'<span class="event-card88" aria-hidden="true"></span>':'';
+ const player='<strong>'+esc(e.player||'Speler onbekend')+'</strong>';
+ const names=group==='substitution'?
+  '<div class="event-player88"><span class="event-in88">IN</span>'+player+'</div>'+
+  '<div class="event-player88"><span class="event-out88">UIT</span><strong>'+esc(e.relatedPlayer||'Speler onbekend')+'</strong></div>':
+  '<div class="event-player88">'+marker+player+'</div>';
+ const score=group==='goal'&&e.score?'<span class="event-score88" aria-label="Tussenstand '+esc(e.score)+'">'+esc(e.score)+'</span>':'';
+ const meta=[side,label].filter(Boolean).join(' · ');
+ return '<li class="event-line88" data-event-kind="'+esc(e.kind)+'"><span class="event-minute88">'+esc(minute)+'</span>'+
+  '<div class="event-description88">'+names+'<small>'+esc(meta)+score+'</small></div></li>';
+}
+
 function matchEventDetails88(f){
- const finished=['FT','AET','PEN'].includes(f.status);
- const verified=f.eventCoverage==='sportmonks'&&Array.isArray(f.matchEvents);
- const lines=verified?f.matchEvents:[];
- if(!finished)return '<p class="events-note88">Gebeurtenissen worden na een gecontroleerde wedstrijd beschikbaar.</p>'+
+ if(!['FT','AET','PEN'].includes(f.status))return '<p class="events-note88">Gebeurtenissen worden na een gecontroleerde wedstrijd beschikbaar.</p>'+
   (f.status==='NS'&&Date.parse(f.date)>Date.now()?'<button class="secondary" data-route="predictions">Voorspel deze wedstrijd</button>':'');
- if(!verified)return '<p class="events-note88">Geen gecontroleerde spelers- en kaartgegevens beschikbaar bij deze wedstrijdbron.</p>';
- const items=[
-  {label:'Doelpunten',icon:'⚽',kinds:['goal','penalty','own_goal']},
-  {label:'Gele en rode kaarten',icon:'▣',kinds:['yellow_card','red_card','second_yellow']},
-  {label:'Wissels',icon:'⇄',kinds:['substitution']}
- ];
- const minute=e=>Number.isInteger(e.minute)&&e.minute>0&&e.minute<=130?
-  esc(e.minute+(Number.isInteger(e.extra)&&e.extra>0?'+'+e.extra:'')+"′"):'';
- const eventRow=e=>{
-  const side=e.side==='home'?f.home.name:e.side==='away'?f.away.name:'Team onbekend';
-  const label={goal:'Doelpunt',own_goal:'Eigen doelpunt',penalty:'Strafschop',yellow_card:'Geel',red_card:'Rood',second_yellow:'Tweede geel, rood',substitution:'Wissel'}[e.kind]||'';
-  const card=e.kind==='yellow_card'?' card-yellow88':e.kind==='red_card'||e.kind==='second_yellow'?' card-red88':'';
-  const name=e.kind==='substitution'?'In: '+String(e.player||'')+' · Uit: '+String(e.relatedPlayer||''):String(e.player||'');
-  return '<li class="event-line88'+card+'"><span class="event-minute88">'+minute(e)+'</span>'+
-   '<span class="event-description88"><strong>'+esc(name)+'</strong><small>'+esc(label)+' · '+esc(side)+
-   (e.score&&['goal','penalty','own_goal'].includes(e.kind)?' · '+esc(e.score):'')+'</small></span></li>';
- };
- return '<div class="events-source88">Wedstrijdmomenten · Sportmonks, gecontroleerde eindstand</div>'+
-  items.map(g=>{const events=lines.filter(e=>g.kinds.includes(e.kind));
-   return '<section class="event-group88"><h3>'+g.icon+' '+g.label+'</h3>'+
-    (events.length?'<ol class="event-rows88">'+events.map(eventRow).join('')+'</ol>':
-     '<p class="events-note88">Geen gecontroleerde gegevens beschikbaar.</p>')+'</section>';
-  }).join('');
+ if(f.eventCoverage!=='sportmonks'||!Array.isArray(f.matchEvents))return '<p class="events-note88">Geen gecontroleerde wedstrijdmomenten beschikbaar bij deze wedstrijdbron.</p>';
+ return eventGroups88.map(({label,icon,kinds,empty})=>{
+  const events=f.matchEvents.filter(e=>e&&kinds.includes(e.kind));
+  const note=icon==='goal'&&f.goals?.home===0&&f.goals?.away===0?'Geen doelpunten.':empty;
+  return '<section class="event-group88" data-event-group="'+icon+'"><h3>'+eventIcon88(icon)+label+'</h3>'+
+   (events.length?'<ol class="event-rows88">'+events.map(e=>eventRow88(f,e,icon)).join('')+'</ol>':
+    '<p class="events-note88">'+note+'</p>')+'</section>';
+ }).join('');
 }
 
 function fixtures50(){
@@ -89,17 +107,16 @@ function fixtures50(){
  const match=f=>{
   const live=liveStates.includes(f.status),finished=['FT','AET','PEN'].includes(f.status);
   const goals=f.goals||{},hasScore=Number.isInteger(goals.home)&&Number.isInteger(goals.away);
-  const result=(finished||live)&&hasScore?esc(goals.home+' – '+goals.away):f.status==='TBD'?'Tijd volgt':esc(date(f.date));
+  const result=(finished||live)&&hasScore?goals.home+' – '+goals.away:f.status==='TBD'?'Tijd volgt':date(f.date);
   const status=live?'Live'+(Number.isInteger(f.minute)?' · '+f.minute+"'":''):finished?'Afgelopen':f.status==='PST'?'Uitgesteld':f.status==='CANC'?'Afgelast':f.status==='NS'&&Date.parse(f.date)>Date.now()?'Nog te voorspellen':f.status==='AWAITING'?'Uitslag nog niet bevestigd':'Niet beschikbaar';
-  const upcoming=f.status==='NS'&&Date.parse(f.date)>Date.now();
-  const content='<span class="team87 team87-home">'+Football47.shirt(f.home)+'<span>'+esc(f.home.name)+'</span></span><span class="when">'+result+'<small>'+esc(status)+'</small></span><span class="team87 team87-away"><span>'+esc(f.away.name)+'</span>'+Football47.shirt(f.away)+'</span>';
+  const content='<span class="team87 team87-home">'+Football47.shirt(f.home)+'<span>'+esc(f.home.name)+'</span></span><span class="when">'+esc(result)+'<small>'+esc(status)+'</small></span><span class="team87 team87-away"><span>'+esc(f.away.name)+'</span>'+Football47.shirt(f.away)+'</span>';
   return '<details class="fixture-expand88" data-match-id="'+esc(f.id)+'" role="listitem">'+
-   '<summary class="match50" aria-label="Wedstrijddetails '+esc(f.home.name+' tegen '+f.away.name)+'">'+content+'</summary>'+
+   '<summary class="match50" aria-label="Wedstrijddetails '+esc(f.home.name+' tegen '+f.away.name+', '+result+', '+status)+'">'+content+'</summary>'+
    '<div class="match-events88" role="region" aria-label="Gebeurtenissen '+esc(f.home.name+' tegen '+f.away.name)+'">'+matchEventDetails88(f)+'</div></details>';
  };
- let h='<section class="fixtures-hero86"><div class="hero-head87"><h1>Wedstrijden</h1><span class="release87" aria-label="Veldio versie 4.63">4.63</span></div><p>Programma, live en uitslagen.</p></section>';
+ let h='<section class="fixtures-hero86"><div class="hero-head87"><h1>Wedstrijden</h1><span class="release87" aria-label="Veldio versie 4.64">4.64</span></div><p>Programma, live en uitslagen.</p></section>';
  h+='<div class="filters50" role="group" aria-label="Competitie kiezen">'+comps.map(([id,label,full])=>'<button data-comp50="'+id+'" title="'+full+'" aria-label="'+full+'" aria-pressed="'+(state.competition===id)+'">'+label+'</button>').join('')+'</div>';
- h+='<div class="round50"><button data-round50="'+esc(rounds[index-1]||'')+'" '+(index<=0?'disabled':'')+' aria-label="Vorige speelronde">‹</button><select id="round50" aria-label="Speelronde">'+(rounds.length?rounds.map(r=>'<option '+(r===round50?'selected':'')+'>'+esc(r)+'</option>').join(''):'<option>Geen speelronde</option>')+'</select><button data-round50="'+esc(rounds[index+1]||'')+'" '+(index<0||index>=rounds.length-1?'disabled':'')+' aria-label="Volgende speelronde">›</button></div>';
+ h+='<div class="round50"><button data-round50="'+esc(rounds[index-1]||'')+'" '+(index<=0?'disabled':'')+' aria-label="Vorige speelronde">‹</button><select id="round50" aria-label="Speelronde">'+(rounds.length?rounds.map(r=>'<option value="'+esc(r)+'" '+(r===round50?'selected':'')+'>'+esc(Football47.roundLabel(r))+'</option>').join(''):'<option>Geen speelronde</option>')+'</select><button data-round50="'+esc(rounds[index+1]||'')+'" '+(index<0||index>=rounds.length-1?'disabled':'')+' aria-label="Volgende speelronde">›</button></div>';
  const statuses=[['all','Alle'],['live','Live'],['upcoming','Programma'],['results','Uitslagen']];
  h+='<div class="match-filter86" role="group" aria-label="Wedstrijden filteren">'+statuses.map(([id,label])=>'<button data-filter86="'+id+'" aria-pressed="'+(filter===id)+'">'+label+'</button>').join('')+'</div>';
  h+='<details class="fixtures-tools86"><summary>Meer filters</summary><label class="toggle">Alleen mijn clubs<input id="favoriteOnly" type="checkbox" '+(favoriteOnly?'checked':'')+'></label></details>';

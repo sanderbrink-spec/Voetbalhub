@@ -30,3 +30,14 @@ test('supplementary Eredivisie results match the same fixture and preserve known
   assert.equal(run([fixture],variants)[0],fixture);
  }
 });
+
+test('localizes round labels for display and preserves Dutch labels and competition codes',()=>{
+ const cases=[
+  ['5.Spieltag','Speelronde 5'],['6. Spieltag','Speelronde 6'],['Spieltag 7','Speelronde 7'],
+  ['Round 12','Speelronde 12'],['Matchday 8','Speelronde 8'],['4','Speelronde 4'],
+  ['Regular Season - 3','Speelronde 3'],['Quarter-finals','Kwartfinales'],
+  ['Speelronde 12','Speelronde 12'],['Halve finales','Halve finales'],
+  ['CL','CL'],['EL','EL'],['UCL','UCL'],[null,'Speelronde']
+ ];
+ for(const [raw,label] of cases)assert.equal(UI.roundLabel(raw),label);
+});

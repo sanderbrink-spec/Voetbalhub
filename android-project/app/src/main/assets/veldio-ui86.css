@@ -87,26 +87,59 @@ body[data-section="fixtures"] .match-filter86{margin-bottom:8px}
  body[data-section="fixtures"] .match50 .when{font-size:13px}
 }
 
-/* Veldio 4.63: accessible inline Sportmonks match events. */
 body[data-section="fixtures"] .fixture-expand88{margin:0 0 7px;min-width:0}
-body[data-section="fixtures"] .fixture-expand88>summary.match50{margin:0;cursor:pointer;list-style:none;position:relative;padding-right:22px}
+body[data-section="fixtures"] .fixture-expand88>summary.match50{margin:0;min-height:60px;cursor:pointer;list-style:none;position:relative;padding-right:22px}
 body[data-section="fixtures"] .fixture-expand88>summary.match50::-webkit-details-marker{display:none}
-body[data-section="fixtures"] .fixture-expand88>summary.match50::after{content:"⌄";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:17px;line-height:1;color:#a9ff35}
-body[data-section="fixtures"] .fixture-expand88[open]>summary.match50::after{content:"⌃"}
-body[data-section="fixtures"] .fixture-expand88[open]>summary.match50{border-bottom-left-radius:0;border-bottom-right-radius:0}
+body[data-section="fixtures"] .fixture-expand88>summary.match50::after{
+ content:"";position:absolute;right:8px;top:50%;width:6px;height:6px;border-right:2px solid #b7ff58;
+ border-bottom:2px solid #b7ff58;transform:translateY(-70%) rotate(45deg)
+}
+body[data-section="fixtures"] .fixture-expand88[open]>summary.match50::after{transform:translateY(-25%) rotate(225deg)}
+body[data-section="fixtures"] .fixture-expand88[open]>summary.match50{border-radius:12px 12px 0 0;border-bottom-color:#375342}
 body[data-section="fixtures"] .fixture-expand88>summary.match50:focus-visible{outline:2px solid #c1ff68;outline-offset:2px}
-.match-events88{border:1px solid #3f664b;border-top:0;border-radius:0 0 12px 12px;background:#07170f;padding:12px 13px 14px}
-.events-source88{color:#a9ff35;font-size:11px;margin:1px 0 9px}
-.event-group88{padding:9px 0 6px;border-top:1px solid #2b4937}
-.event-group88 h3{margin:0 0 7px;font-size:13px;color:#e9f2eb;line-height:1.3;font-weight:750}
-.event-rows88{padding:0;margin:0;list-style:none;display:grid;gap:5px}
-.event-line88{display:grid;grid-template-columns:42px minmax(0,1fr);gap:9px;align-items:start;padding:7px 8px;background:#10261a;border-radius:9px;font-size:12px;border-left:2px solid #82cb44}
-.event-line88.card-yellow88{border-left-color:#f7c744}
-.event-line88.card-red88{border-left-color:#ee6968}
-.event-minute88{color:#a9ff35;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.match-events88{display:grid;gap:7px;border:1px solid #365443;border-top:0;border-radius:0 0 12px 12px;background:#07130e;padding:8px}
+.event-group88{min-width:0;border:1px solid #284435;border-radius:11px;background:#0b1b13;padding:9px 10px}
+.event-group88 h3{display:flex;align-items:center;gap:8px;margin:0;font-size:14px;color:#f0f8f1;line-height:1.3;font-weight:750}
+.event-icon88{width:19px;height:19px;flex:none;color:#b7ff58}
+[data-event-group="cards"] .event-icon88{color:#ffcf63}
+.event-icon88 .swap-out88{stroke:#f99994}
+.event-rows88{padding:0;margin:6px 0 0;list-style:none}
+.event-line88{
+ --event-accent:#a9ff55;position:relative;display:grid;grid-template-columns:44px minmax(0,1fr);
+ gap:18px;align-items:start;padding:7px 0
+}
+.event-line88::before,.event-line88::after{content:"";position:absolute}
+.event-line88::before{left:51px;top:0;bottom:0;border-left:1px solid #3b5b46}
+.event-line88:first-child::before{top:14px}
+.event-line88:last-child::before{bottom:auto;height:15px}
+.event-line88:only-child::before{display:none}
+.event-line88::after{left:48px;top:11px;width:7px;height:7px;border-radius:50%;background:var(--event-accent)}
+.event-line88[data-event-kind="yellow_card"]{--event-accent:#ffcf63}
+.event-line88[data-event-kind="red_card"]{--event-accent:#ff807c}
+.event-line88[data-event-kind="second_yellow"]{--event-accent:#ffcf63}
+.event-minute88{color:#d8eddb;text-align:right;font-size:12px;font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:19px}
 .event-description88{min-width:0;overflow-wrap:anywhere}
-.event-description88 strong{display:block;font-weight:700;line-height:1.3}
-.event-description88 small{display:block;color:#b2c6b9;font-size:11px;line-height:1.35;margin-top:3px}
-.events-note88{font-size:12px;color:#bed0c2;line-height:1.4;margin:6px 0}
-.match-events88 button.secondary{min-height:44px;width:100%;margin-top:8px}
-@media(max-width:359px){body[data-section="fixtures"] .fixture-expand88>summary.match50{padding-right:18px}.match-events88{padding:9px}.event-line88{grid-template-columns:37px minmax(0,1fr);gap:6px}}
+.event-player88{display:flex;align-items:baseline;gap:7px;line-height:19px;font-size:13px;color:#f0f7f1}
+.event-player88+.event-player88{margin-top:3px}
+.event-player88 strong{min-width:0;font-weight:680}
+.event-description88 small{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;color:#b7ccbf;font-size:11px;line-height:1.45;margin-top:2px}
+.event-score88{color:#c7ff9e;font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap}
+.event-card88{position:relative;align-self:center;flex:none;width:9px;height:12px;border-radius:2px;background:var(--event-accent)}
+[data-event-kind="second_yellow"] .event-card88{margin-right:4px;transform:rotate(-10deg)}
+[data-event-kind="second_yellow"] .event-card88::after{
+ content:"";position:absolute;left:5px;top:2px;width:8px;height:11px;border-radius:2px;
+ border:1px solid #0b1b13;background:#ff807c;transform:rotate(18deg)
+}
+.event-in88,.event-out88{
+ flex:none;min-width:27px;padding:0 3px;border-radius:4px;text-align:center;
+ font-size:9px;font-weight:800;line-height:15px
+}
+.event-in88{background:#193923;color:#b4ffac}
+.event-out88{background:#392323;color:#ffaca8}
+.match-events88 .events-note88{font-size:12px;color:#bed0c2;line-height:1.4;margin:4px 2px}
+.match-events88 button.secondary{min-height:44px;width:100%}
+@media(max-width:359px){
+ body[data-section="fixtures"] .fixture-expand88>summary.match50{padding-right:18px}
+ body[data-section="fixtures"] .fixture-expand88>summary.match50::after{right:6px}
+ .event-group88{padding-inline:8px}
+}

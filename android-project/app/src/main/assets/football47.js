@@ -9,5 +9,20 @@ function shirt(t){const key=JSON.stringify([t?.name,t?.colours,t?.color]);if(!sh
 shirtCache.set(key,'<span class="club-shirt" role="img" aria-label="Veldio shirtvariant '+esc(t?.name||'Club')+'" style="--shirt-fill:'+paint+';"><img alt="" aria-hidden="true" src="shirts50/blank-original.webp" width="62" height="84" style="display:block;width:100%;height:100%;mix-blend-mode:multiply;object-fit:fill"></span>');}return shirtCache.get(key);}
 
 function prediction(p,f,now=Date.now()){const final=f&&['FT','AET','PEN'].includes(f.status)&&Date.parse(f.date)<=now&&[f.goals?.home,f.goals?.away].every(v=>Number.isInteger(v)&&v>=0);const points=final?(p.home===f.goals.home&&p.away===f.goals.away?3:Math.sign(p.home-p.away)===Math.sign(f.goals.home-f.goals.away)?1:0):null;const persisted=!final&&[0,1,3].includes(p.assessment?.points)&&p.assessment?.checkedAt;return {points:persisted?p.assessment.points:points,status:final||persisted?'beoordeeld':(f&&f.status!=='NS'||Date.parse(f?.date||p.kickoff)<=now)?'gesloten':'open'};}
-const api={shirt,prediction};if(typeof module==='object'&&module.exports)module.exports=api;else root.Football47=api;
+function roundLabel(value){
+ const label=String(value??'').trim();
+ const number=label.match(/^(?:round|match\s*day|spieltag)\s*[.:–-]?\s*(\d+)$/i)?.[1]
+  ??label.match(/^(\d+)\s*\.?\s*spieltag$/i)?.[1]
+  ??label.match(/^Regular Season\s*-\s*(\d+)$/i)?.[1]
+  ??label.match(/^(\d+)$/)?.[1];
+ if(number)return 'Speelronde '+number;
+ const phases={
+  'regular season':'Reguliere competitie','league phase':'Competitiefase','group stage':'Groepsfase',
+  'round of 16':'Achtste finales','achtelfinale':'Achtste finales','round of 32':'Zestiende finales',
+  'quarter-finals':'Kwartfinales','quarter finals':'Kwartfinales','viertelfinale':'Kwartfinales',
+  'semi-finals':'Halve finales','semi finals':'Halve finales','halbfinale':'Halve finales','final':'Finale'
+ };
+ return Object.hasOwn(phases,label.toLowerCase())?phases[label.toLowerCase()]:label||'Speelronde';
+}
+const api={shirt,prediction,roundLabel};if(typeof module==='object'&&module.exports)module.exports=api;else root.Football47=api;
 })(typeof window==='object'?window:globalThis);
