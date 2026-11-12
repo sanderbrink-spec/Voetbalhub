@@ -778,20 +778,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showIntro() {
-        // Premium Veldio splash with a real, animated 3-second loading bar.
+        // Veldio portrait splash with quiet motion and a branded, growing loading bar.
         final FrameLayout overlay = new FrameLayout(this);
         overlay.setBackgroundColor(PremiumDesign40.INK);
         overlay.setElevation(dp(50));
         overlay.setClickable(true);
         overlay.setFocusable(true);
 
-        ImageView splash = new ImageView(this);
-        splash.setImageResource(R.drawable.intro_splash);
-        splash.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        splash.setContentDescription("Veldio. Alles voetbal. Eén plek.");
-        overlay.addView(splash, new FrameLayout.LayoutParams(
+        // Portrait-first Veldio launch artwork: original logo, quiet green energy
+        // and a subtle animated pitch. No Xbox branding or third-party imagery.
+        VeldioIntroBackdrop backdrop = new VeldioIntroBackdrop(this);
+        overlay.addView(backdrop, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
+
+        ImageView splash = new ImageView(this);
+        splash.setImageResource(R.drawable.veldio_logo);
+        splash.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        splash.setContentDescription("Veldio. Alles voetbal. Eén plek.");
+        int logoWidth = Math.min(dp(320), getResources().getDisplayMetrics().widthPixels - dp(42));
+        FrameLayout.LayoutParams logoLp = new FrameLayout.LayoutParams(
+                logoWidth, dp(350), Gravity.CENTER);
+        overlay.addView(splash, logoLp);
+        splash.setTranslationY(-dp(70));
 
         LinearLayout loader = new LinearLayout(this);
         loader.setOrientation(LinearLayout.VERTICAL);
@@ -845,6 +854,7 @@ public class MainActivity extends AppCompatActivity {
         loadingAnimator.addListener(new android.animation.AnimatorListenerAdapter() {
             @Override public void onAnimationEnd(android.animation.Animator animation) {
                 if (isFinishing() || isDestroyed()) {
+                    backdrop.stop();
                     ViewParentHelper.remove(overlay);
                     return;
                 }
@@ -853,11 +863,15 @@ public class MainActivity extends AppCompatActivity {
                         .alpha(0f)
                         .setDuration(250L)
                         .setInterpolator(new DecelerateInterpolator())
-                        .withEndAction(() -> ViewParentHelper.remove(overlay))
+                        .withEndAction(() -> {
+                            backdrop.stop();
+                            ViewParentHelper.remove(overlay);
+                        })
                         .start();
             }
         });
         overlay.setAlpha(1f);
+        overlay.post(backdrop::start);
         overlay.post(loadingAnimator::start);
     }
 
@@ -901,6 +915,9 @@ public class MainActivity extends AppCompatActivity {
                 float end = Math.max(h, right * progress);
                 RectF glowRect = new RectF(1, 2, Math.min(right - 1, end), h - 2);
                 canvas.drawRoundRect(glowRect, radius, radius, glow);
+                fill.setShader(new android.graphics.LinearGradient(0, 0,
+                        Math.max(1f, glowRect.right), 0, 0xFF0D9B43, C.GREEN,
+                        android.graphics.Shader.TileMode.CLAMP));
                 canvas.drawRoundRect(glowRect, radius, radius, fill);
             }
         }
