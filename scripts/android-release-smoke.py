@@ -100,8 +100,23 @@ def artwork_rotation(device):
         if i == 2:
             adb("shell", "am", "force-stop", PACKAGE)
             adb("shell", "am", "start", "-W", "-n", PACKAGE + "/" + ACTIVITY)
-            if not card.wait(timeout=35):
-                raise AssertionError("ADO–Sparta ontbreekt na app-herstart")
+            # A cold start returns to the app's default screen and scroll position.
+            # Navigate explicitly before asserting that the previously loaded news card persists.
+            news_tab = device(text="Nieuws")
+            if not news_tab.wait(timeout=35):
+                capture(device, "restart-navigation-missing")
+                raise AssertionError("Nieuwsnavigatie ontbreekt na app-herstart")
+            news_tab.click()
+            latest = device(text="Laatste")
+            if latest.wait(timeout=7):
+                latest.click()
+            for attempt in range(10):
+                if card.wait(timeout=4):
+                    break
+                device.swipe_ext("up", scale=0.55)
+            else:
+                capture(device, "ado-sparta-restart-not-found")
+                raise AssertionError("ADO–Sparta ontbreekt na herstart en opnieuw openen van Nieuws")
         card.click()
         cover = device(description="AI-illustratie bij " + headline)
         if not cover.wait(timeout=10):
