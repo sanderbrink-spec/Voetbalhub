@@ -18,6 +18,8 @@ function overview(){
     declared.state==='requires-binary-import'?'chat-file-not-uploaded':'missing-full-resolution-image';
   return {club:club.name,kind,occupancy:declared.occupancy,state,
    assetIds:available.map(x=>x.id),pendingAssetIds:staged.map(x=>x.id),
+   approvedImages:available.map(a=>({id:a.id,sha256:a.sha256,publicImageUrl:'/'+a.file.slice(7),
+    visualScore:a.visualReview?.score??null,reviewer:a.reviewer})),
    pendingImages:staged.map(a=>({id:a.id,sha256:a.sha256,
     reviewUrl:'/editorial/stadium-review74/'+a.id+'/image',
     originalSourceWidth:a.sourceNativeCropWidth||null,
@@ -27,7 +29,9 @@ function overview(){
     canRequestApproval:!findings[a.id]})),
    ...(declared.source?{conversationFile:declared.source}:{})};
  }));
- slots.sort((a,b)=>Number(Boolean(a.pendingImages.some(x=>x.knownIssue)))-Number(Boolean(b.pendingImages.some(x=>x.knownIssue))) || a.club.localeCompare(b.club,'nl') || (a.kind==='preview'?-1:1));
+ slots.sort((a,b)=>{const tier=s=>s.state==='approved-for-use'?2:s.pendingImages.some(x=>x.knownIssue)?1:0;
+  return tier(a)-tier(b) || a.club.localeCompare(b.club,'nl') || (a.kind==='preview'?-1:1);
+ });
  const counts=slots.reduce((out,slot)=>(out[slot.state]=(out[slot.state]||0)+1,out),{});
  const riskCounts=slots.flatMap(s=>s.pendingImages||[]).reduce((out,item)=>{
   if(item.knownIssue)out[item.knownIssue.level]=(out[item.knownIssue.level]||0)+1;
@@ -37,6 +41,7 @@ function overview(){
   releasePolicy:'pending does not mean approved; quality >= 8.5 and rights review are mandatory',
   counts,riskCounts,reviewPlan:{firstReview:slots.filter(s=>s.pendingImages.some(a=>a.reviewPriority==='first-review')).length,
   repairFirst:slots.filter(s=>s.pendingImages.some(a=>a.reviewPriority==='repair-first')).length,
+  approved:slots.filter(s=>s.state==='approved-for-use').length,
   rule:'Geen groepsvrijgave: individuele beoordeling en minimaal 8,5, bewijs van beeldrechten en expliciete goedkeuring verplicht.'},
   issuesForExtraReview:Object.values(riskCounts).reduce((n,x)=>n+x,0),slots};
 }
