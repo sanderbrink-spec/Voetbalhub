@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 79,
+  "source": "visuele kwaliteitscontrole fase 77, nog niet onafhankelijk vrijgegeven",
+  "evaluation": "Voorlopige herstelindicaties, geen definitieve juridische beoordeling",
+  "releaseMinimum": 8.5,
+  "findings": {
+    "veldio74-az-preview": {
+      "level": "rebuild",
+      "reason": "Bij eerdere beeldcontrole is een ongewenste sponsorvermelding gesignaleerd. Maak een leeg stadionbeeld zonder externe merknamen."
+    },
+    "veldio74-az-report": {
+      "level": "rebuild",
+      "reason": "Bij eerdere beeldcontrole is een ongewenste sponsorvermelding gesignaleerd. Maak een vol avondstadion zonder externe merknamen."
+    },
+    "veldio74-excelsiorrotterdam-preview": {
+      "level": "rebuild",
+      "reason": "Controle signaleerde een verouderde stadionnaam in beeld. De illustratie moet zonder stadionnaambord opnieuw worden gecontroleerd."
+    },
+    "veldio74-excelsiorrotterdam-report": {
+      "level": "rebuild",
+      "reason": "Controle signaleerde een verouderde stadionnaam in beeld. De illustratie moet zonder stadionnaambord opnieuw worden gecontroleerd."
+    },
+    "veldio73-telstar-report-evening": {
+      "level": "compare",
+      "reason": "Mogelijk te sterke gelijkenis met Willem II avond. Controleer of het juiste thuisstadion herkenbaar en duidelijk onderscheidend is."
+    },
+    "veldio73-willem-ii-report-evening": {
+      "level": "compare",
+      "reason": "Mogelijk te sterke gelijkenis met Telstar avond. Controleer of het juiste thuisstadion herkenbaar en duidelijk onderscheidend is."
+    },
+    "veldio74-goaheadeagles-preview": {
+      "level": "identity",
+      "reason": "Herbeoordeel rood-gele clubidentiteit en de feitelijke Adelaarshorst-tribunevorm; geen officiële logo’s of sponsorborden."
+    },
+    "veldio74-goaheadeagles-report": {
+      "level": "identity",
+      "reason": "Herbeoordeel rood-gele clubidentiteit en de feitelijke Adelaarshorst-tribunevorm; geen officiële logo’s of sponsorborden."
+    }
+  }
+}
