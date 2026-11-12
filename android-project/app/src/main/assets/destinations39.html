@@ -114,7 +114,7 @@ function fixtures50(){
    '<summary class="match50" aria-label="Wedstrijddetails '+esc(f.home.name+' tegen '+f.away.name+', '+result+', '+status)+'">'+content+'</summary>'+
    '<div class="match-events88" role="region" aria-label="Gebeurtenissen '+esc(f.home.name+' tegen '+f.away.name)+'">'+matchEventDetails88(f)+'</div></details>';
  };
- let h='<section class="fixtures-hero86"><div class="hero-head87"><h1>Wedstrijden</h1><span class="release87" aria-label="Veldio versie 4.64">4.64</span></div><p>Programma, live en uitslagen.</p></section>';
+ let h='<section class="fixtures-hero86"><div class="hero-head87"><h1>Wedstrijden</h1><span class="release87" aria-label="Veldio versie 4.65">4.65</span></div><p>Programma, live en uitslagen.</p></section>';
  h+='<div class="filters50" role="group" aria-label="Competitie kiezen">'+comps.map(([id,label,full])=>'<button data-comp50="'+id+'" title="'+full+'" aria-label="'+full+'" aria-pressed="'+(state.competition===id)+'">'+label+'</button>').join('')+'</div>';
  h+='<div class="round50"><button data-round50="'+esc(rounds[index-1]||'')+'" '+(index<=0?'disabled':'')+' aria-label="Vorige speelronde">‹</button><select id="round50" aria-label="Speelronde">'+(rounds.length?rounds.map(r=>'<option value="'+esc(r)+'" '+(r===round50?'selected':'')+'>'+esc(Football47.roundLabel(r))+'</option>').join(''):'<option>Geen speelronde</option>')+'</select><button data-round50="'+esc(rounds[index+1]||'')+'" '+(index<0||index>=rounds.length-1?'disabled':'')+' aria-label="Volgende speelronde">›</button></div>';
  const statuses=[['all','Alle'],['live','Live'],['upcoming','Programma'],['results','Uitslagen']];

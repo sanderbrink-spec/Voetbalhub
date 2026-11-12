@@ -27,8 +27,8 @@ test('news fallback never prints headlines or fabricated club badges into thumbn
 });
 
 test('updated signed APK advances versionCode to allow a same-certificate update',()=>{
- assert.match(gradle,/versionCode\s*=\s*104\b/);
- assert.match(gradle,/versionName\s*=\s*"4\.64"/);
+ assert.match(gradle,/versionCode\s*=\s*105\b/);
+ assert.match(gradle,/versionName\s*=\s*"4\.65"/);
 });
 
 test('reader and news cards share cover selection and reject generic match imagery',()=>{
