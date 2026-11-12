@@ -32,10 +32,10 @@ test('Signed Android build version and source checksums match current package',(
   const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');
   assert.equal(source.files[name],actual, file+' provenance hash');
  }
- assert.match(gradle,/versionCode\s*=\s*101/);
- assert.match(gradle,/versionName\s*=\s*"4\.61"/);
- assert.match(workflow,/versionCode='101'\.\*versionName='4\.61'/);
- assert.match(workflow,/name: Veldio-61/);
+ assert.match(gradle,/versionCode\s*=\s*102/);
+ assert.match(gradle,/versionName\s*=\s*"4\.62"/);
+ assert.match(workflow,/versionCode='102'\.\*versionName='4\.62'/);
+ assert.match(workflow,/name: Veldio-62/);
 });
 
 test('Nieuws is de startpagina en behoudt alle redactionele artikelen',()=>{
@@ -49,4 +49,19 @@ test('Nieuws is de startpagina en behoudt alle redactionele artikelen',()=>{
  assert.ok(activity.includes('addMoreFeature(list,"Video"'));
  assert.ok(activity.includes('addMoreFeature(list,"Column"'));
  assert.ok(activity.includes('addMoreFeature(list,"Clubquiz"'));
+});
+
+
+test('Veldio 4.62 bundles the approved compact competition and match UI',()=>{
+ const fixtures=read('android-project/app/src/main/assets/destinations39.html');
+ const predictions=read('android-project/app/src/main/assets/predictions49.html');
+ const style=read('android-project/app/src/main/assets/veldio-ui86.css');
+ assert.match(fixtures,/\['championsleague','CL','Champions League'\]/);
+ assert.match(fixtures,/\['europaleague','EL','Europa League'\]/);
+ assert.match(fixtures,/\['conferenceleague','UCL','UEFA Conference League'\]/);
+ assert.match(fixtures,/match-filter86/);
+ assert.match(fixtures,/team87-home/);
+ assert.match(fixtures,/aria-label="Veldio versie 4\.62"/);
+ assert.match(predictions,/aria-label="Veldio versie 4\.62"/);
+ assert.match(style,/grid-template-columns:minmax\(0,1fr\) minmax\(72px,80px\) minmax\(0,1fr\)/);
 });
