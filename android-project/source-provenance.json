@@ -4,10 +4,10 @@
   "approved_apk_run": 41719319572,
   "approved_apk_artifact": 13272705387,
   "approved_apk_sha256": "bce258f0931f55f517aa4114bf3f54a896e1d53478a347fd40be5cbdd55e1243",
-  "version": "4.60",
-  "version_code": 100,
+  "version": "4.61",
+  "version_code": 101,
   "package": "nl.voetbalhub.app1",
-  "asset_count": 210,
+  "asset_count": 211,
   "assets": {
     "assets/youtube-seed.json": "aac0cf7f236633446516996ec5e7ee80912a9fc7efdcb9444ee580482c2700c1",
     "assets/clubquiz-ui.js": "2892377f08f4258241cceef1d12313e7caf7ca19df0ff786039b31c764b18533",
@@ -18,7 +18,7 @@
     "assets/football47.js": "ad3dbc369b06bb6637fed6434f278869925c70d0f1c3a0852d5b08b685baf0e3",
     "assets/contact.html": "484326167a6081f093e24ad0979f58975bc2730d0c9327c3f23a6cd9236ded2f",
     "assets/subpage-model46.js": "fa025c109b8972c735d0cb56e3906019e0230af3630bf7bebb07d2381d3aa25a",
-    "assets/destinations39.html": "1e57f55f5e9318199ab08969da167c7b64cf74bdccf54cc7cfa9995e906fdc52",
+    "assets/destinations39.html": "3b3e1244ee611bc5a5e6d6838622e46aa1165f337c1e8a839d615129d0564ad1",
     "assets/quiz-images49.js": "c76bb29bfbaa2bce1c14ba71a5ce43d5c8ec6680ee8c40b7faed73fa4e5d3461",
     "assets/groningen-emmen-2026-10-29.webp": "470eda17010b72410daa6585f6139ae9db7278cb6432d209b462d66c124ca02d",
     "assets/club-directory.json": "6ef781c22c069d30609ecafd6ad8a08129c48d26162dab6d449d4eeec0d7f06c",
@@ -42,7 +42,7 @@
     "assets/news-photo-catalog.json": "d78777ec4a14c922306ef0b8d23b72196995b23030f745f3fa5cecb3d23411d9",
     "assets/editorial-fallback.svg": "6046918f2382e1f6143ec411bd093abe5a3e987b6ef7110bad4ee47ae9f13317",
     "assets/premium50.css": "6c804ad6ee40c291e35df2772bd18d8ca8e867a577f79d695250d927f2dbb0e1",
-    "assets/predictions49.js": "87745ff63c25a8daead2459975ff6ebafd730c19a66b698f2f95534e1dc4f1a7",
+    "assets/predictions49.js": "56ad060db9ba95b7d264a5cf12f596ee8867051f6b1067a1e6aabd8bcd372cf5",
     "assets/veldio-logo.png": "efc63ba8d212c9c953295d171ff9cf2ffa01c993dec4ec872ecb1bf53f643ccc",
     "assets/veldio-arena.webp": "9827c7dbb48ac6142389ba4c0edfb6084e876592ef97eb771e2559f7af5ccc4a",
     "assets/image-registry39.json": "f0f927bc8aa3b46cff1195ecd703a876e3ce3968a6551a68b428108b8ca1f983",
@@ -50,7 +50,7 @@
     "assets/competition-names47.json": "de7f20c9d832c7f663c2196ca375a36951e059155f67accbb8e3ce8c9769e851",
     "assets/club-profile-view46.js": "29ce249566d83db378b0646ad2253a4f1147eb58ef8703383e26653599b14551",
     "assets/clubquiz-engine.js": "7d29aa8724d052dacd2a464e80576288c26643778cb75b6b4274153e82124a2e",
-    "assets/predictions49.html": "4b92c2ff5a1bee14fd27b59214b60d301c1566e3cf77299504959d3ab9bd62c2",
+    "assets/predictions49.html": "1e47cca1cdb8300b4ced677647782cdeac5495ba222b9f7b90245480e64e5a2b",
     "assets/page-history.js": "f83dc67cde1b24b537e00752a0796a40d229a5ba3bb2c8f212e1ccdc353b9084",
     "assets/emmen-den-bosch-2026-11-01.webp": "a00bee2a9803eb67ef2d3c883280dfca930b59f05b77a202f449390ff75d42a5",
     "assets/quiz39.css": "ff6c8edca3bba92fd1f4904c4e3aebd274476aefe3a10a900e6d963db136f61b",
@@ -218,13 +218,14 @@
     "assets/article-art69/twente-3.webp": "e9c633ee1b04e5d62a56f3c63817778ccdd932a9d1edfb6cc10fb8305f6d365c",
     "assets/article-art69/twente-4.webp": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
     "assets/article-art69/twente-5.webp": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
-    "assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5"
+    "assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
+    "assets/veldio-ui86.css": "ba54edb34b4a68f4ca9c84fcdddf475b339a4b1b438d457fe4e6c4d3fc40d9fe"
   },
   "files": {
     "build.gradle.kts": "7affc359fa871247e8f608f01aee79617629544e22697bdbdeb4e127a250d007",
     "gradle.properties": "fa078c27c9e4bde28a029d673875b028884505efa436b68cf60e1ac0be5b679b",
     "settings.gradle.kts": "4cf21d1bfd7d0a0ca19d852c34d941a00e0b45f816d8f6d0dea0efff79a1bb85",
-    "app/build.gradle.kts": "19153df479d8c9c7e519e79a764449750c567cdb9244d148d75fac8f31ca19c4",
+    "app/build.gradle.kts": "1eca06842a4b34be801b1653e31abc60a6b9e05299ceaad539ce164aca005340",
     "app/src/main/AndroidManifest.xml": "b5aa97d317352e51090de7ba7cb0354227aec21f83633dd0b3e830cd72c581c8",
     "app/src/main/assets/youtube-seed.json": "aac0cf7f236633446516996ec5e7ee80912a9fc7efdcb9444ee580482c2700c1",
     "app/src/main/assets/clubquiz-ui.js": "2892377f08f4258241cceef1d12313e7caf7ca19df0ff786039b31c764b18533",
@@ -235,7 +236,7 @@
     "app/src/main/assets/football47.js": "ad3dbc369b06bb6637fed6434f278869925c70d0f1c3a0852d5b08b685baf0e3",
     "app/src/main/assets/contact.html": "484326167a6081f093e24ad0979f58975bc2730d0c9327c3f23a6cd9236ded2f",
     "app/src/main/assets/subpage-model46.js": "fa025c109b8972c735d0cb56e3906019e0230af3630bf7bebb07d2381d3aa25a",
-    "app/src/main/assets/destinations39.html": "1e57f55f5e9318199ab08969da167c7b64cf74bdccf54cc7cfa9995e906fdc52",
+    "app/src/main/assets/destinations39.html": "3b3e1244ee611bc5a5e6d6838622e46aa1165f337c1e8a839d615129d0564ad1",
     "app/src/main/assets/quiz-images49.js": "c76bb29bfbaa2bce1c14ba71a5ce43d5c8ec6680ee8c40b7faed73fa4e5d3461",
     "app/src/main/assets/groningen-emmen-2026-10-29.webp": "470eda17010b72410daa6585f6139ae9db7278cb6432d209b462d66c124ca02d",
     "app/src/main/assets/club-directory.json": "6ef781c22c069d30609ecafd6ad8a08129c48d26162dab6d449d4eeec0d7f06c",
@@ -259,7 +260,7 @@
     "app/src/main/assets/news-photo-catalog.json": "d78777ec4a14c922306ef0b8d23b72196995b23030f745f3fa5cecb3d23411d9",
     "app/src/main/assets/editorial-fallback.svg": "6046918f2382e1f6143ec411bd093abe5a3e987b6ef7110bad4ee47ae9f13317",
     "app/src/main/assets/premium50.css": "6c804ad6ee40c291e35df2772bd18d8ca8e867a577f79d695250d927f2dbb0e1",
-    "app/src/main/assets/predictions49.js": "87745ff63c25a8daead2459975ff6ebafd730c19a66b698f2f95534e1dc4f1a7",
+    "app/src/main/assets/predictions49.js": "56ad060db9ba95b7d264a5cf12f596ee8867051f6b1067a1e6aabd8bcd372cf5",
     "app/src/main/assets/veldio-logo.png": "efc63ba8d212c9c953295d171ff9cf2ffa01c993dec4ec872ecb1bf53f643ccc",
     "app/src/main/assets/veldio-arena.webp": "9827c7dbb48ac6142389ba4c0edfb6084e876592ef97eb771e2559f7af5ccc4a",
     "app/src/main/assets/image-registry39.json": "f0f927bc8aa3b46cff1195ecd703a876e3ce3968a6551a68b428108b8ca1f983",
@@ -267,7 +268,7 @@
     "app/src/main/assets/competition-names47.json": "de7f20c9d832c7f663c2196ca375a36951e059155f67accbb8e3ce8c9769e851",
     "app/src/main/assets/club-profile-view46.js": "29ce249566d83db378b0646ad2253a4f1147eb58ef8703383e26653599b14551",
     "app/src/main/assets/clubquiz-engine.js": "7d29aa8724d052dacd2a464e80576288c26643778cb75b6b4274153e82124a2e",
-    "app/src/main/assets/predictions49.html": "4b92c2ff5a1bee14fd27b59214b60d301c1566e3cf77299504959d3ab9bd62c2",
+    "app/src/main/assets/predictions49.html": "1e47cca1cdb8300b4ced677647782cdeac5495ba222b9f7b90245480e64e5a2b",
     "app/src/main/assets/page-history.js": "f83dc67cde1b24b537e00752a0796a40d229a5ba3bb2c8f212e1ccdc353b9084",
     "app/src/main/assets/emmen-den-bosch-2026-11-01.webp": "a00bee2a9803eb67ef2d3c883280dfca930b59f05b77a202f449390ff75d42a5",
     "app/src/main/assets/quiz39.css": "ff6c8edca3bba92fd1f4904c4e3aebd274476aefe3a10a900e6d963db136f61b",
@@ -499,7 +500,8 @@
     "app/src/main/assets/article-art69/twente-3.webp": "e9c633ee1b04e5d62a56f3c63817778ccdd932a9d1edfb6cc10fb8305f6d365c",
     "app/src/main/assets/article-art69/twente-4.webp": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
     "app/src/main/assets/article-art69/twente-5.webp": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
-    "app/src/main/assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5"
+    "app/src/main/assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
+    "app/src/main/assets/veldio-ui86.css": "ba54edb34b4a68f4ca9c84fcdddf475b339a4b1b438d457fe4e6c4d3fc40d9fe"
   },
   "backend_image_pipeline": "phase44 retained from main",
   "build_source": "android-project; no archive extraction or build-time UI patching",
@@ -860,5 +862,11 @@
     "assets/clubquiz-engine.js",
     "assets/predictions49.html",
     "assets/predictions49.js"
+  ],
+  "phase86_changed_assets": [
+    "assets/destinations39.html",
+    "assets/predictions49.html",
+    "assets/predictions49.js",
+    "assets/veldio-ui86.css"
   ]
 }
