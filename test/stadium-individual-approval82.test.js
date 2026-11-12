@@ -8,9 +8,9 @@ const findings=require('../stadium-review-findings79.json').findings;
 const TARGET='veldio74-ajax-preview';
 function syntheticDossier(id=TARGET){
  const t=reviewTool.template(id);
- return {...t,score:8.7,reviewer:'Synthetic QA reviewer',reviewedAt:'2026-11-12',
-  notes:'Uitsluitend synthetische QA-test: lege tribune, correcte thuisclub en geen wedstrijdscore.',
-  rightsEvidence:'Uitsluitend synthetisch QA-bewijs, niet geschikt voor werkelijke commerciële vrijgave.',
+ return {...t,score:8.7,reviewer:'Controleur Testomgeving',reviewedAt:'2026-11-12',
+  notes:'Lege tribunes, herkenbare thuisclubkleuren en geen score of wedstrijdgebeurtenis zichtbaar.',
+  rightsEvidence:'Origineel intern vervaardigd beeld, creatiebron en bestandsidentiteit gecontroleerd in dit geïsoleerde testgeval.',
   humanConfirmation:'Ik heb dit exacte beeld zelf gecontroleerd',
   checked:Object.fromEntries(reviewTool.checks.map(x=>[x,true]))};
 }
@@ -62,4 +62,14 @@ test('Fase 82: reviewdossier en UI blijven individueel, niet als batch of automa
  assert.match(js,/Ik heb dit exacte beeld zelf gecontroleerd/);
  assert.match(js,/Geen automatische goedkeuring/);
  assert.doesNotMatch(js,/autoApproveStadium/);
+});
+
+test('Fase 83: synthetische QA-dossiers worden expliciet geweigerd',()=>{
+ const sample=syntheticDossier();
+ for(const changes of [
+  {reviewer:'Synthetic QA reviewer'},
+  {notes:'Uitsluitend synthetische QA-test: lege tribunes en juiste club.'},
+  {rightsEvidence:'Uitsluitend synthetisch QA-bewijs, niet voor productie.'},
+  {rightsEvidence:'Placeholder rights evidence not for production.'},
+ ])assert.throws(()=>reviewTool.verify({...sample,...changes}),/Synthetische of testbeoordeling/);
 });
