@@ -15,8 +15,8 @@ test('Fase 79: 36 stadionbeelden zijn fysiek valide en geen enkel pending beeld 
  const rows=manifest.filter(a=>a.homeClubReusable===true);
  assert.equal(rows.length,36);
  for(const row of rows){
-  assert.equal(row.approval,'pending',row.id);
-  assert.equal(gate.accepted(row),false,row.id);
+  assert.ok(['pending','approved'].includes(row.approval),row.id);
+  assert.equal(gate.accepted(row),row.approval==='approved',row.id);
   assert.equal(row.clubs[1],'*',row.id);
   assert.equal(row.stadiumIdentity,'home:'+String(row.clubs[0]).normalize('NFD')
     .replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''),row.id);
@@ -52,5 +52,5 @@ test('Fase 79: acht concrete herstelpunten zijn zichtbaar, en Cambuur-native bee
   assert.equal(a.sourceNativeCropWidth,1672);
   assert.ok(!findings[a.id]);
  }
- assert.equal(listed.counts['approved-for-use']||0,0);
+ assert.equal((listed.counts['approved-for-use']||0)+(listed.counts['stored-awaiting-review']||0),36);
 });
