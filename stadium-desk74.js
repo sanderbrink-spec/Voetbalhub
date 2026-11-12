@@ -3,6 +3,7 @@
 // Source files from a ChatGPT conversation cannot be served by Render.
 const list=require('./stadium-review74.json');
 const rows=require('./image-library49.json').assets;
+const findings=require('./stadium-review-findings79.json').findings;
 const {norm}=require('./stadium-venue74');
 function overview(){
  const slots=list.clubs.flatMap(club=>['preview','report'].map(kind=>{
@@ -21,12 +22,16 @@ function overview(){
     reviewUrl:'/editorial/stadium-review74/'+a.id+'/image',
     originalSourceWidth:a.sourceNativeCropWidth||null,
     qualityStatus:'requires-independent-review',rightsStatus:'requires-independent-review',
-    minQualityScore:8.5})),
+    minQualityScore:8.5,knownIssue:findings[a.id]||null})),
    ...(declared.source?{conversationFile:declared.source}:{})};
  }));
  const counts=slots.reduce((out,slot)=>(out[slot.state]=(out[slot.state]||0)+1,out),{});
+ const riskCounts=slots.flatMap(s=>s.pendingImages||[]).reduce((out,item)=>{
+  if(item.knownIssue)out[item.knownIssue.level]=(out[item.knownIssue.level]||0)+1;
+  return out;
+ },{});
  return {version:74,season:list.season,slotsTotal:slots.length,clubsTotal:list.clubs.length,
   releasePolicy:'pending does not mean approved; quality >= 8.5 and rights review are mandatory',
-  counts,slots};
+  counts,riskCounts,issuesForExtraReview:Object.values(riskCounts).reduce((n,x)=>n+x,0),slots};
 }
 module.exports={overview};
