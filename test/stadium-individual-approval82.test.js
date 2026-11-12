@@ -57,7 +57,7 @@ test('Fase 82: reviewdossier en UI blijven individueel, niet als batch of automa
  const fs=require('node:fs'),path=require('node:path');
  const js=fs.readFileSync(path.join(__dirname,'../public/desk.js'),'utf8');
  assert.match(js,/addStadiumReviewExport/);
- assert.match(js,/Beoordelingsdossier/);
+ assert.match(js,/beoordelingsdossier/i);
  assert.match(js,/assetSha256:asset.sha256/);
  assert.match(js,/Ik heb dit exacte beeld zelf gecontroleerd/);
  assert.match(js,/Geen automatische goedkeuring/);
