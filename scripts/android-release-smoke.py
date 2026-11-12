@@ -128,9 +128,24 @@ def artwork_rotation(device):
             raise AssertionError("Geen artikelbeeldselectie gelogd")
         observed.append(entries[-1].split("2cb1e3f7-fa9c-5615-a76d-65a1b0f2eb07 ", 1)[1].split()[0])
         device(description="Terug naar de vorige pagina").click()
-    if len(set(observed)) != len(observed):
-        raise AssertionError("Heropening of herstart koos opnieuw hetzelfde beeld: " + str(observed))
-    return observed
+    # The editorial policy permits fewer than six assets until individually approved.
+    # A single approved illustration cannot rotate. Two approved images rotate A/B/A.
+    # Assert genuine rotation only when at least two eligible images exist.
+    with urllib.request.urlopen("https://voetbalhub-redactie.onrender.com/articles", timeout=25) as response:
+        articles = json.load(response)["articles"]
+    article = next((row for row in articles
+                    if row.get("id") == "2cb1e3f7-fa9c-5615-a76d-65a1b0f2eb07"), None)
+    if article is None:
+        raise AssertionError("ADO–Sparta ontbreekt in de productie-API")
+    available = [variant["id"] for variant in article.get("imageVariants", [])
+                 if isinstance(variant, dict) and variant.get("id")]
+    if not available:
+        raise AssertionError("Geen goedgekeurde ADO–Sparta-beeldvarianten in productie-API")
+    if any(asset not in available for asset in observed):
+        raise AssertionError("Android kiest een niet-goedgekeurd artikelbeeld: " + str(observed))
+    if len(available) > 1 and any(left == right for left, right in zip(observed, observed[1:])):
+        raise AssertionError("Android rouleert niet tussen beschikbare goedgekeurde beelden: " + str(observed))
+    return observed, len(available)
 
 
 def news_cover_inventory(device):
@@ -244,8 +259,8 @@ try:
     finally:
         adb("shell", "settings", "put", "system", "font_scale", "1.0")
 
-    variants = artwork_rotation(device)
-    checks.append("ADO–Sparta article-card and reader screenshots; three distinct variants across reopen and app restart")
+    variants, available = artwork_rotation(device)
+    checks.append(f"ADO–Sparta reader screenshots; {available} approved variant(s), correct rotation on reopen and restart")
     rendered_news = news_cover_inventory(device)
     checks.append(f"Rendered Android covers for all {rendered_news} current articles and columns")
 
@@ -262,6 +277,7 @@ try:
         "androidApi": 36,
         "checks": checks,
         "adoVariants": variants,
+        "adoApprovedVariantCount": available,
         "renderedNewsCovers": rendered_news,
         "limits": [
             "Android emulator, not a physical Samsung S23",
