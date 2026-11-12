@@ -370,6 +370,11 @@ $('loadStadiumReview').onclick=async()=>{
     const info=document.createElement('p');info.className='muted';
     info.textContent='Beeldscore minimaal '+asset.minQualityScore+' · rechtencontrole vereist';
     card.appendChild(info);
+    if(asset.preliminaryScreening){
+     const preliminary=document.createElement('p');preliminary.className='muted';
+     preliminary.textContent='Voorlopige beeldscreening: '+asset.preliminaryScreening.note+' Geen eindscore of rechtenvrijgave.';
+     card.appendChild(preliminary);
+    }
     const stage=document.createElement('p');stage.className='muted';
     stage.textContent=asset.reviewPriority==='first-review'?'Prioriteit 1: afzonderlijke eindcontrole vereist vóór publicatie.':'Prioriteit 2: eerst herstellen, vervolgens opnieuw beoordelen.';
     card.appendChild(stage);
