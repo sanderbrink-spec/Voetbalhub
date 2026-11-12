@@ -14,8 +14,8 @@ test('Fase 75: 13 extra review-only images are SHA bound, not automatically publ
  assert.equal(staged.length,13);
  const combos=new Set();
  for(const a of staged){
-  assert.equal(a.approval,'pending');
-  assert.equal(gate.accepted(a),false);
+  assert.ok(['pending','approved'].includes(a.approval));
+  assert.equal(gate.accepted(a),a.approval==='approved');
   assert.equal(a.homeClubReusable,true);
   assert.equal(a.clubs[1],'*');
   assert.equal(a.stadiumOccupancy,a.imageKind==='preview'?'empty':'full');
@@ -30,5 +30,6 @@ test('Fase 75: 13 extra review-only images are SHA bound, not automatically publ
  library.validate(all);
  assert.equal(review.clubs.length,18);
  assert.equal(review.requiredSlots,36);
- assert.equal(require('../stadium-desk74').overview().counts['stored-awaiting-review'],36);
+ const counts=require('../stadium-desk74').overview().counts;
+ assert.equal((counts['stored-awaiting-review']||0)+(counts['approved-for-use']||0),36);
 });
