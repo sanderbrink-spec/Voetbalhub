@@ -21,13 +21,15 @@ function overview(){
    assetIds:available.map(x=>x.id),pendingAssetIds:staged.map(x=>x.id),
    approvedImages:available.map(a=>({id:a.id,sha256:a.sha256,publicImageUrl:'/'+a.file.slice(7),
     visualScore:a.visualReview?.score??null,reviewer:a.reviewer})),
-   pendingImages:staged.map(a=>({id:a.id,sha256:a.sha256,
+    pendingImages:staged.map(a=>({id:a.id,sha256:a.sha256,
     reviewUrl:'/editorial/stadium-review74/'+a.id+'/image',
     originalSourceWidth:a.sourceNativeCropWidth||null,
     qualityStatus:'requires-independent-review',rightsStatus:'requires-independent-review',
     minQualityScore:8.5,knownIssue:findings[a.id]||null,
     reviewPriority:findings[a.id]?'repair-first':'first-review',
     canRequestApproval:!findings[a.id],
+    ...(screenings.get(a.id)?.sha256===a.sha256 && screenings.get(a.id).fullResolutionAssessment
+     ?{fullResolutionAssessment:screenings.get(a.id).fullResolutionAssessment}:{}),
     preliminaryScreening:screenings.get(a.id)?{
      note:screenings.get(a.id).preliminaryVisualNote,
      fullResolutionReviewDone:screenings.get(a.id).hasExactRasterPersonalReview,

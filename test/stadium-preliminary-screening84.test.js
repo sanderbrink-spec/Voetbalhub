@@ -48,3 +48,19 @@ test('Fase 84: visuele screeningsinformatie verschijnt alleen als voorlopige not
  assert.match(ui,/Geen eindscore of rechtenvrijgave/);
  assert.doesNotMatch(ui,/approveFromScreening|autoApproveStadium/);
 });
+test('Fase 85: vier beoordelingen zijn zichtbaar zonder wijziging van de vrijgavestatus',()=>{
+ const assessments=desk().slots.flatMap(slot=>slot.pendingImages)
+  .filter(asset=>asset.fullResolutionAssessment);
+ assert.deepEqual(assessments.map(asset=>asset.id).sort(),[
+  'veldio74-fcgroningen-preview','veldio74-fcgroningen-report',
+  'veldio75-sccambuur-preview','veldio75-sccambuur-report'
+ ]);
+ for(const asset of assessments){
+  const entry=entries.candidates.find(item=>item.id===asset.id);
+  assert.equal(asset.sha256,entry.sha256);
+  assert.equal(asset.fullResolutionAssessment.decision,'pending');
+  assert.ok(Number.isFinite(asset.fullResolutionAssessment.score));
+  assert.equal(asset.preliminaryScreening.rightsReleased,false);
+ }
+ assert.equal(desk().reviewPlan.approved,0);
+});

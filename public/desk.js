@@ -370,7 +370,17 @@ $('loadStadiumReview').onclick=async()=>{
     const info=document.createElement('p');info.className='muted';
     info.textContent='Beeldscore minimaal '+asset.minQualityScore+' · rechtencontrole vereist';
     card.appendChild(info);
-    if(asset.preliminaryScreening){
+    if(asset.fullResolutionAssessment){
+     const assessment=asset.fullResolutionAssessment;
+     const review=document.createElement('p');review.className='muted';
+     review.textContent='Beoordeeld op volledige resolutie · '+assessment.score.toLocaleString('nl-NL')+' / 10 · '+assessment.visualNote;
+     card.appendChild(review);
+     const rights=document.createElement('p');rights.className='warn';
+     rights.textContent='Vrijgave geblokkeerd. '+assessment.rightsNote;
+     card.appendChild(rights);
+     const reference=document.createElement('a');reference.href=assessment.referenceUrl;
+     reference.textContent='Bekijk de stadionreferentie';card.appendChild(reference);
+    }else if(asset.preliminaryScreening){
      const preliminary=document.createElement('p');preliminary.className='muted';
      preliminary.textContent='Voorlopige beeldscreening: '+asset.preliminaryScreening.note+' Geen eindscore of rechtenvrijgave.';
      card.appendChild(preliminary);
