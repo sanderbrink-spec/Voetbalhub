@@ -15,7 +15,7 @@
     "assets/clubquiz-bank.js": "6ad5c1516ca88681519d406143714096bc39cf188233aaa64de78733eae8fe13",
     "assets/competitions47.js": "e59bef155a99dac8d52c9e31853b2d4ecbfb9e2f8e041f30e42910913a06e1cc",
     "assets/stadium-view.js": "a21c40dc931d7f8d8127faeaff86348d19ca9dbc9b66fb0e1371eb61431067e4",
-    "assets/football47.js": "750a6bf1a32d5170e0d8e4a3ea5cb355d1b502e0adb5948a4fe377831fd0a087",
+    "assets/football47.js": "d1a7efc9774e7c47748382cf59da125d99a89232f91caadb423c216c53d9e9af",
     "assets/contact.html": "484326167a6081f093e24ad0979f58975bc2730d0c9327c3f23a6cd9236ded2f",
     "assets/subpage-model46.js": "fa025c109b8972c735d0cb56e3906019e0230af3630bf7bebb07d2381d3aa25a",
     "assets/destinations39.html": "b459e0c6d67666c274df6bf072c8e20cf2f0085d3b8f7f1f270389d8c66cd9c8",
@@ -219,7 +219,7 @@
     "assets/article-art69/twente-4.webp": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
     "assets/article-art69/twente-5.webp": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
     "assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
-    "assets/veldio-ui86.css": "d2d9ed814b3b229f646d43b1f8cebda69be96e66ea46b62d8cd57f939287c422"
+    "assets/veldio-ui86.css": "6e2f04d1e0e0d7162b9c7bf28c88409b00b340590b2310b3c043d4af483cd673"
   },
   "files": {
     "build.gradle.kts": "7affc359fa871247e8f608f01aee79617629544e22697bdbdeb4e127a250d007",
@@ -233,7 +233,7 @@
     "app/src/main/assets/clubquiz-bank.js": "6ad5c1516ca88681519d406143714096bc39cf188233aaa64de78733eae8fe13",
     "app/src/main/assets/competitions47.js": "e59bef155a99dac8d52c9e31853b2d4ecbfb9e2f8e041f30e42910913a06e1cc",
     "app/src/main/assets/stadium-view.js": "a21c40dc931d7f8d8127faeaff86348d19ca9dbc9b66fb0e1371eb61431067e4",
-    "app/src/main/assets/football47.js": "750a6bf1a32d5170e0d8e4a3ea5cb355d1b502e0adb5948a4fe377831fd0a087",
+    "app/src/main/assets/football47.js": "d1a7efc9774e7c47748382cf59da125d99a89232f91caadb423c216c53d9e9af",
     "app/src/main/assets/contact.html": "484326167a6081f093e24ad0979f58975bc2730d0c9327c3f23a6cd9236ded2f",
     "app/src/main/assets/subpage-model46.js": "fa025c109b8972c735d0cb56e3906019e0230af3630bf7bebb07d2381d3aa25a",
     "app/src/main/assets/destinations39.html": "b459e0c6d67666c274df6bf072c8e20cf2f0085d3b8f7f1f270389d8c66cd9c8",
@@ -501,7 +501,7 @@
     "app/src/main/assets/article-art69/twente-4.webp": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
     "app/src/main/assets/article-art69/twente-5.webp": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
     "app/src/main/assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
-    "app/src/main/assets/veldio-ui86.css": "d2d9ed814b3b229f646d43b1f8cebda69be96e66ea46b62d8cd57f939287c422",
+    "app/src/main/assets/veldio-ui86.css": "6e2f04d1e0e0d7162b9c7bf28c88409b00b340590b2310b3c043d4af483cd673",
     "app/src/main/java/nl/voetbalhub/app/VeldioIntroBackdrop.java": "4e0b30276788492efcb73bf13a9c2197f716831c03ff8f13c38ef5dce06d9e8b",
     "app/src/main/res/drawable-nodpi/intro_veldio_portrait.webp": "9ac404f1495fbd6b056fab2e3a8bc29015a735678260d40c79436ab0a035a08b"
   },
@@ -883,5 +883,10 @@
     "assets/football47.js",
     "assets/eredivisie.html",
     "assets/predictions49.js"
-  ]
+  ],
+  "phase89_changed_assets": [
+    "assets/football47.js",
+    "assets/veldio-ui86.css"
+  ],
+  "phase89_note": "User-approved premium fixture shirts and card layout; source hashes updated after CI verification."
 }
