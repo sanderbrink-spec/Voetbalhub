@@ -32,10 +32,10 @@ test('Signed Android build version and source checksums match current package',(
   const actual=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');
   assert.equal(source.files[name],actual, file+' provenance hash');
  }
- assert.match(gradle,/versionCode\s*=\s*100/);
- assert.match(gradle,/versionName\s*=\s*"4\.60"/);
- assert.match(workflow,/versionCode='100'\.\*versionName='4\.60'/);
- assert.match(workflow,/name: Veldio-60/);
+ assert.match(gradle,/versionCode\s*=\s*101/);
+ assert.match(gradle,/versionName\s*=\s*"4\.61"/);
+ assert.match(workflow,/versionCode='101'\.\*versionName='4\.61'/);
+ assert.match(workflow,/name: Veldio-61/);
 });
 
 test('Nieuws is de startpagina en behoudt alle redactionele artikelen',()=>{
