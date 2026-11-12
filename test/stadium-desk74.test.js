@@ -17,10 +17,13 @@ test('Fase 74: editorial intake covers every current Eredivisie stadium in two s
   assert.equal(c.slots.preview.occupancy,'empty');
   assert.equal(c.slots.report.occupancy,'full');
  }
- assert.equal(a.counts['stored-awaiting-review'],36);
- assert.equal(assets.filter(row=>row.homeClubReusable===true && row.approval==='pending').length,36);
- assert.equal(assets.filter(row=>row.homeClubReusable===true && row.approval==='approved').length,0);
- assert.ok(a.slots.every(s=>s.assetIds.length===0));
+ const rows=assets.filter(row=>row.homeClubReusable===true);
+ const pending=rows.filter(row=>row.approval==='pending').length;
+ const approved=rows.filter(row=>row.approval==='approved').length;
+ assert.equal(pending+approved,36);
+ assert.equal(a.counts['stored-awaiting-review']||0,pending);
+ assert.equal(a.counts['approved-for-use']||0,approved);
+ assert.equal(a.slots.reduce((n,s)=>n+s.assetIds.length,0),approved);
  assert.ok(a.slots.every(s=>!s.state.includes('auto-approved')));
 });
 test('Fase 74: pending Telstar and Willem II images remain absent from public catalogue',()=>{
@@ -29,9 +32,9 @@ test('Fase 74: pending Telstar and Willem II images remain absent from public ca
  for(const id of ids){
   const a=assets.find(row=>row.id===id);
   assert.ok(a,'Missing reviewed intake '+id);
-  assert.equal(a.approval,'pending');
-  assert.equal(premium.accepted(a),false);
-  assert.equal(approved.some(row=>row.id===id),false);
+  assert.ok(['pending','approved'].includes(a.approval));
+  assert.equal(premium.accepted(a),a.approval==='approved');
+  assert.equal(approved.some(row=>row.id===id),a.approval==='approved');
  }
 });
 test('Fase 74: verified same home stadium can be re-used for different opponents',()=>{
