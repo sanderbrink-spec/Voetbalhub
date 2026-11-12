@@ -225,7 +225,7 @@
     "build.gradle.kts": "7affc359fa871247e8f608f01aee79617629544e22697bdbdeb4e127a250d007",
     "gradle.properties": "fa078c27c9e4bde28a029d673875b028884505efa436b68cf60e1ac0be5b679b",
     "settings.gradle.kts": "4cf21d1bfd7d0a0ca19d852c34d941a00e0b45f816d8f6d0dea0efff79a1bb85",
-    "app/build.gradle.kts": "e43232175b298f9498b800f6008f483f08ab45cf25220bd7c36a4cb112458616",
+    "app/build.gradle.kts": "1eca06842a4b34be801b1653e31abc60a6b9e05299ceaad539ce164aca005340",
     "app/src/main/AndroidManifest.xml": "b5aa97d317352e51090de7ba7cb0354227aec21f83633dd0b3e830cd72c581c8",
     "app/src/main/assets/youtube-seed.json": "aac0cf7f236633446516996ec5e7ee80912a9fc7efdcb9444ee580482c2700c1",
     "app/src/main/assets/clubquiz-ui.js": "2892377f08f4258241cceef1d12313e7caf7ca19df0ff786039b31c764b18533",
