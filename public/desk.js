@@ -291,8 +291,13 @@ $('loadStadiumReview').onclick=async()=>{
   const data=await request('/editorial/stadium-review74',{headers:{Authorization:'Bearer '+key}});
   const slots=Array.isArray(data.slots)?data.slots:[];
   if(slots.length!==36)throw Error('Onvolledige redactiebeeldbibliotheek; geen beelden vrijgeven.');
-  status.textContent=slots.length+' beeldvarianten. '+(data.counts?.['stored-awaiting-review']||0)+' in beoordeling. '+(data.issuesForExtraReview||0)+' beelden met bekende herstelpunten. Geen automatische goedkeuring.';
-  for(const slot of slots){
+  status.textContent=slots.length+' beeldvarianten. Eerst '+(data.reviewPlan?.firstReview||0)+' ter beoordeling, '+(data.reviewPlan?.repairFirst||0)+' apart voor herstel. Geen automatische goedkeuring.';
+  const reviewNow=slots.filter(s=>s.pendingImages?.some(a=>a.reviewPriority==='first-review'));
+  const repairLater=slots.filter(s=>s.pendingImages?.some(a=>a.reviewPriority==='repair-first'));
+  if(reviewNow.length+repairLater.length!==slots.length)throw Error('Onvolledige fasering; geen vrijgave toegestaan.');
+  for(const [groupName,group] of [['Prioriteit 1: afzonderlijk beoordelen',reviewNow],['Prioriteit 2: eerst herstellen',repairLater]]){
+   const groupHeading=document.createElement('h3');groupHeading.textContent=groupName+' ('+group.length+')';grid.appendChild(groupHeading);
+   for(const slot of group){
    const card=document.createElement('article');card.className='card';
    const heading=document.createElement('strong');heading.textContent=slot.club+' · '+(slot.kind==='preview'?'Voorbeschouwing':'Wedstrijdverslag');card.appendChild(heading);
    const caption=document.createElement('p');caption.className='muted';caption.textContent='Status: '+slot.state+' · '+(slot.kind==='preview'?'Leeg stadion, daglicht':'Volle tribunes, wedstrijdsfeer');card.appendChild(caption);
@@ -301,6 +306,9 @@ $('loadStadiumReview').onclick=async()=>{
     const info=document.createElement('p');info.className='muted';
     info.textContent='Beeldscore minimaal '+asset.minQualityScore+' · rechtencontrole vereist';
     card.appendChild(info);
+    const stage=document.createElement('p');stage.className='muted';
+    stage.textContent=asset.reviewPriority==='first-review'?'Prioriteit 1: afzonderlijke eindcontrole vereist vóór publicatie.':'Prioriteit 2: eerst herstellen, vervolgens opnieuw beoordelen.';
+    card.appendChild(stage);
     if(asset.knownIssue){
      const warning=document.createElement('p');warning.className='warn';
      warning.textContent='Extra controle ('+asset.knownIssue.level+'): '+asset.knownIssue.reason;
@@ -330,6 +338,7 @@ $('loadStadiumReview').onclick=async()=>{
     const msg=document.createElement('p');msg.className='warn';msg.textContent='Geen beeld beschikbaar voor controle.';card.appendChild(msg);
    }
    grid.appendChild(card);
+   }
   }
  }catch(error){status.textContent='Laden mislukt: '+(error.message||'onbekende fout');}
  finally{$('loadStadiumReview').disabled=false;}
