@@ -51,7 +51,7 @@ function verify(review,{assets=require(manifestPath).assets,base=root}={}){
  if(crypto.createHash('sha256').update(bytes).digest('hex')!==a.sha256)throw Error('Afbeeldinghash komt niet overeen.');
  const reviewer=review.reviewer.trim();
  const updated={...a,approval:'approved',reviewer,
-  rightsEvidence:review.rightsEvidence.trim(),approvedAt:review.reviewedAt+'T12:00:00.000Z',
+  rightsEvidence:review.rightsEvidence.trim(),approvedAt:new Date().toISOString(),
   visualReview:{score:review.score,style:'photorealistic',assetSha256:a.sha256,
    checked:Object.fromEntries(checks.map(k=>[k,true])),reviewer,reviewedAt:review.reviewedAt,
    clubScope:'home-only',scopeHome:norm(a.clubs[0]),reviewedStadiumIdentity:a.stadiumIdentity,
