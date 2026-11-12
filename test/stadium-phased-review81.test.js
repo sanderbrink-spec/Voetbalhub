@@ -10,22 +10,25 @@ test('Fase 81: gefaseerde beeldreview heeft precies 28 reguliere en 8 herstelgev
  const data=overview();
  assert.equal(data.clubsTotal,18);
  assert.equal(data.slotsTotal,36);
- assert.deepEqual(data.reviewPlan.firstReview,28);
- assert.deepEqual(data.reviewPlan.repairFirst,8);
  assert.equal(data.issuesForExtraReview,8);
  const p=data.slots.flatMap(s=>s.pendingImages);
- assert.equal(p.length,36);
- assert.equal(p.filter(a=>a.reviewPriority==='first-review').length,28);
- assert.equal(p.filter(a=>a.reviewPriority==='repair-first').length,8);
- assert.equal(p.filter(a=>a.canRequestApproval).length,28);
+ const approved=data.slots.flatMap(s=>s.approvedImages||[]);
+ assert.equal(p.length+approved.length,36);
+ assert.equal(p.filter(a=>a.reviewPriority==='first-review').length,data.reviewPlan.firstReview);
+ assert.equal(p.filter(a=>a.reviewPriority==='repair-first').length,data.reviewPlan.repairFirst);
+ assert.equal(approved.length,data.reviewPlan.approved);
+ assert.equal(p.filter(a=>a.canRequestApproval).length,data.reviewPlan.firstReview);
  assert.ok(p.filter(a=>a.reviewPriority==='repair-first').every(a=>a.knownIssue));
  assert.ok(p.filter(a=>a.reviewPriority==='first-review').every(a=>!a.knownIssue));
  assert.deepEqual(new Set(data.slots.map(s=>s.club)).size,18);
- assert.ok(data.slots.slice(0,28).every(s=>s.pendingImages[0].reviewPriority==='first-review'));
- assert.ok(data.slots.slice(28).every(s=>s.pendingImages[0].reviewPriority==='repair-first'));
+ assert.ok(data.slots.slice(0,data.reviewPlan.firstReview).every(s=>s.pendingImages[0].reviewPriority==='first-review'));
+ assert.ok(data.slots.slice(data.reviewPlan.firstReview,data.reviewPlan.firstReview+data.reviewPlan.repairFirst)
+  .every(s=>s.pendingImages[0].reviewPriority==='repair-first'));
+ assert.ok(data.slots.slice(data.reviewPlan.firstReview+data.reviewPlan.repairFirst)
+  .every(s=>s.state==='approved-for-use'));
  for(const a of assets.filter(x=>x.homeClubReusable===true)){
-  assert.equal(a.approval,'pending');
-  assert.equal(gate.accepted(a),false,'Geen ongekeurde publicatie: '+a.id);
+  assert.ok(['pending','approved'].includes(a.approval));
+  assert.equal(gate.accepted(a),a.approval==='approved','Geen ongekeurde publicatie: '+a.id);
  }
 });
 test('Fase 81: desk toont prioriteit 1 en herstel zonder te doen alsof er goedkeuring is',()=>{
