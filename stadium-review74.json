@@ -136,12 +136,14 @@
           "kind": "preview",
           "occupancy": "empty",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen.",
-          "revision": 76,
+          "reviewNote": "Volledige native-resolutie kandidaat opgeslagen; geen automatisch kwaliteitsoordeel of rechtenvrijgave.",
+          "revision": 77,
           "qualityReviewRequired": true,
           "rightsReviewRequired": true,
           "scoreClaim": "No score generated in revised base image; separate visual verification required",
-          "source": "leeg_voetbalstadion_met_groene_veldio_branding.png"
+          "source": "leeg_voetbalstadion_met_groene_veldio_branding.png",
+          "sourceNativeCropWidth": 1672,
+          "sourceNativeCropHeight": 941
         },
         "report": {
           "state": "repository-pending",
@@ -272,7 +274,12 @@
           "kind": "report",
           "occupancy": "full",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen."
+          "reviewNote": "Volledige native-resolutie kandidaat opgeslagen; geen automatisch kwaliteitsoordeel of rechtenvrijgave.",
+          "revision": 77,
+          "sourceNativeCropWidth": 1672,
+          "sourceNativeCropHeight": 941,
+          "qualityReviewRequired": true,
+          "rightsReviewRequired": true
         }
       }
     },
@@ -384,12 +391,14 @@
           "kind": "preview",
           "occupancy": "empty",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen.",
-          "revision": 76,
+          "reviewNote": "Volledige native-resolutie kandidaat opgeslagen; geen automatisch kwaliteitsoordeel of rechtenvrijgave.",
+          "revision": 77,
           "qualityReviewRequired": true,
           "rightsReviewRequired": true,
           "scoreClaim": "No score generated in revised base image; separate visual verification required",
-          "source": "veldio_in_het_kasteel.png"
+          "source": "veldio_in_het_kasteel.png",
+          "sourceNativeCropWidth": 1672,
+          "sourceNativeCropHeight": 941
         },
         "report": {
           "state": "repository-pending",
@@ -397,12 +406,14 @@
           "kind": "report",
           "occupancy": "full",
           "productionApproved": false,
-          "reviewNote": "Opschaling vanaf klein collagefragment; opnieuw genereren aanbevolen.",
-          "revision": 76,
+          "reviewNote": "Volledige native-resolutie kandidaat opgeslagen; geen automatisch kwaliteitsoordeel of rechtenvrijgave.",
+          "revision": 77,
           "qualityReviewRequired": true,
           "rightsReviewRequired": true,
           "scoreClaim": "No score generated in revised base image; separate visual verification required",
-          "source": "neonverlichte_voetbalavond_in_veldio_stadion.png"
+          "source": "neonverlichte_voetbalavond_in_veldio_stadion.png",
+          "sourceNativeCropWidth": 1672,
+          "sourceNativeCropHeight": 941
         }
       }
     },
