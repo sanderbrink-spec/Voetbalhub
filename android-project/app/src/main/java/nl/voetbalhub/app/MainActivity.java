@@ -785,22 +785,21 @@ public class MainActivity extends AppCompatActivity {
         overlay.setClickable(true);
         overlay.setFocusable(true);
 
-        // Portrait-first Veldio launch artwork: original logo, quiet green energy
-        // and a subtle animated pitch. No Xbox branding or third-party imagery.
-        VeldioIntroBackdrop backdrop = new VeldioIntroBackdrop(this);
-        overlay.addView(backdrop, new FrameLayout.LayoutParams(
+        // Exact approved Veldio portrait artwork: center-crop preserves the logo
+        // across tall phones; a very soft animated overlay brings calm motion.
+        ImageView splash = new ImageView(this);
+        splash.setImageResource(R.drawable.intro_veldio_portrait);
+        splash.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        splash.setContentDescription("Veldio. Alles voetbal. Eén plek.");
+        overlay.addView(splash, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        ImageView splash = new ImageView(this);
-        splash.setImageResource(R.drawable.veldio_logo);
-        splash.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        splash.setContentDescription("Veldio. Alles voetbal. Eén plek.");
-        int logoWidth = Math.min(dp(320), getResources().getDisplayMetrics().widthPixels - dp(42));
-        FrameLayout.LayoutParams logoLp = new FrameLayout.LayoutParams(
-                logoWidth, dp(350), Gravity.CENTER);
-        overlay.addView(splash, logoLp);
-        splash.setTranslationY(-dp(70));
+        VeldioIntroBackdrop backdrop = new VeldioIntroBackdrop(this);
+        backdrop.setAlpha(0.22f);
+        overlay.addView(backdrop, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
         LinearLayout loader = new LinearLayout(this);
         loader.setOrientation(LinearLayout.VERTICAL);
