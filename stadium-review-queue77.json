@@ -4,9 +4,10 @@
   "releasePolicy": "No auto approval. Independent visual, stadium, and commercial rights review required. Score >= 8.5.",
   "counts": {
     "total": 36,
-    "needsRecreation": 6,
+    "needsRecreation": 2,
     "needsIndependentReview": 36,
-    "approved": 0
+    "approved": 0,
+    "replacementsStaged": 4
   },
   "images": [
     {
@@ -566,12 +567,12 @@
       "club": "FC Twente",
       "kind": "preview",
       "path": "public/stadium75/fctwente-preview.webp",
-      "sha256": "7194b40df19ceed9a9a96870f37fca5d37251afcb34803b85b1b7abe2fca5b6f",
-      "sourceNativeCropWidth": 350,
+      "sha256": "e16caf69cdc26f8778b02a541135aeb5f8ee9a192408ced3a85bf11b55b9be94",
+      "sourceNativeCropWidth": 1672,
       "reviewStatus": "pending",
       "reviewer": null,
       "visualReview": null,
-      "requiresRecreation": true,
+      "requiresRecreation": false,
       "checklist": [
         "exact-home-stadium",
         "correct-stand-architecture",
@@ -582,7 +583,11 @@
         "original-veldio-branding",
         "rights-evidence",
         "independent-visual-score-at-least-8.5"
-      ]
+      ],
+      "sourceNativeCropHeight": 941,
+      "replacementStaged": true,
+      "replacementSource": "Origineel Veldio AI-beeld uit gesprek: a_crisp_high_detail_realistic_cgi_stadium_interi.png; fase 77 nieuwe volledige rasteruitsnede",
+      "qualityGate": "pending independent stadium/rights review >=8.5"
     },
     {
       "id": "veldio75-feyenoord-report",
@@ -635,12 +640,12 @@
       "club": "N.E.C. Nijmegen",
       "kind": "report",
       "path": "public/stadium75/necnijmegen-report.webp",
-      "sha256": "4abecd9446fb06593628393b6dd305bef9077685d9e1a322dbeafd2e3c491dcf",
-      "sourceNativeCropWidth": 328,
+      "sha256": "952ecc36540a420234b939fa80fe6950e7c65c57990701bf0aec864104f77fdb",
+      "sourceNativeCropWidth": 1672,
       "reviewStatus": "pending",
       "reviewer": null,
       "visualReview": null,
-      "requiresRecreation": true,
+      "requiresRecreation": false,
       "checklist": [
         "exact-home-stadium",
         "correct-stand-architecture",
@@ -651,7 +656,11 @@
         "original-veldio-branding",
         "rights-evidence",
         "independent-visual-score-at-least-8.5"
-      ]
+      ],
+      "sourceNativeCropHeight": 941,
+      "replacementStaged": true,
+      "replacementSource": "Origineel Veldio AI-beeld uit gesprek: a_highly_detailed_cinematic_night_time_football_s.png; fase 77 nieuwe volledige rasteruitsnede",
+      "qualityGate": "pending independent stadium/rights review >=8.5"
     },
     {
       "id": "veldio75-psv-preview",
@@ -796,12 +805,12 @@
       "club": "Sparta Rotterdam",
       "kind": "preview",
       "path": "public/stadium75/spartarotterdam-preview.webp",
-      "sha256": "15a40912727e19eab91dc552694cad2748ee85d487620a5e47e5d30e9ef26067",
-      "sourceNativeCropWidth": 339,
+      "sha256": "e6a43616c1063aed3f0478a9e925576420dbc7c7caef9560c8890a1a589cc884",
+      "sourceNativeCropWidth": 1672,
       "reviewStatus": "pending",
       "reviewer": null,
       "visualReview": null,
-      "requiresRecreation": true,
+      "requiresRecreation": false,
       "checklist": [
         "exact-home-stadium",
         "correct-stand-architecture",
@@ -812,19 +821,23 @@
         "original-veldio-branding",
         "rights-evidence",
         "independent-visual-score-at-least-8.5"
-      ]
+      ],
+      "sourceNativeCropHeight": 941,
+      "replacementStaged": true,
+      "replacementSource": "Origineel Veldio AI-beeld uit gesprek: veldio_in_het_kasteel.png; fase 77 nieuwe volledige rasteruitsnede",
+      "qualityGate": "pending independent stadium/rights review >=8.5"
     },
     {
       "id": "veldio75-spartarotterdam-report",
       "club": "Sparta Rotterdam",
       "kind": "report",
       "path": "public/stadium75/spartarotterdam-report.webp",
-      "sha256": "6d5fedce0b7dec222627da44218d8213a1f8df620fc0cbc7947721bf65fdcda4",
-      "sourceNativeCropWidth": 339,
+      "sha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
+      "sourceNativeCropWidth": 1672,
       "reviewStatus": "pending",
       "reviewer": null,
       "visualReview": null,
-      "requiresRecreation": true,
+      "requiresRecreation": false,
       "checklist": [
         "exact-home-stadium",
         "correct-stand-architecture",
@@ -835,7 +848,11 @@
         "original-veldio-branding",
         "rights-evidence",
         "independent-visual-score-at-least-8.5"
-      ]
+      ],
+      "sourceNativeCropHeight": 941,
+      "replacementStaged": true,
+      "replacementSource": "Origineel Veldio AI-beeld uit gesprek: neonverlichte_voetbalavond_in_veldio_stadion.png; fase 77 nieuwe volledige rasteruitsnede",
+      "qualityGate": "pending independent stadium/rights review >=8.5"
     }
   ]
 }
