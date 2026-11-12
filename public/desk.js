@@ -273,3 +273,60 @@ async function persistReviewedDraft(approve){
 }
 $('saveServerDraft').onclick=()=>persistReviewedDraft(false);
 $('approveServerDraft').onclick=()=>persistReviewedDraft(true);
+
+
+// Fase 78: protected staging-gallery. Pending files are never linked publicly.
+const stadiumPreviewObjectUrls=new Set();
+function clearStadiumPreviews(){
+ for(const url of stadiumPreviewObjectUrls)URL.revokeObjectURL(url);
+ stadiumPreviewObjectUrls.clear();
+}
+$('loadStadiumReview').onclick=async()=>{
+ const key=$('secret').value.trim(),status=$('stadiumReviewStatus'),grid=$('stadiumReviewGrid');
+ if(!key){status.textContent='Voer de redactiesleutel bovenaan in.';return;}
+ $('loadStadiumReview').disabled=true;
+ status.textContent='De 36 beeldvarianten worden gecontroleerd…';
+ clearStadiumPreviews();grid.replaceChildren();
+ try{
+  const data=await request('/editorial/stadium-review74',{headers:{Authorization:'Bearer '+key}});
+  const slots=Array.isArray(data.slots)?data.slots:[];
+  if(slots.length!==36)throw Error('Onvolledige redactiebeeldbibliotheek; geen beelden vrijgeven.');
+  status.textContent=slots.length+' beeldvarianten. '+(data.counts?.['stored-awaiting-review']||0)+' in beoordeling. Geen automatische goedkeuring.';
+  for(const slot of slots){
+   const card=document.createElement('article');card.className='card';
+   const heading=document.createElement('strong');heading.textContent=slot.club+' · '+(slot.kind==='preview'?'Voorbeschouwing':'Wedstrijdverslag');card.appendChild(heading);
+   const caption=document.createElement('p');caption.className='muted';caption.textContent='Status: '+slot.state+' · '+(slot.kind==='preview'?'Leeg stadion, daglicht':'Volle tribunes, wedstrijdsfeer');card.appendChild(caption);
+   const asset=Array.isArray(slot.pendingImages)?slot.pendingImages[0]:null;
+   if(asset){
+    const info=document.createElement('p');info.className='muted';
+    info.textContent='Beeldscore minimaal '+asset.minQualityScore+' · rechtencontrole vereist';
+    card.appendChild(info);
+    const show=document.createElement('button');show.type='button';show.className='secondary';show.textContent='Bekijk beveiligd beeld';card.appendChild(show);
+    const image=document.createElement('img');image.alt='AI-stadionillustratie voor '+slot.club+', '+slot.kind;image.loading='lazy';
+    image.style.cssText='width:100%;max-height:240px;object-fit:cover;border-radius:10px;display:none';
+    card.appendChild(image);
+    const message=document.createElement('p');message.className='muted';message.setAttribute('role','status');card.appendChild(message);
+    show.onclick=async()=>{
+     const secret=$('secret').value.trim();if(!secret){message.textContent='Redactiesleutel ontbreekt.';return;}
+     show.disabled=true;message.textContent='Beveiligde afbeelding ophalen…';
+     try{
+      const response=await fetch(asset.reviewUrl,{headers:{Authorization:'Bearer '+secret},cache:'no-store',signal:AbortSignal.timeout(30000)});
+      if(!response.ok||!response.headers.get('content-type')?.startsWith('image/webp'))throw Error('Afbeelding niet toegankelijk of integriteitscontrole mislukt.');
+      const blob=await response.blob();
+      if(blob.size<20000||blob.size>2000000)throw Error('Ongeldige bestandsgrootte.');
+      if(image.dataset.previewUrl){URL.revokeObjectURL(image.dataset.previewUrl);stadiumPreviewObjectUrls.delete(image.dataset.previewUrl);}
+      const localUrl=URL.createObjectURL(blob);stadiumPreviewObjectUrls.add(localUrl);
+      image.dataset.previewUrl=localUrl;image.src=localUrl;image.style.display='block';
+      message.textContent='Alleen bekijken. Nog niet goedgekeurd voor publicatie.';
+     }catch(error){message.textContent=error.message||'Beeld niet beschikbaar.';}
+     finally{show.disabled=false;}
+    };
+   }else{
+    const msg=document.createElement('p');msg.className='warn';msg.textContent='Geen beeld beschikbaar voor controle.';card.appendChild(msg);
+   }
+   grid.appendChild(card);
+  }
+ }catch(error){status.textContent='Laden mislukt: '+(error.message||'onbekende fout');}
+ finally{$('loadStadiumReview').disabled=false;}
+};
+window.addEventListener('pagehide',clearStadiumPreviews);
