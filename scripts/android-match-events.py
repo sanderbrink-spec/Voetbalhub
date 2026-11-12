@@ -52,6 +52,12 @@ matches = device(text="Wedstrijden")
 assert matches.wait(timeout=25), "Wedstrijdnavigatie ontbreekt"
 matches.click()
 with closing(destinations_socket(package)) as socket:
+    for _ in range(40):
+        if evaluate(socket, "document.readyState === 'complete' && typeof window.setData === 'function'"):
+            break
+        time.sleep(0.25)
+    else:
+        raise AssertionError("Wedstrijden WebView is niet klaar")
     result = evaluate(socket, """
     (() => {
       const now = Date.now();
@@ -101,7 +107,6 @@ with closing(destinations_socket(package)) as socket:
         "icons": 3, "minute": "90+3′", "outgoing": "Speler Vijf", "noOverflow": True,
         "target": True, "restored": True, "closed": True,
     }, result
-    evaluate(socket, "document.querySelector('.fixture-expand88 summary').click(); true")
 
 out = Path(".android-smoke")
 out.mkdir(exist_ok=True)
