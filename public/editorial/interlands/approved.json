@@ -1,0 +1,22 @@
+{
+  "veldio-nederland-premium.webp": {
+    "sha256": "360358e79e0dff675f254246f32c2d359a0ec5b14d31071587f4d82ef27c7217",
+    "rightsCleared": true,
+    "qualityApproved": true,
+    "logoVerified": true,
+    "noFederationLogos": true,
+    "origin": "User-approved original AI composition, chat 2026-11-13",
+    "reviewer": "Veldio editor",
+    "reviewedAt": "2026-11-13"
+  },
+  "veldio-interlands-universal.webp": {
+    "sha256": "1be2ddf70e98530cbff53d1b2caba67c18200a3663685279798a69115556b80d",
+    "rightsCleared": true,
+    "qualityApproved": true,
+    "logoVerified": true,
+    "noFederationLogos": true,
+    "origin": "User-approved original AI composition, chat 2026-11-13",
+    "reviewer": "Veldio editor",
+    "reviewedAt": "2026-11-13"
+  }
+}
