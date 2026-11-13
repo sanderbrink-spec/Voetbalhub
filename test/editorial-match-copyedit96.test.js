@@ -5,6 +5,7 @@ const {matchSourceStyleIssues}=require('../editorial-desk-model');
 const facts=[
  'FC Utrecht – NEC Nijmegen eindigde in 2-3.',
  'Eredivisie speelronde 12, gespeeld op 2026-11-08.',
+ 'Ruststand 0-2.',
  'Volgens de Sportmonks-wedstrijdregistratie viel in minuut 34 een doelpunt van Kevin Kers, waarna de stand 0-1 was.',
  'Volgens de Sportmonks-wedstrijdregistratie viel in minuut 38 een doelpunt van Dusan Tadic, waarna de stand 0-2 was.',
  'Volgens de Sportmonks-wedstrijdregistratie viel in minuut 56 een doelpunt van Yoann Cathline, waarna de stand 1-2 was.',
