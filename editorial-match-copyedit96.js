@@ -30,6 +30,9 @@ function polishParagraph(paragraph){
    if(/^viel\s+in\s+minuut\s+(\d{1,3}(?:\+\d{1,2})?)\s+/i.test(sentence))
     sentence=sentence.replace(/^viel\s+in\s+minuut\s+(\d{1,3}(?:\+\d{1,2})?)\s+/i,
      (_,minute)=>'In minuut '+minute+' viel ');
+   else if(/^maakte\s+([\p{Lu}][\p{L}’'-]+(?:\s+[\p{Lu}][\p{L}’'-]+){1,3})\s+(.+)$/u.test(sentence))
+    sentence=sentence.replace(/^maakte\s+([\p{Lu}][\p{L}’'-]+(?:\s+[\p{Lu}][\p{L}’'-]+){1,3})\s+(.+)$/u,
+     (_,player,rest)=>player+' maakte '+rest);
    else sentence=sentence[0]?.toUpperCase()+sentence.slice(1);
   }
   kept.push(sentence);

@@ -72,3 +72,20 @@ test('each changed article gets an atomic original archive, no blanket update an
  assert.equal(writes,1);assert.ok(archived.includes('Sportmonks'));
  const second=await apply(client,log);assert.deepEqual(second,{examined:1,detected:0,updated:0,reviewRequired:0});
 });
+
+test('existing source-verified AZ Groningen revision gets a safe metadata-free rewrite',()=>{
+ const row=require('../editorial-evidence/reviewed-revisions71.json').find(x=>x.matchId==='sm-19714593');
+ const previous={...row.draft,id:row.id,matchId:row.matchId,match:row.match,
+  articleKind:'match_report',category:row.category,verifiedFacts:row.verifiedFacts,
+  sources:row.sources,status:'published'};
+ const updated=candidate(previous);
+ if(!updated){
+  const draft={headline:previous.headline,standfirst:previous.standfirst,body:previous.body.map(polishParagraph)};
+  const payload={...previous,draft,factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}};
+  assert.fail(JSON.stringify({draft,structure:require('../editorial-desk-model').draftIssues(draft,false),
+   style:matchSourceStyleIssues({articleKind:'match_report',draft}),
+   facts:require('../editorial-facts').audit(payload),
+   chronology:require('../editorial-chronology139').halfTimeNarrativeIssues(payload,draft)}));
+ }
+ assert.deepEqual(matchSourceStyleIssues({articleKind:'match_report',draft:updated}),[]);
+});
