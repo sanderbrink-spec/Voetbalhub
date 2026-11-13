@@ -96,17 +96,17 @@ class EditorialQueue {
  }
  prune(now=Date.now()) {for(const job of this.records)if(!['pending','retry'].includes(job.status)||now-(job.updatedAt||job.createdAt)>86400000)delete job.checkpoint;this.records=this.records.filter(j=>now-(j.updatedAt||j.createdAt)<7*86400000).slice(-500);}
 }
-async function openQueue({token,branch,fetcher=fetch}) {
+async function openQueue({token,branch,fetcher=fetch,isolated=false}) {
  const endpoint='https://api.github.com/repos/sanderbrink-spec/Voetbalhub/contents/editorial-queue45.json';
  const headers={Authorization:'Bearer '+token,Accept:'application/vnd.github+json','Content-Type':'application/json'};
  const response=await fetcher(endpoint+'?ref='+branch,{headers,signal:AbortSignal.timeout(25000)});
  let sha,records=[],capacity={};
  if(response.ok){const data=await response.json();sha=data.sha;const saved=JSON.parse(Buffer.from(data.content,'base64').toString());records=saved.records;capacity=saved.capacity||{};}
  else if(response.status!==404)throw Error('Redactiewachtrij niet beschikbaar: HTTP '+response.status);
- const queue=new EditorialQueue(records);
+ const queue=new EditorialQueue(isolated?[]:records);
  async function save(){
-  queue.prune();
-  const result=await fetcher(endpoint,{method:'PUT',headers,signal:AbortSignal.timeout(25000),body:JSON.stringify({branch,message:'Checkpoint editorial queue [skip ci]',...(sha?{sha}:{}),content:Buffer.from(JSON.stringify({version:45,records:queue.records,capacity})).toString('base64')})});
+  if(!isolated)queue.prune();
+  const result=await fetcher(endpoint,{method:'PUT',headers,signal:AbortSignal.timeout(25000),body:JSON.stringify({branch,message:'Checkpoint editorial queue [skip ci]',...(sha?{sha}:{}),content:Buffer.from(JSON.stringify({version:45,records:isolated?records:queue.records,capacity})).toString('base64')})});
   if(!result.ok)throw Error('Redactiewachtrij niet opgeslagen: HTTP '+result.status);
   const data=await result.json();sha=data.content.sha;
  }

@@ -30,6 +30,10 @@ on:
     - cron: '23 * * * *'
   workflow_dispatch:
     inputs:
+      validation_only:
+        description: Generate and review three articles without publishing
+        default: false
+        type: boolean
       source_url:
         description: Optional discovered official article URL to process alone
         required: false
@@ -45,7 +49,7 @@ concurrency:
 jobs:
   publish:
     # Start a push run only when the commit explicitly requests a verified editorial run.
-    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[publish-verified-news]') || contains(github.event.head_commit.message, '[verify-editorial-sources]')
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[publish-verified-news]') || contains(github.event.head_commit.message, '[verify-editorial-sources]') || contains(github.event.head_commit.message, '[validate-editorial-generation]')
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     steps:
@@ -74,6 +78,7 @@ jobs:
       - name: Collect official sources and publish checked stories with artwork
         env:
           EDITORIAL_DISCOVERY_ONLY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[verify-editorial-sources]') }}
+          EDITORIAL_VALIDATION_ONLY: ${{ inputs.validation_only || (github.event_name == 'push' && contains(github.event.head_commit.message, '[validate-editorial-generation]')) }}
           FOCUS_SOURCE_URL: ${{ inputs.source_url }}
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -94,7 +99,7 @@ jobs:
           if-no-files-found: error
 
       - name: Signal technical failures and unexplained zero publication
-        if: always()
+        if: ${{ always() && !inputs.validation_only && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[validate-editorial-generation]')) }}
         uses: actions/github-script@v7
         with:
           script: |
