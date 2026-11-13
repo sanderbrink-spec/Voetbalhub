@@ -46,6 +46,9 @@ concurrency:
   # Een nieuwe main-commit vervangt alleen verouderde push-publicatieproeven.
   # Geplande controles blijven buiten deze annuleringsregel.
   cancel-in-progress: ${{ github.event_name == 'push' }}
+# Nieuwe productieronde: gebruik de bestaande gecontroleerde workflow.
+# Journalistieke voorbeelden sturen nieuwsselectie; publicatie blijft afhankelijk van
+# geverifieerde feiten, onafhankelijke review, rechten en feedcontrole.
 jobs:
   publish:
     # Start a push run only when the commit explicitly requests a verified editorial run.
