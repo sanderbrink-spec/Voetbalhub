@@ -249,7 +249,7 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-67-preview-release.apk > preview-signature.txt
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-67-preview-release.apk > preview-manifest.txt
           grep -q "package: name='nl.voetbalhub.preview51'.*versionCode='107'.*versionName='4.67'" preview-manifest.txt
-          grep -q "application-label:'Veldio 64 Test'" preview-manifest.txt
+          grep -q "application-label:'Veldio 67 Test'" preview-manifest.txt
           python3 scripts/apk-secret-scan.py Veldio-67-preview-release.apk
           python3 scripts/verify-android-source.py Veldio-67-preview-release.apk
           python3 scripts/verify-apk-match-artwork68.py Veldio-67-preview-release.apk
