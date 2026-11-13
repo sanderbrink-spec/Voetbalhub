@@ -80,6 +80,9 @@ test('real server enforces Flashscore and does not write blocked submissions',as
 test('publication requires authorization and explicit approval; duplicate retry writes once',async()=>{
   let r=await fetch(base+'/publish',{method:'POST',body:JSON.stringify(valid())});assert.equal(r.status,401);
   r=await publish({...valid(),approved:false});assert.equal(r.status,400);
+  const manual=valid();
+  manual.draft.body[2]+=' De Sportmonks-API bevestigt dit.';
+  r=await publish(manual);assert.equal(r.status,400);assert.match((await r.json()).error,/leveranciersverantwoording/);
   r=await publish(valid());assert.equal(r.status,200);assert.equal(store.size,1);
   r=await publish(valid());assert.equal(r.status,409);assert.equal(store.size,1);
 });
@@ -243,12 +246,16 @@ test('registered match approval, publication and retry share a stable article ID
   status:'FT',round:'Speelronde 7',home:{name:'FC Twente'},away:{name:'PSV'},goals:{home:3,away:2},halfTime:{home:1,away:2}};
  store.set('football47:eredivisie',JSON.stringify({rightsExpiresAt:now+3600000,status:'available',fixtures:[fixture]}));
  const match=require('../editorial-match55').candidate(fixture,now);
- const payload={...match,editorialScore:95,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),
+ const payload={...match,editorialScore:95,journalismScore:90,reliabilityScore:94,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),
   draft:{headline:'FC Twente verslaat PSV met 3-2',
    standfirst:'FC Twente heeft de thuiswedstrijd tegen PSV in de Eredivisie gewonnen.',
-   body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten. Bron voor de uitslag en ruststand is OpenFootball.']}};
+   body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten. FC Twente won het duel met 3-2.']}};
  const tampered=await saveOwn({approve:true,payload:{...payload,match:{...match.match,homeScore:9}}});
  assert.equal(tampered.status,400);
+ for(const scores of [{journalismScore:84},{reliabilityScore:89},{reliabilityScore:undefined}]){
+  const rejected=await saveOwn({approve:true,payload:{...payload,...scores}});
+  assert.equal(rejected.status,400);
+ }
  const approved=await saveOwn({approve:true,payload});
  assert.equal(approved.status,200);
  const {record}=await approved.json();

@@ -289,10 +289,16 @@ function publicationId(record) {
   return hash.slice(0,8)+'-'+hash.slice(8,12)+'-5'+hash.slice(13,16)+'-a'+hash.slice(17,20)+'-'+hash.slice(20,32);
 }
 async function automaticEvidenceIssue(payload) {
+  const matchArticle = ['match_report', 'score_update'].includes(payload?.articleKind);
+  if (matchArticle && !payload.matchId) return 'Wedstrijdpublicatie vereist een geregistreerd wedstrijd-ID.';
   if (!payload?.matchId && !payload?.primaryAuthority) return '';
   if (!Number.isInteger(payload.editorialScore) || payload.editorialScore < 85 || payload.editorialScore > 100)
     return 'Automatische publicatie vereist een redactionele score van minimaal 85.';
   if (payload.matchId) {
+    if (!Number.isInteger(payload.journalismScore) || payload.journalismScore < 85 || payload.journalismScore > 100)
+      return 'Wedstrijdpublicatie vereist een journalistieke score van minimaal 85.';
+    if (!Number.isInteger(payload.reliabilityScore) || payload.reliabilityScore < 90 || payload.reliabilityScore > 100)
+      return 'Wedstrijdpublicatie vereist een betrouwbaarheidsscore van minimaal 90.';
     const chronology = require('./editorial-match-guidance133').paragraphChronologyIssues(payload, payload.draft);
     if (chronology.length) return chronology.join(' ');
     if (typeof payload.matchId !== 'string') return 'Ongeldig wedstrijd-ID.';
@@ -850,7 +856,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept niet beschikbaar."}); }
     }
     if(reviewedDraft)body={...reviewedDraft.payload,approved:body.approved};
-    if ((body.matchId || body.primaryAuthority) && !reviewedDraft)
+    if ((body.matchId || body.primaryAuthority || ["match_report", "score_update"].includes(body.articleKind)) && !reviewedDraft)
       return send(res,400,{error:"Automatische publicatie vereist een goedgekeurd concept."});
     const automaticIssue = await automaticEvidenceIssue(body);
     if (automaticIssue) return send(res,400,{error:automaticIssue});

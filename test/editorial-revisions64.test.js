@@ -45,3 +45,45 @@ test('all three registration records require the verified competition, participa
   assert.equal(registrationMatches(row, {...actual,goals:{home:99,away:0}}), false);
  }
 });
+
+test('Utrecht–NEC revision archives the live copy under the same ID and requires the verified goals', async () => {
+ const [row] = require('../editorial-evidence/reviewed-revisions96.json');
+ const previous = {
+  id:row.id, matchId:row.matchId, match:row.match, category:row.category, status:'published',
+  headline:'NEC Nijmegen wint met 2-3 van FC Utrecht in Eredivisie',
+  standfirst:'In speelronde 12 van de Eredivisie versloeg NEC Nijmegen op 8 november 2026 FC Utrecht met 2-3. De ruststand was 0-2 in het voordeel van NEC.',
+  body:[
+   'De Eredivisie-wedstrijd tussen FC Utrecht en NEC Nijmegen vond plaats op 8 november 2026 en maakte deel uit van speelronde 12. Bij rust stond NEC Nijmegen met 0-2 voor tegen FC Utrecht, een voorsprong die zij hadden opgebouwd zonder dat FC Utrecht tot scoren was gekomen.',
+   'In de eerste helft opende Kevin Kers de score voor NEC Nijmegen in de 34e minuut, gevolgd door een doelpunt van Dusan Tadic in de 38e minuut, waarmee NEC Nijmegen de ruststand op 0-2 bracht.',
+   'Na de rust wist FC Utrecht via Yoann Cathline in de 56e minuut de 1-2 te maken. Kort daarna, in de 58e minuut, vergrootte Dusan Tadic de voorsprong van NEC Nijmegen opnieuw tot 1-3. FC Utrecht kwam nog terug tot 2-3 door een doelpunt van Dani de Wit in de 64e minuut.'
+  ],
+  publishedAt:'2026-11-10T21:33:34.993Z', imageUrl:'https://voetbalhub-redactie.onrender.com/article-art72/utrecht-nec-report.webp'
+ };
+ const registered = fixture(row);
+ const changedGoals = registered.goalTimeline.map((event, i) => i === 0 ? {...event,minute:33} : event);
+ assert.throws(() => prepare(previous, row, {...registered,goalTimeline:changedGoals}), /Sportmonks/);
+ const key = 'article:' + row.id;
+ const history = 'article-revision:96:' + row.id;
+ const original = JSON.stringify(previous);
+ const stored = new Map([[key,original]]);
+ const client = {
+  mGet: async keys => keys.map(id => stored.get(id)),
+  eval: async (_script,{keys,arguments:args}) => {
+   assert.deepEqual(keys,[key,history]);
+   assert.equal(stored.get(key),args[0]);
+   assert.equal(stored.has(history),false);
+   stored.set(history,args[0]);
+   stored.set(key,args[1]);
+   return 1;
+  }
+ };
+ await apply(client, async () => [registered], {info:()=>{}});
+ const article = JSON.parse(stored.get(key));
+ assert.equal(stored.get(history),original);
+ assert.equal(article.id,previous.id);
+ assert.equal(article.publishedAt,previous.publishedAt);
+ assert.equal(article.imageUrl,previous.imageUrl);
+ assert.deepEqual(article.body,row.draft.body);
+ assert.match(article.body[2],/Barkas/);
+ await apply(client, async () => assert.fail('already archived'));
+});

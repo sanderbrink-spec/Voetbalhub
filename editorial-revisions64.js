@@ -1,13 +1,14 @@
 'use strict';
 
 const { contentHash } = require('./article-covers');
-const { draftIssues } = require('./editorial-desk-model');
+const { draftIssues, matchSourceStyleIssues } = require('./editorial-desk-model');
 const { audit } = require('./editorial-facts');
 const { headlineContradictions } = require('./editorial-quality');
 const { verifiedIncidentCoverageIssues } = require('./editorial-match-guidance133');
 const { halfTimeNarrativeIssues } = require('./editorial-chronology139');
 const revisions = require('./editorial-evidence/reviewed-revisions64.json');
 const incidentRevisions = require('./editorial-evidence/reviewed-revisions71.json');
+const copyRevisions = require('./editorial-evidence/reviewed-revisions96.json');
 const day = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Amsterdam' });
 const factChecks = { resultVerified: true, namesVerified: true, dateVerified: true, timelineVerified: true };
 
@@ -39,12 +40,13 @@ function prepare(previous, row, fixture, updatedAt) {
  const { draft, verifiedFacts, sources } = row;
  const payload = { match: row.match, articleKind: 'match_report', verifiedFacts, sources, factChecks, draft };
  const issues = [...draftIssues(draft), ...audit(payload), ...halfTimeNarrativeIssues(payload, draft)];
- if (incidentRevisions.includes(row)) issues.push(...verifiedIncidentCoverageIssues(payload,draft));
+ if (copyRevisions.includes(row)) issues.push(...matchSourceStyleIssues(payload));
+ if (incidentRevisions.includes(row) || copyRevisions.includes(row)) issues.push(...verifiedIncidentCoverageIssues(payload,draft));
  if (headlineContradictions(draft)) issues.push('Tegenstrijdige kop.');
  if (issues.length) throw Error(issues.join(' '));
 
  const next = { ...previous, ...draft, verifiedFacts, sources, articleKind: payload.articleKind,
-  updatedAt, correctionNote: 'Wedstrijdverslag herzien na vergelijking met Sportmonks en openbare wedstrijdbronnen.' };
+  updatedAt, correctionNote: 'Wedstrijdverslag herzien na vergelijking met de wedstrijdgegevens en openbare wedstrijdbronnen.' };
  delete next.compactVerified;
  return next;
 }
@@ -58,9 +60,9 @@ return 1
 
 async function apply(client, getFixtures, logger = console) {
  const pending = [];
- for (const row of [...revisions, ...incidentRevisions]) {
+ for (const row of [...revisions, ...incidentRevisions, ...copyRevisions]) {
   const key = 'article:' + row.id;
-  const version = incidentRevisions.includes(row) ? 71 : 64;
+  const version = copyRevisions.includes(row) ? 96 : incidentRevisions.includes(row) ? 71 : 64;
   const history = 'article-revision:' + version + ':' + row.id;
   const [raw, prior] = await client.mGet([key, history]);
   if (raw && !prior) pending.push({ row, key, history, raw, version });
