@@ -27,9 +27,14 @@
     "keukenkampioendivisie.nl",
     "liverpoolfc.com",
     "askclub.be",
-    "english.ajax.nl"
+    "english.ajax.nl",
+    "onsoranje.nl"
   ],
   "newsIndexes": [
+    {
+      "url": "https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen",
+      "articlePath": "^/nieuws/nederlands-elftal-mannen/[0-9]+/[^/]+/?$"
+    },
     {
       "url": "https://www.inter.it/en/news",
       "articlePath": "^/en/news/[^/]+/?$"
