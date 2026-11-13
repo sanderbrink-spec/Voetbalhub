@@ -90,6 +90,27 @@ test('Gemini requires confirmed free-tier project even when OpenAI is independen
  const router=createRouter({env:{GEMINI_API_KEY:'private'},fetcher:()=>{throw Error('unexpected network');}});
  assert.equal(router.configured().some(p=>p.enabled),false);await assert.rejects(router.complete(messages));
 });
+
+test('exhausted local writer budgets resume after UTC reset without spending reserved review capacity',async()=>{
+ const now=Date.parse('2026-11-13T20:40:00Z');
+ const state={
+  groq:{day:'2026-11-13',requests:36,tokens:144915,blockedUntil:0,nextAt:0},
+  openai:{day:'2026-11-13',requests:98,tokens:171854,blockedUntil:0,nextAt:0}
+ };
+ let calls=0;
+ const router=new EditorialProviderRouter({groqKey:'x',openaiKey:'y',state,now:()=>now,intervalMs:0,fetcher:async()=>{calls++;return response(draft);}});
+ await assert.rejects(router.complete(messages,{task:'writing'}),error=>{
+  assert.equal(error.availabilityCategory,'capacity');
+  assert.ok(error.retryAfterSeconds>=3*3600);
+  assert.ok(error.retryAfterSeconds<=4*3600);
+  return true;
+ });
+ assert.equal(calls,0);
+ const afterReset=new EditorialProviderRouter({groqKey:'x',openaiKey:'y',state,now:()=>Date.parse('2026-11-14T00:01:00Z'),intervalMs:0,fetcher:async()=>{calls++;return response(draft);}});
+ assert.deepEqual(await afterReset.complete(messages,{task:'writing'}),draft);
+ assert.equal(calls,1);
+});
+
 test('capacity reserves requests and tokens for review without weakening quality',async()=>{
  const router=new EditorialProviderRouter({groqKey:'x',intervalMs:0,limits:{groq:{requests:3,tokens:40000}},fetcher:async()=>response(review)});
  await router.complete(messages);await assert.rejects(router.complete(messages));assert.deepEqual(await router.complete(messages,{task:'review'}),review);assert.equal(router.state.groq.requests,2);
