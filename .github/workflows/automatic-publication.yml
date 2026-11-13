@@ -35,6 +35,10 @@ on:
         description: Generate and review three articles without publishing
         default: false
         type: boolean
+      sportmonks_only:
+        description: Test only verified SportsMonks match reports (default for manual ten-article run)
+        default: true
+        type: boolean
       source_url:
         description: Optional discovered official article URL to process alone
         required: false
@@ -82,7 +86,7 @@ jobs:
       - name: Collect official sources and publish checked stories with artwork
         env:
           EDITORIAL_DISCOVERY_ONLY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[verify-editorial-sources]') }}
-          EDITORIAL_SPORTMONKS_ONLY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[sportmonks-ten]') }}
+          EDITORIAL_SPORTMONKS_ONLY: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[sportmonks-ten]')) || (github.event_name == 'workflow_dispatch' && inputs.sportmonks_only) }}
           EDITORIAL_VALIDATION_ONLY: ${{ inputs.validation_only || (github.event_name == 'push' && contains(github.event.head_commit.message, '[validate-editorial-generation]')) }}
           FOCUS_SOURCE_URL: ${{ inputs.source_url }}
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
