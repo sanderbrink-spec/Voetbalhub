@@ -1,5 +1,5 @@
 'use strict';
-const { draftIssues, paragraphs, compactStructure, standardStructure } = require('./editorial-desk-model');
+const { draftIssues, paragraphs, compactStructure, standardStructure, storyStyle, previewStyle, previewStructure, storyIssues } = require('./editorial-desk-model');
 const { headlineContradictions } = require('./editorial-quality');
 // Task-specific free-tier GPT-OSS policy. Source extraction stays fast;
 // writing gets deeper reasoning and the independent review gets high effort.
@@ -211,9 +211,10 @@ function normalizeDraft(text) {
   if(value.skip===true||String(value.editorialDecision||value.editorial_decision||'').toLowerCase()==='skip')return {skip:true};
   return {...value,headline:typeof value.headline==='string'?value.headline.trim():'',standfirst:typeof value.standfirst==='string'?value.standfirst.trim():'',body:paragraphs(value).map(p=>p.trim())};
 }
-function generationIssues(draft,facts,match=null,compact=false,sourceName='') {
+function generationIssues(draft,facts,match=null,compact=false,sourceName='',articleKind) {
   if(!draft)return ['Geef uitsluitend een geldig JSON-object met kop, intro en body.'];
-  const issues=draftIssues(draft,compact);
+  const issues=draftIssues(draft,compact,articleKind==='preview');
+  issues.push(...storyIssues({draft,verifiedFacts:facts,articleKind}));
   // A conservative preflight for the observed English rewrite. Names and
   // isolated foreign football terms do not qualify as a language failure.
   const words=[draft.headline,draft.standfirst,...(Array.isArray(draft.body)?draft.body:[])].join(' ').toLowerCase().match(/[a-zà-ÿ]+/g)||[];
@@ -283,14 +284,14 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // infer dates or staff identities from the current date, title or URL.
   const allowedNumbers=[...new Set(facts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
   if(automaticPublication&&articleKind==='preview'){
-   prompt='Schrijf een zelfstandige Nederlandse voorbeschouwing uitsluitend uit facts. Zet uitsluitend het duel en aftrapmoment in de intro. Gebruik alinea 1 alleen voor stadion en stad, alinea 2 alleen voor competitie en groep, en alinea 3 alleen voor het andere bevestigde groepsduel. De intro noemt geen locatie of groepsnummer. Benoem de locatie uitsluitend in alinea 1 en het groepsnummer uitsluitend in alinea 2. Noem in alinea 3 alleen het andere duel en de datum, zonder groepsnummer of stadionnaam. Geef drie verschillende feitelijke alinea’s. Bewaar de locatie voor de body. Vermijd uitleg over de kalender, thuisvoordeel, sfeer, historie, stadioncapaciteit, kwalificatieregels, verwachtingen en bronverantwoording. Voeg geen onbewezen namen of cijfers toe. Formuleer in eigen woorden. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+'. Geef skip wanneer verschillende feiten ontbreken.';
+   prompt=previewStyle+' Gebruik uitsluitend facts. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+previewStructure+'.';
   }else if(automaticPublication&&primaryAuthority==='association_decision'){
    prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Begin de inhoudelijke alinea over opvolging of vervolgstappen met een duidelijke toeschrijving aan '+officialPublisher+', bijvoorbeeld: “'+officialPublisher+' meldt dat …”. Schrijf een volgende functie alleen toe aan de bond als die als enige het nieuws meldt. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
   }
   if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority){
    prompt='Schrijf een origineel Nederlands voetbalnieuwsbericht uitsluitend uit facts. Leg het nieuws eenmaal uit in de intro. Verdeel de body in exact drie alinea’s. Gebruik voor elke alinea een ander bewezen thema. Bij een afmelding kan dat de concreet gemelde aanleiding, het besluit van de bond voor de komende interlands en de afzonderlijk gemelde clubplanning zijn. Zet de terugkeer alleen in de intro. Vermijd herhaling, ook in andere woorden. Schrijf alleen wat een bron concreet heeft bevestigd. Gebruik bij een verschil tussen de bronnen expliciete toeschrijving en vermijd relatieve termen zoals morgen. Verzin geen intentie, prognose, herstelduur, beoordeling of gevolg. Schrijf alleen headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+' als JSON. Geef skip bij onvoldoende verschillende feiten.';
   }
-  const messages=resume?.messages||[{role:'system',content:prompt+' De bijgevoegde editorialAssignment is een taakverdeling op basis van bestaande feiten-ID’s. Begin de intro bij leadFactIds. Gebruik voor elke bodyalinea een ander controleerbaar detail uit bodySections en herhaal geen feiten uit de intro als alineaonderwerp. De labels voegen geen feiten toe. Als er te weinig onafhankelijke details zijn voor de gevraagde vorm, geef skip in plaats van opvulling. Elke naam, datum en claim blijft uitsluitend verifieerbaar met facts. Elke genoemde datum, jaartal en getalwaarde moet letterlijk voorkomen in facts. Vul geen jaartal afgeleid van de publicatiedatum in. Controleer persoonsnamen per woordgroep tegen facts; verzin geen trainersstaf, functie of loopbaanfeit.'},{role:'user',content:JSON.stringify({topic,category,facts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
+  const messages=resume?.messages||[{role:'system',content:storyStyle+' '+prompt+' Gebruik editorialAssignment als suggestie; de labels voegen geen feiten toe. Noem alleen namen, datums, cijfers en claims die facts ondersteunen. De publicatiedatum is geen bewijs. Geef skip als de feiten onvoldoende stof bieden.'},{role:'user',content:JSON.stringify({topic,category,facts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
   // Both writing and its single targeted repair share one 25-second deadline.
   const signal=AbortSignal.timeout(timeoutMs);
   for(let attempt=resume?.attempt||0;attempt<2;attempt++){
@@ -343,7 +344,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      }
      throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.');
     }
-    const issues=generationIssues(draft,facts,match,compact,officialPublisher?sourceUrls[0]:'');
+    const issues=generationIssues(draft,facts,match,compact,officialPublisher?sourceUrls[0]:'',articleKind);
     if(automaticPublication){
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts}));
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority,facts}));

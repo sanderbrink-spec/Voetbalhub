@@ -291,14 +291,15 @@ function publicationId(record) {
 async function automaticEvidenceIssue(payload) {
   const matchArticle = ['match_report', 'score_update'].includes(payload?.articleKind);
   if (matchArticle && !payload.matchId) return 'Wedstrijdpublicatie vereist een geregistreerd wedstrijd-ID.';
-  if (!payload?.matchId && !payload?.primaryAuthority) return '';
+  const newsArticle = ['preview','announcement'].includes(payload?.articleKind);
+  if (!payload?.matchId && !payload?.primaryAuthority && !newsArticle) return '';
+  if (!Number.isInteger(payload.journalismScore) || payload.journalismScore < 85 || payload.journalismScore > 100)
+    return 'Automatische publicatie vereist een journalistieke score van minimaal 85.';
+  if (!Number.isInteger(payload.reliabilityScore) || payload.reliabilityScore < 90 || payload.reliabilityScore > 100)
+    return 'Automatische publicatie vereist een betrouwbaarheidsscore van minimaal 90.';
   if (!Number.isInteger(payload.editorialScore) || payload.editorialScore < 85 || payload.editorialScore > 100)
     return 'Automatische publicatie vereist een redactionele score van minimaal 85.';
   if (payload.matchId) {
-    if (!Number.isInteger(payload.journalismScore) || payload.journalismScore < 85 || payload.journalismScore > 100)
-      return 'Wedstrijdpublicatie vereist een journalistieke score van minimaal 85.';
-    if (!Number.isInteger(payload.reliabilityScore) || payload.reliabilityScore < 90 || payload.reliabilityScore > 100)
-      return 'Wedstrijdpublicatie vereist een betrouwbaarheidsscore van minimaal 90.';
     const chronology = require('./editorial-match-guidance133').paragraphChronologyIssues(payload, payload.draft);
     if (chronology.length) return chronology.join(' ');
     if (typeof payload.matchId !== 'string') return 'Ongeldig wedstrijd-ID.';
@@ -308,7 +309,7 @@ async function automaticEvidenceIssue(payload) {
     if (payload.sources[0].url === require('./editorial-match55').FD &&
         !payload.draft?.body?.some(p => typeof p === 'string' && p.includes(require('./football-results52').CREDIT)))
       return 'Verplichte bronvermelding ontbreekt.';
-  } else {
+  } else if (payload.primaryAuthority) {
     const {articleUrl, officialSourceAuthority} = require('./scripts/editorial-discovery53');
     const source = payload.sources?.[0]?.url;
     const canonical = articleUrl(source, require('./automatic-editorial.json').newsIndexes);
@@ -872,7 +873,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       } catch(error) { return send(res,error.status||500,{error:error.status?error.message:"Concept niet beschikbaar."}); }
     }
     if(reviewedDraft)body={...reviewedDraft.payload,approved:body.approved};
-    if ((body.matchId || body.primaryAuthority || ["match_report", "score_update"].includes(body.articleKind)) && !reviewedDraft)
+    if ((body.matchId || body.primaryAuthority || ["match_report", "score_update", "preview", "announcement"].includes(body.articleKind)) && !reviewedDraft)
       return send(res,400,{error:"Automatische publicatie vereist een goedgekeurd concept."});
     const automaticIssue = await automaticEvidenceIssue(body);
     if (automaticIssue) return send(res,400,{error:automaticIssue});
@@ -926,7 +927,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     }
     if (!cover) return send(res, 422, {error:"Publicatie geblokkeerd: geen passend goedgekeurd artikelbeeld."});
     const compactVerified = reviewedDraft && publishBody.length < 3 && imageUrl &&
-      (body.matchId || require("./editorial-desk-model").briefEligible(body));
+      (body.matchId || body.articleKind === "preview" || require("./editorial-desk-model").briefEligible(body));
     const now = new Date().toISOString();
     const article = { ...(compactVerified ? {compactVerified:true} : {}), ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? publicationId(reviewedDraft) : crypto.randomUUID(), ...(body.matchId ? {matchId:body.matchId} : {}), ...(body.articleKind ? {articleKind:body.articleKind} : {}), ...(body.imageCategory ? {imageCategory:body.imageCategory} : {}), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), ...(reviewedDraft && body.fixture ? {fixture:body.fixture} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
     const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
