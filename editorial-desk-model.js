@@ -65,6 +65,20 @@
     }
     return issues;
   }
+  // Supplier provenance belongs in source metadata, never in a match story.
+  // Reject the draft rather than stripping sentences: the remaining text
+  // might lose essential match facts and must be rewritten and rechecked.
+  function matchSourceStyleIssues(payload = {}) {
+    if (!['match_report','score_update'].includes(payload.articleKind)) return [];
+    const d=payload.draft || {};
+    const text=[d.headline,d.standfirst,...(Array.isArray(d.body)?d.body:[])].filter(x=>typeof x==='string').join(' ');
+    const provider=/\b(?:sport\s*monks|sports\s*monks|sportmonks(?:-wedstrijdregistratie)?|football[ -]?api)\b/i;
+    const registry=/\b(?:volgens|blijk(?:t|en)\s+uit|bevestigd\s+door|geregistreerd\s+(?:volgens|door|in)|gekoppeld\s+aan)\b[^.!?]{0,95}\b(?:wedstrijdregistratie|doelpuntenregistratie|data(?:bron|leverancier)|bron(?:gegevens)?|api)\b/i;
+    const evidenceMeta=/\b(?:de\s+)?(?:offici[eë]le\s+)?wedstrijdregistratie\b|\b(?:geverifieerd|bevestigd)\s+(?:door|volgens|aan\s+de\s+hand\s+van)\s+(?:de\s+)?(?:bron|provider|registratie)\b/i;
+    return provider.test(text)||registry.test(text)||evidenceMeta.test(text)
+      ? ['Wedstrijdverslag bevat bron- of leveranciersverantwoording in de lopende tekst. Schrijf de gebeurtenis direct, zonder Sportmonks, API, wedstrijdregistratie of verificatieclaims; behoud brongegevens afzonderlijk.']
+      : [];
+  }
   function publicationIssues(payload) {
     const issues = [], d = payload.draft || {};
     const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+|sm-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
@@ -75,6 +89,7 @@
     const richMatch = registeredMatch && payload.articleKind === 'match_report' &&
       (Boolean(payload.matchEvidence) || (payload.verifiedFacts || []).length >= 5);
     issues.push(...draftIssues(d, (registeredMatch && !richMatch) || brief));
+    issues.push(...matchSourceStyleIssues(payload));
     issues.push(...factAudit.audit(payload));
     if (!Array.isArray(payload.verifiedFacts) || payload.verifiedFacts.filter(x => typeof x === 'string' && x.trim()).length < (brief ? 1 : 2)) issues.push(brief ? 'Vul het gecontroleerde besluit in.' : 'Vul twee zelf gecontroleerde feiten in.');
     const sources = Array.isArray(payload.sources) ? payload.sources : [];
@@ -134,5 +149,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

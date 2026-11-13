@@ -31,7 +31,7 @@ test('exact complete 4-3 timeline proves the two-goal comeback as derived, trans
  assert.ok(plan.body[0].factIds.some(id=>record.verifiedFacts[Number(id.slice(1))-1]===fact));
  assert.equal(plan.events,7);
  assert.match(guide.writingPrompt(record),/Gebruik NOOIT een berekend tijdsverschil/);
- assert.match(guide.revisionPrompt(record),/Sportmonks-wedstrijdregistratie/);
+ assert.match(guide.revisionPrompt(record),/verificatieproces niet in kop, intro of lopende artikeltekst/);
 });
 test('no comeback context when chronology is tampered, incomplete, or victory did not follow a two-goal deficit',()=>{
  const match={homeTeam:'AZ Alkmaar',awayTeam:'FC Groningen'};

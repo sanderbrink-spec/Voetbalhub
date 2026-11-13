@@ -223,7 +223,7 @@ for(const hasHalf of [true,false])test('registered match uses compact format wit
     const request=JSON.parse(options.body);
     if(calls===1||(hasHalf&&calls===3)){
      assert.deepEqual(JSON.parse(request.messages[1].content).verifiedFacts,record.verifiedFacts);
-     return Response.json({choices:[{message:{content:JSON.stringify({headline:'FC Twente en PSV sluiten duel af op 3-0',standfirst:'De ontmoeting tussen FC Twente en PSV in de Eredivisie eindigde op 3-0.',body:[record.verifiedFacts[1]+' De wedstrijdregistratie is de bron voor de eindstand. Bron: OpenFootball.',...(hasHalf?['De geregistreerde ruststand was 1-0. Deze tussenstand is afzonderlijk vastgelegd in dezelfde wedstrijdregistratie.']:[])]})}}]});
+     return Response.json({choices:[{message:{content:JSON.stringify({headline:'FC Twente en PSV sluiten duel af op 3-0',standfirst:'De ontmoeting tussen FC Twente en PSV in de Eredivisie eindigde op 3-0.',body:[record.verifiedFacts[1]+' FC Twente was de thuisploeg en PSV de bezoekende ploeg in deze ontmoeting.',...(hasHalf?['De ruststand was 1-0. FC Twente ging daardoor met een voorsprong op PSV de kleedkamer in.']:[])]})}}]});
     }
     assert.match(request.messages[0].content,/tweede feitenredacteur/);
     const response=hasHalf&&calls===2?{approved:false,issues:['De tekst moet origineler worden geformuleerd.'],scores}:{approved:true,issues:[],scores};
@@ -235,7 +235,8 @@ for(const hasHalf of [true,false])test('registered match uses compact format wit
     assert.equal(saved.draft.body.length,hasHalf?2:1);
     if(hasHalf)assert.match(saved.draft.body[1],/ruststand was 1-0/);
     else assert.ok(!saved.draft.body.join(' ').includes('ruststand'));
-    assert.ok(saved.draft.body[0].endsWith('OpenFootball.'));
+    assert.ok(saved.draft.body[0].endsWith('ontmoeting.'));
+     assert.deepEqual(require('../editorial-desk-model').matchSourceStyleIssues(saved),[]);
     assert.deepEqual(require('../editorial-desk-model').publicationIssues(saved),[]);
     assert.equal(require('../editorial-match55').matchesRegistration(saved,[match],clock),true);
     return Response.json({record:{id:'isolated',revision:1,status:'approved',contentHash:fingerprint(saved)}});
