@@ -1,5 +1,6 @@
 'use strict';
 const crypto = require('node:crypto');
+const MINIMUM_SCORES = Object.freeze({reliability:90,journalism:85});
 const WEIGHTS = {actuality:20, reliability:25, nationalValue:20, originality:15, journalism:15, diversity:5};
 const normalize = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 function priority(doc) {
@@ -29,8 +30,8 @@ function assess({review, docs, evidenceIssues=[], duplicate=false, copied=false,
  if(evidenceIssues.length) {scores.reliability=0;reasons.push(...evidenceIssues);}
  if(duplicate) {scores.diversity=0;reasons.push('Dubbel onderwerp.');}
  if(copied) {scores.originality=0;reasons.push('Woordelijke overlap met bron.');}
- if(scores.reliability<90) reasons.push('Betrouwbaarheid lager dan 90.');
- if(scores.journalism<85) reasons.push('Journalistieke kwaliteit lager dan 85.');
+ if(scores.reliability<MINIMUM_SCORES.reliability) reasons.push('Betrouwbaarheid lager dan 90.');
+ if(scores.journalism<MINIMUM_SCORES.journalism) reasons.push('Journalistieke kwaliteit lager dan 85.');
  for(const key of Object.keys(WEIGHTS)) if(scores[key]<70) reasons.push(key+' lager dan 70.');
  const score=Math.round(Object.keys(WEIGHTS).reduce((sum,key)=>sum+scores[key]*WEIGHTS[key]/100,0));
  if(score<threshold) reasons.push('Redactiescore lager dan '+threshold+'.');
@@ -112,4 +113,4 @@ async function openQueue({token,branch,fetcher=fetch,isolated=false}) {
  }
  return {queue,save,capacity};
 }
-module.exports={WEIGHTS,priority,assess,EditorialQueue,openQueue};
+module.exports={WEIGHTS,MINIMUM_SCORES,priority,assess,EditorialQueue,openQueue};

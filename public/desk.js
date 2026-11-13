@@ -227,12 +227,17 @@ $('generateDraft').onclick=async()=>{
 
 function approvalCurrent(){return savedRecord?.status==='approved'&&lastSavedSnapshot===JSON.stringify(payload());}
 function upsertOwnRecord(record){ownRecords=[record,...ownRecords.filter(r=>r.id!==record.id)];renderOwnDrafts();}
+function editorialScoreLine(payload) {
+ const scores=[['Redactie',payload.editorialScore],['Journalistiek',payload.journalismScore],['Betrouwbaarheid',payload.reliabilityScore]]
+  .filter(([,value])=>Number.isInteger(value)&&value>=0&&value<=100);
+ return scores.length?'<p class="muted">'+scores.map(([label,value])=>label+' '+value+'/100').join(' · ')+'</p>':'';
+}
 function renderOwnDrafts(){
  $('ownDraftStatus').textContent=ownRecords.length?`${ownRecords.length} eigen artikelen opgeslagen. Volledige tekst, feiten en bronnen blijven bij ieder concept bewaard.`:'Nog geen volledige eigen artikelen opgeslagen. Maak een eigen artikel of herstel een bestaande bewerking en kies Concept opslaan.';
  $('ownDraftQueue').innerHTML=ownRecords.map((r,i)=>{
   const p=r.payload||{},d=p.draft||{};
   const label=r.status==='published'?'Gepubliceerd':r.status==='approved'?(M.factAuditIssues(p).length?'Aanvullende feitencontrole nodig':'Goedgekeurd voor de app'):'Inhoudelijk beoordelen';
-  return `<article class="card"><span class="badge">${esc(label)}</span><h3>${esc(d.headline)}</h3><p>${esc(d.standfirst)}</p><details><summary>Volledige tekst lezen</summary><div class="article-text">${(d.body||[]).map(t=>'<p>'+esc(t)+'</p>').join('')}</div></details>${r.status==='published'?'<p class="muted">Dit artikel is beschikbaar voor de app.</p>':`<button data-own-open="${i}">Lees en beoordeel</button>`}</article>`;
+  return `<article class="card"><span class="badge">${esc(label)}</span><h3>${esc(d.headline)}</h3><p>${esc(d.standfirst)}</p>${editorialScoreLine(p)}<details><summary>Volledige tekst lezen</summary><div class="article-text">${(d.body||[]).map(t=>'<p>'+esc(t)+'</p>').join('')}</div></details>${r.status==='published'?'<p class="muted">Dit artikel is beschikbaar voor de app.</p>':`<button data-own-open="${i}">Lees en beoordeel</button>`}</article>`;
  }).join('');
  document.querySelectorAll('[data-own-open]').forEach(b=>b.onclick=()=>openOwnRecord(ownRecords[Number(b.dataset.ownOpen)]));
 }

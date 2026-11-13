@@ -868,6 +868,17 @@ test('V95 quality review scores become specific bounded revision instructions, n
  assert.equal(feedback.priorities.some(p=>p.includes('verlaag')),false);
  assert.equal(editorialRewriteFeedback({approved:true,scores:{originality:100}}),null);
 });
+test('revision prioritizes a failed journalism minimum over an improvement above the reliability minimum',()=>{
+ const {editorialRewriteFeedback}=require('../scripts/automatic-publication');
+ const feedback=editorialRewriteFeedback({approved:false,score:92,scores:{
+  actuality:95,reliability:94,nationalValue:90,originality:90,journalism:80,diversity:90
+ }},{issues:['De slotalinea herhaalt de inzet.\nGebruik de vorige ontmoeting.']});
+ assert.deepEqual(feedback.focus.map(({dimension,score,minimum,target})=>({dimension,score,minimum,target})),[
+  {dimension:'journalism',score:80,minimum:85,target:90},
+  {dimension:'reliability',score:94,minimum:90,target:95}
+ ]);
+ assert.deepEqual(feedback.findings,['De slotalinea herhaalt de inzet. Gebruik de vorige ontmoeting.']);
+});
 test('V95 rewrite sees quality weaknesses and verified fact plan but never raw source body',async()=>{
  const {reviseDraft,editorialRewriteFeedback}=require('../scripts/automatic-publication');
  let messages;
