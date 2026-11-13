@@ -49,7 +49,12 @@ function jerseySvg(team){
  '<path d="'+outline+'" fill="none" stroke="#f7fff0" stroke-opacity=".42" stroke-width=".9"/>'+
  '<path d="M24 3Q31 14 38 3L42 7Q31 21 20 7Z" fill="#111c17" stroke="#f3f3ed" stroke-width="1.6"/>'+
  '<path d="M0 31L13 36M49 36L62 31" fill="none" stroke="#f3f2ed" stroke-opacity=".35" stroke-width="1.6"/>'+
- '<path d="M17 78Q31 82 45 78" fill="none" stroke="#101b15" stroke-opacity=".4" stroke-width="1.6"/></g></svg>';
+ '<path d="M17 78Q31 82 45 78" fill="none" stroke="#101b15" stroke-opacity=".4" stroke-width="1.6"/>'+
+ '<path d="M8 17L14 30M54 17L48 30" fill="none" stroke="#fff" stroke-opacity=".48" stroke-width="1"/>'+
+ '<path d="M18 78Q31 81 44 78M18 76Q31 79 44 76" fill="none" stroke="#fff" stroke-opacity=".27" stroke-width=".65"/>'+
+ '<path d="M25 5Q31 11 37 5" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width=".9"/>'+
+ '<path d="M22 19Q24 37 20 52M40 19Q38 37 42 52" fill="none" stroke="#fff" stroke-opacity=".11" stroke-width=".8"/>'+
+ '<path d="M3 23Q8 25 13 22M49 22Q54 25 59 23" fill="none" stroke="#000" stroke-opacity=".3" stroke-width=".7"/></g></svg>';
 }
 function shirt(team){
  const key=JSON.stringify([team?.name,team?.colours,team?.color]);
