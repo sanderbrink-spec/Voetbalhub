@@ -144,7 +144,15 @@ class EditorialProviderRouter{
    slot.blockedUntil=this.now()+delay;slot.blockReason=kind;await this.onState(this.state);attempts.push({provider,reason:kind});
   }
   const delays=Object.values(this.state).map(s=>s.blockedUntil-this.now()).filter(n=>n>0);
-  throw new ProviderUnavailable(attempts,Math.ceil((delays.length?Math.min(...delays):3600000)/1000));
+  // Local request/token budgets reset on UTC day change. When all available
+  // providers are exhausted locally, retry after that reset rather than
+  // repeatedly selecting an article every hour without making an AI call.
+  // Do not shorten a real server Retry-After or raise any provider budget.
+  const solelyLocalCapacity=attempts.length>0&&attempts.every(a=>a.reason==='capacity');
+  const midnight=Date.parse(new Date(this.now()).toISOString().slice(0,10)+'T00:00:00Z')+86400000;
+  const localResetDelay=Math.max(1000,midnight+1000-this.now());
+  const delay=delays.length?Math.min(...delays):solelyLocalCapacity?localResetDelay:3600000;
+  throw new ProviderUnavailable(attempts,Math.ceil(delay/1000));
  }
 }
 function createRouter({env=process.env,...options}={}){return new EditorialProviderRouter({groqKey:env.GROQ_API_KEY,openaiKey:env.OPENAI_API_KEY,openaiModel:env.OPENAI_MODEL,geminiKey:env.GEMINI_API_KEY||env.GOOGLE_API_KEY,openrouterKey:env.OPENROUTER_API_KEY,geminiFreeTierConfirmed:env.GEMINI_FREE_TIER_CONFIRMED==='true',...options});}
