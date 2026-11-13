@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
-const {polishParagraph,candidate,apply}=require('../editorial-match-copyedit96');
+const {polishParagraph,candidate,reviewReason,apply}=require('../editorial-match-copyedit96');
 const {matchSourceStyleIssues}=require('../editorial-desk-model');
 const facts=[
  'FC Utrecht – NEC Nijmegen eindigde in 2-3.',
@@ -53,6 +53,11 @@ test('unknown or factual supplier claims are never stripped or republished',()=>
  a.body=article().body;a.verifiedFacts=[];
  assert.equal(candidate(a),null);
  assert.equal(candidate({...article(),articleKind:'announcement'}),null);
+});
+test('review reason exposes only validation category without article contents',()=>{
+ const item=article();item.verifiedFacts=[];
+ assert.equal(reviewReason(item),'insufficient_verified_facts');
+ assert.equal(reviewReason(article()),'ready');
 });
 test('each changed article gets an atomic original archive, no blanket update and no repetition',async()=>{
  const a=article();const key='article:'+a.id;let current=JSON.stringify(a),archived=null,writes=0;
