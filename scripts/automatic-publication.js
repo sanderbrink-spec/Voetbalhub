@@ -1345,6 +1345,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   report.status='discovery_complete';
   return report;
  }
+ if(sportmonksOnly&&scheduled.length===0){
+  // An empty verified match pool is not a failed generation attempt.
+  // Do not spend provider budget on unrelated queued club news.
+  report.signals.push({route:'match',outcome:'no_recent_verified_sportmonks_matches',requested:10});
+  report.status='no_new_verified_articles';
+  return report;
+ }
  const router=providerRouter||createRouter({groqKey,fetcher,state:durable.capacity,
   intervalMs:groqIntervalMs??35000,onState:()=>durable.save(),onAttempt:()=>report.counts.aiRequests++});
  report.providers=router.configured();report.providerTrace=router.trace;
