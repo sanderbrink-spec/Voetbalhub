@@ -16,6 +16,7 @@ on:
       - 'scripts/automatic-publication.js'
       - 'editorial-ai.js'
       - 'editorial-provider-router.js'
+      - 'test/editorial-provider-router.test.js'
       - 'editorial-overlap-repair.js'
       - 'scripts/render-editorial-cover.py'
       - 'scripts/refresh-automatic-covers.js'
