@@ -408,3 +408,33 @@ body.predictions86 .pred-choices86 #fixtureSelector .match50:focus-visible{
   width:35px!important;height:48px!important;
  }
 }
+
+
+/* Veldio 94: load actual per-club premium image assets, not the old flat jersey SVG.
+   Authentic Veldio brand image is displayed on the viewer's left chest. */
+.club-shirt90.premium-kit-loaded{
+ position:relative!important;display:inline-block!important;
+ flex-shrink:0;overflow:visible!important;background:transparent!important;
+ filter:drop-shadow(0 5px 3px #0009) drop-shadow(0 0 2px #a8ff3540)!important;
+}
+.club-shirt90.premium-kit-loaded .premium-kit-art{
+ display:block!important;width:100%!important;height:100%!important;
+ object-fit:contain;position:absolute;inset:0;pointer-events:none;
+}
+.club-shirt90.premium-kit-loaded .premium-kit-badge{
+ display:block!important;position:absolute;z-index:2;pointer-events:none;
+ width:15%!important;height:auto!important;aspect-ratio:1;
+ left:34%;top:25%;object-fit:contain;border-radius:35%;
+ box-shadow:0 0 2px #0009;
+}
+body[data-section="fixtures"] .fixture-expand88>summary.match50 .club-shirt90.premium-kit-loaded,
+body.predictions86 .pred-choices86 #fixtureSelector .match50 .club-shirt90.premium-kit-loaded{
+ width:53px!important;height:71px!important;
+}
+@media(max-width:389px){
+ body[data-section="fixtures"] .fixture-expand88>summary.match50 .club-shirt90.premium-kit-loaded,
+ body.predictions86 .pred-choices86 #fixtureSelector .match50 .club-shirt90.premium-kit-loaded{
+  width:36px!important;height:49px!important;
+ }
+ .club-shirt90.premium-kit-loaded .premium-kit-badge{width:18%!important}
+}
