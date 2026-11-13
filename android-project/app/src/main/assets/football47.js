@@ -38,11 +38,13 @@ function jerseySvg(team){
  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 0 64 84" aria-hidden="true" focusable="false">'+
  '<defs><clipPath id="'+id+'c"><path d="'+outline+'"/></clipPath>'+
  '<linearGradient id="'+id+'l" x1="0" x2="1"><stop stop-color="#ffffff" stop-opacity=".22"/><stop offset=".18" stop-color="#ffffff" stop-opacity=".08"/><stop offset=".50" stop-color="#000" stop-opacity=".14"/><stop offset=".78" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></linearGradient>'+
- '<linearGradient id="'+id+'v" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".18"/><stop offset=".45" stop-color="#000" stop-opacity=".04"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient>'+
+ '<linearGradient id="'+id+'v" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".34"/><stop offset=".28" stop-color="#fff" stop-opacity=".08"/><stop offset=".60" stop-color="#000" stop-opacity=".02"/><stop offset="1" stop-color="#000" stop-opacity=".36"/></linearGradient>'+
  '<filter id="'+id+'s" x="-25%" y="-20%" width="150%" height="150%"><feDropShadow dx="0" dy="3" stdDeviation="2.1" flood-color="#000" flood-opacity=".67"/></filter></defs>'+
  '<g filter="url(#'+id+'s)"><g clip-path="url(#'+id+'c)"><path d="'+outline+'" fill="'+base+'"/>'+paint+
  '<path d="M10 14Q18 27 18 40L16 70M52 14Q44 27 44 40L46 70" fill="none" stroke="#000" stroke-opacity=".17" stroke-width="2"/>'+
  '<path d="M22 16Q20 43 25 72M40 16Q42 43 37 72" fill="none" stroke="#fff" stroke-opacity=".13" stroke-width="2"/>'+
+ '<path d="M16 21L26 32L31 27L36 32L46 21M17 39L27 50L31 46L35 50L45 39M19 57L27 65L31 62L35 65L43 57" fill="none" stroke="#fff" stroke-opacity=".105" stroke-width=".85"/>'+ 
+ '<path d="M19 13Q31 18 43 13M18 76Q31 80 44 76" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width=".8"/>'+
  '<path d="'+outline+'" fill="url(#'+id+'l)"/><path d="'+outline+'" fill="url(#'+id+'v)"/></g>'+
  '<path d="'+outline+'" fill="none" stroke="#f7fff0" stroke-opacity=".42" stroke-width=".9"/>'+
  '<path d="M24 3Q31 14 38 3L42 7Q31 21 20 7Z" fill="#111c17" stroke="#f3f3ed" stroke-width="1.6"/>'+
