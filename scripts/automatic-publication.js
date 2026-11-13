@@ -1772,6 +1772,8 @@ async function run(options={}){
     'Verificatie: '+uniqueGroups+' groepen, '+queued+' klaar, '+attempted+' geprobeerd, '+selected+' geselecteerd.',
     'Artikelen: '+generated+' geschreven, '+approved+' goedgekeurd, '+stored+' opgeslagen, '+published+' gepubliceerd uit '+report.counts.publicationAttempts+' publicatiepogingen, '+report.skipped.length+' afgewezen.',
     'Per route: '+JSON.stringify(report.routes),
+    'Bronstatus per koppeling: '+JSON.stringify(report.sources),
+    'Bronfouten per koppeling: '+JSON.stringify(report.sourceErrors.map(({source,url,error,code})=>({source:source||url,error,code}))),
     ...report.validated.map(item=>'- Gevalideerd: '+item.article.headline+' · redactie '+item.score+'/100 · journalistiek '+item.scores.journalism+'/100 · betrouwbaarheid '+item.scores.reliability+'/100'),
     ...report.published.map(item=>'- Openbaar gecontroleerd: '+item.headline+' · redactie '+item.score+'/100 · journalistiek '+item.journalism+'/100 · betrouwbaarheid '+item.reliability+'/100 · '+item.url),
     ...report.assessments.filter(item=>item.scores).map(item=>'- Beoordeling '+item.topic+' (versie '+(item.revision+1)+'): journalistiek '+item.scores.journalism+'/100 · betrouwbaarheid '+item.scores.reliability+'/100 · redactie '+item.score+'/100'+(item.change?' · verschil journalistiek '+(item.change.journalism>=0?'+':'')+item.change.journalism:'')+(item.findings.length?' · '+item.findings.join(' / '):'')),
