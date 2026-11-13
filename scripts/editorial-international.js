@@ -2,6 +2,7 @@
 
 const ORANJE='https://www.onsoranje.nl/teams/185184/programma';
 const UEFA='https://www.uefa.com/uefanationsleague/teams/95/matches/';
+const UEFA_RESULTS='https://www.uefa.com/uefanationsleague/news/02a2-1fea7079900a-801b2c5f6c9e-1000--2026-27-uefa-nations-league-league-phase-fixtures-and-results-by-team/';
 const amsterdam=new Intl.DateTimeFormat('sv-SE',{
  timeZone:'Europe/Amsterdam',dateStyle:'short',timeStyle:'short'
 });
@@ -88,4 +89,31 @@ function enrichPreview(group,detail,plain){
  for(const text of facts)candidate.facts.push({text,evidence:[{source:0,quote:text}]});
  group[0].text+=' '+facts.join(' ');
 }
-module.exports={ORANJE,UEFA,confirmedPreviews,enrichPreview};
+function enrichPreviewResults(group, results, plain){
+ const candidate=group.internationalPreview;
+ const opponent=candidate.teams.find(team=>team!=='Nederland');
+ if(!opponent)return;
+ const section=results.html.match(/<h3[^>]*>\s*(?:<b>)?Netherlands \(A[1-4]\)(?:<\/b>)?\s*<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/i)?.[1]||'';
+ const records=[...section.matchAll(/<a href="(https:\/\/www\.uefa\.com\/uefanationsleague\/match\/\d+--([a-z0-9-]+)\/)"[^>]*>([^<]+)<\/a>/g)];
+ const fixtureIndex=records.findIndex(([,url])=>url===group[1].url);
+ if(fixtureIndex<0)return;
+ const english=teamSlug(opponent);
+ const previous=records.slice(0,fixtureIndex).reverse().find(([, , slug,label])=>
+  [english+'-vs-netherlands','netherlands-vs-'+english].includes(slug)&&/\b\d{1,2}-\d{1,2}\b/.test(label));
+ if(!previous)return;
+ const [,url,slug,label]=previous;
+ const score=label.match(/\b\d{1,2}-\d{1,2}\b/)[0];
+ const teams=slug.startsWith('netherlands-')?['Nederland',opponent]:[opponent,'Nederland'];
+ const text='Eerdere ontmoeting in de Nations League: '+teams[0]+' '+score+' '+teams[1]+'.';
+ // The official results list links the score to this exact, completed fixture.
+ const quote='UEFA Nations League, Netherlands: '+plain(label);
+ const source=group.length;
+ group.push({url,title:plain(label),text:quote,publishedAt:''});
+ candidate.facts.push({text,evidence:[{source,quote}]});
+ if(fixtureIndex===records.length-1){
+  const closing='Dit is de laatste groepswedstrijd van Nederland in deze Nations League.';
+  group[1].text+=' '+closing;
+  candidate.facts.push({text:closing,evidence:[{source:1,quote:closing}]});
+ }
+}
+module.exports={ORANJE,UEFA,UEFA_RESULTS,confirmedPreviews,enrichPreview,enrichPreviewResults};

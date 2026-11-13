@@ -44,12 +44,14 @@
     !payload.transferStatus && payload.verifiedFacts?.length >= 1 && payload.verifiedFacts.length <= 3;
   const compactStructure = 'body (1-2 inhoudelijke alinea’s, elk 10-65 woorden)';
   const standardStructure = 'body (3-5 alinea’s, elk 18-120 woorden en minimaal 70 tekens)';
-  function draftIssues(d = {}, compact = false) {
+  function draftIssues(d = {}, compact = false, preview = false) {
     const issues = [];
     const body = Array.isArray(d.body) ? d.body.filter(p => typeof p === 'string' && p.trim()).map(p => p.trim()) : [];
     if (words(d.headline) < 5 || words(d.headline) > 14) issues.push('Kop: 5 tot 14 woorden.');
     if (words(d.standfirst) < 8 || words(d.standfirst) > 35) issues.push('Intro: 8 tot 35 woorden.');
-    if (compact ? body.length < 1 || body.length > 2 || body.some(p => words(p) < 10 || words(p) > 65) : body.length < 3 || body.length > 5 || body.some(p => p.length < 70 || words(p) < 18 || words(p) > 120)) issues.push(compact ? 'Compacte tekst: één of twee korte inhoudelijke alinea’s.' : 'Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.');
+    if (preview) {
+      if (body.length < 1 || body.length > 3 || body.some(p => words(p) < 10 || words(p) > 120)) issues.push('Voorbeschouwing: één tot drie inhoudelijke alinea’s van 10 tot 120 woorden.');
+    } else if (compact ? body.length < 1 || body.length > 2 || body.some(p => words(p) < 10 || words(p) > 65) : body.length < 3 || body.length > 5 || body.some(p => p.length < 70 || words(p) < 18 || words(p) > 120)) issues.push(compact ? 'Compacte tekst: één of twee korte inhoudelijke alinea’s.' : 'Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.');
     const normalize = value => String(value || '').toLowerCase().normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
     const blocks = [d.standfirst, ...body].map(normalize).filter(Boolean);
@@ -82,6 +84,23 @@
       ? ['Wedstrijdverslag bevat bron- of leveranciersverantwoording in de lopende tekst. Schrijf de gebeurtenis direct, zonder Sportmonks, API, wedstrijdregistratie of verificatieclaims; behoud brongegevens afzonderlijk.']
       : [];
   }
+  const storyStyle = 'Schrijf direct en natuurlijk Nederlands voetbalnieuws. Kies één bewezen invalshoek voor kop en intro. Laat iedere alinea daarop voortbouwen met nieuw bewijs. Vermijd herhaling en opvulling. Sla over als een onderbouwde invalshoek ontbreekt.';
+  const previewStyle = 'Een voorbeschouwing begint bij de aantoonbare inzet, de vorige ontmoeting of concreet selectienieuws. Datum, aftrap, stadion, groepsletter en het volgende duel zijn praktische informatie. Bouw daar geen losse alinea’s omheen. Geef skip als uitsluitend die praktische gegevens bekend zijn.';
+  const previewStructure = 'body (1-3 inhoudelijke alinea’s, elk 10-120 woorden)';
+  function storyIssues(payload) {
+    const draft = payload.draft || {};
+    const body = Array.isArray(draft.body) ? draft.body : [];
+    const filler = /\b(?:dit stadion is de offici[eë]le locatie|waarin verschillende europese landen strijden om de groepswinst|strijden in deze groep om de beste positie in het toernooi)\b/i;
+    const issues = [];
+    if ([draft.headline, draft.standfirst, ...body].some(block => filler.test(String(block || '')))) {
+      issues.push('Schrap opvultekst over de locatie of competitie. Voeg een concreet detail toe dat de invalshoek versterkt.');
+    }
+    if (payload.articleKind === 'preview' && !(Array.isArray(payload.verifiedFacts) ? payload.verifiedFacts : []).some(fact =>
+      typeof fact === 'string' && !/^(?:.+ staat op \d{4}-|.+ speelt thuis tegen |de wedstrijd wordt gespeeld in |.+ is een wedstrijd in |de offici[eë]le speelstad |het duel hoort bij groep |het andere geplande groepsduel |dit is de laatste groepswedstrijd )/i.test(fact))) {
+      issues.push('Voorbeschouwing mist bevestigde sportieve context, zoals de vorige ontmoeting, de inzet of selectienieuws.');
+    }
+    return issues;
+  }
   function publicationIssues(payload) {
     const issues = [], d = payload.draft || {};
     const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+|sm-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
@@ -91,7 +110,8 @@
     // Bare results and half-time-only updates retain the compact standard.
     const richMatch = registeredMatch && payload.articleKind === 'match_report' &&
       (Boolean(payload.matchEvidence) || (payload.verifiedFacts || []).length >= 5);
-    issues.push(...draftIssues(d, (registeredMatch && !richMatch) || brief));
+    issues.push(...draftIssues(d, (registeredMatch && !richMatch) || brief, payload.articleKind === 'preview'));
+    issues.push(...storyIssues(payload));
     issues.push(...matchSourceStyleIssues(payload));
     issues.push(...factAudit.audit(payload));
     if (!Array.isArray(payload.verifiedFacts) || payload.verifiedFacts.filter(x => typeof x === 'string' && x.trim()).length < (brief ? 1 : 2)) issues.push(brief ? 'Vul het gecontroleerde besluit in.' : 'Vul twee zelf gecontroleerde feiten in.');
@@ -115,7 +135,7 @@
     const matchSource = registeredMatch && matchRegistry.includes(sources[0]?.url) &&
       (sources.length === 1 || officialMatchEvidence);
     if (!primary && !matchSource && (sources.length < 2 || hosts.some(h => !h) || new Set(hosts.filter(Boolean)).size < 2)) issues.push('Voeg twee geldige HTTPS-bronnen van verschillende websites toe.');
-    if (!matchSource && requiresFlashscore(d) && !officialDisciplinaryCardNotice(payload) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
+    if (!matchSource && !factAudit.hasOfficialPreviewResult(payload) && requiresFlashscore(d) && !officialDisciplinaryCardNotice(payload) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
     const missing = checks.filter(key => payload.editorialChecks?.[key] !== true);
     if (missing.length) issues.push('Rond alle vier redactionele controles af.');
     if (payload.imageUrl && (!host(payload.imageUrl) || !payload.imageSource?.trim() || !payload.imageCredit?.trim() || !['cleared','licensed'].includes(payload.imageRights) || !['kitVerified','playerIdentityVerified','aiDisclosureVerified'].every(k => payload.imageReview?.[k] === true))) issues.push('Rond de beeldgegevens en alle drie beeldcontroles af.');
@@ -152,5 +172,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { storyStyle, previewStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

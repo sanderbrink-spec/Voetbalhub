@@ -126,6 +126,11 @@
   }
   return [...new Set(issues)];
  }
+ function hasOfficialPreviewResult(payload){
+  return payload.articleKind==='preview' &&
+   Array.isArray(payload.verifiedFacts) && payload.verifiedFacts.some(fact=>/^Eerdere ontmoeting in de Nations League:/i.test(fact) && scores(fact).length===1) &&
+   Array.isArray(payload.sources) && new Set(payload.sources.filter(source=>/^https:\/\/www\.uefa\.com\/uefanationsleague\/match\/\d+--[a-z0-9-]+\/$/.test(source?.url)).map(source=>source.url)).size>=2;
+ }
  function audit(payload){
   const draft=payload.draft||{},match=payload.match||null;
   const publisher=payload.sources?.[0]?.url==='https://www.sportmonks.com/football-api/'?'Sportmonks Football API':
@@ -134,13 +139,13 @@
    payload.articleKind==='announcement'&&['club_decision','association_decision'].includes(payload.primaryAuthority)&&payload.sources?.length===1?
     payload.sources[0].url:'';
   const issues=evidenceIssues(draft,payload.verifiedFacts||[],match,publisher);
-  if(needsMatch(draft)||match){
+  if(match||(needsMatch(draft)&&!hasOfficialPreviewResult(payload))){
    if(!match||!String(match.homeTeam||'').trim()||!String(match.awayTeam||'').trim()||normalize(match.homeTeam)===normalize(match.awayTeam)||![match.homeScore,match.awayScore].every(x=>Number.isInteger(x)&&x>=0&&x<=99)||!validDate(match.playedAt))
     issues.push('Wedstrijdverslag: leg thuisploeg, uitploeg, eindstand thuis-uit en wedstrijddatum vast.');
    for(const [key,label] of [['resultVerified','eindstand en thuis-uit'],['namesVerified','namen en clubs'],['dateVerified','datum en weekdag'],['timelineVerified','wedstrijdverloop en doelpuntenmakers']])if(payload.factChecks?.[key]!==true)issues.push('Feitencontrole ontbreekt: '+label+'.');
   }
   return [...new Set(issues)];
  }
- return {audit,evidenceIssues,needsMatch,officialPublisherName};
+ return {audit,evidenceIssues,needsMatch,hasOfficialPreviewResult,officialPublisherName};
 });
 

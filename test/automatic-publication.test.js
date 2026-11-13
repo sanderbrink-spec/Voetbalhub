@@ -1250,6 +1250,36 @@ test('OnsOranje fixtures enter the editorial route only when UEFA confirms the k
  assert.deepEqual(confirmedPreviews(oranje,uefa,plain,Date.parse('2026-11-13T19:45:00Z'),7),[]);
 });
 
+test('a calendar item cannot pass as a preview until official football context is available',()=>{
+ const {enrichPreviewResults}=require('../scripts/editorial-international');
+ const model=require('../editorial-desk-model');
+ const scheduled='https://www.uefa.com/uefanationsleague/match/456--netherlands-vs-greece/';
+ const historical='https://www.uefa.com/uefanationsleague/match/123--greece-vs-netherlands/';
+ const group=[{url:'https://www.onsoranje.nl/teams/185184/programma/wedstrijd/123',text:''},{url:scheduled,text:''}];
+ group.internationalPreview={teams:['Nederland','Griekenland'],facts:[
+  {text:'Nederland - Griekenland staat op 2026-11-13 om 20:45 Nederlandse tijd op het programma.'},
+  {text:'De wedstrijd wordt gespeeld in de Johan Cruijff ArenA.'},
+  {text:'Het duel hoort bij groep A2 van de UEFA Nations League.'}
+ ]};
+ const payload=()=>({articleKind:'preview',verifiedFacts:group.internationalPreview.facts.map(f=>f.text),sources:group});
+ assert.match(model.storyIssues(payload()).join(' '),/mist bevestigde sportieve context/);
+ enrichPreviewResults(group,{html:
+  '<h3><b>Netherlands (A2)</b></h3><p><a href="'+historical+'">Greece 2-2 Netherlands</a>'+
+  '<br/><a href="'+scheduled+'">Netherlands vs Greece</a></p>'},plain);
+ assert.deepEqual(model.storyIssues(payload()),[]);
+ const facts=require('../editorial-facts');
+ assert.equal(facts.hasOfficialPreviewResult(payload()),true);
+ assert.equal(facts.hasOfficialPreviewResult({...payload(),sources:[group[1],group[1]]}),false);
+ const draft={headline:'Oranje treft Griekenland opnieuw na gelijkspel',standfirst:'Nederland treft Griekenland op 13 november opnieuw in de Nations League.',body:[
+  'De vorige ontmoeting tussen Griekenland en Nederland eindigde in 2-2.'
+ ]};
+ assert.deepEqual(model.draftIssues(draft,false,true),[]);
+ assert.deepEqual(facts.audit({...payload(),draft}),[]);
+ assert.match(facts.audit({...payload(),draft:{...draft,body:[draft.body[0].replace('2-2','1-1')]}}).join(' '),/wijkt af/);
+ const filler={...draft,body:['Dit stadion is de officiële locatie voor deze ontmoeting.']};
+ assert.match(model.storyIssues({...payload(),draft:filler}).join(' '),/opvultekst/);
+});
+
 test('PSV and US Soccer match an international injury through the same named player',()=>{
  const {nationallyRelevant,partnerDocuments}=require('../scripts/automatic-publication');
  const psv={url:'https://www.psv.nl/media/artikel/dest',title:'PSV - Dest keert terug',
