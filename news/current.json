@@ -1,6 +1,6 @@
 {
   "rightsPolicyVersion": 26,
-  "rightsExpiresAt": 1794508509978,
+  "rightsExpiresAt": 1794701898385,
   "count": 15,
   "articles": [
     {
@@ -10,12 +10,12 @@
       "imageCategory": "report",
       "status": "published",
       "author": "Veldio Redactie",
-      "headline": "NEC Nijmegen wint met 2-3 van FC Utrecht in Eredivisie",
-      "standfirst": "In speelronde 12 van de Eredivisie versloeg NEC Nijmegen op 8 november 2026 FC Utrecht met 2-3. De ruststand was 0-2 in het voordeel van NEC.",
+      "headline": "Tadic schiet NEC met twee treffers langs Utrecht",
+      "standfirst": "FC Utrecht vond na rust twee keer aansluiting tegen NEC, maar de Nijmegenaren wonnen zondag in Stadion Galgenwaard met 2-3.",
       "body": [
-        "De Eredivisie-wedstrijd tussen FC Utrecht en NEC Nijmegen vond plaats op 8 november 2026 en maakte deel uit van speelronde 12. Bij rust stond NEC Nijmegen met 0-2 voor tegen FC Utrecht, een voorsprong die zij hadden opgebouwd zonder dat FC Utrecht tot scoren was gekomen. Dit blijkt uit de officiële wedstrijdregistratie van Sportmonks.",
-        "In de eerste helft opende Kevin Kers de score voor NEC Nijmegen in de 34e minuut, gevolgd door een doelpunt van Dusan Tadic in de 38e minuut, waarmee NEC Nijmegen de ruststand op 0-2 bracht. Beide doelpunten werden bevestigd door de Sportmonks-wedstrijdregistratie en gekoppeld aan de genoemde spelers.",
-        "Na de rust wist FC Utrecht via Yoann Cathline in de 56e minuut de 1-2 te maken. Kort daarna, in de 58e minuut, vergrootte Dusan Tadic de voorsprong van NEC Nijmegen opnieuw tot 1-3. FC Utrecht kwam nog terug tot 2-3 door een doelpunt van Dani de Wit in de 64e minuut. Deze doelpunten zijn geregistreerd volgens de Sportmonks-wedstrijdregistratie."
+        "Kevin Kers kopte NEC in de 34e minuut op voorsprong uit een voorzet van Mitchel Bakker. In de 38e minuut schoot Dusan Tadic van buiten het strafschopgebied de 0-2 binnen. Met die stand gingen beide ploegen de rust in.",
+        "Na rust tekende Yoann Cathline in de 56e minuut voor de 1-2 na een breedtepass van Ángel Alarcón. Tadic maakte in de 58e minuut zijn tweede treffer en bracht NEC op 1-3. De ingevallen Nordin Amrabat vond daarna met een voorzet Dani de Wit, die in de 64e minuut de 2-3 binnenkopte.",
+        "Utrecht bleef op zoek naar de gelijkmaker. De Wit kreeg in de slotfase opnieuw een kans, maar schoot van dichtbij naast. Aan de andere kant hield Vasilios Barkas in de blessuretijd Jamiro Monteiro van scoren af."
       ],
       "why_it_matters": "",
       "category": "Eredivisie",
@@ -35,11 +35,27 @@
         "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 38 een doelpunt van Dusan Tadic, waarna de stand 0-2 was. De Sportmonks-participantregistratie koppelt Dusan Tadic als doelpuntenmaker aan NEC Nijmegen.",
         "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 56 een doelpunt van Yoann Cathline, waarna de stand 1-2 was. De Sportmonks-participantregistratie koppelt Yoann Cathline als doelpuntenmaker aan FC Utrecht.",
         "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 58 een doelpunt van Dusan Tadic, waarna de stand 1-3 was. De Sportmonks-participantregistratie koppelt Dusan Tadic als doelpuntenmaker aan NEC Nijmegen.",
-        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 64 een doelpunt van Dani de Wit, waarna de stand 2-3 was. De Sportmonks-participantregistratie koppelt Dani de Wit als doelpuntenmaker aan FC Utrecht."
+        "Volgens de Sportmonks-wedstrijdregistratie viel in minuut 64 een doelpunt van Dani de Wit, waarna de stand 2-3 was. De Sportmonks-participantregistratie koppelt Dani de Wit als doelpuntenmaker aan FC Utrecht.",
+        "De wedstrijd werd zondag 8 november 2026 gespeeld in Stadion Galgenwaard.",
+        "Kevin Kers kopte de voorzet van Mitchel Bakker binnen. Dusan Tadic schoot bij de 0-2 van buiten het strafschopgebied raak.",
+        "Na rust legde Ángel Alarcón de bal breed voor de aansluitingstreffer van Yoann Cathline.",
+        "Invaller Nordin Amrabat gaf de voorzet waaruit Dani de Wit de 2-3 binnenkopte.",
+        "FC Utrecht zocht in de slotfase de gelijkmaker. In de slotfase schoot Dani de Wit vanuit het doelgebied naast.",
+        "Vasilios Barkas redde in de blessuretijd op een poging van Jamiro Monteiro.",
+        "Geel voor Nordin Amrabat en Yoann Cathline bij FC Utrecht en Bryan Linssen, Clement Bischoff en Willum Willumsson bij NEC. Geen rode kaarten."
       ],
       "sources": [
         {
           "url": "https://www.sportmonks.com/football-api/"
+        },
+        {
+          "url": "https://www.fcutrecht.nl/nieuws/2026/november/fc-utrecht-lijdt-onnodige-nederlaag-tegen-nec/"
+        },
+        {
+          "url": "https://www-nec.gxcloud.net/wedstrijden/wedstrijd/matchcenter-fc-utrecht-n.e.c.-8-11-2026.htm"
+        },
+        {
+          "url": "https://www.fcupdate.nl/voetbalcompetities/nederland/eredivisie/programma-uitslagen/2026-2027/fc-utrecht-nec-08-11/live-verslag"
         }
       ],
       "editorialChecks": {
@@ -48,9 +64,98 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art72/utrecht-nec-report.webp",
+      "imageSource": "Veldio · illustratie",
+      "imageCredit": "Veldio",
       "imageRights": "cleared",
+      "imageReview": {
+        "method": "approved-library49",
+        "mode": "approved-library",
+        "pipelineVersion": 49,
+        "assetSha256": "b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e",
+        "kitVerified": true,
+        "playerIdentityVerified": true,
+        "aiDisclosureVerified": true,
+        "clubs": [
+          "FC Utrecht",
+          "NEC Nijmegen"
+        ],
+        "imageKind": "report",
+        "stadiumOccupancy": "full",
+        "stadiumIdentity": "home:fcutrecht",
+        "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a",
+        "generated": true,
+        "qualityTier": "reviewed-fixture",
+        "visualQualityScore": 8.7,
+        "visualQualityStatus": "premium-reviewed",
+        "fixtureId": "sm-19714594",
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true
+      },
       "autoPublish": false,
-      "imageQualityStatus": "awaiting-premium-replacement",
+      "updatedAt": "2026-11-13T09:29:16.502Z",
+      "correctionNote": "Wedstrijdverslag herzien na vergelijking met de wedstrijdgegevens en openbare wedstrijdbronnen.",
+      "editorialCopyeditVersion": "96",
+      "imageAssetId": "veldio72-utrecht-nec-report",
+      "imageCaption": "Veldio · originele AI-illustratie bij FC Utrecht – NEC Nijmegen. Geen foto van deze wedstrijd of exacte documentaire afbeelding van Stadion Galgenwaard.",
+      "imageVariants": [
+        {
+          "id": "veldio72-utrecht-nec-report",
+          "url": "https://voetbalhub-redactie.onrender.com/article-art72/utrecht-nec-report.webp",
+          "caption": "Veldio · originele AI-illustratie bij FC Utrecht – NEC Nijmegen. Geen foto van deze wedstrijd of exacte documentaire afbeelding van Stadion Galgenwaard.",
+          "credit": "Veldio",
+          "source": "Veldio · illustratie",
+          "rights": "cleared",
+          "review": {
+            "method": "approved-library49",
+            "mode": "approved-library",
+            "pipelineVersion": 49,
+            "assetSha256": "b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e",
+            "kitVerified": true,
+            "playerIdentityVerified": true,
+            "aiDisclosureVerified": true,
+            "clubs": [
+              "FC Utrecht",
+              "NEC Nijmegen"
+            ],
+            "imageKind": "report",
+            "stadiumOccupancy": "full",
+            "stadiumIdentity": "home:fcutrecht",
+            "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a",
+            "generated": true,
+            "qualityTier": "reviewed-fixture",
+            "visualQualityScore": 8.7,
+            "visualQualityStatus": "premium-reviewed",
+            "fixtureId": "sm-19714594",
+            "noOfficialLogos": true,
+            "noRecognizablePeople": true,
+            "noDocumentaryClaim": true
+          }
+        }
+      ],
+      "imageRotation": {
+        "method": "approved-article-v69",
+        "count": 1,
+        "maximum": 6,
+        "selectedId": "veldio72-utrecht-nec-report",
+        "context": {
+          "category": "report",
+          "clubs": [
+            "FC Utrecht",
+            "NEC Nijmegen"
+          ],
+          "fixtureId": "sm-19714594",
+          "competition": "Eredivisie",
+          "daypart": "neutral",
+          "venueName": "",
+          "imageKind": "report",
+          "stadiumOccupancy": "full",
+          "stadiumIdentity": "home:fcutrecht",
+          "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a"
+        },
+        "reason": "ordered-fixture"
+      },
       "feedState": "current"
     },
     {
@@ -62,7 +167,7 @@
       "headline": "Meerdink voltooit ommekeer van AZ tegen negen Groningers",
       "standfirst": "AZ boog tegen FC Groningen een 1-3-achterstand om in een 4-3-zege. Mexx Meerdink benutte de beslissende strafschop nadat doelman Etienne Vaessen zijn tweede gele kaart had gekregen.",
       "body": [
-        "Jacob Ondrejka kopte Groningen in de tweede minuut op voorsprong. Volgens de Sportmonks-wedstrijdregistratie maakte Mexx Meerdink in de negende minuut gelijk. Met 1-1 gingen de ploegen rusten.",
+        "Jacob Ondrejka kopte Groningen in de tweede minuut op voorsprong. Mexx Meerdink maakte in de negende minuut gelijk. Met 1-1 gingen de ploegen rusten.",
         "Na rust scoorde Brynjólfur Willumsson in de 47e minuut. Thom van Bergen profiteerde in de 54e minuut van een fout van doelman Jari De Busser en maakte er 1-3 van. AZ kreeg na een VAR-beoordeling een strafschop, maar Meerdink schoot over. Ayoub Oufkir bracht AZ in de 61e minuut terug tot 2-3. Mateo Chávez maakte in de 76e minuut gelijk.",
         "Vaessen haalde Oufkir in het strafschopgebied neer. Hij kreeg geel voor de overtreding en daarna zijn tweede gele kaart toen hij bij scheidsrechter Jannick van der Laan bleef protesteren. Ploeggenoten hielden Vaessen bij de arbiter weg. Meerdink schoot de strafschop in de eerste minuut van de blessuretijd binnen.",
         "In de blessuretijd kreeg ook Hans Hateboer een directe rode kaart wegens hands. FC Groningen speelde het restant met negen man uit. De KNVB bevestigde dat beide spelers één wedstrijd moesten missen."
@@ -149,8 +254,9 @@
         "noDocumentaryClaim": true
       },
       "autoPublish": false,
-      "updatedAt": "2026-11-10T17:32:34.546Z",
-      "correctionNote": "Wedstrijdverslag herzien na vergelijking met Sportmonks en openbare wedstrijdbronnen.",
+      "updatedAt": "2026-11-13T08:49:00.953Z",
+      "correctionNote": "Redactionele tekstcorrectie: technische bronverwijzingen uit het wedstrijdverslag verwijderd; oorspronkelijke versie gearchiveerd.",
+      "editorialCopyeditVersion": "96",
       "imageAssetId": "veldio71-az-groningen-report",
       "imageCaption": "Veldio · AI-illustratie bij AZ – FC Groningen. Geen foto van de wedstrijd of gebeurtenis.",
       "imageVariants": [
@@ -201,6 +307,7 @@
           "fixtureId": "sm-19714593",
           "competition": "Eredivisie",
           "daypart": "twilight",
+          "venueName": "",
           "imageKind": "report",
           "stadiumOccupancy": "full",
           "stadiumIdentity": "home:az",
@@ -354,6 +461,7 @@
           "fixtureId": "sm-19714595",
           "competition": "Eredivisie",
           "daypart": "day",
+          "venueName": "",
           "imageKind": "report",
           "stadiumOccupancy": "full",
           "stadiumIdentity": "home:fctwente",
@@ -497,6 +605,7 @@
           "fixtureId": "sm-19714597",
           "competition": "Eredivisie",
           "daypart": "night",
+          "venueName": "",
           "imageKind": "report",
           "stadiumOccupancy": "full",
           "stadiumIdentity": "home:adodenhaag",
@@ -647,6 +756,7 @@
           "fixtureId": "sm-19714596",
           "competition": "Eredivisie",
           "daypart": "day",
+          "venueName": "",
           "imageKind": "report",
           "stadiumOccupancy": "full",
           "stadiumIdentity": "home:scheerenveen",
@@ -844,7 +954,8 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "De Derde Helft",
-          "daypart": "neutral"
+          "daypart": "neutral",
+          "venueName": ""
         },
         "reason": "exact-topic"
       },
@@ -962,7 +1073,8 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "FC Groningen",
-          "daypart": "neutral"
+          "daypart": "neutral",
+          "venueName": ""
         },
         "reason": "exact-topic"
       },
@@ -1093,6 +1205,7 @@
           "fixtureId": "",
           "competition": "Eredivisie",
           "daypart": "neutral",
+          "venueName": "",
           "imageKind": "report",
           "stadiumOccupancy": "full",
           "stadiumIdentity": "home:scheerenveen",
@@ -1220,6 +1333,7 @@
           "fixtureId": "",
           "competition": "Eredivisie",
           "daypart": "neutral",
+          "venueName": "",
           "imageKind": "report",
           "stadiumOccupancy": "full",
           "stadiumIdentity": "home:feyenoord",
@@ -1346,6 +1460,7 @@
           "fixtureId": "",
           "competition": "Eredivisie",
           "daypart": "neutral",
+          "venueName": "",
           "imageKind": "report",
           "stadiumOccupancy": "full",
           "stadiumIdentity": "home:ajax",
@@ -1471,6 +1586,7 @@
           "fixtureId": "",
           "competition": "Eredivisie",
           "daypart": "neutral",
+          "venueName": "",
           "imageKind": "report",
           "stadiumOccupancy": "full",
           "stadiumIdentity": "home:psv",
@@ -1838,7 +1954,8 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "De Derde Helft",
-          "daypart": "neutral"
+          "daypart": "neutral",
+          "venueName": ""
         },
         "reason": "exact-topic"
       },
@@ -1949,6 +2066,7 @@
           "fixtureId": "",
           "competition": "Conference League",
           "daypart": "night",
+          "venueName": "",
           "imageKind": "preview",
           "stadiumOccupancy": "empty",
           "stadiumIdentity": "home:fcmidtjylland",
@@ -2063,6 +2181,7 @@
           "fixtureId": "",
           "competition": "Eredivisie",
           "daypart": "neutral",
+          "venueName": "",
           "imageKind": "preview",
           "stadiumOccupancy": "empty",
           "stadiumIdentity": "home:willemii",
@@ -2179,6 +2298,7 @@
           "fixtureId": "",
           "competition": "Keuken Kampioen Divisie",
           "daypart": "neutral",
+          "venueName": "",
           "imageKind": "preview",
           "stadiumOccupancy": "empty",
           "stadiumIdentity": "home:fcemmen",
@@ -2190,6 +2310,6 @@
     }
   ],
   "imagePolicyVersion": 69,
-  "mirroredAt": "2026-11-11T06:35:09.738Z",
+  "mirroredAt": "2026-11-13T12:18:18.000Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
