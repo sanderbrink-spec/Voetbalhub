@@ -41,6 +41,23 @@ function isMatch(article){
   typeof article?.matchId==='string' &&
   /^(?:sm-\d+|of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+)$/i.test(article.matchId);
 }
+function reviewReason(article){
+ if(!isMatch(article)||article.status!=='published'||!Array.isArray(article.body))return 'not_match';
+ const d={headline:article.headline,standfirst:article.standfirst,body:article.body.map(polishParagraph)};
+ if(d.body.some(x=>!x))return 'empty_paragraph';
+ if(d.body.every((x,i)=>x===article.body[i]))return 'unsupported_source_pattern';
+ const facts=Array.isArray(article.verifiedFacts)?article.verifiedFacts:[];
+ if(facts.length<2)return 'insufficient_verified_facts';
+ if(!article.match?.homeTeam||!article.match?.awayTeam)return 'missing_match_identity';
+ const compact=article.articleKind==='score_update'||article.compactVerified===true;
+ if(draftIssues(d,compact).length)return 'structure_quality';
+ if(matchSourceStyleIssues({articleKind:article.articleKind,draft:d}).length)return 'remaining_source_narration';
+ if(headlineContradictions(d))return 'headline_conflict';
+ const payload={...article,draft:d,factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}};
+ if(audit(payload).length)return 'factual_quality';
+ if(halfTimeNarrativeIssues(payload,d).length)return 'chronology';
+ return 'ready';
+}
 function candidate(article){
  if(!isMatch(article)||article.status!=='published'||!Array.isArray(article.body))return null;
  const d={headline:article.headline,standfirst:article.standfirst,body:article.body.map(polishParagraph)};
@@ -77,7 +94,7 @@ async function apply(client,logger=console){
    if(!matchSourceStyleIssues({articleKind:old.articleKind,draft:old}).length)continue;
    detected++;
    const next=candidate(old);
-   if(!next){reviewRequired++;continue}
+   if(!next){reviewRequired++;logger.warn('Match copyedit '+VERSION+' held: '+JSON.stringify({matchId:old.matchId,articleId:old.id,reason:reviewReason(old)}));continue}
    const key=batch[i],history='article-copyedit:'+VERSION+':'+old.id;
    const wrote=await client.eval(atomicRevision,{keys:[key,history],arguments:[raw,JSON.stringify(next)]});
    if(wrote===1||wrote==='1')updated++;
@@ -86,4 +103,4 @@ async function apply(client,logger=console){
  logger.info('Match copyedit '+VERSION+': '+JSON.stringify({examined,detected,updated,reviewRequired}));
  return {examined,detected,updated,reviewRequired};
 }
-module.exports={polishParagraph,candidate,isMatch,apply,VERSION};
+module.exports={polishParagraph,candidate,isMatch,reviewReason,apply,VERSION};
