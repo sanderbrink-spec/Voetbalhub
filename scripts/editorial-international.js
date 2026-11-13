@@ -69,7 +69,7 @@ function enrichPreview(group,detail,plain){
  const stage=plain(match.match(/class="MatchDetail-title">([^<]+)</)?.[1]||'');
  const groupName=stage.match(/\bgroep ([A-D][1-4])$/i)?.[1];
  const facts=[
-  city&&'De speelstad is '+(city==='Berlin'?'Berlijn':city)+'.',
+  city&&'De officiële speelstad voor dit duel is '+(city==='Berlin'?'Berlijn':city)+'.',
   groupName&&'Het duel hoort bij groep '+groupName+' van de UEFA Nations League.'
  ].filter(Boolean);
  for(const text of facts)candidate.facts.push({text,evidence:[{source:0,quote:text}]});

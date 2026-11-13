@@ -7,7 +7,7 @@
   'feyenoord.com':'Feyenoord','fctwente.nl':'FC Twente','az.nl':'AZ',
   'fcgroningen.nl':'FC Groningen','fortunasittard.nl':'Fortuna Sittard',
   'willem-ii.nl':'Willem II','fcemmen.nl':'FC Emmen','fcdenbosch.nl':'FC Den Bosch',
-  'knvb.nl':'KNVB','onsoranje.nl':'KNVB','eurojackpotknvbbeker.nl':'KNVB Beker',
+  'knvb.nl':'KNVB','onsoranje.nl':'KNVB','ussoccer.com':'U.S. Soccer','eurojackpotknvbbeker.nl':'KNVB Beker',
   'eredivisie.nl':'Eredivisie','inter.it':'Inter','clubbrugge.be':'Club Brugge',
   'liverpoolfc.com':'Liverpool','fcm.dk':'FC Midtjylland',
   'keukenkampioendivisie.nl':'Keuken Kampioen Divisie'
@@ -57,9 +57,12 @@
   // Match introductions like "De Eredivisie-wedstrijd" are grammar, not invented
   // proper names. Restrict this exception to fixed competition expressions;
   // unknown players and stadiums must still be rejected.
-  const verifiedCompetitionArticle=name=>/^De Nations$/i.test(name)&&/\bnations league\b/.test(known);
+  const verifiedGeographicArticle=name=>
+   (/^De Nations$/i.test(name)&&/\bnations league\b/.test(known))||
+   (/^De Verenigde(?: Staten)?$/i.test(name)&&/\b(?:verenigde staten|united states|amerikaans[e]?)\b/.test(known))||
+   (/^De Amerikaanse$/i.test(name)&&/\b(?:amerikaans[e]?|u s soccer|usmnt)\b/.test(known));
   const competitionPhrasing=/^(?:(?:De|Het|Een) Eredivisie(?:-wedstrijd|-speelronde)?|In de Eredivisie(?:-wedstrijd|-speelronde)?)$/i;
-  const missingNames=[...new Set(names)].filter(name=>!competitionPhrasing.test(name)&&!verifiedCompetitionArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!known.includes(normalize(name)));
+  const missingNames=[...new Set(names)].filter(name=>!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
