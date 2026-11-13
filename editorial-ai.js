@@ -77,9 +77,9 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  const publisher=officialPublisherName(sourceUrls[0]);
  if(!publisher||!draft||!Array.isArray(draft.body))return [];
  const lowered=x=>String(x||'').toLocaleLowerCase('nl');
- const name=lowered(publisher);
- const signals=['volgens','aldus','meldt','bevestigt','schrijft','laat weten','maakt bekend','bekendgemaakt','bekendmaking'];
- const isNamedAttribution=x=>lowered(x).split(/[.!?](?:\s+|$)/).some(sentence=>
+ const name=lowered(publisher).replaceAll('u.s.', 'us');
+ const signals=['volgens','aldus','meldt','bevestigt','kondigt','schrijft','laat weten','maakt bekend','bekendgemaakt','bekendmaking'];
+ const isNamedAttribution=x=>lowered(x).replaceAll('u.s.', 'us').split(/[.!?](?:\s+|$)/).some(sentence=>
   sentence.includes(name)&&(signals.some(signal=>sentence.includes(signal))||(sentence.includes('legt ')&&sentence.includes(' uit'))||(sentence.includes('licht ')&&sentence.includes(' toe'))));
  const paragraphs=draft.body.filter(x=>typeof x==='string');
  const lead=String(draft.standfirst||'');
@@ -278,7 +278,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // infer dates or staff identities from the current date, title or URL.
   const allowedNumbers=[...new Set(facts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
   if(automaticPublication&&articleKind==='preview'){
-   prompt='Schrijf een zelfstandige Nederlandse voorbeschouwing uitsluitend uit facts. Zet het duel en het tijdstip in de intro. Verdeel andere gecontroleerde details, zoals de stad en het stadion, de competitie en groepsindeling, en een eventueel ander bevestigd groepsduel over drie alinea’s met elk nieuw feitelijk nieuws. Gebruik elk detail één keer. Bewaar de locatie voor de body. Vermijd uitleg over de kalender, thuisvoordeel, sfeer, historie, stadioncapaciteit, kwalificatieregels, verwachtingen en bronverantwoording. Voeg geen onbewezen namen of cijfers toe. Formuleer in eigen woorden. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+'. Geef skip wanneer verschillende feiten ontbreken.';
+   prompt='Schrijf een zelfstandige Nederlandse voorbeschouwing uitsluitend uit facts. Zet uitsluitend het duel en aftrapmoment in de intro. Gebruik alinea 1 alleen voor stadion en stad, alinea 2 alleen voor competitie en groep, en alinea 3 alleen voor het andere bevestigde groepsduel. De intro en andere alinea’s bevatten geen locatie of groepsnummer. Geef drie verschillende feitelijke alinea’s. Bewaar de locatie voor de body. Vermijd uitleg over de kalender, thuisvoordeel, sfeer, historie, stadioncapaciteit, kwalificatieregels, verwachtingen en bronverantwoording. Voeg geen onbewezen namen of cijfers toe. Formuleer in eigen woorden. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+'. Geef skip wanneer verschillende feiten ontbreken.';
   }else if(automaticPublication&&primaryAuthority==='association_decision'){
    prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de einddatum of laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
   }
