@@ -70,9 +70,10 @@ function shirt(team){
   if(shirtCache.size>=256)shirtCache.delete(shirtCache.keys().next().value);
   const code=premiumClubCode(team?.name);
   const inner=code
-   ?'<img class="premium-kit-art" src="shirts-premium/'+code+'.svg" alt="" loading="lazy" draggable="false"><img class="premium-kit-badge" src="veldio-logo.png" alt="" loading="lazy" draggable="false">'
+   ?'<img class="premium-kit-art" src="shirts-premium/'+code+'.svg" alt="" loading="lazy" draggable="false">'
    :jerseySvg(team);
-  shirtCache.set(key,'<span class="club-shirt club-shirt90'+(code?' premium-kit-loaded':'')+'" role="img" aria-label="Veldio-tenue '+esc(team?.name||'Club')+'" style="-webkit-mask:none;mask:none;background:transparent;">'+inner+'</span>');
+  const badge='<img class="premium-kit-badge" src="veldio-logo.png" alt="" loading="lazy" draggable="false">';
+  shirtCache.set(key,'<span class="club-shirt club-shirt90 premium-kit-badged'+(code?' premium-kit-loaded':'')+'" role="img" aria-label="Veldio-tenue '+esc(team?.name||'Club')+'" style="-webkit-mask:none;mask:none;background:transparent;">'+inner+badge+'</span>');
  }
  return shirtCache.get(key);
 }
