@@ -163,4 +163,24 @@ async function load({fetcher,token,now,sourceBody,competition='eredivisie'}){
  if(all.size<100||all.size>500)throw Error('Sportmonks onvolledige seizoensdekking');
  return [...all.values()].sort((a,b)=>a.date.localeCompare(b.date));
 }
-module.exports={EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load};
+async function statisticsCoverage({fixtureId,token,fetcher=fetch,sourceBody}){
+ if(!token||!/^sm-\d+$/.test(fixtureId))return {status:'unavailable'};
+ const id=Number(fixtureId.slice(3));
+ const url=new URL('https://api.sportmonks.com/v3/football/fixtures/'+id);
+ url.searchParams.set('api_token',token);
+ url.searchParams.set('include','statistics');
+ try{
+  const response=await fetcher(url.href,{redirect:'error',signal:AbortSignal.timeout(8000)});
+  if(!response.ok){
+   await response.body?.cancel();
+   return {status:'provider_error',httpStatus:response.status};
+  }
+  const {data}=JSON.parse(await sourceBody(response));
+  if(data?.id!==id||data.league_id!==LEAGUES.eredivisie)return {status:'invalid_response'};
+  const rows=Array.isArray(data.statistics)?data.statistics:[];
+  const valid=rows.filter(row=>row?.fixture_id===id&&Number.isSafeInteger(row.type_id)&&
+   Number.isSafeInteger(row.participant_id)&&Number.isFinite(row.data?.value));
+  return {status:valid.length?'available':'no_data',fixtureId,records:valid.length,types:new Set(valid.map(row=>row.type_id)).size};
+ }catch{return {status:'unavailable'};}
+}
+module.exports={statisticsCoverage,EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load};

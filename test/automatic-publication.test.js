@@ -1219,3 +1219,45 @@ test('first-party acceptance of a disciplinary proposal is checked as a club dec
   sharedEventEvidence:[],facts:[{text:evidence,evidence:[{source:0,quote:evidence}]}]
  },[doc],Date.parse('2026-11-10T12:00:00Z')).length);
 });
+
+test('OnsOranje uses the article body and its own publication label',()=>{
+ const cfg=require('../automatic-editorial.json');
+ const index=cfg.newsIndexes.find(entry=>entry.url.includes('onsoranje.nl'));
+ assert.match(index.url,/\/knvb_node\/categorie\//);
+ const [url]=discoverLinks('<a href="/nieuws/nederlands-elftal-mannen/123/selectie">Selectie</a>',index);
+ const html='<h1>Speler opgeroepen voor Oranje</h1><div class="HeroCover-authorDate"><span>Gisteren, 10:15</span></div>'+
+  '<div class="Template Template--article"><p>De speler is toegevoegd aan de selectie.</p>'+
+  '<div class="PageTags">Geen bronfeit.</div><div class="ShareOptions--article">Delen</div>';
+ const doc=extractPage(html,url,'Fri, 13 Nov 2026 11:30:00 GMT');
+ assert.equal(doc.publishedAt,'2026-11-12T09:15:00.000Z');
+ assert.equal(doc.text,'De speler is toegevoegd aan de selectie.');
+ assert.equal(require('../scripts/automatic-publication').primaryAuthority(doc),'association_decision');
+ assert.equal(extractPage(html,url).publishedAt,'');
+});
+
+test('OnsOranje fixtures enter the editorial route only when UEFA confirms the kickoff',()=>{
+ const {confirmedPreviews}=require('../scripts/editorial-international');
+ const checkedAt=Date.parse('2026-11-13T11:30:00Z');
+ const oranje={html:'<div class="Matchevent-item"><a href="/toernooien/1">UEFA Nations League</a>'+
+  '<a href="/teams/185184/programma/wedstrijd/123" class="Matchblock-wrapper" title="13 nov 2026: Nederland - Griekenland">'+
+  '<span class="Matchblock-metadata--time">20:45</span></a><span class="location-label">Johan Cruijff ArenA</span>'};
+ const options=JSON.stringify({match:{id:'456',status:'Upcoming',kickOffTime:{dateTime:'2026-11-13T19:45:00+00:00'}}}).replaceAll('"','&quot;');
+ const uefa={html:'<div data-plugin="pk-match-unit" data-options="'+options+'"></div>'+
+  '<a href="/uefanationsleague/match/456--netherlands-vs-greece/">UEFA</a>'};
+ const [group]=confirmedPreviews(oranje,uefa,plain,checkedAt,7);
+ assert.deepEqual(validateEvidence(group.internationalPreview,group,checkedAt),[]);
+ assert.deepEqual(confirmedPreviews(oranje,{html:uefa.html.replace('19:45','18:45')},plain,checkedAt,7),[]);
+ assert.deepEqual(confirmedPreviews(oranje,uefa,plain,Date.parse('2026-11-13T19:45:00Z'),7),[]);
+});
+
+test('PSV and US Soccer match an international injury through the same named player',()=>{
+ const {nationallyRelevant,partnerDocuments}=require('../scripts/automatic-publication');
+ const psv={url:'https://www.psv.nl/media/artikel/dest',title:'PSV - Dest keert terug',
+  text:plain('Sergi&ntilde;o Dest heeft het trainingskamp verlaten vanwege fysieke klachten.'),
+  publishedAt:'2026-11-12T16:15:00Z'};
+ const us={url:'https://www.ussoccer.com/stories/2026/11/usmnt/dest',title:'Sergiño Dest to depart training camp',
+  text:'Defender Sergiño Dest will depart training camp and return to PSV.',publishedAt:'2026-11-12T15:54:25Z'};
+ assert.equal(nationallyRelevant(psv),true);
+ assert.deepEqual(partnerDocuments(psv,[us]),[us]);
+ assert.deepEqual(partnerDocuments(psv,[{...us,text:us.text.replace('Sergiño','Other')}]),[]);
+});

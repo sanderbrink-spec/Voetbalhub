@@ -7,7 +7,7 @@
   'feyenoord.com':'Feyenoord','fctwente.nl':'FC Twente','az.nl':'AZ',
   'fcgroningen.nl':'FC Groningen','fortunasittard.nl':'Fortuna Sittard',
   'willem-ii.nl':'Willem II','fcemmen.nl':'FC Emmen','fcdenbosch.nl':'FC Den Bosch',
-  'knvb.nl':'KNVB','eurojackpotknvbbeker.nl':'KNVB Beker',
+  'knvb.nl':'KNVB','onsoranje.nl':'KNVB','eurojackpotknvbbeker.nl':'KNVB Beker',
   'eredivisie.nl':'Eredivisie','inter.it':'Inter','clubbrugge.be':'Club Brugge',
   'liverpoolfc.com':'Liverpool','fcm.dk':'FC Midtjylland',
   'keukenkampioendivisie.nl':'Keuken Kampioen Divisie'

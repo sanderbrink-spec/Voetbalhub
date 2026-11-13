@@ -38,3 +38,18 @@ test('Sportmonks errors fail over to existing Eredivisie source without exposing
  assert.equal(snap.status,'source_unavailable');assert.equal(calls.length,2);
  assert.match(calls[0],/api.sportmonks.com/);assert.match(calls[1],/raw.githubusercontent.com/);
 });
+
+test('statistics probe distinguishes available data from an unavailable include without exposing tokens',async()=>{
+ const fixtureId='sm-19714594';
+ const check=fetcher=>SM.statisticsCoverage({fixtureId,token:'private',fetcher,sourceBody:async response=>JSON.stringify(response.payload)});
+ const result=await check(async url=>{
+  assert.equal(new URL(url).searchParams.get('include'),'statistics');
+  return {ok:true,payload:{data:{id:19714594,league_id:72,statistics:[
+   {fixture_id:19714594,type_id:42,participant_id:1,data:{value:0}},
+   {fixture_id:19714594,type_id:42,participant_id:2,data:{value:4}},
+   {fixture_id:1,type_id:42,participant_id:1,data:{value:5}}
+  ]}}};
+ });
+ assert.deepEqual(result,{status:'available',fixtureId,records:2,types:1});
+ assert.deepEqual(await check(async()=>({ok:false,status:403})),{status:'provider_error',httpStatus:403});
+});

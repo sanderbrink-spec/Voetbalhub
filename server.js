@@ -645,6 +645,16 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     res.writeHead(200, { "Content-Type": "image/png", "Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'" });
     return res.end(Buffer.from(encoded, "base64"));
   }
+  if (req.method === 'GET' && url.pathname === '/editorial-sportmonks-statistics') {
+    if (!authorizeRequest(req,res)) return;
+    const {fixtures}=await football47.get('eredivisie');
+    const fixture=fixtures.filter(row=>row.status==='FT'&&/^sm-\d+$/.test(row.id)).at(-1);
+    const coverage=await require('./sportmonks-football').statisticsCoverage({
+      fixtureId:fixture?.id||'',token:process.env.SPORTMONKS_API_TOKEN?.trim(),
+      sourceBody:require('./football-data47').sourceBody
+    });
+    return send(res,200,coverage);
+  }
   if (req.method === 'GET' && url.pathname === '/editorial-champions-league') {
     if (!authorizeRequest(req,res)) return;
     return send(res,200,await europeanEditorial());

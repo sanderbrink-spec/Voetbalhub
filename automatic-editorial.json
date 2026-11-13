@@ -28,11 +28,17 @@
     "liverpoolfc.com",
     "askclub.be",
     "english.ajax.nl",
-    "onsoranje.nl"
+    "onsoranje.nl",
+    "uefa.com",
+    "ussoccer.com"
   ],
   "newsIndexes": [
     {
-      "url": "https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen",
+      "url": "https://www.ussoccer.com/teams/usmnt",
+      "articlePath": "^/stories/[0-9]{4}/[0-9]{2}/usmnt/[^/]+/?$"
+    },
+    {
+      "url": "https://www.onsoranje.nl/knvb_node/categorie/nederlands-elftal-mannen",
       "articlePath": "^/nieuws/nederlands-elftal-mannen/[0-9]+/[^/]+/?$"
     },
     {
