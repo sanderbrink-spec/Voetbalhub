@@ -25,7 +25,14 @@ function article(){
 }
 test('screenshot-style self-referential sentences are removed without dropping scores or players',()=>{
  const input=article(),updated=candidate(input);
- assert.ok(updated,'must accept complete independently checked narrative');
+ if(!updated){
+  const edited={headline:input.headline,standfirst:input.standfirst,body:input.body.map(polishParagraph)};
+  const payload={...input,draft:edited,factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}};
+  assert.fail(JSON.stringify({edited,structure:require('../editorial-desk-model').draftIssues(edited,false),
+   style:matchSourceStyleIssues({articleKind:'match_report',draft:edited}),
+   facts:require('../editorial-facts').audit(payload),
+   chronology:require('../editorial-chronology139').halfTimeNarrativeIssues(payload,edited)}));
+ }
  assert.equal(updated.body.length,3);
  assert.deepEqual(matchSourceStyleIssues({articleKind:'match_report',draft:updated}),[]);
  assert.equal(updated.body[0],'De bezoekers bouwden vóór rust een voorsprong van 0-2 op, zonder dat FC Utrecht tot scoren was gekomen.');
