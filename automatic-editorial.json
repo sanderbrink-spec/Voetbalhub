@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "maxPerRun": 5,
-  "maxPerDay": 15,
+  "maxPerRun": 8,
+  "maxPerDay": 24,
   "maxAgeHours": 72,
   "previewHorizonDays": 7,
   "model": "openai/gpt-oss-120b",
