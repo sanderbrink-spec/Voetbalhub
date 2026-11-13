@@ -2,6 +2,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {EditorialProviderRouter}=require('../editorial-provider-router');
+const {scheduleEditorialGroups}=require('../scripts/automatic-publication');
 const config=require('../automatic-editorial.json');
 const scores={actuality:94,reliability:100,nationalValue:90,originality:91,journalism:91,diversity:90};
 const response=value=>Response.json({choices:[{message:{content:JSON.stringify(value)}}],usage:{total_tokens:1200}});
@@ -39,4 +40,13 @@ test('review reserve has a hard cap and cannot be spent on new extraction',async
  await assert.rejects(r.complete([{role:'user',content:'proof'}],{task:'review'}),{code:'EDITORIAL_AI_UNAVAILABLE'});
  await assert.rejects(r.complete([{role:'user',content:'proof'}],{task:'extraction'}),{code:'EDITORIAL_AI_UNAVAILABLE'});
  assert.equal(called,0);
+});
+
+test('Sportmonks-only production selects only distinct registered Sportmonks match candidates',()=>{
+ const mk=(id,url='https://www.sportmonks.com/football-api/')=>Object.assign([{url,title:id}],{matchRecord:{matchId:id,sources:[{url}]}});
+ const sm1=mk('sm-101'),sm2=mk('sm-102'),cl=mk('fd-cl-10'),unverified=mk('sm-103','https://not-sportmonks.example/');
+ const news=[[{url:'https://fcgroningen.nl/nieuws',title:'Unrelated news'}]];
+ assert.deepEqual(scheduleEditorialGroups(news,[sm1,cl,sm2,unverified],{sportmonksOnly:true}),[sm1,sm2]);
+ assert.deepEqual(scheduleEditorialGroups(news,[],{sportmonksOnly:true}),[]);
+ assert.deepEqual(scheduleEditorialGroups(news,[sm1,cl,sm2]),[news[0],sm1,cl,sm2]);
 });
