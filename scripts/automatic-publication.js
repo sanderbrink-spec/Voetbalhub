@@ -1383,6 +1383,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    report.counts.approved++;
    payload.editorialScore=assessment.score;
+   if(matchRecord){
+    payload.journalismScore=assessment.scores.journalism;
+    payload.reliabilityScore=assessment.scores.reliability;
+   }
    payload.reviewNotes+=' Redactiescore fase45: '+JSON.stringify(assessment);
    payload.reviewNotes+=' Providerverantwoording: '+JSON.stringify([...(checkpoint.trace||[]),...router.trace.slice(traceCursor)]);
    stage='artwork';

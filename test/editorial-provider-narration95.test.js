@@ -18,7 +18,9 @@ test('supplier and registry attribution are rejected in a match story before pub
   'Het doelpunt is geregistreerd volgens de wedstrijdregistratie.',
   'De registratie bevestigt het doelpunt volgens de bron.',
   'Volgens de wedstrijdregistratie was de ruststand 0-2.',
-  'De SportMonks Football API bevestigt de 2-3.'
+  'De SportMonks Football API bevestigt de 2-3.',
+  'Deze API leverde de uitslag.',
+  'OpenFootball vermeldt dezelfde ruststand.'
  ])assert.ok(desk.matchSourceStyleIssues(match([wording])).length,wording);
 });
 test('ordinary event reporting stays permitted and non-match attribution stays untouched',()=>{

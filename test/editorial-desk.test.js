@@ -243,12 +243,16 @@ test('registered match approval, publication and retry share a stable article ID
   status:'FT',round:'Speelronde 7',home:{name:'FC Twente'},away:{name:'PSV'},goals:{home:3,away:2},halfTime:{home:1,away:2}};
  store.set('football47:eredivisie',JSON.stringify({rightsExpiresAt:now+3600000,status:'available',fixtures:[fixture]}));
  const match=require('../editorial-match55').candidate(fixture,now);
- const payload={...match,editorialScore:95,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),
+ const payload={...match,editorialScore:95,journalismScore:90,reliabilityScore:94,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),
   draft:{headline:'FC Twente verslaat PSV met 3-2',
    standfirst:'FC Twente heeft de thuiswedstrijd tegen PSV in de Eredivisie gewonnen.',
-   body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten. Bron voor de uitslag en ruststand is OpenFootball.']}};
+   body:['Bij rust leidde PSV met 1-2. Na de pauze maakte de thuisploeg twee doelpunten. FC Twente won het duel met 3-2.']}};
  const tampered=await saveOwn({approve:true,payload:{...payload,match:{...match.match,homeScore:9}}});
  assert.equal(tampered.status,400);
+ for(const scores of [{journalismScore:84},{reliabilityScore:89},{reliabilityScore:undefined}]){
+  const rejected=await saveOwn({approve:true,payload:{...payload,...scores}});
+  assert.equal(rejected.status,400);
+ }
  const approved=await saveOwn({approve:true,payload});
  assert.equal(approved.status,200);
  const {record}=await approved.json();

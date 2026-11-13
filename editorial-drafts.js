@@ -15,14 +15,21 @@ return 1`;
 function problem(status,message){const e=new Error(message);e.status=status;return e;}
 function cleanPayload(value={}){
  const d=value.draft||{};
+ const evidence=value.matchEvidence;
  return {
   draft:{headline:String(d.headline||'').trim().slice(0,200),standfirst:String(d.standfirst||'').trim().slice(0,700),body:Array.isArray(d.body)?d.body.filter(x=>typeof x==='string').map(x=>x.trim().slice(0,6000)).filter(Boolean).slice(0,5):[],why_it_matters:String(d.why_it_matters||'').slice(0,1000)},
   ...(value.matchId ? {matchId:String(value.matchId).slice(0,150)} : {}),
   ...(value.imageCategory ? {imageCategory:String(value.imageCategory).slice(0,30)} : {}),
   ...(value.articleKind ? {articleKind:String(value.articleKind).slice(0,30)} : {}),
   ...(Number.isInteger(value.editorialScore) ? {editorialScore:value.editorialScore} : {}),
+  ...(Number.isInteger(value.journalismScore) ? {journalismScore:value.journalismScore} : {}),
+  ...(Number.isInteger(value.reliabilityScore) ? {reliabilityScore:value.reliabilityScore} : {}),
   ...(value.primaryAuthority ? {primaryAuthority:String(value.primaryAuthority).slice(0,30)} : {}),
   ...(value.feedLifecycle ? {feedLifecycle:require('./feed-policy').publicationLifecycle(value.feedLifecycle)} : {}),
+  ...(evidence && typeof evidence.url==='string' && typeof evidence.text==='string' ? {matchEvidence:{
+   url:evidence.url.slice(0,1500),publishedAt:String(evidence.publishedAt||'').slice(0,100),
+   text:evidence.text,title:String(evidence.title||'').slice(0,300)
+  }} : {}),
   match:value.match?{homeTeam:String(value.match.homeTeam||'').trim().slice(0,100),awayTeam:String(value.match.awayTeam||'').trim().slice(0,100),homeScore:Number.isInteger(value.match.homeScore)?value.match.homeScore:null,awayScore:Number.isInteger(value.match.awayScore)?value.match.awayScore:null,playedAt:String(value.match.playedAt||'').slice(0,10)}:null,
   factChecks:Object.fromEntries(['resultVerified','namesVerified','dateVerified','timelineVerified'].map(k=>[k,value.factChecks?.[k]===true])),
   reviewNotes:String(value.reviewNotes||'').trim().slice(0,3000),

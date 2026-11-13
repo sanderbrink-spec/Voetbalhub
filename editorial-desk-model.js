@@ -71,8 +71,11 @@
   function matchSourceStyleIssues(payload = {}) {
     if (!['match_report','score_update'].includes(payload.articleKind)) return [];
     const d=payload.draft || {};
-    const text=[d.headline,d.standfirst,...(Array.isArray(d.body)?d.body:[])].filter(x=>typeof x==='string').join(' ');
-    const provider=/\b(?:sport\s*monks|sports\s*monks|sportmonks(?:-wedstrijdregistratie)?|football[ -]?api)\b/i;
+    const requiredCredit='Football data provided by the Football-Data.org API';
+    const body=Array.isArray(d.body)?d.body:[];
+    const text=[d.headline,d.standfirst,...body.filter(p=>payload.sources?.[0]?.url!=='https://www.football-data.org/'||p!==requiredCredit)]
+      .filter(x=>typeof x==='string').join(' ');
+    const provider=/\b(?:sports?\s*monks|openfootball|football-data\.org|api(?:['’]s)?)\b/i;
     const registry=/\b(?:volgens|blijk(?:t|en)\s+uit|bevestigd\s+door|geregistreerd\s+(?:volgens|door|in)|gekoppeld\s+aan)\b[^.!?]{0,95}\b(?:wedstrijdregistratie|doelpuntenregistratie|data(?:bron|leverancier)|bron(?:gegevens)?|api)\b/i;
     const evidenceMeta=/\b(?:de\s+)?(?:offici[eë]le\s+)?wedstrijdregistratie\b|\b(?:geverifieerd|bevestigd)\s+(?:door|volgens|aan\s+de\s+hand\s+van)\s+(?:de\s+)?(?:bron|provider|registratie)\b/i;
     return provider.test(text)||registry.test(text)||evidenceMeta.test(text)
