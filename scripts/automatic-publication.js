@@ -5,6 +5,7 @@ const M=require('../editorial-desk-model');
 const {reframeVerifiedStaffPair,reframeVerifiedClubDecision}=require('../editorial-overlap-repair');
 const {repairUnsupportedDecisionTimestamp,generationIssues,createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles}=require('../editorial-ai');
 const {fingerprint}=require('../editorial-drafts');
+const brand=require('../brand');
 const config=require('../automatic-editorial.json');
 const bootstrap=require('../automatic-bootstrap.json');
 const production=require('../editorial-production45');
@@ -767,6 +768,20 @@ async function reviseDraft(payload,candidate,docs,reason,options,published=[],re
  ],options,'revision');
  return finalizeCheckedRevision(revised,payload,candidate,docs);
 }
+function retryInternationalPreviewArtwork(job, candidate, now) {
+ if(!candidate?.fixture||candidate.kickoff<=now||job.status!=='review'||
+    job.failureStage!=='artwork'||job.errorHash!==sha('Geen passend goedgekeurd artikelbeeld beschikbaar.'))return false;
+ const image=require('../image-rotation65').resolve({articleKind:'preview',fixture:candidate.fixture,category:candidate.category}).article;
+ if(!image||job.retriedPreviewArtwork===image.imageAssetId)return false;
+ job.retriedPreviewArtwork=image.imageAssetId;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ delete job.reason;
+ delete job.failureStage;
+ delete job.failureCategory;
+ delete job.errorHash;
+ delete job.checkpoint;
+ return true;
+}
 async function uploadCover(payload){
  const image=require('../image-rotation65').resolve({...payload, ...payload.draft}).article;
  if (!image) throw Error('Geen passend goedgekeurd artikelbeeld beschikbaar.');
@@ -1292,6 +1307,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(seenGroups.has(key))continue;
   seenGroups.add(key);
   const job=durable.queue.enqueue(group,now);
+  if(retryInternationalPreviewArtwork(job,group.internationalPreview,now))
+   report.signals.push({route:'news',topic:group[0].title,outcome:'international_preview_artwork_retry'});
   if(group.length===1&&!group.matchRecord){
    if(retryFederationStorageFailure(job,group[0],now))
     report.signals.push({route:'news',topic:group[0].title,outcome:'federation_storage_retry'});
@@ -1536,6 +1553,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
     reviewNotes:(validationOnly?'Automatische redactionele validatie. ':'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. ')+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
+    if(group.internationalPreview?.fixture)payload.fixture=group.internationalPreview.fixture;
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
     payload.feedLifecycle={kind:'preview',expiresAt:new Date(group.internationalPreview?.kickoff??Date.parse(candidate.eventDate+'T23:59:59'+zone)).toISOString()};
    }
@@ -1644,11 +1662,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const visible=publicFeed.articles?.find(a=>a.id===result.article.id);
    if(draft.body.length<3&&(publicFeed.rightsPolicyVersion!==26||!(publicFeed.rightsExpiresAt>Date.now())))
     throw Error('Android accepteert dit compacte artikel niet zonder geldig feedbeleid.');
-   if(!visible||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(draft.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
+   const expectedCopy=brand.article(draft);
+   if(!visible||visible.headline!==expectedCopy.headline||visible.standfirst!==expectedCopy.standfirst||visible.imageUrl!==payload.imageUrl||JSON.stringify(visible.body)!==JSON.stringify(expectedCopy.body))throw Error('Gepubliceerde versie ontbreekt in de app-feed.');
    const repeatedResponse=await fetcher(API+'/articles',{signal:AbortSignal.timeout(60000),cache:'no-store'});
-   if(!repeatedResponse.ok||!(await repeatedResponse.json()).articles?.some(article=>article.id===visible.id))throw Error('Gepubliceerd artikel niet opnieuw opvraagbaar.');
+   if(!repeatedResponse.ok||(await repeatedResponse.json()).articles?.filter(article=>article.id===visible.id).length!==1)throw Error('Gepubliceerd artikel niet opnieuw opvraagbaar.');
    report.counts.published++;route.published++;
-   report.published.push({route:matchRecord?'match':'news',id:visible.id,url:API+'/articles?id='+encodeURIComponent(visible.id),headline:visible.headline,score:assessment.score,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.category,imageMode:payload.imageReview.mode});published.push(visible);
+   report.published.push({route:matchRecord?'match':'news',id:visible.id,url:API+'/articles?id='+encodeURIComponent(visible.id),headline:visible.headline,score:assessment.score,journalism:assessment.scores.journalism,reliability:assessment.scores.reliability,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.imageKind,imageMode:payload.imageReview.mode});published.push(visible);
    durable.queue.finish(job,'published',now);
    console.log('Gepubliceerd met afbeelding:',visible.headline);
   }catch(e){durable.queue.fail(job,e,now,{stage});const technical=job.failureCategory!=='journalistic_rejection';

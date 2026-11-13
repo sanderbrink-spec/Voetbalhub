@@ -3596,6 +3596,106 @@
       "qualityReviewNote": "Nieuw 1672x941 bronraster. Stadionvorm, clubidentiteit, Veldio-branding en commerciële rechten nog onafhankelijk controleren; geen score toegekend.",
       "homeVenueAliases": [],
       "sourceNativeCropHeight": 941
+    },
+    {
+      "id": "veldio97c-nederland-griekenland-preview",
+      "file": "public/article-art71/nederland-griekenland-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "Nederland tegen Griekenland",
+      "clubs": [
+        "Nederland",
+        "Griekenland"
+      ],
+      "competitions": [
+        "Nations League"
+      ],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "interland",
+        "Nations League"
+      ],
+      "variant": "nederland-griekenland-preview",
+      "origin": "Originele AI-illustratie voor Veldio, 13 november 2026",
+      "rights": "original-ai",
+      "rightsEvidence": "Eigen AI-illustratie. Visueel gecontroleerd op sponsors, officiële logo’s, herkenbare personen en documentaire claims.",
+      "approval": "approved",
+      "reviewer": "Codex visuele controle",
+      "approvedAt": "2026-11-13",
+      "lastUsed": null,
+      "sha256": "d560f2d335a79e4ed004e9ed5f1ca253a791957d8bc273e7eda43b4d0af3222b",
+      "caption": "AI-illustratie van Johan Cruijff ArenA bij de voorbeschouwing op Nederland tegen Griekenland.",
+      "questionIds": [],
+      "fixtureId": "uefa-2047886",
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:nederland",
+      "visualReview": {
+        "score": 8.8,
+        "style": "photorealistic",
+        "assetSha256": "d560f2d335a79e4ed004e9ed5f1ca253a791957d8bc273e7eda43b4d0af3222b",
+        "reviewer": "Codex visuele controle",
+        "reviewedAt": "2026-11-13",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      }
+    },
+    {
+      "id": "veldio97c-duitsland-nederland-preview",
+      "file": "public/article-art71/duitsland-nederland-preview.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "Duitsland tegen Nederland",
+      "clubs": [
+        "Duitsland",
+        "Nederland"
+      ],
+      "competitions": [
+        "Nations League"
+      ],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "interland",
+        "Nations League"
+      ],
+      "variant": "duitsland-nederland-preview",
+      "origin": "Originele AI-illustratie voor Veldio, 13 november 2026",
+      "rights": "original-ai",
+      "rightsEvidence": "Eigen AI-illustratie. Visueel gecontroleerd op sponsors, officiële logo’s, herkenbare personen en documentaire claims.",
+      "approval": "approved",
+      "reviewer": "Codex visuele controle",
+      "approvedAt": "2026-11-13",
+      "lastUsed": null,
+      "sha256": "cf4f08dcae8e48bd0c8b700a3403f79e4d463f607e35c658d25a60faddde6b0e",
+      "caption": "AI-illustratie van Olympiastadion in Berlijn bij de voorbeschouwing op Duitsland tegen Nederland.",
+      "questionIds": [],
+      "fixtureId": "uefa-2047909",
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:duitsland",
+      "visualReview": {
+        "score": 8.7,
+        "style": "photorealistic",
+        "assetSha256": "cf4f08dcae8e48bd0c8b700a3403f79e4d463f607e35c658d25a60faddde6b0e",
+        "reviewer": "Codex visuele controle",
+        "reviewedAt": "2026-11-13",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      }
     }
   ]
 }

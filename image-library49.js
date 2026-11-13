@@ -18,7 +18,7 @@ function validate(rows,{root=ROOT}={}){
    (!['preview','report'].includes(a.imageKind) || a.stadiumOccupancy!==occupancyFor(a.imageKind) ||
     !a.categories.includes(a.imageKind) || a.clubs.length!==2 ||
     !/^(home|venue):[a-z0-9]+$/.test(a.stadiumIdentity||'')))throw Error('Ongeldige stadionbezetting: '+a.id);
- if(a.fixtureId&&(!/^sm-\d+$/.test(a.fixtureId)||a.clubs.length!==2||!a.categories.some(c=>c==='report'||c==='preview')))throw Error('Ongeldig wedstrijdbestand.');
+ if(a.fixtureId&&(!/^(?:sm|uefa)-\d+$/.test(a.fixtureId)||a.clubs.length!==2||!a.categories.some(c=>c==='report'||c==='preview')))throw Error('Ongeldig wedstrijdbestand.');
  if(a.homeClubReusable && (a.clubs?.length!==2 || a.clubs[1]!=='*' || a.fixtureId ||
     !a.stadiumIdentity || a.stadiumIdentity!=='home:'+norm(a.clubs[0]) ||
     !Array.isArray(a.homeVenueAliases) || a.homeVenueAliases.some(s=>typeof s!=='string'||s.length>100)))

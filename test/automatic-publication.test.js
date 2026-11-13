@@ -242,7 +242,7 @@ for(const hasHalf of [true,false])test('registered match uses compact format wit
     return Response.json({record:{id:'isolated',revision:1,status:'approved',contentHash:fingerprint(saved)}});
    }
    if(url.endsWith('/publish')){
-    article={id:'isolated',imageUrl:saved.imageUrl,body:saved.draft.body};
+    article={id:'isolated',imageUrl:saved.imageUrl,...saved.draft};
     return Response.json({status:'published',article});
    }
    return new Response(null,{status:503});
@@ -1299,4 +1299,24 @@ test('official federation announcements use the same source authority at storage
  assert.equal(queue.due(job,now),true);
  assert.equal(job.failureCategory,undefined);
  assert.equal(retryFederationStorageFailure(job,doc,now),false);
+});
+
+test('verified international preview keeps its fixture artwork across draft storage and feed rendering',async()=>{
+ const {cleanPayload,fingerprint}=require('../editorial-drafts');
+ const {resolve}=require('../image-rotation65');
+ const {uploadCover}=require('../scripts/automatic-publication');
+ const fixture={id:'uefa-2047886',homeTeam:'Nederland',awayTeam:'Griekenland',
+  date:'2026-11-13T19:45:00.000Z',venueName:'Johan Cruijff ArenA'};
+ const payload={fixture,articleKind:'preview',category:'Nations League',
+  draft:{headline:'Nederland ontvangt Griekenland in Amsterdam'}};
+ const cover=await uploadCover(payload);
+ assert.match(cover.imageUrl,/nederland-griekenland-preview\.webp$/);
+ assert.equal(cover.imageReview.stadiumOccupancy,'empty');
+ const stored=cleanPayload({...payload,...cover});
+ assert.deepEqual(stored.fixture,fixture);
+ assert.equal(fingerprint(stored),fingerprint({...payload,...cover}));
+ assert.equal(resolve({...stored,...stored.draft}).article.imageUrl,cover.imageUrl);
+ for(const change of [{id:'uefa-1234567'},{venueName:'Een ander stadion'},{homeTeam:'Griekenland'}])
+  assert.equal(resolve({...payload,fixture:{...fixture,...change}}).article,null);
+ assert.equal(resolve({...payload,articleKind:'match_report'}).article,null);
 });

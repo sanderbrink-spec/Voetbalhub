@@ -2,6 +2,8 @@
 // Known venue aliases are used solely to verify home-club stadium assignment.
 // Never infer a match venue from team colors, a scoreboard, or opponent names.
 const names={
+ 'nederland':['Johan Cruijff Arena'],
+ 'duitsland':['Olympiastadion, Berlin, Duitsland'],
  'adodenhaag':['Werktalent Stadion','Bingoal Stadion','Cars Jeans Stadion'],
  'ajax':['Johan Cruijff Arena','Amsterdam Arena'],
  'az':['AFAS Stadion'],

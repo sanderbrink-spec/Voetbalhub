@@ -19,7 +19,7 @@ function confirmedPreviews(oranje,uefa,plain,now,horizonDays){
  }
  const links=new Map();
  for(const [,path,id,teams] of uefa.html.matchAll(/href="(\/uefanationsleague\/match\/(\d+)--([a-z0-9-]+)\/)"/g)){
-  links.set(teams,{path,kickoff:times.get(id)});
+  links.set(teams,{path,id,kickoff:times.get(id)});
  }
  const groups=[];
  for(const item of oranje.html.split(/<div class="Matchevent-item">/).slice(1)){
@@ -49,6 +49,8 @@ function confirmedPreviews(oranje,uefa,plain,now,horizonDays){
   ];
   group.internationalPreview={
    kind:'preview',topic,category:'Nations League',eventDate,teams,kickoff:corroboration.kickoff,
+   fixture:{id:'uefa-'+corroboration.id,homeTeam:teams[0],awayTeam:teams[1],
+    date:new Date(corroboration.kickoff).toISOString(),venueName:venue},
    facts:details.map(text=>({text,evidence:[{source:0,quote:text}]})),
    sharedEventEvidence:[{source:0,quote:details[0]},{source:1,quote:details[0]}]
   };
