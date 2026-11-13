@@ -277,7 +277,11 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // Number and person inventories are supplied separately so the writer cannot
   // infer dates or staff identities from the current date, title or URL.
   const allowedNumbers=[...new Set(facts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
-  if(articleKind==='preview')prompt+=' Schrijf een voorbeschouwing. Zet de wedstrijd en het aanstaande aftrapmoment centraal. Gebruik afzonderlijke bewezen details zoals de locatie en de competitie in de body. Geef geen voorspelling, uitslag, spelbeeld, opstelling of ambities. Schrijf een datum in natuurlijk Nederlands met dezelfde dag, maand en jaar als in de feiten.';
+  if(automaticPublication&&articleKind==='preview'){
+   prompt='Schrijf een zelfstandige Nederlandse voorbeschouwing uitsluitend uit facts. Zet het duel en het tijdstip in de intro. Verdeel andere gecontroleerde details, zoals de stad en het stadion, de competitie en groepsindeling, en de thuis-uitverdeling over de body. Gebruik elk detail één keer. Bewaar de locatie voor de body. Vermijd uitleg over de kalender, thuisvoordeel, sfeer, historie, stadioncapaciteit, kwalificatieregels, verwachtingen en bronverantwoording. Voeg geen onbewezen namen of cijfers toe. Formuleer in eigen woorden. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+'. Geef skip wanneer verschillende feiten ontbreken.';
+  }else if(automaticPublication&&primaryAuthority==='association_decision'){
+   prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. Bij een selectieoproep behandelt de body afzonderlijk bewezen informatie over de speler, het moment van aansluiting en de selectiecontext, voor zover aangeleverd. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
+  }
   const messages=resume?.messages||[{role:'system',content:prompt+' De bijgevoegde editorialAssignment is een taakverdeling op basis van bestaande feiten-ID’s. Begin de intro bij leadFactIds. Gebruik voor elke bodyalinea een ander controleerbaar detail uit bodySections en herhaal geen feiten uit de intro als alineaonderwerp. De labels voegen geen feiten toe. Als er te weinig onafhankelijke details zijn voor de gevraagde vorm, geef skip in plaats van opvulling. Elke naam, datum en claim blijft uitsluitend verifieerbaar met facts. Elke genoemde datum, jaartal en getalwaarde moet letterlijk voorkomen in facts. Vul geen jaartal afgeleid van de publicatiedatum in. Controleer persoonsnamen per woordgroep tegen facts; verzin geen trainersstaf, functie of loopbaanfeit.'},{role:'user',content:JSON.stringify({topic,category,facts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
   // Both writing and its single targeted repair share one 25-second deadline.
   const signal=AbortSignal.timeout(timeoutMs);
@@ -312,6 +316,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     if(automaticPublication&&officialPublisher&&!draft?.skip)
      draft=repairUnsupportedDecisionTimestamp(draft,facts,sourceUrls[0],primaryAuthority);
     if(draft?.skip){
+     const sufficientSelectionEvidence=automaticPublication&&primaryAuthority==='association_decision'&&facts.length>=4;
      const sufficientCoachEvidence=automaticPublication&&coachPlan&&officialPublisher&&facts.length>=7&&
       facts.some(x=>/assistent|keeperstrainer/i.test(x))&&facts.some(x=>/\b20\d\d\b/.test(x))&&
       facts.some(x=>/licht.*toe|verklaar|: ,,|: “|: „/i.test(x));
@@ -321,8 +326,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
       Boolean(officialPublisher)&&facts.length>=3&&assignment.bodySections.length>=1;
      // One extra writing attempt only when a verified first-party decision
      // provides distinct facts. Do not automatically accept the second answer.
-     if(attempt===0&&(sufficientCoachEvidence||verifiedShortDecision)){
-      const feedback=verifiedShortDecision?
+     if(attempt===0&&(sufficientCoachEvidence||verifiedShortDecision||sufficientSelectionEvidence)){
+      const feedback=sufficientSelectionEvidence?'Gebruik de verschillende feiten over het selectiebesluit en de bevestigde details uit de bron. Schrijf een volledig artikel met afzonderlijke informatieve alinea’s, zonder opvulling. Geef alleen skip als het ook met deze feiten niet kan.':verifiedShortDecision?
        'Controleer of skip werkelijk noodzakelijk is. Er is een officieel bevestigd besluit plus afzonderlijke brongetrouwe facts. Gebruik het besluit uitsluitend voor de intro en maak één of twee korte bodyalinea’s over concrete andere facts uit editorialAssignment.bodySections. Geen opvulling, bronkopie, verzonnen consequenties, cijfers of extra context. Geef een volledig JSON-concept als de feiten dit toelaten; geef uitsluitend skip als ook het korte formaat onvoldoende onderbouwd is.':
        'Controleer of je skip ten onrechte hebt gekozen. De officiële feiten bevatten aantoonbaar een besluit, stafrollen, eerdere loopbaanstappen en expliciete toegeschreven toelichting. Schrijf een nieuw, kort, origineel artikel met precies drie afzonderlijke bodyalinea’s uitsluitend uit die bestaande facts. De intro bevestigt het besluit namens officialPublisher. Voeg geen zelfbedachte seizoenen, nieuwe functietitels, gevolgen of persoonlijke oordelen toe. Indien een deel toch geen feitelijke grond heeft, laat uitsluitend dat detail weg en gebruik een ander geverifieerd feit. Bij echt onvoldoende bewijs blijft skip toegestaan.';
       messages.push({role:'assistant',content:'{"skip":true}'},{role:'user',content:feedback});

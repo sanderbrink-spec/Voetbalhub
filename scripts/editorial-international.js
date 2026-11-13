@@ -56,4 +56,23 @@ function confirmedPreviews(oranje,uefa,plain,now,horizonDays){
  }
  return groups;
 }
-module.exports={ORANJE,UEFA,confirmedPreviews};
+function enrichPreview(group,detail,plain){
+ const candidate=group.internationalPreview;
+ const match=detail.html.match(/<div class="MatchDetail">([\s\S]*?)<div class="Template-aside">/)?.[1]||'';
+ const detailTeams=[...match.matchAll(/<div class="MatchDetail-teamName[^"]*">\s*<span>([^<]+)<\/span>/g)]
+  .map(([,name])=>plain(name));
+ const clock=plain(match.match(/class="MatchDetail-separatorLineText">([^<]+)</)?.[1]||'');
+ if(detail.url!==group[0].url||candidate.teams.join('|')!==detailTeams.join('|')||
+    !amsterdam.format(candidate.kickoff).endsWith(' '+clock))return;
+ const section=detail.html.match(/<div class="AsideLocation-content">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/)?.[1]||'';
+ const city=plain(section.match(/>Stad<\/span><span>([^<]+)</)?.[1]||'').split(',')[0];
+ const stage=plain(match.match(/class="MatchDetail-title">([^<]+)</)?.[1]||'');
+ const groupName=stage.match(/\bgroep ([A-D][1-4])$/i)?.[1];
+ const facts=[
+  city&&'De speelstad is '+(city==='Berlin'?'Berlijn':city)+'.',
+  groupName&&'Het duel hoort bij groep '+groupName+' van de UEFA Nations League.'
+ ].filter(Boolean);
+ for(const text of facts)candidate.facts.push({text,evidence:[{source:0,quote:text}]});
+ group[0].text+=' '+facts.join(' ');
+}
+module.exports={ORANJE,UEFA,confirmedPreviews,enrichPreview};

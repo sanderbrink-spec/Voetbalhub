@@ -57,8 +57,9 @@
   // Match introductions like "De Eredivisie-wedstrijd" are grammar, not invented
   // proper names. Restrict this exception to fixed competition expressions;
   // unknown players and stadiums must still be rejected.
+  const verifiedCompetitionArticle=name=>/^De Nations$/i.test(name)&&/\bnations league\b/.test(known);
   const competitionPhrasing=/^(?:(?:De|Het|Een) Eredivisie(?:-wedstrijd|-speelronde)?|In de Eredivisie(?:-wedstrijd|-speelronde)?)$/i;
-  const missingNames=[...new Set(names)].filter(name=>!competitionPhrasing.test(name)&&!sentenceStarters.has(name.split(' ')[0])&&!known.includes(normalize(name)));
+  const missingNames=[...new Set(names)].filter(name=>!competitionPhrasing.test(name)&&!verifiedCompetitionArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
