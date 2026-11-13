@@ -43,9 +43,9 @@ permissions:
   issues: write
 concurrency:
   group: automatic-verified-editorial-publication
-  # Een nieuwe main-commit vervangt alleen verouderde push-publicatieproeven.
-  # Geplande controles blijven buiten deze annuleringsregel.
-  cancel-in-progress: ${{ github.event_name == 'push' }}
+  # Laat lopende controles afronden. Een nieuwe commit mag geen productieproef
+  # afbreken terwijl Render nog synchroniseert. De revision-gate blijft vereist.
+  cancel-in-progress: false
 # Nieuwe productieronde: gebruik de bestaande gecontroleerde workflow.
 # Journalistieke voorbeelden sturen nieuwsselectie; publicatie blijft afhankelijk van
 # geverifieerde feiten, onafhankelijke review, rechten en feedcontrole.
