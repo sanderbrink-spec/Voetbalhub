@@ -344,6 +344,7 @@ async function handle(req, res) {
   }
   if (req.method === "GET" && url.pathname === "/beeldcollectie")
     return send(res, 410, {error:"De illustraties verschijnen bij Veldio-artikelen."});
+  if(await require("./interland-artwork247").serve(req,res,url.pathname))return;
   if(require("./image-library49").serve(req,res,url.pathname))return;
   if(require("./media43").serve(req,res,url.pathname))return;
   if(await quizHandler(req,res))return;
