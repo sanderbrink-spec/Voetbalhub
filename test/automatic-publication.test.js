@@ -1261,3 +1261,18 @@ test('PSV and US Soccer match an international injury through the same named pla
  assert.deepEqual(partnerDocuments(psv,[us]),[us]);
  assert.deepEqual(partnerDocuments(psv,[{...us,text:us.text.replace('Sergiño','Other')}]),[]);
 });
+
+test('a club and federation training-camp announcement supplies only explicitly confirmed facts',()=>{
+ const {confirmedTrainingCampDeparture}=require('../scripts/automatic-publication');
+ const publishedAt='2026-11-12T16:15:00Z';
+ const club={url:'https://www.psv.nl/media/artikel/nieuws-dest-uit-voorzorg-terug-naar-nederland',publishedAt,
+  text:'Sergiño Dest heeft het trainingskamp van het Amerikaanse nationale team verlaten vanwege lichte fysieke klachten. Hij keert uit voorzorg terug naar Nederland. De verdediger kreeg tijdens het afgelopen duel met SC Cambuur last van deze klachten. Dest bereidt zich in Nederland verder voor op de komende wedstrijden van PSV.'};
+ const federation={url:'https://www.ussoccer.com/stories/2026/11/usmnt/defender-sergino-dest-departs-november-training-camp',publishedAt,
+  text:'USMNT defender Sergiño Dest will depart training camp tomorrow and return to his club, PSV Eindhoven. Dest entered camp with a minor injury and following medical evaluation will be kept out of the upcoming matches as a precaution. The roster now stands at 24 players in preparation for the series against Haiti.'};
+ const docs=[club,federation];
+ const candidate=confirmedTrainingCampDeparture(docs);
+ assert.equal(candidate.facts.length,6);
+ assert.deepEqual(validateEvidence(candidate,docs,Date.parse('2026-11-13T12:00:00Z')),[]);
+ assert.equal(confirmedTrainingCampDeparture([club]),null);
+ assert.equal(confirmedTrainingCampDeparture([club,{...federation,text:federation.text.replaceAll('Dest','Reynolds')}]),null);
+});
