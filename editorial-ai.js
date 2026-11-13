@@ -1,5 +1,5 @@
 'use strict';
-const { draftIssues, paragraphs, compactStructure, standardStructure, storyStyle, previewStyle, federationCoachStyle, previewStructure, storyIssues } = require('./editorial-desk-model');
+const { draftIssues, paragraphs, compactStructure, standardStructure, storyStyle, previewStyle, previewWritingFacts, federationCoachStyle, previewStructure, storyIssues } = require('./editorial-desk-model');
 const { headlineContradictions } = require('./editorial-quality');
 // Task-specific free-tier GPT-OSS policy. Source extraction stays fast;
 // writing gets deeper reasoning and the independent review gets high effort.
@@ -236,7 +236,8 @@ function mayDelegateLeadOverlap(issues,{automaticPublication=false,coachPlan=fal
 async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],articleKind,primaryAuthority=null,match=null,compact=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
   // Normal server calls and production share the same provider interface.
   if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
-  const assignment=editorialAssignment(facts,{compact});
+  const writerFacts=articleKind==='preview'?previewWritingFacts(facts):facts;
+  const assignment=editorialAssignment(writerFacts,{compact});
   const coachPlan=primaryAuthority==='club_decision'&&String(topic||'').toLocaleLowerCase('nl').includes('hoofdtrainer')&&facts.length>=4;
   const officialPublisher=['club_decision','association_decision'].includes(primaryAuthority)&&sourceUrls.length===1?officialPublisherName(sourceUrls[0]):null;
   const coachStoryline=primaryAuthority==='club_decision'&&/\bhoofdtrainer\b/i.test(topic||'')&&facts.length>=4?
@@ -291,7 +292,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority){
    prompt='Schrijf een origineel Nederlands voetbalnieuwsbericht uitsluitend uit facts. Leg het nieuws eenmaal uit in de intro. Verdeel de body in exact drie alinea’s. Gebruik voor elke alinea een ander bewezen thema. Bij een afmelding kan dat de concreet gemelde aanleiding, het besluit van de bond voor de komende interlands en de afzonderlijk gemelde clubplanning zijn. Zet de terugkeer alleen in de intro. Vermijd herhaling, ook in andere woorden. Schrijf alleen wat een bron concreet heeft bevestigd. Gebruik bij een verschil tussen de bronnen expliciete toeschrijving en vermijd relatieve termen zoals morgen. Verzin geen intentie, prognose, herstelduur, beoordeling of gevolg. Schrijf alleen headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+' als JSON. Geef skip bij onvoldoende verschillende feiten.';
   }
-  const messages=resume?.messages||[{role:'system',content:storyStyle+' '+prompt+' Gebruik editorialAssignment als suggestie; de labels voegen geen feiten toe. Noem alleen namen, datums, cijfers en claims die facts ondersteunen. De publicatiedatum is geen bewijs. Geef skip als de feiten onvoldoende stof bieden.'},{role:'user',content:JSON.stringify({topic,category,facts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
+  const messages=resume?.messages||[{role:'system',content:storyStyle+' '+prompt+' Gebruik editorialAssignment als suggestie; de labels voegen geen feiten toe. Noem alleen namen, datums, cijfers en claims die facts ondersteunen. De publicatiedatum is geen bewijs. Geef skip als de feiten onvoldoende stof bieden.'},{role:'user',content:JSON.stringify({topic,category,facts:writerFacts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
   // Both writing and its single targeted repair share one 25-second deadline.
   const signal=AbortSignal.timeout(timeoutMs);
   for(let attempt=resume?.attempt||0;attempt<2;attempt++){

@@ -1267,6 +1267,10 @@ test('a calendar item cannot pass as a preview until official football context i
   '<h3><b>Netherlands (A2)</b></h3><p><a href="'+historical+'">Greece 2-2 Netherlands</a>'+
   '<br/><a href="'+scheduled+'">Netherlands vs Greece</a></p>'},plain);
  assert.deepEqual(model.storyIssues(payload()),[]);
+ assert.deepEqual(model.previewWritingFacts(payload().verifiedFacts),[
+  'Eerdere ontmoeting in de Nations League: Griekenland 2-2 Nederland.',
+  'Dit is de laatste groepswedstrijd van Nederland in deze Nations League.'
+ ]);
  const facts=require('../editorial-facts');
  assert.equal(facts.hasOfficialPreviewResult(payload()),true);
  assert.equal(facts.hasOfficialPreviewResult({...payload(),sources:[group[1],group[1]]}),false);
