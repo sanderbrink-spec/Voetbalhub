@@ -85,7 +85,8 @@
       : [];
   }
   const storyStyle = 'Schrijf direct en natuurlijk Nederlands voetbalnieuws. Kies één bewezen invalshoek voor kop en intro. Laat iedere alinea daarop voortbouwen met nieuw bewijs. Vermijd herhaling en opvulling. Sla over als een onderbouwde invalshoek ontbreekt.';
-  const previewStyle = 'Een voorbeschouwing begint bij de aantoonbare inzet, de vorige ontmoeting of concreet selectienieuws. Datum, aftrap, stadion, groepsletter en het volgende duel zijn praktische informatie. Bouw daar geen losse alinea’s omheen. Geef skip als uitsluitend die praktische gegevens bekend zijn.';
+  const previewStyle = 'Open met de bewezen inzet van het duel, een vorige ontmoeting of concreet selectienieuws. Schrijf één of twee korte alinea’s als die de invalshoek dekken. De body geeft nieuwe informatie. Noem aftrap, stadion en groep elk hooguit één keer in intro en body samen. Laat praktische details weg die niets toevoegen. Vermijd voorspellingen, onbewezen thuisvoordeel en woorden als cruciaal of spannend zonder concreet bewijs. Geef skip bij uitsluitend kalendergegevens.';
+  const federationCoachStyle = 'Zet de bevestigde nieuwe functie of bestemming in de kop als die de belangrijkste ontwikkeling is. Verbind in de body de laatste opdracht, het concrete resultaat van de vertrekkende coach en de tijdelijke opvolging. Gebruik de feiten die de overstap betekenis geven. Laat algemene verklaringen over het zoeken naar kandidaten weg als ze geen concreet nieuws toevoegen. Verzin geen reden voor de overstap. Geef de bond bronvermelding in de intro en bij minstens één inhoudelijk vervolgfeit.';
   const previewStructure = 'body (1-3 inhoudelijke alinea’s, elk 10-120 woorden)';
   function storyIssues(payload) {
     const draft = payload.draft || {};
@@ -172,5 +173,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { storyStyle, previewStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { storyStyle, previewStyle, federationCoachStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

@@ -1280,6 +1280,23 @@ test('a calendar item cannot pass as a preview until official football context i
  assert.match(model.storyIssues({...payload(),draft:filler}).join(' '),/opvultekst/);
 });
 
+test('the preview keeps verified qualification context and accepts Dutch football compounds',()=>{
+ const {enrichPreviewStakes}=require('../scripts/editorial-international');
+ const {evidenceIssues}=require('../editorial-facts');
+ const group=[];
+ group.internationalPreview={teams:['Duitsland','Nederland'],kickoff:Date.parse('2026-11-16T19:45:00Z'),facts:[]};
+ const quote='Ook winst op Duitsland garandeert Oranje een plek bij de eerste twee, ongeacht het resultaat tegen Griekenland.';
+ const doc={url:'https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen/1/oranje',title:'Oranje in de Nations League',publishedAt:'2026-11-13T08:00:00Z',text:quote};
+ enrichPreviewStakes(group,{...doc,publishedAt:'2026-11-17T08:00:00Z'});
+ assert.equal(group.length,0);
+ enrichPreviewStakes(group,doc);
+ enrichPreviewStakes(group,doc);
+ assert.deepEqual(group.internationalPreview.facts,[{text:quote,evidence:[{source:0,quote}]}]);
+ assert.deepEqual(evidenceIssues({headline:'Oranje wacht een Nations League-wedstrijd'},['Oranje speelt in de Nations League.']),[]);
+ assert.deepEqual(evidenceIssues({headline:'Bondscoach stopt bij de Verenigde Staten'},['The U.S. Men’s National Team head coach will depart.']),[]);
+ assert.match(evidenceIssues({headline:'Bondscoach stopt bij de Verenigde Staten'},['Canada appoints a head coach.']).join(' '),/Verenigde Staten/);
+});
+
 test('PSV and US Soccer match an international injury through the same named player',()=>{
  const {nationallyRelevant,partnerDocuments}=require('../scripts/automatic-publication');
  const psv={url:'https://www.psv.nl/media/artikel/dest',title:'PSV - Dest keert terug',
