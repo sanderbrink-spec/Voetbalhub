@@ -72,6 +72,12 @@ function assetFields(asset, context) {
 }
 
 function resolve(article, {rows} = {}) {
+  // Preserve a deliberate editor-selected image. Only attach explicitly reviewed
+  // national-team artwork when no image was selected for the article.
+  if (!article.imageUrl) {
+    const interland = require('./interland-artwork247').select(article);
+    if (interland) return {assignment:{version:247,state:'approved',context:{countryCode:interland.imageReview.countryCode},assetIds:[interland.imageAssetId],reason:'reviewed-interland'},article:{...article,...interland}};
+  }
   const ctx = context(article);
   const options = eligible(article, rows, ctx);
   const reason = options.length ? (ctx.clubs.length ? 'ordered-fixture' : 'exact-topic') :
