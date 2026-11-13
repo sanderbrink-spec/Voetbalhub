@@ -918,9 +918,13 @@ async function start() {
   if (client) {
     // Listen immediately; storage routes report 503 while Redis reconnects.
     client.on("ready", () => {
+      // Finish older fact-reviewed revisions first, then carefully copyedit
+      // previously published supplier narration. Both operations archive the
+      // original and are safe to repeat after Redis reconnects.
       require("./editorial-revisions64").apply(client, async () =>
         (await football47.get("eredivisie")).fixtures || []
-      ).catch(error => console.error("Editorial revisions 64 could not run:", error.message));
+      ).then(() => require("./editorial-match-copyedit96").apply(client))
+       .catch(error => console.error("Published match revision/copyedit failed:", error.message));
       getArticles("all").catch(error => console.error("Article image migration:", error.message));
     });
     client.connect().then(() => console.log("Redis connected"))
