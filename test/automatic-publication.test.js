@@ -1276,3 +1276,27 @@ test('a club and federation training-camp announcement supplies only explicitly 
  assert.equal(confirmedTrainingCampDeparture([club]),null);
  assert.equal(confirmedTrainingCampDeparture([club,{...federation,text:federation.text.replaceAll('Dest','Reynolds')}]),null);
 });
+
+test('official federation announcements use the same source authority at storage and discovery',()=>{
+ const {articleUrl,officialSourceAuthority}=require('../scripts/editorial-discovery53');
+ const {primaryAuthority,retryFederationStorageFailure}=require('../scripts/automatic-publication');
+ const indexes=require('../automatic-editorial.json').newsIndexes;
+ const doc={
+  url:'https://www.ussoccer.com/stories/2026/11/usmnt/coach-departure',
+  title:'National Team Head Coach to depart as announced',
+  text:'U.S. Soccer announced that the head coach will depart.'
+ };
+ assert.equal(primaryAuthority(doc),'association_decision');
+ assert.equal(officialSourceAuthority(articleUrl(doc.url,indexes)),primaryAuthority(doc));
+ assert.equal(officialSourceAuthority(articleUrl('https://www.ussoccer.com/teams/usmnt',indexes)),'');
+ assert.equal(officialSourceAuthority(articleUrl('https://www.ajax.nl/artikelen/coach',indexes)),'club_decision');
+ assert.equal(primaryAuthority({...doc,title:'Head Coach appears in a press conference'}),'');
+ const {EditorialQueue}=require('../editorial-production45');
+ const queue=new EditorialQueue();
+ const job=queue.enqueue([doc],now);
+ queue.fail(job,Error('/editorial-drafts: HTTP 400 De opgegeven primaire bron is niet bevoegd voor deze publicatieroute.'),now,{stage:'storage'});
+ assert.equal(retryFederationStorageFailure(job,doc,now),true);
+ assert.equal(queue.due(job,now),true);
+ assert.equal(job.failureCategory,undefined);
+ assert.equal(retryFederationStorageFailure(job,doc,now),false);
+});

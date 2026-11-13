@@ -18,6 +18,13 @@ function articleUrl(value, indexes) {
   }
 }
 
+function officialSourceAuthority(canonicalUrl) {
+  if (!canonicalUrl) return '';
+  const domain = new URL(canonicalUrl).hostname.replace(/^www\./, '');
+  return ['knvb.nl', 'eurojackpotknvbbeker.nl', 'onsoranje.nl', 'ussoccer.com'].includes(domain)
+    ? 'association_decision' : 'club_decision';
+}
+
 async function discoverGdelt(indexes, fetcher, readBody) {
   const domains = [...new Set(indexes.map(entry => new URL(entry.url).hostname.replace(/^www\./, '')))];
   if (!domains.length) return [];
@@ -45,4 +52,4 @@ async function discoverGdelt(indexes, fetcher, readBody) {
   return [...new Set(data.articles.slice(0, 25).map(article => articleUrl(article?.url, indexes)).filter(Boolean))].slice(0, 8);
 }
 
-module.exports = { articleUrl, discoverGdelt };
+module.exports = { articleUrl, officialSourceAuthority, discoverGdelt };

@@ -309,12 +309,11 @@ async function automaticEvidenceIssue(payload) {
         !payload.draft?.body?.some(p => typeof p === 'string' && p.includes(require('./football-results52').CREDIT)))
       return 'Verplichte bronvermelding ontbreekt.';
   } else {
-    const {articleUrl} = require('./scripts/editorial-discovery53');
+    const {articleUrl, officialSourceAuthority} = require('./scripts/editorial-discovery53');
     const source = payload.sources?.[0]?.url;
     const canonical = articleUrl(source, require('./automatic-editorial.json').newsIndexes);
-    const association = canonical && /^(www\.)?(knvb\.nl|eurojackpotknvbbeker\.nl)$/.test(new URL(canonical).hostname);
     if (!canonical || payload.sources.length !== 1 || payload.articleKind !== 'announcement' ||
-        payload.primaryAuthority !== (association ? 'association_decision' : 'club_decision'))
+        payload.primaryAuthority !== officialSourceAuthority(canonical))
       return 'De opgegeven primaire bron is niet bevoegd voor deze publicatieroute.';
   }
   return '';
