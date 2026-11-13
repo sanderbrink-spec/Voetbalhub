@@ -38,7 +38,9 @@ test('screenshot-style self-referential sentences are removed without dropping s
  assert.deepEqual(matchSourceStyleIssues({articleKind:'match_report',draft:updated}),[]);
  assert.equal(updated.body[0],'De bezoekers bouwden vóór rust een voorsprong van 0-2 op, zonder dat FC Utrecht tot scoren was gekomen.');
  assert.match(updated.body[1],/Kevin Kers.+34e.+Dusan Tadic.+38e/);
- assert.match(updated.body[2],/Cathline.+56e.+Dusan Tadic.+58e.+Dani de Wit.+64e/);
+ assert.match(updated.body[2],/Cathline.+56e/);
+ assert.match(updated.body[2],/58e minuut vergrootte Dusan Tadic/);
+ assert.match(updated.body[2],/Dani de Wit.+64e/);
  assert.deepEqual(input.body,article().body,'old copy untouched');
 });
 test('cited goal event retains minute and scorer when the introductory attribution is removed',()=>{
