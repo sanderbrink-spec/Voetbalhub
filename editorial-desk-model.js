@@ -69,8 +69,8 @@
   // Reject the draft rather than stripping sentences: the remaining text
   // might lose essential match facts and must be rewritten and rechecked.
   function matchSourceStyleIssues(payload = {}) {
-    if (!['match_report','score_update'].includes(payload.articleKind)) return [];
     const d=payload.draft || {};
+    if (!['match_report','score_update'].includes(payload.articleKind) && !payload.match && !factAudit.needsMatch(d)) return [];
     const requiredCredit='Football data provided by the Football-Data.org API';
     const body=Array.isArray(d.body)?d.body:[];
     const text=[d.headline,d.standfirst,...body.filter(p=>payload.sources?.[0]?.url!=='https://www.football-data.org/'||p!==requiredCredit)]

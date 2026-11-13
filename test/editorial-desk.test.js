@@ -80,6 +80,9 @@ test('real server enforces Flashscore and does not write blocked submissions',as
 test('publication requires authorization and explicit approval; duplicate retry writes once',async()=>{
   let r=await fetch(base+'/publish',{method:'POST',body:JSON.stringify(valid())});assert.equal(r.status,401);
   r=await publish({...valid(),approved:false});assert.equal(r.status,400);
+  const manual=valid();
+  manual.draft.body[2]+=' De Sportmonks-API bevestigt dit.';
+  r=await publish(manual);assert.equal(r.status,400);assert.match((await r.json()).error,/leveranciersverantwoording/);
   r=await publish(valid());assert.equal(r.status,200);assert.equal(store.size,1);
   r=await publish(valid());assert.equal(r.status,409);assert.equal(store.size,1);
 });
