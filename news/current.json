@@ -1,8 +1,262 @@
 {
   "rightsPolicyVersion": 26,
-  "rightsExpiresAt": 1794701898385,
-  "count": 15,
+  "rightsExpiresAt": 1794736797134,
+  "count": 17,
   "articles": [
+    {
+      "id": "9d5519ca-0923-416c-88df-169dac7c6ff0",
+      "articleKind": "announcement",
+      "status": "published",
+      "author": "Veldio Redactie",
+      "headline": "Mauricio Pochettino vertrekt als bondscoach van U.S. Men’s National Team",
+      "standfirst": "U.S. Soccer meldt dat Mauricio Pochettino na het huidige trainingskamp stopt als bondscoach om Manchester United te gaan leiden.",
+      "body": [
+        "U.S. Soccer heeft vandaag bekendgemaakt dat Mauricio Pochettino zijn functie als hoofdcoach van het Amerikaanse mannenvoetbalteam zal neerleggen na afloop van het lopende trainingskamp. Hij vertrekt om hoofdcoach te worden bij Manchester United.",
+        "Pochettino en zijn technische staf zullen het team begeleiden tijdens de komende wedstrijden tegen Haïti op 14 en 17 november. Dit zijn de laatste officiële wedstrijden onder zijn leiding.",
+        "U.S. Soccer meldt dat Steve Cherundolo het team zal leiden tijdens het eerder geplande trainingskamp in december. Dit kamp zal voornamelijk bestaan uit spelers die actief zijn in de Major League Soccer (MLS).",
+        "De bond geeft aan dat zij kandidaten uit diverse achtergronden zullen overwegen voor de opvolging van Pochettino als hoofdcoach van het nationale team."
+      ],
+      "why_it_matters": "",
+      "category": "Internationaal voetbal",
+      "publishedAt": "2026-11-13T15:44:58.396Z",
+      "verifiedFacts": [
+        "U.S. Soccer today announced that Mauricio Pochettino will depart his role as Head Coach of the U.S. Men’s National Team following the conclusion of the current camp to become Head Coach of Manchester United.",
+        "Pochettino and his staff will coach the USMNT in its upcoming matches against Haiti on November 14 and 17.",
+        "Steve Cherundolo will lead the team’s previously scheduled December camp, which will feature a primarily MLS-based roster.",
+        "The Federation will consider candidates from a broad range of backgrounds."
+      ],
+      "sources": [
+        {
+          "url": "https://www.ussoccer.com/stories/2026/11/usmnt/mauricio-pochettino-to-depart-as-head-coach"
+        }
+      ],
+      "editorialChecks": {
+        "originalSourceReviewed": true,
+        "claimsIndependentlyChecked": true,
+        "duplicateChecked": true,
+        "languageChecked": true
+      },
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art69/club-1.webp",
+      "imageSource": "Veldio · illustratie",
+      "imageCredit": "Veldio",
+      "imageRights": "cleared",
+      "imageReview": {
+        "method": "approved-library49",
+        "mode": "approved-library",
+        "pipelineVersion": 49,
+        "assetSha256": "ea436ae1778a3c402bacb93c1249c39d135da9b09cd9c329ef23503d8c94a195",
+        "kitVerified": true,
+        "playerIdentityVerified": true,
+        "aiDisclosureVerified": true,
+        "clubs": [],
+        "generated": true,
+        "qualityTier": "contextual-illustration"
+      },
+      "autoPublish": false,
+      "imageAssetId": "veldio69-club-1",
+      "imageCaption": "Veldio · AI-illustratie bij Maatschappelijke clubactiviteit. Geen foto van de wedstrijd of gebeurtenis.",
+      "imageVariants": [
+        {
+          "id": "veldio69-club-1",
+          "url": "https://voetbalhub-redactie.onrender.com/article-art69/club-1.webp",
+          "caption": "Veldio · AI-illustratie bij Maatschappelijke clubactiviteit. Geen foto van de wedstrijd of gebeurtenis.",
+          "credit": "Veldio",
+          "source": "Veldio · illustratie",
+          "rights": "cleared",
+          "review": {
+            "method": "approved-library49",
+            "mode": "approved-library",
+            "pipelineVersion": 49,
+            "assetSha256": "ea436ae1778a3c402bacb93c1249c39d135da9b09cd9c329ef23503d8c94a195",
+            "kitVerified": true,
+            "playerIdentityVerified": true,
+            "aiDisclosureVerified": true,
+            "clubs": [],
+            "generated": true,
+            "qualityTier": "contextual-illustration"
+          }
+        },
+        {
+          "id": "veldio69-club-2",
+          "url": "https://voetbalhub-redactie.onrender.com/article-art69/club-2.webp",
+          "caption": "Veldio · AI-illustratie bij Maatschappelijke clubactiviteit. Geen foto van de wedstrijd of gebeurtenis.",
+          "credit": "Veldio",
+          "source": "Veldio · illustratie",
+          "rights": "cleared",
+          "review": {
+            "method": "approved-library49",
+            "mode": "approved-library",
+            "pipelineVersion": 49,
+            "assetSha256": "9b18d048d002b60a324b7f7bfefe4ad508ed5b13cdc94a565b1d9e4fd74c2362",
+            "kitVerified": true,
+            "playerIdentityVerified": true,
+            "aiDisclosureVerified": true,
+            "clubs": [],
+            "generated": true,
+            "qualityTier": "contextual-illustration"
+          }
+        }
+      ],
+      "imageRotation": {
+        "method": "approved-article-v69",
+        "count": 2,
+        "maximum": 6,
+        "selectedId": "veldio69-club-1",
+        "context": {
+          "category": "club",
+          "clubs": [],
+          "fixtureId": "",
+          "competition": "Internationaal voetbal",
+          "daypart": "neutral",
+          "venueName": ""
+        },
+        "reason": "exact-topic"
+      },
+      "feedState": "current"
+    },
+    {
+      "feedLifecycle": {
+        "kind": "preview",
+        "expiresAt": "2026-11-16T19:45:00.000Z"
+      },
+      "id": "be77be99-b1d9-4318-865f-48e9101d5cf8",
+      "articleKind": "preview",
+      "status": "published",
+      "author": "Veldio Redactie",
+      "headline": "Duitsland ontmoet Nederland in Nations League op 16 november 2026",
+      "standfirst": "Op 16 november 2026 om 20:45 uur speelt Duitsland thuis tegen Nederland in de UEFA Nations League.",
+      "body": [
+        "De wedstrijd tussen Duitsland en Nederland wordt gespeeld in het Olympiastadion in Berlijn, Duitsland. Dit stadion is de officiële locatie voor deze ontmoeting.",
+        "Deze wedstrijd maakt deel uit van groep A2 in de UEFA Nations League, waarin verschillende Europese landen strijden om de groepswinst.",
+        "Naast het duel tegen Duitsland staat voor Nederland ook een groepswedstrijd gepland tegen Griekenland. Dit duel vindt plaats op 13 november 2026."
+      ],
+      "why_it_matters": "",
+      "category": "Nations League",
+      "publishedAt": "2026-11-13T15:37:41.184Z",
+      "fixture": {
+        "id": "uefa-2047909",
+        "homeTeam": "Duitsland",
+        "awayTeam": "Nederland",
+        "date": "2026-11-16T19:45:00.000Z",
+        "venueName": "Olympiastadion, Berlin, Duitsland"
+      },
+      "verifiedFacts": [
+        "Duitsland - Nederland staat op 2026-11-16 om 20:45 Nederlandse tijd op het programma.",
+        "Duitsland speelt thuis tegen Nederland.",
+        "De wedstrijd wordt gespeeld in Olympiastadion, Berlin, Duitsland.",
+        "Duitsland - Nederland is een wedstrijd in de UEFA Nations League.",
+        "Het andere geplande groepsduel van Nederland is Nederland - Griekenland op 2026-11-13.",
+        "De officiële speelstad voor dit duel is Berlijn.",
+        "Het duel hoort bij groep A2 van de UEFA Nations League."
+      ],
+      "sources": [
+        {
+          "url": "https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660"
+        },
+        {
+          "url": "https://www.onsoranje.nl/teams/185184/programma"
+        },
+        {
+          "url": "https://www.uefa.com/uefanationsleague/match/2047909--germany-vs-netherlands/"
+        }
+      ],
+      "editorialChecks": {
+        "originalSourceReviewed": true,
+        "claimsIndependentlyChecked": true,
+        "duplicateChecked": true,
+        "languageChecked": true
+      },
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/duitsland-nederland-preview.webp",
+      "imageSource": "Veldio · illustratie",
+      "imageCredit": "Veldio",
+      "imageRights": "cleared",
+      "imageReview": {
+        "method": "approved-library49",
+        "mode": "approved-library",
+        "pipelineVersion": 49,
+        "assetSha256": "cf4f08dcae8e48bd0c8b700a3403f79e4d463f607e35c658d25a60faddde6b0e",
+        "kitVerified": true,
+        "playerIdentityVerified": true,
+        "aiDisclosureVerified": true,
+        "clubs": [
+          "Duitsland",
+          "Nederland"
+        ],
+        "imageKind": "preview",
+        "stadiumOccupancy": "empty",
+        "stadiumIdentity": "home:duitsland",
+        "imageIdentity": "068186c77aa303db0a0a4b7923cb3a3466370c37eeb943cd13ec90a14ed2087d",
+        "generated": true,
+        "qualityTier": "reviewed-fixture",
+        "visualQualityScore": 8.7,
+        "visualQualityStatus": "premium-reviewed",
+        "fixtureId": "uefa-2047909",
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true
+      },
+      "autoPublish": false,
+      "imageAssetId": "veldio97c-duitsland-nederland-preview",
+      "imageCaption": "AI-illustratie van Olympiastadion in Berlijn bij de voorbeschouwing op Duitsland tegen Nederland.",
+      "imageVariants": [
+        {
+          "id": "veldio97c-duitsland-nederland-preview",
+          "url": "https://voetbalhub-redactie.onrender.com/article-art71/duitsland-nederland-preview.webp",
+          "caption": "AI-illustratie van Olympiastadion in Berlijn bij de voorbeschouwing op Duitsland tegen Nederland.",
+          "credit": "Veldio",
+          "source": "Veldio · illustratie",
+          "rights": "cleared",
+          "review": {
+            "method": "approved-library49",
+            "mode": "approved-library",
+            "pipelineVersion": 49,
+            "assetSha256": "cf4f08dcae8e48bd0c8b700a3403f79e4d463f607e35c658d25a60faddde6b0e",
+            "kitVerified": true,
+            "playerIdentityVerified": true,
+            "aiDisclosureVerified": true,
+            "clubs": [
+              "Duitsland",
+              "Nederland"
+            ],
+            "imageKind": "preview",
+            "stadiumOccupancy": "empty",
+            "stadiumIdentity": "home:duitsland",
+            "imageIdentity": "068186c77aa303db0a0a4b7923cb3a3466370c37eeb943cd13ec90a14ed2087d",
+            "generated": true,
+            "qualityTier": "reviewed-fixture",
+            "visualQualityScore": 8.7,
+            "visualQualityStatus": "premium-reviewed",
+            "fixtureId": "uefa-2047909",
+            "noOfficialLogos": true,
+            "noRecognizablePeople": true,
+            "noDocumentaryClaim": true
+          }
+        }
+      ],
+      "imageRotation": {
+        "method": "approved-article-v69",
+        "count": 1,
+        "maximum": 6,
+        "selectedId": "veldio97c-duitsland-nederland-preview",
+        "context": {
+          "category": "preview",
+          "clubs": [
+            "Duitsland",
+            "Nederland"
+          ],
+          "fixtureId": "uefa-2047909",
+          "competition": "Nations League",
+          "daypart": "neutral",
+          "venueName": "Olympiastadion, Berlin, Duitsland",
+          "imageKind": "preview",
+          "stadiumOccupancy": "empty",
+          "stadiumIdentity": "venue:olympiastadionberlinduitsland",
+          "imageIdentity": "068186c77aa303db0a0a4b7923cb3a3466370c37eeb943cd13ec90a14ed2087d"
+        },
+        "reason": "ordered-fixture"
+      },
+      "feedState": "current"
+    },
     {
       "id": "10b600ac-43ec-54a5-ae48-8f8d21383ba2",
       "matchId": "sm-19714594",
@@ -2310,6 +2564,6 @@
     }
   ],
   "imagePolicyVersion": 69,
-  "mirroredAt": "2026-11-13T12:18:18.000Z",
+  "mirroredAt": "2026-11-13T21:59:56.900Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
