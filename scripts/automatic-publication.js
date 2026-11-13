@@ -1221,7 +1221,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(!nationallyRelevant(doc)){signal.outcome='no_national_relevance';continue;}
   report.counts.relevant++;
   if(/\b(?:uitgeschakeld|nederlaag|overwinning|zege|verslaat|wint|won|doelpunten|nabeschouwing|samenvatting|highlights|liveblog|in beeld|komt tekort)\b/i.test(doc.title)){signal.outcome='unsupported_result';continue;}
-  if(published.some(a=>articleUrl(a.sources?.[0]?.url,config.newsIndexes)===linkFor(doc))){signal.outcome='duplicate_primary_source';continue;}
+  if(!validationOnly&&published.some(a=>articleUrl(a.sources?.[0]?.url,config.newsIndexes)===linkFor(doc))){signal.outcome='duplicate_primary_source';continue;}
   report.counts.eligible++;
   const partners=partnerDocuments(doc,[...docs.values()]);
   if(partners.length||primaryAuthority(doc)){
@@ -1280,7 +1280,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      report.signals.push({route:'news',topic:candidate.topic,outcome:'invalid_preview_evidence',issues:previewIssues});
      continue;
     }
-    if(published.some(a=>a.sources?.[0]?.url===group[0].url))continue;
+    if(!validationOnly&&published.some(a=>a.sources?.[0]?.url===group[0].url))continue;
     groups.push(group);
     report.signals.push({route:'news',topic:candidate.topic,outcome:'verified_international_preview',
      kickoff:new Date(candidate.kickoff).toISOString(),sources:group.map(doc=>doc.url)});
@@ -1520,6 +1520,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if((validationOnly?report.counts.approved:report.published.length)>=limit)break;
   const matchRecord=group.matchRecord;
   const route=matchRecord?report.routes.match:report.routes.news;
+  // A dry run can recheck existing copy without weakening production deduplication.
+  const comparison=validationOnly?published.filter(article=>article.sources?.[0]?.url!==group[0].url):published;
   let topic=group[0].title,stage='verification';
   report.counts.attempted++;
   try{
@@ -1573,7 +1575,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(draft?.skip)throw Error('Onvoldoende bewezen feiten voor een origineel wedstrijdverslag.');
     report.generationOrigin='production_ai';
    }else if(!draft){
-    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:published.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
+    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
     report.generationOrigin='production_ai';
    }
    await checkpointStep({draft,generation:null});
@@ -1586,7 +1588,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
     payload.feedLifecycle={kind:'preview',expiresAt:new Date(group.internationalPreview?.kickoff??Date.parse(candidate.eventDate+'T23:59:59'+zone)).toISOString()};
    }
-   if(duplicate(payload,published.concat(report.validated.map(item=>item.article)))){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
+   if(duplicate(payload,comparison.concat(report.validated.map(item=>item.article)))){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
    for(let revision=checkpoint.revisions||0;revision<=2;revision++){
     if(!matchRecord&&candidate.primaryAuthority==='club_decision'){
@@ -1631,7 +1633,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     let rejection=[...new Set(issues)].join(' ');
     assessment=undefined;
     if(!rejection)try{
-     const review=await verifyDraft(payload,candidate,group,ai,published);
+     const review=await verifyDraft(payload,candidate,group,ai,comparison);
      assessment=production.assess({review,docs:group,evidenceIssues,now,threshold:config.qualityThreshold,...(candidate.kind==='preview'?{eventDate:candidate.eventDate,eventKickoff:group.internationalPreview?.kickoff}:{})});
      report.assessments.push({topic,revision,...assessment});
      if(assessment.approved)break;
@@ -1644,7 +1646,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      report.assessments.push({topic,revision,approved:false,score:null,reasons:[rejection],...(focusSourceUrl?{draft:{headline:draft.headline,standfirst:draft.standfirst,body:draft.body}}:{})});
     }
     if(revision===2)throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
-    const revised=await reviseDraft(payload,candidate,group,rejection,ai,published,editorialRewriteFeedback(assessment));
+    const revised=await reviseDraft(payload,candidate,group,rejection,ai,comparison,editorialRewriteFeedback(assessment));
     if(!revised)throw Error('Onvoldoende feiten voor verantwoorde herschrijving.');
     payload.draft=revised;
     draft=revised;
