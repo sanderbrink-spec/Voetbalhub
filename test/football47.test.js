@@ -11,6 +11,14 @@ test('unavailable leagues never acquire fabricated standings or paid fallback; n
 test('concurrent source requests share a request; outage retries after one minute',async()=>{let calls=0,t=now;const service=M.create({clock:()=>t,fetcher:async()=>{calls++;throw Error('offline');}});await Promise.all([service.get('bundesliga'),service.get('bundesliga')]);assert.equal(calls,1);await service.get('bundesliga');assert.equal(calls,1);t+=61000;await service.get('bundesliga');assert.equal(calls,2);});
 test('shirt markup only accepts validated colours and escapes club names',()=>{const s=UI.shirt({name:'<img onerror=alert(1)>',colours:['red" onload="alert(1)','#ffffff']});assert.equal((s.match(/<svg/g)||[]).length,1); assert.ok(s.includes('club-shirt90'));assert.ok(!s.includes('onload='));assert.ok(s.includes('&lt;img'));});
 
+test('known club shirts load distinct premium image assets and original Veldio breast badge',()=>{
+ for(const [club,code] of [['FC Groningen','GRO'],['AZ Alkmaar','AZ'],['Excelsior','EXC'],['PEC Zwolle','PEC'],['PSV','PSV']]){
+  const markup=UI.shirt({name:club});
+  assert.ok(markup.includes('shirts-premium/'+code+'.svg'));
+  assert.ok(markup.includes('premium-kit-badge'));
+  assert.ok(markup.includes('veldio-logo.png'));
+ }
+});
 test('postponed or unknown-time games never remain open for predictions',()=>{for(const status of ['PST','CANC','TBD','AWAITING'])assert.equal(UI.prediction({home:1,away:0},{...fixture(1,'A','B',null,'2026-11-05T12:00:00Z'),status},now).status,'gesloten');});
 
 test('supplementary Eredivisie results match the same fixture and preserve known scores and IDs',()=>{

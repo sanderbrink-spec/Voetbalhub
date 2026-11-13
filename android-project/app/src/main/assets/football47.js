@@ -56,11 +56,24 @@ function jerseySvg(team){
  '<path d="M22 19Q24 37 20 52M40 19Q38 37 42 52" fill="none" stroke="#fff" stroke-opacity=".11" stroke-width=".8"/>'+
  '<path d="M3 23Q8 25 13 22M49 22Q54 25 59 23" fill="none" stroke="#000" stroke-opacity=".3" stroke-width=".7"/></g></svg>';
 }
+function premiumClubCode(value){
+ const n=String(value||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+ const m=[
+ [/^jong ajax$/,'JAJ'],[/^jong psv$/,'JPS'],[/^jong az(?: alkmaar)?$/,'JAZ'],[/^jong (?:fc )?utrecht$/,'JUT'],
+ [/^(?:fc )?groningen$/,'GRO'],[/^(?:afc )?ajax$/,'AJA'],[/^feyenoord(?: rotterdam)?$/,'FEY'],[/^psv(?: eindhoven)?$/,'PSV'],[/^az(?: alkmaar)?$/,'AZ'],[/^(?:fc )?twente$/,'TWE'],[/^(?:fc )?utrecht$/,'UTR'],[/^(?:sc )?heerenveen$/,'HEE'],[/^(?:n e c|nec)(?: nijmegen)?$/,'NEC'],[/^go ahead eagles$/,'GAE'],[/^sparta(?: rotterdam)?$/,'SPA'],[/^fortuna sittard$/,'FOR'],[/^(?:pec|pec zwolle)$/,'PEC'],[/^heracles(?: almelo)?$/,'HER'],[/^nac(?: breda)?$/,'NAC'],[/^willem ii$/,'WII'],[/^(?:sbv )?excelsior$/,'EXC'],[/^(?:fc )?volendam$/,'VOL'],[/^rkc(?: waalwijk)?$/,'RKC'],[/^almere city(?: fc)?$/,'ALM'],[/^(?:fc )?emmen$/,'EMM'],[/^(?:sc )?cambuur$/,'CAM'],[/^de graafschap$/,'GRA'],[/^ado(?: den haag)?$/,'ADO'],[/^(?:fc )?den bosch$/,'DBO'],[/^(?:fc )?eindhoven$/,'EIN'],[/^mvv(?: maastricht)?$/,'MVV'],[/^roda jc(?: kerkrade)?$/,'ROD'],[/^vvv(?: venlo)?$/,'VVV'],[/^vitesse$/,'VIT'],[/^helmond sport$/,'HEL'],[/^top oss$/,'OSS'],[/^(?:sc )?telstar$/,'TEL'],[/^(?:fc )?dordrecht$/,'DOR']
+ ];
+ return m.find(([re])=>re.test(n))?.[1]||null;
+}
 function shirt(team){
  const key=JSON.stringify([team?.name,team?.colours,team?.color]);
  if(!shirtCache.has(key)){
   if(shirtCache.size>=256)shirtCache.delete(shirtCache.keys().next().value);
-  shirtCache.set(key,'<span class="club-shirt club-shirt90" role="img" aria-label="Veldio 3D-shirt '+esc(team?.name||'Club')+'" style="-webkit-mask:none;mask:none;background:transparent;">'+jerseySvg(team)+'</span>');
+  const code=premiumClubCode(team?.name);
+  const inner=code
+   ?'<img class="premium-kit-art" src="shirts-premium/'+code+'.svg" alt="" loading="lazy" draggable="false">'
+   :jerseySvg(team);
+  const badge='<img class="premium-kit-badge" src="veldio-logo.png" alt="" loading="lazy" draggable="false">';
+  shirtCache.set(key,'<span class="club-shirt club-shirt90 premium-kit-badged'+(code?' premium-kit-loaded':'')+'" role="img" aria-label="Veldio-tenue '+esc(team?.name||'Club')+'" style="-webkit-mask:none;mask:none;background:transparent;">'+inner+badge+'</span>');
  }
  return shirtCache.get(key);
 }
