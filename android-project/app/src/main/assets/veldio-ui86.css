@@ -438,3 +438,12 @@ body.predictions86 .pred-choices86 #fixtureSelector .match50 .club-shirt90.premi
  }
  .club-shirt90.premium-kit-loaded .premium-kit-badge{width:18%!important}
 }
+
+/* Apply genuine Veldio chest mark to unknown-club fallback jerseys as well. */
+.club-shirt90.premium-kit-badged{position:relative!important;}
+.club-shirt90.premium-kit-badged>.premium-kit-badge{
+ position:absolute;display:block!important;z-index:3;
+ width:15%!important;height:auto!important;aspect-ratio:1;
+ left:34%;top:25%;object-fit:contain;pointer-events:none;
+ border-radius:35%;box-shadow:0 0 2px #0009;
+}
