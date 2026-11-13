@@ -78,7 +78,7 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  if(!publisher||!draft||!Array.isArray(draft.body))return [];
  const lowered=x=>String(x||'').toLocaleLowerCase('nl');
  const name=lowered(publisher).replaceAll('u.s.', 'us');
- const signals=['volgens','aldus','meldt','bevestigt','kondigt','schrijft','laat weten','maakt bekend','bekendgemaakt','bekendmaking'];
+ const signals=['volgens','aldus','meldt','bevestigt','kondigt','schrijft','laat weten','geeft aan','maakt bekend','maakte bekend','bekendgemaakt','bekendmaking'];
  const isNamedAttribution=x=>lowered(x).replaceAll('u.s.', 'us').split(/[.!?](?:\s+|$)/).some(sentence=>
   sentence.includes(name)&&(signals.some(signal=>sentence.includes(signal))||(sentence.includes('legt ')&&sentence.includes(' uit'))||(sentence.includes('licht ')&&sentence.includes(' toe'))));
  const paragraphs=draft.body.filter(x=>typeof x==='string');
@@ -87,9 +87,14 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  if(![lead,...paragraphs].some(isNamedAttribution))
   result.push('Noem '+publisher+' in de intro of tekst expliciet als de organisatie die de officiële mededeling meldt of bevestigt.');
  if(facts.length>=4&&paragraphs.length>=3){
-  const bodyAttribution=paragraphs.some(p=>isNamedAttribution(p)||['de club meldt','de club bevestigt','de club schrijft','volgens de club','in de bekendmaking','in haar bekendmaking','de bond meldt'].some(signal=>lowered(p).includes(signal)));
+  const federation=primaryAuthority==='association_decision';
+  const organisation=federation?'de bond':'de club';
+  const attributionPhrases=['in de bekendmaking','in haar bekendmaking','in zijn bekendmaking',
+   'volgens '+organisation,...['meldt','bevestigt','schrijft','geeft aan','laat weten'].map(verb=>organisation+' '+verb)];
+  if(federation)attributionPhrases.push('volgens de voetbalbond','de voetbalbond meldt','de voetbalbond bevestigt','de voetbalbond geeft aan');
+  const bodyAttribution=paragraphs.some(p=>isNamedAttribution(p)||attributionPhrases.some(signal=>lowered(p).includes(signal)));
   if(!bodyAttribution)
-   result.push('Wijs in een inhoudelijke alinea de staf-, loopbaan- of contractdetails duidelijk toe aan de officiële clubbekendmaking.');
+   result.push('Schrijf in minstens één inhoudelijke alinea de aanvullende feiten expliciet toe aan de officiële bekendmaking van '+publisher+'.');
  }
  return result;
 }
@@ -278,9 +283,9 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // infer dates or staff identities from the current date, title or URL.
   const allowedNumbers=[...new Set(facts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
   if(automaticPublication&&articleKind==='preview'){
-   prompt='Schrijf een zelfstandige Nederlandse voorbeschouwing uitsluitend uit facts. Zet uitsluitend het duel en aftrapmoment in de intro. Gebruik alinea 1 alleen voor stadion en stad, alinea 2 alleen voor competitie en groep, en alinea 3 alleen voor het andere bevestigde groepsduel. De intro noemt geen locatie of groepsnummer. Benoem de locatie uitsluitend in alinea 1 en het groepsnummer uitsluitend in alinea 2. Geef drie verschillende feitelijke alinea’s. Bewaar de locatie voor de body. Vermijd uitleg over de kalender, thuisvoordeel, sfeer, historie, stadioncapaciteit, kwalificatieregels, verwachtingen en bronverantwoording. Voeg geen onbewezen namen of cijfers toe. Formuleer in eigen woorden. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+'. Geef skip wanneer verschillende feiten ontbreken.';
+   prompt='Schrijf een zelfstandige Nederlandse voorbeschouwing uitsluitend uit facts. Zet uitsluitend het duel en aftrapmoment in de intro. Gebruik alinea 1 alleen voor stadion en stad, alinea 2 alleen voor competitie en groep, en alinea 3 alleen voor het andere bevestigde groepsduel. De intro noemt geen locatie of groepsnummer. Benoem de locatie uitsluitend in alinea 1 en het groepsnummer uitsluitend in alinea 2. Noem in alinea 3 alleen het andere duel en de datum, zonder groepsnummer of stadionnaam. Geef drie verschillende feitelijke alinea’s. Bewaar de locatie voor de body. Vermijd uitleg over de kalender, thuisvoordeel, sfeer, historie, stadioncapaciteit, kwalificatieregels, verwachtingen en bronverantwoording. Voeg geen onbewezen namen of cijfers toe. Formuleer in eigen woorden. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+'. Geef skip wanneer verschillende feiten ontbreken.';
   }else if(automaticPublication&&primaryAuthority==='association_decision'){
-   prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de einddatum of laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
+   prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Begin de inhoudelijke alinea over opvolging of vervolgstappen met een duidelijke toeschrijving aan '+officialPublisher+', bijvoorbeeld: “'+officialPublisher+' meldt dat …”. Schrijf een volgende functie alleen toe aan de bond als die als enige het nieuws meldt. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
   }
   if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority){
    prompt='Schrijf een origineel Nederlands voetbalnieuwsbericht uitsluitend uit facts. Leg het nieuws eenmaal uit in de intro. Verdeel de body in exact drie alinea’s. Gebruik voor elke alinea een ander bewezen thema. Bij een afmelding kan dat de concreet gemelde aanleiding, het besluit van de bond voor de komende interlands en de afzonderlijk gemelde clubplanning zijn. Zet de terugkeer alleen in de intro. Vermijd herhaling, ook in andere woorden. Schrijf alleen wat een bron concreet heeft bevestigd. Gebruik bij een verschil tussen de bronnen expliciete toeschrijving en vermijd relatieve termen zoals morgen. Verzin geen intentie, prognose, herstelduur, beoordeling of gevolg. Schrijf alleen headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+' als JSON. Geef skip bij onvoldoende verschillende feiten.';

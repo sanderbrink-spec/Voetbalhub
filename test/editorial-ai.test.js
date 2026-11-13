@@ -337,3 +337,16 @@ test('first-party source attribution can be restored without changing official f
  assert.equal(attachVerifiedOfficialAttribution(draft,{...options,primaryAuthority:null}),draft);
  assert.equal(attachVerifiedOfficialAttribution(draft,{...options,sourceUrls:['https://untrusted.example/news']}),draft);
 });
+
+test('a federation announcement attributes additional facts to the federation',()=>{
+ const {editorialAttributionIssues}=require('../editorial-ai');
+ const options={primaryAuthority:'association_decision',
+  sourceUrls:['https://www.ussoccer.com/stories/2026/11/usmnt/coach-departure'],
+  facts:['besluit','laatste wedstrijden','opvolging','selectieproces']};
+ const draft={standfirst:'U.S. Soccer meldt dat de bondscoach vertrekt.',
+  body:['Zijn staf begeleidt de komende interlands.','Een assistent leidt het geplande trainingskamp.',
+   'De voetbalbond geeft aan dat het verschillende kandidaten zal bekijken.']};
+ assert.deepEqual(editorialAttributionIssues(draft,options),[]);
+ assert.match(editorialAttributionIssues({...draft,body:[...draft.body.slice(0,2),
+  'De club bevestigt dat het verschillende kandidaten zal bekijken.']},options)[0],/U\.S\. Soccer/);
+});
