@@ -272,3 +272,54 @@ body.predictions86 .pred-choices86 #fixtureSelector .match50 .when small{
  body.predictions86 .pred-choices86 #fixtureSelector .match50 .when{font-size:15px}
  body.predictions86 .pred-choices86 #fixtureSelector .match50 .when small{font-size:9px}
 }
+
+
+/* Veldio 92: premium luminous match cards, subtle modern trim, no excessive glare.
+   Applies to the two real match lists and preserves expandable event details. */
+body[data-section="fixtures"] .fixture-expand88>summary.match50,
+body.predictions86 .pred-choices86 #fixtureSelector .match50 {
+ position:relative;isolation:isolate;overflow:hidden;
+ border:1px solid #587d61!important;
+ border-radius:20px!important;
+ background:
+  radial-gradient(ellipse at 22% -24%,#8fff3540,transparent 42%),
+  linear-gradient(129deg,#153c26 0%,#092318 30%,#05150e 72%,#0d321c 100%)!important;
+ box-shadow:inset 0 1px 0 #d8ffe545,inset 0 -1px 0 #0008,0 7px 16px #0005!important;
+ transition:background-color .18s,border-color .18s,box-shadow .18s;
+}
+body[data-section="fixtures"] .fixture-expand88>summary.match50::before,
+body.predictions86 .pred-choices86 #fixtureSelector .match50::before{
+ content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;
+ background:linear-gradient(142deg,#ffffff10 0 19%,transparent 19% 100%);
+}
+body[data-section="fixtures"] .fixture-expand88[open]>summary.match50{
+ border-radius:20px 20px 0 0!important;border-bottom-color:#466b4f!important;
+}
+body[data-section="fixtures"] .fixture-expand88>summary.match50:focus-visible,
+body.predictions86 .pred-choices86 #fixtureSelector .match50:focus-visible{
+ outline:2px solid #b4ff4c;outline-offset:2px;
+}
+body[data-section="fixtures"] .fixture-expand88>summary.match50 .club-shirt90,
+body.predictions86 .pred-choices86 #fixtureSelector .match50 .club-shirt90{
+ filter:drop-shadow(0 5px 3px #0009) drop-shadow(0 0 3px #a9ff3526);
+}
+body[data-section="fixtures"] .fixture-expand88>summary.match50 .when,
+body.predictions86 .pred-choices86 #fixtureSelector .match50 .when{
+ color:#f5fff6;text-shadow:0 1px 1px #000b;letter-spacing:.012em;
+}
+body[data-section="fixtures"] .fixture-expand88>summary.match50 .team87,
+body.predictions86 .pred-choices86 #fixtureSelector .match50 > :nth-child(1),
+body.predictions86 .pred-choices86 #fixtureSelector .match50 > :nth-child(5){
+ color:#f1faf3;font-weight:760;
+}
+body[data-section="fixtures"] .fixture-expand88>summary.match50::after{
+ z-index:2;right:8px;border-color:#acff49;
+}
+body.predictions86 .pred-choices86 #fixtureSelector .match50[aria-current="true"]{
+ border-color:#a9ff35!important;
+ box-shadow:inset 0 0 0 1px #baff3a45,0 0 13px #a9ff351c,0 7px 17px #0006!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-section="fixtures"] .fixture-expand88>summary.match50,
+ body.predictions86 .pred-choices86 #fixtureSelector .match50{transition:none}
+}
