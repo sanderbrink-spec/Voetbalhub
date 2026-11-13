@@ -4,8 +4,8 @@
   "approved_apk_run": 41719319572,
   "approved_apk_artifact": 13272705387,
   "approved_apk_sha256": "bce258f0931f55f517aa4114bf3f54a896e1d53478a347fd40be5cbdd55e1243",
-  "version": "4.65",
-  "version_code": 105,
+  "version": "4.66",
+  "version_code": 106,
   "package": "nl.voetbalhub.app1",
   "asset_count": 211,
   "assets": {
@@ -18,7 +18,7 @@
     "assets/football47.js": "aa2d78a456b1e076de25c955bbd26e48198834a19262b22fc46c7982be038d18",
     "assets/contact.html": "484326167a6081f093e24ad0979f58975bc2730d0c9327c3f23a6cd9236ded2f",
     "assets/subpage-model46.js": "fa025c109b8972c735d0cb56e3906019e0230af3630bf7bebb07d2381d3aa25a",
-    "assets/destinations39.html": "56b0c10c6712c46cc4dc68b37514ce3e394a0f421107ac923ab65a7e07454b95",
+    "assets/destinations39.html": "30e00cb275432ba261fc5be15e6270dd31254e0e7a3cb9bc94014f221ed00a91",
     "assets/quiz-images49.js": "c76bb29bfbaa2bce1c14ba71a5ce43d5c8ec6680ee8c40b7faed73fa4e5d3461",
     "assets/groningen-emmen-2026-10-29.webp": "470eda17010b72410daa6585f6139ae9db7278cb6432d209b462d66c124ca02d",
     "assets/club-directory.json": "6ef781c22c069d30609ecafd6ad8a08129c48d26162dab6d449d4eeec0d7f06c",
@@ -50,7 +50,7 @@
     "assets/competition-names47.json": "de7f20c9d832c7f663c2196ca375a36951e059155f67accbb8e3ce8c9769e851",
     "assets/club-profile-view46.js": "29ce249566d83db378b0646ad2253a4f1147eb58ef8703383e26653599b14551",
     "assets/clubquiz-engine.js": "7d29aa8724d052dacd2a464e80576288c26643778cb75b6b4274153e82124a2e",
-    "assets/predictions49.html": "ad6fedb17d5ceddb60bf2aabdfbb3cda5b711ce5964321da9be13dcf996ca2eb",
+    "assets/predictions49.html": "67820928610bf5de55822df7e7a4644b87099b82b4dd848f7ec685376648dcf1",
     "assets/page-history.js": "f83dc67cde1b24b537e00752a0796a40d229a5ba3bb2c8f212e1ccdc353b9084",
     "assets/emmen-den-bosch-2026-11-01.webp": "a00bee2a9803eb67ef2d3c883280dfca930b59f05b77a202f449390ff75d42a5",
     "assets/quiz39.css": "ff6c8edca3bba92fd1f4904c4e3aebd274476aefe3a10a900e6d963db136f61b",
@@ -219,13 +219,13 @@
     "assets/article-art69/twente-4.webp": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
     "assets/article-art69/twente-5.webp": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
     "assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
-    "assets/veldio-ui86.css": "3681a264a1b5715bd1672ea60114e0ef013f0c679ec0d76b786768264cbae821"
+    "assets/veldio-ui86.css": "2cc7450052904593ab21148f66e2be97fc18b9b37a5eb896bb193958c2a7ae70"
   },
   "files": {
     "build.gradle.kts": "7affc359fa871247e8f608f01aee79617629544e22697bdbdeb4e127a250d007",
     "gradle.properties": "fa078c27c9e4bde28a029d673875b028884505efa436b68cf60e1ac0be5b679b",
     "settings.gradle.kts": "4cf21d1bfd7d0a0ca19d852c34d941a00e0b45f816d8f6d0dea0efff79a1bb85",
-    "app/build.gradle.kts": "269b4f8f1f1b3cc8c129e1630e13479edde183aad548f5fe4269be43b860be01",
+    "app/build.gradle.kts": "a9bd04bacf4542c92886afbc031a7175905725b8404b6ca4347c1d3ee1b68df4",
     "app/src/main/AndroidManifest.xml": "b5aa97d317352e51090de7ba7cb0354227aec21f83633dd0b3e830cd72c581c8",
     "app/src/main/assets/youtube-seed.json": "aac0cf7f236633446516996ec5e7ee80912a9fc7efdcb9444ee580482c2700c1",
     "app/src/main/assets/clubquiz-ui.js": "2892377f08f4258241cceef1d12313e7caf7ca19df0ff786039b31c764b18533",
@@ -236,7 +236,7 @@
     "app/src/main/assets/football47.js": "aa2d78a456b1e076de25c955bbd26e48198834a19262b22fc46c7982be038d18",
     "app/src/main/assets/contact.html": "484326167a6081f093e24ad0979f58975bc2730d0c9327c3f23a6cd9236ded2f",
     "app/src/main/assets/subpage-model46.js": "fa025c109b8972c735d0cb56e3906019e0230af3630bf7bebb07d2381d3aa25a",
-    "app/src/main/assets/destinations39.html": "56b0c10c6712c46cc4dc68b37514ce3e394a0f421107ac923ab65a7e07454b95",
+    "app/src/main/assets/destinations39.html": "30e00cb275432ba261fc5be15e6270dd31254e0e7a3cb9bc94014f221ed00a91",
     "app/src/main/assets/quiz-images49.js": "c76bb29bfbaa2bce1c14ba71a5ce43d5c8ec6680ee8c40b7faed73fa4e5d3461",
     "app/src/main/assets/groningen-emmen-2026-10-29.webp": "470eda17010b72410daa6585f6139ae9db7278cb6432d209b462d66c124ca02d",
     "app/src/main/assets/club-directory.json": "6ef781c22c069d30609ecafd6ad8a08129c48d26162dab6d449d4eeec0d7f06c",
@@ -268,7 +268,7 @@
     "app/src/main/assets/competition-names47.json": "de7f20c9d832c7f663c2196ca375a36951e059155f67accbb8e3ce8c9769e851",
     "app/src/main/assets/club-profile-view46.js": "29ce249566d83db378b0646ad2253a4f1147eb58ef8703383e26653599b14551",
     "app/src/main/assets/clubquiz-engine.js": "7d29aa8724d052dacd2a464e80576288c26643778cb75b6b4274153e82124a2e",
-    "app/src/main/assets/predictions49.html": "ad6fedb17d5ceddb60bf2aabdfbb3cda5b711ce5964321da9be13dcf996ca2eb",
+    "app/src/main/assets/predictions49.html": "67820928610bf5de55822df7e7a4644b87099b82b4dd848f7ec685376648dcf1",
     "app/src/main/assets/page-history.js": "f83dc67cde1b24b537e00752a0796a40d229a5ba3bb2c8f212e1ccdc353b9084",
     "app/src/main/assets/emmen-den-bosch-2026-11-01.webp": "a00bee2a9803eb67ef2d3c883280dfca930b59f05b77a202f449390ff75d42a5",
     "app/src/main/assets/quiz39.css": "ff6c8edca3bba92fd1f4904c4e3aebd274476aefe3a10a900e6d963db136f61b",
@@ -501,7 +501,7 @@
     "app/src/main/assets/article-art69/twente-4.webp": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
     "app/src/main/assets/article-art69/twente-5.webp": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
     "app/src/main/assets/article-art69/twente-6.webp": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
-    "app/src/main/assets/veldio-ui86.css": "3681a264a1b5715bd1672ea60114e0ef013f0c679ec0d76b786768264cbae821",
+    "app/src/main/assets/veldio-ui86.css": "2cc7450052904593ab21148f66e2be97fc18b9b37a5eb896bb193958c2a7ae70",
     "app/src/main/java/nl/voetbalhub/app/VeldioIntroBackdrop.java": "4e0b30276788492efcb73bf13a9c2197f716831c03ff8f13c38ef5dce06d9e8b",
     "app/src/main/res/drawable-nodpi/intro_veldio_portrait.webp": "9ac404f1495fbd6b056fab2e3a8bc29015a735678260d40c79436ab0a035a08b"
   },
@@ -895,5 +895,11 @@
     "assets/destinations39.html",
     "assets/predictions49.html"
   ],
-  "phase90_note": "Real shaded SVG jerseys, fixed fixture grid, Android version bump"
+  "phase90_note": "Real shaded SVG jerseys, fixed fixture grid, Android version bump",
+  "phase91_changed_assets": [
+    "assets/veldio-ui86.css",
+    "assets/destinations39.html",
+    "assets/predictions49.html"
+  ],
+  "phase91_note": "Approved prediction match layout: outer jerseys, names next to score, fixed center column, responsive Android design."
 }
