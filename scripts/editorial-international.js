@@ -54,6 +54,17 @@ function confirmedPreviews(oranje,uefa,plain,now,horizonDays){
   };
   groups.push(group);
  }
+ // A second independently verified group fixture gives useful context for
+ // a preview without borrowing standings or an unverified match result.
+ for(const group of groups){
+  const candidate=group.internationalPreview;
+  const adjacent=groups.find(other=>other!==group&&Math.abs(other.internationalPreview.kickoff-candidate.kickoff)<=7*86400000);
+  if(!adjacent)continue;
+  const related=adjacent.internationalPreview;
+  const calendarFact='Het andere geplande groepsduel van Nederland is '+related.topic+' op '+related.eventDate+'.';
+  group.push({url:ORANJE,title:'OnsOranje wedstrijdprogramma',publishedAt:'',text:calendarFact});
+  candidate.facts.push({text:calendarFact,evidence:[{source:group.length-1,quote:calendarFact}]});
+ }
  return groups;
 }
 function enrichPreview(group,detail,plain){
