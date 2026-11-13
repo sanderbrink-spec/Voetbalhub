@@ -125,22 +125,22 @@ jobs:
       - name: Verify signature, manifest and approved APK assets
         run: |
           set -euo pipefail
-          cp android-project/app/build/outputs/apk/release/app-release.apk Veldio-67.apk
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-67.apk > signature.txt
-          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-67.apk > manifest.txt
-          grep -q "package: name='nl.voetbalhub.app1'.*versionCode='107'.*versionName='4.67'" manifest.txt
+          cp android-project/app/build/outputs/apk/release/app-release.apk Veldio-68.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-68.apk > signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-68.apk > manifest.txt
+          grep -q "package: name='nl.voetbalhub.app1'.*versionCode='108'.*versionName='4.68'" manifest.txt
           grep -q "application-label:'Veldio'" manifest.txt
-          python3 scripts/apk-secret-scan.py Veldio-67.apk
-          python3 scripts/verify-android-source.py Veldio-67.apk
-          python3 scripts/verify-apk-match-artwork68.py Veldio-67.apk
-          sha256sum Veldio-67.apk > sha256.txt
+          python3 scripts/apk-secret-scan.py Veldio-68.apk
+          python3 scripts/verify-android-source.py Veldio-68.apk
+          python3 scripts/verify-apk-match-artwork68.py Veldio-68.apk
+          sha256sum Veldio-68.apk > sha256.txt
           grep -qi 'Signer #1 certificate SHA-256 digest: 682c149cd7879d80a81c757f02fbca093b5a86e629fd29a0e5f8c715e0206d57' signature.txt
           echo 'PASS: main APK signed with permanently pinned new Veldio release certificate'
       - uses: actions/upload-artifact@v4
         with:
-          name: Veldio-67
+          name: Veldio-68
           path: |
-            Veldio-67.apk
+            Veldio-68.apk
             Veldio-build-provenance.json
             signature.txt
             manifest.txt
@@ -245,22 +245,22 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           set -euo pipefail
-          cp android-project/app/build/outputs/apk/release/app-release.apk Veldio-67-preview-release.apk
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-67-preview-release.apk > preview-signature.txt
-          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-67-preview-release.apk > preview-manifest.txt
-          grep -q "package: name='nl.voetbalhub.preview51'.*versionCode='107'.*versionName='4.67'" preview-manifest.txt
-          grep -q "application-label:'Veldio 67 Test'" preview-manifest.txt
-          python3 scripts/apk-secret-scan.py Veldio-67-preview-release.apk
-          python3 scripts/verify-android-source.py Veldio-67-preview-release.apk
-          python3 scripts/verify-apk-match-artwork68.py Veldio-67-preview-release.apk
+          cp android-project/app/build/outputs/apk/release/app-release.apk Veldio-68-preview-release.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs Veldio-68-preview-release.apk > preview-signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging Veldio-68-preview-release.apk > preview-manifest.txt
+          grep -q "package: name='nl.voetbalhub.preview51'.*versionCode='108'.*versionName='4.68'" preview-manifest.txt
+          grep -q "application-label:'Veldio 68 Test'" preview-manifest.txt
+          python3 scripts/apk-secret-scan.py Veldio-68-preview-release.apk
+          python3 scripts/verify-android-source.py Veldio-68-preview-release.apk
+          python3 scripts/verify-apk-match-artwork68.py Veldio-68-preview-release.apk
           grep -qi 'Signer #1 certificate SHA-256 digest: 682c149cd7879d80a81c757f02fbca093b5a86e629fd29a0e5f8c715e0206d57' preview-signature.txt
-          sha256sum Veldio-67-preview-release.apk > preview-sha256.txt
+          sha256sum Veldio-68-preview-release.apk > preview-sha256.txt
       - uses: actions/upload-artifact@v4
         if: github.ref == 'refs/heads/main'
         with:
-          name: Veldio-67-preview-release
+          name: Veldio-68-preview-release
           path: |
-            Veldio-67-preview-release.apk
+            Veldio-68-preview-release.apk
             preview-signature.txt
             preview-manifest.txt
             preview-sha256.txt
@@ -274,7 +274,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: Veldio-67
+          name: Veldio-68
           path: apk
       - name: Install device test driver
         run: python3 -m pip install 'uiautomator2>=3,<4' 'websocket-client>=1,<2'
@@ -291,11 +291,11 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-release-smoke.py apk/Veldio-67.apk
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 scripts/android-release-smoke.py apk/Veldio-68.apk
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Veldio-67-Android16-release
+          name: Veldio-68-Android16-release
           path: .android-smoke/
           include-hidden-files: true
           if-no-files-found: error

@@ -199,8 +199,8 @@ try:
     )
     if not all(token in manifest for token in (
         "package: name='" + PACKAGE + "'",
-        "versionCode='107'",
-        "versionName='4.67'",
+        "versionCode='108'",
+        "versionName='4.68'",
     )):
         raise AssertionError("Unexpected production package or version")
     if "application-debuggable" in manifest:
