@@ -1109,6 +1109,20 @@ function reusableCheckpointPriority(job,group,secret,now=Date.now()){
  if(prior.evidenceHash!==evidenceHash)return 0;
  return prior.draft?2:prior.candidate?1:0;
 }
+// Focused probe: never fill Sportmonks slots with unrelated news or other providers.
+function scheduleEditorialGroups(newsGroups,matchGroups,{sportmonksOnly=false}={}){
+ const news=sportmonksOnly?[]:newsGroups;
+ const matches=sportmonksOnly?matchGroups.filter(group=>
+  /^sm-\d+$/.test(String(group?.matchRecord?.matchId||''))&&
+  group.matchRecord?.sources?.[0]?.url==='https://www.sportmonks.com/football-api/'
+ ):matchGroups;
+ const scheduled=[];
+ for(let index=0;index<Math.max(news.length,matches.length);index++){
+  if(news[index])scheduled.push(news[index]);
+  if(matches[index])scheduled.push(matches[index]);
+ }
+ return scheduled;
+}
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,providerRouter,report,focusSourceUrl,discoveryOnly=false,validationOnly=false,expectedRevision=process.env.GITHUB_SHA}={}){
  if(focusSourceUrl&&!articleUrl(focusSourceUrl,config.newsIndexes))throw Error('Ongeldige gerichte nieuwsbron.');
  if(focusSourceUrl)report.focusSourceUrl=focusSourceUrl;
@@ -1312,10 +1326,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  matchGroups.sort((a,b)=>Number(matchGuidance.isRichMatch(b.matchRecord))-
   Number(matchGuidance.isRichMatch(a.matchRecord))||
   (b.matchRecord?.verifiedFacts?.length||0)-(a.matchRecord?.verifiedFacts?.length||0));
- const scheduled=[];
- for(let index=0;index<Math.max(groups.length,matchGroups.length);index++){
-  if(groups[index])scheduled.push(groups[index]);
-  if(matchGroups[index])scheduled.push(matchGroups[index]);
+ const sportmonksOnly=process.env.EDITORIAL_SPORTMONKS_ONLY==='true';
+ const scheduled=scheduleEditorialGroups(groups,matchGroups,{sportmonksOnly});
+ if(sportmonksOnly){
+  report.testScope='verified_sportmonks_match_reports_only';
+  report.signals.push({route:'match',outcome:'focused_sportmonks_probe',eligible:scheduled.length,requested:10});
  }
  if(discoveryOnly){
   const unique=new Map(scheduled.map(group=>[group.matchRecord?.matchId||group.map(doc=>doc.url).sort().join(' '),group]));
@@ -1831,4 +1846,4 @@ function publicationFocus(env=process.env){
  return event.head_commit?.message?.match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
