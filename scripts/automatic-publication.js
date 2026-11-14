@@ -1539,7 +1539,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    delete job.checkpoint;
   }
   if(job.status==='review'&&job.failureStage==='quality'&&
-     job.errorHash==='d4ecc341b9a27868826ddb7b78d26b82109439a25714362f5a5abee279f4e423'&&
+     (job.errorHash==='d4ecc341b9a27868826ddb7b78d26b82109439a25714362f5a5abee279f4e423'||
+      (singlePublication&&job.errorHash===sha('Kwaliteitscontrole na 2 herschrijvingen: Journalistieke kwaliteit lager dan 85.')))&&
      !job.attributionFeedbackRetried){
    job.attributionFeedbackRetried=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
    delete job.checkpoint;
@@ -1657,7 +1658,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    if(duplicate(payload,comparison.concat(report.validated.map(item=>item.article)))){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
-   for(let revision=checkpoint.revisions||0;revision<=2;revision++){
+   const revisionLimit=singlePublication?3:2;
+   for(let revision=checkpoint.revisions||0;revision<=revisionLimit;revision++){
     if(!matchRecord&&candidate.primaryAuthority==='club_decision'){
      // V71: the same source-copied staff clause appears in both brief and full
      // news articles. The helper only rewrites an explicitly verified fact.
@@ -1715,7 +1717,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(!assessment){
      report.assessments.push({topic,revision,approved:false,score:null,reasons:[rejection],...(focusSourceUrl?{draft:{headline:draft.headline,standfirst:draft.standfirst,body:draft.body}}:{})});
     }
-    if(revision===2)throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
+    // Use the additional proof-run revision only for actionable review scores.
+    if(revision===revisionLimit||(revision===2&&!assessment))
+     throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
     const revised=await reviseDraft(payload,candidate,group,rejection,ai,comparison,editorialRewriteFeedback(assessment,review));
     if(!revised)throw Error('Onvoldoende feiten voor verantwoorde herschrijving.');
     payload.draft=revised;
