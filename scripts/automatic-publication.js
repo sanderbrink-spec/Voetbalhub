@@ -321,6 +321,19 @@ function confirmedFederationCoachDeparture(doc){
   primaryAuthority:'association_decision',sharedEventEvidence:[],
   facts:sentences.filter(Boolean).map(text=>({text,evidence:[{source:0,quote:text}]}))};
 }
+function confirmedClubHonoraryMembership(doc){
+ if(primaryAuthority(doc)!=='club_decision'||!/\bbenoemd tot erelid\b/i.test(doc.title))return null;
+ const publisher=officialPublisherName(doc.url);
+ if(!publisher)return null;
+ const sentences=doc.text.match(/[^.!?]+[.!?](?=\s|$)/g)?.map(sentence=>sentence.trim())||[];
+ const decision=sentences.findIndex(sentence=>/\bis benoemd tot erelid van\b/i.test(sentence)&&sentence.includes(publisher));
+ if(decision===-1)return null;
+ const facts=[sentences[decision].match(/[\p{Lu}][\p{L}’'-]+(?:\s+[\p{L}’'-]+){1,5}\s+is benoemd tot erelid van[^.!?]+\./u)?.[0],
+  ...sentences.slice(decision+1,decision+10).filter(sentence=>sentence.length>=25&&sentence.length<=300)];
+ if(!facts[0]||facts.length<4)return null;
+ return {kind:'announcement',topic:doc.title,category:'Eredivisie',teams:[],primaryAuthority:'club_decision',
+  sharedEventEvidence:[],facts:facts.map(text=>({text,evidence:[{source:0,quote:text}]}))};
+}
 function primaryAuthority(doc){
  const url=articleUrl(doc.url,config.newsIndexes);
  if(!url)return '';
@@ -1538,6 +1551,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    job.overlapFeedbackRetried=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
    delete job.checkpoint;
   }
+  if(singlePublication&&group.length===1&&!group.matchRecord&&job.status==='review'&&
+     job.failureStage==='verification'&&job.reason==='insufficient_verified_facts'&&confirmedClubHonoraryMembership(group[0])){
+   job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+  }
   if(job.status==='review'&&job.failureStage==='quality'&&
      (job.errorHash==='d4ecc341b9a27868826ddb7b78d26b82109439a25714362f5a5abee279f4e423'||
       (singlePublication&&job.errorHash===sha('Kwaliteitscontrole na 2 herschrijvingen: Journalistieke kwaliteit lager dan 85.')))&&
@@ -1605,7 +1622,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     durable.queue.finish(job,'duplicate',now);continue;
    }
    const candidate=checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
-    group.internationalPreview||group.bootstrap?.candidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&confirmedFederationCoachDeparture(group[0]))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
+    group.internationalPreview||group.bootstrap?.candidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
    if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage:'verification',category:'journalistic_rejection'});continue;}
    const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
