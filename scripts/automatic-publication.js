@@ -752,7 +752,20 @@ function finalizeCheckedRevision(revised,payload,candidate,docs) {
   throw Error('Herschrijving heeft geen geldige artikelstructuur.');
  const draft={headline:revised.headline,standfirst:revised.standfirst,body:revised.body};
  const sourceUrl=docs?.length===1?docs[0].url:'';
- return repairUnsupportedDecisionTimestamp(draft,payload.verifiedFacts||[],sourceUrl,candidate?.primaryAuthority||'');
+ const primaryAuthority=candidate?.primaryAuthority||'';
+ const facts=payload.verifiedFacts||[];
+ const corrected=repairUnsupportedDecisionTimestamp(draft,facts,sourceUrl,primaryAuthority);
+ const attribution={primaryAuthority,sourceUrls:sourceUrl?[sourceUrl]:[],facts};
+ const publisher=sourceUrl&&officialPublisherName(sourceUrl);
+ if(publisher&&editorialAttributionIssues(corrected,attribution).some(issue=>issue.startsWith('Schrijf in minstens één inhoudelijke alinea'))){
+  const index=corrected.body.findIndex(paragraph=>paragraph.endsWith('.')&&paragraph.split(/\s+/).length<115);
+  if(index!==-1){
+   const body=[...corrected.body];
+   body[index]=body[index].slice(0,-1)+', aldus '+publisher+'.';
+   return {...corrected,body};
+  }
+ }
+ return corrected;
 }
 
 async function reviseDraft(payload,candidate,docs,reason,options,published=[],reviewFeedback=null){
@@ -1523,6 +1536,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      job.errorHash==='f583692cfdc657a7bcd79f1c729837d2715b566dffec6e670f2f06262d992c70'&&
      !job.overlapFeedbackRetried){
    job.overlapFeedbackRetried=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+   delete job.checkpoint;
+  }
+  if(job.status==='review'&&job.failureStage==='quality'&&
+     job.errorHash==='d4ecc341b9a27868826ddb7b78d26b82109439a25714362f5a5abee279f4e423'&&
+     !job.attributionFeedbackRetried){
+   job.attributionFeedbackRetried=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
    delete job.checkpoint;
   }
   // Generator failures have their own separate bounded retry path.
