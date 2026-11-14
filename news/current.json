@@ -1,8 +1,127 @@
 {
   "rightsPolicyVersion": 26,
-  "rightsExpiresAt": 1794736797134,
-  "count": 17,
+  "rightsExpiresAt": 1794798546064,
+  "count": 18,
   "articles": [
+    {
+      "id": "e91cc5d6-9330-4470-b187-eb1293a74199",
+      "articleKind": "announcement",
+      "status": "published",
+      "author": "Veldio Redactie",
+      "headline": "Koen Groenewold benoemd tot erelid van FC Twente",
+      "standfirst": "FC Twente heeft Koen Groenewold tot erelid benoemd. Algemeen directeur Dominique Scholten reikte hem de gouden speld uit.",
+      "body": [
+        "Groenewold trad in juni 2016 toe tot de raad van commissarissen. FC Twente maakte op 13 november bekend dat hij afscheid had genomen en eerde hem voor zijn jarenlange inzet.",
+        "Na de degradatie in 2018 kreeg Groenewold een andere taak. Toen de directie en een aantal commissarissen vertrokken, werd hij benoemd tot gedelegeerd statutair bestuurder.",
+        "Onder leiding van Dennis Schipper ging Groenewold met clubmedewerkers langs bij sponsoren. Uit die gesprekken kwamen volgens FC Twente de Noabers en de Ambassadeurs voort. Hun investeringen hielpen de club samen met steun van de gemeente Enschede overeind te blijven."
+      ],
+      "why_it_matters": "",
+      "category": "Eredivisie",
+      "publishedAt": "2026-11-14T12:41:33.645Z",
+      "verifiedFacts": [
+        "Koen Groenewold is benoemd tot erelid van FC Twente.",
+        "Het erelidmaatschap is een erkenning voor zijn jarenlange inzet als lid van de Raad van Commissarissen van FC Twente.",
+        "Groenewold kreeg het erelidmaatschap in de vorm van een gouden speld vandaag uitgereikt door algemeen directeur Dominique Scholten.",
+        "Groenewold was sinds juni 2016 lid van de RvC van FC Twente en nam vandaag afscheid.",
+        "Koen Groenewold trad aan in een van de meest turbulente periodes van FC Twente.",
+        "Het voortbestaan van de club kwam in 2016 onder druk te staan en na de degradatie in 2018 stond de club voor grote (financiële) uitdagingen.",
+        "Na het vertrek van de directie en enkele RvC-leden in 2018 werd Groenewold benoemd tot gedelegeerd statutair bestuurder.",
+        "Onder leiding van Dennis Schipper bezocht Groenewold samen met medewerkers van FC Twente talloze sponsoren.",
+        "Deze inspanningen legden de basis voor de totstandkoming van de Noabers en de Ambassadeurs.",
+        "Hun investeringen waren in combinatie met de steun van de gemeente Enschede cruciaal voor het voortbestaan van FC Twente.",
+        "FC Twente publiceerde het bericht op 13 november 2026."
+      ],
+      "sources": [
+        {
+          "url": "https://fctwente.nl/nieuws/koen-groenewold-benoemd-tot-erelid-fc-twente"
+        }
+      ],
+      "editorialChecks": {
+        "originalSourceReviewed": true,
+        "claimsIndependentlyChecked": true,
+        "duplicateChecked": true,
+        "languageChecked": true
+      },
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art69/club-1.webp",
+      "imageSource": "Veldio · illustratie",
+      "imageCredit": "Veldio",
+      "imageRights": "cleared",
+      "imageReview": {
+        "method": "approved-library49",
+        "mode": "approved-library",
+        "pipelineVersion": 49,
+        "assetSha256": "ea436ae1778a3c402bacb93c1249c39d135da9b09cd9c329ef23503d8c94a195",
+        "kitVerified": true,
+        "playerIdentityVerified": true,
+        "aiDisclosureVerified": true,
+        "clubs": [],
+        "generated": true,
+        "qualityTier": "contextual-illustration"
+      },
+      "autoPublish": false,
+      "updatedAt": "2026-11-14T12:46:25.605Z",
+      "correctionNote": "Datum van het afscheid verduidelijkt en de leiding over de sponsorbezoeken correct toegeschreven aan Dennis Schipper.",
+      "imageAssetId": "veldio69-club-1",
+      "imageCaption": "Veldio · AI-illustratie bij Maatschappelijke clubactiviteit. Geen foto van de wedstrijd of gebeurtenis.",
+      "imageVariants": [
+        {
+          "id": "veldio69-club-1",
+          "url": "https://voetbalhub-redactie.onrender.com/article-art69/club-1.webp",
+          "caption": "Veldio · AI-illustratie bij Maatschappelijke clubactiviteit. Geen foto van de wedstrijd of gebeurtenis.",
+          "credit": "Veldio",
+          "source": "Veldio · illustratie",
+          "rights": "cleared",
+          "review": {
+            "method": "approved-library49",
+            "mode": "approved-library",
+            "pipelineVersion": 49,
+            "assetSha256": "ea436ae1778a3c402bacb93c1249c39d135da9b09cd9c329ef23503d8c94a195",
+            "kitVerified": true,
+            "playerIdentityVerified": true,
+            "aiDisclosureVerified": true,
+            "clubs": [],
+            "generated": true,
+            "qualityTier": "contextual-illustration"
+          }
+        },
+        {
+          "id": "veldio69-club-2",
+          "url": "https://voetbalhub-redactie.onrender.com/article-art69/club-2.webp",
+          "caption": "Veldio · AI-illustratie bij Maatschappelijke clubactiviteit. Geen foto van de wedstrijd of gebeurtenis.",
+          "credit": "Veldio",
+          "source": "Veldio · illustratie",
+          "rights": "cleared",
+          "review": {
+            "method": "approved-library49",
+            "mode": "approved-library",
+            "pipelineVersion": 49,
+            "assetSha256": "9b18d048d002b60a324b7f7bfefe4ad508ed5b13cdc94a565b1d9e4fd74c2362",
+            "kitVerified": true,
+            "playerIdentityVerified": true,
+            "aiDisclosureVerified": true,
+            "clubs": [],
+            "generated": true,
+            "qualityTier": "contextual-illustration"
+          }
+        }
+      ],
+      "imageRotation": {
+        "method": "approved-article-v69",
+        "count": 2,
+        "maximum": 6,
+        "selectedId": "veldio69-club-1",
+        "context": {
+          "category": "club",
+          "clubs": [],
+          "fixtureId": "",
+          "competition": "Eredivisie",
+          "daypart": "neutral",
+          "venueName": ""
+        },
+        "reason": "exact-topic"
+      },
+      "feedState": "current"
+    },
     {
       "id": "9d5519ca-0923-416c-88df-169dac7c6ff0",
       "articleKind": "announcement",
@@ -2564,6 +2683,6 @@
     }
   ],
   "imagePolicyVersion": 69,
-  "mirroredAt": "2026-11-13T21:59:56.900Z",
+  "mirroredAt": "2026-11-14T15:09:05.444Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
