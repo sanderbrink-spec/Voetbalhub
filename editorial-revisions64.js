@@ -59,6 +59,7 @@ return 1
 `;
 
 async function apply(client, getFixtures, logger = console) {
+ await correctHonoraryMembership(client, logger);
  const pending = [];
  for (const row of [...revisions, ...incidentRevisions, ...copyRevisions]) {
   const key = 'article:' + row.id;
@@ -80,6 +81,36 @@ async function apply(client, getFixtures, logger = console) {
   const written = await client.eval(writeRevision, { keys: [key, history], arguments: [raw, JSON.stringify(next)] });
   if (written) logger.info('Editorial revision '+version+' applied:', row.matchId);
  }
+}
+
+async function correctHonoraryMembership(client, logger) {
+ const id = 'e91cc5d6-9330-4470-b187-eb1293a74199';
+ const key = 'article:' + id;
+ const history = 'article-revision:97E:' + id;
+ const [raw, prior] = await client.mGet([key, history]);
+ if (!raw || prior) return;
+ const article = JSON.parse(raw);
+ if (article.id !== id || article.status !== 'published' || article.articleKind !== 'announcement' ||
+     article.sources?.[0]?.url !== 'https://fctwente.nl/nieuws/koen-groenewold-benoemd-tot-erelid-fc-twente' ||
+     !article.body?.some(paragraph => paragraph.includes('Onder zijn leiding en samen met medewerkers')) ||
+     !article.verifiedFacts?.some(fact => fact.startsWith('Onder leiding van Dennis Schipper bezocht Groenewold')))
+  return;
+ const draft = {
+  headline: article.headline,
+  standfirst: 'FC Twente heeft Koen Groenewold tot erelid benoemd. Algemeen directeur Dominique Scholten reikte hem de gouden speld uit.',
+  body: [
+   'Groenewold trad in juni 2016 toe tot de raad van commissarissen. FC Twente maakte op 13 november bekend dat hij afscheid had genomen en eerde hem voor zijn jarenlange inzet.',
+   'Na de degradatie in 2018 kreeg Groenewold een andere taak. Toen de directie en een aantal commissarissen vertrokken, werd hij benoemd tot gedelegeerd statutair bestuurder.',
+   'Onder leiding van Dennis Schipper ging Groenewold met clubmedewerkers langs bij sponsoren. Uit die gesprekken kwamen volgens FC Twente de Noabers en de Ambassadeurs voort. Hun investeringen hielpen de club samen met steun van de gemeente Enschede overeind te blijven.'
+  ]
+ };
+ const verifiedFacts = [...article.verifiedFacts, 'FC Twente publiceerde het bericht op 13 november 2026.'];
+ const issues = [...draftIssues(draft), ...audit({...article, draft, verifiedFacts})];
+ if (issues.length) throw Error('Correctie FC Twente geblokkeerd: ' + issues.join(' '));
+ const corrected = {...article, ...draft, verifiedFacts, updatedAt: new Date().toISOString(),
+  correctionNote: 'Datum van het afscheid verduidelijkt en de leiding over de sponsorbezoeken correct toegeschreven aan Dennis Schipper.'};
+ const written = await client.eval(writeRevision, {keys: [key, history], arguments: [raw, JSON.stringify(corrected)]});
+ if (written) logger.info('Editorial revision 97E applied:', id);
 }
 
 module.exports = { apply, prepare, registrationMatches };
