@@ -1,0 +1,76 @@
+name: Veldio 97E existing release article check
+on:
+  push:
+    branches: ['verify/veldio-97e-android']
+    paths: ['.github/workflows/veldio-97e-android.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  android16:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Veldio-70
+          path: apk
+          run-id: 43387901243
+          github-token: ${{ github.token }}
+      - run: python3 -m pip install 'uiautomator2>=3,<4'
+      - name: Prepare Android verification
+        env:
+          ARTICLE_ID: 'e91cc5d6-9330-4470-b187-eb1293a74199'
+        run: |
+          cat > /tmp/veldio-android-97e.py <<'PY'
+          import json
+          import os
+          import subprocess
+          import urllib.request
+          import uiautomator2 as u2
+
+          with urllib.request.urlopen('https://voetbalhub-redactie.onrender.com/articles', timeout=30) as response:
+              feed = json.load(response)
+          matches = [row for row in feed['articles'] if row['id'] == os.environ['ARTICLE_ID']]
+          assert len(matches) == 1, 'Publicatie-ID ontbreekt in de productiefeed'
+          article = matches[0]
+          subprocess.run(['adb', 'install', 'apk/Veldio-70.apk'], check=True)
+          subprocess.run(['adb', 'shell', 'am', 'start', '-W', '-n', 'nl.voetbalhub.app1/nl.voetbalhub.app.MainActivity'], check=True)
+          device = u2.connect()
+          tab = device(text='Nieuws')
+          assert tab.wait(timeout=25), 'Nieuwsscherm ontbreekt'
+          tab.click()
+          latest = device(text='Laatste')
+          if latest.wait(timeout=5):
+              latest.click()
+          card = device(text=article['headline'])
+          for _ in range(12):
+              if card.wait(timeout=4):
+                  break
+              device.swipe_ext('up', scale=0.55)
+          else:
+              raise AssertionError('Nieuwe kop ontbreekt in de Android-nieuwslijst')
+          device.screenshot('android-feed.png')
+          card.click()
+          assert device(description='Terug naar de vorige pagina').wait(timeout=12), 'Artikelweergave opende niet'
+          assert device(text=article['headline']).wait(timeout=10), 'Kop ontbreekt in artikelweergave'
+          device.screenshot('android-article.png')
+          print('Android 16 / Veldio 4.70: ' + article['id'] + ' / ' + article['headline'])
+          PY
+          echo "ARTICLE_ID=$ARTICLE_ID" >> "$GITHUB_ENV"
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: adb shell wm size 1080x2340 && adb shell wm density 440 && python3 /tmp/veldio-android-97e.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Veldio-97E-Android-16
+          path: android-*.png
+          if-no-files-found: error
