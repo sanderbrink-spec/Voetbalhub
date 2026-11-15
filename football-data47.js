@@ -1,7 +1,7 @@
 'use strict';
 const sportmonks = require('./sportmonks-football');
 const crypto=require('node:crypto');
-const CATALOG={eredivisie:{id:88,name:'Eredivisie',file:'nl.1',zone:'Europe/Amsterdam'},bundesliga:{id:78,name:'Bundesliga',file:'de.1',zone:'Europe/Berlin'},premierleague:{id:39,name:'Premier League',file:'en.1',zone:'Europe/London'},laliga:{id:140,name:'La Liga',file:'es.1',zone:'Europe/Madrid'},seriea:{id:135,name:'Serie A',file:'it.1',zone:'Europe/Rome'},ligue1:{id:61,name:'Ligue 1',file:'fr.1',zone:'Europe/Paris'},kkd:{id:89,name:'Keuken Kampioen Divisie'},championsleague:{id:2,name:'Champions League'},europaleague:{id:3,name:'Europa League'},conferenceleague:{id:848,name:'Conference League'}};
+const CATALOG={eredivisie:{id:88,name:'Eredivisie',file:'nl.1',zone:'Europe/Amsterdam'},bundesliga:{id:78,name:'Bundesliga',file:'de.1',zone:'Europe/Berlin'},premierleague:{id:39,name:'Premier League',file:'en.1',zone:'Europe/London'},laliga:{id:140,name:'La Liga',file:'es.1',zone:'Europe/Madrid'},seriea:{id:135,name:'Serie A',file:'it.1',zone:'Europe/Rome'},ligue1:{id:61,name:'Ligue 1',file:'fr.1',zone:'Europe/Paris'},kkd:{id:89,name:'Keuken Kampioen Divisie'},knvbbeker:{id:78,name:'KNVB Beker'},eredivisieplayoffs:{id:0,name:'Eredivisie Play-offs'},championsleague:{id:2,name:'Champions League'},europaleague:{id:3,name:'Europa League'},conferenceleague:{id:848,name:'Conference League'}};
 const PROVIDERS={bundesliga:{shortcut:'bl1',min:250},laliga:{shortcut:'la1',min:300},premierleague:{shortcut:'pl',min:300},championsleague:{shortcut:'ucl',min:100},europaleague:{shortcut:'uel2026',min:100},conferenceleague:{shortcut:'uecl2026',min:100}};
 const SOURCE={name:'OpenLigaDB',url:'https://www.openligadb.de/',license:'ODbL-1.0',licenseUrl:'https://www.openligadb.de/lizenz',commercial:true,cost:0,refreshMinutes:15,limits:'Geen SLA; gedeelde communitybron. Maximaal één centraal verzoek per 15 minuten.',databaseDownload:'/integrations/football?competition=bundesliga'};
 const slug=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-');
@@ -41,28 +41,29 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
     if(redis?.isReady){
      try{
       const raw=await require('./runtime-health').withDeadline(()=>redis.get('football47:'+key),1500);
-      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&['eredivisie','kkd'].includes(key)&&(value.sourceDetails?.name!=='Sportmonks Football API'||value.sourceDetails?.eventParserRevision!==sportmonks.EVENT_PARSER_REVISION))){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
+      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&['eredivisie','kkd','premierleague','knvbbeker','eredivisieplayoffs'].includes(key)&&(value.sourceDetails?.name!=='Sportmonks Football API'||value.sourceDetails?.eventParserRevision!==sportmonks.EVENT_PARSER_REVISION))){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
      }catch{storageFailed=true;}
     }
-    if(key==='eredivisie'||key==='kkd'){
+    if(['eredivisie','kkd','premierleague','knvbbeker','eredivisieplayoffs'].includes(key)){
      // Sportmonks is the first provider. An outage or incomplete season falls back
      // to the existing public schedule and Football-Data.org results.
      if(sportmonksToken){
       try{
        const fixtures=await sportmonks.load({fetcher,token:sportmonksToken,now,sourceBody,competition:key});
        const value=envelope(key,fixtures,now,sportmonks.SOURCE);
+       if(['knvbbeker','eredivisieplayoffs'].includes(key)){value.standings=[];value.standingsNote='Beker en play-offs hebben geen reguliere competitieranglijst.';}
        if(fixtures.some(f=>f.status==='AWAITING'&&Date.parse(f.date)<now)){
         value.standings=[];value.standingsNote='Niet alle eindstanden zijn bevestigd; stand tijdelijk verborgen.';
        }
        cache.set(key,{at:now,value,ttl:15*60000});return value;
       }catch(error){console.warn('football47 Sportmonks fallback:',error.message);}
      }
-     if(key==='kkd'){
+     if(key!=='eredivisie'){
       // No subscription is a configured absence, not a failed source call.
       // A configured token with unusable data must be reported as an outage.
       const value={...envelope(key,[],now),source:'Veldio',sourceDetails:null,
        status:sportmonksToken?'source_unavailable':'unavailable',
-       message:sportmonksToken?'Sportmonks KKD-gegevens tijdelijk niet beschikbaar.':'KKD vereist een actief Sportmonks-token.'};
+       message:sportmonksToken?'Sportmonks '+key+'-gegevens tijdelijk niet beschikbaar.':key+' vereist een actief Sportmonks-token.'};
       cache.set(key,{at:now,value,ttl:60000});
       return value;
      }
