@@ -11,12 +11,17 @@ test('unavailable leagues never acquire fabricated standings or paid fallback; n
 test('concurrent source requests share a request; outage retries after one minute',async()=>{let calls=0,t=now;const service=M.create({clock:()=>t,fetcher:async()=>{calls++;throw Error('offline');}});await Promise.all([service.get('bundesliga'),service.get('bundesliga')]);assert.equal(calls,1);await service.get('bundesliga');assert.equal(calls,1);t+=61000;await service.get('bundesliga');assert.equal(calls,2);});
 test('shirt markup only accepts validated colours and escapes club names',()=>{const s=UI.shirt({name:'<img onerror=alert(1)>',colours:['red" onload="alert(1)','#ffffff']});assert.equal((s.match(/<svg/g)||[]).length,1); assert.ok(s.includes('club-shirt90'));assert.ok(!s.includes('onload='));assert.ok(s.includes('&lt;img'));});
 
-test('known club shirts load distinct premium image assets and original Veldio breast badge',()=>{
+test('known club shirts retain distinct premium kits without invented Veldio chest logos',()=>{
  for(const [club,code] of [['FC Groningen','GRO'],['AZ Alkmaar','AZ'],['Excelsior','EXC'],['PEC Zwolle','PEC'],['PSV','PSV']]){
   const markup=UI.shirt({name:club});
   assert.ok(markup.includes('shirts-premium/'+code+'.svg'));
-  assert.ok(markup.includes('premium-kit-badge'));
-  assert.ok(markup.includes('veldio-logo.png'));
+  assert.ok(!markup.includes('premium-kit-badge'));
+  assert.ok(!markup.includes('veldio-logo.png'));
+ }
+ for(const club of ['FC Barcelona','Aston Villa','Club Brugge','Sabah']){
+  const markup=UI.shirt({name:club});
+  assert.ok(markup.includes('<svg'));
+  assert.ok(!markup.includes('premium-kit-badge'));
  }
 });
 test('postponed or unknown-time games never remain open for predictions',()=>{for(const status of ['PST','CANC','TBD','AWAITING'])assert.equal(UI.prediction({home:1,away:0},{...fixture(1,'A','B',null,'2026-11-05T12:00:00Z'),status},now).status,'gesloten');});
@@ -48,4 +53,47 @@ test('localizes round labels for display and preserves Dutch labels and competit
   ['CL','CL'],['EL','EL'],['UCL','UCL'],[null,'Speelronde']
  ];
  for(const [raw,label] of cases)assert.equal(UI.roundLabel(raw),label);
+});
+
+test('UEFA 2026/27 Barcelona identity correction is exact and preserves other competitions',()=>{
+ const original=(home,away,date='2026-11-03T20:00:00Z',key='championsleague',season=2026,finished=false,score=null)=>
+  M.verifiedUefaClubIdentity({key,season,date,home:{id:'h',name:home},away:{id:'a',name:away},finished,score});
+ assert.equal(original('Excelsior Rotterdam','Aston Villa').home.name,'FC Barcelona');
+ assert.equal(original('Sabah','Excelsior Rotterdam','2026-11-25T17:45:00Z').away.name,'FC Barcelona');
+ assert.equal(original('Excelsior Rotterdam','Aston Villa','2025-11-03T20:00:00Z').home.name,'Excelsior Rotterdam');
+ assert.equal(original('Excelsior Rotterdam','Aston Villa',undefined,'eredivisie').home.name,'Excelsior Rotterdam');
+ assert.equal(original('Excelsior Rotterdam','Other Club').home.name,'Excelsior Rotterdam');
+ assert.throws(()=>original('Excelsior Rotterdam','Aston Villa',undefined,'championsleague',2026,true,{pointsTeam1:0,pointsTeam2:3}),/geblokkeerd/);
+});
+test('OpenLiga Champions League source fixes exactly the verified fixtures without changing their scores or IDs',()=>{
+ const now=Date.parse('2026-11-15T14:00:00Z');
+ const make=(matchID,home,away,date='2026-11-26T20:00:00Z',finished=false)=>
+  ({matchID,leagueShortcut:'ucl',leagueSeason:2026,matchDateTimeUTC:date,
+    team1:{teamId:matchID*2,teamName:home},team2:{teamId:matchID*2+1,teamName:away},
+    matchIsFinished:finished,matchResults:finished?[{resultTypeID:2,pointsTeam1:3,pointsTeam2:0}]:[]});
+ const rows=Array.from({length:98},(_,i)=>make(i+3,'Club '+i,'Opponent '+i));
+ rows.push(make(1,'Excelsior Rotterdam','Aston Villa','2026-11-03T20:00:00Z',true));
+ rows.push(make(2,'Sabah','Excelsior Rotterdam','2026-11-25T17:45:00Z'));
+ const snapshot=M.fromOpenLiga(rows,now,'championsleague');
+ const barcelona=snapshot.fixtures.find(x=>x.id==='oldb-1');
+ const sabah=snapshot.fixtures.find(x=>x.id==='oldb-2');
+ assert.equal(barcelona.home.name,'FC Barcelona');
+ assert.equal(barcelona.goals.home,3);
+ assert.equal(barcelona.goals.away,0);
+ assert.equal(sabah.away.name,'FC Barcelona');
+ assert.equal(sabah.away.id,barcelona.home.id);
+ assert.equal(sabah.status,'NS');
+ assert.equal(snapshot.fixtures.length,100);
+});
+test('Android match layout separates date and time and never inserts unsupported kit badges',()=>{
+ const fs=require('node:fs'),path=require('node:path');
+ const root=path.join(__dirname,'../android-project/app/src/main/assets');
+ const html=fs.readFileSync(path.join(root,'destinations39.html'),'utf8');
+ const css=fs.readFileSync(path.join(root,'veldio-ui86.css'),'utf8');
+ assert.match(html,/kickoff97/);
+ assert.match(css,/no overlap between long club names/);
+ assert.match(css,/overflow-wrap:anywhere!important/);
+ assert.match(css,/padding-bottom:max\\(112px/);
+ const ui=fs.readFileSync(path.join(root,'football47.js'),'utf8');
+ assert.ok(!ui.includes('premium-kit-badged'));
 });
