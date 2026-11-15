@@ -15,7 +15,7 @@ function envelope(key,fixtures,now,source=SOURCE){const c=CATALOG[key];return {s
 // match list. Only repair OpenLigaDB's wrong Excelsior identity when opponent,
 // competition, season, fixture date and (for a final) score all agree.
 function verifiedUefaClubIdentity({key,season,date,home,away,finished,score}){
- const original={home,away},excelsior=n=>/^(?:sbv\\s+)?excelsior(?:\\s+rotterdam)?$/i.test(String(n||'').trim());
+ const original={home,away},excelsior=n=>/^(?:sbv\s+)?excelsior(?:\s+rotterdam)?$/i.test(String(n||'').trim());
  if(key!=='championsleague'||season!==2026)return original;
  if(date.slice(0,10)==='2026-11-03'&&excelsior(home.name)&&/^aston villa(?: fc)?$/i.test(away.name)){
   if(finished&&(!score||score.pointsTeam1!==3||score.pointsTeam2!==0))
