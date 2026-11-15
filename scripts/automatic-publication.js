@@ -1205,6 +1205,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const matchGroups=[];
  for(const [competition, endpoint] of [
   ['eredivisie','/integrations/football?competition=eredivisie'],
+  ['premierleague','/integrations/football?competition=premierleague'],
+  ['knvbbeker','/integrations/football?competition=knvbbeker'],
+  ['eredivisieplayoffs','/integrations/football?competition=eredivisieplayoffs'],
+  ['kkd','/integrations/football?competition=kkd'],
   ['championsleague','/editorial-champions-league']
  ]){
  try{
@@ -1226,7 +1230,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }
   }catch(error){report.sources[competition]={status:'unavailable'};report.sourceErrors.push({source:competition,error:error.message});}
  }
- report.sources.match={status:['eredivisie','championsleague'].some(key=>report.sources[key].status==='ok')?'ok':'unavailable'};
+ report.sources.match={status:['eredivisie','premierleague','knvbbeker','eredivisieplayoffs','kkd','championsleague'].some(key=>report.sources[key].status==='ok')?'ok':'unavailable'};
 
  for(const job of durable.queue.records.filter(j=>!j.matchId&&durable.queue.due(j,now))){const group=(await Promise.all(job.urls.map(load))).filter(Boolean);if(group.length===job.urls.length){if(durable.queue.enqueue(group,now).id!==job.id)durable.queue.finish(job,'superseded',now);groups.push(group);}else{durable.queue.fail(job,Error('Primaire bron tijdelijk onbereikbaar'),now);}}
  for(const urls of config.sourceGroups){
