@@ -32,7 +32,16 @@ const destinations=[['news','Nieuws'],['fixtures','Wedstrijden'],['competitions'
 let filter='all',favoriteOnly=false,round50='';
 let state={mode:'home',stats:{},predictions:[],notifications:{},loading:false},club='';const bridge=(method,data='')=>window.VeldioDestinations?.[method]?.(typeof data==='string'?data:JSON.stringify(data));
 function score(f){return f.goals||f.score;}
-function fixtures(){return(state.stats?.fixtures||[]).filter(f=>f.id&&f.home?.name&&f.away?.name&&Number.isFinite(Date.parse(f.date)));}
+// Do not display stale cached 2026/27 UEFA fixtures with the proven bad
+// Excelsior identity. The backend supplies the corrected Barcelona fixtures.
+function verifiedFixtureIdentity97(f){
+ if(state.competition!=='championsleague')return true;
+ const day=String(f.date||'').slice(0,10);
+ const wrong=n=>/^(?:sbv\\s+)?excelsior(?:\\s+rotterdam)?$/i.test(String(n||'').trim());
+ return !(day==='2026-11-03'&&wrong(f.home?.name)&&/^aston villa(?: fc)?$/i.test(f.away?.name||''))&&
+        !(day==='2026-11-25'&&/^sabah(?: fc)?$/i.test(f.home?.name||'')&&wrong(f.away?.name));
+}
+function fixtures(){return(state.stats?.fixtures||[]).filter(f=>f.id&&f.home?.name&&f.away?.name&&Number.isFinite(Date.parse(f.date))&&verifiedFixtureIdentity97(f));}
 function date(v){try{return new Intl.DateTimeFormat('nl-NL',{timeZone:'Europe/Amsterdam',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(v));}catch{return '';}}
 function setData(raw){const form=document.querySelector('#prediction'),draft=form?{fixtureId:document.querySelector('#fixture').value,home:document.querySelector('#homeGoals').value,away:document.querySelector('#awayGoals').value}:null;state=JSON.parse(raw);if(!Subpage46.current(state.stats))state.stats={};render();if(draft&&[...document.querySelectorAll('#fixture option')].some(o=>o.value===draft.fixtureId)){document.querySelector('#fixture').value=draft.fixtureId;document.querySelector('#homeGoals').value=draft.home;document.querySelector('#awayGoals').value=draft.away;}}function result(ok,message){const s=document.querySelector('#status');if(s)s.textContent=message|| (ok?'Opgeslagen op dit apparaat.':'Opslaan mislukt.');}
 function render(){document.body.dataset.section=state.mode;let h='';if(state.mode==='home'){h='<div class="hero"><span class="eyebrow">MIJN VELDIO</span><h1>Alles voetbal.<br>Eén plek.</h1><p>Kies jouw onderdeel.</p></div><nav class="grid" aria-label="Veldio startmenu">'+destinations.map(([id,label])=>'<button class="tile" data-route="'+id+'"><img src="icons/'+id+'.svg" alt=""><span>'+esc(label)+'</span></button>').join('')+'</nav>';}
