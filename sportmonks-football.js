@@ -145,7 +145,7 @@ async function resolvePlayoffsLeague({fetcher,token,sourceBody}){
  try{data=JSON.parse(await sourceBody(response));}catch{throw Error('Ongeldig Sportmonks play-offs antwoord');}
  const found=(Array.isArray(data.data)?data.data:[]).filter(l=>
   Number.isSafeInteger(l?.id)&&l.id>0&&
-  /^eredivisie\\s+play[ -]?offs$/i.test(String(l.name||'').trim())&&
+  /^eredivisie\s+play[ -]?offs$/i.test(String(l.name||'').trim())&&
   /^play[ -]?offs$/i.test(String(l.sub_type||'')));
  if(found.length!==1)throw Error('Eredivisie-play-offs ID niet eenduidig geverifieerd');
  return found[0].id;
