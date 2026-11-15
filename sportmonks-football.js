@@ -2,7 +2,7 @@
 // Sportmonks is the first-choice football provider only for leagues explicitly configured here.
 // Never log the token, API URL with token, or raw provider errors.
 // The Eredivisie is league 72; 271 is Denmark's Superliga. Verify against provider catalog.
-const LEAGUES={eredivisie:72};
+const LEAGUES={eredivisie:72,kkd:74};
 const CREDIT='Sportmonks Football API';
 const EVENT_PARSER_REVISION=138;
 const SOURCE={name:CREDIT,eventParserRevision:EVENT_PARSER_REVISION,url:'https://www.sportmonks.com/football-api/',license:'Sportmonks subscription; commercial display rights subject to contract',commercial:null,cost:'trial/subscription',refreshMinutes:15,databaseDownload:null};
