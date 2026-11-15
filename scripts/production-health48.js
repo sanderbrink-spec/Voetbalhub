@@ -58,7 +58,9 @@ function allowedLink(value){try{const u=new URL(value);return u.protocol==='http
 // Include both bare and www official host forms, with a fixed host allowlist.
 allowedHosts.add('youtube.com');
 async function request(url,{fetcher=fetch,json=true,headers={}}={}){
- const signal=AbortSignal.timeout(20000);
+ // Render's free instance may wake from sleep. Allow the first read-only
+ // health request enough time without masking HTTP errors or stale data.
+ const signal=AbortSignal.timeout(45000);
  for(let redirects=0;redirects<=2;redirects++){
   const r=await fetcher(url,{signal,redirect:'manual',headers});
   if(r.status>=300&&r.status<400){const next=new URL(r.headers.get('location')||'',url);await r.body?.cancel();if(!allowedLink(next.href))throw Error('Omleiding buiten toegestane bron');url=next.href;continue;}
