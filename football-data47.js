@@ -41,15 +41,15 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
     if(redis?.isReady){
      try{
       const raw=await require('./runtime-health').withDeadline(()=>redis.get('football47:'+key),1500);
-      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&key==='eredivisie'&&(value.sourceDetails?.name!=='Sportmonks Football API'||value.sourceDetails?.eventParserRevision!==sportmonks.EVENT_PARSER_REVISION))){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
+      if(raw){const value=JSON.parse(raw);if(value.rightsExpiresAt>now&&!(sportmonksToken&&['eredivisie','kkd'].includes(key)&&(value.sourceDetails?.name!=='Sportmonks Football API'||value.sourceDetails?.eventParserRevision!==sportmonks.EVENT_PARSER_REVISION))){cache.set(key,{at:now,value,ttl:15*60000});return currentManual(value,now);}}
      }catch{storageFailed=true;}
     }
-    if(key==='eredivisie'){
+    if(key==='eredivisie'||key==='kkd'){
      // Sportmonks is the first provider. An outage or incomplete season falls back
      // to the existing public schedule and Football-Data.org results.
      if(sportmonksToken){
       try{
-       const fixtures=await sportmonks.load({fetcher,token:sportmonksToken,now,sourceBody});
+       const fixtures=await sportmonks.load({fetcher,token:sportmonksToken,now,sourceBody,competition:key});
        const value=envelope(key,fixtures,now,sportmonks.SOURCE);
        if(fixtures.some(f=>f.status==='AWAITING'&&Date.parse(f.date)<now)){
         value.standings=[];value.standingsNote='Niet alle eindstanden zijn bevestigd; stand tijdelijk verborgen.';
@@ -57,6 +57,7 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
        cache.set(key,{at:now,value,ttl:15*60000});return value;
       }catch(error){console.warn('football47 Sportmonks fallback:',error.message);}
      }
+     if(key==='kkd')throw Error('KKD Sportmonks-data niet beschikbaar; geen onbevestigde fallback.');
      const season=new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear();
      const r=await fetcher('https://raw.githubusercontent.com/openfootball/football.json/master/'+season+'-'+String(season+1).slice(-2)+'/nl.1.json',{headers:{'User-Agent':'Veldio/50 (redactie.veldio@gmail.com)'},signal:AbortSignal.timeout(12000)});
      if(!r.ok)throw Error('Eredivisiebron HTTP '+r.status);
