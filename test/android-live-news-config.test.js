@@ -65,3 +65,16 @@ test('Veldio 4.62 bundles the approved compact competition and match UI',()=>{
  assert.match(predictions,/aria-label="Veldio versie 4\.70"/);
  assert.match(style,/grid-template-columns:minmax\(0,1fr\) minmax\(72px,80px\) minmax\(0,1fr\)/);
 });
+
+test('Feed startup reuses only a bounded approved snapshot, keeping rows through network outages',()=>{
+ const feed=read(feedPath);
+ const panel=read('android-project/app/src/main/java/nl/voetbalhub/app/FeedPanel.java');
+ assert.match(feed,/CACHE_MAX_AGE_MS=12L\*60\*60\*1000/);
+ assert.match(feed,/restoreApprovedSnapshot\(\)/);
+ assert.match(feed,/ArticleArtwork\.feedApproved\(stored\)/);
+ assert.match(feed,/\.putString\(CACHE_KEY,snapshot\.toString\(\)\)/);
+ assert.match(feed,/DeadlineHttp\.get\(address,45000,3000000\)/);
+ assert.doesNotMatch(feed,/snapshot=null;if\(pending!=null\)/);
+ assert.doesNotMatch(feed,/snapshot=data==null\?new JSONObject\(\)/);
+ assert.match(panel,/Verbinding tijdelijk onderbroken/);
+});
