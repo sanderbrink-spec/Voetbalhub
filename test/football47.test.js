@@ -97,3 +97,24 @@ test('Android match layout separates date and time and never inserts unsupported
  const ui=fs.readFileSync(path.join(root,'football47.js'),'utf8');
  assert.ok(!ui.includes('premium-kit-badged'));
 });
+
+test('UEFA club display names are standardized without modifying unrelated clubs',()=>{
+ const names=new Map([
+  ['Feyenoord Rotterdam','Feyenoord'],
+  ['Inter Mailand','Inter'],
+  ['Atletico Madrid','Atlético Madrid'],
+  ['FC Bayern München','Bayern München'],
+  ['FC Brugge','Club Brugge'],
+  ['PSV Eindhoven','PSV']
+ ]);
+ for(const [input,expected] of names)
+  assert.equal(M.displayClubName(input,'championsleague'),expected);
+ assert.equal(M.displayClubName('Excelsior Rotterdam','championsleague'),'Excelsior Rotterdam');
+ assert.equal(M.displayClubName('Inter Mailand','eredivisie'),'Inter Mailand');
+});
+test('full UEFA program stays available to fixture view while editorial shortlist remains opt-in',()=>{
+ const fs=require('node:fs'),path=require('node:path');
+ const source=fs.readFileSync(path.join(__dirname,'../server.js'),'utf8');
+ assert.match(source,/view"\)==="veldio50"&&key==="eredivisie"\?football47\.overview\(\):football47\.get\(key\)/);
+ assert.doesNotMatch(source,/key==="eredivisie"\?football47\.overview\(\):football47\.getSelected\(key\)/);
+});
