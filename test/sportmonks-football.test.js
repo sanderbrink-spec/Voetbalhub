@@ -53,3 +53,28 @@ test('statistics probe distinguishes available data from an unavailable include 
  assert.deepEqual(result,{status:'available',fixtureId,records:2,types:1});
  assert.deepEqual(await check(async()=>({ok:false,status:403})),{status:'provider_error',httpStatus:403});
 });
+
+test('KKD uses Sportmonks league 74 and never mixes Eredivisie fixtures',async()=>{
+ assert.equal(SM.LEAGUES.kkd,74);
+ assert.throws(()=>SM.parseFixture(match(99),'kkd',now),/Ongeldig/);
+ const kkdRow=id=>({...match(id),league_id:74});
+ let calls=0;
+ const service=Football.create({clock:()=>now,sportmonksToken:'mock-private-token',
+  fetcher:async url=>{
+   calls++;
+   const request=new URL(url);
+   assert.equal(request.hostname,'api.sportmonks.com');
+   assert.equal(request.searchParams.get('filters'),'fixtureLeagues:74');
+   return {ok:true,text:async()=>JSON.stringify({
+    data:Array.from({length:30},(_,i)=>kkdRow(calls*100+i)),
+    pagination:{has_more:false}
+   })};
+  }
+ });
+ const snapshot=await service.get('kkd');
+ assert.equal(snapshot.source,SM.CREDIT);
+ assert.equal(snapshot.fixtures.length,120);
+ assert.ok(snapshot.fixtures.every(f=>f.competition==='kkd'));
+ assert.equal(snapshot.status,'available');
+ assert.equal(calls,4);
+});
