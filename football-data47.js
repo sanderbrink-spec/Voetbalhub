@@ -57,7 +57,15 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
        cache.set(key,{at:now,value,ttl:15*60000});return value;
       }catch(error){console.warn('football47 Sportmonks fallback:',error.message);}
      }
-     if(key==='kkd')throw Error('KKD Sportmonks-data niet beschikbaar; geen onbevestigde fallback.');
+     if(key==='kkd'){
+      // No subscription is a configured absence, not a failed source call.
+      // A configured token with unusable data must be reported as an outage.
+      const value={...envelope(key,[],now),source:'Veldio',sourceDetails:null,
+       status:sportmonksToken?'source_unavailable':'unavailable',
+       message:sportmonksToken?'Sportmonks KKD-gegevens tijdelijk niet beschikbaar.':'KKD vereist een actief Sportmonks-token.'};
+      cache.set(key,{at:now,value,ttl:60000});
+      return value;
+     }
      const season=new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear();
      const r=await fetcher('https://raw.githubusercontent.com/openfootball/football.json/master/'+season+'-'+String(season+1).slice(-2)+'/nl.1.json',{headers:{'User-Agent':'Veldio/50 (redactie.veldio@gmail.com)'},signal:AbortSignal.timeout(12000)});
      if(!r.ok)throw Error('Eredivisiebron HTTP '+r.status);
