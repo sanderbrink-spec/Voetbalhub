@@ -98,23 +98,94 @@ test('Android match layout separates date and time and never inserts unsupported
  assert.ok(!ui.includes('premium-kit-badged'));
 });
 
-test('UEFA club display names are standardized without modifying unrelated clubs',()=>{
- const names=new Map([
-  ['Feyenoord Rotterdam','Feyenoord'],
-  ['Inter Mailand','Inter'],
-  ['Atletico Madrid','Atlético Madrid'],
-  ['FC Bayern München','Bayern München'],
-  ['FC Brugge','Club Brugge'],
-  ['PSV Eindhoven','PSV']
- ]);
- for(const [input,expected] of names)
-  assert.equal(M.displayClubName(input,'championsleague'),expected);
- assert.equal(M.displayClubName('Excelsior Rotterdam','championsleague'),'Excelsior Rotterdam');
- assert.equal(M.displayClubName('Inter Mailand','eredivisie'),'Inter Mailand');
+test('corrects complete club-name variants, including whitespace and decomposed accents',()=>{
+ const cases=[
+  ['Feyenoord Rotterdam','Feyenoord'],['Inter Mailand','Inter'],['Internazionale Milano','Inter'],['Inter Milan','Inter'],
+  ['AC Mailand','AC Milaan'],['AC Milan','AC Milaan'],
+  ['Olympiakos Piräus','Olympiakos Pireus'],['Olympiakos Piraus','Olympiakos Pireus'],
+  ['Olympiakos Piraeus','Olympiakos Pireus'],['Olympiacos Piraeus','Olympiakos Pireus'],
+  ['Atletico Madrid','Atlético Madrid'],['Atletico de Madrid','Atlético Madrid'],
+  ['FC Bayern München','Bayern München'],['FC Bayern Munchen','Bayern München'],['Bayern Munich','Bayern München'],
+  ['FC Brugge','Club Brugge'],['FC Brügge','Club Brugge'],['Club Brugge KV','Club Brugge'],
+  ['PSV Eindhoven','PSV'],['fc porto','FC Porto'],
+  ['Ajax Amsterdam','Ajax'],['AFC Ajax','Ajax'],['FC Twente Enschede','FC Twente'],
+  ['AEK Athen','AEK Athene'],['AEK Athens','AEK Athene'],['AS Rom','AS Roma'],
+  ['FC Arsenal','Arsenal'],['FC Liverpool','Liverpool'],['Manchester United FC','Manchester United'],
+  ['Crystal Palace FC','Crystal Palace'],['Brighton & Hove Albion F.C.','Brighton & Hove Albion'],
+  ['Brentford F.C.','Brentford'],['Chelsea FC','Chelsea'],['Everton FC','Everton'],
+  ['Fulham FC','Fulham'],['Newcastle United FC','Newcastle United'],['Tottenham Hotspur FC','Tottenham Hotspur'],
+  ['Paris St. Germain','Paris Saint-Germain'],['Paris Saint Germain','Paris Saint-Germain'],
+  ['FK Bodö/Glimt','Bodø/Glimt'],['Bodo/Glimt','Bodø/Glimt'],
+  ['Slavia Prag','Slavia Praag'],['Slavia Prague','Slavia Praag'],
+  ['Sparta Prag','Sparta Praag'],['Sparta Prague','Sparta Praag'],
+  ['Viktoria Pilsen','Viktoria Plzeň'],['Viktoria Plzen','Viktoria Plzeň'],
+  ['Benfica Lissabon','Benfica'],['Besiktas Istanbul','Beşiktaş'],['Besiktas','Beşiktaş'],
+  ['Celtic Glasgow','Celtic'],['Juventus Turin','Juventus'],['Hapoel Beer Scheva','Hapoel Beer Sheva'],
+  ['Jagiellonia Bialystok','Jagiellonia Białystok'],['Lech Poznan','Lech Poznań'],['Omonia Nikosia','Omonia Nicosia'],
+  ['FC Getafe','Getafe CF'],['FC Malaga','Málaga CF'],['Deportivo Alaves','Deportivo Alavés'],
+  ['FC Sevilla','Sevilla FC'],['FC Valencia','Valencia CF'],['FC Villareal','Villarreal CF'],
+  ['FC Iberia 1999 Tiflis','Iberia Tbilisi'],['FC Nordsjaelland','FC Nordsjælland'],
+  ['Paphos FC','Pafos FC'],['Roter Stern Belgrad','Rode Ster Belgrado'],['ZSKA Sofia','CSKA Sofia'],
+  ['SSC Napoli  ','SSC Napoli'],
+  ['  '+ 'FC BRÜGGE'.normalize('NFD') +'  ','Club Brugge'],
+ ];
+ for(const [input,expected] of cases){
+  for(const key of ['championsleague','europaleague','conferenceleague']){
+   assert.equal(M.displayClubName(input,key),expected,input+' / '+key);
+   assert.equal(M.displayClubName(expected,key),expected);
+  }
+ }
+ assert.equal(M.displayClubName('FC Bayern München','bundesliga'),'FC Bayern München');
+ assert.equal(M.displayClubName('AFC Ajax','eredivisie'),'Ajax');
+ assert.equal(M.displayClubName('Brentford F.C.','premierleague'),'Brentford');
+ assert.equal(M.displayClubName('FC Villareal','laliga'),'Villarreal CF');
 });
+
+test('preserves correct names and distinguishes similar club identities',()=>{
+ for(const input of ['Ajax Amateurs','Jong Ajax','Excelsior Rotterdam','Excelsior Maassluis',
+  'Cercle Brugge','Club Brugge','AEK Larnaca','CSKA 1948 Sofia','AC Milaan','Inter',
+  "Inter Club d'Escaldes",'Sparta Rotterdam','Sparta Nijkerk','AZ Alkmaar',
+  'Olympique Marseille','Olympique Lyon','Sporting CP','Stade Rennes','FC Kopenhagen','Bodø/Glimt']){
+  assert.equal(M.displayClubName(input,'conferenceleague'),input);
+ }
+ assert.equal(M.displayClubName('AC Mailand','unknown'),'AC Mailand');
+});
+
+test('corrects cached fixtures and standings without changing IDs, scores, sources or match selection',async()=>{
+ const base=fixture('oldb-123','AC Mailand','Real Madrid',{home:2,away:1});
+ const match={...base,competition:'europaleague',resultSource:'Bron',
+  home:{id:'oldb-45',name:'AC Mailand'},away:{id:'oldb-67',name:'Real Madrid'}};
+ const snapshot=M.envelope('europaleague',[match],now);
+ const getCache=async key=>{
+  if(key==='football47:europaleague')return JSON.stringify(snapshot);
+  return JSON.stringify(M.envelope(key.slice('football47:'.length),[],now));
+ };
+ const service=M.create({clock:()=>now,redis:{isReady:true,get:getCache},fetcher:()=>assert.fail('Unexpected fetch')});
+ const localized=await service.get('europaleague');
+ assert.deepEqual(localized.fixtures,[{...match,home:{...match.home,name:'AC Milaan'}}]);
+ assert.deepEqual(localized.standings[0],{...snapshot.standings[0],team:{...match.home,name:'AC Milaan'}});
+ assert.deepEqual(localized.sourceDetails,snapshot.sourceDetails);
+ assert.deepEqual((await service.getSelected('europaleague')).fixtures,[]);
+ assert.deepEqual((await service.overview()).europeanFixtures,[]);
+ assert.deepEqual(await service.get('europaleague',{legacy:true}),snapshot);
+ assert.equal(snapshot.fixtures[0].home.name,'AC Mailand');
+});
+
+test('legacy names remain available for installed APK shirt lookups',()=>{
+ const legacy={legacy:true};
+ assert.equal(M.displayClubName('Olympiakos Piräus','europaleague',legacy),'Olympiakos Piräus');
+ assert.equal(M.displayClubName('AC Mailand','europaleague',legacy),'AC Mailand');
+ assert.equal(M.displayClubName('FC Brügge','championsleague',legacy),'FC Brügge');
+ assert.equal(M.displayClubName('Club Brugge KV','championsleague',legacy),'Club Brugge');
+ assert.equal(M.displayClubName('FC Bayern München','championsleague',legacy),'Bayern München');
+ assert.equal(M.displayClubName('FC Bayern München','bundesliga',legacy),'FC Bayern München');
+ const source=require('node:fs').readFileSync(require('node:path').join(__dirname,'../server.js'),'utf8');
+ assert.match(source,/legacy:url\.searchParams\.get\("clubNames"\)!=="nl"/);
+});
+
 test('full UEFA program stays available to fixture view while editorial shortlist remains opt-in',()=>{
  const fs=require('node:fs'),path=require('node:path');
  const source=fs.readFileSync(path.join(__dirname,'../server.js'),'utf8');
- assert.match(source,/view"\)==="veldio50"&&key==="eredivisie"\?football47\.overview\(\):football47\.get\(key\)/);
- assert.doesNotMatch(source,/key==="eredivisie"\?football47\.overview\(\):football47\.getSelected\(key\)/);
+ assert.match(source,/view"\)==="veldio50"&&key==="eredivisie"\?football47\.overview\(options\):football47\.get\(key,options\)/);
+ assert.doesNotMatch(source,/key==="eredivisie"\?football47\.overview\(options\):football47\.getSelected\(key\)/);
 });

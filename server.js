@@ -325,7 +325,9 @@ async function handle(req, res) {
   if(req.method==='GET'&&url.pathname==='/integrations/football/catalog')return send(res,200,{competitions:football47.catalog()});
   if(req.method==='GET'&&['/integrations/statistics','/integrations/football'].includes(url.pathname)){
     const key=url.searchParams.get('competition')||'eredivisie';
-    try{return send(res,200,await (url.searchParams.get("view")==="veldio50"&&key==="eredivisie"?football47.overview():football47.get(key)));}catch{return send(res,400,{error:'Onbekende competitie.'});}
+    // Installed Android clients use the old name as a shirt lookup key.
+    const options={legacy:url.searchParams.get("clubNames")!=="nl"};
+    try{return send(res,200,await (url.searchParams.get("view")==="veldio50"&&key==="eredivisie"?football47.overview(options):football47.get(key,options)));}catch{return send(res,400,{error:'Onbekende competitie.'});}
   }
   // All 18 clubs / 36 slots in a protected editorial review queue.
   // Protected review-only image bytes. Never add these files to the public catalogue.
