@@ -36,7 +36,7 @@ function candidate(fixture, now) {
  const kickoff = Date.parse(fixture.date);
  const {home, away} = fixture.goals || {};
  const championsLeague = fixture.competition === 'championsleague' && /^fd-cl-\d+$/.test(fixture.id);
- const sportmonks = fixture.competition === 'eredivisie' && /^sm-\d+$/.test(fixture.id) && fixture.resultSource === 'Sportmonks Football API';
+ const sportmonks = ['eredivisie','kkd','premierleague','knvbbeker','eredivisieplayoffs'].includes(fixture.competition) && /^sm-\d+$/.test(fixture.id) && fixture.resultSource === 'Sportmonks Football API';
  // The known production review on this exact match has been blocked until
  // its normal 48-hour eligibility elapsed. Grant only this proven 2026-11-08
  // fixture a bounded 72-hour repair window, never for general stale news.
@@ -56,9 +56,9 @@ function candidate(fixture, now) {
  const hasHalf = [half?.home, half?.away].every(validScore) && half.home <= home && half.away <= away;
  const round = /^(?:Speelronde \d+|Competitiefase|Achtste finale|Kwartfinale|Halve finale|Finale)$/.test(fixture.round) ? fixture.round : '';
  if (!round) return null;
- const category = championsLeague ? 'Champions League' : 'Eredivisie';
+ const category = championsLeague ? 'Champions League' : ({eredivisie:'Eredivisie',kkd:'Keuken Kampioen Divisie',premierleague:'Premier League',knvbbeker:'KNVB Beker',eredivisieplayoffs:'Eredivisie Play-offs'}[fixture.competition]||'Voetbal');
  // With only a score, report exceptional margins or a meeting of leading clubs.
- const leading = /^(Ajax|Feyenoord|PSV|AZ|FC Twente)$/i;
+ const leading = /^(Ajax|Feyenoord|PSV|AZ|FC Twente|Arsenal|Manchester City|Manchester United|Liverpool|Chelsea|Tottenham Hotspur|Newcastle United)$/i;
  if (!hasHalf && !(sportmonks && fixture.goalTimeline?.length === home + away && home + away >= 2) && !championsLeague && Math.abs(home - away) < 3 &&
      !(leading.test(fixture.home.name) && leading.test(fixture.away.name))) return null;
  const match = {homeTeam:fixture.home.name, awayTeam:fixture.away.name, homeScore:home, awayScore:away, playedAt:DAY.format(new Date(kickoff))};
