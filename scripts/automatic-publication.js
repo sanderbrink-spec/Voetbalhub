@@ -1214,7 +1214,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  try{
   const snapshot=await api(endpoint);
   if(!Array.isArray(snapshot.fixtures)||!['available','cached'].includes(snapshot.status))throw Error('Wedstrijdbron tijdelijk niet beschikbaar.');
-  const fixtures=selectPublicationFixtures(snapshot.fixtures,now);
+  // Reject accidental cross-league records before counting or drafting.
+  const fixtures=selectPublicationFixtures(snapshot.fixtures,now).filter(fixture=>fixture.competition===competition);
   report.routes.match.found+=fixtures.length;
   report.sources[competition]={status:'ok'};
   for(const fixture of fixtures){
