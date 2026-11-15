@@ -52,7 +52,8 @@ function displayClubName(name,key,{legacy=false}={}){
 
 function displayTeam(team,key,options){
  const name=displayClubName(team?.name,key,options);
- return name===team?.name?team:{...team,name};
+ if(name===team?.name)return team;
+ return options?.legacy?{...team,name}:{...team,name,kitName:displayClubName(team.name,key,{legacy:true})};
 }
 function displayFixture(fixture,key,options){
  const home=displayTeam(fixture.home,key,options),away=displayTeam(fixture.away,key,options);

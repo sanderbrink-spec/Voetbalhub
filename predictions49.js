@@ -1,7 +1,15 @@
 'use strict';
 const rounds52=require('./prediction-rounds52');
+const {CATALOG,displayClubName}=require('./football-data47');
 const fail=(message,status=400)=>Object.assign(Error(message),{status});
 function outcome(f,now=Date.now()){if(f?.status!=='FT'||!Number.isFinite(Date.parse(f.date))||Date.parse(f.date)>now||![f.goals?.home,f.goals?.away].every(v=>Number.isInteger(v)&&v>=0))return null;return f.goals.home>f.goals.away?'1':f.goals.home===f.goals.away?'X':'2';}
+function displayPredictionLabel(record,fixture){
+ if(fixture)return fixture.home.name+' – '+fixture.away.name;
+ const teams=record.label?.split(' – ');
+ if(teams?.length!==2)return record.label;
+ const competition=record.competition==='veldio'?'eredivisie':record.competition;
+ return teams.map(name=>displayClubName(name,competition)).join(' – ');
+}
 function rank(rows){const sorted=rows.sort((a,b)=>b.points-a.points||a.playerId.localeCompare(b.playerId));return sorted.map((r,i)=>({...r,position:i&&r.points===sorted[i-1].points?sorted.findIndex(p=>p.points===r.points)+1:i+1}));}
 const SAVE=`local t=redis.call('TIME');local now=tonumber(t[1])*1000+math.floor(tonumber(t[2])/1000);if now>=tonumber(ARGV[3]) then return 0 end;local raw=redis.call('HGET',KEYS[1],ARGV[1]);local rows=raw and cjson.decode(raw) or {};local v=cjson.decode(ARGV[2]);v.savedAt=now;rows[v.fixtureId]=v;redis.call('HSET',KEYS[1],ARGV[1],cjson.encode(rows));redis.call('SADD',KEYS[2],KEYS[1]);return 1`;
 function create({redis,football,prefix='q39:',now=Date.now,profile,safeProfile}){
@@ -9,7 +17,7 @@ function create({redis,football,prefix='q39:',now=Date.now,profile,safeProfile})
  async function handle(req,url,p,body){
  const d=req.method==='POST'?await body(req,['competition','fixtureId','choice','season','round','home','away','scope']):Object.fromEntries(url.searchParams);
  const competition=d.competition||'eredivisie',weekly=competition==='veldio';
- if(!weekly&&!Object.hasOwn(require('./football-data47').CATALOG,competition))throw fail('Onbekende competitie.');
+ if(!weekly&&!Object.hasOwn(CATALOG,competition))throw fail('Onbekende competitie.');
  const snap=weekly
   ? await rounds52.snapshot({redis,football,prefix,now:now(),requestedSeason:d.season,requestedRound:d.round,publish:req.method==='GET'})
   : await (football.getSelected||football.get)(competition);
@@ -30,7 +38,7 @@ function create({redis,football,prefix='q39:',now=Date.now,profile,safeProfile})
  // Keep verified finals if a later feed omits older fixtures. Recalculate corrections.
  const resultsKey=key+':results';for(const f of fixtureMap.values()){const value=outcome(f,now());if(value!==null)await redis.hSet(resultsKey,String(f.id),JSON.stringify({choice:value,goals:f.goals,source:f.resultSource||snap.source,checkedAt:snap.updatedAt,...(f.resultExpiresAt?{expiresAt:f.resultExpiresAt}:{})}));else if(['PST','CANC','TBD','NS','AWAITING','FT'].includes(f.status))await redis.hDel(resultsKey,String(f.id));}
  const finals=await redis.hGetAll(resultsKey),all=await redis.hGetAll(key);if(Object.keys(all).length>500)throw fail('Ranglijst tijdelijk niet beschikbaar.',503);
- const assess=raw=>Object.values(JSON.parse(raw||'{}')).map(r=>{const f=fixtureMap.get(r.fixtureId),stored=finals[r.fixtureId]?JSON.parse(finals[r.fixtureId]):null,final=stored?.expiresAt&&stored.expiresAt<=now()?null:stored,points=final?(final.choice===r.choice?1:0):null;return {...r,points,result:final?.choice||null,goals:final?.goals||null,status:final?'beoordeeld':f?.status==='CANC'?'afgelast':f?.status==='PST'?'uitgesteld':f?.status==='NS'&&Date.parse(f.date)>now()?'open':'gesloten'};});
+ const assess=raw=>Object.values(JSON.parse(raw||'{}')).map(r=>{const f=fixtureMap.get(r.fixtureId),stored=finals[r.fixtureId]?JSON.parse(finals[r.fixtureId]):null,final=stored?.expiresAt&&stored.expiresAt<=now()?null:stored,points=final?(final.choice===r.choice?1:0):null;return {...r,label:displayPredictionLabel(r,f),points,result:final?.choice||null,goals:final?.goals||null,status:final?'beoordeeld':f?.status==='CANC'?'afgelast':f?.status==='PST'?'uitgesteld':f?.status==='NS'&&Date.parse(f.date)>now()?'open':'gesloten'};});
  const mine=assess(all[p.id]),rounds=weekly?(snap.rounds||[]):[...new Set([...fixtureMap.values()].map(f=>String(f.round||'Speelronde')).concat(mine.map(r=>r.round)))],round=weekly?snap.round:d.round||rounds.find(r=>[...fixtureMap.values()].some(f=>f.round===r&&f.status==='NS'&&Date.parse(f.date)>now()))||rounds.at(-1)||'',scope=d.scope||'season';if(!['round','season'].includes(scope))throw fail('Ongeldige ranglijst.');
  const boards=[];for(const [playerId,raw] of Object.entries(all)){const who=await profile(playerId);if(!who||who.blocked)continue;const records=assess(raw).filter(r=>scope==='season'||r.round===round);if(!records.length)continue;boards.push({playerId,name:safeProfile(who).name,points:records.reduce((a,r)=>a+(r.points||0),0),assessed:records.filter(r=>r.points!==null).length});}
  const ranked=rank(boards),years=await redis.sMembers(prefix+'predictionKeys:'+p.id);return {competition,season,serverNow:now(),profile:safeProfile(p),fixtures:[...fixtureMap.values()].filter(f=>!weekly||(snap.complete&&f.round===round)),source:snap.source,message:current?snap.message||'': 'Wedstrijdgegevens verlopen.',rounds,round,scope,points:mine.reduce((a,r)=>a+(r.points||0),0),predictions:mine,board:{top:ranked.slice(0,50),mine:ranked.find(r=>r.playerId===p.id)||null,players:ranked.length},seasons:[...new Set([season,...years.filter(k=>k.startsWith(prefix+'pred49:'+competition+':')).map(k=>k.split(':').at(-1))])].sort().reverse(),rules:'1 punt voor de juiste winnaar of een correct voorspeld gelijkspel. Alleen gecontroleerde definitieve uitslagen tellen.'};

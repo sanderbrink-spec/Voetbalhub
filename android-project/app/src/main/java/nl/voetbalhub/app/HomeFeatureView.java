@@ -36,7 +36,7 @@ public final class HomeFeatureView extends FrameLayout {
     private final StadiumRepository.Listener stadiumListener=data->{stadiums=data;deliver();};
     private JSONObject articles=new JSONObject(),stats=new JSONObject(),videos=new JSONObject();
     private boolean ready,disposed,loading=true,videoLoading=true;
-    private final Runnable weeklyRefresh=new Runnable(){public void run(){if(disposed)return;fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);postDelayed(this,60000);}};
+    private final Runnable weeklyRefresh=new Runnable(){public void run(){if(disposed)return;fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?clubNames=nl&v="+System.currentTimeMillis()/60000,1);postDelayed(this,60000);}};
     private final FeedRepository.Listener feedListener=(data,busy,failed)->{if(disposed)return;loading=busy;articles=data==null?new JSONObject():data;deliver();};
     private float startX,startY;
     private int dp(float n){return (int)(n*getResources().getDisplayMetrics().density+.5f);}
@@ -67,7 +67,7 @@ public final class HomeFeatureView extends FrameLayout {
             @Override public boolean shouldOverrideUrlLoading(WebView view,String url){return true;}
         });
         addView(web,new FrameLayout.LayoutParams(-1,-1));
-        try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot","{}"));}catch(Exception ignored){}
+        try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot:nl","{}"));}catch(Exception ignored){}
         try{videos=new JSONObject(activity.getSharedPreferences(PREFS,0).getString("youtube_videos","{}"));}catch(Exception ignored){}
         if(videos.optJSONArray("videos")==null)try(InputStream in=activity.getAssets().open("youtube-seed.json")){
             ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1){out.write(b,0,n);if(out.size()>200000)throw new Exception("Seed too large");}videos=new JSONObject(out.toString("UTF-8"));
@@ -79,7 +79,7 @@ public final class HomeFeatureView extends FrameLayout {
         web.loadUrl("file:///android_asset/home-features.html");
         FeedRepository.subscribe(activity,feedListener);
         FeedRepository.refresh(false);
-        fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,1);
+        fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?clubNames=nl&v="+System.currentTimeMillis()/60000,1);
         StadiumRepository.subscribe(activity,stadiumListener);
         postDelayed(weeklyRefresh,60000);
     }
@@ -97,7 +97,7 @@ public final class HomeFeatureView extends FrameLayout {
     }catch(Exception ignored){}finally{if(conn!=null)conn.disconnect();}
         final JSONObject data=result;activity.runOnUiThread(()->{if(disposed||activity.isFinishing())return;
             if(kind==2)videoLoading=false;
-            if(data!=null){if(kind==1){stats=data;activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",data.toString()).apply();}else{videos=data;activity.getSharedPreferences(PREFS,0).edit().putString("youtube_videos",data.toString()).apply();}}deliver();
+            if(data!=null){if(kind==1){stats=data;activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot:nl",data.toString()).apply();}else{videos=data;activity.getSharedPreferences(PREFS,0).edit().putString("youtube_videos",data.toString()).apply();}}deliver();
         });
     });}
     private JSONObject findArticle(String id){JSONArray rows=articles.optJSONArray("articles");if(rows!=null)for(int i=0;i<rows.length();i++){JSONObject a=rows.optJSONObject(i);if(a!=null&&"published".equals(a.optString("status"))&&id.equals(a.optString("id")))return ArticleArtwork.selected(activity,a);}return null;}

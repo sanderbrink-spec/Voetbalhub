@@ -162,8 +162,8 @@ test('corrects cached fixtures and standings without changing IDs, scores, sourc
  };
  const service=M.create({clock:()=>now,redis:{isReady:true,get:getCache},fetcher:()=>assert.fail('Unexpected fetch')});
  const localized=await service.get('europaleague');
- assert.deepEqual(localized.fixtures,[{...match,home:{...match.home,name:'AC Milaan'}}]);
- assert.deepEqual(localized.standings[0],{...snapshot.standings[0],team:{...match.home,name:'AC Milaan'}});
+ assert.deepEqual(localized.fixtures,[{...match,home:{...match.home,name:'AC Milaan',kitName:'AC Mailand'}}]);
+ assert.deepEqual(localized.standings[0],{...snapshot.standings[0],team:{...match.home,name:'AC Milaan',kitName:'AC Mailand'}});
  assert.deepEqual(localized.sourceDetails,snapshot.sourceDetails);
  assert.deepEqual((await service.getSelected('europaleague')).fixtures,[]);
  assert.deepEqual((await service.overview()).europeanFixtures,[]);

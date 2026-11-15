@@ -65,6 +65,48 @@ assert.equal(await detail.getAttribute('open'),null);
 assert.equal(calls.length,callsBeforeOpen);
 await page.getByRole('button',{name:'Vernieuwen',exact:true}).click();assert.equal(calls.at(-1).m,'refresh');
 for(const competition of ['eredivisie','kkd','premierleague','bundesliga','laliga','seriea','ligue1','championsleague','europaleague','conferenceleague']){await page.evaluate(c=>setData(JSON.stringify({mode:'competition',competition:c,stats:{},clubs:[],predictions:[]})),competition);assert.ok((await page.locator('main').innerText()).includes('Competitieachtergrond'));assert.equal(await page.getByRole('button',{name:'Officiële competitiebron ↗'}).count(),1);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);}
+// Exercise the Android assets with the server's Dutch display payload.
+const football=require('../../football-data47');
+const competition='championsleague';
+const names=['AC Mailand','Olympiakos Piräus','FC Brügge'];
+const expected=['AC Milaan','Olympiakos Pireus','Club Brugge'];
+const teams=names.map((name,id)=>({id:String(id),name}));
+const european=teams.map((home,i)=>({...tracked,id:'localized-'+i,competition,home,away:teams[(i+1)%teams.length]}));
+const snapshot=football.envelope(competition,european,now);
+const service=football.create({clock:()=>now,redis:{isReady:true,get:async()=>JSON.stringify(snapshot)}});
+const dutchStats=await service.get(competition);
+const legacy=await service.get(competition,{legacy:true});
+const kit=require('../../android-project/app/src/main/assets/football47');
+for(const [index,fixture] of dutchStats.fixtures.entries()){
+ const rendered=kit.shirt(fixture.home);
+ assert.match(rendered,/<linearGradient/);
+ assert.equal(rendered.replace(fixture.home.name,legacy.fixtures[index].home.name),kit.shirt(legacy.fixtures[index].home));
+}
+await page.evaluate(s=>setData(JSON.stringify(s)),{...state,mode:'fixtures',competition,stats:dutchStats});
+for(const name of expected)assert.ok((await page.locator('summary.match50').allTextContents()).some(row=>row.includes(name)));
+const milan=page.getByLabel('Wedstrijddetails AC Milaan tegen Olympiakos Pireus, 2 – 1, Afgelopen',{exact:true});
+await milan.click();
+const events=page.getByRole('region',{name:'Gebeurtenissen AC Milaan tegen Olympiakos Pireus'});
+assert.match(await events.innerText(),/AC Milaan/);
+assert.match(await events.innerText(),/Olympiakos Pireus/);
+await page.evaluate(s=>setData(JSON.stringify(s)),{...state,mode:'competition',competition,stats:dutchStats});
+for(const name of expected){
+ assert.equal(await page.getByRole('cell',{name,exact:true}).count(),1);
+ assert.equal(await page.getByRole('img',{name:'Eigen shirtillustratie in clubkleuren: '+name}).count(),1);
+ assert.ok((await page.getByRole('heading',{level:2}).allTextContents()).some(row=>row.includes(name+' – ')));
+}
+const predictionPage=await browser.newPage({viewport:{width,height:852}});
+predictionPage.on('pageerror',e=>errors.push(e.message));
+const predictionFixtures=dutchStats.fixtures.map(f=>({...f,round:'Speelronde 1',status:'NS',date:future.date}));
+const predictionData={competition:'veldio',profile:{name:'Test'},points:0,board:{top:[]},round:'Speelronde 1',
+ rounds:['Speelronde 1'],seasons:['2026'],season:'2026',serverNow:now,fixtures:predictionFixtures,predictions:[]};
+const predictionBridge='<script>window.QuizApi={request:async(action)=>action==="legacy"?{predictions:[]}:JSON_DATA};</script>'.replace('JSON_DATA',JSON.stringify(predictionData));
+await predictionPage.setContent(html('predictions49.html').replace('<script>'+fs.readFileSync(dir+'predictions49.js','utf8'),predictionBridge+'<script>'+fs.readFileSync(dir+'predictions49.js','utf8')));
+for(const [i,name] of expected.entries()){
+ await predictionPage.getByRole('button',{name:'Voorspel '+name+' tegen '+expected[(i+1)%expected.length]}).click();
+ assert.equal(await predictionPage.locator('#fixtures strong').first().textContent(),name);
+}
+await predictionPage.close();
 assert.deepEqual(errors,[]);await page.close();
 const hub=await browser.newPage({viewport:{width,height:852}});hub.on('pageerror',e=>errors.push(e.message));await hub.setContent(html('personal-hub.html'));await hub.evaluate(()=>{window.PersonalHub={savePrimary:()=>{},saveClubs:()=>{}};setData(JSON.stringify({mode:'favorites',clubs:['FC Groningen','AZ'],primaryClub:'AZ',articles:[],saved:[],stats:{},loading:false}));});assert.equal(await hub.locator('#heading').innerText(),'Mijn Clubs');assert.equal(await hub.locator('.clubs .club-shirt').count(),2);assert.equal(await hub.locator('#primaryClub').inputValue(),'AZ');await hub.evaluate(()=>{setData(JSON.stringify({mode:'favorites',clubs:['FC Groningen','AZ'],primaryClub:'AZ',articles:[],saved:[],stats:{schemaVersion:1,rightsPolicyVersion:26,rightsExpiresAt:Date.now()+3600000,updatedAt:new Date().toISOString(),standings:[],fixtures:[],status:'unavailable',message:'Geen actuele, vrijgegeven gegevensbron.'},loading:false,offline:false}));});assert.ok((await hub.locator('#content').innerText()).includes('Geen actuele, vrijgegeven gegevensbron.'));assert.ok(!(await hub.locator('#status').innerText()).includes('Verbinding beperkt'));assert.equal(await hub.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await hub.getByRole('button',{name:'Club toevoegen +'}).click();assert.ok(await hub.locator('.club-choice .club-shirt').count()>30);assert.deepEqual(errors,[]);fs.mkdirSync('.browser-output',{recursive:true});await hub.screenshot({path:'.browser-output/functional47-'+width+'.png',fullPage:true});await hub.close();}
 console.log('PASS 47: 320/393px, shirts, primary club, 10 competition pages, prediction 3/1/0 model, bridge submission, kickoff lock, filters, refresh, draft preservation, localized round IDs and all timeline events');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

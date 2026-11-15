@@ -54,8 +54,8 @@ public final class WeeklyMatchCard extends LinearLayout {
         action=text("Bekijk de statistieken",13,green,true);cta.addView(action,new LayoutParams(0,-2,1));
         TextView arrow=text("→",24,green,false);cta.addView(arrow);LayoutParams ctaParams=new LayoutParams(-1,dp(28));ctaParams.topMargin=dp(6);addView(cta,ctaParams);
         setFocusable(true);setOnClickListener(v->openStatistics.run());
-        String lastValid=activity.getSharedPreferences("eredivisie-statistics",0).getString("last_valid_feature",null);if(lastValid!=null)try{show(new JSONObject(lastValid));}catch(Exception ignored){}
-        String cached=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot",null);if(cached!=null)try{show(new JSONObject(cached));}catch(Exception ignored){}
+        String lastValid=activity.getSharedPreferences("eredivisie-statistics",0).getString("last_valid_feature:nl",null);if(lastValid!=null)try{show(new JSONObject(lastValid));}catch(Exception ignored){}
+        String cached=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot:nl",null);if(cached!=null)try{show(new JSONObject(cached));}catch(Exception ignored){}
         new Thread(this::load,"weekly-match-card").start();
     }
     private void show(JSONObject data)throws Exception{
@@ -73,7 +73,7 @@ public final class WeeklyMatchCard extends LinearLayout {
         String when=DateTimeFormatter.ofPattern("EEEE d MMMM · HH:mm",new Locale("nl","NL")).withZone(ZoneId.of("Europe/Amsterdam")).format(kickoff);
         String round=feature.optString("round","");details.setText(when+(round.isEmpty()?"":"  ·  "+round));
         summary.setVisibility(GONE);action.setText(report?"Lees het wedstrijdverslag":"Bekijk de voorbeschouwing");
-        activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("last_valid_feature",data.toString()).apply();
+        activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("last_valid_feature:nl",data.toString()).apply();
         setContentDescription("Wedstrijd van de week: "+home+" tegen "+away+". "+when+(report?". Lees het wedstrijdverslag.":". Bekijk de voorbeschouwing."));setOnClickListener(v->openPreview.open(data.toString()));
     }
     private void loadLogo(ImageView view,String address,String club){
@@ -92,7 +92,7 @@ public final class WeeklyMatchCard extends LinearLayout {
         }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}});
     }
     private void load(){try{
-        JSONObject data=new JSONObject(DeadlineHttp.get("https://voetbalhub-redactie.onrender.com/integrations/statistics?v="+System.currentTimeMillis()/60000,18000,3000000));
+        JSONObject data=new JSONObject(DeadlineHttp.get("https://voetbalhub-redactie.onrender.com/integrations/statistics?clubNames=nl&v="+System.currentTimeMillis()/60000,18000,3000000));
         activity.runOnUiThread(()->{if(!activity.isFinishing())try{show(data);}catch(Exception ignored){}});
     }catch(Exception ignored){}}
 }

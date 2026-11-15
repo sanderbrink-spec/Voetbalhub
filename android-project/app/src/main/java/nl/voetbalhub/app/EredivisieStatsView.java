@@ -15,7 +15,7 @@ import java.io.InputStream;
 
 /** Native subpage with an internal statistical view. No API keys or external match links. */
 public final class EredivisieStatsView extends LinearLayout {
-    private static final String FEED = "https://voetbalhub-redactie.onrender.com/integrations/statistics";
+    private static final String FEED = "https://voetbalhub-redactie.onrender.com/integrations/statistics?clubNames=nl";
     private final Activity activity;
     private final WebView web;
     private final WebPageHistory pageHistory;
@@ -48,7 +48,7 @@ public final class EredivisieStatsView extends LinearLayout {
             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest req){if("app".equals(req.getUrl().getScheme())&&"retry".equals(req.getUrl().getHost()))load();return true;}
         });
         addView(web,new LayoutParams(-1,0,1));
-        json=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot",null);
+        json=activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot:nl",null);
         try{if(!PublicationPolicy.allows(new JSONObject(json==null?"{}":json)))json=null;}catch(Exception ignored){json=null;}
         web.loadUrl("file:///android_asset/eredivisie.html"); load();
     }
@@ -60,7 +60,7 @@ public final class EredivisieStatsView extends LinearLayout {
         try{
             String text=DeadlineHttp.get(FEED,18000,3000000);JSONObject data=new JSONObject(text);if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");
             if(data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.getJSONArray("standings").length()==0)throw new Exception("Onvolledige gegevens");
-            activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",text).apply();
+            activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot:nl",text).apply();
             activity.runOnUiThread(()->{if(disposed)return;json=text;deliver();});
         }catch(Exception e){activity.runOnUiThread(()->{if(ready&&!disposed)web.evaluateJavascript("window.loadFailed&&window.loadFailed()",null);});}
         finally{if(conn!=null)conn.disconnect();}

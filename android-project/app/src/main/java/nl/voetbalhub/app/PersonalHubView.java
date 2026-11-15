@@ -43,13 +43,13 @@ public final class PersonalHubView extends LinearLayout {
             @Override public void onPageFinished(WebView view,String url){ready=true;pageHistory.restore(restoredState);deliver();}
             @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return true;}
         });addView(web,new LayoutParams(-1,-1));
-        try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot","{}"));}catch(Exception ignored){}
+        try{stats=new JSONObject(activity.getSharedPreferences("eredivisie-statistics",0).getString("snapshot:nl","{}"));}catch(Exception ignored){}
         try(InputStream in=activity.getAssets().open("club-directory.json")){directory=new JSONObject(new String(BoundedInput.read(in,100000),java.nio.charset.StandardCharsets.UTF_8)).getJSONArray("clubs");}catch(Exception ignored){}
         web.loadUrl("file:///android_asset/personal-hub.html");
         try{JSONObject feed=PublicationPolicy.articleFeed(articles);articles=feed==null?new JSONObject():feed;}catch(Exception ignored){articles=new JSONObject();}
         if(!PublicationPolicy.allows(stats))stats=new JSONObject();
         fetch("https://voetbalhub-redactie.onrender.com/articles?view=all",true);
-        fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics",false);
+        fetch("https://voetbalhub-redactie.onrender.com/integrations/statistics?clubNames=nl",false);
     }
     public void refreshSaved(){deliver();}
     public boolean handleBack(){return pageHistory.back();}
@@ -62,7 +62,7 @@ public final class PersonalHubView extends LinearLayout {
         String response=DeadlineHttp.get(address,18000,3000000);
         JSONObject data=new JSONObject(response);if(news){if(!ArticleArtwork.feedApproved(data))throw new Exception("Beeldbeleid ontbreekt");data=PublicationPolicy.articleFeed(data);if(data==null)throw new Exception("Feed unavailable");}else if(!PublicationPolicy.allows(data))throw new Exception("Rights approval missing");if(news?data.optJSONArray("articles")==null:data.optInt("schemaVersion")!=1||data.getJSONObject("league").optInt("id")!=88||data.optJSONArray("standings")==null||data.optJSONArray("fixtures")==null)throw new Exception("Invalid data");result=data;
     }catch(Exception ignored){}finally{if(connection!=null)connection.disconnect();}
-        final JSONObject data=result;activity.runOnUiThread(()->{if(disposed)return;pending--;if(data!=null){if(news){articles=data;}else{stats=data;activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot",data.toString()).apply();}}else offline=true;deliver();});
+        final JSONObject data=result;activity.runOnUiThread(()->{if(disposed)return;pending--;if(data!=null){if(news){articles=data;}else{stats=data;activity.getSharedPreferences("eredivisie-statistics",0).edit().putString("snapshot:nl",data.toString()).apply();}}else offline=true;deliver();});
     });}
     private JSONArray selectedRows(JSONArray rows, boolean savedOnly) {
         JSONArray result=new JSONArray();
