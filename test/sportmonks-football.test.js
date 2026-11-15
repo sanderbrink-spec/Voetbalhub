@@ -104,7 +104,7 @@ test('Premier League and KNVB Beker use their distinct selected Sportmonks IDs',
 });
 test('Playoffs require one unambiguous Sportmonks league catalogue match',async()=>{
  const good={id:123456,name:'Eredivisie Play-offs',sub_type:'play-offs'};
- let catalogueCalls=0;
+ let catalogueCalls=0, fixtureCalls=0;
  const sourceBody=async response=>response.text();
  const fetcher=async url=>{
   const u=new URL(url);
@@ -113,11 +113,12 @@ test('Playoffs require one unambiguous Sportmonks league catalogue match',async(
    return {ok:true,text:async()=>JSON.stringify({data:[good]})};
   }
   assert.equal(u.searchParams.get('filters'),'fixtureLeagues:'+good.id);
-  return {ok:true,text:async()=>JSON.stringify({data:[{...match(720),league_id:good.id},{...match(721),league_id:good.id}],pagination:{has_more:false}})};
+  fixtureCalls++;
+  return {ok:true,text:async()=>JSON.stringify({data:[{...match(720+fixtureCalls*2),league_id:good.id},{...match(721+fixtureCalls*2),league_id:good.id}],pagination:{has_more:false}})};
  };
  const fixtures=await SM.load({fetcher,token:'mock-secret',now,sourceBody,competition:'eredivisieplayoffs'});
  assert.equal(catalogueCalls,1);
- assert.equal(fixtures.length,2);
+ assert.equal(fixtures.length,8);
  assert.equal(fixtures[0].competition,'eredivisieplayoffs');
  await assert.rejects(()=>SM.load({fetcher:async url=>({ok:true,text:async()=>JSON.stringify({data:[good,{...good,id:123457}]})}),token:'mock',now,sourceBody,competition:'eredivisieplayoffs'}),/niet eenduidig/);
 });
