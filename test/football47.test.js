@@ -93,7 +93,7 @@ test('Android match layout separates date and time and never inserts unsupported
  assert.match(html,/kickoff97/);
  assert.match(css,/no overlap between long club names/);
  assert.match(css,/overflow-wrap:anywhere!important/);
- assert.match(css,/padding-bottom:max\\(112px/);
+ assert.ok(css.includes('padding-bottom:max(112px'));
  const ui=fs.readFileSync(path.join(root,'football47.js'),'utf8');
  assert.ok(!ui.includes('premium-kit-badged'));
 });
