@@ -109,7 +109,11 @@ function fixtures50(){
   const goals=f.goals||{},hasScore=Number.isInteger(goals.home)&&Number.isInteger(goals.away);
   const result=(finished||live)&&hasScore?goals.home+' – '+goals.away:f.status==='TBD'?'Tijd volgt':date(f.date);
   const status=live?'Live'+(Number.isInteger(f.minute)?' · '+f.minute+"'":''):finished?'Afgelopen':f.status==='PST'?'Uitgesteld':f.status==='CANC'?'Afgelast':f.status==='NS'&&Date.parse(f.date)>Date.now()?'Nog te voorspellen':f.status==='AWAITING'?'Uitslag nog niet bevestigd':'Niet beschikbaar';
-  const content='<span class="team87 team87-home">'+Football47.shirt(f.home)+'<span>'+esc(f.home.name)+'</span></span><span class="when">'+esc(result)+'<small>'+esc(status)+'</small></span><span class="team87 team87-away"><span>'+esc(f.away.name)+'</span>'+Football47.shirt(f.away)+'</span>';
+  // A kickoff must never share one unbreakable line with both team names.
+  const kickoff=!finished&&!live&&f.status!=='TBD'&&Number.isFinite(Date.parse(f.date))
+   ?'<span class="kickoff97"><span>'+esc(new Intl.DateTimeFormat('nl-NL',{timeZone:'Europe/Amsterdam',day:'numeric',month:'short'}).format(new Date(f.date)))+'</span><span>'+esc(new Intl.DateTimeFormat('nl-NL',{timeZone:'Europe/Amsterdam',hour:'2-digit',minute:'2-digit'}).format(new Date(f.date)))+'</span></span>'
+   :esc(result);
+  const content='<span class="team87 team87-home">'+Football47.shirt(f.home)+'<span>'+esc(f.home.name)+'</span></span><span class="when">'+kickoff+'<small>'+esc(status)+'</small></span><span class="team87 team87-away"><span>'+esc(f.away.name)+'</span>'+Football47.shirt(f.away)+'</span>';
   return '<details class="fixture-expand88" data-match-id="'+esc(f.id)+'" role="listitem">'+
    '<summary class="match50" aria-label="Wedstrijddetails '+esc(f.home.name+' tegen '+f.away.name+', '+result+', '+status)+'">'+content+'</summary>'+
    '<div class="match-events88" role="region" aria-label="Gebeurtenissen '+esc(f.home.name+' tegen '+f.away.name)+'">'+matchEventDetails88(f)+'</div></details>';
