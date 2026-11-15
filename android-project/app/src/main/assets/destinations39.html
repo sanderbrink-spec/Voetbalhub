@@ -37,7 +37,7 @@ function score(f){return f.goals||f.score;}
 function verifiedFixtureIdentity97(f){
  if(state.competition!=='championsleague')return true;
  const day=String(f.date||'').slice(0,10);
- const wrong=n=>/^(?:sbv\\s+)?excelsior(?:\\s+rotterdam)?$/i.test(String(n||'').trim());
+ const wrong=n=>/^(?:sbv\s+)?excelsior(?:\s+rotterdam)?$/i.test(String(n||'').trim());
  return !(day==='2026-11-03'&&wrong(f.home?.name)&&/^aston villa(?: fc)?$/i.test(f.away?.name||''))&&
         !(day==='2026-11-25'&&/^sabah(?: fc)?$/i.test(f.home?.name||'')&&wrong(f.away?.name));
 }
