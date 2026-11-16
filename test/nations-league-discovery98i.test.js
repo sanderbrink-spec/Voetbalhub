@@ -51,3 +51,12 @@ test('official Oranje announcements can use a preapproved generic international 
  assert.equal(result.article.imageRotation.method,'approved-article-v69');
  assert.ok(result.article.imageUrl.startsWith('https://voetbalhub-redactie.onrender.com/'));
 });
+
+test('newsroom prioritizes verified squad changes and decisive League A stories over routine items',()=>{
+ const {priority}=require('../editorial-production45');
+ const knvb={url:'https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen/82834/frenkie-de-jong-mist-duitsland-uit',title:'Frenkie de Jong mist Duitsland-uit',text:'Nederland wijzigt de selectie'};
+ const uefa={url:'https://www.uefa.com/uefanationsleague/news/02ab-latest/',title:'Nations League quarter-final qualification: what each team needs',text:'League A knockout picture'};
+ const routine={url:'https://www.ajax.nl/artikelen/nieuws/',title:'Ajax werkt trainingsschema af',text:'Ajax trainde vandaag.'};
+ assert.ok(priority(knvb)>priority(uefa));
+ assert.ok(priority(uefa)>priority(routine));
+});
