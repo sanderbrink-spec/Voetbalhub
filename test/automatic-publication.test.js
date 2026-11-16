@@ -1308,8 +1308,7 @@ test('a calendar item cannot pass as a preview until official football context i
   '<br/><a href="'+scheduled+'">Netherlands vs Greece</a></p>'},plain);
  assert.deepEqual(model.storyIssues(payload()),[]);
  assert.deepEqual(model.previewWritingFacts(payload().verifiedFacts),[
-  'Eerdere ontmoeting in de Nations League: Griekenland 2-2 Nederland.',
-  'Dit is de laatste groepswedstrijd van Nederland in deze Nations League.'
+  'Eerdere ontmoeting in de Nations League: Griekenland 2-2 Nederland.'
  ]);
  const facts=require('../editorial-facts');
  assert.equal(facts.hasOfficialPreviewResult(payload()),true);

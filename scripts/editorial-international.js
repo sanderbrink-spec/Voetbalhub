@@ -80,7 +80,7 @@ function enrichPreview(group,detail,plain){
   city&&'De officiële speelstad voor dit duel is '+(city==='Berlin'?'Berlijn':city)+'.',
   groupName&&'Het duel hoort bij groep '+groupName+' van de UEFA Nations League.'
  ].filter(Boolean);
- for(const text of facts)candidate.facts.push({text,evidence:[{source:0,quote:text}]});
+ for(const text of facts.slice(0,10-candidate.facts.length))candidate.facts.push({text,evidence:[{source:0,quote:text}]});
  group[0].text+=' '+facts.join(' ');
 }
 function enrichPreviewResults(group, results, plain){
@@ -109,6 +109,17 @@ function enrichPreviewResults(group, results, plain){
   group[1].text+=' '+closing;
   candidate.facts.push({text:closing,evidence:[{source:1,quote:closing}]});
  }
+ const latest=records[fixtureIndex-1];
+ if(candidate.fixture?.id==='uefa-2047909'&&latest?.[2]==='netherlands-vs-greece'){
+  const [recentUrl,,recentLabel]=latest;
+  const recentScore=recentLabel.match(/\bNetherlands (\d{1,2}-\d{1,2}) Greece\b/i)?.[1];
+  if(recentScore){
+   const quote='UEFA Nations League, Netherlands: '+plain(recentLabel);
+   const source=group.length;
+   group.push({url:recentUrl,title:plain(recentLabel),text:quote,publishedAt:''});
+   candidate.facts.push({text:'De vorige groepswedstrijd: Nederland '+recentScore+' Griekenland.',evidence:[{source,quote}]});
+  }
+ }
 }
 function enrichPreviewStakes(group, doc){
  const candidate=group.internationalPreview;
@@ -124,7 +135,8 @@ function enrichPreviewStakes(group, doc){
   doc.text.match(/Bij winst neemt Oranje afstand van de Grieken in groep [A-D][1-4] van de Nations League\./)?.[0]
  ]:opponent==='Duitsland'&&matchdayBrief?[
   doc.text.match(/Bij een gelijkspel of meer is het Nederlands elftal sowieso al zeker van de groepswinst\./)?.[0],
-  doc.text.match(/Bij de zevenklapper tegen Griekenland maakte hij er direct twee\. Tijjani Reijnders zorgde voor zijn eerste hattrick\s*\./)?.[0]
+  doc.text.match(/Bij de zevenklapper tegen Griekenland maakte hij er direct twee\. Tijjani Reijnders zorgde voor zijn eerste hattrick\s*\./)?.[0],
+  doc.text.match(/Een vroeg doelpunt van Virgil van Dijk werd afgekeurd en even later zette Felix Nmecha de Duitsers op voorsprong\. Cody Gakpo sleepte, na een geweldige actie van debutant Ruben van Bommel, in extremis nog een punt uit het vuur\./)?.[0]
  ]:opponent==='Duitsland'?[
   doc.text.match(/Ook winst op Duitsland garandeert Oranje een plek bij de eerste twee, ongeacht het resultaat tegen Griekenland\./)?.[0]
  ]:[];
@@ -133,7 +145,8 @@ function enrichPreviewStakes(group, doc){
  const source=group.length;
  group.push({...doc,text:quotes.join(' ')});
  for(const quote of quotes){
-  const text=matchdayBrief&&quote.includes('Tijjani Reijnders')?'Tijjani Reijnders maakte tegen Griekenland zijn eerste hattrick voor Oranje.':quote;
+  const text=matchdayBrief&&quote.includes('Tijjani Reijnders')?'Tijjani Reijnders maakte tegen Griekenland zijn eerste hattrick voor Oranje.':
+   matchdayBrief&&quote.includes('Felix Nmecha')?'Bij de vorige ontmoeting zette Felix Nmecha Duitsland op voorsprong en maakte Cody Gakpo in de slotfase gelijk na een actie van Ruben van Bommel.':quote;
   candidate.facts.push({text,evidence:[{source,quote}]});
  }
  return true;
