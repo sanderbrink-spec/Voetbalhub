@@ -1666,3 +1666,50 @@ test('98S recent Sportmonks errors and inconsistent fixtures retain existing saf
  },now,[]);
  assert.equal(requested,'/editorial-champions-league');
 });
+
+
+test('98T UEFA homepage discovers up to twelve exact official mens Nations League stories',()=>{
+ const {discoverLinks}=require('../scripts/automatic-publication');
+ const uefa={url:'https://www.uefa.com/uefanationsleague/',articlePath:'^/uefanationsleague/news/02[a-z0-9-]+/?$'};
+ const html=Array.from({length:16},(_,i)=>'<a href="/uefanationsleague/news/02a'+i.toString(36)+'-status-'+i+'/">Club</a>').join('')+
+  '<a href="https://unofficial.example/uefanationsleague/news/02a-unsafe/">Outside</a>';
+ const links=discoverLinks(html,uefa);
+ assert.equal(links.length,12);
+ assert.ok(links.every(x=>x.startsWith('https://www.uefa.com/uefanationsleague/news/')));
+ const ajax={url:'https://www.ajax.nl/',articlePath:'^/artikelen/[^/]+/?$'};
+ assert.equal(discoverLinks(Array.from({length:14},(_,i)=>'<a href="/artikelen/test-'+i+'">Ajax</a>').join(''),ajax).length,6);
+});
+test('98T verified first-party UEFA League A reports can be considered without enabling womens or third-party content',()=>{
+ const {nationallyRelevant}=require('../scripts/automatic-publication');
+ const base={url:'https://www.uefa.com/uefanationsleague/news/02ab-league-a-matchday/',
+  title:'Nations League League A matchday: what each team needs',
+  text:'The UEFA Nations League League A quarter-finals have confirmed places. Four League A groups and their confirmed qualification status are explained in the official briefing.'};
+ assert.equal(nationallyRelevant(base),true);
+ assert.equal(nationallyRelevant({...base,title:'Women Nations League League A matchday'}),false);
+ assert.equal(nationallyRelevant({...base,url:'https://unofficial.example/uefanationsleague/news/02ab-league-a-matchday/'}),false);
+});
+test('98T official UEFA first-party context appears only as literal audited fact',()=>{
+ const {confirmedUefaQualification}=require('../scripts/automatic-publication');
+ const intro='UEFA Nations League 2026/27 League A qualification status for quarter-finals is presented in this official overview.';
+ const text=[
+  intro,
+  'Group A1 France (13pts), Belgium (12), Italy (10), Türkiye (0)',
+  'France are confirmed in first place and have qualified for the quarter-finals.',
+  'Belgium are confirmed in second place and have qualified for the quarter-finals.',
+  'Group A2 Netherlands (11pts), Greece (8), Germany (8), Serbia (0)',
+  'Netherlands are confirmed in first place and have qualified for the quarter-finals.',
+  'Group A3 England (15pts), Spain (15), Croatia (6), Czechia (0)',
+  'England are confirmed in first place and have qualified for the quarter-finals.',
+  'Spain are confirmed in second place and have qualified for the quarter-finals.',
+  'Group A4 Portugal (12pts), Denmark (9), Norway (6), Wales (3)',
+  'Portugal are confirmed in first place and have qualified for the quarter-finals.'
+ ].join(' ');
+ const doc={url:'https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through/',
+  title:'Nations League quarter-finals: Who is through? State of play',text};
+ const packet=confirmedUefaQualification(doc);
+ assert.ok(packet);
+ assert.ok(packet.facts.some(f=>f.text===intro));
+ assert.ok(packet.facts.length<=10);
+ assert.ok(['A1','A2','A3','A4'].every(group=>packet.facts.some(f=>f.text.startsWith('Group '+group))));
+ for(const fact of packet.facts)assert.ok(text.includes(fact.evidence[0].quote));
+});
