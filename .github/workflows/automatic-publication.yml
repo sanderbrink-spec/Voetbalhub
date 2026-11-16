@@ -50,9 +50,9 @@ permissions:
   issues: write
 concurrency:
   group: automatic-verified-editorial-publication
-  # Laat lopende controles afronden. Een nieuwe commit mag geen productieproef
-  # afbreken terwijl Render nog synchroniseert. De revision-gate blijft vereist.
-  cancel-in-progress: false
+  # Een oudere commit mag de actuele productieronde niet blokkeren.
+  # Publiceren vereist nog steeds dat Render exact dezelfde main-revisie draait.
+  cancel-in-progress: true
 # Nieuwe productieronde: gebruik de bestaande gecontroleerde workflow.
 # Journalistieke voorbeelden sturen nieuwsselectie; publicatie blijft afhankelijk van
 # geverifieerde feiten, onafhankelijke review, rechten en feedcontrole.
