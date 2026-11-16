@@ -60,3 +60,19 @@ test('newsroom prioritizes verified squad changes and decisive League A stories 
  assert.ok(priority(knvb)>priority(uefa));
  assert.ok(priority(uefa)>priority(routine));
 });
+
+test('only UEFA own qualification status is first-party competition evidence, never a match preview or rumour',()=>{
+ const {officialSourceAuthority}=require('../scripts/editorial-discovery53');
+ const {primaryAuthority,nationallyRelevant}=require('../scripts/automatic-publication');
+ const status={url:'https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/',
+  title:'Nations League quarter-finals: Who is through and who can join?',
+  text:'The official status of League A qualification for the UEFA Nations League quarter-finals, including who can still qualify.'};
+ const other={url:'https://www.uefa.com/uefanationsleague/news/02ab-221287e5a66c-f9855de4b857-1000--uefa-nations-league-matchday-6-preview-germany-welcome-nethe/',
+  title:'UEFA Nations League Matchday 6 preview',text:'Germany Netherlands preview with players to watch and League A matchday fixtures.'};
+ assert.equal(officialSourceAuthority(status.url),'association_decision');
+ assert.equal(primaryAuthority(status),'association_decision');
+ assert.equal(nationallyRelevant(status),true);
+ assert.equal(officialSourceAuthority(other.url),'club_decision');
+ assert.equal(primaryAuthority(other),'');
+ assert.equal(primaryAuthority({...status,title:'Nations League rumour: who might leave?'}),'');
+});
