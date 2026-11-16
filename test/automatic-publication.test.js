@@ -1542,3 +1542,31 @@ test('98P Nations League review uses separate factual paragraphs instead of fede
  assert.equal(called,true);
  assert.equal(result,null);
 });
+
+
+test('98Q official UEFA League A tables provide distinct literal context without loosening evidence checks',()=>{
+ const {confirmedUefaQualification}=require('../scripts/automatic-publication');
+ const url='https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/';
+ const text=[
+  'Group A1 France (13pts), Belgium (12), Italy (10), Türkiye (0)',
+  'France are confirmed in first place and have qualified for the quarter-finals.',
+  'Belgium are confirmed in second place and have qualified for the quarter-finals.',
+  'Italy are confirmed in third place.',
+  'Group A2 Netherlands (11pts), Greece (8), Germany (8), Serbia (0)',
+  'Group A3 England (15pts), Spain (15), Croatia (6), Czechia (0)',
+  'England are confirmed in first place and have qualified for the quarter-finals.',
+  'Spain are confirmed in second place and have qualified for the quarter-finals.',
+  'Group A4 Portugal (12pts), Denmark (9), Norway (6), Wales (3)',
+  'Portugal are confirmed in the quarter-finals.'
+ ].join(' ');
+ const doc={url,title:'Nations League quarter-finals: Who is through? State of play',text};
+ const result=confirmedUefaQualification(doc);
+ assert.ok(result);
+ assert.ok(result.facts.length>=8&&result.facts.length<=10);
+ for(const group of ['A1','A2','A3','A4'])
+  assert.ok(result.facts.some(f=>f.text.startsWith('Group '+group+' ')),group+' should have a distinct standing');
+ for(const fact of result.facts)assert.ok(text.includes(fact.evidence[0].quote),'Every fact remains an exact first-party quote');
+ assert.equal(confirmedUefaQualification({...doc,url:'https://example.com/uefanationsleague/news/fake'}),null);
+ const noTables=confirmedUefaQualification({...doc,text:text.replace(/Group A[1-4] [^.!?]*(?=[A-Z][a-z]+ are confirmed)/g,'')});
+ assert.ok(noTables===null||noTables.facts.every(f=>!f.text.startsWith('Group A')));
+});
