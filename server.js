@@ -930,6 +930,8 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     if (!cover) return send(res, 422, {error:"Publicatie geblokkeerd: geen passend goedgekeurd artikelbeeld."});
     const compactVerified = reviewedDraft && publishBody.length < 3 && imageUrl &&
       (body.matchId || body.articleKind === "preview" || require("./editorial-desk-model").briefEligible(body));
+    if (feedLifecycle?.kind === 'preview' && Date.parse(feedLifecycle.expiresAt) <= Date.now())
+      return send(res,409,{error:"Voorbeschouwing verlopen: de aftrap is bereikt."});
     const now = new Date().toISOString();
     const article = { ...(compactVerified ? {compactVerified:true} : {}), ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? publicationId(reviewedDraft) : crypto.randomUUID(), ...(body.matchId ? {matchId:body.matchId} : {}), ...(body.articleKind ? {articleKind:body.articleKind} : {}), ...(body.imageCategory ? {imageCategory:body.imageCategory} : {}), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), ...(reviewedDraft && body.fixture ? {fixture:body.fixture} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
     const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});

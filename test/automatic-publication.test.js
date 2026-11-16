@@ -1261,6 +1261,35 @@ test('OnsOranje fixtures enter the editorial route only when UEFA confirms the k
  assert.deepEqual(confirmedPreviews(oranje,uefa,plain,Date.parse('2026-11-13T19:45:00Z'),7),[]);
 });
 
+test('a targeted Nations League preview reports a published fixture before requesting any AI work',async()=>{
+ const {ORANJE,UEFA}=require('../scripts/editorial-international');
+ const previewUrl='https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660';
+ const kickoff='2026-11-16T19:45:00Z';
+ const options=JSON.stringify({match:{id:'2047909',status:'Upcoming',kickOffTime:{dateTime:kickoff}}}).replaceAll('"','&quot;');
+ const sources=new Map([
+  [ORANJE,'<div class="Matchevent-item"><a href="/toernooien/4546">UEFA Nations League</a>'+
+   '<a href="/teams/185184/programma/wedstrijd/334660" class="Matchblock-wrapper" title="16 nov 2026: Duitsland - Nederland">'+
+   '<span class="Matchblock-metadata--time">20:45</span></a><span class="location-label">Olympiastadion</span>'],
+  [UEFA,'<div data-plugin="pk-match-unit" data-options="'+options+'"></div>'+
+   '<a href="/uefanationsleague/match/2047909--germany-vs-netherlands/">UEFA</a>']
+ ]);
+ const report=await run({secret:'test',githubToken:'test',now:Date.parse('2026-11-16T17:00:00Z'),
+  focusSourceUrl:previewUrl,singlePublication:true,fetcher:async(url,request={})=>{
+   assert.notEqual(request.method,'POST');
+   if(url.endsWith('/articles?view=all'))return Response.json({articles:[
+    {id:'existing-preview',articleKind:'preview',fixture:{id:'uefa-2047909'},sources:[]}
+   ]});
+   if(url.includes('editorial-queue45.json'))return new Response(null,{status:404});
+   if(sources.has(url))return new Response(sources.get(url));
+   return new Response(null,{status:404});
+  }});
+ const duplicate=report.signals.find(item=>item.outcome==='duplicate_primary_source');
+ assert.equal(duplicate?.articleId,'existing-preview');
+ assert.equal(duplicate.url,previewUrl);
+ assert.equal(report.counts.aiRequests,0);
+ assert.equal(report.counts.publicationAttempts,0);
+});
+
 test('a calendar item cannot pass as a preview until official football context is available',()=>{
  const {enrichPreviewResults}=require('../scripts/editorial-international');
  const model=require('../editorial-desk-model');

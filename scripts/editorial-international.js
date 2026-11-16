@@ -57,18 +57,12 @@ function confirmedPreviews(oranje,uefa,plain,now,horizonDays){
   };
   groups.push(group);
  }
- // A second independently verified group fixture gives useful context for
- // a preview without borrowing standings or an unverified match result.
- for(const group of groups){
-  const candidate=group.internationalPreview;
-  const adjacent=groups.find(other=>other!==group&&Math.abs(other.internationalPreview.kickoff-candidate.kickoff)<=7*86400000);
-  if(!adjacent)continue;
-  const related=adjacent.internationalPreview;
-  const calendarFact='Het andere geplande groepsduel van Nederland is '+related.topic+' op '+related.eventDate+'.';
-  group.push({url:ORANJE,title:'OnsOranje wedstrijdprogramma',publishedAt:'',text:calendarFact});
-  candidate.facts.push({text:calendarFact,evidence:[{source:group.length-1,quote:calendarFact}]});
- }
  return groups;
+}
+function samePreview(article,fixture,sourceUrl){
+ if(article.articleKind!=='preview'&&article.feedLifecycle?.kind!=='preview')return false;
+ return Boolean((fixture?.id&&article.fixture?.id===fixture.id)||
+  (sourceUrl&&article.sources?.some(source=>source.url===sourceUrl)));
 }
 function enrichPreview(group,detail,plain){
  const candidate=group.internationalPreview;
@@ -135,4 +129,4 @@ function enrichPreviewStakes(group, doc){
  group.push({...doc,text:quotes.join(' ')});
  for(const quote of quotes)candidate.facts.push({text:quote,evidence:[{source,quote}]});
 }
-module.exports={ORANJE,UEFA,UEFA_RESULTS,confirmedPreviews,enrichPreview,enrichPreviewResults,enrichPreviewStakes};
+module.exports={ORANJE,UEFA,UEFA_RESULTS,confirmedPreviews,samePreview,enrichPreview,enrichPreviewResults,enrichPreviewStakes};

@@ -1152,7 +1152,8 @@ function scheduleEditorialGroups(newsGroups,matchGroups,{sportmonksOnly=false}={
  return scheduled;
 }
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,providerRouter,report,focusSourceUrl,discoveryOnly=false,validationOnly=false,singlePublication=false,expectedRevision=process.env.GITHUB_SHA}={}){
- if(focusSourceUrl&&!articleUrl(focusSourceUrl,config.newsIndexes))throw Error('Ongeldige gerichte nieuwsbron.');
+ const fixtureFocus=/^https:\/\/www\.onsoranje\.nl\/teams\/185184\/programma\/wedstrijd\/\d+$/.test(focusSourceUrl||'');
+ if(focusSourceUrl&&!fixtureFocus&&!articleUrl(focusSourceUrl,config.newsIndexes))throw Error('Ongeldige gerichte nieuwsbron.');
  if(focusSourceUrl)report.focusSourceUrl=focusSourceUrl;
  if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!githubToken)throw Error('HUB_API_SECRET en GitHub-mediatoegang zijn vereist.');
@@ -1264,7 +1265,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  const authoritative=[];
  const linkFor=doc=>articleUrl(doc.url,config.newsIndexes)||doc.url;
  const discovered=[];
- const linksToRead=editorialSourceLinks(links,focusSourceUrl);
+ const linksToRead=fixtureFocus?[...links].filter(url=>host(url)==='onsoranje.nl'):editorialSourceLinks(links,focusSourceUrl);
  for(let index=0;index<linksToRead.length;index+=6){
   const batch=await Promise.all(linksToRead.slice(index,index+6).map(load));
   for(const doc of batch)if(doc&&!discovered.some(item=>item.url===doc.url))discovered.push(doc);
@@ -1313,7 +1314,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    break;
   }
  }
- if(!focusSourceUrl){
+ if(!focusSourceUrl||fixtureFocus){
   const calendars=await Promise.allSettled([international.ORANJE,international.UEFA].map(url=>officialPage(url,fetcher)));
   report.sources.internationalCalendars=calendars.map((result,index)=>{
    const url=[international.ORANJE,international.UEFA][index];
@@ -1322,7 +1323,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    return {url,status:'unavailable'};
   });
   if(calendars.every(result=>result.status==='fulfilled')){
-   const previews=international.confirmedPreviews(...calendars.map(result=>result.value),plain,now,config.previewHorizonDays);
+   const found=international.confirmedPreviews(...calendars.map(result=>result.value),plain,now,config.previewHorizonDays);
+   const previews=fixtureFocus?found.filter(group=>group[0].url===focusSourceUrl):found;
+   if(fixtureFocus&&!previews.length)report.signals.push({route:'news',url:focusSourceUrl,outcome:'no_verified_upcoming_fixture',
+    reason:'Geen door OnsOranje en UEFA bevestigde wedstrijd met een toekomstige aftrap binnen het publicatievenster.'});
    let results;
    if(previews.length&&!discoveryOnly){
     try{results=await officialPage(international.UEFA_RESULTS,fetcher);}
@@ -1344,7 +1348,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      report.signals.push({route:'news',topic:candidate.topic,outcome:'invalid_preview_evidence',issues:previewIssues});
      continue;
     }
-    if(!validationOnly&&published.some(a=>a.sources?.[0]?.url===group[0].url))continue;
+    const existing=published.find(article=>international.samePreview(article,candidate.fixture,group[0].url));
+    if(!validationOnly&&existing){
+     report.signals.push({route:'news',url:group[0].url,topic:candidate.topic,outcome:'duplicate_primary_source',
+      articleId:existing.id,reason:'Voor deze wedstrijd is al een voorbeschouwing gepubliceerd.'});
+     continue;
+    }
     groups.push(group);
     report.signals.push({route:'news',topic:candidate.topic,outcome:'verified_international_preview',
      kickoff:new Date(candidate.kickoff).toISOString(),sources:group.map(doc=>doc.url)});
@@ -1359,7 +1368,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  matchGroups.sort((a,b)=>Number(matchGuidance.isRichMatch(b.matchRecord))-
   Number(matchGuidance.isRichMatch(a.matchRecord))||
   (b.matchRecord?.verifiedFacts?.length||0)-(a.matchRecord?.verifiedFacts?.length||0));
- const sportmonksOnly=process.env.EDITORIAL_SPORTMONKS_ONLY==='true';
+ const sportmonksOnly=!fixtureFocus&&process.env.EDITORIAL_SPORTMONKS_ONLY==='true';
  const scheduled=scheduleEditorialGroups(groups,matchGroups,{sportmonksOnly});
  if(sportmonksOnly){
   report.testScope='verified_sportmonks_match_reports_only';
@@ -1376,6 +1385,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   try{report.sources.sportmonksStatistics=await api('/editorial-sportmonks-statistics');}
   catch(error){report.sourceErrors.push({source:'Sportmonks statistics',error:error.message});}
   report.status='discovery_complete';
+  return report;
+ }
+ if(fixtureFocus&&!scheduled.some(group=>group.internationalPreview&&group[0].url===focusSourceUrl)){
+  report.status='no_new_verified_articles';
   return report;
  }
  if(sportmonksOnly&&scheduled.length===0){
@@ -1604,6 +1617,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  // Resume valid, already-written drafts before spending more provider capacity
  // on entirely new topics. Freshness and exact evidence hashes remain mandatory.
  const runnable=[...jobs.values()].sort((a,b)=>
+  Number(Boolean(b.group.internationalPreview))-Number(Boolean(a.group.internationalPreview))||
+  (a.group.internationalPreview?.kickoff||0)-(b.group.internationalPreview?.kickoff||0)||
   reusableCheckpointPriority(b.job,b.group,secret,now)-
   reusableCheckpointPriority(a.job,a.group,secret,now));
  for(const {group,job} of runnable.slice(0,8)){
@@ -1768,7 +1783,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
    // Refresh before the only publication write to avoid a concurrent/manual duplicate.
    published=(await api('/articles?view=all')).articles;
-   if(duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp inmiddels gepubliceerd.'});durable.queue.finish(job,'duplicate',now);continue;}
+   if((group.internationalPreview&&published.some(article=>international.samePreview(article,payload.fixture,group[0].url)))||
+      duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp inmiddels gepubliceerd.'});durable.queue.finish(job,'duplicate',now);continue;}
    const latestCount=published.filter(a=>{const t=Date.parse(a.publishedAt);return Number.isFinite(t)&&new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(t))===today;}).length;
    if(latestCount>=config.maxPerDay){report.status='daily_limit';break;}
    stage='storage';
@@ -1850,6 +1866,7 @@ async function run(options={}){
     'Per route: '+JSON.stringify(report.routes),
     'Bronstatus per koppeling: '+JSON.stringify(report.sources),
     'Bronfouten per koppeling: '+JSON.stringify(report.sourceErrors.map(({source,url,error,code})=>({source:source||url,error,code}))),
+    ...report.signals.filter(item=>item.url===report.focusSourceUrl&&item.reason).map(item=>'- Selectie: '+item.reason+(item.articleId?' Artikel-ID '+item.articleId+'.':'')),
     ...report.validated.map(item=>'- Gevalideerd: '+item.article.headline+' · redactie '+item.score+'/100 · journalistiek '+item.scores.journalism+'/100 · betrouwbaarheid '+item.scores.reliability+'/100'),
     ...report.published.map(item=>'- Openbaar gecontroleerd: '+item.headline+' · redactie '+item.score+'/100 · journalistiek '+item.journalism+'/100 · betrouwbaarheid '+item.reliability+'/100 · '+item.url),
     ...report.assessments.filter(item=>item.scores).map(item=>'- Beoordeling '+item.topic+' (versie '+(item.revision+1)+'): journalistiek '+item.scores.journalism+'/100 · betrouwbaarheid '+item.scores.reliability+'/100 · redactie '+item.score+'/100'+(item.change?' · verschil journalistiek '+(item.change.journalism>=0?'+':'')+item.change.journalism:'')+(item.findings.length?' · '+item.findings.join(' / '):'')),
