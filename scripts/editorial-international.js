@@ -106,7 +106,7 @@ function enrichPreviewResults(group, results, plain){
  const source=group.length;
  group.push({url,title:plain(label),text:quote,publishedAt:''});
  candidate.facts.push({text,evidence:[{source,quote}]});
- if(fixtureIndex===records.length-1){
+ if(fixtureIndex===records.length-1&&candidate.fixture?.id!=='uefa-2047909'){
   const closing='Dit is de laatste groepswedstrijd van Nederland in deze Nations League.';
   group[1].text+=' '+closing;
   candidate.facts.push({text:closing,evidence:[{source:1,quote:closing}]});
@@ -138,6 +138,7 @@ function enrichPreviewStakes(group, doc){
   doc.text.match(/Bij winst neemt Oranje afstand van de Grieken in groep [A-D][1-4] van de Nations League\./)?.[0]
  ]:opponent==='Duitsland'&&matchdayBrief?[
   doc.text.match(/Bij een gelijkspel of meer is het Nederlands elftal sowieso al zeker van de groepswinst\./)?.[0],
+  doc.text.match(/Bij een nederlaag is de ploeg van Xavi afhankelijk van de uitslag bij Griekenland - Servië\./)?.[0],
   doc.text.match(/Bij de zevenklapper tegen Griekenland maakte hij er direct twee\. Tijjani Reijnders zorgde voor zijn eerste hattrick\s*\./)?.[0],
   doc.text.match(/Een vroeg doelpunt van Virgil van Dijk werd afgekeurd en even later zette Felix Nmecha de Duitsers op voorsprong\. Cody Gakpo sleepte, na een geweldige actie van debutant Ruben van Bommel, in extremis nog een punt uit het vuur\./)?.[0]
  ]:opponent==='Duitsland'?[
@@ -148,7 +149,8 @@ function enrichPreviewStakes(group, doc){
  const source=group.length;
  group.push({...doc,text:quotes.join(' ')});
  for(const quote of quotes){
-  const text=matchdayBrief&&quote.includes('Tijjani Reijnders')?'Tijjani Reijnders maakte tegen Griekenland zijn eerste hattrick voor Oranje.':
+  const text=matchdayBrief&&quote.startsWith('Bij een nederlaag')?'Bij verlies tegen Duitsland hangt de groepswinst voor Oranje af van de uitslag van Griekenland tegen Servië.':
+   matchdayBrief&&quote.includes('Tijjani Reijnders')?'Tijjani Reijnders maakte tegen Griekenland zijn eerste hattrick voor Oranje.':
    matchdayBrief&&quote.includes('Felix Nmecha')?'Bij de vorige ontmoeting zette Felix Nmecha Duitsland op voorsprong en maakte Cody Gakpo in de slotfase gelijk na een actie van Ruben van Bommel.':quote;
   candidate.facts.push({text,evidence:[{source,quote}]});
  }
