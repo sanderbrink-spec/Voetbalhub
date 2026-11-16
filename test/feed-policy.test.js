@@ -38,3 +38,25 @@ test('Android rights envelope includes only verified compact articles and preser
   assert.deepEqual(feed.articles.map(article=>article.id),['brief','legacy']);
   assert.deepEqual(articleEnvelope([legacy]),{count:1,articles:[legacy]});
 });
+
+test('reviewed Nations League preview refreshes Android feed order without erasing its first publication date',()=>{
+ const now=Date.parse('2026-11-16T19:20:00Z');
+ const preview={id:'oranje',status:'published',articleKind:'preview',editorialDraftId:'approved-456',
+  publishedAt:'2026-11-13T15:37:41.184Z',updatedAt:'2026-11-16T18:15:33.000Z',
+  feedLifecycle:{kind:'preview',expiresAt:'2026-11-16T19:45:00.000Z'}};
+ const older={id:'twente',publishedAt:'2026-11-14T12:41:33.645Z'};
+ const original=JSON.stringify(preview);
+ const current=selectFeed([older,preview],{now});
+ assert.deepEqual(current.map(a=>a.id),['oranje','twente']);
+ assert.equal(current[0].publishedAt,preview.updatedAt);
+ assert.equal(current[0].firstPublishedAt,preview.publishedAt);
+ assert.equal(current[0].feedDateKind,'verified_revision');
+ assert.equal(JSON.stringify(preview),original);
+ const afterKickoff=selectFeed([older,preview],{now:Date.parse('2026-11-16T19:45:00.000Z')});
+ assert.deepEqual(afterKickoff.map(a=>a.id),['twente']);
+ const archived=selectFeed([older,preview],{now:Date.parse('2026-11-16T19:45:00.000Z'),view:'archive'});
+ assert.equal(archived[0].publishedAt,preview.publishedAt,'Archive retains original date');
+ assert.equal(archived[0].feedState,'archived');
+ assert.deepEqual(selectFeed([older,{...preview,editorialDraftId:undefined}],{now}).map(a=>a.id),['twente','oranje']);
+ assert.deepEqual(selectFeed([older,{...preview,updatedAt:'2026-11-17T00:00:00Z'}],{now}).map(a=>a.id),['twente','oranje']);
+});
