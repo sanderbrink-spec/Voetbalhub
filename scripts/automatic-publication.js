@@ -360,6 +360,11 @@ function primaryAuthority(doc){
  if(!url)return '';
  const title=normalize(doc.title);
  if(/\b(gerucht|mogelijk|liveblog|samenvatting|highlights)\b/.test(title))return '';
+ // This is a verified organising-body status, not a UEFA writer's opinion.
+ // The server independently rechecks the exact eligible official URL.
+ if(host(url)==='uefa.com'&&officialSourceAuthority(url)==='association_decision'&&
+    /\b(nations league|league a|quarter finals|quarter final|kwalificatie|qualification|promotion|relegation)\b/.test(title+' '+normalize((doc.text||'').slice(0,900))))
+   return 'association_decision';
  if(host(url)==='onsoranje.nl'&&/\b(opgeroepen|vallen af|valt af|afgemeld|selectie bekend)\b/.test(title)&&
    /\b(selectie|trainingskamp)\b/.test(normalize((doc.text||'').slice(0,3000))))return 'association_decision';
  // The KNVB has first-hand authority over its own men's squad, including an
@@ -1741,7 +1746,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    await checkpointStep({draft,generation:null});
    report.counts.generated++;route.generated++;
    stage='quality';
-   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&host(sources[0].url)==='onsoranje.nl'?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
+   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&['onsoranje.nl','uefa.com'].includes(host(sources[0].url))?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
     reviewNotes:(validationOnly?'Automatische redactionele validatie. ':'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. ')+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
     if(group.replacePreviewId)payload.replacePreviewId=group.replacePreviewId;
