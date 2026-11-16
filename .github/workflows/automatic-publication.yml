@@ -159,4 +159,3 @@ jobs:
             } else if (qualityAlert && report?.counts.published > 0) {
               await github.rest.issues.update({owner,repo,issue_number:qualityAlert.number,state:'closed'});
             }
-# Productieproef 98D: controleer autonome nieuwsselectie, kwaliteit en openbare feed.
