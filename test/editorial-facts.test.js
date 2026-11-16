@@ -27,3 +27,25 @@ test('Eredivisie phrasing is not an invented person, but unverified names still 
  p.draft.body.push('Abe Lenstra was bij het duel betrokken.');
  assert.ok(F.audit(p).some(x=>x.includes('Abe Lenstra')));
 });
+
+
+test('98T official UEFA League A facts support Dutch country names and competition name only when proven',()=>{
+ const statusUrl='https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through/';
+ const facts=[
+  'Group A1 France (13pts), Belgium (12), Italy (10), Türkiye (0)',
+  'France are confirmed in first place and have qualified for the quarter-finals.',
+  'Belgium are confirmed in second place and have qualified for the quarter-finals.'
+ ];
+ const verified={headline:'Nations League: Frankrijk en België weten waar zij staan',
+  standfirst:'Zowel Frankrijk als België is volgens de officiële UEFA-status geplaatst voor de kwartfinales.',
+  body:[]};
+ const issues=F.evidenceIssues(verified,facts,null,statusUrl);
+ assert.ok(!issues.some(x=>x.includes('Controleer namen')),issues.join(' | '));
+ const invented={...verified,standfirst:'Zowel Japan als België is volgens de UEFA-status geplaatst.'};
+ assert.ok(F.evidenceIssues(invented,facts,null,statusUrl).some(x=>x.includes('Zowel Japan')));
+ const fakeSource='https://www.ajax.nl/artikelen/uefa-status';
+ const fakeErrors=F.evidenceIssues(verified,facts,null,fakeSource).join(' ');
+ assert.ok(fakeErrors.includes('Nations League')||fakeErrors.includes('Zowel Frankrijk'));
+ const unrelated={...verified,standfirst:'Zowel Kevin Mbappé als België is volgens de UEFA-status geplaatst.'};
+ assert.ok(F.evidenceIssues(unrelated,facts,null,statusUrl).some(x=>x.includes('Zowel Kevin')));
+});

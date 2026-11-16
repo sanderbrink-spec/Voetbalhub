@@ -65,9 +65,42 @@
   const verifiedStadiumArticle=name=>/^(?:De Johan|Het Olympiastadion)$/i.test(name)&&
    (name.toLowerCase().includes('johan')?/\bjohan cruijff arena\b/.test(known):/\bolympiastadion\b/.test(known));
   const verifiedLeagueAbbreviation=name=>/^Major League$/i.test(name)&&/\bmls\b/.test(known);
+  // UEFA League A status is first-party competition metadata. Match results,
+  // standings and named participants still require literal verified facts.
+  let officialUefaLeagueA=false;
+  try{
+   const u=new URL(sourceName);
+   officialUefaLeagueA=u.protocol==='https:'&&u.hostname==='www.uefa.com'&&
+    /^\/uefanationsleague\/news\/02[a-z0-9-]+\/?$/.test(u.pathname)&&
+    /\b(?:league a|group a[1-4]|quarter.final)\b/i.test(evidence);
+  }catch{}
+  // Official UEFA data uses English national-team names. A strict, finite
+  // dictionary allows Dutch names only for teams present in verified facts.
+  const teamAliases=[
+   ['France','Frankrijk'],['Belgium','België'],['England','Engeland'],
+   ['Spain','Spanje'],['Italy','Italië'],['Germany','Duitsland'],
+   ['Netherlands','Nederland'],['Greece','Griekenland'],['Serbia','Servië'],
+   ['Türkiye','Turkije'],['Turkey','Turkije'],['Czechia','Tsjechië'],
+   ['Portugal','Portugal'],['Denmark','Denemarken'],['Norway','Noorwegen'],
+   ['Croatia','Kroatië'],['Wales','Wales']
+  ];
+  const uefaVerifiedNames=new Set();
+  if(officialUefaLeagueA){
+   for(const [source,target] of teamAliases)
+    if((' '+normalize(evidence)+' ').includes(' '+normalize(source)+' '))
+     uefaVerifiedNames.add(normalize(target));
+  }
+  const verifiedUefaStatusGrammar=name=>{
+   if(!officialUefaLeagueA)return false;
+   if(name==='Nations League')return true;
+   const leading=name.match(/^Zowel\s+([A-ZÀ-Ý][\p{L}’'-]+)$/u);
+   return Boolean(leading&&
+    (uefaVerifiedNames.has(normalize(leading[1]))||
+     (' '+normalize(evidence)+' ').includes(' '+normalize(leading[1])+' ')));
+  };
   const grammaticalStatusName=name=>(/^De UEFA$/i.test(name)&&publisher==='UEFA')||
     (/^In Groep$/i.test(name)&&publisher==='UEFA'&&/\b(?:group|groep|league a)\b/i.test(supported));
-   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!known.includes(normalize(name)));
+   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
