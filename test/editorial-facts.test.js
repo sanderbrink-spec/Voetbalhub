@@ -47,5 +47,5 @@ test('98T official UEFA League A facts support Dutch country names and competiti
  const fakeErrors=F.evidenceIssues(verified,facts,null,fakeSource).join(' ');
  assert.ok(fakeErrors.includes('Nations League')||fakeErrors.includes('Zowel Frankrijk'));
  const unrelated={...verified,standfirst:'Zowel Kevin Mbappé als België is volgens de UEFA-status geplaatst.'};
- assert.ok(F.evidenceIssues(unrelated,facts,null,statusUrl).some(x=>x.includes('Kevin Mbappé')));
+ assert.ok(F.evidenceIssues(unrelated,facts,null,statusUrl).some(x=>x.includes('Zowel Kevin')));
 });
