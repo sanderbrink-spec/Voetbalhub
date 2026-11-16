@@ -73,7 +73,10 @@ function enrichPreview(group,detail,plain){
  if(detail.url!==group[0].url||candidate.teams.join('|')!==detailTeams.join('|')||
     !amsterdam.format(candidate.kickoff).endsWith(' '+clock))return;
  const section=detail.html.match(/<div class="AsideLocation-content">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/)?.[1]||'';
- const city=plain(section.match(/>Stad<\/span><span>([^<]+)</)?.[1]||'').split(',')[0];
+ const location=plain(section.match(/>Stad<\/span><span>([^<]+)</)?.[1]||'');
+ const venue=plain(section.match(/class="AsideLocation-contentTitle">([^<]+)</)?.[1]||'');
+ if(location&&venue===candidate.fixture?.venueName)candidate.fixture.venueName=venue+', '+location;
+ const city=location.split(',')[0];
  const stage=plain(match.match(/class="MatchDetail-title">([^<]+)</)?.[1]||'');
  const groupName=stage.match(/\bgroep ([A-D][1-4])$/i)?.[1];
  const facts=[

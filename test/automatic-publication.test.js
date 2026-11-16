@@ -1418,6 +1418,28 @@ test('official federation announcements use the same source authority at storage
  assert.equal(retryFederationStorageFailure(job,doc,now),false);
 });
 
+test('verified match detail resolves the existing Berlin illustration from the abbreviated calendar venue',async()=>{
+ const {enrichPreview}=require('../scripts/editorial-international');
+ const {uploadCover}=require('../scripts/automatic-publication');
+ const url='https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660';
+ const fixture={id:'uefa-2047909',homeTeam:'Duitsland',awayTeam:'Nederland',
+  date:'2026-11-16T19:45:00.000Z',venueName:'Olympiastadion'};
+ const group=[{url,text:''}];
+ group.internationalPreview={fixture,teams:['Duitsland','Nederland'],kickoff:Date.parse(fixture.date),facts:[]};
+ const detail={url,html:'<div class="MatchDetail"><div class="MatchDetail-teamName"><span>Duitsland</span></div>'+
+  '<div class="MatchDetail-teamName"><span>Nederland</span></div><div class="MatchDetail-separatorLineText">20:45</div>'+
+  '<div class="Template-aside"><div class="AsideLocation-content"><div class="AsideLocation-contentTitle">Olympiastadion</div>'+
+  '<div><span>Stad</span><span>Berlin, Duitsland</span></div></div></div>'};
+ enrichPreview(group,{...detail,html:detail.html.replace('20:45','21:00')},plain);
+ assert.equal(fixture.venueName,'Olympiastadion');
+ enrichPreview(group,detail,plain);
+ assert.equal(fixture.venueName,'Olympiastadion, Berlin, Duitsland');
+ const cover=await uploadCover({fixture,articleKind:'preview',category:'Nations League',
+  draft:{headline:'Oranje speelt om groepswinst in Berlijn'}});
+ assert.match(cover.imageUrl,/duitsland-nederland-preview\.webp$/);
+ assert.equal(cover.imageReview.stadiumOccupancy,'empty');
+});
+
 test('verified international preview keeps its fixture artwork across draft storage and feed rendering',async()=>{
  const {cleanPayload,fingerprint}=require('../editorial-drafts');
  const {resolve}=require('../image-rotation65');
