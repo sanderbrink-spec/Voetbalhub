@@ -24,6 +24,7 @@ function cleanPayload(value={}){
    awayTeam:String(fixture.awayTeam||'').trim().slice(0,100),
    date:String(fixture.date||'').slice(0,30),venueName:String(fixture.venueName||'').trim().slice(0,150)
   }} : {}),
+  ...(value.replacePreviewId ? {replacePreviewId:String(value.replacePreviewId).slice(0,80)} : {}),
   ...(value.matchId ? {matchId:String(value.matchId).slice(0,150)} : {}),
   ...(value.imageCategory ? {imageCategory:String(value.imageCategory).slice(0,30)} : {}),
   ...(value.articleKind ? {articleKind:String(value.articleKind).slice(0,30)} : {}),

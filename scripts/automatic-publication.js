@@ -1332,10 +1332,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     try{results=await officialPage(international.UEFA_RESULTS,fetcher);}
     catch(error){report.sourceErrors.push({url:international.UEFA_RESULTS,error:error.message});}
    }
+   const recentDocs=[...discovered].sort((a,b)=>(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0));
    await Promise.all(previews.map(async group=>{
     if(discoveryOnly)return;
     if(results)international.enrichPreviewResults(group,results,plain);
-    for(const doc of discovered)international.enrichPreviewStakes(group,doc);
+    recentDocs.some(doc=>international.enrichPreviewStakes(group,doc));
     try{
      international.enrichPreview(group,await officialPage(group[0].url,fetcher),plain);
     }
@@ -1350,9 +1351,14 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     }
     const existing=published.find(article=>international.samePreview(article,candidate.fixture,group[0].url));
     if(!validationOnly&&existing){
-     report.signals.push({route:'news',url:group[0].url,topic:candidate.topic,outcome:'duplicate_primary_source',
-      articleId:existing.id,reason:'Voor deze wedstrijd is al een voorbeschouwing gepubliceerd.'});
-     continue;
+     if(fixtureFocus&&singlePublication&&existing.fixture?.id===candidate.fixture.id&&
+        M.storyIssues({...existing,draft:existing}).length){
+      group.replacePreviewId=existing.id;
+     }else{
+      report.signals.push({route:'news',url:group[0].url,topic:candidate.topic,outcome:'duplicate_primary_source',
+       articleId:existing.id,reason:'Voor deze wedstrijd is al een voorbeschouwing gepubliceerd.'});
+      continue;
+     }
     }
     groups.push(group);
     report.signals.push({route:'news',topic:candidate.topic,outcome:'verified_international_preview',
@@ -1413,6 +1419,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(seenGroups.has(key))continue;
   seenGroups.add(key);
   const job=durable.queue.enqueue(group,now);
+  if(group.replacePreviewId&&job.status==='published'&&!job.previewRevision){
+   Object.assign(job,{status:'pending',attempts:0,nextAttemptAt:now,previewRevision:true});
+   delete job.checkpoint;
+  }
   if(retryCorrectedEditorialInstruction(job,group,now))
    report.signals.push({route:'news',topic:group[0].title,outcome:'corrected_editorial_instruction_retry'});
   if(retryInternationalPreviewArtwork(job,group.internationalPreview,now))
@@ -1626,7 +1636,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const matchRecord=group.matchRecord;
   const route=matchRecord?report.routes.match:report.routes.news;
   // A dry run can recheck existing copy without weakening production deduplication.
-  const comparison=validationOnly?published.filter(article=>article.sources?.[0]?.url!==group[0].url):published;
+  const comparison=published.filter(article=>(!group.replacePreviewId||article.id!==group.replacePreviewId)&&
+   (!validationOnly||article.sources?.[0]?.url!==group[0].url));
   let topic=group[0].title,stage='verification';
   report.counts.attempted++;
   try{
@@ -1689,6 +1700,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
     reviewNotes:(validationOnly?'Automatische redactionele validatie. ':'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. ')+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
+    if(group.replacePreviewId)payload.replacePreviewId=group.replacePreviewId;
     if(group.internationalPreview?.fixture)payload.fixture=group.internationalPreview.fixture;
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
     payload.feedLifecycle={kind:'preview',expiresAt:new Date(group.internationalPreview?.kickoff??Date.parse(candidate.eventDate+'T23:59:59'+zone)).toISOString()};
@@ -1783,8 +1795,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(M.publicationIssues(payload).length)throw Error('Artikel met afbeelding haalt publicatiecontrole niet.');
    // Refresh before the only publication write to avoid a concurrent/manual duplicate.
    published=(await api('/articles?view=all')).articles;
-   if((group.internationalPreview&&published.some(article=>international.samePreview(article,payload.fixture,group[0].url)))||
-      duplicate(payload,published)){report.skipped.push({topic,reason:'Onderwerp inmiddels gepubliceerd.'});durable.queue.finish(job,'duplicate',now);continue;}
+   const otherArticles=group.replacePreviewId?published.filter(article=>article.id!==group.replacePreviewId):published;
+   if((group.internationalPreview&&otherArticles.some(article=>international.samePreview(article,payload.fixture,group[0].url)))||
+      duplicate(payload,otherArticles)){report.skipped.push({topic,reason:'Onderwerp inmiddels gepubliceerd.'});durable.queue.finish(job,'duplicate',now);continue;}
    const latestCount=published.filter(a=>{const t=Date.parse(a.publishedAt);return Number.isFinite(t)&&new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(t))===today;}).length;
    if(latestCount>=config.maxPerDay){report.status='daily_limit';break;}
    stage='storage';

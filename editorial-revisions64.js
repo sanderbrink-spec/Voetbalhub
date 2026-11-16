@@ -58,6 +58,10 @@ redis.call('MSET', KEYS[2], ARGV[1], KEYS[1], ARGV[2])
 return 1
 `;
 
+function archiveAndReplace(client,key,history,previous,next) {
+ return client.eval(writeRevision,{keys:[key,history],arguments:[previous,JSON.stringify(next)]});
+}
+
 async function apply(client, getFixtures, logger = console) {
  await correctHonoraryMembership(client, logger);
  const pending = [];
@@ -78,7 +82,7 @@ async function apply(client, getFixtures, logger = console) {
    logger.warn('Editorial revision '+version+' held:', row.matchId, error.message);
    continue;
   }
-  const written = await client.eval(writeRevision, { keys: [key, history], arguments: [raw, JSON.stringify(next)] });
+  const written = await archiveAndReplace(client,key,history,raw,next);
   if (written) logger.info('Editorial revision '+version+' applied:', row.matchId);
  }
 }
@@ -109,8 +113,8 @@ async function correctHonoraryMembership(client, logger) {
  if (issues.length) throw Error('Correctie FC Twente geblokkeerd: ' + issues.join(' '));
  const corrected = {...article, ...draft, verifiedFacts, updatedAt: new Date().toISOString(),
   correctionNote: 'Datum van het afscheid verduidelijkt en de leiding over de sponsorbezoeken correct toegeschreven aan Dennis Schipper.'};
- const written = await client.eval(writeRevision, {keys: [key, history], arguments: [raw, JSON.stringify(corrected)]});
+ const written = await archiveAndReplace(client,key,history,raw,corrected);
  if (written) logger.info('Editorial revision 97E applied:', id);
 }
 
-module.exports = { apply, prepare, registrationMatches };
+module.exports = { apply, archiveAndReplace, prepare, registrationMatches };

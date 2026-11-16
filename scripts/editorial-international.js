@@ -113,13 +113,18 @@ function enrichPreviewResults(group, results, plain){
 function enrichPreviewStakes(group, doc){
  const candidate=group.internationalPreview;
  const publishedAt=Date.parse(doc.publishedAt);
+ const matchdayBrief=candidate.fixture?.id==='uefa-2047909'&&
+  doc.url.startsWith('https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen/82837/');
  if(!/^https:\/\/www\.onsoranje\.nl\/nieuws\/nederlands-elftal-mannen\/\d+\//.test(doc.url)||
    !Number.isFinite(publishedAt)||publishedAt>=candidate.kickoff||candidate.kickoff-publishedAt>5*86400000||
-   !/\bNations League\b/i.test(doc.title)||!candidate.teams.includes('Nederland'))return;
+   !(matchdayBrief||/\bNations League\b/i.test(doc.title))||!candidate.teams.includes('Nederland'))return;
  const opponent=candidate.teams.find(team=>team!=='Nederland');
  const passages=opponent==='Griekenland'&&/Nederland.*Griekenland/i.test(doc.title)?[
   doc.text.match(/Na vier speelronden in de groepsfase van de Nations League hebben zowel Nederland als Griekenland \d+ punten verzameld\./)?.[0],
   doc.text.match(/Bij winst neemt Oranje afstand van de Grieken in groep [A-D][1-4] van de Nations League\./)?.[0]
+ ]:opponent==='Duitsland'&&matchdayBrief?[
+  doc.text.match(/Bij een gelijkspel of meer is het Nederlands elftal sowieso al zeker van de groepswinst\./)?.[0],
+  doc.text.match(/Bij de zevenklapper tegen Griekenland maakte hij er direct twee\. Tijjani Reijnders zorgde voor zijn eerste hattrick\s*\./)?.[0]
  ]:opponent==='Duitsland'?[
   doc.text.match(/Ook winst op Duitsland garandeert Oranje een plek bij de eerste twee, ongeacht het resultaat tegen Griekenland\./)?.[0]
  ]:[];
@@ -127,6 +132,10 @@ function enrichPreviewStakes(group, doc){
  if(!quotes.length||group.some(source=>source.url===doc.url))return;
  const source=group.length;
  group.push({...doc,text:quotes.join(' ')});
- for(const quote of quotes)candidate.facts.push({text:quote,evidence:[{source,quote}]});
+ for(const quote of quotes){
+  const text=matchdayBrief&&quote.includes('Tijjani Reijnders')?'Tijjani Reijnders maakte tegen Griekenland zijn eerste hattrick voor Oranje.':quote;
+  candidate.facts.push({text,evidence:[{source,quote}]});
+ }
+ return true;
 }
 module.exports={ORANJE,UEFA,UEFA_RESULTS,confirmedPreviews,samePreview,enrichPreview,enrichPreviewResults,enrichPreviewStakes};

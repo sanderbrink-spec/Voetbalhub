@@ -284,7 +284,7 @@ const europeanEditorial=require('./editorial-match55').europeanRegistry({
 const contactHandler=require("./contact-mail").createContactHandler({redis:client});
 const quizHandler=require("./quiz39/service").create({redis:client,football:football47});
 function publicationId(record) {
-  if (!record.payload.matchId) return record.id.slice(14);
+  if (!record.payload.matchId) return record.payload.replacePreviewId || record.id.slice(14);
   const hash = require('node:crypto').createHash('sha256').update(record.payload.matchId).digest('hex');
   return hash.slice(0,8)+'-'+hash.slice(8,12)+'-5'+hash.slice(13,16)+'-a'+hash.slice(17,20)+'-'+hash.slice(20,32);
 }
@@ -885,6 +885,21 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     let feedLifecycle;
     try { feedLifecycle = require("./feed-policy").publicationLifecycle(body.feedLifecycle); }
     catch(error) { return send(res,400,{error:error.message}); }
+    let replacementRaw, replacement;
+    if (body.replacePreviewId) {
+      if (!reviewedDraft || body.articleKind !== 'preview' || !/^uefa-\d+$/.test(body.fixture?.id || '') ||
+          !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(body.replacePreviewId) ||
+          !feedLifecycle || feedLifecycle.expiresAt !== body.fixture.date)
+        return send(res,400,{error:"Correctie vereist een beoordeeld concept voor dezelfde interland en aftrap."});
+      replacementRaw=await client.get("article:"+body.replacePreviewId);
+      replacement=replacementRaw&&JSON.parse(replacementRaw);
+      if (replacement?.editorialDraftId===reviewedDraft.id)
+        return send(res,200,{status:"published",article:replacement});
+      if (!replacement || replacement.status!=="published" || replacement.articleKind!=="preview" ||
+          replacement.fixture?.id!==body.fixture.id || replacement.feedLifecycle?.expiresAt!==feedLifecycle.expiresAt ||
+          !require("./editorial-desk-model").storyIssues({...replacement,draft:replacement}).length)
+        return send(res,409,{error:"De bestaande voorbeschouwing komt niet in aanmerking voor deze correctie."});
+    }
     const d = body.draft || {};
     const facts = Array.isArray(body.verifiedFacts) ? body.verifiedFacts.filter(x => typeof x === "string" && x.trim()) : [];
     const sources = Array.isArray(body.sources) ? body.sources.filter(s => s && typeof s.url === "string" && s.url.startsWith("https://")) : [];
@@ -916,7 +931,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       if (!raw) continue;
       let existing;
       try { existing = JSON.parse(raw); } catch { continue; }
-      if (existing.status !== "published") continue;
+      if (existing.status !== "published" || (replacement && key === "article:"+replacement.id)) continue;
       const oldHeadline = canonical(existing.headline);
       const oldBody = canonical([existing.standfirst, ...(Array.isArray(existing.body) ? existing.body : [])].join(" "));
       const oldWords = new Set(oldBody.split(" ").filter(w => w.length > 4));
@@ -934,8 +949,15 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
       return send(res,409,{error:"Voorbeschouwing verlopen: de aftrap is bereikt."});
     const now = new Date().toISOString();
     const article = { ...(compactVerified ? {compactVerified:true} : {}), ...(feedLifecycle ? {feedLifecycle} : {}), id: reviewedDraft ? publicationId(reviewedDraft) : crypto.randomUUID(), ...(body.matchId ? {matchId:body.matchId} : {}), ...(body.articleKind ? {articleKind:body.articleKind} : {}), ...(body.imageCategory ? {imageCategory:body.imageCategory} : {}), status: "published", author: "Veldio Redactie", headline: d.headline.slice(0,200), standfirst: d.standfirst.slice(0,500), body: publishBody.slice(0,5), why_it_matters: String(d.why_it_matters || "").slice(0,1000), category: String(body.category || "Voetbal").slice(0,80), publishedAt: now, ...(body.match ? {match: body.match} : {}), ...(reviewedDraft && body.fixture ? {fixture:body.fixture} : {}), verifiedFacts: facts, sources, editorialChecks: requiredChecks.reduce((out, key) => (out[key] = true, out), {}), ...(imageUrl ? {imageUrl,imageSource,imageCredit,imageRights,imageReview:body.imageReview} : {imageRights}), autoPublish: false };
-    const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
-    if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
+    if (replacement) {
+      Object.assign(article,{publishedAt:replacement.publishedAt,updatedAt:now,editorialDraftId:reviewedDraft.id});
+      const written=await require("./editorial-revisions64").archiveAndReplace(client,"article:"+article.id,
+        "article-revision:preview:"+article.id,replacementRaw,article);
+      if (Number(written)!==1) return send(res,409,{error:"De bestaande voorbeschouwing is intussen gewijzigd."});
+    } else {
+      const written=await client.set("article:" + article.id, JSON.stringify(article), {NX:true});
+      if(written===null){const existing=await client.get("article:"+article.id);return send(res,200,{status:"published",article:JSON.parse(existing)});}
+    }
     if(reviewedDraft) { try {await require("./editorial-drafts").markPublished(client,reviewedDraft,article.id);} catch {console.warn("Published article retained; draft status update deferred.");} }
     return send(res, 200, { status: "published", article });
   }

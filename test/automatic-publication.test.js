@@ -1277,7 +1277,7 @@ test('a targeted Nations League preview reports a published fixture before reque
   focusSourceUrl:previewUrl,singlePublication:true,fetcher:async(url,request={})=>{
    assert.notEqual(request.method,'POST');
    if(url.endsWith('/articles?view=all'))return Response.json({articles:[
-    {id:'existing-preview',articleKind:'preview',fixture:{id:'uefa-2047909'},sources:[]}
+    {id:'existing-preview',articleKind:'preview',fixture:{id:'uefa-2047909'},sources:[],verifiedFacts:['Oranje speelt bij een gelijkspel om groepswinst.']}
    ]});
    if(url.includes('editorial-queue45.json'))return new Response(null,{status:404});
    if(sources.has(url))return new Response(sources.get(url));
@@ -1339,6 +1339,19 @@ test('the preview keeps verified qualification context and accepts Dutch footbal
  assert.deepEqual(evidenceIssues({headline:'Oranje wacht een Nations League-wedstrijd'},['Oranje speelt in de Nations League.']),[]);
  assert.deepEqual(evidenceIssues({headline:'Bondscoach stopt bij de Verenigde Staten'},['The U.S. Men’s National Team head coach will depart.']),[]);
  assert.match(evidenceIssues({headline:'Bondscoach stopt bij de Verenigde Staten'},['Canada appoints a head coach.']).join(' '),/Verenigde Staten/);
+});
+
+test('matchday evidence for the verified Germany fixture keeps stakes and form separate',()=>{
+ const {enrichPreviewStakes}=require('../scripts/editorial-international');
+ const group=[];
+ group.internationalPreview={fixture:{id:'uefa-2047909'},teams:['Duitsland','Nederland'],kickoff:Date.parse('2026-11-16T19:45:00Z'),facts:[]};
+ const doc={url:'https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen/82837/matchday',title:'Oranje kan groepswinst veiligstellen',
+  publishedAt:'2026-11-15T11:30:00Z',text:'Bij een gelijkspel of meer is het Nederlands elftal sowieso al zeker van de groepswinst. Bij de zevenklapper tegen Griekenland maakte hij er direct twee. Tijjani Reijnders zorgde voor zijn eerste hattrick .'};
+ assert.equal(enrichPreviewStakes(group,doc),true);
+ assert.deepEqual(group.internationalPreview.facts.map(fact=>fact.text),[
+  'Bij een gelijkspel of meer is het Nederlands elftal sowieso al zeker van de groepswinst.',
+  'Tijjani Reijnders maakte tegen Griekenland zijn eerste hattrick voor Oranje.'
+ ]);
 });
 
 test('PSV and US Soccer match an international injury through the same named player',()=>{
