@@ -265,7 +265,16 @@ function partnerDocuments(doc,documents){
   /^[^:]{2,38}\s[-–]\s[^:]{2,38}$/.test(value);
 
  const title=tokens(doc.title),lead=tokens(doc.title+' '+doc.text.slice(0,1000));
- return documents.filter(d=>owner(d.url)!==owner(doc.url)).map(d=>{
+ // Different confederations can share labels such as "Nations League" and
+ // "matchday", but they do not cover the same UEFA fixture. Never pair a
+ // European UEFA Nations League article with a CONCACAF USMNT guide.
+ const europeanLeague=d=>allowedUrl(d.url)&&host(d.url)==='uefa.com'&&
+  /^\/uefanationsleague\/(?:news|match)\//.test(new URL(d.url).pathname);
+ const isUsmnt=d=>allowedUrl(d.url)&&host(d.url)==='ussoccer.com'&&
+  /\/stories\/\d{4}\/\d{2}\/usmnt\//.test(new URL(d.url).pathname);
+ return documents.filter(d=>owner(d.url)!==owner(doc.url)&&
+  !(europeanLeague(doc)&&isUsmnt(d))&&
+  !(isUsmnt(doc)&&europeanLeague(d))).map(d=>{
   const otherTitle=tokens(d.title),otherLead=tokens(d.title+' '+d.text.slice(0,1000));
   const anchors=Math.max(countMatches(title,otherLead),countMatches(otherTitle,lead));
   const commonTitle=[...title].filter(token=>otherTitle.has(token));
