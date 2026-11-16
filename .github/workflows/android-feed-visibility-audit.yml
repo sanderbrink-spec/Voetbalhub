@@ -2,30 +2,31 @@ name: Audit Android news visibility in production
 on:
   push:
     branches: [main]
-    paths: ['.github/workflows/android-feed-visibility-audit.yml']
+    paths: ['.github/workflows/android-feed-visibility-audit.yml', 'feed-policy.js', 'test/feed-policy.test.js']
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - name: Compare public current feed with Android 4.71 filtering
         run: |
           python3 - <<'PY'
-          import json, urllib.request, datetime, time
+          import json, urllib.request, datetime, time, os
           base='https://voetbalhub-redactie.onrender.com'
           target='be77be99-b1d9-4318-865f-48e9101d5cf8'
           def fetch(url):
               req=urllib.request.Request(base+url,headers={'Accept':'application/json','Cache-Control':'no-cache','User-Agent':'Veldio-feed-audit/1.0'})
               with urllib.request.urlopen(req,timeout=20) as response: return json.load(response)
-          for attempt in range(8):
+          for attempt in range(40):
               try:
                   current=fetch('/articles'); allview=fetch('/articles?view=all'); ready=fetch('/ready')
+                  if ready.get('revision')!=os.environ['GITHUB_SHA']: raise ValueError('Waiting for current production revision')
                   break
               except Exception as error:
-                  if attempt==7: raise
+                  if attempt==39: raise
                   print('Retry live feed:',type(error).__name__)
                   time.sleep(5)
           def android_visible(a):
@@ -50,5 +51,7 @@ jobs:
           if kickoff and datetime.datetime.now(datetime.timezone.utc)<kickoff:
               if not target_current: raise SystemExit('Article hidden in current feed before kickoff')
               if not android_visible(target_current): raise SystemExit('Article is in current feed but Android image eligibility rejects it')
+              if current_rows[0].get('id')!=target: raise SystemExit('Revised preview not first in latest news before kickoff')
+              if target_current.get('firstPublishedAt')!='2026-11-13T15:37:41.184Z': raise SystemExit('Original audited publication timestamp missing')
           else: print('Preview expired by policy; archive is expected after kickoff')
           PY
