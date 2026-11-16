@@ -1,0 +1,54 @@
+name: Audit Android news visibility in production
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/android-feed-visibility-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Compare public current feed with Android 4.71 filtering
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request, datetime, time
+          base='https://voetbalhub-redactie.onrender.com'
+          target='be77be99-b1d9-4318-865f-48e9101d5cf8'
+          def fetch(url):
+              req=urllib.request.Request(base+url,headers={'Accept':'application/json','Cache-Control':'no-cache','User-Agent':'Veldio-feed-audit/1.0'})
+              with urllib.request.urlopen(req,timeout=20) as response: return json.load(response)
+          for attempt in range(8):
+              try:
+                  current=fetch('/articles'); allview=fetch('/articles?view=all'); ready=fetch('/ready')
+                  break
+              except Exception as error:
+                  if attempt==7: raise
+                  print('Retry live feed:',type(error).__name__)
+                  time.sleep(5)
+          def android_visible(a):
+              rotation=a.get('imageRotation') or {}
+              variants=a.get('imageVariants') or []
+              return rotation.get('method')=='approved-article-v69' and 1<=len(variants)<=6 and str(a.get('imageUrl','')).startswith(base+'/') and a.get('feedState')!='archived'
+          def details(a):
+              return {key:a.get(key) for key in ['id','headline','publishedAt','articleKind','compactVerified','status','feedState','imageRights','feedLifecycle','imagePolicyVersion']}|{'bodyCount':len(a.get('body') or []),'imageRotationMethod':(a.get('imageRotation') or {}).get('method'),'variantCount':len(a.get('imageVariants') or []),'imageUrl':a.get('imageUrl'),'androidVisible':android_visible(a)}
+          current_rows=current.get('articles') or []
+          all_rows=allview.get('articles') or []
+          target_current=next((a for a in current_rows if a.get('id')==target),None)
+          target_all=next((a for a in all_rows if a.get('id')==target),None)
+          print('READY',json.dumps(ready))
+          print('CURRENT COUNTS',len(current_rows),'server declared',current.get('count'),'image policy',current.get('imagePolicyVersion'),'rights policy',current.get('rightsPolicyVersion'),'rights expires',current.get('rightsExpiresAt'))
+          print('CURRENT HEADLINES',json.dumps([details(a) for a in current_rows[:5]],ensure_ascii=False))
+          print('TARGET CURRENT',json.dumps(details(target_current) if target_current else None,ensure_ascii=False))
+          print('TARGET ALL',json.dumps(details(target_all) if target_all else None,ensure_ascii=False))
+          print('ANDROID ACCEPTED',sum(android_visible(a) for a in current_rows),'of',len(current_rows))
+          if not target_all: raise SystemExit('Article missing from all published records')
+          expiry=(target_all.get('feedLifecycle') or {}).get('expiresAt')
+          kickoff=datetime.datetime.fromisoformat(expiry.replace('Z','+00:00')) if expiry else None
+          if kickoff and datetime.datetime.now(datetime.timezone.utc)<kickoff:
+              if not target_current: raise SystemExit('Article hidden in current feed before kickoff')
+              if not android_visible(target_current): raise SystemExit('Article is in current feed but Android image eligibility rejects it')
+          else: print('Preview expired by policy; archive is expected after kickoff')
+          PY
