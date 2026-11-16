@@ -1504,3 +1504,41 @@ test('98O reopens only the exact verified UEFA writer false rejection once for a
  assert.equal(reopenUefaStatusAttributionV98O(initial(),{...doc,url:'https://example.com/news'},now),false);
  assert.equal(reopenUefaStatusAttributionV98O(initial(),doc,now+73*3600000),false);
 });
+
+
+test('98P Nations League review uses separate factual paragraphs instead of federation personnel speculation',async()=>{
+ const {reviseDraft,reopenUefaNarrativeV98P}=require('../scripts/automatic-publication');
+ const crypto=require('node:crypto');
+ const url='https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/';
+ const doc={url,title:'Nations League quarter-finals: Who is through?',publishedAt:'2026-11-16T08:00:00Z',
+  text:'UEFA confirmed France in the quarter-finals of the competition. Belgium have secured their place in the quarter-finals. England has qualified for the quarter-finals of the competition. Spain have secured their place in the quarter-finals.'};
+ const reason='Kwaliteitscontrole na 2 herschrijvingen: Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.';
+ const job={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',
+  errorHash:crypto.createHash('sha256').update(reason).digest('hex'),urls:[url],attempts:3,checkpoint:{invalid:true}};
+ const now=Date.parse('2026-11-16T20:30:00Z');
+ assert.equal(reopenUefaNarrativeV98P(job,doc,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.checkpoint,undefined);
+ assert.equal(reopenUefaNarrativeV98P(job,doc,now),false);
+ const packet={articleKind:'announcement',verifiedFacts:[
+  'UEFA confirmed France and Belgium in group A1.',
+  'France finished first with 13 points.',
+  'Belgium finished second with 12 points.',
+  'England qualified from group A3.',
+  'Germany versus Netherlands remains on the schedule.'
+ ],draft:{headline:'Voorlopige kop',standfirst:'Voorlopige intro',body:['a','b','c']}};
+ let called=false;
+ const result=await reviseDraft(packet,
+  {kind:'announcement',primaryAuthority:'association_decision',category:'Nations League',topic:doc.title},
+  [doc],'Score onder minimum',{router:{complete:async(messages,opts)=>{
+   called=true;
+   assert.equal(opts.task,'revision');
+   const instruction=messages[0].content;
+   assert.match(instruction,/PRECIES drie bodyalinea/);
+   assert.match(instruction,/Verzin geen UEFA-vervolgstappen/);
+   assert.match(instruction,/geen trainers-/i);
+   return {skip:true};
+  }}});
+ assert.equal(called,true);
+ assert.equal(result,null);
+});
