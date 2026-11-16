@@ -1308,6 +1308,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   readable:uefaNationsLeague.length,
   newsworthy:uefaNationsLeague.filter(nationallyRelevant).length
  };
+ const knvbTeamNews=discovered.filter(doc=>allowedUrl(doc.url)&&host(doc.url)==='onsoranje.nl'&&
+  new URL(doc.url).pathname.startsWith('/nieuws/nederlands-elftal-mannen/'));
+ report.sources.officialOranjeNews={
+  readable:knvbTeamNews.length,
+  newsworthy:knvbTeamNews.filter(nationallyRelevant).length,
+  firstPartyTeamAnnouncements:knvbTeamNews.filter(doc=>primaryAuthority(doc)==='association_decision').length
+ };
  for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
   const publishedTime=Date.parse(doc.publishedAt||'');
   const signal={url:doc.url,topic:doc.title,publishedAt:doc.publishedAt};
