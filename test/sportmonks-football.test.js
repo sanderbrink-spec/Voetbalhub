@@ -122,3 +122,40 @@ test('Playoffs require one unambiguous Sportmonks league catalogue match',async(
  assert.equal(fixtures[0].competition,'eredivisieplayoffs');
  await assert.rejects(()=>SM.load({fetcher:async url=>({ok:true,text:async()=>JSON.stringify({data:[good,{...good,id:123457}]})}),token:'mock',now,sourceBody,competition:'eredivisieplayoffs'}),/niet eenduidig/);
 });
+
+
+test('98S recent-only Sportmonks feed accepts a verified small match window without claiming a complete season',async()=>{
+ const now=Date.parse('2026-11-16T20:00:00Z');
+ const recent={...match(98765),starting_at_timestamp:Math.floor((now-3*3600000)/1000)};
+ const upcoming={...match(98766),state_id:1,starting_at_timestamp:Math.floor((now+3600000)/1000)};
+ const old={...match(98767),starting_at_timestamp:Math.floor((now-6*86400000)/1000)};
+ const invalidScore={...match(98768),starting_at_timestamp:Math.floor((now-2*3600000)/1000),scores:[]};
+ let requested=0;
+ const fixtures=await SM.loadRecent({token:'hidden-token',now,sourceBody:async response=>response.text(),fetcher:async(url)=>{
+  requested++;
+  const u=new URL(url);
+  assert.equal(u.hostname,'api.sportmonks.com');
+  assert.equal(u.searchParams.get('filters'),'fixtureLeagues:72');
+  assert.equal(u.searchParams.get('include'),'participants;scores;round;events');
+  assert.equal(u.searchParams.get('page'),'1');
+  return new Response(JSON.stringify({data:[recent,upcoming,old,invalidScore],pagination:{has_more:false}}));
+ }});
+ assert.equal(requested,1);
+ assert.deepEqual(fixtures.map(f=>f.id),['sm-98765']);
+ assert.equal(fixtures[0].status,'FT');
+ assert.deepEqual(fixtures[0].goals,{home:2,away:2});
+ assert.equal(fixtures[0].resultSource,SM.CREDIT);
+});
+test('98S recent-only window rejects foreign leagues and incomplete pagination',async()=>{
+ const now=Date.parse('2026-11-16T20:00:00Z');
+ const data={...match(98770),starting_at_timestamp:Math.floor((now-3600000)/1000)};
+ await assert.rejects(SM.loadRecent({token:'hidden',now,sourceBody:async r=>r.text(),fetcher:async()=>new Response(JSON.stringify({
+  data:[{...data,league_id:74}],pagination:{has_more:false}
+ }))}),/verkeerde competitie/);
+ let calls=0;
+ await assert.rejects(SM.loadRecent({token:'hidden',now,sourceBody:async r=>r.text(),fetcher:async()=>{calls++;return new Response(JSON.stringify({
+  data:[{...data,id:98770+calls}],pagination:{has_more:true}
+ }));}}),/paginering onvolledig/);
+ assert.equal(calls,3);
+ await assert.rejects(SM.loadRecent({token:'',now,sourceBody:async r=>r.text()}),/niet geconfigureerd/);
+});
