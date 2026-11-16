@@ -205,3 +205,33 @@ test('revisions still reject malformed body strings and never auto-approve copy'
  await assert.rejects(router.complete(messages,{task:'revision'}),{code:'EDITORIAL_AI_UNAVAILABLE'});
  assert.deepEqual(router.trace.map(t=>t.outcome),['invalid_json','invalid_json']);
 });
+
+
+test('98R automatic writing overrides legacy JSON-object hint with typed strict schema',async()=>{
+ for(const provider of ['groq','openai']){
+  let calls=0;
+  const router=new EditorialProviderRouter({[provider+'Key']:'existing-key',intervalMs:0,fetcher:async(_,opt)=>{
+   calls++;
+   const request=JSON.parse(opt.body);
+   assert.equal(request.response_format.type,'json_schema');
+   assert.equal(request.response_format.json_schema.strict,true);
+   assert.equal(request.response_format.json_schema.schema.properties.body.items.type,'string');
+   assert.deepEqual(request.response_format.json_schema.schema.required,['skip','headline','standfirst','body']);
+   return response({...draft,skip:false});
+  }});
+  assert.deepEqual(await router.complete(messages,{task:'writing',requestOptions:{response_format:{type:'json_object'},max_completion_tokens:3600}}),{...draft,skip:false});
+  assert.deepEqual(await router.complete(messages,{task:'revision',requestOptions:{response_format:{type:'json_object'},max_completion_tokens:4200}}),{...draft,skip:false});
+  assert.equal(calls,2);
+ }
+});
+test('98R extraction and independent factual review still use their own JSON contract',async()=>{
+ const seen=[];
+ const router=new EditorialProviderRouter({groqKey:'key',intervalMs:0,fetcher:async(_,opt)=>{
+  const request=JSON.parse(opt.body);
+  seen.push(request.response_format.type);
+  return response(seen.length===1?{skip:true}:review);
+ }});
+ assert.deepEqual(await router.complete(messages,{task:'extraction',requestOptions:{response_format:{type:'json_object'}}}),{skip:true});
+ assert.deepEqual(await router.complete(messages,{task:'review',requestOptions:{response_format:{type:'json_object'}}}),review);
+ assert.deepEqual(seen,['json_object','json_object']);
+});

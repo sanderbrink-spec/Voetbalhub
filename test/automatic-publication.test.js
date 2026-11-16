@@ -1570,3 +1570,45 @@ test('98Q official UEFA League A tables provide distinct literal context without
  const noTables=confirmedUefaQualification({...doc,text:text.replace(/Group A[1-4] [^.!?]*(?=[A-Z][a-z]+ are confirmed)/g,'')});
  assert.ok(noTables===null||noTables.facts.every(f=>!f.text.startsWith('Group A')));
 });
+
+
+test('98R checks exact approved fixture art before spending AI requests',()=>{
+ const {preflightArtwork}=require('../scripts/automatic-publication');
+ const fixture={id:'uefa-2047909',date:'2026-11-16T19:45:00Z',homeTeam:'Duitsland',awayTeam:'Nederland'};
+ const group=Object.assign([{url:'https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660'}],{internationalPreview:{fixture}});
+ let observed;
+ const art=preflightArtwork(group,{kind:'preview',category:'Nations League'},'Duitsland - Nederland',payload=>{
+  observed=payload;return {article:null,assignment:{reason:'no cleared correct preview'}};
+ });
+ assert.deepEqual(art,{checked:true,approved:false,reason:'no cleared correct preview'});
+ assert.equal(observed.articleKind,'preview');
+ assert.equal(observed.fixture.id,fixture.id);
+ assert.equal(observed.draft.headline,'Duitsland - Nederland');
+ const match=Object.assign([{url:'https://www.sportmonks.com/football-api/'}],{
+  matchRecord:{articleKind:'match_report',matchId:'sm-19715860',category:'Eredivisie',match:{homeTeam:'Ajax',awayTeam:'PSV'}}
+ });
+ const checked=preflightArtwork(match,{kind:'match_report'},'Ajax - PSV',payload=>{
+  assert.equal(payload.matchId,'sm-19715860');
+  assert.equal(payload.imageCategory,'report');
+  return {article:{imageUrl:'https://example.com/approved.webp'},assignment:{reason:'ordered-fixture'}};
+ });
+ assert.equal(checked.approved,true);
+ let called=false;
+ assert.equal(preflightArtwork([{url:'https://ajax.nl/a'}],{kind:'announcement'},'Ajax bericht',()=>{
+  called=true;throw Error('never call');
+ }).checked,false);
+ assert.equal(called,false);
+});
+test('98R artwork deferral preserves independent review gates and retry budget',()=>{
+ const {deferArtwork}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-16T20:00:00Z');
+ const job={status:'pending',attempts:1,checkpoint:{encrypted:'verified draft'},nextAttemptAt:now};
+ deferArtwork(job,now);
+ assert.equal(job.status,'retry');
+ assert.equal(job.attempts,1);
+ assert.equal(job.nextAttemptAt,now+6*3600000);
+ assert.equal(job.failureCategory,'missing_approved_artwork');
+ assert.deepEqual(job.checkpoint,{encrypted:'verified draft'});
+ assert.equal(require('../editorial-production45').EditorialQueue.prototype.due.call({},
+  job,now+6*3600000),true);
+});
