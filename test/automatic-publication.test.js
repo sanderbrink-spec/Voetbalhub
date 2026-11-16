@@ -1459,3 +1459,22 @@ test('verified international preview keeps its fixture artwork across draft stor
   assert.equal(resolve({...payload,fixture:{...fixture,...change}}).article,null);
  assert.equal(resolve({...payload,articleKind:'match_report'}).article,null);
 });
+
+test('short verified Germany venue names retain the approved international preview image',()=>{
+ const {resolve}=require('../image-rotation65');
+ const fixture={id:'uefa-2047909',homeTeam:'Duitsland',awayTeam:'Nederland',date:'2026-11-16T19:45:00.000Z'};
+ for(const venueName of ['Olympiastadion','Olympiastadion, Berlin','Olympiastadion, Berlin, Duitsland']){
+  const {assignment,article}=resolve({articleKind:'preview',category:'Nations League',fixture:{...fixture,venueName}});
+  assert.equal(assignment.state,'approved',venueName);
+  assert.equal(article.imageAssetId,'veldio97c-duitsland-nederland-preview',venueName);
+  assert.equal(article.imageReview.stadiumOccupancy,'empty');
+  assert.equal(article.imageReview.visualQualityScore>=8.5,true);
+ }
+ for(const invalid of [
+  {articleKind:'preview',category:'Nations League',fixture:{...fixture,venueName:'Westfalenstadion'}},
+  {articleKind:'preview',category:'Nations League',fixture:{...fixture,awayTeam:'België',venueName:'Olympiastadion'}},
+  {articleKind:'report',category:'Nations League',fixture:{...fixture,venueName:'Olympiastadion'}}
+ ]){
+  assert.equal(resolve(invalid).article,null,'An unapproved venue, opponent or report must not reuse the preview image.');
+ }
+});
