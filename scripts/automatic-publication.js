@@ -1740,6 +1740,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    const candidate=checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
     group.internationalPreview||group.bootstrap?.candidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
+   if(group.length===1&&!matchRecord&&host(group[0].url)==='uefa.com'&&
+      candidate?.primaryAuthority==='association_decision'&&Array.isArray(candidate.facts))
+     report.signals.push({route:'news',topic:group[0].title,outcome:'uefa_status_literal_facts',facts:candidate.facts.length});
    if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage:'verification',category:'journalistic_rejection'});continue;}
    const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
