@@ -1348,10 +1348,10 @@ test('UEFA results for the Germany preview attach the latest result to its offic
  const scheduled=uefa+'2047909--germany-vs-netherlands/';
  const group=[{url:'https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660',text:''},{url:scheduled,text:''}];
  group.internationalPreview={fixture:{id:'uefa-2047909'},teams:['Duitsland','Nederland'],facts:[]};
- enrichPreviewResults(group,{html:'<h3><b>Netherlands (A2)</b></h3><p><a href="'+previous+'">Netherlands 1-1 Germany</a>'+
-  '<br/><a href="'+recent+'">Netherlands 7-0 Greece</a><br/><a href="'+scheduled+'">Germany vs Netherlands</a></p>'},plain);
+ enrichPreviewResults(group,{html:'<h3><b>Netherlands (A2)</b></h3><p><b>24/09</b>: <a href="'+previous+'">Netherlands 1-1 Germany</a>'+
+  '<br/><b>13/11</b>: <a href="'+recent+'">Netherlands 7-0 Greece</a><br/><a href="'+scheduled+'">Germany vs Netherlands</a></p>'},plain);
  assert.equal(group.at(-1).url,recent);
- assert.equal(group.internationalPreview.facts.at(-1).text,'De vorige groepswedstrijd: Nederland 7-0 Griekenland.');
+ assert.equal(group.internationalPreview.facts.at(-1).text,'De vorige groepswedstrijd op 13 november: Nederland 7-0 Griekenland.');
 });
 
 test('matchday evidence for the verified Germany fixture keeps stakes and form separate',()=>{

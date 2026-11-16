@@ -128,7 +128,7 @@
  }
  function hasOfficialPreviewResult(payload){
   return payload.articleKind==='preview' &&
-   Array.isArray(payload.verifiedFacts) && payload.verifiedFacts.some(fact=>/^Eerdere ontmoeting in de Nations League:/i.test(fact) && scores(fact).length===1) &&
+   Array.isArray(payload.verifiedFacts) && payload.verifiedFacts.some(fact=>/^Eerdere ontmoeting in de Nations League(?: op \d{1,2} [a-z]+)?:/i.test(fact) && scores(fact).length===1) &&
    Array.isArray(payload.sources) && new Set(payload.sources.filter(source=>/^https:\/\/www\.uefa\.com\/uefanationsleague\/match\/\d+--[a-z0-9-]+\/$/.test(source?.url)).map(source=>source.url)).size>=2;
  }
  function audit(payload){

@@ -98,9 +98,11 @@ function enrichPreviewResults(group, results, plain){
  const [,url,slug,label]=previous;
  const score=label.match(/\b\d{1,2}-\d{1,2}\b/)[0];
  const teams=slug.startsWith('netherlands-')?['Nederland',opponent]:[opponent,'Nederland'];
- const text='Eerdere ontmoeting in de Nations League: '+teams[0]+' '+score+' '+teams[1]+'.';
+ const previousDate=candidate.fixture?.id==='uefa-2047909'&&
+  /<b>24\/09<\/b>:\s*$/.test(section.slice(0,previous.index))?' op 24 september':'';
+ const text='Eerdere ontmoeting in de Nations League'+previousDate+': '+teams[0]+' '+score+' '+teams[1]+'.';
  // The official results list links the score to this exact, completed fixture.
- const quote='UEFA Nations League, Netherlands: '+plain(label);
+ const quote='UEFA Nations League, Netherlands'+(previousDate?', 24/09':'')+': '+plain(label);
  const source=group.length;
  group.push({url,title:plain(label),text:quote,publishedAt:''});
  candidate.facts.push({text,evidence:[{source,quote}]});
@@ -114,10 +116,11 @@ function enrichPreviewResults(group, results, plain){
   const [,recentUrl,,recentLabel]=latest;
   const recentScore=recentLabel.match(/\bNetherlands (\d{1,2}-\d{1,2}) Greece\b/i)?.[1];
   if(recentScore){
-   const quote='UEFA Nations League, Netherlands: '+plain(recentLabel);
+   const recentDate=/<b>13\/11<\/b>:\s*$/.test(section.slice(0,latest.index))?' op 13 november':'';
+   const quote='UEFA Nations League, Netherlands'+(recentDate?', 13/11':'')+': '+plain(recentLabel);
    const source=group.length;
    group.push({url:recentUrl,title:plain(recentLabel),text:quote,publishedAt:''});
-   candidate.facts.push({text:'De vorige groepswedstrijd: Nederland '+recentScore+' Griekenland.',evidence:[{source,quote}]});
+   candidate.facts.push({text:'De vorige groepswedstrijd'+recentDate+': Nederland '+recentScore+' Griekenland.',evidence:[{source,quote}]});
   }
  }
 }
