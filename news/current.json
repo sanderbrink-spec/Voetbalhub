@@ -1,7 +1,7 @@
 {
   "rightsPolicyVersion": 26,
-  "rightsExpiresAt": 1794798546064,
-  "count": 18,
+  "rightsExpiresAt": 1794983849851,
+  "count": 17,
   "articles": [
     {
       "id": "e91cc5d6-9330-4470-b187-eb1293a74199",
@@ -230,149 +230,6 @@
           "venueName": ""
         },
         "reason": "exact-topic"
-      },
-      "feedState": "current"
-    },
-    {
-      "feedLifecycle": {
-        "kind": "preview",
-        "expiresAt": "2026-11-16T19:45:00.000Z"
-      },
-      "id": "be77be99-b1d9-4318-865f-48e9101d5cf8",
-      "articleKind": "preview",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Duitsland ontmoet Nederland in Nations League op 16 november 2026",
-      "standfirst": "Op 16 november 2026 om 20:45 uur speelt Duitsland thuis tegen Nederland in de UEFA Nations League.",
-      "body": [
-        "De wedstrijd tussen Duitsland en Nederland wordt gespeeld in het Olympiastadion in Berlijn, Duitsland. Dit stadion is de officiële locatie voor deze ontmoeting.",
-        "Deze wedstrijd maakt deel uit van groep A2 in de UEFA Nations League, waarin verschillende Europese landen strijden om de groepswinst.",
-        "Naast het duel tegen Duitsland staat voor Nederland ook een groepswedstrijd gepland tegen Griekenland. Dit duel vindt plaats op 13 november 2026."
-      ],
-      "why_it_matters": "",
-      "category": "Nations League",
-      "publishedAt": "2026-11-13T15:37:41.184Z",
-      "fixture": {
-        "id": "uefa-2047909",
-        "homeTeam": "Duitsland",
-        "awayTeam": "Nederland",
-        "date": "2026-11-16T19:45:00.000Z",
-        "venueName": "Olympiastadion, Berlin, Duitsland"
-      },
-      "verifiedFacts": [
-        "Duitsland - Nederland staat op 2026-11-16 om 20:45 Nederlandse tijd op het programma.",
-        "Duitsland speelt thuis tegen Nederland.",
-        "De wedstrijd wordt gespeeld in Olympiastadion, Berlin, Duitsland.",
-        "Duitsland - Nederland is een wedstrijd in de UEFA Nations League.",
-        "Het andere geplande groepsduel van Nederland is Nederland - Griekenland op 2026-11-13.",
-        "De officiële speelstad voor dit duel is Berlijn.",
-        "Het duel hoort bij groep A2 van de UEFA Nations League."
-      ],
-      "sources": [
-        {
-          "url": "https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660"
-        },
-        {
-          "url": "https://www.onsoranje.nl/teams/185184/programma"
-        },
-        {
-          "url": "https://www.uefa.com/uefanationsleague/match/2047909--germany-vs-netherlands/"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/duitsland-nederland-preview.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageRights": "cleared",
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "cf4f08dcae8e48bd0c8b700a3403f79e4d463f607e35c658d25a60faddde6b0e",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "Duitsland",
-          "Nederland"
-        ],
-        "imageKind": "preview",
-        "stadiumOccupancy": "empty",
-        "stadiumIdentity": "home:duitsland",
-        "imageIdentity": "068186c77aa303db0a0a4b7923cb3a3466370c37eeb943cd13ec90a14ed2087d",
-        "generated": true,
-        "qualityTier": "reviewed-fixture",
-        "visualQualityScore": 8.7,
-        "visualQualityStatus": "premium-reviewed",
-        "fixtureId": "uefa-2047909",
-        "noOfficialLogos": true,
-        "noRecognizablePeople": true,
-        "noDocumentaryClaim": true
-      },
-      "autoPublish": false,
-      "imageAssetId": "veldio97c-duitsland-nederland-preview",
-      "imageCaption": "AI-illustratie van Olympiastadion in Berlijn bij de voorbeschouwing op Duitsland tegen Nederland.",
-      "imageVariants": [
-        {
-          "id": "veldio97c-duitsland-nederland-preview",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art71/duitsland-nederland-preview.webp",
-          "caption": "AI-illustratie van Olympiastadion in Berlijn bij de voorbeschouwing op Duitsland tegen Nederland.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "cf4f08dcae8e48bd0c8b700a3403f79e4d463f607e35c658d25a60faddde6b0e",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "Duitsland",
-              "Nederland"
-            ],
-            "imageKind": "preview",
-            "stadiumOccupancy": "empty",
-            "stadiumIdentity": "home:duitsland",
-            "imageIdentity": "068186c77aa303db0a0a4b7923cb3a3466370c37eeb943cd13ec90a14ed2087d",
-            "generated": true,
-            "qualityTier": "reviewed-fixture",
-            "visualQualityScore": 8.7,
-            "visualQualityStatus": "premium-reviewed",
-            "fixtureId": "uefa-2047909",
-            "noOfficialLogos": true,
-            "noRecognizablePeople": true,
-            "noDocumentaryClaim": true
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "veldio97c-duitsland-nederland-preview",
-        "context": {
-          "category": "preview",
-          "clubs": [
-            "Duitsland",
-            "Nederland"
-          ],
-          "fixtureId": "uefa-2047909",
-          "competition": "Nations League",
-          "daypart": "neutral",
-          "venueName": "Olympiastadion, Berlin, Duitsland",
-          "imageKind": "preview",
-          "stadiumOccupancy": "empty",
-          "stadiumIdentity": "venue:olympiastadionberlinduitsland",
-          "imageIdentity": "068186c77aa303db0a0a4b7923cb3a3466370c37eeb943cd13ec90a14ed2087d"
-        },
-        "reason": "ordered-fixture"
       },
       "feedState": "current"
     },
@@ -2683,6 +2540,6 @@
     }
   ],
   "imagePolicyVersion": 69,
-  "mirroredAt": "2026-11-14T15:09:05.444Z",
+  "mirroredAt": "2026-11-16T18:37:29.556Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
