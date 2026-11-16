@@ -91,6 +91,13 @@
   function previewWritingFacts(facts) {
     return facts.filter(fact => !/^(?:.+ staat op \d{4}-|.+ speelt thuis tegen |de wedstrijd wordt gespeeld in |.+ is een wedstrijd in |de offici[eë]le speelstad |het duel hoort bij groep |het andere geplande groepsduel |dit is de laatste groepswedstrijd )/i.test(fact));
   }
+  function previewAssignment(facts) {
+    const stakes=facts.filter(fact=>/groepswinst|plek bij de eerste twee|neemt Oranje afstand/i.test(fact));
+    const previousMeeting=facts.filter(fact=>/^(?:Eerdere ontmoeting|Bij de vorige ontmoeting)/i.test(fact));
+    const recentForm=facts.filter(fact=>/^(?:De vorige groepswedstrijd|.+maakte tegen .+zijn eerste hattrick)/i.test(fact));
+    if(!stakes.length||!previousMeeting.length||!recentForm.length)return null;
+    return {opening:stakes,firstParagraph:previousMeeting,secondParagraph:recentForm};
+  }
   function storyIssues(payload) {
     const draft = payload.draft || {};
     const body = Array.isArray(draft.body) ? draft.body : [];
@@ -176,5 +183,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { storyStyle, previewStyle, previewWritingFacts, federationCoachStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { storyStyle, previewStyle, previewWritingFacts, previewAssignment, federationCoachStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, draftIssues, excludedBy, publicationIssues, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

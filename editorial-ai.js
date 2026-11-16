@@ -1,5 +1,5 @@
 'use strict';
-const { draftIssues, paragraphs, compactStructure, standardStructure, storyStyle, previewStyle, previewWritingFacts, federationCoachStyle, previewStructure, storyIssues } = require('./editorial-desk-model');
+const { draftIssues, paragraphs, compactStructure, standardStructure, storyStyle, previewStyle, previewWritingFacts, previewAssignment, federationCoachStyle, previewStructure, storyIssues } = require('./editorial-desk-model');
 const { headlineContradictions } = require('./editorial-quality');
 // Task-specific free-tier GPT-OSS policy. Source extraction stays fast;
 // writing gets deeper reasoning and the independent review gets high effort.
@@ -237,7 +237,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // Normal server calls and production share the same provider interface.
   if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
   const writerFacts=articleKind==='preview'?previewWritingFacts(facts):facts;
-  const assignment=editorialAssignment(writerFacts,{compact});
+  const assignment=articleKind==='preview'?previewAssignment(writerFacts):editorialAssignment(writerFacts,{compact});
   const coachPlan=primaryAuthority==='club_decision'&&String(topic||'').toLocaleLowerCase('nl').includes('hoofdtrainer')&&facts.length>=4;
   const officialPublisher=['club_decision','association_decision'].includes(primaryAuthority)&&sourceUrls.length===1?officialPublisherName(sourceUrls[0]):null;
   const coachStoryline=primaryAuthority==='club_decision'&&/\bhoofdtrainer\b/i.test(topic||'')&&facts.length>=4?
@@ -283,9 +283,9 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   }
   // Number and person inventories are supplied separately so the writer cannot
   // infer dates or staff identities from the current date, title or URL.
-  const allowedNumbers=[...new Set(facts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
+  const allowedNumbers=[...new Set(writerFacts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
   if(automaticPublication&&articleKind==='preview'){
-   prompt=previewStyle+' Gebruik uitsluitend facts. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+previewStructure+'.';
+   prompt=previewStyle+' Gebruik uitsluitend facts. Als editorialAssignment aanwezig is, reserveer opening uitsluitend voor kop en intro en gebruik firstParagraph en secondParagraph voor precies twee alinea’s van circa twee zinnen. De beschikbare feiten volstaan dan voor die vorm. Beschrijf het concrete eerdere doelpuntenmoment en vervolgens het afzonderlijke recente resultaat en de doelpuntenmaker. Houd de duels uit elkaar. Voeg geen datum, helft, precieze minuut of spelbeeld toe. Gebruik korte idiomatische zinnen zonder woorden als groepstop, meeting of confrontatie. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+previewStructure+'.';
   }else if(automaticPublication&&primaryAuthority==='association_decision'){
    prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. '+(/\b(?:to depart as|steps down as)\b/i.test(topic||'')?federationCoachStyle+' ':'')+'Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Begin de inhoudelijke alinea over opvolging of vervolgstappen met een duidelijke toeschrijving aan '+officialPublisher+', bijvoorbeeld: “'+officialPublisher+' meldt dat …”. Schrijf een volgende functie alleen toe aan de bond als die als enige het nieuws meldt. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
   }
@@ -343,7 +343,9 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
       messages.push({role:'assistant',content:'{"skip":true}'},{role:'user',content:feedback});
       continue;
      }
-     throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.');
+     const issue=messages.at(-1)?.content?.split('Controlepunten: ')[1];
+     throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept.'+
+      (automaticPublication&&articleKind==='preview'&&issue?' Controlepunt vóór het overslaan: '+issue:' Vul zo nodig aanvullende, verschillende feiten aan.'));
     }
     const issues=generationIssues(draft,facts,match,compact,officialPublisher?sourceUrls[0]:'',articleKind);
     if(automaticPublication){
