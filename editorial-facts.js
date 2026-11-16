@@ -65,7 +65,9 @@
   const verifiedStadiumArticle=name=>/^(?:De Johan|Het Olympiastadion)$/i.test(name)&&
    (name.toLowerCase().includes('johan')?/\bjohan cruijff arena\b/.test(known):/\bolympiastadion\b/.test(known));
   const verifiedLeagueAbbreviation=name=>/^Major League$/i.test(name)&&/\bmls\b/.test(known);
-  const missingNames=[...new Set(names)].filter(name=>!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!known.includes(normalize(name)));
+  const grammaticalStatusName=name=>(/^De UEFA$/i.test(name)&&publisher==='UEFA')||
+    (/^In Groep$/i.test(name)&&publisher==='UEFA'&&/\b(?:group|groep|league a)\b/i.test(supported));
+   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
@@ -131,6 +133,23 @@
    Array.isArray(payload.verifiedFacts) && payload.verifiedFacts.some(fact=>/^Eerdere ontmoeting in de Nations League(?: op \d{1,2} [a-z]+)?:/i.test(fact) && scores(fact).length===1) &&
    Array.isArray(payload.sources) && new Set(payload.sources.filter(source=>/^https:\/\/www\.uefa\.com\/uefanationsleague\/match\/\d+--[a-z0-9-]+\/$/.test(source?.url)).map(source=>source.url)).size>=2;
  }
+
+ // An official UEFA qualification announcement is not a match result.
+ // This exception never applies to score claims or unverified sources.
+ function verifiedUefaCompetitionStatus(payload){
+  const d=payload?.draft||{},facts=payload?.verifiedFacts||[];
+  const src=payload?.sources?.[0]?.url||'';
+  if(payload?.articleKind!=='announcement'||payload.primaryAuthority!=='association_decision'||
+     payload.category!=='Nations League'||payload.match||payload.sources?.length!==1||
+     !/^https:\/\/www\.uefa\.com\/uefanationsleague\/news\/[^?#]+\/?$/.test(src)||
+     facts.length<4||!facts.some(f=>/\b(?:confirmed|qualified|guaranteed|secured)\b/i.test(f))||
+     !facts.some(f=>/\b(?:quarter.final(?:s)?|league a|group [a-d])\b/i.test(f)))return false;
+  const prose=text(d);
+  if(scores(prose).length||
+     /\b(?:verslaat|versloeg|gelijkspel|puntendeling|eindstand|ruststand|doelpuntenmakers?|wedstrijdverloop|wedstrijduitslag)\b/i.test(prose)||
+     /\b(?:wint|won|gewonnen|overwinning)\s+van\b/i.test(prose))return false;
+  return true;
+ }
  function audit(payload){
   const draft=payload.draft||{},match=payload.match||null;
   const publisher=payload.sources?.[0]?.url==='https://www.sportmonks.com/football-api/'?'Sportmonks Football API':
@@ -139,13 +158,13 @@
    payload.articleKind==='announcement'&&['club_decision','association_decision'].includes(payload.primaryAuthority)&&payload.sources?.length===1?
     payload.sources[0].url:'';
   const issues=evidenceIssues(draft,payload.verifiedFacts||[],match,publisher);
-  if(match||(needsMatch(draft)&&!hasOfficialPreviewResult(payload))){
+  if(match||(needsMatch(draft)&&!hasOfficialPreviewResult(payload)&&!verifiedUefaCompetitionStatus(payload))){
    if(!match||!String(match.homeTeam||'').trim()||!String(match.awayTeam||'').trim()||normalize(match.homeTeam)===normalize(match.awayTeam)||![match.homeScore,match.awayScore].every(x=>Number.isInteger(x)&&x>=0&&x<=99)||!validDate(match.playedAt))
     issues.push('Wedstrijdverslag: leg thuisploeg, uitploeg, eindstand thuis-uit en wedstrijddatum vast.');
    for(const [key,label] of [['resultVerified','eindstand en thuis-uit'],['namesVerified','namen en clubs'],['dateVerified','datum en weekdag'],['timelineVerified','wedstrijdverloop en doelpuntenmakers']])if(payload.factChecks?.[key]!==true)issues.push('Feitencontrole ontbreekt: '+label+'.');
   }
   return [...new Set(issues)];
  }
- return {audit,evidenceIssues,needsMatch,hasOfficialPreviewResult,officialPublisherName};
+ return {audit,evidenceIssues,needsMatch,hasOfficialPreviewResult,officialPublisherName,verifiedUefaCompetitionStatus};
 });
 

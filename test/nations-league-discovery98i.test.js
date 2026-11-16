@@ -116,3 +116,40 @@ test('previous UEFA extraction skip is reopened once without overriding a qualit
  assert.equal(retryUefaQualificationExtraction(rejected,source,Date.now()),false);
  assert.equal(rejected.status,'review');
 });
+
+test('UEFA first-party qualification status is not a match report, but a claimed match score remains blocked',()=>{
+ const facts=require('../editorial-facts');
+ const desk=require('../editorial-desk-model');
+ const payload={
+  articleKind:'announcement',category:'Nations League',primaryAuthority:'association_decision',
+  sources:[{url:'https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/'}],
+  verifiedFacts:[
+   'France have qualified for the quarter-finals in League A and are confirmed in first place.',
+   'Belgium have qualified for the quarter-finals and are confirmed in second place.',
+   'England have qualified for the quarter-finals and are confirmed in first place.',
+   'Italy are confirmed in third place and will remain in League A.',
+   'Portugal have guaranteed a place in the quarter-finals.',
+   'Spain have qualified for the quarter-finals and are confirmed in second place.'
+  ],
+  editorialChecks:Object.fromEntries(desk.checks.map(k=>[k,true])),
+  draft:{
+   headline:'UEFA bevestigt plaatsing van meerdere landen in Nations League',
+   standfirst:'De UEFA bevestigt dat Frankrijk, Engeland en Portugal zich hebben verzekerd van een plaats in de kwartfinales van de Nations League.',
+   body:[
+    'Frankrijk is volgens de UEFA als eerste geplaatst in de groep en heeft een ticket voor de kwartfinale. België staat volgens de bond als tweede vast.',
+    'Engeland heeft zijn plaats in de kwartfinales ook al zeker. Dat land sluit de groep als nummer één af, bevestigt de UEFA in haar competitieoverzicht.',
+    'Italië is bevestigd als derde en blijft in League A. Spanje is als tweede verzekerd van een kwartfinaleplaats. Deze positie is officieel vastgelegd.'
+   ]
+  }
+ };
+ assert.equal(facts.verifiedUefaCompetitionStatus(payload),true);
+ assert.deepEqual(facts.audit(payload).filter(x=>/Wedstrijdverslag:|Feitencontrole ontbreekt/.test(x)),[]);
+ assert.deepEqual(desk.publicationIssues(payload).filter(x=>/Flashscore|Wedstrijdverslag:|Feitencontrole ontbreekt/.test(x)),[]);
+ assert.equal(facts.evidenceIssues({headline:'De UEFA bevestigt kwalificatie',standfirst:'In Groep A is plaatsing bekend.',body:[]},
+  [...payload.verifiedFacts,'League A group A qualification overview'],null,payload.sources[0].url).some(x=>/De UEFA|In Groep/.test(x)),false);
+ const falseResult={...payload,draft:{...payload.draft,standfirst:'Frankrijk wint van België met 2-1 in de Nations League.'}};
+ assert.equal(facts.verifiedUefaCompetitionStatus(falseResult),false);
+ assert.ok(desk.publicationIssues(falseResult).some(x=>/Flashscore|Wedstrijdverslag|Feitencontrole/.test(x)));
+ assert.equal(facts.verifiedUefaCompetitionStatus({...payload,primaryAuthority:''}),false);
+ assert.equal(facts.verifiedUefaCompetitionStatus({...payload,sources:[{url:'https://example.com/news'}]}),false);
+});

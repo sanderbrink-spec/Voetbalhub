@@ -286,6 +286,19 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   const allowedNumbers=[...new Set(writerFacts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
   if(automaticPublication&&articleKind==='preview'){
    prompt=previewStyle+' Gebruik uitsluitend facts. Als editorialAssignment aanwezig is, reserveer opening uitsluitend voor kop en intro en gebruik firstParagraph en secondParagraph voor precies twee alinea’s van circa twee zinnen. De beschikbare feiten volstaan dan voor die vorm. Beschrijf het concrete eerdere doelpuntenmoment en vervolgens het afzonderlijke recente resultaat en de doelpuntenmaker. Schrijf over de komende wedstrijd in de tegenwoordige of toekomstige tijd. Begin beide alinea’s met de datum van het betreffende eerdere duel als die bewezen is en gebruik voor die duels de verleden tijd. Voeg geen onbewezen datum, helft, precieze minuut, type actie of spelbeeld toe. Gebruik korte idiomatische zinnen zonder woorden als groepstop, meeting of confrontatie. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+previewStructure+'.';
+  }else if(automaticPublication&&primaryAuthority==='association_decision'&&category==='Nations League'&&
+    /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\//.test(sourceUrls[0]||'')&&
+    facts.some(f=>/\b(?:confirmed|qualified|guaranteed|secured)\b/i.test(f))){
+   prompt=[
+    'Je schrijft als Veldio-journalist een zelfstandig Nederlands bericht over de door UEFA bevestigde kwalificatiestatus in de Nations League. GEEN wedstrijdverslag, trainersnieuws of selectienieuws.',
+    'Gebruik uitsluitend verifiedFacts. De bronkop en publicatiedatum voegen geen extra feiten toe.',
+    'Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden), body met 3 inhoudelijk verschillende alinea’s van 18-120 woorden en minstens 70 tekens.',
+    'Kies het belangrijkste bevestigde kwalificatienieuws voor kop en intro, met UEFA als officieel aangewezen bron.',
+    'Groepeer afzonderlijke geverifieerde kwalificatiegevolgen per land of groep. Geef iedere bodyalinea een ander concreet en geverifieerd nieuwsfeit. Herhaal niet de intro of eerdere alinea met andere woorden.',
+    'Geen onbewezen uitslagen, opstellingen, groepsnummers, voorspellingen, wedstrijdverloop of gevolgen. Noem een groepspositie alleen als die letterlijk in facts staat.',
+    'Schrijf natuurlijk voetbal-Nederlands en geen opsomming van geïsoleerde statistieken. Geen clubcontracten, stafzaken of personele besluiten.',
+    'Kopieer geen UEFA-zinnen. Bij onvoldoende verschillende feiten voor drie betekenisvolle bodyalinea’s: antwoord uitsluitend met JSON {"skip":true}. Publiceer nooit zelf.'
+   ].join(' ');
   }else if(automaticPublication&&primaryAuthority==='association_decision'){
    prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. '+(/\b(?:to depart as|steps down as)\b/i.test(topic||'')?federationCoachStyle+' ':'')+'Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Begin de inhoudelijke alinea over opvolging of vervolgstappen met een duidelijke toeschrijving aan '+officialPublisher+', bijvoorbeeld: “'+officialPublisher+' meldt dat …”. Schrijf een volgende functie alleen toe aan de bond als die als enige het nieuws meldt. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
   }
