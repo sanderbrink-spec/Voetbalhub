@@ -5,6 +5,14 @@ const WEIGHTS = {actuality:20, reliability:25, nationalValue:20, originality:15,
 const normalize = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 function priority(doc) {
  const title=normalize(doc.title), text=normalize(doc.title+' '+(doc.text||'').slice(0,500));
+ const url=String(doc.url||'');
+ // Story angles, not permission to publish: official national-team selection,
+ // decisive international stakes and knockout implications outrank routine club
+ // updates. Evidence, deduplication and the independent quality gates still decide.
+ if (/^https:\/\/(?:www\.)?onsoranje\.nl\/nieuws\/nederlands-elftal-mannen\//.test(url)&&
+     /\b(mist|niet inzetbaar|opstelling|basiself|vervanger|afgemeld|selectie|groepswinst|bondscoach)\b/.test(title))return 7;
+ if (/^https:\/\/(?:www\.)?uefa\.com\/uefanationsleague\/news\//.test(url)&&
+     /\b(qualification|quarter.final|who is through|what each team needs|matchday|promotion|relegation|group winner|state of play|record|players to watch)\b/.test(text))return 6;
  if (/\b(kkd|keuken kampioen divisie|eerste divisie)\b/.test(title)) return /\b(promotie|degradatie|kampioen|ontslag|faillissement|licentie|record)\b/.test(title)?1:0;
  if (/\b(ajax|feyenoord|psv)\b/.test(title)) return 5;
  if (/\b(fc twente|az|fc groningen)\b/.test(title)) return 4;
