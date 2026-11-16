@@ -145,9 +145,9 @@ jobs:
             const qualityTitle = '[Veldio] Redactie: geen publiceerbare artikelen';
             const qualityAlert = issues.find(issue => issue.title === qualityTitle);
             const awaitingReview = report?.signals?.some(signal => signal.outcome === 'queue_review');
-            const editorialBlock = report && !failed && report.counts.published === 0 && (report.counts.generated > 0 || awaitingReview);
+            const editorialBlock = report && !failed && report.counts.published === 0 && (report.counts.generated > 0 || report.counts.attempted > 0 || awaitingReview);
             if (editorialBlock) {
-              const body = ['Geen artikel gepubliceerd ondanks generatie of een beoordelingswachtrij.',
+              const body = ['Geen artikel gepubliceerd na controle van kandidaatonderwerpen of bij een redactionele beoordelingswachtrij.',
                 'Dit is een redactionele waarschuwing. Verlaag geen kwaliteitsnormen.',
                 'Run: '+context.serverUrl+'/'+owner+'/'+repo+'/actions/runs/'+context.runId,
                 'Tellingen: '+JSON.stringify(report.counts),
