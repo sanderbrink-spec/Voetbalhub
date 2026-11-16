@@ -1285,6 +1285,30 @@ function reusableCheckpointPriority(job,group,secret,now=Date.now()){
  return prior.draft?2:prior.candidate?1:0;
 }
 // Focused probe: never fill Sportmonks slots with unrelated news or other providers.
+// Prefer a narrow, verified Sportmonks result window for editorial stories.
+// A partial match window is never used for Android standings. If it is empty,
+// stale or unavailable, the existing league feed remains the fallback.
+async function editorialMatchSnapshot(competition,endpoint,api,now,signals=[]){
+ if(['eredivisie','premierleague','knvbbeker','kkd'].includes(competition)){
+  try{
+   const recent=await api('/editorial-sportmonks-recent?competition='+competition);
+   if(recent?.status==='available'&&recent.coverage==='verified_recent_finals_only'&&
+      Array.isArray(recent.fixtures)&&recent.fixtures.length>0&&
+      recent.fixtures.every(f=>f?.competition===competition&&/^sm-\d+$/.test(f.id||'')&&
+       f.status==='FT'&&f.resultSource==='Sportmonks Football API')&&
+      selectPublicationFixtures(recent.fixtures,now).length>0){
+    signals.push({route:'match',competition,outcome:'verified_recent_sportmonks',
+      eligible:selectPublicationFixtures(recent.fixtures,now).length});
+    return recent;
+   }
+   signals.push({route:'match',competition,outcome:'recent_sportmonks_unavailable_or_empty'});
+  }catch{
+   signals.push({route:'match',competition,outcome:'recent_sportmonks_transport_unavailable'});
+  }
+ }
+ return api(endpoint);
+}
+
 function scheduleEditorialGroups(newsGroups,matchGroups,{sportmonksOnly=false}={}){
  const news=sportmonksOnly?[]:newsGroups;
  const matches=sportmonksOnly?matchGroups.filter(group=>
@@ -1360,7 +1384,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   ['championsleague','/editorial-champions-league']
  ]){
  try{
-  const snapshot=await api(endpoint);
+  const snapshot=await editorialMatchSnapshot(competition,endpoint,api,now,report.signals);
   if(!Array.isArray(snapshot.fixtures)||!['available','cached'].includes(snapshot.status))throw Error('Wedstrijdbron tijdelijk niet beschikbaar.');
   // Reject accidental cross-league records before counting or drafting.
   const fixtures=selectPublicationFixtures(snapshot.fixtures,now).filter(fixture=>fixture.competition===competition);
@@ -2122,4 +2146,4 @@ function publicationFocus(env=process.env){
  return env.FOCUS_SOURCE_URL||pushCommitMessage(env).match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
