@@ -78,7 +78,7 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  if(!publisher||!draft||!Array.isArray(draft.body))return [];
  const lowered=x=>String(x||'').toLocaleLowerCase('nl');
  const name=lowered(publisher).replaceAll('u.s.', 'us');
- const signals=['volgens','aldus','meldt','bevestigt','kondigt','schrijft','laat weten','geeft aan','maakt bekend','maakte bekend','bekendgemaakt','bekendmaking'];
+ const signals=['volgens','aldus','meldt','bevestigt','bevestigd','kondigt','schrijft','laat weten','geeft aan','maakt bekend','maakte bekend','bekendgemaakt','bekendmaking'];
  const isNamedAttribution=x=>lowered(x).replaceAll('u.s.', 'us').split(/[.!?](?:\s+|$)/).some(sentence=>
   sentence.includes(name)&&(signals.some(signal=>sentence.includes(signal))||(sentence.includes('legt ')&&sentence.includes(' uit'))||(sentence.includes('licht ')&&sentence.includes(' toe'))));
  const paragraphs=draft.body.filter(x=>typeof x==='string');

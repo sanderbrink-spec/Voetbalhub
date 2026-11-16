@@ -350,3 +350,25 @@ test('a federation announcement attributes additional facts to the federation',(
  assert.match(editorialAttributionIssues({...draft,body:[...draft.body.slice(0,2),
   'De club bevestigt dat het verschillende kandidaten zal bekijken.']},options)[0],/U\.S\. Soccer/);
 });
+
+
+test('first-party UEFA status accepts confirmed past tense in body and rejects absent attribution',()=>{
+ const options={primaryAuthority:'association_decision',
+  sourceUrls:['https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/'],
+  facts:['UEFA confirmed five teams.','France qualified.','Belgium qualified.','England qualified.']};
+ const draft={
+  headline:'UEFA bevestigt vijf kwartfinalisten voor de Nations League',
+  standfirst:'De UEFA bevestigt vijf kwartfinalisten voor de komende ronde.',
+  body:[
+   'De UEFA heeft officieel bevestigd dat Frankrijk en België zich hebben geplaatst.',
+   'In een andere groep hebben ook Engeland en Spanje hun plaats veiliggesteld.',
+   'De overige groepen moeten nog worden afgerond.'
+  ]};
+ assert.deepEqual(editorialAttributionIssues(draft,options),[]);
+ const missing={...draft,body:[
+  'Frankrijk en België hebben zich geplaatst.',
+  'Engeland en Spanje staan ook in de volgende ronde.',
+  'De overige groepen moeten nog worden afgerond.'
+ ]};
+ assert.ok(editorialAttributionIssues(missing,options).some(issue=>issue.includes('inhoudelijke alinea')));
+});
