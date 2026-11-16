@@ -3,7 +3,10 @@
 // Never infer a match venue from team colors, a scoreboard, or opponent names.
 const names={
  'nederland':['Johan Cruijff Arena'],
- 'duitsland':['Olympiastadion, Berlin, Duitsland'],
+ // The official fixture calendar abbreviates the approved Berlin venue to
+ // 'Olympiastadion'. The detail page may add the city and country. Both
+ // spellings identify the same stadium; no other Germany venue is accepted.
+ 'duitsland':['Olympiastadion','Olympiastadion, Berlin','Olympiastadion, Berlin, Duitsland'],
  'adodenhaag':['Werktalent Stadion','Bingoal Stadion','Cars Jeans Stadion'],
  'ajax':['Johan Cruijff Arena','Amsterdam Arena'],
  'az':['AFAS Stadion'],
