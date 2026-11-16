@@ -390,13 +390,13 @@ function primaryAuthority(doc){
 // preflight. This is NOT a license to treat UEFA previews or rumours as facts.
 function confirmedUefaQualification(doc){
  if(!doc||host(doc.url)!=='uefa.com'||primaryAuthority(doc)!=='association_decision'||
-    !/\b(?:quarter.final|qualification|state of play)\b/i.test(doc.title||''))return null;
+    !/\b(?:quarter.final(?:s)?|qualification|state of play)\b/i.test(doc.title||''))return null;
  const sentences=String(doc.text||'').match(/[^.!?]{26,330}[.!?]/g)||[];
  const picked=[],seen=new Set();
  for(const passage of sentences){
   const quote=passage.trim();
   if(!/\b(?:confirmed|have guaranteed|has guaranteed|have qualified|has qualified|have secured|has secured)\b/i.test(quote)||
-     !/\b(?:quarter.final|first place|second place|third place|fourth place|league a|relegat|play.off)\b/i.test(quote))continue;
+     !/\b(?:quarter.final(?:s)?|first place|second place|third place|fourth place|league a|relegat|play.off)\b/i.test(quote))continue;
   const key=normalize(quote);
   if(seen.has(key))continue;
   seen.add(key);picked.push(quote);
