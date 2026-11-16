@@ -359,7 +359,7 @@ function primaryAuthority(doc){
  const url=articleUrl(doc.url,config.newsIndexes);
  if(!url)return '';
  const title=normalize(doc.title);
- if(/\b(gerucht|mogelijk|liveblog|samenvatting|highlights)\b/.test(title))return '';
+ if(/\b(gerucht|geruchten|rumour|rumours|rumor|rumors|mogelijk|liveblog|samenvatting|highlights)\b/.test(title))return '';
  // This is a verified organising-body status, not a UEFA writer's opinion.
  // The server independently rechecks the exact eligible official URL.
  if(host(url)==='uefa.com'&&officialSourceAuthority(url)==='association_decision'&&
