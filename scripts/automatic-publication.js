@@ -1311,7 +1311,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.sources.nationsLeagueNews={
   status:indexStatus.some(index=>index.url==='https://www.uefa.com/uefanationsleague/'&&index.status==='ok')?'ok':'unavailable',
   readable:uefaNationsLeague.length,
-  newsworthy:uefaNationsLeague.filter(nationallyRelevant).length
+  newsworthy:uefaNationsLeague.filter(nationallyRelevant).length,
+  officialCompetitionStatus:uefaNationsLeague.filter(doc=>primaryAuthority(doc)==='association_decision').length
  };
  const knvbTeamNews=discovered.filter(doc=>allowedUrl(doc.url)&&host(doc.url)==='onsoranje.nl'&&
   new URL(doc.url).pathname.startsWith('/nieuws/nederlands-elftal-mannen/'));
