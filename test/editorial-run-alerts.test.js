@@ -2,7 +2,23 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
-const text=fs.readFileSync('.github/workflows/automatic-publication.yml','utf8').split('script: |\n')[1].split('\n').map(line=>line.startsWith('            ')?line.slice(12):line).join('\n');
+// Extract only the indented github-script block. Trailing YAML comments or
+// subsequent workflow steps must never be executed as JavaScript by this test.
+function workflowScript(yaml){
+ const after=yaml.split('script: |\n')[1];
+ assert.ok(after,'The publication workflow must contain its monitoring script.');
+ const body=[];
+ for(const line of after.split('\n')){
+  if(line.trim()&&!line.startsWith('            '))break;
+  body.push(line.startsWith('            ')?line.slice(12):'');
+ }
+ return body.join('\n');
+}
+const text=workflowScript(fs.readFileSync('.github/workflows/automatic-publication.yml','utf8'));
+test('YAML comments following the script block are not parsed as JavaScript',()=>{
+ const snippet='script: |\n            const ok = 1;\n# Documentation comment in YAML, not JS\n';
+ assert.equal(workflowScript(snippet).trim(),'const ok = 1;');
+});
 const execute=new (Object.getPrototypeOf(async function(){}).constructor)('require','github','context','core',text);
 for(const scenario of ['quiet','rejected','technical','published'])test('publication monitoring distinguishes '+scenario,async()=>{
  const report={outcome:scenario==='technical'?'error':scenario==='published'?'success':'no_suitable_news',counts:{selected:scenario==='rejected'?2:0,generated:scenario==='rejected'?2:0,published:scenario==='published'?1:0},skipped:scenario==='rejected'?[{topic:'Test',reason:'Score 73 is lager dan 85'}]:[],signals:[],processingErrors:scenario==='technical'?[{reason:'Opslagfout'}]:[]};
