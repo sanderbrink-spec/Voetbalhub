@@ -1278,6 +1278,15 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  }
  report.counts.found=linksToRead.length;
  report.counts.readable=discovered.length;
+ // Measure official Nations League story coverage separately. A discovered
+ // story is not a verified article or a publication approval.
+ const uefaNationsLeague=discovered.filter(doc=>allowedUrl(doc.url)&&host(doc.url)==='uefa.com'&&
+  new URL(doc.url).pathname.startsWith('/uefanationsleague/news/'));
+ report.sources.nationsLeagueNews={
+  status:indexStatus.some(index=>index.url==='https://www.uefa.com/uefanationsleague/'&&index.status==='ok')?'ok':'unavailable',
+  readable:uefaNationsLeague.length,
+  newsworthy:uefaNationsLeague.filter(nationallyRelevant).length
+ };
  for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
   const publishedTime=Date.parse(doc.publishedAt||'');
   const signal={url:doc.url,topic:doc.title,publishedAt:doc.publishedAt};
