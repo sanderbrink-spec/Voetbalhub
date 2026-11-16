@@ -232,6 +232,12 @@ function nationallyRelevant(doc){
  if(allowedUrl(doc.url)&&host(doc.url)==='uefa.com'&&/^\/uefanationsleague\/news\//.test(new URL(doc.url).pathname)&&
     /\b(nations league|league a|matchday|quarter finals|quarter final|groepswinst)\b/.test(title+' '+body.slice(0,500))&&
     /\b(preview|storylines|players to watch|what each team needs|qualification|quarter finals|top spot|promotion|record|groepswinst)\b/.test(title+' '+body.slice(0,500)))return true;
+ // Editorial angles seen in real football news: verified line-up and squad
+ // changes, injuries, coach decisions and historical relevance. Newsroom examples
+ // are not sources and never supply claims to the article writer.
+ if(allowedUrl(doc.url)&&host(doc.url)==='onsoranje.nl'&&
+    /\b(oranje|nederland|nederlands elftal|de jong|bondscoach)\b/.test(title+' '+body.slice(0,500))&&
+    /\b(mist|uitgevallen|afwezig|niet inzetbaar|opstelling|basiself|vervanger|wissel|blessure|selectie|persconferentie|duitsland)\b/.test(title))return true;
  if(allowedUrl(doc.url)&&host(doc.url)==='onsoranje.nl'&&primaryAuthority(doc)==='association_decision')return true;
  if(allowedUrl(doc.url)&&host(doc.url)==='ussoccer.com'&&primaryAuthority(doc)==='association_decision'&&
     /\b(?:premier league|manchester united|champions league)\b/.test(body))return true;
@@ -347,6 +353,12 @@ function primaryAuthority(doc){
  if(/\b(gerucht|mogelijk|liveblog|samenvatting|highlights)\b/.test(title))return '';
  if(host(url)==='onsoranje.nl'&&/\b(opgeroepen|vallen af|valt af|afgemeld|selectie bekend)\b/.test(title)&&
    /\b(selectie|trainingskamp)\b/.test(normalize((doc.text||'').slice(0,3000))))return 'association_decision';
+ // The KNVB has first-hand authority over its own men's squad, including an
+ // official absence or confirmed line-up. This does not validate third-party
+ // injury speculation, predicted XI lists or historical claims by itself.
+ if(host(url)==='onsoranje.nl'&&
+   /\b(mist|valt uit|niet inzetbaar|niet beschikbaar|afwezig|basisopstelling|opstelling|basiself|vervangt)\b/.test(title)&&
+   /\b(oranje|nederlands elftal|bondscoach|selectie|duitsland|griekenland)\b/.test(normalize((doc.text||'').slice(0,3000))))return 'association_decision';
  if(host(url)==='ussoccer.com'&&/\b(?:to depart as|steps down as|appointed as)\b/.test(title)&&
    /\bu s soccer (?:today )?announced\b/.test(normalize(doc.text.slice(0,2000))))return 'association_decision';
  if(owner(url)==='knvb.nl'&&/\b(besluit|loting|schorsing|vastgesteld|speeldagen|ingepland)\b/.test(title))return 'association_decision';
@@ -1713,7 +1725,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    await checkpointStep({draft,generation:null});
    report.counts.generated++;route.generated++;
    stage='quality';
-   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
+   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&host(sources[0].url)==='onsoranje.nl'?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
     reviewNotes:(validationOnly?'Automatische redactionele validatie. ':'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. ')+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
     if(group.replacePreviewId)payload.replacePreviewId=group.replacePreviewId;
