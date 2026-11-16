@@ -1478,3 +1478,29 @@ test('short verified Germany venue names retain the approved international previ
   assert.equal(resolve(invalid).article,null,'An unapproved venue, opponent or report must not reuse the preview image.');
  }
 });
+
+
+test('98O reopens only the exact verified UEFA writer false rejection once for a fresh full review',()=>{
+ const crypto=require('node:crypto');
+ const {reopenUefaStatusAttributionV98O}=require('../scripts/automatic-publication');
+ const url='https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/';
+ const doc={url,title:'Nations League quarter-finals: Who is through?',
+  publishedAt:'2026-11-16T08:00:00Z',
+  text:'UEFA confirmed France in the quarter-finals of the competition. Belgium have secured their place in the quarter-finals. England has qualified for the quarter-finals of the competition. Spain have secured their place in the quarter-finals.'};
+ const now=Date.parse('2026-11-16T20:30:00Z');
+ const reason='Concept na herstel nog niet geschikt: Schrijf in minstens één inhoudelijke alinea de aanvullende feiten expliciet toe aan de officiële bekendmaking van UEFA.';
+ const hash=crypto.createHash('sha256').update(reason).digest('hex');
+ const initial=()=>({status:'review',failureStage:'generation',failureCategory:'generator_failure',
+  errorHash:hash,urls:[url],attempts:2,checkpoint:{rejectedDraft:true}});
+ const job=initial();
+ assert.equal(reopenUefaStatusAttributionV98O(job,doc,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ assert.equal(job.checkpoint,undefined);
+ assert.equal(job.uefaAttributionRecoveryV98O,true);
+ assert.equal(reopenUefaStatusAttributionV98O(job,doc,now),false);
+ assert.equal(reopenUefaStatusAttributionV98O({...initial(),failureCategory:'journalistic_rejection'},doc,now),false);
+ assert.equal(reopenUefaStatusAttributionV98O({...initial(),errorHash:'different'},doc,now),false);
+ assert.equal(reopenUefaStatusAttributionV98O(initial(),{...doc,url:'https://example.com/news'},now),false);
+ assert.equal(reopenUefaStatusAttributionV98O(initial(),doc,now+73*3600000),false);
+});
