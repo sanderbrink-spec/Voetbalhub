@@ -226,6 +226,12 @@ function nationallyRelevant(doc){
  if(/\b(kkd|keuken kampioen divisie|eerste divisie)\b/.test(title)&&!/\b(promotie|degradatie|kampioen|kampioenschap|titel|ontslag|hoofdtrainer|trainerswissel|fraude|faillissement|knvb|licentie|record)\b/.test(title))return false;
  if(/^(alle informatie|match center|wedstrijdprogramma|wedstrijden|nieuws|home|tickets|ticketinformatie|kaartverkoop|veelgestelde vragen|faq|contact|agenda|overzicht)$/.test(title))return false;
  if(/\b(ticket|tickets|kaartverkoop\w*|seizoenkaart|parkeer|routebeschrijving|openingstijden|fanshop|webshop|merchandise|fotoverslag|trainingsschema|vacature|vrijwilliger|businessclub|hospitality|jeugdopleiding|onder 1[0-9]|onder 2[0-3])\b/.test(title))return false;
+ // Men's Nations League only. A relevant UEFA editorial briefing still needs
+ // independent verifiable facts and the existing review/image gates to publish.
+ if(/\b(vrouwen|womens|women|wsl|feminin)\b/.test(title))return false;
+ if(host(doc.url)==='uefa.com'&&/^\/uefanationsleague\/news\//.test(new URL(doc.url).pathname)&&
+    /\b(nations league|league a|matchday|quarter finals|quarter final|groepswinst)\b/.test(title+' '+body.slice(0,500))&&
+    /\b(preview|storylines|players to watch|what each team needs|qualification|quarter finals|top spot|promotion|record|groepswinst)\b/.test(title+' '+body.slice(0,500)))return true;
  if(allowedUrl(doc.url)&&host(doc.url)==='onsoranje.nl'&&primaryAuthority(doc)==='association_decision')return true;
  if(allowedUrl(doc.url)&&host(doc.url)==='ussoccer.com'&&primaryAuthority(doc)==='association_decision'&&
     /\b(?:premier league|manchester united|champions league)\b/.test(body))return true;
