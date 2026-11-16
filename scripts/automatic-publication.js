@@ -215,7 +215,11 @@ function discoverLinks(html,index){
  for(const m of html.matchAll(/<a\b[^>]*href=["']([^"']+)["']/gi)){
   try{const u=new URL(m[1].replace(/&amp;/g,'&'),index.url);u.hash='';if(allowedUrl(u.href)&&host(u.href)===host(index.url)&&paths.test(u.pathname)&&u.href!==index.url&&!urls.includes(u.href))urls.push(u.href);}catch{}
  }
- return [...new Set(urls.map(url=>articleUrl(url,[index])).filter(Boolean))].slice(0,6);
+ // A competition homepage carries several independent current international
+ // stories. Expand only this official UEFA index, retaining strict host/path
+ // allowlisting, source date, fact and image checks for every discovered link.
+ const limit=index.url==='https://www.uefa.com/uefanationsleague/'?12:6;
+ return [...new Set(urls.map(url=>articleUrl(url,[index])).filter(Boolean))].slice(0,limit);
 }
 // National-platform relevance gate. Runs before any paid editorial model call.
 function nationallyRelevant(doc){
@@ -230,8 +234,8 @@ function nationallyRelevant(doc){
  // independent verifiable facts and the existing review/image gates to publish.
  if(/\b(vrouwen|womens|women|wsl|feminin)\b/.test(title))return false;
  if(allowedUrl(doc.url)&&host(doc.url)==='uefa.com'&&/^\/uefanationsleague\/news\//.test(new URL(doc.url).pathname)&&
-    /\b(nations league|league a|matchday|quarter finals|quarter final|groepswinst)\b/.test(title+' '+body.slice(0,500))&&
-    /\b(preview|storylines|players to watch|what each team needs|qualification|quarter finals|top spot|promotion|record|groepswinst)\b/.test(title+' '+body.slice(0,500)))return true;
+    /\b(nations league|league a|group a[1-4]|matchday|quarter finals|quarter final|groepswinst)\b/.test(title+' '+body.slice(0,500))&&
+    /\b(preview|storylines|players to watch|what each team needs|qualification|qualify|qualified|who is through|quarter finals|quarter final|top spot|promotion|relegation|record|groepswinst|state of play|matchday|knockout stage|group a[1-4])\b/.test(title+' '+body.slice(0,500)))return true;
  // Editorial angles seen in real football news: verified line-up and squad
  // changes, injuries, coach decisions and historical relevance. Newsroom examples
  // are not sources and never supply claims to the article writer.
@@ -418,9 +422,17 @@ function confirmedUefaQualification(doc){
  // standings decisions. Only include full, literal group snapshots when found.
  const qualified=picked.filter(s=>/\b(?:qualified|quarter.final(?:s)?|guaranteed|secured)\b/i.test(s));
  const status=[...qualified,...picked.filter(s=>!qualified.includes(s))];
- const sourceFacts=standings.length
-  ? [...status.slice(0,6),...standings.slice(0,4).map(s=>s.quote)]
-  : status.slice(0,8);
+ // Preserve one distinct first-party competition-context quote if the
+ // UEFA document really contains it. The headline, link and current date
+ // themselves do not supply factual claims to the writer.
+ const competitionContext=sentences.find(quote=>
+  /\b(?:UEFA )?Nations League\b/i.test(quote)&&
+  /\b(?:league a|qualification|qualified|quarter.final|group a[1-4])\b/i.test(quote)&&
+  !/\b(?:women|women's|womens)\b/i.test(quote)&&quote.trim().length>=30&&quote.trim().length<=330);
+ const context=competitionContext?.trim();
+ const tables=standings.slice(0,4).map(s=>s.quote);
+ const statusLimit=standings.length?Math.max(0,10-tables.length-Number(Boolean(context))):8-Number(Boolean(context));
+ const sourceFacts=[...status.slice(0,statusLimit),...(context?[context]:[]),...tables];
  return {kind:'announcement',topic:doc.title,category:'Nations League',
   teams:[],primaryAuthority:'association_decision',sharedEventEvidence:[],
   facts:sourceFacts.map(quote=>({text:quote,evidence:[{source:0,quote}]}))};
