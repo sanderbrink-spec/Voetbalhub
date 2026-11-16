@@ -1577,6 +1577,8 @@ private void showScores() {
         addMoreFeature(list,"Column","De Derde Helft","Wekelijkse column van Sander Brink","column",this::showColumn);
         addMoreFeature(list,"Clubquiz","Voetbalquiz","Test je voetbalkennis","quiz",this::showClubQuiz);
         addMoreFeature(list,"Stadion","Stadion van de Week","Ontdek stadions en hun verhalen","stadium",()->showStadiums(""));
+        // Separate clearly marked synthetic load-test articles; never part of the real news feed.
+        PremiumDesign40.menuRow(list,"DEMO","36 testartikelen","Fictieve artikelen voor de Veldio-weergavetest",()->openUrl("https://voetbalhub-redactie.onrender.com/demo-artikelen"));
         moreSection(list,"Mijn Veldio");
         PremiumDesign40.menuRow(list,"Nieuws","Zoeken","Nieuws, clubs en onderwerpen",this::showSearch);
         PremiumDesign40.menuRow(list,"Nieuws","Leeslijst","Bewaarde artikelen teruglezen",()->showPersonalHub("saved",""));
