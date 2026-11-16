@@ -76,3 +76,27 @@ test('only UEFA own qualification status is first-party competition evidence, ne
  assert.equal(primaryAuthority(other),'');
  assert.equal(primaryAuthority({...status,title:'Nations League rumour: who might leave?'}),'');
 });
+
+test('UEFA status packets use only literal confirmed competition facts and never waive editorial review',()=>{
+ const {confirmedUefaQualification,validateEvidence}=require('../scripts/automatic-publication');
+ const source={url:'https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/',
+ title:'Nations League quarter-finals: Who is through? Who can join?',
+ publishedAt:'2026-11-16T08:00:00Z',
+ text:[
+ 'France, Belgium, England, Portugal and Spain have guaranteed their places in the Nations League quarter-finals.',
+ 'France are confirmed in first place and have qualified for the quarter-finals.',
+ 'Belgium are confirmed in second place and have qualified for the quarter-finals.',
+ 'Italy are confirmed in third place and will remain in League A.',
+ 'England are confirmed in first place and have qualified for the quarter-finals.',
+ 'Spain are confirmed in second place and have qualified for the quarter-finals.'
+ ].join(' ')};
+ const packet=confirmedUefaQualification(source);
+ assert.ok(packet);
+ assert.equal(packet.primaryAuthority,'association_decision');
+ assert.equal(packet.kind,'announcement');
+ assert.ok(packet.facts.length>=4);
+ assert.deepEqual(validateEvidence(packet,[source],Date.parse('2026-11-16T18:00:00Z')),[]);
+ assert.ok(packet.facts.every(x=>source.text.includes(x.text)&&x.evidence[0].quote===x.text));
+ assert.equal(confirmedUefaQualification({...source,url:'https://www.uefa.com/uefanationsleague/news/02ab-matchday-preview/'}),null);
+ assert.equal(confirmedUefaQualification({...source,text:source.text.split('. ').slice(0,2).join('. ')}),null);
+});
