@@ -647,6 +647,28 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     res.writeHead(200, { "Content-Type": "image/png", "Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'" });
     return res.end(Buffer.from(encoded, "base64"));
   }
+  // Protected editorial-only verified final scores. Never expose a partial
+  // season as a complete league table to Android clients.
+  if (req.method === 'GET' && url.pathname === '/editorial-sportmonks-recent') {
+    if (!authorizeRequest(req,res)) return;
+    const competition=url.searchParams.get('competition')||'eredivisie';
+    if(!['eredivisie','premierleague','knvbbeker','kkd'].includes(competition))
+      return send(res,400,{error:'Onbekende redactiecompetitie.'});
+    try{
+      const fixtures=await require('./sportmonks-football').loadRecent({
+        competition,token:process.env.SPORTMONKS_API_TOKEN?.trim(),
+        sourceBody:require('./football-data47').sourceBody
+      });
+      return send(res,200,{status:fixtures.length?'available':'empty_recent_window',
+        competition,coverage:'verified_recent_finals_only',fixtures,
+        source:'Sportmonks Football API',standings:[]});
+    }catch(error){
+      // Report source outages without exposing credentials or private API URLs.
+      console.warn('editorial Sportmonks recent unavailable:',error.message);
+      return send(res,200,{status:'source_unavailable',competition,
+        coverage:'verified_recent_finals_only',fixtures:[],standings:[]});
+    }
+  }
   if (req.method === 'GET' && url.pathname === '/editorial-sportmonks-statistics') {
     if (!authorizeRequest(req,res)) return;
     const {fixtures}=await football47.get('eredivisie');
