@@ -10,10 +10,23 @@ function archiveReason(article, now = Date.now()) {
       Date.parse(lifecycle.expiresAt) <= now) return 'Voorbeschouwing verlopen';
   return '';
 }
+// A verified, substantive preview revision is a new editorial update, not
+// an unchanged old article. Retain the original publication date for audit,
+// but expose the verified revision date to already-installed Android versions
+// that sort exclusively on publishedAt. Never promote expired previews.
+function presentationArticle(article, now) {
+  if (article.articleKind !== 'preview' || article.feedLifecycle?.kind !== 'preview' ||
+      !article.editorialDraftId || archiveReason(article, now)) return article;
+  const original = Date.parse(article.publishedAt), revised = Date.parse(article.updatedAt);
+  if (!Number.isFinite(original) || !Number.isFinite(revised) ||
+      revised <= original || revised > now) return article;
+  return {...article, firstPublishedAt:article.publishedAt,
+    publishedAt:new Date(revised).toISOString(), feedDateKind:'verified_revision'};
+}
 function selectFeed(articles, {view = 'current', now = Date.now()} = {}) {
   return articles.map(article => {
     const reason = archiveReason(article, now);
-    return {...article, feedState: reason ? 'archived' : 'current', ...(reason ? {archiveReason: reason} : {})};
+    return {...presentationArticle(article,now),feedState: reason ? 'archived' : 'current', ...(reason ? {archiveReason: reason} : {})};
   }).filter(article => view === 'all' || (view === 'archive' ? article.feedState === 'archived' : article.feedState === 'current'))
     .sort((a,b) => String(b.publishedAt || '').localeCompare(String(a.publishedAt || '')) || String(a.id).localeCompare(String(b.id)));
 }
