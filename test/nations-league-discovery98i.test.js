@@ -100,3 +100,19 @@ test('UEFA status packets use only literal confirmed competition facts and never
  assert.equal(confirmedUefaQualification({...source,url:'https://www.uefa.com/uefanationsleague/news/02ab-matchday-preview/'}),null);
  assert.equal(confirmedUefaQualification({...source,text:source.text.split('. ').slice(0,2).join('. ')}),null);
 });
+
+test('previous UEFA extraction skip is reopened once without overriding a quality rejection',()=>{
+ const {retryUefaQualificationExtraction}=require('../scripts/automatic-publication');
+ const source={url:'https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/',
+ title:'Nations League quarter-finals: Who is through?',
+ text:'France are confirmed in first place and have qualified for the quarter-finals. Belgium are confirmed in second place and have qualified for the quarter-finals. Italy are confirmed in third place and will remain in League A. England are confirmed in first place and have qualified for the quarter-finals.'};
+ const job={status:'review',failureStage:'verification',reason:'insufficient_verified_facts',attempts:3};
+ assert.equal(retryUefaQualificationExtraction(job,source,Date.parse('2026-11-16T18:00:00Z')),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.attempts,0);
+ assert.equal(job.uefaQualificationRetry98M,true);
+ assert.equal(retryUefaQualificationExtraction(job,source,Date.now()),false);
+ const rejected={status:'review',failureStage:'quality',reason:'insufficient_verified_facts'};
+ assert.equal(retryUefaQualificationExtraction(rejected,source,Date.now()),false);
+ assert.equal(rejected.status,'review');
+});
