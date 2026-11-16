@@ -184,6 +184,49 @@ async function load({fetcher,token,now,sourceBody,competition='eredivisie'}){
  if(all.size<minimum||all.size>500)throw Error('Sportmonks onvolledige seizoensdekking');
  return [...all.values()].sort((a,b)=>a.date.localeCompare(b.date));
 }
+// Editorial-only recent matches. The public league table still requires a
+// complete, independently validated season via load(). Never use this small
+// window to construct standings or imply full-season coverage.
+async function loadRecent({fetcher=fetch,token,now=Date.now(),sourceBody,competition='eredivisie'}={}){
+ if(!token||!Object.hasOwn(LEAGUES,competition))throw Error('Sportmonks recente wedstrijden niet geconfigureerd');
+ if(!Number.isFinite(now)||typeof sourceBody!=='function')throw Error('Ongeldige Sportmonks redactieverzoek');
+ const leagueId=LEAGUES[competition];
+ const from=now-4*86400000;
+ const day=value=>new Date(value).toISOString().slice(0,10);
+ const prefix='https://api.sportmonks.com/v3/football/fixtures/between/'+day(from)+'/'+day(now);
+ const accepted=new Map();
+ for(let page=1;page<=3;page++){
+  const url=new URL(prefix);
+  url.searchParams.set('api_token',token);
+  url.searchParams.set('include','participants;scores;round;events');
+  url.searchParams.set('filters','fixtureLeagues:'+leagueId);
+  url.searchParams.set('per_page','50');
+  url.searchParams.set('page',String(page));
+  let response;
+  try{response=await fetcher(url.href,{redirect:'error',signal:AbortSignal.timeout(8000)});}
+  catch{throw Error('Sportmonks recente wedstrijden onbereikbaar');}
+  if(!response.ok){
+   await response.body?.cancel();
+   throw Error('Sportmonks recente wedstrijden HTTP '+response.status);
+  }
+  let data;
+  try{data=JSON.parse(await sourceBody(response));}catch{throw Error('Sportmonks recente wedstrijden antwoord ongeldig');}
+  if(!Array.isArray(data.data)||data.data.length>50)throw Error('Sportmonks recente wedstrijden respons onvolledig');
+  for(const row of data.data){
+   // The subscribed league filter is not trusted without a second local check.
+   if(row?.league_id!==leagueId)throw Error('Sportmonks recente wedstrijden verkeerde competitie');
+   const fixture=parseFixture(row,competition,now,leagueId);
+   const age=now-Date.parse(fixture.date);
+   if(fixture.status!=='FT'||!Number.isFinite(age)||age<=0||age>4*86400000)continue;
+   if(accepted.has(fixture.id))throw Error('Sportmonks recent dubbel wedstrijd-ID');
+   accepted.set(fixture.id,fixture);
+  }
+  if(data.pagination?.has_more!==true)break;
+  if(page===3)throw Error('Sportmonks recente wedstrijden paginering onvolledig');
+ }
+ return [...accepted.values()].sort((a,b)=>a.date.localeCompare(b.date));
+}
+
 async function statisticsCoverage({fixtureId,token,fetcher=fetch,sourceBody}){
  if(!token||!/^sm-\d+$/.test(fixtureId))return {status:'unavailable'};
  const id=Number(fixtureId.slice(3));
@@ -204,4 +247,4 @@ async function statisticsCoverage({fixtureId,token,fetcher=fetch,sourceBody}){
   return {status:valid.length?'available':'no_data',fixtureId,records:valid.length,types:new Set(valid.map(row=>row.type_id)).size};
  }catch{return {status:'unavailable'};}
 }
-module.exports={statisticsCoverage,EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load};
+module.exports={statisticsCoverage,EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load,loadRecent};
