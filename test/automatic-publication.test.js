@@ -1612,3 +1612,57 @@ test('98R artwork deferral preserves independent review gates and retry budget',
  assert.equal(require('../editorial-production45').EditorialQueue.prototype.due.call({},
   job,now+6*3600000),true);
 });
+
+
+test('98S publication chooses independently verified recent Sportmonks fixtures without season completeness',async()=>{
+ const {editorialMatchSnapshot,selectPublicationFixtures}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-16T20:00:00Z');
+ const fixture={id:'sm-98765',competition:'eredivisie',date:new Date(now-3600000).toISOString(),
+  status:'FT',resultSource:'Sportmonks Football API',goals:{home:2,away:1},
+  home:{id:'sm-1',name:'Ajax'},away:{id:'sm-2',name:'PSV'}};
+ const calls=[],signals=[];
+ const api=async path=>{
+  calls.push(path);
+  if(path==='/editorial-sportmonks-recent?competition=eredivisie')
+   return {status:'available',coverage:'verified_recent_finals_only',fixtures:[fixture],standings:[]};
+  throw Error('Full season should not be requested for verified recent matches');
+ };
+ const snapshot=await editorialMatchSnapshot('eredivisie','/integrations/football?competition=eredivisie',api,now,signals);
+ assert.equal(snapshot.fixtures.length,1);
+ assert.equal(selectPublicationFixtures(snapshot.fixtures,now).length,1);
+ assert.deepEqual(calls,['/editorial-sportmonks-recent?competition=eredivisie']);
+ assert.equal(signals[0].outcome,'verified_recent_sportmonks');
+});
+test('98S recent Sportmonks errors and inconsistent fixtures retain existing safe fallback',async()=>{
+ const {editorialMatchSnapshot}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-16T20:00:00Z');
+ for(const recent of [
+  {status:'empty_recent_window',coverage:'verified_recent_finals_only',fixtures:[]},
+  {status:'available',coverage:'verified_recent_finals_only',
+   fixtures:[{id:'sm-5',competition:'kkd',status:'FT',resultSource:'Sportmonks Football API'}]},
+  new Error('unavailable')
+ ]){
+  const calls=[],signals=[];
+  const api=async path=>{
+   calls.push(path);
+   if(path.startsWith('/editorial-sportmonks-recent')){
+    if(recent instanceof Error)throw recent;
+    return recent;
+   }
+   return {status:'cached',fixtures:[]};
+  };
+  const result=await editorialMatchSnapshot('eredivisie','/integrations/football?competition=eredivisie',api,now,signals);
+  assert.equal(result.status,'cached');
+  assert.deepEqual(calls,[
+   '/editorial-sportmonks-recent?competition=eredivisie',
+   '/integrations/football?competition=eredivisie'
+  ]);
+  assert.equal(signals.length,1);
+ }
+ // European UEFA/club fixtures continue on the independent verified route.
+ let requested;
+ await editorialMatchSnapshot('championsleague','/editorial-champions-league',async path=>{
+  requested=path;return {status:'available',fixtures:[]};
+ },now,[]);
+ assert.equal(requested,'/editorial-champions-league');
+});
