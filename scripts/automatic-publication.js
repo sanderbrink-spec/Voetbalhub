@@ -400,13 +400,32 @@ function confirmedUefaQualification(doc){
   const key=normalize(quote);
   if(seen.has(key))continue;
   seen.add(key);picked.push(quote);
-  if(picked.length===8)break;
+  if(picked.length===24)break;
  }
  if(picked.length<4)return null;
+ // A UEFA status overview can contain several qualified teams but little
+ // separate context in the status sentences. Keep literal League A group tables
+ // from the same official page so the writer has independent angles and stakes.
+ // No derived points, inferred standings or score assumptions are permitted.
+ const standings=[];
+ const table=/\bGroup A([1-4])\s+((?:[\p{Lu}][\p{L}'’ .-]{1,32}\s*\(\d+\s*(?:pts)?\)\s*,?\s*){3,4})/gu;
+ for(const match of String(doc.text||'').matchAll(table)){
+  const quote=match[0].trim();
+  if(standings.some(x=>x.group===match[1]))continue;
+  standings.push({group:match[1],quote});
+ }
+ // Prioritize confirmed quarter-final qualifiers, then other official
+ // standings decisions. Only include full, literal group snapshots when found.
+ const qualified=picked.filter(s=>/\b(?:qualified|quarter.final(?:s)?|guaranteed|secured)\b/i.test(s));
+ const status=[...qualified,...picked.filter(s=>!qualified.includes(s))];
+ const sourceFacts=standings.length
+  ? [...status.slice(0,6),...standings.slice(0,4).map(s=>s.quote)]
+  : status.slice(0,8);
  return {kind:'announcement',topic:doc.title,category:'Nations League',
   teams:[],primaryAuthority:'association_decision',sharedEventEvidence:[],
-  facts:picked.map(quote=>({text:quote,evidence:[{source:0,quote}]}))};
+  facts:sourceFacts.map(quote=>({text:quote,evidence:[{source:0,quote}]}))};
 }
+
 // A prior AI skip is not authoritative once the official source has an exact,
 // revalidated status packet. Retry only this recorded extraction failure once.
 function retryUefaQualificationExtraction(job,doc,now=Date.now()){
