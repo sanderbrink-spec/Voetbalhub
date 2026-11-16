@@ -111,7 +111,7 @@ function enrichPreviewResults(group, results, plain){
  }
  const latest=records[fixtureIndex-1];
  if(candidate.fixture?.id==='uefa-2047909'&&latest?.[2]==='netherlands-vs-greece'){
-  const [recentUrl,,recentLabel]=latest;
+  const [,recentUrl,,recentLabel]=latest;
   const recentScore=recentLabel.match(/\bNetherlands (\d{1,2}-\d{1,2}) Greece\b/i)?.[1];
   if(recentScore){
    const quote='UEFA Nations League, Netherlands: '+plain(recentLabel);

@@ -1340,6 +1340,20 @@ test('the preview keeps verified qualification context and accepts Dutch footbal
  assert.match(evidenceIssues({headline:'Bondscoach stopt bij de Verenigde Staten'},['Canada appoints a head coach.']).join(' '),/Verenigde Staten/);
 });
 
+test('UEFA results for the Germany preview attach the latest result to its official fixture',()=>{
+ const {enrichPreviewResults}=require('../scripts/editorial-international');
+ const uefa='https://www.uefa.com/uefanationsleague/match/';
+ const previous=uefa+'123--netherlands-vs-germany/';
+ const recent=uefa+'2047886--netherlands-vs-greece/';
+ const scheduled=uefa+'2047909--germany-vs-netherlands/';
+ const group=[{url:'https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660',text:''},{url:scheduled,text:''}];
+ group.internationalPreview={fixture:{id:'uefa-2047909'},teams:['Duitsland','Nederland'],facts:[]};
+ enrichPreviewResults(group,{html:'<h3><b>Netherlands (A2)</b></h3><p><a href="'+previous+'">Netherlands 1-1 Germany</a>'+
+  '<br/><a href="'+recent+'">Netherlands 7-0 Greece</a><br/><a href="'+scheduled+'">Germany vs Netherlands</a></p>'},plain);
+ assert.equal(group.at(-1).url,recent);
+ assert.equal(group.internationalPreview.facts.at(-1).text,'De vorige groepswedstrijd: Nederland 7-0 Griekenland.');
+});
+
 test('matchday evidence for the verified Germany fixture keeps stakes and form separate',()=>{
  const {enrichPreviewStakes}=require('../scripts/editorial-international');
  const group=[];
