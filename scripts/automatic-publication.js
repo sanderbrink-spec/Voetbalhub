@@ -359,9 +359,39 @@ function confirmedClubHonoraryMembership(doc){
  return {kind:'announcement',topic:doc.title,category:'Eredivisie',teams:[],primaryAuthority:'club_decision',
   sharedEventEvidence:[],facts:facts.map(text=>({text,evidence:[{source:0,quote:text}]}))};
 }
+// 98V-2: the federation can verify its own coach's first-hand remarks.
+// Do not elevate a headline, third-party quotation or unverified score to proof.
+function confirmedFederationCoachReaction(doc){
+ if(!doc||host(doc.url)!=='onsoranje.nl'||!/^\/nieuws\/nederlands-elftal-mannen\/\d+\//.test(new URL(doc.url).pathname)||
+    /\b(vrouwen|women|jeugd|onder 1\d|onder 2\d|liveblog)\b/i.test(doc.title||''))return null;
+ const source=String(doc.text||'').replace(/\s+/g,' ').trim();
+ const lead=/\bBondscoach\s+([\p{Lu}][\p{L}’'-]+(?:\s+[\p{Lu}][\p{L}’'-]+){1,2})\s+reageerde\b/u.exec(source);
+ if(!lead||!normalize(doc.title).startsWith(normalize(lead[1]).split(' ')[0]+' '))return null;
+ let section=source.slice(lead.index,lead.index+1800);
+ // Cut at another person's reported response, to avoid wrongly attributing it.
+ for(const mention of section.matchAll(/\b([\p{Lu}][\p{L}’'-]+\s+[\p{Lu}][\p{L}’'-]+)\s+(?:droeg|sprak|zei|reageerde|vertelde|verklaarde)\b/gu)){
+  if(mention.index>lead[0].length&&!/^(?:de|het|een|the)\b/.test(normalize(mention[1]))&&normalize(mention[1])!==normalize(lead[1])){section=section.slice(0,mention.index);break;}
+ }
+ const quotes=[...section.matchAll(/["“]([^"”]{30,450})["”]/gu)]
+  .map(m=>m[1].trim()).filter(t=>!/\b\d{1,2}\s*[-–]\s*\d{1,2}\b/.test(t));
+ if(quotes.length<3)return null;
+ const parts=[],seen=new Set();
+ const add=text=>{
+  if(!text||text.length<30||text.length>450||!normalize(source).includes(normalize(text)))return;
+  const key=normalize(text);if(!seen.has(key)){seen.add(key);parts.push(text);}
+ };
+ add(section.match(/\b[\p{Lu}][\p{L}]+\s+hekelde\s+[^.!?]{20,150}\./u)?.[0]);
+ add(section.match(/\bDe\s+[\p{L}]+\s+sprak\s+[^.!?]{25,180}\./u)?.[0]);
+ quotes.forEach(add);
+ if(parts.length<4)return null;
+ return {kind:'announcement',topic:doc.title,category:'Internationaal voetbal',
+  teams:[],primaryAuthority:'association_decision',officialReaction:true,
+  sharedEventEvidence:[],facts:parts.slice(0,7).map(text=>({text,evidence:[{source:0,quote:text}]}))};
+}
 function primaryAuthority(doc){
  const url=articleUrl(doc.url,config.newsIndexes);
  if(!url)return '';
+ if(confirmedFederationCoachReaction(doc))return 'association_decision';
  const title=normalize(doc.title);
  if(/\b(gerucht|geruchten|rumour|rumours|rumor|rumors|mogelijk|liveblog|samenvatting|highlights)\b/.test(title))return '';
  // This is a verified organising-body status, not a UEFA writer's opinion.
@@ -1313,7 +1343,10 @@ async function editorialMatchSnapshot(competition,endpoint,api,now,signals=[]){
       eligible:selectPublicationFixtures(recent.fixtures,now).length});
     return recent;
    }
-   signals.push({route:'match',competition,outcome:'recent_sportmonks_unavailable_or_empty'});
+   signals.push({route:'match',competition,outcome:
+     recent?.status==='empty_recent_window'?'recent_sportmonks_empty_window':
+     recent?.status==='source_unavailable'?'recent_sportmonks_source_unavailable':
+     'recent_sportmonks_no_eligible_finals',providerStatus:recent?.status||'invalid'});
   }catch{
    signals.push({route:'match',competition,outcome:'recent_sportmonks_transport_unavailable'});
   }
@@ -1490,9 +1523,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const partners=partnerDocuments(doc,[...docs.values()]);
   if(partners.length||primaryAuthority(doc)){
    const authority=primaryAuthority(doc);
-   if(authority)authoritative.push([doc]);
+   if(authority){
+    const group=[doc],reaction=confirmedFederationCoachReaction(doc);
+    if(reaction)group.officialReactionCandidate=reaction;
+    authoritative.push(group);
+   }
    else groups.push([doc,...partners]);
-   signal.outcome=authority?'primary_authority':'partner_found';
+   signal.outcome=authority?(confirmedFederationCoachReaction(doc)?'verified_first_party_reaction':'primary_authority'):'partner_found';
    signal.partners=authority?[]:partners.map(partner=>partner.url);
   }else{
    signal.outcome='no_corroboration';
@@ -1883,7 +1920,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     durable.queue.finish(job,'duplicate',now);continue;
    }
    const candidate=checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
-    group.internationalPreview||group.bootstrap?.candidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
+    group.internationalPreview||group.bootstrap?.candidate||group.officialReactionCandidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
    if(group.length===1&&!matchRecord&&host(group[0].url)==='uefa.com'&&
       candidate?.primaryAuthority==='association_decision'&&Array.isArray(candidate.facts))
      report.signals.push({route:'news',topic:group[0].title,outcome:'uefa_status_literal_facts',facts:candidate.facts.length});
@@ -1934,7 +1971,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(draft?.skip)throw Error('Onvoldoende bewezen feiten voor een origineel wedstrijdverslag.');
     report.generationOrigin='production_ai';
    }else if(!draft){
-    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,compact,automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
+    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,compact,officialReaction:Boolean(group.officialReactionCandidate),automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
     report.generationOrigin='production_ai';
    }
    await checkpointStep({draft,generation:null});
@@ -2220,4 +2257,4 @@ function publicationFocus(env=process.env){
  return env.FOCUS_SOURCE_URL||pushCommitMessage(env).match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};

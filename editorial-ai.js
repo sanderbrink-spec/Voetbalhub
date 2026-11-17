@@ -233,7 +233,7 @@ function mayDelegateLeadOverlap(issues,{automaticPublication=false,coachPlan=fal
  return Boolean(automaticPublication&&coachPlan&&Array.isArray(issues)&&issues.length===1&&
   issues[0]==='Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.');
 }
-async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],articleKind,primaryAuthority=null,match=null,compact=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
+async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],articleKind,primaryAuthority=null,match=null,compact=false,officialReaction=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
   // Normal server calls and production share the same provider interface.
   if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
   const writerFacts=articleKind==='preview'?previewWritingFacts(facts):facts;
@@ -307,6 +307,17 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   }
   if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority){
    prompt='Schrijf een origineel Nederlands voetbalnieuwsbericht uitsluitend uit facts. Leg het nieuws eenmaal uit in de intro. Verdeel de body in exact drie alinea’s. Gebruik voor elke alinea een ander bewezen thema. Bij een afmelding kan dat de concreet gemelde aanleiding, het besluit van de bond voor de komende interlands en de afzonderlijk gemelde clubplanning zijn. Zet de terugkeer alleen in de intro. Vermijd herhaling, ook in andere woorden. Schrijf alleen wat een bron concreet heeft bevestigd. Gebruik bij een verschil tussen de bronnen expliciete toeschrijving en vermijd relatieve termen zoals morgen. Verzin geen intentie, prognose, herstelduur, beoordeling of gevolg. Schrijf alleen headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+' als JSON. Geef skip bij onvoldoende verschillende feiten.';
+  }
+  if(automaticPublication&&officialReaction){
+   prompt=[
+    'Schrijf een zelfstandig Nederlandstalig Veldio-artikel over de rechtstreeks door OnsOranje gepubliceerde reactie van de bondscoach. Dit is géén KNVB-besluit en géén wedstrijdverslag.',
+    'De input bevat uitsluitend bewezen afzonderlijke uitspraken van de bondscoach. Vertel wat hij zelf constateerde en aan welke onderdelen hij verbetering wil zien, uitsluitend wanneer expliciet door facts ondersteund.',
+    'Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (3-5 inhoudelijk verschillende alinea’s, elk 18-120 woorden en minstens 70 tekens).',
+    'Noem in de intro OnsOranje als bron van de uitspraken. Schrijf in volledig eigen woorden: reproduceer geen zinnen uit de citaten en verander een mening nooit in een bewezen sportief feit.',
+    'Gebruik geen uitslag, score, doelpuntenmakers, exacte wedstrijdmomenten, groepsstanden, kwalificatieconclusies of uitspraken van andere spelers. Zulke gegevens zijn niet geverifieerd via deze uitsprakenroute.',
+    'Verdeel de verschillende toegeschreven opmerkingen over aparte alinea’s, zonder opvulling, herhaling, losse feitenlijst of fictieve gevolgen.',
+    'Als de gecontroleerde uitspraken onvoldoende stof bieden: antwoord uitsluitend met JSON {"skip":true}. Publiceer nooit zelf.'
+   ].join(' ');
   }
   const messages=resume?.messages||[{role:'system',content:storyStyle+' '+prompt+' Gebruik editorialAssignment als suggestie; de labels voegen geen feiten toe. Noem alleen namen, datums, cijfers en claims die facts ondersteunen. De publicatiedatum is geen bewijs. Geef skip als de feiten onvoldoende stof bieden.'},{role:'user',content:JSON.stringify({topic,category,facts:writerFacts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
   // Both writing and its single targeted repair share one 25-second deadline.
