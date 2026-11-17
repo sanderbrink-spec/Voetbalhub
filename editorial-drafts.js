@@ -16,6 +16,7 @@ function problem(status,message){const e=new Error(message);e.status=status;retu
 function cleanPayload(value={}){
  const d=value.draft||{};
  const evidence=value.matchEvidence;
+ const officialFinal=value.officialFinalProof;
  const fixture=value.articleKind==='preview'&&/^uefa-\d+$/.test(value.fixture?.id||'')?value.fixture:null;
  return {
   draft:{headline:String(d.headline||'').trim().slice(0,200),standfirst:String(d.standfirst||'').trim().slice(0,700),body:Array.isArray(d.body)?d.body.filter(x=>typeof x==='string').map(x=>x.trim().slice(0,6000)).filter(Boolean).slice(0,5):[],why_it_matters:String(d.why_it_matters||'').slice(0,1000)},
@@ -25,6 +26,15 @@ function cleanPayload(value={}){
    date:String(fixture.date||'').slice(0,30),venueName:String(fixture.venueName||'').trim().slice(0,150)
   }} : {}),
   ...(value.replacePreviewId ? {replacePreviewId:String(value.replacePreviewId).slice(0,80)} : {}),
+  ...(officialFinal ? {officialFinalProof:{
+   knvbResultsUrl:String(officialFinal.knvbResultsUrl||'').slice(0,1500),
+   uefaResultsUrl:String(officialFinal.uefaResultsUrl||'').slice(0,1500),
+   sourceNewsUrl:String(officialFinal.sourceNewsUrl||'').slice(0,1500),
+   match:officialFinal.match ? {
+    homeTeam:officialFinal.match.homeTeam,awayTeam:officialFinal.match.awayTeam,
+    homeScore:officialFinal.match.homeScore,awayScore:officialFinal.match.awayScore,playedAt:officialFinal.match.playedAt
+   } : null
+  }} : {}),
   ...(value.matchId ? {matchId:String(value.matchId).slice(0,150)} : {}),
   ...(value.imageCategory ? {imageCategory:String(value.imageCategory).slice(0,30)} : {}),
   ...(value.articleKind ? {articleKind:String(value.articleKind).slice(0,30)} : {}),
