@@ -51,7 +51,7 @@
   const allowedScores=new Set(scores(supported));
   const unknownScores=[...new Set(scores(article))].filter(x=>!allowedScores.has(x));
   if(unknownScores.length)issues.push('Uitslag of tussenstand wijkt af van de gecontroleerde feiten: '+unknownScores.join(', ')+'. Controleer ook de volgorde thuis-uit.');
-  const names=blocks(draft).flatMap(block=>[...String(block).matchAll(/\b(?:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’\-]+|FC|SC|AZ|PSV)(?:\s+(?:van|de|der|den|ten|ter))?\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ'’\-]+\b/g)].map(m=>m[0]));
+  const names=blocks(draft).flatMap(block=>[...String(block).matchAll(/\b(?:(?:De )?League A-groep|Kwartfinales Nations League)\b|\b(?:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’\-]+|FC|SC|AZ|PSV)(?:\s+(?:van|de|der|den|ten|ter))?\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ'’\-]+\b/g)].map(m=>m[0]));
   const known=normalize(supported);
   const sentenceStarters=new Set(['Voor','Volgens','Ook','Tegen','Na','Bij','Zonder','Sinds','Tijdens']);
   // Match introductions like "De Eredivisie-wedstrijd" are grammar, not invented
@@ -92,8 +92,9 @@
   }
   const verifiedUefaStatusGrammar=name=>{
    if(!officialUefaLeagueA)return false;
-   if(name==='Nations League')return true;
-   const leading=name.match(/^Zowel\s+([A-ZÀ-Ý][\p{L}’'-]+)$/u);
+   if(/^(?:Kwartfinales Nations League|Nations League(?:-kwartfinales?)?)$/.test(name))return true;
+   if(/^(?:De )?League A-groep$/.test(name)&&/\b(?:league a|group a[1-4])\b/i.test(evidence))return true;
+   const leading=name.match(/^(?:Zowel|Naast|Met)\s+([A-ZÀ-Ý][\p{L}’'-]+)$/u);
    return Boolean(leading&&
     (uefaVerifiedNames.has(normalize(leading[1]))||
      (' '+normalize(evidence)+' ').includes(' '+normalize(leading[1])+' ')));
