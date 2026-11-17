@@ -52,9 +52,10 @@ permissions:
   issues: write
 concurrency:
   group: automatic-verified-editorial-publication
-  # Een oudere commit mag de actuele productieronde niet blokkeren.
-  # Publiceren vereist nog steeds dat Render exact dezelfde main-revisie draait.
-  cancel-in-progress: true
+  # Laat een actieve bron- en publicatieronde aflopen. Een nieuwe scheduled
+  # check mag geen reeds verwerkte feiten en eindredactie weggooien.
+  # Oudere commits kunnen niets publiceren: de /ready-revisiecheck bewaakt dit.
+  cancel-in-progress: false
 # Nieuwe productieronde: gebruik de bestaande gecontroleerde workflow.
 # Journalistieke voorbeelden sturen nieuwsselectie; publicatie blijft afhankelijk van
 # geverifieerde feiten, onafhankelijke review, rechten en feedcontrole.
@@ -87,6 +88,8 @@ jobs:
           done
           echo "::error::Render draait nog niet op de workflowcommit."
           exit 1
+      - name: Remove any test-only report before a real production attempt
+        run: rm -rf .automatic-output
       - name: Collect official sources and publish checked stories with artwork
         env:
           EDITORIAL_DISCOVERY_ONLY: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[verify-editorial-sources]') }}
