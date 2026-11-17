@@ -312,12 +312,12 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
    prompt=[
     'Schrijf een zelfstandig Nederlandstalig Veldio-artikel over de rechtstreeks door OnsOranje gepubliceerde reactie van de bondscoach. Dit is géén KNVB-besluit en géén wedstrijdverslag.',
     'De input bevat uitsluitend bewezen afzonderlijke uitspraken van de bondscoach. Vertel wat hij zelf constateerde en aan welke onderdelen hij verbetering wil zien, uitsluitend wanneer expliciet door facts ondersteund.',
-    'Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden), body (3-5 inhoudelijk verschillende alinea’s, elk 18-120 woorden en minstens 70 tekens).',
+    'Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden), '+(compact?'body als array met één of twee inhoudelijke alinea’s van 10-65 woorden per alinea.':'body als array met 3-5 verschillende alinea’s, elk 18-120 woorden en minimaal 70 tekens.') ,
     'Noem de KNVB in de intro als uitgever van de verklaring op OnsOranje, bijvoorbeeld: De KNVB meldt via OnsOranje dat de bondscoach kritisch reageerde. Geef in minimaal één bodyalinea een zelfstandige toeschrijving met de exacte formule “Volgens de KNVB ...”.',
     'Gebruik steeds uitsluitend de volledig geverifieerde naam van de bondscoach uit de facts of de gewone term “de bondscoach”. Schrijf niet “Bondscoach Xavi” of “De Spaanse bondscoach” als die woordgroepen niet letterlijk in facts zijn bevestigd.',
     'Schrijf volledig in eigen woorden: reproduceer geen zinnen uit de citaten en verander een mening nooit in een bewezen sportief feit.',
     'Gebruik geen uitslag, score, doelpuntenmakers, exacte wedstrijdmomenten, groepsstanden, kwalificatieconclusies of uitspraken van andere spelers. Zulke gegevens zijn niet geverifieerd via deze uitsprakenroute.',
-    'Verdeel de verschillende toegeschreven opmerkingen over aparte alinea’s, zonder opvulling, herhaling, losse feitenlijst of fictieve gevolgen.',
+    'Gebruik iedere gecontroleerde uitspraak hoogstens eenmaal. Gebruik de volledige naam uit verifiedFacts, nooit een ongedekte naamvariant. Schrijf een beknopte kop en duidelijke nieuwsintro en behandel de andere bewezen reacties in de body, zonder opvulling, herhaling, losse feitenlijst of fictieve gevolgen.',
     'Als de gecontroleerde uitspraken onvoldoende stof bieden: antwoord uitsluitend met JSON {"skip":true}. Publiceer nooit zelf.'
    ].join(' ');
   }

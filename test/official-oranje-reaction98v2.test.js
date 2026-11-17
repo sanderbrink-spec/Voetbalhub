@@ -23,7 +23,8 @@ test('98V-2: three first-hand coach quotations become literal attributed facts w
  assert.equal(candidate.officialReaction,true);
  assert.equal(candidate.primaryAuthority,'association_decision');
  assert.equal(primaryAuthority(article),'association_decision');
- assert.ok(candidate.facts.length>=4);
+ assert.equal(candidate.facts.length,3);
+ assert.equal(require('../editorial-desk-model').briefEligible({articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,sources:[{url:article.url}],verifiedFacts:candidate.facts.map(f=>f.text)}),true);
  assert.ok(candidate.facts.some(f=>f.text==='Bondscoach Xavi Hernández reageerde op de nederlaag van het Nederlands elftal.'));
 
  assert.equal(candidate.facts.some(f=>/5-0|Denzel|collectief falen/.test(f.text)),false);

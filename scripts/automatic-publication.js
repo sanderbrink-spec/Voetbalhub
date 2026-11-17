@@ -390,10 +390,16 @@ function confirmedFederationCoachReaction(doc){
  const identityFact=leadSentence&&/nederlaag van het Nederlands elftal/i.test(leadSentence)
   ?{text:'Bondscoach '+lead[1]+' reageerde op de nederlaag van het Nederlands elftal.',
     evidence:[{source:0,quote:leadSentence}]}:null;
- if(parts.length<4)return null;
+ // A coach's reaction may support a high-quality concise item, not three
+ // repetitive body paragraphs. Keep three genuinely different literal facts.
+ // Independent scores and the separate publication audit stay unchanged.
+ if(parts.length<4||!identityFact||quotes.length<3)return null;
+ const conciseFacts=[identityFact,...quotes.slice(1,3).map(text=>({
+  text,evidence:[{source:0,quote:text}]
+ }))];
  return {kind:'announcement',topic:doc.title,category:'Internationaal voetbal',
   teams:[],primaryAuthority:'association_decision',officialReaction:true,
-  sharedEventEvidence:[],facts:[...(identityFact?[identityFact]:[]),...parts.slice(0,7).map(text=>({text,evidence:[{source:0,quote:text}]}))]};
+  sharedEventEvidence:[],facts:conciseFacts};
 }
 function primaryAuthority(doc){
  const url=articleUrl(doc.url,config.newsIndexes);
