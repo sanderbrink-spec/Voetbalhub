@@ -2075,6 +2075,41 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
  return report;
 }
+// Fase 98V: link discovery is not article rejection. Each source URL belongs
+// to one discovery outcome; quality and technical failures are tracked separately.
+function summarizeEditorialFunnel98V(report){
+ const outcomes=new Set(['stale_date','missing_date','future_date',
+  'no_national_relevance','unsupported_result','duplicate_primary_source',
+  'primary_authority','partner_found','no_corroboration']);
+ const seen=new Set(),discoveryReasons={};
+ for(const signal of report.signals||[]){
+  if(!signal.url||!outcomes.has(signal.outcome)||seen.has(signal.url))continue;
+  seen.add(signal.url);
+  discoveryReasons[signal.outcome]=(discoveryReasons[signal.outcome]||0)+1;
+ }
+ const articleExitReasons={};
+ for(const item of report.skipped||[]){
+  const stage=item.stage||'other';
+  articleExitReasons[stage]=(articleExitReasons[stage]||0)+1;
+ }
+ for(const item of report.processingErrors||[]){
+  const stage='technical_'+(item.stage||'unknown');
+  articleExitReasons[stage]=(articleExitReasons[stage]||0)+1;
+ }
+ return {
+  discoveredLinks:report.counts?.found||0,
+  readableSources:report.counts?.readable||0,
+  discoveryReasons,
+  distinctArticleCandidates:report.counts?.uniqueGroups||0,
+  attempted:report.counts?.attempted||0,
+  generated:report.counts?.generated||0,
+  approved:report.counts?.approved||0,
+  published:report.counts?.published||0,
+  articleExitReasons,
+  sourceErrors:report.sourceErrors?.length||0,
+  aiRequests:report.counts?.aiRequests||0
+ };
+}
 function reconcileDeferredPublications(report){
  // A quota/capacity stop after a verified publication is not a total outage.
  // Keep the unfinished item in the durable retry queue and expose the warning.
@@ -2103,7 +2138,9 @@ async function run(options={}){
   return report;
  }catch(error){report.status='failed';report.error=error.message;throw error;}
  finally{
-  report.outcome=['completed','discovery_complete','validation_complete'].includes(report.status)?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected'].includes(report.status)?'editorial_blocked':'error';
+  report.runMode={singlePublication:options.singlePublication===true,discoveryOnly:options.discoveryOnly===true,validationOnly:options.validationOnly===true};
+   report.funnel=summarizeEditorialFunnel98V(report);
+   report.outcome=['completed','discovery_complete','validation_complete'].includes(report.status)?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected'].includes(report.status)?'editorial_blocked':'error';
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
   fs.writeFileSync('.automatic-output/draft-review.json',JSON.stringify({
@@ -2120,6 +2157,8 @@ async function run(options={}){
     'Verificatie: '+uniqueGroups+' groepen, '+queued+' klaar, '+attempted+' geprobeerd, '+selected+' geselecteerd.',
     'Artikelen: '+generated+' geschreven, '+approved+' goedgekeurd, '+stored+' opgeslagen, '+published+' gepubliceerd uit '+report.counts.publicationAttempts+' publicatiepogingen, '+report.skipped.length+' afgewezen.',
     'Per route: '+JSON.stringify(report.routes),
+     'Fase 98V trechter (links zijn geen concepten): '+JSON.stringify(report.funnel)+'.',
+     'Publicatiemodus: '+JSON.stringify(report.runMode)+'.',
     'Bronstatus per koppeling: '+JSON.stringify(report.sources),
     'Bronfouten per koppeling: '+JSON.stringify(report.sourceErrors.map(({source,url,error,code})=>({source:source||url,error,code}))),
     ...report.signals.filter(item=>item.url===report.focusSourceUrl&&item.reason).map(item=>'- Selectie: '+item.reason+(item.articleId?' Artikel-ID '+item.articleId+'.':'')),
@@ -2181,4 +2220,4 @@ function publicationFocus(env=process.env){
  return env.FOCUS_SOURCE_URL||pushCommitMessage(env).match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
