@@ -299,6 +299,31 @@ async function automaticEvidenceIssue(payload) {
     return 'Automatische publicatie vereist een betrouwbaarheidsscore van minimaal 90.';
   if (!Number.isInteger(payload.editorialScore) || payload.editorialScore < 85 || payload.editorialScore > 100)
     return 'Automatische publicatie vereist een redactionele score van minimaal 85.';
+  // Recheck the two official scoreboards and the source report in production.
+  // An AI draft or a user-supplied JSON proof is never sufficient to establish
+  // a men's international final. Any upstream outage fails closed.
+  if (payload.officialFinalProof) {
+    const desk=require('./editorial-desk-model');
+    if (!desk.officialInternationalFinal(payload))
+      return 'Officiële interlandregistratie is onvolledig of strijdig.';
+    try {
+      const official=require('./scripts/editorial-official-finals98w');
+      const {officialPage}=require('./scripts/automatic-publication');
+      const [knvb,uefa,story]=await Promise.all([
+        officialPage(official.KNVB_RESULTS),
+        officialPage(official.UEFA_RESULTS),
+        officialPage(payload.officialFinalProof.sourceNewsUrl)
+      ]);
+      const verified=official.officialRecentFinals(knvb,uefa,[story],Date.now());
+      const exact=verified.some(item=>
+        JSON.stringify(item.candidate.match)===JSON.stringify(payload.match)&&
+        JSON.stringify(item.candidate.facts.map(fact=>fact.text))===JSON.stringify(payload.verifiedFacts)&&
+        item.proof.sourceNewsUrl===payload.sources[0].url);
+      if(!exact)return 'KNVB en UEFA bevestigen deze interlandfeiten niet allebei letterlijk.';
+    }catch{
+      return 'Officiële interlandbronnen konden niet opnieuw worden gecontroleerd.';
+    }
+  }
   if (payload.matchId) {
     const chronology = require('./editorial-match-guidance133').paragraphChronologyIssues(payload, payload.draft);
     if (chronology.length) return chronology.join(' ');

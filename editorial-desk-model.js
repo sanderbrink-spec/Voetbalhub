@@ -112,6 +112,29 @@
     }
     return issues;
   }
+  // Official men international results require both named source URLs and
+  // a score/date record. The server separately re-fetches and reconstructs
+  // this proof before draft approval or publication.
+  function officialInternationalFinal(payload) {
+    const proof=payload?.officialFinalProof,match=payload?.match,sources=payload?.sources;
+    if(payload?.articleKind!=='announcement'||payload?.matchId||payload?.primaryAuthority||
+      !proof||!match||!Array.isArray(sources)||sources.length!==3||
+      !Array.isArray(payload.verifiedFacts)||payload.verifiedFacts.length<4||
+      JSON.stringify(proof.match)!==JSON.stringify(match)||
+      proof.knvbResultsUrl!=='https://www.onsoranje.nl/teams/185184/uitslagen'||
+      proof.uefaResultsUrl!=='https://www.uefa.com/uefanationsleague/news/02a2-1fea7079900a-801b2c5f6c9e-1000--2026-27-uefa-nations-league-league-phase-fixtures-and-results-by-team/'||
+      !/^https:\/\/www\.onsoranje\.nl\/nieuws\/nederlands-elftal-mannen\/\d+\//.test(proof.sourceNewsUrl||'')||
+      sources[0]?.url!==proof.sourceNewsUrl||
+      sources[1]?.url!==proof.knvbResultsUrl||
+      sources[2]?.url!==proof.uefaResultsUrl||
+      !/^\d{4}-\d{2}-\d{2}$/.test(match.playedAt||'')||
+      ![match.homeScore,match.awayScore].every(n=>Number.isInteger(n)&&n>=0&&n<=25)||
+      ![match.homeTeam,match.awayTeam].every(n=>typeof n==='string'&&n.length>=3&&n.length<=55)||
+      (match.homeTeam==='Nederland')===(match.awayTeam==='Nederland'))return false;
+    const first=payload.verifiedFacts[0];
+    return typeof first==='string'&&first.includes(match.homeTeam)&&first.includes(match.awayTeam)&&
+      first.includes(match.homeScore+'-'+match.awayScore)&&first.includes(match.playedAt);
+  }
   function publicationIssues(payload) {
     const issues = [], d = payload.draft || {};
     const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+|sm-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
@@ -146,7 +169,7 @@
     const matchSource = registeredMatch && matchRegistry.includes(sources[0]?.url) &&
       (sources.length === 1 || officialMatchEvidence);
     if (!primary && !matchSource && (sources.length < 2 || hosts.some(h => !h) || new Set(hosts.filter(Boolean)).size < 2)) issues.push('Voeg twee geldige HTTPS-bronnen van verschillende websites toe.');
-    if (!matchSource && !factAudit.hasOfficialPreviewResult(payload) && !factAudit.verifiedUefaCompetitionStatus(payload) && requiresFlashscore(d) && !officialDisciplinaryCardNotice(payload) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
+    if (!matchSource && !factAudit.hasOfficialPreviewResult(payload) && !factAudit.verifiedUefaCompetitionStatus(payload) && !officialInternationalFinal(payload) && requiresFlashscore(d) && !officialDisciplinaryCardNotice(payload) && !hosts.some(h => /^flashscore\.(?:nl|com|be|de|co\.uk)$/.test(h))) issues.push('Uitslagen, standen en statistieken: voeg de gecontroleerde Flashscore-link toe.');
     const missing = checks.filter(key => payload.editorialChecks?.[key] !== true);
     if (missing.length) issues.push('Rond alle vier redactionele controles af.');
     if (payload.imageUrl && (!host(payload.imageUrl) || !payload.imageSource?.trim() || !payload.imageCredit?.trim() || !['cleared','licensed'].includes(payload.imageRights) || !['kitVerified','playerIdentityVerified','aiDisclosureVerified'].every(k => payload.imageReview?.[k] === true))) issues.push('Rond de beeldgegevens en alle drie beeldcontroles af.');
@@ -183,5 +206,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { storyStyle, previewStyle, previewWritingFacts, previewAssignment, federationCoachStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, verifiedUefaCompetitionStatus:factAudit.verifiedUefaCompetitionStatus, draftIssues, excludedBy, publicationIssues, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { storyStyle, previewStyle, previewWritingFacts, previewAssignment, federationCoachStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, verifiedUefaCompetitionStatus:factAudit.verifiedUefaCompetitionStatus, draftIssues, excludedBy, publicationIssues, officialInternationalFinal, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });

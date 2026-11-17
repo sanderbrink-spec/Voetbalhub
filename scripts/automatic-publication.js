@@ -65,6 +65,7 @@ const matchEvidence122=require('../editorial-match-evidence122');
 const {CREDIT}=require('../football-results52');
 const {articleUrl,officialSourceAuthority,discoverGdelt}=require('./editorial-discovery53');
 const international=require('./editorial-international');
+const officialFinals98W=require('./editorial-official-finals98w');
 const API='https://voetbalhub-redactie.onrender.com';
 const REPO='sanderbrink-spec/Voetbalhub';
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
@@ -1555,6 +1556,41 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   newsworthy:knvbTeamNews.filter(nationallyRelevant).length,
   firstPartyTeamAnnouncements:knvbTeamNews.filter(doc=>primaryAuthority(doc)==='association_decision').length
  };
+ // An official result must be corroborated by both results lists before
+ // any generative model can encounter a score or published match conclusion.
+ if(!focusSourceUrl){
+  try{
+   const [knvbResults,uefaResults]=await Promise.all([
+    officialPage(officialFinals98W.KNVB_RESULTS,fetcher),
+    officialPage(officialFinals98W.UEFA_RESULTS,fetcher)
+   ]);
+   const finals=officialFinals98W.officialRecentFinals(knvbResults,uefaResults,discovered,now);
+   for(const item of finals){
+    const match=item.candidate.match;
+    const alreadyPublished=published.some(article=>
+     article.sources?.some(source=>source.url===item.documents[0].url)||
+     (article.match?.playedAt===match.playedAt&&
+      normalize(article.match.homeTeam)===normalize(match.homeTeam)&&
+      normalize(article.match.awayTeam)===normalize(match.awayTeam)));
+    if(!validationOnly&&alreadyPublished){
+     report.signals.push({route:'news',outcome:'duplicate_verified_international_final',topic:item.candidate.topic});
+     continue;
+    }
+    const group=Object.assign(item.documents,{
+     officialFinalCandidate:item.candidate,officialFinalProof:item.proof
+    });
+    groups.push(group);
+    report.signals.push({route:'news',outcome:'verified_official_international_final',
+     topic:item.candidate.topic,date:match.playedAt,
+     factCount:item.candidate.facts.length});
+   }
+   if(!finals.length)
+    report.signals.push({route:'news',outcome:'insufficient_distinct_verified_match_facts',
+     reason:'Geen recent, dubbel bevestigd KNVB-UEFA wedstrijdresultaat met drie afzonderlijke verifieerbare extra feiten.'});
+  }catch(error){
+   report.sourceErrors.push({source:'official men internationals',error:error.message});
+  }
+ }
  for(const doc of discovered.sort((a,b)=>editorialPriority(b)-editorialPriority(a)||(Date.parse(b.publishedAt)||0)-(Date.parse(a.publishedAt)||0))){
   const publishedTime=Date.parse(doc.publishedAt||'');
   const signal={url:doc.url,topic:doc.title,publishedAt:doc.publishedAt};
@@ -1972,14 +2008,14 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     durable.queue.finish(job,'duplicate',now);continue;
    }
    const candidate=checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
-    group.internationalPreview||group.bootstrap?.candidate||group.officialReactionCandidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
+    group.internationalPreview||group.officialFinalCandidate||group.bootstrap?.candidate||group.officialReactionCandidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
    if(group.length===1&&!matchRecord&&host(group[0].url)==='uefa.com'&&
       candidate?.primaryAuthority==='association_decision'&&Array.isArray(candidate.facts))
      report.signals.push({route:'news',topic:group[0].title,outcome:'uefa_status_literal_facts',facts:candidate.facts.length});
    if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage:'verification',category:'journalistic_rejection'});continue;}
    const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
-   const sourceIndices=matchRecord?matchRecord.sources.map((_,i)=>i):[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
+   const sourceIndices=matchRecord?matchRecord.sources.map((_,i)=>i):group.officialFinalCandidate?[0,1,2]:[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
    const facts=matchRecord?.verifiedFacts||candidate.facts.map(f=>f.text);
    const sources=sourceIndices.map(i=>({url:group[i].url}));
    await checkpointStep({candidate});
@@ -2023,13 +2059,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(draft?.skip)throw Error('Onvoldoende bewezen feiten voor een origineel wedstrijdverslag.');
     report.generationOrigin='production_ai';
    }else if(!draft){
-    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,compact,officialReaction:Boolean(group.officialReactionCandidate),automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
+    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,match:candidate.match||null,compact,officialFinal:Boolean(group.officialFinalCandidate),officialReaction:Boolean(group.officialReactionCandidate),automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
     report.generationOrigin='production_ai';
    }
    await checkpointStep({draft,generation:null});
    report.counts.generated++;route.generated++;
    stage='quality';
-   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&['onsoranje.nl','uefa.com'].includes(host(sources[0].url))?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
+   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(group.officialFinalCandidate?{match:candidate.match,officialFinalProof:group.officialFinalProof}:{}),...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&['onsoranje.nl','uefa.com'].includes(host(sources[0].url))?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
     reviewNotes:(validationOnly?'Automatische redactionele validatie. ':'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. ')+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
     if(group.replacePreviewId)payload.replacePreviewId=group.replacePreviewId;

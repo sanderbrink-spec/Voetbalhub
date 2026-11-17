@@ -233,7 +233,7 @@ function mayDelegateLeadOverlap(issues,{automaticPublication=false,coachPlan=fal
  return Boolean(automaticPublication&&coachPlan&&Array.isArray(issues)&&issues.length===1&&
   issues[0]==='Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.');
 }
-async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],articleKind,primaryAuthority=null,match=null,compact=false,officialReaction=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
+async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],articleKind,primaryAuthority=null,match=null,compact=false,officialFinal=false,officialReaction=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
   // Normal server calls and production share the same provider interface.
   if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
   const writerFacts=articleKind==='preview'?previewWritingFacts(facts):facts;
@@ -305,7 +305,18 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   }else if(automaticPublication&&primaryAuthority==='association_decision'){
    prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. '+(/\b(?:to depart as|steps down as)\b/i.test(topic||'')?federationCoachStyle+' ':'')+'Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Begin de inhoudelijke alinea over opvolging of vervolgstappen met een duidelijke toeschrijving aan '+officialPublisher+', bijvoorbeeld: “'+officialPublisher+' meldt dat …”. Schrijf een volgende functie alleen toe aan de bond als die als enige het nieuws meldt. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
   }
-  if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority){
+  if(automaticPublication&&officialFinal&&articleKind==='announcement'&&!primaryAuthority){
+    prompt=[
+     'Je bent Veldio-journalist en schrijft een origineel Nederlands bericht over een gespeelde manneninterland.',
+     'De eindstand is door KNVB en UEFA afzonderlijk bevestigd. Alleen verifiedFacts en de gecontroleerde match mogen feitelijke beweringen onderbouwen.',
+     'Geef alleen JSON met headline (5-14 Nederlandse woorden), standfirst (8-35 woorden) en body met precies drie onderscheiden alinea’s (elk 18-120 woorden, minimaal 70 tekens).',
+     'Intro: de bewezen eindstand in correcte thuis-uitrichting. Body 1: één bewezen betekenis voor de groep of het toernooi. Body 2: feiten over de eerste helft. Body 3: afzonderlijke feiten over de tweede helft of een letterlijk bewezen wedstrijdincident.',
+     'Noem geen tussenstand, ruststand, doelpuntenmaker, minuut, ranglijst, kwalificatiegevolg of oorzaak zonder expliciet bewezen grond.',
+     'Geen API-namen, leveranciersnamen of het verificatieproces in de lopende tekst. Kopieer geen bronzinnen. Iedere alinea bevat nieuw feitelijk nieuws en herhaalt niet de eindstand.',
+     'Kan het artikel niet drie eigen alinea’s met voldoende verschillende feiten dragen, geef uitsluitend {"skip":true}. Alle onafhankelijke review-, rechten- en publicatiecontroles blijven verplicht.'
+    ].join(' ');
+   }
+   if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority&&!officialFinal){
    prompt='Schrijf een origineel Nederlands voetbalnieuwsbericht uitsluitend uit facts. Leg het nieuws eenmaal uit in de intro. Verdeel de body in exact drie alinea’s. Gebruik voor elke alinea een ander bewezen thema. Bij een afmelding kan dat de concreet gemelde aanleiding, het besluit van de bond voor de komende interlands en de afzonderlijk gemelde clubplanning zijn. Zet de terugkeer alleen in de intro. Vermijd herhaling, ook in andere woorden. Schrijf alleen wat een bron concreet heeft bevestigd. Gebruik bij een verschil tussen de bronnen expliciete toeschrijving en vermijd relatieve termen zoals morgen. Verzin geen intentie, prognose, herstelduur, beoordeling of gevolg. Schrijf alleen headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+' als JSON. Geef skip bij onvoldoende verschillende feiten.';
   }
   if(automaticPublication&&officialReaction){
