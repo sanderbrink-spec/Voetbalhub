@@ -196,3 +196,16 @@ test('98Y: official final extracts distinctive proven timeline events from both 
  assert.ok(candidate.facts.some(f=>/77e minuut/.test(f.text)));
  assert.deepEqual(require('../scripts/automatic-publication').validateEvidence(candidate,documents,now),[]);
 });
+
+test('98Y: one bounded early retry for current source outage, never lower fact or editorial gates',()=>{
+ const {reopenTransientOfficialFinal98Y}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-17T23:10:00Z');
+ const group=Object.assign([{publishedAt:'2026-11-16T21:30:00Z'}],{officialFinalCandidate:{verifiedOfficialFinal:true}});
+ const base={status:'retry',failureStage:'verification',failureCategory:'temporary_source_failure',reason:'external_service_unavailable',updatedAt:now-180000,nextAttemptAt:now+3600000,checkpoint:{draft:'untrusted'}};
+ assert.equal(reopenTransientOfficialFinal98Y(base,group,now),true);
+ assert.equal(base.status,'pending');assert.equal(base.nextAttemptAt,now);assert.equal(base.checkpoint,undefined);
+ assert.equal(reopenTransientOfficialFinal98Y(base,group,now),false);
+ assert.equal(reopenTransientOfficialFinal98Y({...base,status:'retry',officialFinalTransientRetry98Y:false,updatedAt:now-30000},group,now),false);
+ assert.equal(reopenTransientOfficialFinal98Y({...base,status:'retry',officialFinalTransientRetry98Y:false,updatedAt:now-180000},group,now+72*3600000),false);
+ assert.equal(reopenTransientOfficialFinal98Y({...base,status:'review',officialFinalTransientRetry98Y:false},group,now),false);
+});
