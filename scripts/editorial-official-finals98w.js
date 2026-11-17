@@ -25,6 +25,8 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
    typeof knvb.text!=='string'||typeof uefa.text!=='string'||
    !/UEFA Nations League/i.test(knvb.text)||!/UEFA Nations League/i.test(uefa.text))return [];
  const knvbText=tidy(knvb.text),uefaText=tidy(uefa.text);
+ const leagueSeason=/\b(20\d{2})\/(?:20)?\d{2}\b/.exec(uefaText);
+ if(!leagueSeason)return [];
  const names=countries.map(pair=>tidy(pair[0])).join('|');
  const pattern=new RegExp('\\b('+names+')\\s+(\\d{1,2})\\s+('+months.join('|')+')\\s+(20\\d{2})\\s+(\\d{1,2})\\s*[-–]\\s*(\\d{1,2})\\s+('+names+')\\b','giu');
  const available=[],seen=new Set();
@@ -34,7 +36,7 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
   if(!/UEFA Nations League/i.test(knvbText.slice(Math.max(0,row.index-260),row.index)))continue;
   const month=months.indexOf(row[3].toLowerCase())+1;
   const day=Number(row[2]),year=Number(row[4]),hs=Number(row[5]),as=Number(row[6]);
-  if(!dayValid(year,month,day)||hs>25||as>25)continue;
+  if(!dayValid(year,month,day)||year!==Number(leagueSeason[1])||hs>25||as>25)continue;
   const date=year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0');
   // Dates without a kickoff time are not sufficient evidence on matchday.
   const end=Date.parse(date+'T23:59:59Z');
