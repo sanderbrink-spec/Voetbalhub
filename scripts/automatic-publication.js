@@ -383,10 +383,17 @@ function confirmedFederationCoachReaction(doc){
  add(section.match(/\b[\p{Lu}][\p{L}]+\s+hekelde\s+[^.!?]{20,150}\./u)?.[0]);
  add(section.match(/\bDe\s+[\p{L}]+\s+sprak\s+[^.!?]{25,180}\./u)?.[0]);
  quotes.forEach(add);
+ // A quoted coach reaction establishes the coach's identity, not a match
+ // result. Keep the literal source sentence as evidence, without publishing
+ // its unregistered score through this statement-only route.
+ const leadSentence=source.slice(lead.index).match(/^[^.!?]{45,260}\./u)?.[0];
+ const identityFact=leadSentence&&/nederlaag van het Nederlands elftal/i.test(leadSentence)
+  ?{text:'Bondscoach '+lead[1]+' reageerde op de nederlaag van het Nederlands elftal.',
+    evidence:[{source:0,quote:leadSentence}]}:null;
  if(parts.length<4)return null;
  return {kind:'announcement',topic:doc.title,category:'Internationaal voetbal',
   teams:[],primaryAuthority:'association_decision',officialReaction:true,
-  sharedEventEvidence:[],facts:parts.slice(0,7).map(text=>({text,evidence:[{source:0,quote:text}]}))};
+  sharedEventEvidence:[],facts:[...(identityFact?[identityFact]:[]),...parts.slice(0,7).map(text=>({text,evidence:[{source:0,quote:text}]}))]};
 }
 function primaryAuthority(doc){
  const url=articleUrl(doc.url,config.newsIndexes);
