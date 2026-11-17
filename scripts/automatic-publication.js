@@ -1560,11 +1560,22 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  // any generative model can encounter a score or published match conclusion.
  if(!focusSourceUrl){
   try{
-   const [knvbResults,uefaResults]=await Promise.all([
-    officialPage(officialFinals98W.KNVB_RESULTS,fetcher),
-    officialPage(officialFinals98W.UEFA_RESULTS,fetcher)
-   ]);
-   const finals=officialFinals98W.officialRecentFinals(knvbResults,uefaResults,discovered,now);
+   const knvbResults=await officialPage(officialFinals98W.KNVB_RESULTS,fetcher);
+   let secondary;
+   try{secondary=await officialPage(officialFinals98W.UEFA_RESULTS,fetcher);}
+   catch(error){
+    report.sourceErrors.push({source:'UEFA men internationals',error:error.message});
+    // Another first-party national federation is an independent official
+    // source. No provider proxy, archived text or fabricated results.
+    secondary=await officialPage(officialFinals98W.DFB_RESULTS,fetcher);
+   }
+   let finals=officialFinals98W.officialRecentFinals(knvbResults,secondary,discovered,now);
+   if(!finals.length&&secondary.url===officialFinals98W.UEFA_RESULTS){
+    try{
+     secondary=await officialPage(officialFinals98W.DFB_RESULTS,fetcher);
+     finals=officialFinals98W.officialRecentFinals(knvbResults,secondary,discovered,now);
+    }catch(error){report.sourceErrors.push({source:'DFB men internationals',error:error.message});}
+   }
    for(const item of finals){
     const match=item.candidate.match;
     const alreadyPublished=published.some(article=>
@@ -1586,7 +1597,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    if(!finals.length)
     report.signals.push({route:'news',outcome:'insufficient_distinct_verified_match_facts',
-     reason:'Geen recent, dubbel bevestigd KNVB-UEFA wedstrijdresultaat met drie afzonderlijke verifieerbare extra feiten.'});
+     reason:'Geen recent KNVB-resultaat dat door UEFA of DFB onafhankelijk is bevestigd met drie verschillende verifieerbare extra feiten.'});
   }catch(error){
    report.sourceErrors.push({source:'official men internationals',error:error.message});
   }
