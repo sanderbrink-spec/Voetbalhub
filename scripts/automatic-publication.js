@@ -370,7 +370,7 @@ function confirmedFederationCoachReaction(doc){
  let section=source.slice(lead.index,lead.index+1800);
  // Cut at another person's reported response, to avoid wrongly attributing it.
  for(const mention of section.matchAll(/\b([\p{Lu}][\p{L}’'-]+\s+[\p{Lu}][\p{L}’'-]+)\s+(?:droeg|sprak|zei|reageerde|vertelde|verklaarde)\b/gu)){
-  if(mention.index>lead[0].length&&normalize(mention[1])!==normalize(lead[1])){section=section.slice(0,mention.index);break;}
+  if(mention.index>lead[0].length&&!/^(?:de|het|een|the)\b/.test(normalize(mention[1]))&&normalize(mention[1])!==normalize(lead[1])){section=section.slice(0,mention.index);break;}
  }
  const quotes=[...section.matchAll(/["“]([^"”]{30,450})["”]/gu)]
   .map(m=>m[1].trim()).filter(t=>!/\b\d{1,2}\s*[-–]\s*\d{1,2}\b/.test(t));
