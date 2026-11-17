@@ -13,6 +13,23 @@ const countries=[
 ];
 const months=['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
 const tidy=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+
+// The general newsroom parser deliberately caps extracted article text to
+// 14,000 characters and may pick the first <article>. Those rules are suitable
+// for stories but not two full official results indexes. Read the full bounded
+// HTML fetched by officialPage instead. Never execute scripts or accept a
+// result from any other URL.
+function htmlText(value){
+ return tidy(String(value||'')
+  .replace(/<(script|style|noscript|svg|nav|header|footer|form)\b[^>]*>[\s\S]*?<\/\1>/gi,' ')
+  .replace(/<[^>]*>/g,' ')
+  .replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&')
+  .replace(/&ndash;/gi,'–').replace(/&mdash;/gi,'—')
+  .replace(/&#(\d+);/g,(_,num)=>Number(num)<=0x10ffff?String.fromCodePoint(Number(num)):' ')
+ );
+}
+const fullOfficialText=doc=>typeof doc?.html==='string'&&doc.html
+ ?htmlText(doc.html):tidy(doc?.text);
 const english=value=>countries.find(pair=>tidy(pair[0]).toLowerCase()===tidy(value).toLowerCase())?.[1];
 const dutch=value=>countries.find(pair=>tidy(pair[0]).toLowerCase()===tidy(value).toLowerCase())?.[0];
 const dayValid=(year,month,day)=>{
@@ -21,10 +38,9 @@ const dayValid=(year,month,day)=>{
  return d.getUTCFullYear()===year&&d.getUTCMonth()===month-1&&d.getUTCDate()===day;
 };
 function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
- if(knvb?.url!==KNVB_RESULTS||uefa?.url!==UEFA_RESULTS||
-   typeof knvb.text!=='string'||typeof uefa.text!=='string'||
-   !/UEFA Nations League/i.test(knvb.text)||!/UEFA Nations League/i.test(uefa.text))return [];
- const knvbText=tidy(knvb.text),uefaText=tidy(uefa.text);
+ if(knvb?.url!==KNVB_RESULTS||uefa?.url!==UEFA_RESULTS)return [];
+ const knvbText=fullOfficialText(knvb),uefaText=fullOfficialText(uefa);
+ if(!/UEFA Nations League/i.test(knvbText)||!/UEFA Nations League/i.test(uefaText))return [];
  const leagueSeason=/\b(20\d{2})\/(?:20)?\d{2}\b/.exec(uefaText);
  if(!leagueSeason)return [];
  const names=countries.map(pair=>tidy(pair[0])).join('|');
@@ -43,7 +59,7 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
   if(end>now||now-end>48*3600000)continue;
   const homeEn=english(home),awayEn=english(away);
   const dateTag=String(day).padStart(2,'0')+'/'+String(month).padStart(2,'0');
-  const uefaPattern='\\b'+dateTag.replace('/','\\/')+':\\s*'+homeEn+'\\s+'+hs+'[-–]'+as+'\\s+'+awayEn+'\\b';
+  const uefaPattern='\\b'+dateTag.replace('/','\\/')+'\\s*:\\s*'+homeEn+'\\s+'+hs+'[-–]'+as+'\\s+'+awayEn+'\\b';
   const confirmed=new RegExp(uefaPattern,'iu').exec(uefaText);
   if(!confirmed)continue;
   const score=hs+'-'+as;
@@ -89,7 +105,13 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
    const key=[date,home,away,article.url].join(':');
    if(seen.has(key))continue;
    seen.add(key);
-   available.push({candidate,documents:[article,knvb,uefa],
+   // Preserve exact source excerpts used by the evidence gate. These are
+   // substrings of the current raw official pages, not reconstructed claims.
+   const knvbEvidence={url:knvb.url,title:knvb.title||'',publishedAt:knvb.publishedAt||'',
+    text:knvbText.slice(Math.max(0,row.index-260),row.index+row[0].length+80)};
+   const uefaEvidence={url:uefa.url,title:uefa.title||'',publishedAt:uefa.publishedAt||'',
+    text:uefaText.slice(Math.max(0,confirmed.index-90),confirmed.index+confirmed[0].length+80)};
+   available.push({candidate,documents:[article,knvbEvidence,uefaEvidence],
     proof:{knvbResultsUrl:KNVB_RESULTS,uefaResultsUrl:UEFA_RESULTS,
      sourceNewsUrl:article.url,match}});
   }
