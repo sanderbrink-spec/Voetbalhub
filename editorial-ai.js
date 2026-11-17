@@ -308,7 +308,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   if(automaticPublication&&officialFinal&&articleKind==='announcement'&&!primaryAuthority){
     prompt=[
      'Je bent Veldio-journalist en schrijft een origineel Nederlands bericht over een gespeelde manneninterland.',
-     'De eindstand is door KNVB en UEFA afzonderlijk bevestigd. Alleen verifiedFacts en de gecontroleerde match mogen feitelijke beweringen onderbouwen.',
+     'De eindstand is door KNVB en een tweede officiële voetbalbond afzonderlijk bevestigd. Alleen verifiedFacts en de gecontroleerde match mogen feitelijke beweringen onderbouwen.',
+     'De kop behandelt de wedstrijd zelf: noem het bewezen thuis-uitresultaat met exacte eindstand (bijvoorbeeld de score in de kop), niet alleen plaatsing of groepsstatus. Gebruik een andere nieuwsaanleiding dan recente kwalificatieoverzichten in recentHeadlines.',
      'Geef alleen JSON met headline (5-14 Nederlandse woorden), standfirst (8-35 woorden) en body met precies drie onderscheiden alinea’s (elk 18-120 woorden, minimaal 70 tekens).',
      'Intro: de bewezen eindstand in correcte thuis-uitrichting. Body 1: één bewezen betekenis voor de groep of het toernooi. Body 2: feiten over de eerste helft. Body 3: afzonderlijke feiten over de tweede helft of een letterlijk bewezen wedstrijdincident.',
      'Noem geen tussenstand, ruststand, doelpuntenmaker, minuut, ranglijst, kwalificatiegevolg of oorzaak zonder expliciet bewezen grond.',
