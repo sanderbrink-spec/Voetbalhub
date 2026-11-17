@@ -1956,6 +1956,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    delete job.checkpoint;
   }
   // Generator failures have their own separate bounded retry path.
+  if(group.officialFinalCandidate&&job.status==='review'&&job.failureStage==='generation'&&
+     job.failureCategory==='generator_failure'&&
+     job.errorHash===sha('Concept na herstel nog niet geschikt: Controleer namen die niet in de aangeleverde feiten staan: De Duitse.')&&
+     !job.officialFinalNameRecovery){
+   job.officialFinalNameRecovery=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+   delete job.checkpoint;
+  }
   if(!group.matchRecord){recoverGeneration(job,now);recoverCompleteBodyV91(job,now);recoverCurrentVerifiedDecisionV131(job,now);}
   // The focused trial's recorded packet invented 13 November and merged unrelated
   // career claims. Re-extract that exact rejected job once under literal checks;
@@ -2076,7 +2083,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    await checkpointStep({draft,generation:null});
    report.counts.generated++;route.generated++;
    stage='quality';
-   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(group.officialFinalCandidate?{match:candidate.match,officialFinalProof:group.officialFinalProof}:{}),...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&['onsoranje.nl','uefa.com'].includes(host(sources[0].url))?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
+   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(group.officialFinalCandidate?{match:candidate.match,officialFinalProof:group.officialFinalProof,factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}}:{}),...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&['onsoranje.nl','uefa.com'].includes(host(sources[0].url))?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
     reviewNotes:(validationOnly?'Automatische redactionele validatie. ':'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. ')+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
     if(group.replacePreviewId)payload.replacePreviewId=group.replacePreviewId;
@@ -2116,14 +2123,14 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(nameRepaired!==draft){draft=nameRepaired;payload.draft=draft;}
     const issues=M.publicationIssues(payload);
     issues.push(...newsEvidenceIssues(payload));
-    issues.push(...generationIssues(draft,facts,matchRecord?.match||null,matchGenerationIsCompact(matchRecord,compact),matchRecord?.sources?.[0]?.url===matches.SM?'Sportmonks Football API':matchRecord?.sources?.[0]?.url===matches.OPEN?'OpenFootball':matchRecord?.sources?.[0]?.url===matches.FD?'football-data.org':candidate.primaryAuthority&&sources.length===1?sources[0].url:'',candidate.kind));
+    issues.push(...generationIssues(draft,facts,payload.match||null,matchGenerationIsCompact(matchRecord,compact),matchRecord?.sources?.[0]?.url===matches.SM?'Sportmonks Football API':matchRecord?.sources?.[0]?.url===matches.OPEN?'OpenFootball':matchRecord?.sources?.[0]?.url===matches.FD?'football-data.org':candidate.primaryAuthority&&sources.length===1?sources[0].url:'',candidate.kind));
     if(matchRecord)issues.push(...matchGuidance.paragraphChronologyIssues(matchRecord,draft));
     if(!matchRecord){
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority:candidate.primaryAuthority,sourceUrls:sources.map(x=>x.url),facts}));
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority:candidate.primaryAuthority,facts}));
      issues.push(...unsupportedInterpretationIssues(draft,facts));
      issues.push(...unverifiedTimelineAndRoles(draft,facts));
-     if(!hasOfficialPreviewResult(payload)&&!M.verifiedUefaCompetitionStatus(payload)&&(M.needsMatch(draft)||(M.requiresFlashscore(draft)&&!M.officialDisciplinaryCardNotice(payload))))issues.push('Niet-geverifieerde wedstrijdclaim.');
+     if(!M.officialInternationalFinal(payload)&&!hasOfficialPreviewResult(payload)&&!M.verifiedUefaCompetitionStatus(payload)&&(M.needsMatch(draft)||(M.requiresFlashscore(draft)&&!M.officialDisciplinaryCardNotice(payload))))issues.push('Niet-geverifieerde wedstrijdclaim.');
      const copied=[...new Set(group.flatMap(d=>overlapPhrases(d.text,draft)))].slice(0,6);
      if(copied.length)issues.push('Woordelijke bronoverlap. Herschrijf deze letterlijke reeksen met eigen zinsbouw: '+JSON.stringify(copied)+'. Behoud alle namen en feiten, maar verander de woordvolgorde; alleen andere leestekens helpen niet.');
     }

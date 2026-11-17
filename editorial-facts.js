@@ -60,6 +60,7 @@
   const verifiedGeographicArticle=name=>
    (/^(?:De Nations|Nations League-(?:wedstrijd|duel|groep|campagne))$/i.test(name)&&/\bnations league\b/.test(known))||
    (/^(?:De )?Verenigde(?: Staten)?$/i.test(name)&&/\b(?:verenigde staten|united states|u s men s national team|usmnt|amerikaans[e]?)\b/.test(known))||
+   (/^De Duitse$/.test(name)&&/\bduitsland\b/.test(known))||
    (/^De Amerikaanse$/i.test(name)&&/\b(?:amerikaans[e]?|u s soccer|usmnt)\b/.test(known));
   const competitionPhrasing=/^(?:(?:De|Het|Een) Eredivisie(?:-wedstrijd|-speelronde)?|In de Eredivisie(?:-wedstrijd|-speelronde)?)$/i;
   const verifiedStadiumArticle=name=>/^(?:De Johan|Het Olympiastadion)$/i.test(name)&&

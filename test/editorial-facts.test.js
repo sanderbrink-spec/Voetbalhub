@@ -8,6 +8,13 @@ test('draw versus victory contradictions are blocked against structured result',
 test('weekdays and dates must agree with the match anchor and recorded facts',()=>{const p=packet();p.draft.standfirst='FC Groningen won vrijdag het duel.';assert.ok(F.audit(p).some(x=>x.includes('weekdag')));p.match.playedAt='2026-10-28';assert.ok(F.audit(p).some(x=>x.includes('wijkt af van de datum')));});
 test('invalid calendar dates and missing score fields stay blocked',()=>{const p=packet();p.match.playedAt='2026-02-31';assert.ok(F.audit(p).some(x=>x.includes('leg thuisploeg')));p.match.homeScore=null;assert.ok(F.audit(p).some(x=>x.includes('leg thuisploeg')));});
 test('invented people and quotes are flagged separately from writing style',()=>{const p=packet();p.draft.body=['Joey Veerman verklaarde: "Ik beslis altijd iedere wedstrijd voor mijn ploeg."'];const issues=F.audit(p);assert.ok(issues.some(x=>x.includes('Joey Veerman')));assert.ok(issues.some(x=>x.includes('Citaat')));});
+test('a verified country adjective is not a person and requires country evidence',()=>{
+ const draft={headline:'Oranje houdt stand',body:['De Duitse ploeg hield stand.']};
+ assert.deepEqual(F.evidenceIssues(draft,['Duitsland speelde tegen Nederland.']),[]);
+ assert.ok(F.evidenceIssues(draft,['Nederland speelde tegen België.']).some(issue=>issue.includes('De Duitse')));
+ draft.body.push('Karl Onbekend speelde mee.');
+ assert.ok(F.evidenceIssues(draft,['Duitsland speelde tegen Nederland.']).some(issue=>issue.includes('Karl Onbekend')));
+});
 test('a score alone cannot justify a comeback, dominance or detailed half-time story',()=>{const p=packet();p.draft.body=['Ajax domineerde in de eerste helft, maar Groningen knokte terug na een achterstand.'];const issues=F.audit(p);assert.ok(issues.some(x=>x.includes('dominantie')));assert.ok(issues.some(x=>x.includes('comeback')));assert.ok(issues.some(x=>x.includes('per helft')));});
 test('a factual half-time story is allowed when that detail was actually supplied',()=>{const p=packet();p.verifiedFacts.push('FC Groningen had voor rust overwicht.');p.draft.body=['FC Groningen had voor rust overwicht.'];assert.deepEqual(F.audit(p),[]);});
 test('individual factual acknowledgements cannot be replaced by the old general checkbox',()=>{const p=packet();p.factChecks={};p.editorialChecks={claimsIndependentlyChecked:true};assert.equal(F.audit(p).filter(x=>x.includes('Feitencontrole ontbreekt')).length,4);});

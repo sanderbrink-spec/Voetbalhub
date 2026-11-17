@@ -115,3 +115,17 @@ test('98W: DFB score, date, gender and competition conflicts fail closed',()=>{
  assert.deepEqual(officialRecentFinals(knvb,{...base,text:base.text.replace('UEFA Nations League Div. A','Frauen Bundesliga')},[article],now),[]);
  assert.deepEqual(officialRecentFinals(knvb,{...base,text:base.text.replace('Deutschland 5 : 0 Niederlande','Niederlande 5 : 0 Deutschland')},[article],now),[]);
 });
+
+test('98X: draft storage preserves official final proof and rejects altered identity',()=>{
+ const {candidate,documents,proof}=officialRecentFinals(knvb,uefa,[article],now)[0];
+ const {cleanPayload}=require('../editorial-drafts');
+ const desk=require('../editorial-desk-model');
+ const payload={draft:{headline:article.title,body:[]},articleKind:'announcement',
+  match:candidate.match,officialFinalProof:proof,
+  verifiedFacts:candidate.facts.map(f=>f.text),sources:documents.map(doc=>({url:doc.url})),
+  factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}};
+ const cleaned=cleanPayload(payload);
+ assert.deepEqual(cleaned.officialFinalProof,proof);
+ assert.equal(desk.officialInternationalFinal(cleaned),true);
+ assert.equal(desk.officialInternationalFinal({...cleaned,officialFinalProof:{...proof,match:{...proof.match,homeScore:1}}}),false);
+});
