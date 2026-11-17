@@ -67,3 +67,25 @@ test('98W: fully evidenced announcement passes normal source gates, tampering ca
  altered.sharedEventEvidence[1].quote='An independent football website confirms nothing.';
  assert.ok(validateEvidence(altered,documents,now).some(issue=>/bevestiging|broncitaat/i.test(issue)));
 });
+
+test('98W: full official HTML beats 14k article truncation and preserves literal excerpts',()=>{
+ const knvbHtml='<main><h1>Nederlands elftal mannen</h1><div>UEFA Nations League</div>'+
+   '<a href="/teams/185184/programma/wedstrijd/123">Duitsland <time>16 nov 2026</time> <strong>5 - 0</strong> Nederland</a></main>';
+ const uefaHtml='<article><h1>2026/27 UEFA Nations League results</h1>'+
+   '<p>Published league-phase results</p><section><h3>Netherlands (A2)</h3>'+
+   '<p><b>16/11</b>: <a href="/uefanationsleague/match/123--germany-vs-netherlands/">Germany 5-0 Netherlands</a></p></section></article>';
+ const knvbRaw={...knvb,text:'Nederlands elftal mannen resultaten',html:knvbHtml};
+ const uefaRaw={...uefa,text:'2026/27 UEFA Nations League',html:uefaHtml};
+ const rows=officialRecentFinals(knvbRaw,uefaRaw,[article],now);
+ assert.equal(rows.length,1);
+ assert.equal(rows[0].candidate.facts.length,5);
+ const [story,knvbDoc,uefaDoc]=rows[0].documents;
+ assert.equal(story.url,article.url);
+ for(const piece of rows[0].candidate.facts[0].evidence){
+  assert.ok(rows[0].documents[piece.source].text.includes(piece.quote),piece.quote);
+ }
+ assert.match(knvbDoc.text,/UEFA Nations League Duitsland 16 nov 2026 5 - 0 Nederland/);
+ assert.match(uefaDoc.text,/16\/11 : Germany 5-0 Netherlands/);
+ const {validateEvidence}=require('../scripts/automatic-publication');
+ assert.deepEqual(validateEvidence(rows[0].candidate,rows[0].documents,now),[]);
+});
