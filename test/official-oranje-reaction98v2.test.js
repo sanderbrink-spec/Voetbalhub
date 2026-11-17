@@ -69,3 +69,26 @@ test('98V-2: a KNVB quote article attributes both lead and details to its first-
   facts:candidate.facts.map(f=>f.text)
  }),[]);
 });
+
+test('98V-2: only the exact fresh, first-party, previously fact-limited draft may retry once in compact form',()=>{
+ const {reopenCompactOranjeReaction98V}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-17T18:30:00Z');
+ const candidate=confirmedFederationCoachReaction(article);
+ const group=Object.assign([article],{officialReactionCandidate:candidate});
+ const old={status:'review',failureStage:'generation',failureCategory:'journalistic_rejection',
+  reason:'insufficient_verified_facts',attempts:1,urls:[URL],
+  errorHash:'235b9a004c20c01180bc71375746bbe14f9b423fb3c43bbc3c9233e2eda27b13',
+  checkpoint:{draft:{headline:'rejected, never reuse'}}};
+ assert.equal(reopenCompactOranjeReaction98V(old,group,now),true);
+ assert.equal(old.status,'pending');
+ assert.equal(old.attempts,0);
+ assert.equal(old.nextAttemptAt,now);
+ assert.equal(old.checkpoint,undefined);
+ assert.equal(reopenCompactOranjeReaction98V(old,group,now),false);
+ const error={...old,status:'review',failureStage:'quality',failureCategory:'journalistic_rejection'};
+ assert.equal(reopenCompactOranjeReaction98V(error,group,now),false);
+ const wrong={...old,status:'review',failureStage:'generation',compactOranjeReaction98V:false,urls:['https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen/123/other']};
+ assert.equal(reopenCompactOranjeReaction98V(wrong,group,now),false);
+ const stale={...old,status:'review',failureStage:'generation',compactOranjeReaction98V:false};
+ assert.equal(reopenCompactOranjeReaction98V(stale,group,Date.parse('2026-12-01T00:00:00Z')),false);
+});
