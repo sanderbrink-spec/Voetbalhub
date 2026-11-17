@@ -46,3 +46,23 @@ test('98W: repeat source listing does not create duplicate article packets',()=>
  const reports=[article,structuredClone(article)];
  assert.equal(officialRecentFinals(knvb,uefa,reports,now).length,1);
 });
+
+test('98W: fully evidenced announcement passes normal source gates, tampering cannot bypass them',()=>{
+ const {candidate,documents,proof}=officialRecentFinals(knvb,uefa,[article],now)[0];
+ const {validateEvidence}=require('../scripts/automatic-publication');
+ const desk=require('../editorial-desk-model');
+ assert.deepEqual(validateEvidence(candidate,documents,now),[]);
+ const payload={articleKind:'announcement',category:'Nations League',match:candidate.match,
+  officialFinalProof:proof,
+  verifiedFacts:candidate.facts.map(f=>f.text),
+  sources:documents.map(doc=>({url:doc.url}))
+ };
+ assert.equal(desk.officialInternationalFinal(payload),true);
+ assert.equal(desk.officialInternationalFinal({...payload,match:{...candidate.match,awayScore:4}}),false);
+ assert.equal(desk.officialInternationalFinal({...payload,sources:payload.sources.slice(0,2)}),false);
+ assert.equal(desk.officialInternationalFinal({...payload,verifiedFacts:payload.verifiedFacts.slice(0,2)}),false);
+ assert.equal(desk.officialInternationalFinal({...payload,officialFinalProof:{...proof,sourceNewsUrl:'https://example.org/false'}}),false);
+ const altered=structuredClone(candidate);
+ altered.sharedEventEvidence[1].quote='An independent football website confirms nothing.';
+ assert.ok(validateEvidence(altered,documents,now).some(issue=>/bevestiging|broncitaat/i.test(issue)));
+});
