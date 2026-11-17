@@ -589,8 +589,35 @@ function overlap(source,draft){return overlapPhrases(source,draft).length>0;}
 function duplicate(candidate,published){
  const urls=candidate.sources.map(s=>s.url);
  const title=normalize(candidate.draft.headline),words=new Set(title.split(' ').filter(w=>w.length>3));
+ const result=candidate.match;
+ const finalProof=candidate.officialFinalProof;
+ const score=result&&new RegExp('\\b'+result.homeScore+'\\s*[-–]\\s*'+result.awayScore+'\\b');
+ const lead=String(candidate.draft.headline||'')+' '+String(candidate.draft.standfirst||'');
+ const distinctFinal=Boolean(finalProof&&result&&
+  Array.isArray(candidate.verifiedFacts)&&candidate.verifiedFacts.length>=4&&
+  Array.isArray(candidate.sources)&&candidate.sources.length===3&&
+  score?.test(lead)&&urls.includes(finalProof.knvbResultsUrl)&&
+  urls.includes(finalProof.dfbResultsUrl||finalProof.uefaResultsUrl));
  return published.some(a=>{
   if(candidate.matchId)return candidate.matchId===a.matchId||(a.match?.playedAt===candidate.match.playedAt&&normalize(a.match.homeTeam)===normalize(candidate.match.homeTeam)&&normalize(a.match.awayTeam)===normalize(candidate.match.awayTeam));
+  if(distinctFinal){
+   const old=a.match,oldLead=String(a.headline||'')+' '+String(a.standfirst||'');
+   // Existing full match records, first-party match reports and identical
+   // headlines remain duplicates. An earlier GROUP STATUS article is not a
+   // match report, even if both mention the same countries.
+   if(old?.playedAt===result.playedAt&&normalize(old.homeTeam)===normalize(result.homeTeam)&&
+      normalize(old.awayTeam)===normalize(result.awayTeam))return true;
+   if(a.sources?.some(source=>source.url===finalProof.sourceNewsUrl))return true;
+   if(normalize(a.headline)===title)return true;
+   const countriesInLead=normalize(oldLead).includes(normalize(result.homeTeam))&&
+    normalize(oldLead).includes(normalize(result.awayTeam));
+   if(countriesInLead&&score.test(oldLead))return true;
+   const priorTitle=normalize(a.headline);
+   if(priorTitle.includes(normalize(result.homeTeam))&&priorTitle.includes(normalize(result.awayTeam))&&
+      /\b(?:nederlaag|verslaat|wint|won|verneder|verpletter|zege|overwinning)\b/.test(priorTitle))
+    return true;
+   return false;
+  }
   if(candidate.articleKind==='preview'&&candidate.feedLifecycle?.expiresAt&&a.feedLifecycle?.kind==='preview'){
    const sameKickoff=Date.parse(a.feedLifecycle.expiresAt)===Date.parse(candidate.feedLifecycle.expiresAt);
    const sameFixtureSource=urls.includes(a.sources?.[0]?.url);
@@ -1753,6 +1780,23 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(seenGroups.has(key))continue;
   seenGroups.add(key);
   const job=durable.queue.enqueue(group,now);
+  // Re-open only the previously mislabelled official match report once.
+  // A real article covering this registered match or first-party story
+  // still prevents new generation. The full review will run from scratch.
+  if(group.officialFinalCandidate&&job.status==='duplicate'&&!job.distinctFinalRetry98W){
+   const m=group.officialFinalCandidate.match,sourceUrl=group.officialFinalProof?.sourceNewsUrl;
+   const alreadyCovered=published.some(article=>
+    article.sources?.some(source=>source.url===sourceUrl)||
+    (article.match?.playedAt===m.playedAt&&
+     normalize(article.match.homeTeam)===normalize(m.homeTeam)&&
+     normalize(article.match.awayTeam)===normalize(m.awayTeam)));
+   if(!alreadyCovered){
+    job.distinctFinalRetry98W=true;job.status='pending';
+    job.attempts=0;job.nextAttemptAt=now;delete job.checkpoint;
+    report.signals.push({route:'news',topic:group[0].title,
+     outcome:'official_match_distinct_from_status_retry'});
+   }
+  }
   if(reopenCompactOranjeReaction98V(job,group,now))report.signals.push({route:'news',topic:group[0].title,outcome:'one_time_compact_oranje_reaction_retry'});
   if(reopenInterviewFeedback98V(job,group,now))report.signals.push({route:'news',topic:group[0].title,outcome:'one_time_interview_feedback_retry'});
   if(group.length===1&&!group.matchRecord&&retryUefaQualificationExtraction(job,group[0],now))
@@ -2091,7 +2135,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
     payload.feedLifecycle={kind:'preview',expiresAt:new Date(group.internationalPreview?.kickoff??Date.parse(candidate.eventDate+'T23:59:59'+zone)).toISOString()};
    }
-   if(duplicate(payload,comparison.concat(report.validated.map(item=>item.article)))){report.skipped.push({topic,reason:'Onderwerp staat al in de app.'});durable.queue.finish(job,'duplicate',now);continue;}
+   if(duplicate(payload,comparison.concat(report.validated.map(item=>item.article)))){report.skipped.push({topic,reason:'Onderwerp staat al in de app.',draftHeadline:draft.headline});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
    const revisionLimit=singlePublication?3:2;
    for(let revision=checkpoint.revisions||0;revision<=revisionLimit;revision++){

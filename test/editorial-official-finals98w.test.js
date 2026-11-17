@@ -129,3 +129,31 @@ test('98X: draft storage preserves official final proof and rejects altered iden
  assert.equal(desk.officialInternationalFinal(cleaned),true);
  assert.equal(desk.officialInternationalFinal({...cleaned,officialFinalProof:{...proof,match:{...proof.match,homeScore:1}}}),false);
 });
+
+test('98W: an independently verified final is editorially distinct from earlier group-status news',()=>{
+ const {duplicate}=require('../scripts/automatic-publication');
+ const {candidate,proof,documents}=officialRecentFinals(knvb,{
+  url:DFB_RESULTS,
+  text:'DFB Datencenter UEFA Nations League Div. A Montag, 16.11.2026 20:45 Uhr Deutschland 5 : 0 Niederlande'
+ },[article],now)[0];
+ const current={
+  articleKind:'announcement',topicTeams:candidate.teams,topicDate:candidate.eventDate,
+  match:candidate.match,officialFinalProof:proof,
+  sources:documents.map(d=>({url:d.url})),
+  verifiedFacts:candidate.facts.map(f=>f.text),
+  draft:{headline:'Duitsland Nederland Nations League na 5-0',
+   standfirst:'Duitsland versloeg Nederland met 5-0 in de Nations League.',body:['Oorspronkelijk wedstrijdverhaal.']}
+ };
+ const status={articleKind:'announcement',
+  headline:'Duitsland Nederland Nations League kwartfinales 2026',
+  standfirst:'Beide landen zijn verzekerd van de volgende ronde.',
+  body:['De groepsstatus is officieel vastgelegd.'],
+  sources:[{url:'https://www.uefa.com/uefanationsleague/news/02ab-status/'}]};
+ assert.equal(duplicate(current,[status]),false);
+ assert.equal(duplicate({...current,officialFinalProof:null},[status]),true);
+ const oldFullMatch={...status,headline:'Duitsland verslaat Nederland met 5-0',standfirst:'Duitsland 5-0 Nederland in Berlijn.'};
+ assert.equal(duplicate(current,[oldFullMatch]),true);
+ assert.equal(duplicate(current,[{...status,sources:[{url:proof.sourceNewsUrl}]}]),true);
+ assert.equal(duplicate(current,[{...status,match:structuredClone(candidate.match)}]),true);
+ assert.equal(duplicate(current,[{...status,headline:current.draft.headline}]),true);
+});
