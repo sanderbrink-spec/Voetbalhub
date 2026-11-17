@@ -117,16 +117,20 @@
   // this proof before draft approval or publication.
   function officialInternationalFinal(payload) {
     const proof=payload?.officialFinalProof,match=payload?.match,sources=payload?.sources;
+    const uefa='https://www.uefa.com/uefanationsleague/news/02a2-1fea7079900a-801b2c5f6c9e-1000--2026-27-uefa-nations-league-league-phase-fixtures-and-results-by-team/';
+    const dfb='https://datencenter.dfb.de/teams/deutschland/seasonplan';
+    const secondary=proof?.uefaResultsUrl||proof?.dfbResultsUrl;
+    const uniqueSource=Boolean(proof?.uefaResultsUrl)!==Boolean(proof?.dfbResultsUrl);
     if(payload?.articleKind!=='announcement'||payload?.matchId||payload?.primaryAuthority||
       !proof||!match||!Array.isArray(sources)||sources.length!==3||
       !Array.isArray(payload.verifiedFacts)||payload.verifiedFacts.length<4||
       JSON.stringify(proof.match)!==JSON.stringify(match)||
       proof.knvbResultsUrl!=='https://www.onsoranje.nl/teams/185184/uitslagen'||
-      proof.uefaResultsUrl!=='https://www.uefa.com/uefanationsleague/news/02a2-1fea7079900a-801b2c5f6c9e-1000--2026-27-uefa-nations-league-league-phase-fixtures-and-results-by-team/'||
+      !uniqueSource||![uefa,dfb].includes(secondary)||
       !/^https:\/\/www\.onsoranje\.nl\/nieuws\/nederlands-elftal-mannen\/\d+\//.test(proof.sourceNewsUrl||'')||
       sources[0]?.url!==proof.sourceNewsUrl||
       sources[1]?.url!==proof.knvbResultsUrl||
-      sources[2]?.url!==proof.uefaResultsUrl||
+      sources[2]?.url!==secondary||
       !/^\d{4}-\d{2}-\d{2}$/.test(match.playedAt||'')||
       ![match.homeScore,match.awayScore].every(n=>Number.isInteger(n)&&n>=0&&n<=25)||
       ![match.homeTeam,match.awayTeam].every(n=>typeof n==='string'&&n.length>=3&&n.length<=55)||
