@@ -92,3 +92,24 @@ test('98V-2: only the exact fresh, first-party, previously fact-limited draft ma
  const stale={...old,status:'review',failureStage:'generation',compactOranjeReaction98V:false};
  assert.equal(reopenCompactOranjeReaction98V(stale,group,Date.parse('2026-12-01T00:00:00Z')),false);
 });
+
+test('98V-2: skipped coach interview gets first-hand reaction feedback, never decision feedback',async()=>{
+ const {createEditorialDraft}=require('../editorial-ai');
+ const candidate=confirmedFederationCoachReaction(article);
+ const facts=candidate.facts.map(f=>f.text);
+ const requests=[];
+ const router={complete:async(messages)=>{
+  requests.push(messages.map(x=>x.content));
+  return {skip:true};
+ }};
+ await assert.rejects(createEditorialDraft({
+  topic:candidate.topic,category:candidate.category,facts,sourceUrls:[URL],
+  articleKind:'announcement',primaryAuthority:'association_decision',
+  compact:true,officialReaction:true,automaticPublication:true
+ },{apiKey:'not_used',router,model:'openai/gpt-oss-120b',timeoutMs:5000}),/Onvoldoende gecontroleerde feiten/);
+ assert.equal(requests.length,2);
+ const last=requests[1].at(-1);
+ assert.match(last,/eerstehands reactie van een bondscoach/);
+ assert.match(last,/verifiedFacts\[1\]/);
+ assert.doesNotMatch(last,/officieel bevestigd besluit/);
+});
