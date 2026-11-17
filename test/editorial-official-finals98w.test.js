@@ -34,6 +34,7 @@ test('98W: scoreboard disagreements or missing dates never create a match fact',
  assert.deepEqual(officialRecentFinals(knvb,{...uefa,text:uefa.text.replace('5-0','4-0')},[article],now),[]);
  assert.deepEqual(officialRecentFinals(knvb,{...uefa,text:uefa.text.replace('Germany 5-0 Netherlands','Netherlands 5-0 Germany')},[article],now),[]);
  assert.deepEqual(officialRecentFinals({...knvb,text:knvb.text.replace('16 nov 2026','16 2026')},uefa,[article],now),[]);
+ assert.deepEqual(officialRecentFinals(knvb,{...uefa,text:uefa.text.replace('2026/27','2025/26')},[article],now),[]);
  assert.deepEqual(officialRecentFinals({...knvb,text:knvb.text.replace('5 - 0','4 - 0')},uefa,[article],now),[]);
 });
 test('98W: excludes women, youths, distant matches and a result without distinct proven context',()=>{
