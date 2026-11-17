@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {KNVB_RESULTS,UEFA_RESULTS,officialRecentFinals}=require('../scripts/editorial-official-finals98w');
+const {KNVB_RESULTS,UEFA_RESULTS,DFB_RESULTS,officialRecentFinals}=require('../scripts/editorial-official-finals98w');
 const now=Date.parse('2026-11-17T19:20:00Z');
 const knvb={url:KNVB_RESULTS,text:'Nederlands elftal mannen Uitslagen UEFA Nations League Duitsland 16 nov 2026 5 - 0 Nederland Olympiastadion, Berlijn.'};
 const uefa={url:UEFA_RESULTS,text:'UEFA Nations League 2026/27 Netherlands (A2) 13/11: Netherlands 7-0 Greece 16/11: Germany 5-0 Netherlands'};
@@ -88,4 +88,30 @@ test('98W: full official HTML beats 14k article truncation and preserves literal
  assert.match(uefaDoc.text,/16\/11 : Germany 5-0 Netherlands/);
  const {validateEvidence}=require('../scripts/automatic-publication');
  assert.deepEqual(validateEvidence(rows[0].candidate,rows[0].documents,now),[]);
+});
+
+test('98W: DFB official men schedule independently replaces a blocked UEFA index',()=>{
+ const dfb={url:DFB_RESULTS,text:'DFB Datencenter UEFA Nations League Div. A Montag, 16.11.2026 20:45 Uhr Deutschland 5 : 0 Niederlande'};
+ const rows=officialRecentFinals(knvb,dfb,[article],now);
+ assert.equal(rows.length,1);
+ const {candidate,documents,proof}=rows[0];
+ assert.deepEqual(candidate.match,{homeTeam:'Duitsland',awayTeam:'Nederland',homeScore:5,awayScore:0,playedAt:'2026-11-16'});
+ assert.equal(proof.dfbResultsUrl,DFB_RESULTS);
+ assert.equal(proof.uefaResultsUrl,undefined);
+ assert.equal(documents[2].url,DFB_RESULTS);
+ assert.deepEqual(require('../scripts/automatic-publication').validateEvidence(candidate,documents,now),[]);
+ const desk=require('../editorial-desk-model');
+ const payload={articleKind:'announcement',category:'Nations League',
+  match:candidate.match,officialFinalProof:proof,
+  verifiedFacts:candidate.facts.map(f=>f.text),sources:documents.map(d=>({url:d.url}))};
+ assert.equal(desk.officialInternationalFinal(payload),true);
+ assert.equal(desk.officialInternationalFinal({...payload,officialFinalProof:{...proof,uefaResultsUrl:UEFA_RESULTS}}),false);
+ assert.equal(desk.officialInternationalFinal({...payload,officialFinalProof:{...proof,dfbResultsUrl:'https://example.org/stale'}}),false);
+});
+test('98W: DFB score, date, gender and competition conflicts fail closed',()=>{
+ const base={url:DFB_RESULTS,text:'DFB Datencenter UEFA Nations League Div. A Montag, 16.11.2026 20:45 Uhr Deutschland 5 : 0 Niederlande'};
+ assert.deepEqual(officialRecentFinals(knvb,{...base,text:base.text.replace('5 : 0','5 : 1')},[article],now),[]);
+ assert.deepEqual(officialRecentFinals(knvb,{...base,text:base.text.replace('16.11.2026','15.11.2026')},[article],now),[]);
+ assert.deepEqual(officialRecentFinals(knvb,{...base,text:base.text.replace('UEFA Nations League Div. A','Frauen Bundesliga')},[article],now),[]);
+ assert.deepEqual(officialRecentFinals(knvb,{...base,text:base.text.replace('Deutschland 5 : 0 Niederlande','Niederlande 5 : 0 Deutschland')},[article],now),[]);
 });

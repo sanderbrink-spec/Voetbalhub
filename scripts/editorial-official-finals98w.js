@@ -3,6 +3,7 @@
 // Only literal, independently matching results on two official domains create
 // a final. This is evidence intake, not an approval or publication shortcut.
 const KNVB_RESULTS='https://www.onsoranje.nl/teams/185184/uitslagen';
+const DFB_RESULTS='https://datencenter.dfb.de/teams/deutschland/seasonplan';
 const UEFA_RESULTS=require('./editorial-international').UEFA_RESULTS;
 const countries=[
  ['Nederland','Netherlands'],['Duitsland','Germany'],['Griekenland','Greece'],
@@ -38,11 +39,12 @@ const dayValid=(year,month,day)=>{
  return d.getUTCFullYear()===year&&d.getUTCMonth()===month-1&&d.getUTCDate()===day;
 };
 function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
- if(knvb?.url!==KNVB_RESULTS||uefa?.url!==UEFA_RESULTS)return [];
+ if(knvb?.url!==KNVB_RESULTS||![UEFA_RESULTS,DFB_RESULTS].includes(uefa?.url))return [];
  const knvbText=fullOfficialText(knvb),uefaText=fullOfficialText(uefa);
  if(!/UEFA Nations League/i.test(knvbText)||!/UEFA Nations League/i.test(uefaText))return [];
  const leagueSeason=/\b(20\d{2})\/(?:20)?\d{2}\b/.exec(uefaText);
- if(!leagueSeason)return [];
+ const isUefa=uefa.url===UEFA_RESULTS;
+ if(isUefa&&!leagueSeason)return [];
  const names=countries.map(pair=>tidy(pair[0])).join('|');
  const pattern=new RegExp('\\b('+names+')\\s+(\\d{1,2})\\s+('+months.join('|')+')\\s+(20\\d{2})\\s+(\\d{1,2})\\s*[-–]\\s*(\\d{1,2})\\s+('+names+')\\b','giu');
  const available=[],seen=new Set();
@@ -52,15 +54,29 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
   if(!/UEFA Nations League/i.test(knvbText.slice(Math.max(0,row.index-260),row.index)))continue;
   const month=months.indexOf(row[3].toLowerCase())+1;
   const day=Number(row[2]),year=Number(row[4]),hs=Number(row[5]),as=Number(row[6]);
-  if(!dayValid(year,month,day)||year!==Number(leagueSeason[1])||hs>25||as>25)continue;
+  if(!dayValid(year,month,day)||(isUefa&&year!==Number(leagueSeason[1]))||hs>25||as>25)continue;
   const date=year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0');
   // Dates without a kickoff time are not sufficient evidence on matchday.
   const end=Date.parse(date+'T23:59:59Z');
   if(end>now||now-end>48*3600000)continue;
   const homeEn=english(home),awayEn=english(away);
   const dateTag=String(day).padStart(2,'0')+'/'+String(month).padStart(2,'0');
-  const uefaPattern='\\b'+dateTag.replace('/','\\/')+'\\s*:\\s*'+homeEn+'\\s+'+hs+'[-–]'+as+'\\s+'+awayEn+'\\b';
-  const confirmed=new RegExp(uefaPattern,'iu').exec(uefaText);
+  let confirmed;
+  if(isUefa){
+   const uefaPattern='\\b'+dateTag.replace('/','\\/')+'\\s*:\\s*'+homeEn+'\\s+'+hs+'[-–]'+as+'\\s+'+awayEn+'\\b';
+   confirmed=new RegExp(uefaPattern,'iu').exec(uefaText);
+  }else{
+   // DFB's own men's schedule provides an independently registered home/away
+   // score and date. Do not transform or invent a score from a news headline.
+   const de={Nederland:'Niederlande',Duitsland:'Deutschland'};
+   if(!de[home]||!de[away])continue;
+   const dateDe=String(day).padStart(2,'0')+'\\.'+String(month).padStart(2,'0')+'\\.'+year;
+   const patternDe='\\b(?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag),\\s*'+dateDe+
+    '\\s+\\d{2}:\\d{2}\\s+Uhr\\s+'+de[home]+'\\s+'+hs+'\\s*:\\s*'+as+'\\s+'+de[away]+'\\b';
+   confirmed=new RegExp(patternDe,'iu').exec(uefaText);
+   if(confirmed&&!/UEFA Nations League Div\. A/i.test(uefaText.slice(Math.max(0,confirmed.index-260),confirmed.index)))
+    confirmed=null;
+  }
   if(!confirmed)continue;
   const score=hs+'-'+as;
   const homeAway=home+' – '+away;
@@ -112,10 +128,11 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
    const uefaEvidence={url:uefa.url,title:uefa.title||'',publishedAt:uefa.publishedAt||'',
     text:uefaText.slice(Math.max(0,confirmed.index-90),confirmed.index+confirmed[0].length+80)};
    available.push({candidate,documents:[article,knvbEvidence,uefaEvidence],
-    proof:{knvbResultsUrl:KNVB_RESULTS,uefaResultsUrl:UEFA_RESULTS,
+    proof:{knvbResultsUrl:KNVB_RESULTS,
+     ...(isUefa?{uefaResultsUrl:UEFA_RESULTS}:{dfbResultsUrl:DFB_RESULTS}),
      sourceNewsUrl:article.url,match}});
   }
  }
  return available;
 }
-module.exports={KNVB_RESULTS,UEFA_RESULTS,officialRecentFinals};
+module.exports={KNVB_RESULTS,UEFA_RESULTS,DFB_RESULTS,officialRecentFinals};
