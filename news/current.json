@@ -1,8 +1,105 @@
 {
   "rightsPolicyVersion": 26,
-  "rightsExpiresAt": 1794983849851,
-  "count": 17,
+  "rightsExpiresAt": 1795087952113,
+  "count": 18,
   "articles": [
+    {
+      "id": "b96da9ec-9930-4c1d-85aa-f0b9f6b2694a",
+      "articleKind": "announcement",
+      "imageCategory": "international",
+      "status": "published",
+      "author": "Veldio Redactie",
+      "headline": "Nederland en Duitsland zeker van kwartfinales Nations League",
+      "standfirst": "Nederland en Duitsland hebben zich als groepswinnaar en tweede geplaatst voor de kwartfinales van de UEFA Nations League, samen met andere topteams uit League A.",
+      "body": [
+        "In groep A2 van de UEFA Nations League eindigden Duitsland, Nederland en Griekenland elk met elf punten. Duitsland werd groepswinnaar en plaatste zich daarmee rechtstreeks voor de kwartfinales. Nederland eindigde als tweede en verzekerde zich eveneens van een plek in deze volgende fase, zo meldt UEFA.",
+        "In groep A1 bevestigden Frankrijk en België hun kwalificatie door respectievelijk eerste en tweede te worden met dertien en twaalf punten. Deze resultaten onderstrepen het belang van consistente prestaties binnen de groepen, waarbij de top twee teams doorgaan naar de kwartfinales.",
+        "Naast Nederland, Duitsland, Frankrijk en België zijn ook Engeland, Portugal en Spanje zeker van deelname aan de kwartfinales van de Nations League. Deze zeven landen hebben zich via hun groepsposities verzekerd van een plek in de volgende ronde, aldus de officiële UEFA-rapportage."
+      ],
+      "why_it_matters": "",
+      "category": "Nations League",
+      "publishedAt": "2026-11-17T17:25:26.839Z",
+      "verifiedFacts": [
+        "Article summary Germany, Netherlands, France, Belgium, England, Portugal and Spain have guaranteed their places in the 2026/27 UEFA Nations League quarter-finals.",
+        "Group A1 France (13pts), Belgium (12), Italy (10), Türkiye (0) France are confirmed in first place and have qualified for the quarter-finals.",
+        "Belgium are confirmed in second place and have qualified for the quarter-finals.",
+        "Group A2 Germany (11pts), Netherlands (11), Greece (11), Serbia (0) Germany are confirmed in first place and have qualified for the quarter-finals.",
+        "Netherlands are confirmed in second place and have qualified for the quarter-finals.",
+        "Article top media content Germany are through to the quarter-finals Getty Images Article body The top two teams in each League A group gain passage to the 2026/27 UEFA Nations League quarter-finals in March.",
+        "Group A1 France (13pts), Belgium (12), Italy (10), Türkiye (0)",
+        "Group A2 Germany (11pts), Netherlands (11), Greece (11), Serbia (0)",
+        "Group A3 England (15pts), Spain (15), Croatia (6), Czechia (0)",
+        "Group A4 Portugal (12pts), Denmark (9), Norway (6), Wales (3)"
+      ],
+      "sources": [
+        {
+          "url": "https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-who-is-through-who-can-joi/"
+        }
+      ],
+      "editorialChecks": {
+        "originalSourceReviewed": true,
+        "claimsIndependentlyChecked": true,
+        "duplicateChecked": true,
+        "languageChecked": true
+      },
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art69/international-1.webp",
+      "imageSource": "Veldio · illustratie",
+      "imageCredit": "Veldio",
+      "imageRights": "cleared",
+      "imageReview": {
+        "method": "approved-library49",
+        "mode": "approved-library",
+        "pipelineVersion": 49,
+        "assetSha256": "237bdaba0fc2991d5ef0a1790f3cbb93d4494803ef2ce8e7ac18d27c83e343bb",
+        "kitVerified": true,
+        "playerIdentityVerified": true,
+        "aiDisclosureVerified": true,
+        "clubs": [],
+        "generated": true,
+        "qualityTier": "contextual-illustration"
+      },
+      "autoPublish": false,
+      "imageAssetId": "veldio69-international-1",
+      "imageCaption": "Veldio · AI-illustratie bij Europees voetbal.",
+      "imageVariants": [
+        {
+          "id": "veldio69-international-1",
+          "url": "https://voetbalhub-redactie.onrender.com/article-art69/international-1.webp",
+          "caption": "Veldio · AI-illustratie bij Europees voetbal.",
+          "credit": "Veldio",
+          "source": "Veldio · illustratie",
+          "rights": "cleared",
+          "review": {
+            "method": "approved-library49",
+            "mode": "approved-library",
+            "pipelineVersion": 49,
+            "assetSha256": "237bdaba0fc2991d5ef0a1790f3cbb93d4494803ef2ce8e7ac18d27c83e343bb",
+            "kitVerified": true,
+            "playerIdentityVerified": true,
+            "aiDisclosureVerified": true,
+            "clubs": [],
+            "generated": true,
+            "qualityTier": "contextual-illustration"
+          }
+        }
+      ],
+      "imageRotation": {
+        "method": "approved-article-v69",
+        "count": 1,
+        "maximum": 6,
+        "selectedId": "veldio69-international-1",
+        "context": {
+          "category": "international",
+          "clubs": [],
+          "fixtureId": "",
+          "competition": "Nations League",
+          "daypart": "neutral",
+          "venueName": ""
+        },
+        "reason": "exact-topic"
+      },
+      "feedState": "current"
+    },
     {
       "id": "e91cc5d6-9330-4470-b187-eb1293a74199",
       "articleKind": "announcement",
@@ -2540,6 +2637,6 @@
     }
   ],
   "imagePolicyVersion": 69,
-  "mirroredAt": "2026-11-16T18:37:29.556Z",
+  "mirroredAt": "2026-11-17T23:32:31.493Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
