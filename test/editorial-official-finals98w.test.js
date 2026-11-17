@@ -209,3 +209,26 @@ test('98Y: one bounded early retry for current source outage, never lower fact o
  assert.equal(reopenTransientOfficialFinal98Y({...base,status:'retry',officialFinalTransientRetry98Y:false,updatedAt:now-180000},group,now+72*3600000),false);
  assert.equal(reopenTransientOfficialFinal98Y({...base,status:'review',officialFinalTransientRetry98Y:false},group,now),false);
 });
+
+test('98Y: score-opening and quarter-final draw are proven without generic play opinions',()=>{
+ const rich={...article,text:[
+  'Oranje verloor de uitwedstrijd tegen Duitsland met 5-0.',
+  'Nederland eindigde als tweede in groep A2 en bereikte de kwartfinales.',
+  'Aan de hoge verwachtingen konden beide ploegen in de eerste helft niet voldoen.',
+  'Oranje werd in de tweede helft totaal afgeschminkt en kreeg veel doelpunten tegen.',
+  'In de 19e minuut kreeg Crysencio Summerville de bal bij het doel.',
+  'Een kansrijke positie, maar de aanvaller gleed weg voordat hij kon schieten.',
+  'Een schot van Derry Scherhant kwam in de 32e minuut tegen de paal.',
+  'Derry Scherhant schoot kort daarna namens Duitsland raak: 1-0.',
+  'In de 60e minuut mikte Florian Wirtz vanaf afstand raak: 2-0.',
+  'In de 77e minuut tikte Brajan Gruda de 5-0 binnen.',
+  'Vrijdag is de loting voor de kwartfinales van de Nations League.'
+ ].join(' ')};
+ const rows=officialRecentFinals(knvb,uefa,[rich],now);
+ assert.equal(rows.length,1);
+ const {candidate,documents}=rows[0];
+ assert.ok(candidate.facts.some(f=>/1-0/.test(f.text)),JSON.stringify(candidate.facts));
+ assert.ok(candidate.facts.some(f=>/loting/.test(f.text)),JSON.stringify(candidate.facts));
+ assert.ok(candidate.facts.length<=10);
+ assert.deepEqual(require('../scripts/automatic-publication').validateEvidence(candidate,documents,now),[]);
+});

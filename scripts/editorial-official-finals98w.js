@@ -133,7 +133,14 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
     add(sentences.find(s=>/\b(?:doelpunt|treffer|scoorde)\b/i.test(s)&&
      !/\b(?:vorige ontmoeting|afgelopen vrijdag)\b/i.test(s)));
    }
-   if(picked.length<3)continue;
+   // Prefer the source-backed opening goal and quarter-final draw over two
+   // generic opinions on the quality of play.
+   add(sentences.find(s=>/\b1\s*[-–]\s*0\b/.test(s)&&
+    /\b(?:raak|scoorde|treffer|schiet|schoot|kopte)\b/i.test(s)&&safeSentence(s)));
+   add(sentences.find(s=>/\bloting\b/i.test(s)&&/\bkwartfinal/i.test(s)&&safeSentence(s)));
+   const informative=picked.filter(s=>!/\b(?:aan de hoge verwachtingen|totaal afgeschminkt)\b/i.test(s));
+   const selectedEvidence=(informative.length>=4?informative:picked).slice(0,8);
+   if(selectedEvidence.length<3)continue;
    const match={homeTeam:home,awayTeam:away,homeScore:hs,awayScore:as,playedAt:date};
    const fact={
     text:homeAway+' eindigde op '+date+' in '+score+' in de UEFA Nations League.',
@@ -142,7 +149,7 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
    const candidate={kind:'announcement',topic:article.title,category:'Nations League',
     teams:[home,away],eventDate:date,match,verifiedOfficialFinal:true,
     sharedEventEvidence:[{source:1,quote:scoreQuote},{source:2,quote:otherQuote}],
-    facts:[fact,...picked.slice(0,8).map(text=>({text,evidence:[{source:0,quote:text}]}))]};
+    facts:[fact,...selectedEvidence.map(text=>({text,evidence:[{source:0,quote:text}]}))]};
    const key=[date,home,away,article.url].join(':');
    if(seen.has(key))continue;
    seen.add(key);
