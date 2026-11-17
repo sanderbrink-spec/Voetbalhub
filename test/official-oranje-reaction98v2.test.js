@@ -24,6 +24,8 @@ test('98V-2: three first-hand coach quotations become literal attributed facts w
  assert.equal(candidate.primaryAuthority,'association_decision');
  assert.equal(primaryAuthority(article),'association_decision');
  assert.ok(candidate.facts.length>=4);
+ assert.ok(candidate.facts.some(f=>f.text==='Bondscoach Xavi Hernández reageerde op de nederlaag van het Nederlands elftal.'));
+
  assert.equal(candidate.facts.some(f=>/5-0|Denzel|collectief falen/.test(f.text)),false);
  assert.ok(candidate.facts.every(f=>article.text.includes(f.evidence[0].quote)));
  assert.deepEqual(validateEvidence(candidate,[article],Date.parse('2026-11-17T14:00:00Z')),[]);
@@ -47,4 +49,22 @@ test('98V-2: distinct Sportmonks empty windows and outages are recorded before f
  await editorialMatchSnapshot('eredivisie','/integrations/football?competition=eredivisie',
   async endpoint=>endpoint.startsWith('/editorial-sportmonks-recent')?{status:'source_unavailable'}:{status:'available',fixtures:[]},Date.now(),signals2);
  assert.equal(signals2[0].outcome,'recent_sportmonks_source_unavailable');
+});
+
+test('98V-2: a KNVB quote article attributes both lead and details to its first-party publisher',()=>{
+ const candidate=confirmedFederationCoachReaction(article);
+ const {editorialAttributionIssues}=require('../editorial-ai');
+ const draft={
+  headline:'Xavi Hernández noemt de instelling van zijn ploeg onvoldoende',
+  standfirst:'De KNVB meldt via OnsOranje dat Xavi Hernández zijn kritiek op de instelling van de spelers heeft toegelicht.',
+  body:[
+   'Volgens de KNVB was Xavi Hernández geschokt over de manier waarop zijn elftal speelde. De bondscoach was teleurgesteld over wat hij zag.',
+   'Xavi Hernández wees op de mentaliteit van zijn spelers en zei dat die anders moest. Hij voelde dat de ploeg zijn waarden niet naleefde.',
+   'De uitspraken laten vooral het verschil zien tussen zijn eerdere trots en zijn huidige teleurstelling. Hij wil begrijpen wat er is gebeurd.'
+  ]
+ };
+ assert.deepEqual(editorialAttributionIssues(draft,{
+  primaryAuthority:'association_decision',sourceUrls:[URL],
+  facts:candidate.facts.map(f=>f.text)
+ }),[]);
 });
