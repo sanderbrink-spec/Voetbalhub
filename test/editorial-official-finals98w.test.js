@@ -173,3 +173,26 @@ test('98Y: exact official match quality failure gets one bounded source-scoped r
  assert.equal(reopenOfficialFinalQuality98Y({...job,status:'review',officialFinalQualityRetry98Y:false,errorHash:'wrong'},group,now),false);
  assert.equal(reopenOfficialFinalQuality98Y({...job,status:'review',officialFinalQualityRetry98Y:false},group,Date.parse('2026-11-22T00:00:00Z')),false);
 });
+
+test('98Y: official final extracts distinctive proven timeline events from both halves',()=>{
+ const rich={...article,text:[
+  'Oranje verloor de uitwedstrijd tegen Duitsland met 5-0.',
+  'Nederland eindigde als tweede in groep A2 en plaatste zich voor de kwartfinales van de Nations League.',
+  'Voor rust maakten beide ploegen weinig kansen vanuit het veldspel.',
+  'In de 19e minuut kreeg Crysencio Summerville de bal in het strafschopgebied.',
+  'Een kansrijke positie, maar de speler gleed uit voordat hij kon schieten.',
+  'In de 32e minuut schoot Derry Scherhant de bal op de paal.',
+  'Na rust kreeg Oranje in korte tijd meerdere doelpunten tegen.',
+  'In de 60e minuut schoot Florian Wirtz de bal binnen: 2-0.',
+  'In de 77e minuut tikte Brajan Gruda de vijfde treffer binnen.'
+ ].join(' ')};
+ const rows=officialRecentFinals(knvb,uefa,[rich],now);
+ assert.equal(rows.length,1);
+ const {candidate,documents}=rows[0];
+ assert.ok(candidate.facts.length>=7,JSON.stringify(candidate.facts));
+ assert.ok(candidate.facts.some(f=>/19e minuut/.test(f.text)));
+ assert.ok(candidate.facts.some(f=>/gleed uit voordat hij/.test(f.text)));
+ assert.ok(candidate.facts.some(f=>/60e minuut/.test(f.text)));
+ assert.ok(candidate.facts.some(f=>/77e minuut/.test(f.text)));
+ assert.deepEqual(require('../scripts/automatic-publication').validateEvidence(candidate,documents,now),[]);
+});

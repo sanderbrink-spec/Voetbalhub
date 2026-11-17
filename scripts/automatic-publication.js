@@ -1002,7 +1002,7 @@ async function reviseDraft(payload,candidate,docs,reason,options,published=[],re
   {role:'system',content:M.storyStyle+' Pak eerst de tekortkomingen uit reviewFeedback.focus en reviewFeedback.findings aan. De scores zijn doelen voor de tekstkwaliteit; geef zelf geen score. '+(payload.matchId?matchGuidance.revisionPrompt(payload):candidate.kind==='preview'?
    M.previewStyle+' Gebruik uitsluitend verifiedFacts. Als editorialAssignment aanwezig is, verdeel de feiten exact over opening, firstParagraph en secondParagraph. Herhaal de inzet niet in de alinea’s. Begin beide alinea’s met de gecontroleerde datum van dat afgelopen duel als die aanwezig is, en gebruik de verleden tijd. Houd de kop en intro ondubbelzinnig toekomstgericht. Laat onbewezen datums, speelhelften, minuten, typen acties en conclusies weg. Gebruik helder voetbal-Nederlands. Verwerk rejection en geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+M.previewStructure+'.':
    candidate.verifiedOfficialFinal&&candidate.match?
-   'Je herschrijft uitsluitend een officieel bevestigd manneninterlandresultaat. Gebruik de gecontroleerde match voor thuis-uitrichting, datum en eindstand en verifiedFacts voor alle overige beweringen. Maak een nieuwe originele kop met exacte thuis-uitstand en een korte nieuwsintro. Body 1 beschrijft alleen een bewezen betekenis voor het toernooi. Body 2 behandelt uitsluitend een concreet feit vóór rust als dat bewijs bestaat. Body 3 behandelt uitsluitend een ander feit na rust of een bewezen afzonderlijk incident. Leg verband tussen de onderdelen zonder een spelbeeld, balbezit, overwicht, kansen of oorzaken te verzinnen. Geen competitieuitleg, samenvattende opvulalinea of herhaling van de uitslag. De KNVB mag als officiële uitgever via OnsOranje worden genoemd, maar niet als bewijs voor wedstrijdgebeurtenissen zonder expliciete feiten. Controleer alle eigennamen en adjectieven tegen verifiedFacts. Geen onbekende spelers, minuten of tussenstanden. Voor iedere alinea moet ten minste één ander letterlijk bewezen feit bestaan; anders JSON {"skip":true}. Schrijf precies drie inhoudelijke alinea’s in natuurlijk voetbal-Nederlands met elk 18-120 woorden en minstens 70 tekens. Laat de eerdere afgewezen tekst en de afwijsredenen niet als nieuwe feiten meetellen. Behoud de onafhankelijke beoordeling 85/90. Geef uitsluitend JSON met headline, standfirst en body.' :
+   'Je bent Veldio-verslaggever en herschrijft een volledig geverifieerd manneninterlandresultaat. De gecontroleerde match bewijst uitsluitend de exacte datum, thuis-uitrichting en eindstand; alle andere feiten moeten letterlijk terug te vinden zijn in verifiedFacts. Kies uit de afzonderlijke bronfeiten de belangrijkste kansen, doelpunten en gevolgen. Gebruik een duidelijke chronologie: een korte krachtige intro met de eindstand; alinea 1 vertelt de belangrijkste concrete ontwikkelingen voor rust; alinea 2 vertelt met brongetrouwe minuten en spelers wat er na rust gebeurde; alinea 3 behandelt de afzonderlijk bevestigde groepspositie en vervolgstap. Als de groepspositie al in de intro staat, gebruik het derde deel voor een nog niet genoemd afzonderlijk wedstrijdfeit. Beschrijf niet driemaal de uitslag, maak geen algemene wedstrijdanalyse en verzin geen ruststand, speler, doelpunt, oorzaak, kansenbalans, dominantie of effectiviteit. Kopieer geen KNVB-zinnen, ook niet uit verifiedFacts; herbouw iedere zin in een nieuwe woordvolgorde. De afwijzingsredenen dienen alleen als waarschuwing, niet als feiten. Vermeld de KNVB uitsluitend als toegeschreven officiële uitgever, niet als bewijs voor ontbrekende wedstrijdgebeurtenissen. Alleen bij minstens drie verschillende inhoudelijke bronfeiten schrijf je drie zelfstandige alinea’s van elk 18-120 woorden en minstens 70 tekens, anders JSON {"skip":true}. Houd de onafhankelijke 85/90 beoordelingsgrenzen intact. Antwoord uitsluitend met headline, standfirst, body als JSON.' :
    candidate.kind==='announcement'&&!candidate.primaryAuthority?
    'Herschrijf het voetbalnieuws vanuit verifiedFacts. Gebruik drie bondige bodyalinea’s met elk nieuw bewijs. Bij een afmelding behandelt alinea 1 de gemelde aanleiding, alinea 2 het besluit van de bond en alinea 3 de afzonderlijk gemelde clubplanning of tegenstander. Noem de terugkeer alleen in de intro en de selectiegrootte maximaal één keer. Schrijf de aanleiding en het vervolg toe aan de juiste organisaties. Gebruik eigen zinnen. Trek geen medische conclusies en voeg geen bedoelingen, verwachtingen of uitslagen toe. Gebruik de woordreeksen in rejection uitsluitend als te vermijden tekst. Begin met een ander feit of onderwerp en verander de volledige zinsbouw. Los rejection op. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+structure+'. Geef skip als bewijs ontbreekt.':
    candidate.kind==='announcement'&&candidate.primaryAuthority==='association_decision'&&
@@ -2016,6 +2016,20 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    delete job.checkpoint;
   }
   if(reopenOfficialFinalQuality98Y(job,group,now))report.signals.push({route:'news',topic:group[0].title,outcome:'official_final_quality_retry_98y'});
+  if(group.officialFinalCandidate&&group.officialFinalCandidate.facts.length>=7&&
+     job.status==='review'&&job.failureStage==='quality'&&
+     job.failureCategory==='journalistic_rejection'&&
+     job.errorHash===sha('Kwaliteitscontrole na 2 herschrijvingen: Journalistieke kwaliteit lager dan 85.')&&
+     !job.officialFinalRicherEvidenceRetry98Y){
+    const published=Date.parse(group[0]?.publishedAt||'');
+    if(Number.isFinite(published)&&published<=now&&now-published<=72*3600000){
+     job.officialFinalRicherEvidenceRetry98Y=true;
+     job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+     delete job.checkpoint;
+     report.signals.push({route:'news',topic:group[0].title,
+      outcome:'official_final_richer_evidence_retry_98y',facts:group.officialFinalCandidate.facts.length});
+    }
+  }
   // Generator failures have their own separate bounded retry path.
   if(group.officialFinalCandidate&&job.status==='review'&&job.failureStage==='generation'&&
      job.failureCategory==='generator_failure'&&
@@ -2154,7 +2168,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    if(duplicate(payload,comparison.concat(report.validated.map(item=>item.article)))){report.skipped.push({topic,reason:'Onderwerp staat al in de app.',draftHeadline:draft.headline});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
-   const revisionLimit=singlePublication?3:2;
+   const revisionLimit=singlePublication||(candidate.verifiedOfficialFinal&&facts.length>=7)?3:2;
    for(let revision=checkpoint.revisions||0;revision<=revisionLimit;revision++){
     if(!matchRecord&&candidate.primaryAuthority==='club_decision'){
      // V71: the same source-copied staff clause appears in both brief and full
@@ -2214,7 +2228,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      report.assessments.push({topic,revision,approved:false,score:null,reasons:[rejection],...(focusSourceUrl?{draft:{headline:draft.headline,standfirst:draft.standfirst,body:draft.body}}:{})});
     }
     // Use the additional proof-run revision only for actionable review scores.
-    if(revision===revisionLimit||(revision===2&&!assessment))
+    if(revision===revisionLimit||(revision===2&&!assessment&&!candidate.verifiedOfficialFinal))
      throw Error('Kwaliteitscontrole na '+revision+' herschrijvingen: '+rejection);
     const revised=await reviseDraft(payload,candidate,group,rejection,ai,comparison,editorialRewriteFeedback(assessment,review));
     if(!revised)throw Error('Onvoldoende feiten voor verantwoorde herschrijving.');

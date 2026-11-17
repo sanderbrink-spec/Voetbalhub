@@ -93,20 +93,45 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
       !lead.includes(tidy(opponent).toLowerCase())||
       !(lead.includes('oranje')||lead.includes('nederland')))continue;
    const sentences=(body.slice(0,11000).match(/[^.!?]{36,340}[.!?]/gu)||[]).map(x=>x.trim());
-   // Narrative plan: stakes, before the break, after the break, a concrete
-   // match incident. Do not copy unrelated historical scorelines.
-   const roles=[
-    /\b(?:groep|kwartfinal|geplaatst|groepswinnaar)\b/i,
-    /\b(?:eerste helft|voor rust|rust in|ruststand)\b/i,
-    /\b(?:tweede helft|na rust|na de pauze)\b/i,
-    /\b(?:in de \d{1,2}e minuut|doelpunt|treffer|scoorde)\b/i
-   ];
+   // 98Y: preserve more of the *actual* match evidence rather than asking
+   // the writer to inflate four generic source sentences into three paragraphs.
+   // A cited incident is not inferred from the final score, and older match
+   // anecdotes are never selected as current timeline evidence.
    const picked=[],used=new Set();
-   for(const role of roles){
-    const line=sentences.find(s=>role.test(s)&&
-     !/\b\d{1,2}\s*[-–]\s*\d{1,2}\b/.test(s)&&
-     !used.has(tidy(s).toLowerCase()));
-    if(line){picked.push(line);used.add(tidy(line).toLowerCase());}
+   const safeSentence=s=>s&&!/\b(?:vorig seizoen|vorige ontmoeting|destijds|historische wedstrijd uit)\b/i.test(s);
+   const add=s=>{
+    if(!safeSentence(s))return;
+    const key=tidy(s).toLowerCase();
+    if(!used.has(key)){picked.push(s);used.add(key);}
+   };
+   const stakes=sentences.filter(s=>/\b(?:groep|kwartfinal|geplaatst|groepswinnaar)\b/i.test(s))
+    .sort((a,b)=>Number(/\b(?:groep a[1-4]|tweede plaats|groepswinnaar)\b/i.test(b))-
+     Number(/\b(?:groep a[1-4]|tweede plaats|groepswinnaar)\b/i.test(a))||
+     Number(/\bfoto:/i.test(a))-Number(/\bfoto:/i.test(b)))[0];
+   add(stakes);
+   add(sentences.find(s=>/\b(?:eerste helft|voor rust|rust in|ruststand)\b/i.test(s)));
+   add(sentences.find(s=>/\b(?:tweede helft|na rust|na de pauze)\b/i.test(s)));
+   // Add explicit minute-bearing events from both halves. These events come
+   // verbatim from the current KNVB article; no elapsed minute is calculated.
+   const incidentMinutes=sentences.map((s,i)=>{
+    const m=/\b(?:in|rond)\s+de\s+(\d{1,3})(?:e|ste)\s+minuut\b/i.exec(s);
+    return {s,i,minute:m?Number(m[1]):null};
+   }).filter(item=>Number.isInteger(item.minute)&&item.minute>=1&&item.minute<=120&&safeSentence(item.s));
+   for(const phase of [0,1]){
+    for(const {s,i} of incidentMinutes.filter(item=>phase===0?item.minute<=45:item.minute>45).slice(0,3)){
+     // Retain immediate outcome of a chance, but only when the next source
+     // sentence explicitly completes that same incident.
+     const next=sentences[i+1]||'';
+     const completion=/^(?:Een kansrijke positie|De kans|Hij|Zij|Maar)\b/i.test(next)&&
+      s.length+next.length<500?s+' '+next:s;
+     add(completion);
+    }
+   }
+   // If the article reports an event without an explicit minute, it may serve
+   // as a fourth separate fact but never as proof for a particular match minute.
+   if(picked.length<3){
+    add(sentences.find(s=>/\b(?:doelpunt|treffer|scoorde)\b/i.test(s)&&
+     !/\b(?:vorige ontmoeting|afgelopen vrijdag)\b/i.test(s)));
    }
    if(picked.length<3)continue;
    const match={homeTeam:home,awayTeam:away,homeScore:hs,awayScore:as,playedAt:date};
@@ -117,7 +142,7 @@ function officialRecentFinals(knvb,uefa,reports,now=Date.now()){
    const candidate={kind:'announcement',topic:article.title,category:'Nations League',
     teams:[home,away],eventDate:date,match,verifiedOfficialFinal:true,
     sharedEventEvidence:[{source:1,quote:scoreQuote},{source:2,quote:otherQuote}],
-    facts:[fact,...picked.slice(0,4).map(text=>({text,evidence:[{source:0,quote:text}]}))]};
+    facts:[fact,...picked.slice(0,8).map(text=>({text,evidence:[{source:0,quote:text}]}))]};
    const key=[date,home,away,article.url].join(':');
    if(seen.has(key))continue;
    seen.add(key);
