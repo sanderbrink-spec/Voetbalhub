@@ -61,6 +61,7 @@
    (/^(?:De Nations|Nations League-(?:wedstrijd|duel|groep|campagne))$/i.test(name)&&/\bnations league\b/.test(known))||
    (/^(?:De )?Verenigde(?: Staten)?$/i.test(name)&&/\b(?:verenigde staten|united states|u s men s national team|usmnt|amerikaans[e]?)\b/.test(known))||
    (/^De Duitse$/.test(name)&&/\bduitsland\b/.test(known))||
+   (/^De Nederlandse$/i.test(name)&&/\bnederland\b/.test(known))||
    (/^De Amerikaanse$/i.test(name)&&/\b(?:amerikaans[e]?|u s soccer|usmnt)\b/.test(known));
   const competitionPhrasing=/^(?:(?:De|Het|Een) Eredivisie(?:-wedstrijd|-speelronde)?|In de Eredivisie(?:-wedstrijd|-speelronde)?)$/i;
   const verifiedStadiumArticle=name=>/^(?:De Johan|Het Olympiastadion)$/i.test(name)&&
@@ -100,7 +101,8 @@
     (uefaVerifiedNames.has(normalize(leading[1]))||
      (' '+normalize(evidence)+' ').includes(' '+normalize(leading[1])+' ')));
   };
-  const grammaticalStatusName=name=>(/^De UEFA$/i.test(name)&&publisher==='UEFA')||
+  const grammaticalStatusName=name=>(/^De KNVB$/i.test(name)&&publisher==='KNVB')||
+   (/^De UEFA$/i.test(name)&&publisher==='UEFA')||
     (/^In Groep$/i.test(name)&&publisher==='UEFA'&&/\b(?:group|groep|league a)\b/i.test(supported));
    const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
@@ -190,6 +192,9 @@
   const publisher=payload.sources?.[0]?.url==='https://www.sportmonks.com/football-api/'?'Sportmonks Football API':
    payload.sources?.[0]?.url==='https://www.football-data.org/'?'football-data.org':
    payload.sources?.[0]?.url==='https://github.com/openfootball/football.json'?'OpenFootball':
+   payload.articleKind==='announcement'&&payload.officialFinalProof&&payload.sources?.length===3&&
+    /^https:\/\/www\.onsoranje\.nl\/nieuws\/nederlands-elftal-mannen\/\d+\//.test(payload.sources[0]?.url||'')?
+    payload.sources[0].url:
    payload.articleKind==='announcement'&&['club_decision','association_decision'].includes(payload.primaryAuthority)&&payload.sources?.length===1?
     payload.sources[0].url:'';
   const issues=evidenceIssues(draft,payload.verifiedFacts||[],match,publisher);

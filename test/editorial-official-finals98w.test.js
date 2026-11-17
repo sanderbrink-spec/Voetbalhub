@@ -157,3 +157,19 @@ test('98W: an independently verified final is editorially distinct from earlier 
  assert.equal(duplicate(current,[{...status,match:structuredClone(candidate.match)}]),true);
  assert.equal(duplicate(current,[{...status,headline:current.draft.headline}]),true);
 });
+
+test('98Y: exact official match quality failure gets one bounded source-scoped retry',()=>{
+ const {reopenOfficialFinalQuality98Y}=require('../scripts/automatic-publication');
+ const crypto=require('node:crypto');
+ const reason='Kwaliteitscontrole na 2 herschrijvingen: Controleer namen die niet in de aangeleverde feiten staan: De Nederlandse. Niet aangeleverd wedstrijdverloop: overwicht of dominantie. Voeg controleerbare feiten toe of verwijder deze passage.';
+ const hash=crypto.createHash('sha256').update(reason).digest('hex');
+ const now=Date.parse('2026-11-17T23:00:00Z');
+ const group=Object.assign([{publishedAt:'2026-11-16T21:30:00Z'}],{officialFinalCandidate:{match:{homeTeam:'Duitsland',awayTeam:'Nederland',homeScore:5,awayScore:0,playedAt:'2026-11-16'}}});
+ const job={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',errorHash:hash,attempts:2,checkpoint:{test:1}};
+ assert.equal(reopenOfficialFinalQuality98Y(job,group,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);assert.equal(job.checkpoint,undefined);
+ assert.equal(reopenOfficialFinalQuality98Y(job,group,now),false);
+ assert.equal(reopenOfficialFinalQuality98Y({...job,status:'review'},group,now),false);
+ assert.equal(reopenOfficialFinalQuality98Y({...job,status:'review',officialFinalQualityRetry98Y:false,errorHash:'wrong'},group,now),false);
+ assert.equal(reopenOfficialFinalQuality98Y({...job,status:'review',officialFinalQualityRetry98Y:false},group,Date.parse('2026-11-22T00:00:00Z')),false);
+});

@@ -56,3 +56,18 @@ test('98T official UEFA League A facts support Dutch country names and competiti
  const unrelated={...verified,standfirst:'Zowel Kevin Mbappé als België is volgens de UEFA-status geplaatst.'};
  assert.ok(F.evidenceIssues(unrelated,facts,null,statusUrl).some(x=>x.includes('Zowel Kevin')));
 });
+
+test('98Y: Dutch country adjective requires Nederland in verified facts',()=>{
+ const draft={headline:'Oranje verliest van Duitsland',standfirst:'De Nederlandse ploeg verloor.',body:[]};
+ assert.ok(!F.evidenceIssues(draft,['Nederland verloor van Duitsland.']).some(x=>x.includes('De Nederlandse')));
+ assert.ok(F.evidenceIssues(draft,['België verloor van Duitsland.']).some(x=>x.includes('De Nederlandse')));
+ draft.body=['Kevin Onbekend scoorde.'];
+ assert.ok(F.evidenceIssues(draft,['Nederland verloor van Duitsland.']).some(x=>x.includes('Kevin Onbekend')));
+});
+test('98Y: KNVB publisher attribution requires verified official host',()=>{
+ const draft={headline:'Oranje verliest van Duitsland',standfirst:'De KNVB meldt de uitslag.',body:[]};
+ const facts=['Nederland verloor van Duitsland.'];
+ const official='https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen/82839/uitslag';
+ assert.ok(!F.evidenceIssues(draft,facts,null,official).some(x=>x.includes('De KNVB')));
+ assert.ok(F.evidenceIssues(draft,facts,null,'').some(x=>x.includes('De KNVB')));
+});

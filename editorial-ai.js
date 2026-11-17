@@ -311,7 +311,9 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      'De eindstand is door KNVB en een tweede officiële voetbalbond afzonderlijk bevestigd. Alleen verifiedFacts en de gecontroleerde match mogen feitelijke beweringen onderbouwen.',
      'De kop behandelt de wedstrijd zelf: noem het bewezen thuis-uitresultaat met exacte eindstand (bijvoorbeeld de score in de kop), niet alleen plaatsing of groepsstatus. Gebruik een andere nieuwsaanleiding dan recente kwalificatieoverzichten in recentHeadlines.',
      'Geef alleen JSON met headline (5-14 Nederlandse woorden), standfirst (8-35 woorden) en body met precies drie onderscheiden alinea’s (elk 18-120 woorden, minimaal 70 tekens).',
-     'Intro: de bewezen eindstand in correcte thuis-uitrichting. Body 1: één bewezen betekenis voor de groep of het toernooi. Body 2: feiten over de eerste helft. Body 3: afzonderlijke feiten over de tweede helft of een letterlijk bewezen wedstrijdincident.',
+     'Intro: de bewezen eindstand in correcte thuis-uitrichting. Body 1: een afzonderlijk letterlijk bewezen groeps- of toernooifeit. Body 2: een concreet geverifieerd detail over de eerste helft als dat in verifiedFacts staat. Body 3: een ander concreet geverifieerd detail over de tweede helft of een afzonderlijk bewezen wedstrijdincident.',
+     'Schrijf één samenhangende verhaallijn: resultaat, betekenis, bewezen gebeurtenissen. Verdeel de aangeleverde feiten vooraf over de alinea’s. Elke alinea voegt nieuws toe en herhaalt geen eerdere bewering. Niet alle details hoeven een spectaculaire wending te zijn.',
+     'Beschrijf balbezit, overwicht, kansen, dominantie, ruststand of de oorzaak van een nederlaag uitsluitend als die details expliciet in verifiedFacts staan. Een doelpunt of eindstand bewijst geen spelbeeld. Gebruik geen vage algemene slotzin.',
      'Noem geen tussenstand, ruststand, doelpuntenmaker, minuut, ranglijst, kwalificatiegevolg of oorzaak zonder expliciet bewezen grond.',
      'Geen API-namen, leveranciersnamen of het verificatieproces in de lopende tekst. Kopieer geen bronzinnen. Iedere alinea bevat nieuw feitelijk nieuws en herhaalt niet de eindstand.',
      'Kan het artikel niet drie eigen alinea’s met voldoende verschillende feiten dragen, geef uitsluitend {"skip":true}. Alle onafhankelijke review-, rechten- en publicatiecontroles blijven verplicht.'
@@ -390,7 +392,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      throw new DraftError(422,'Onvoldoende gecontroleerde feiten voor een inhoudelijk concept.'+
       (automaticPublication&&articleKind==='preview'&&issue?' Controlepunt vóór het overslaan: '+issue:' Vul zo nodig aanvullende, verschillende feiten aan.'));
     }
-    const issues=generationIssues(draft,facts,match,compact,officialPublisher?sourceUrls[0]:'',articleKind);
+    const issues=generationIssues(draft,facts,match,compact,(officialPublisher||officialFinal)?sourceUrls[0]:'',articleKind);
     if(automaticPublication){
      issues.push(...editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts}));
      issues.push(...officialCoachStructureIssues(draft,{topic,primaryAuthority,facts}));
