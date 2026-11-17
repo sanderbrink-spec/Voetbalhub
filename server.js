@@ -309,17 +309,21 @@ async function automaticEvidenceIssue(payload) {
     try {
       const official=require('./scripts/editorial-official-finals98w');
       const {officialPage}=require('./scripts/automatic-publication');
-      const [knvb,uefa,story]=await Promise.all([
+      const secondary=payload.officialFinalProof.uefaResultsUrl===official.UEFA_RESULTS?
+       official.UEFA_RESULTS:payload.officialFinalProof.dfbResultsUrl===official.DFB_RESULTS?
+       official.DFB_RESULTS:null;
+      if(!secondary)return 'Onbekende tweede officiële interlandbron.';
+      const [knvb,second,story]=await Promise.all([
         officialPage(official.KNVB_RESULTS),
-        officialPage(official.UEFA_RESULTS),
+        officialPage(secondary),
         officialPage(payload.officialFinalProof.sourceNewsUrl)
       ]);
-      const verified=official.officialRecentFinals(knvb,uefa,[story],Date.now());
+      const verified=official.officialRecentFinals(knvb,second,[story],Date.now());
       const exact=verified.some(item=>
         JSON.stringify(item.candidate.match)===JSON.stringify(payload.match)&&
         JSON.stringify(item.candidate.facts.map(fact=>fact.text))===JSON.stringify(payload.verifiedFacts)&&
         item.proof.sourceNewsUrl===payload.sources[0].url);
-      if(!exact)return 'KNVB en UEFA bevestigen deze interlandfeiten niet allebei letterlijk.';
+      if(!exact)return 'KNVB en de tweede officiële bond bevestigen deze interlandfeiten niet allebei letterlijk.';
     }catch{
       return 'Officiële interlandbronnen konden niet opnieuw worden gecontroleerd.';
     }

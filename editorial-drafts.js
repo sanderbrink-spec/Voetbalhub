@@ -28,7 +28,8 @@ function cleanPayload(value={}){
   ...(value.replacePreviewId ? {replacePreviewId:String(value.replacePreviewId).slice(0,80)} : {}),
   ...(officialFinal ? {officialFinalProof:{
    knvbResultsUrl:String(officialFinal.knvbResultsUrl||'').slice(0,1500),
-   uefaResultsUrl:String(officialFinal.uefaResultsUrl||'').slice(0,1500),
+   ...(officialFinal.uefaResultsUrl ? {uefaResultsUrl:String(officialFinal.uefaResultsUrl).slice(0,1500)} : {}),
+   ...(officialFinal.dfbResultsUrl ? {dfbResultsUrl:String(officialFinal.dfbResultsUrl).slice(0,1500)} : {}),
    sourceNewsUrl:String(officialFinal.sourceNewsUrl||'').slice(0,1500),
    match:officialFinal.match ? {
     homeTeam:officialFinal.match.homeTeam,awayTeam:officialFinal.match.awayTeam,
