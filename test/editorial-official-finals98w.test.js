@@ -89,3 +89,17 @@ test('98W: full official HTML beats 14k article truncation and preserves literal
  const {validateEvidence}=require('../scripts/automatic-publication');
  assert.deepEqual(validateEvidence(rows[0].candidate,rows[0].documents,now),[]);
 });
+
+test('98X: draft storage preserves official final proof and rejects altered identity',()=>{
+ const {candidate,documents,proof}=officialRecentFinals(knvb,uefa,[article],now)[0];
+ const {cleanPayload}=require('../editorial-drafts');
+ const desk=require('../editorial-desk-model');
+ const payload={draft:{headline:article.title,body:[]},articleKind:'announcement',
+  match:candidate.match,officialFinalProof:proof,
+  verifiedFacts:candidate.facts.map(f=>f.text),sources:documents.map(doc=>({url:doc.url})),
+  factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}};
+ const cleaned=cleanPayload(payload);
+ assert.deepEqual(cleaned.officialFinalProof,proof);
+ assert.equal(desk.officialInternationalFinal(cleaned),true);
+ assert.equal(desk.officialInternationalFinal({...cleaned,officialFinalProof:{...proof,match:{...proof.match,homeScore:1}}}),false);
+});
