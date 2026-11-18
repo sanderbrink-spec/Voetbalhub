@@ -250,6 +250,37 @@ function internationalScoring(doc){
  }
  return persons.size?{persons:[...persons],keys}:null;
 }
+// A club roundup can point to a separate competition decision. Its names and
+// goals never enter this packet. Only the organiser supplies publication facts.
+function promotionFromRoundup(club,organiser,now){
+ if(!allowedUrl(club.url)||host(organiser.url)!=='uefa.com'||
+    primaryAuthority(organiser)!=='association_decision'||
+    !new URL(organiser.url).pathname.startsWith('/uefanationsleague/news/'))return null;
+ const recent=[club,organiser].every(doc=>{
+  const age=now-Date.parse(doc.publishedAt);
+  return age>=-300000&&age<=config.maxAgeHours*3600000;
+ });
+ if(!recent)return null;
+ const signal=club.text.match(/\b(\p{Lu}[\p{L}-]+) promoveerde in de Nations League\b/u);
+ if(!signal)return null;
+ const country=signal[1],english=country==='IJsland'?'Iceland':country;
+ const sections=organiser.text.split(/(?=\bGroup [A-D][1-4]\s)/);
+ for(const section of sections){
+  const table=section.match(/^Group [A-D][1-4]\s+(?:[\p{Lu}][\p{L} ’'-]+\s*\(\d+\s*(?:pts)?\),?\s*){3,4}/u);
+  if(!table)continue;
+  const statuses=section.slice(table[0].length).match(/^(?:[\p{Lu}][\p{L} ’'-]+ are confirmed in (?:first|second|third|fourth) place and will [^.!?]{5,65}\.\s*){3,4}/u);
+  if(!statuses)continue;
+  const lines=statuses[0].trim().match(/[^.]+\./g).map(line=>line.trim());
+  const decision=lines.find(line=>line.startsWith(english+' are confirmed in first place and will be promoted to League '));
+  if(!decision||!new RegExp('\\b'+english+' \\(\\d+').test(table[0]))continue;
+  const quotes=[decision,table[0].trim(),...lines.filter(line=>line!==decision)];
+  const candidate={kind:'announcement',primaryAuthority:'association_decision',category:'Nations League',
+   topic:country+' promoveert in de Nations League',teams:[],sharedEventEvidence:[],
+   facts:quotes.map(quote=>({text:quote,evidence:[{source:0,quote}]}))};
+  if(!validateEvidence(candidate,[organiser],now).length)return candidate;
+ }
+ return null;
+}
 function addScoringSource(groups,doc,event){
  const group=groups.find(group=>
   Math.abs(Date.parse(group[0].publishedAt)-Date.parse(doc.publishedAt))<=48*3600000&&
@@ -1043,11 +1074,16 @@ async function reviseDraft(payload,candidate,docs,reason,options,published=[],re
   'Maak duidelijk dat de body-informatie uit de officiële bekendmaking komt. Kopieer geen bronzinnen of citaten, verzin geen namen, rollen, datums, gevolgen of analysen en herhaal de benoeming niet in de body. '+
   'Gebruik de afwijzingsredenen alleen als fouten die je moet vermijden, niet als bewijs. Neem geen beweringen over uit een afgekeurd concept. '+
   'Geen vierde of vijfde alinea. Als voldoende verschillende feiten ontbreken, geef JSON {"skip":true}. De onafhankelijke feitenredacteur controleert alle beweringen opnieuw.';
+ const editExisting=candidate.verifiedOfficialFinal&&reviewFeedback?.dimensions?.reliability>=production.MINIMUM_SCORES.reliability&&
+  reviewFeedback.dimensions.journalism<production.MINIMUM_SCORES.journalism&&
+  reason==='Journalistieke kwaliteit lager dan 85.';
  const revised=await complete([
   {role:'system',content:M.storyStyle+' Pak eerst de tekortkomingen uit reviewFeedback.focus en reviewFeedback.findings aan. De scores zijn doelen voor de tekstkwaliteit; geef zelf geen score. '+(payload.matchId?matchGuidance.revisionPrompt(payload):candidate.kind==='preview'?
    M.previewStyle+' Gebruik uitsluitend verifiedFacts. Als editorialAssignment aanwezig is, verdeel de feiten exact over opening, firstParagraph en secondParagraph. Herhaal de inzet niet in de alinea’s. Begin beide alinea’s met de gecontroleerde datum van dat afgelopen duel als die aanwezig is, en gebruik de verleden tijd. Houd de kop en intro ondubbelzinnig toekomstgericht. Laat onbewezen datums, speelhelften, minuten, typen acties en conclusies weg. Gebruik helder voetbal-Nederlands. Verwerk rejection en geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+M.previewStructure+'.':
    candidate.verifiedOfficialFinal&&candidate.match?
-   officialFinalWritingGuide+' Herbouw het concept vanuit verifiedFacts. Gebruik rejection alleen om afgewezen beweringen te verwijderen of te vervangen door andere geverifieerde feiten.' :
+   officialFinalWritingGuide+(editExisting?
+    ' Redigeer previousDraft op samenhang en natuurlijk voetbal-Nederlands. Behoud de bewezen gebeurtenisvolgorde. Gebruik verifiedFacts om elke claim opnieuw te staven. Schrap onnauwkeurige beeldspraak, herhaalde groepsposities en een onbewezen slotzin. Verbind de nederlaag met de bewezen toernooi-uitkomst als beide zijn onderbouwd. Introduceer geen nieuwe gebeurtenissen, minuten of namen.':
+    ' Herbouw het concept vanuit verifiedFacts. Gebruik rejection alleen om afgewezen beweringen te verwijderen of te vervangen door andere geverifieerde feiten.') :
    candidate.kind==='announcement'&&!candidate.primaryAuthority?
    'Herschrijf het voetbalnieuws vanuit verifiedFacts. Gebruik drie bondige bodyalinea’s met elk nieuw bewijs. Bij een afmelding behandelt alinea 1 de gemelde aanleiding, alinea 2 het besluit van de bond en alinea 3 de afzonderlijk gemelde clubplanning of tegenstander. Noem de terugkeer alleen in de intro en de selectiegrootte maximaal één keer. Schrijf de aanleiding en het vervolg toe aan de juiste organisaties. Gebruik eigen zinnen. Trek geen medische conclusies en voeg geen bedoelingen, verwachtingen of uitslagen toe. Gebruik de woordreeksen in rejection uitsluitend als te vermijden tekst. Begin met een ander feit of onderwerp en verander de volledige zinsbouw. Los rejection op. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+structure+'. Geef skip als bewijs ontbreekt.':
    candidate.kind==='announcement'&&candidate.primaryAuthority==='association_decision'&&
@@ -1058,7 +1094,7 @@ async function reviseDraft(payload,candidate,docs,reason,options,published=[],re
    candidate.primaryAuthority==='association_decision'?
    (/\b(?:to depart as|steps down as)\b/i.test(candidate.topic||'')?M.federationCoachStyle+' ':'')+'Herschrijf het officiële nieuwsbericht in natuurlijk Nederlands uitsluitend vanuit verifiedFacts. Vermeld de bond als bron van haar besluit in de intro. Schrijf minstens één inhoudelijke bodyalinea over opvolging of vervolgstappen expliciet toe aan de bond in officialPublisher. Verdeel afzonderlijke informatie over de speler, selectie of trainersopvolging over de body, uitsluitend als geverifieerd. Voeg geen medische diagnose of uitkomst toe. Herhaal geen feit. Neem geen letterlijke bronzinnen over. Los rejection op en geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+structure+'. Geef skip bij onvoldoende feiten.':
    coachPlan?coachRewritePrompt:`Je bent de eindredacteur van Veldio. Schrijf een nieuw, origineel Nederlands voetbalartikel op basis van uitsluitend de gecontroleerde feiten. De voorgaande concepttekst is bewust niet meegestuurd. Bouw een nieuwe tekst uitsluitend uit geverifieerde feiten, afwijsredenen en de onafhankelijke feitenverdeling. Herhaal geen eerdere speculatie en schrijf niet op basis van de oude zinsstructuur. Verdeel de feiten anders over de tekst en begin iedere inhoudelijke alinea met een eigen, afzonderlijk bewezen feit. De volledige bronpagina wordt niet meegestuurd. De aangeleverde letterlijke feiten dienen alleen als controleerbaar bewijs, niet als model voor zinsbouw. Herschrijf een afgekeurd concept op basis van uitsluitend gecontroleerde feiten en letterlijke bronpassages. Los de gemelde tekortkomingen op zonder nieuwe feiten, uitslagen, citaten, wedstrijdmomenten, datums of gevolgen te verzinnen. Gebruik uitsluitend persoonsnamen en cijfers die letterlijk in verifiedFacts voorkomen. Als een bron meerdere personen in een opsomming noemt, verander de volgorde van die personen wanneer ze dezelfde functie bekleden, of verdeel ze over afzonderlijke zinnen. Herhaal nooit de volledige namenreeks met daaropvolgende tijdsaanduiding uit de bron. Is een ondergeschikt detail niet zonder letterlijk kopiëren weer te geven, laat dat detail weg. Alle datums en jaartallen die niet in verifiedFacts staan moeten volledig uit het artikel verdwijnen; de huidige systeemdatum is geen bron. Geen onbestaande samenstellingen als 'Assistents Dennis'. Voeg nooit een technisch directeur, bestuurder, speler of andere persoon toe omdat die waarschijnlijk bij de club betrokken is. Controleer vóór je antwoord iedere genoemde persoon tegen verifiedFacts; ontbreekt de naam, verwijder de volledige onbewezen bewering. Schrijf expliciet welke organisatie elke club- of bondmededeling bevestigde. Als verifiedFacts een uitspraak van een genoemde bestuurder of coach bevatten, verwerk diens uitsluitend geverifieerde argumenten of verwachting met expliciete toeschrijving, zonder letterlijk te citeren. Maak van een mening nooit een bewezen feit. Maak nooit nieuwe uitspraken over langetermijnstrategie, ongewijzigde staf, wedstrijden of komende seizoenen die niet letterlijk ondersteund zijn door verifiedFacts. Gebruik editorialAssignment als leidraad: de intro behandelt de leadFactIds; iedere bodyalinea gebruikt een eigen factId uit bodySections. Controleer de verdeling vóór het schrijven. De labels zijn geen bron en geen aanleiding om ontbrekende claims aan te vullen. Pak de concrete tekortkomingen in reviewFeedback.priorities aan. Bij officialPublisher moet de intro duidelijk de officiële bron noemen en moet minimaal één inhoudelijke alinea expliciet aan dezelfde bekendmaking worden toegeschreven. De bronlink staat daarnaast in het aparte bronnenveld. Formuleer iedere alinea in eigen zinsbouw en orden controleerbare verschillende feiten; verzin geen interview, analyse, consequentie of quote. Wees expliciet over wat alleen de club bevestigt; pas de scores nooit zelf aan en wijzig geen feiten om een hogere score te krijgen. Als coachPlan waar is, schrijf exact drie bodyalinea’s met elk één kernthema: staf, loopbaan en toegeschreven motivering. De benoeming en contractvoorwaarden horen in de intro en worden niet in een extra slotparagraaf herhaald. Feiten die uitspraken of verwachtingen zijn, blijven expliciet toegeschreven aan de spreker; behandel potentie, autoriteit en verwachtingen nooit als objectieve uitkomsten. Gebruik geen extra vierde of vijfde paragraaf. Als er onvoldoende werkelijk verschillende feiten zijn voor de gevraagde structuur, geef skip. Maak eerst intern een feitenverdeling: intro bevat uitsluitend het nieuwsbesluit; elke bodyalinea behandelt een ander, concreet geverifieerd detail. Herhaal de aanstelling niet opnieuw in de eerste bodyalinea. Verander bij bronoverlap de volledige zinsstructuur en volgorde van informatie, niet alleen synoniemen of leestekens. Controleer dat geen reeks van tien opeenvolgende woorden uit de bron in het concept voorkomt. Formuleer vanuit verifiedFacts met een eigen zinsbouw. Gebruik letterlijke bronpassages alleen om feiten te controleren. Neem geen bronzinnen of citaten over. Maak een nieuwe artikelstructuur, niet slechts een synoniemenversie. Bij een bewezen trainersbenoeming met veel feiten: reserveer het besluit en contract uitsluitend voor de intro, beschrijf daarna de verandering van interim-leiding naar de nieuwe hoofdtrainer, de afzonderlijke bevestigde loopbaanstappen en de expliciet ondersteunde afweging of stafindeling. De voormalige tijdelijke leidinggevenden waren niet tijdelijk assistent: zij keren na hun interim-rol terug als assistent. Noem dat onderscheid uitsluitend als de aangeleverde feiten dit bevestigen. Geef elk bodydeel een eigen invalshoek. Verwijder repetitieve benoemingszinnen, vermijd generieke formuleringen en citeer de club als bron van haar eigen besluit. Gebruik voor iedere inhoudelijke alinea een ander nog niet benut geverifieerd detail, waaronder relevante loopbaanachtergrond of de onderbouwde motivering van de club, voor zover aanwezig. Houd de opening informatief en onderscheid de eigen kop van de recente koppen zonder nieuwe feiten toe te voegen. Houd de tekst origineel en journalistiek sterk. Lever alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden),  ${structure}. Als de feiten onvoldoende diepgang toelaten, geef {"skip":true}. Geen claims die niet door de aangeleverde feiten worden gedragen.`)},
-  {role:'user',content:JSON.stringify({rejection:safeRejection,...(forbiddenPhrases.length?{originalityConstraint:'Gebruik deze aangetroffen woordreeksen uitsluitend als verbod. Herbouw de betreffende zin vanuit een ander zinsdeel of laat een ondergeschikt detail weg.',forbiddenPhrases}:{}),reviewFeedback,officialPublisher,coachPlan,factRoles,editorialAssignment:candidate.kind==='preview'?M.previewAssignment(writerFacts):candidate.verifiedOfficialFinal?null:editorialAssignment(writerFacts,{compact:M.briefEligible(payload)}),verifiedFacts:writerFacts,paragraphPlan:payload.matchId?matchGuidance.paragraphPlan(payload):null,allowedNumbers:matchGuidance.allowedNumbers(writerFacts),allowedScores:matchGuidance.allowedScores(writerFacts),match:payload.match||null,articleKind:payload.articleKind,recentHeadlines:published.slice(0,20).map(a=>a.headline),candidate:{kind:candidate.kind,topic:candidate.topic,category:candidate.category,primaryAuthority:candidate.primaryAuthority},sources:docs.map(d=>({url:d.url,title:d.title,publishedAt:d.publishedAt}))})}
+  {role:'user',content:JSON.stringify({rejection:safeRejection,...(editExisting?{previousDraft:payload.draft}:{}),...(forbiddenPhrases.length?{originalityConstraint:'Gebruik deze aangetroffen woordreeksen uitsluitend als verbod. Herbouw de betreffende zin vanuit een ander zinsdeel of laat een ondergeschikt detail weg.',forbiddenPhrases}:{}),reviewFeedback,officialPublisher,coachPlan,factRoles,editorialAssignment:candidate.kind==='preview'?M.previewAssignment(writerFacts):candidate.verifiedOfficialFinal?null:editorialAssignment(writerFacts,{compact:M.briefEligible(payload)}),verifiedFacts:writerFacts,paragraphPlan:payload.matchId?matchGuidance.paragraphPlan(payload):null,allowedNumbers:matchGuidance.allowedNumbers(writerFacts),allowedScores:matchGuidance.allowedScores(writerFacts),match:payload.match||null,articleKind:payload.articleKind,recentHeadlines:published.slice(0,20).map(a=>a.headline),candidate:{kind:candidate.kind,topic:candidate.topic,category:candidate.category,primaryAuthority:candidate.primaryAuthority},sources:docs.map(d=>({url:d.url,title:d.title,publishedAt:d.publishedAt}))})}
  ],options,'revision');
  return finalizeCheckedRevision(revised,payload,candidate,docs);
 }
@@ -1828,6 +1864,21 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(restored)restored.scorers=group.scorers;
   else groups.push(group);
  }
+ // Give the existing UEFA topic a specific independently checkable angle.
+ // Queue identity stays with the original UEFA page, including duplicate checks.
+ for(const group of authoritative){
+  if(host(group[0].url)!=='uefa.com')continue;
+  for(const roundup of scoringGroups.filter(packet=>independentEvidenceIssue(packet))){
+   const candidate=promotionFromRoundup(roundup[0],group[0],now);
+   if(!candidate)continue;
+   group.promotionCandidate=candidate;
+   for(const restored of groups.filter(other=>other.length===1&&other[0].url===group[0].url))
+    restored.promotionCandidate=candidate;
+   report.signals.push({route:'news',outcome:'verified_alternative_angle',topic:candidate.topic,
+    signalUrl:roundup[0].url,evidenceUrl:group[0].url,omitted:'Onbevestigde doelpuntenmakers'});
+   break;
+  }
+ }
  groups.push(...authoritative);
  groups.sort((a,b)=>editorialPriority(b[0])-editorialPriority(a[0])||Date.parse(b[0].publishedAt)-Date.parse(a[0].publishedAt));
  // Produce the most evidence-rich, verified fixtures first. Brief updates
@@ -1880,6 +1931,11 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(seenGroups.has(key))continue;
   seenGroups.add(key);
   const job=durable.queue.enqueue(group,now);
+  if(group.promotionCandidate&&job.status==='review'&&job.reason==='insufficient_verified_facts'&&
+     job.failureCategory==='journalistic_rejection'&&!job.promotionAngleRetried){
+   job.promotionAngleRetried=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+   delete job.checkpoint;
+  }
   // Re-open only the previously mislabelled official match report once.
   // A real article covering this registered match or first-party story
   // still prevents new generation. The full review will run from scratch.
@@ -2099,6 +2155,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    job.attributionFeedbackRetried=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
    delete job.checkpoint;
   }
+  const lastFinalError='Kwaliteitscontrole na 3 herschrijvingen: Cijfers ontbreken in de gecontroleerde feiten: 28. Controleer namen die niet in de aangeleverde feiten staan: De Duitsers. Niet aangeleverd wedstrijdverloop: verloop per helft en ruststand. Voeg controleerbare feiten toe of verwijder deze passage.';
+  if(group.officialFinalCandidate&&job.status==='review'&&job.failureStage==='quality'&&
+     job.failureCategory==='journalistic_rejection'&&job.errorHash===sha(lastFinalError)&&
+     !job.finalCopyEditRetried&&!validateEvidence(group.officialFinalCandidate,group,now).length){
+   job.finalCopyEditRetried=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+   delete job.checkpoint;
+  }
   if(reopenTransientOfficialFinal98Y(job,group,now))report.signals.push({
    route:'news',topic:group[0].title,outcome:'official_final_transient_retry_98y'});
   if(group.officialFinalCandidate&&job.status==='review'&&
@@ -2190,7 +2253,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   let topic=group[0].title,stage='verification';
   report.counts.attempted++;
   try{
-   const evidenceHash=groupEvidenceHash(group);
+   const evidenceHash=group.promotionCandidate?sha(JSON.stringify([groupEvidenceHash(group),group.promotionCandidate])):groupEvidenceHash(group);
    const savedCheckpoint=openCheckpoint(job.checkpoint,secret,job.id);
    const checkpoint=savedCheckpoint?.evidenceHash===evidenceHash&&savedCheckpoint.expiresAt>now?savedCheckpoint:{evidenceHash,expiresAt:now+24*3600000,revisions:0};
    router.lastWriter=checkpoint.writer||null;router.articleId=job.id;
@@ -2216,13 +2279,21 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      continue;
     }
    }
-   const candidate=checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
+   const candidate=group.promotionCandidate||checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
     group.internationalPreview||group.officialFinalCandidate||group.bootstrap?.candidate||group.officialReactionCandidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
    if(group.length===1&&!matchRecord&&host(group[0].url)==='uefa.com'&&
       candidate?.primaryAuthority==='association_decision'&&Array.isArray(candidate.facts))
      report.signals.push({route:'news',topic:group[0].title,outcome:'uefa_status_literal_facts',facts:candidate.facts.length});
    if(candidate.skip){route.rejected++;report.skipped.push({topic,stage,reason:'Geen voldoende onderbouwde hoofdgebeurtenis uit de beschikbare bronpassages.'});durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage:'verification',category:'journalistic_rejection'});continue;}
-   const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
+   const evidenceIssues=matchRecord?[]:validateEvidence(candidate,group,now);
+   if(group.scorers&&!candidate.skip){
+    const quotes=(candidate.sharedEventEvidence||[]).map(e=>normalize(e.quote));
+    const attributed=(candidate.sharedEventEvidence||[]).some(e=>/\b(?:volgens|bron:|source:|according to|overgenomen van|meldt|reports that)\b/i.test(e.quote));
+    const sharedPassage=quotes.some((quote,i)=>quote&&group.some((doc,j)=>
+     j!==candidate.sharedEventEvidence[i].source&&normalize(doc.text).includes(quote)));
+    if(attributed||sharedPassage)evidenceIssues.push('Onafhankelijke herkomst van de scorersmelding is niet aangetoond.');
+   }
+   if(evidenceIssues.length)throw Error(evidenceIssues.join(' '));
    topic=candidate.topic;
    const sourceIndices=matchRecord?matchRecord.sources.map((_,i)=>i):group.officialFinalCandidate?[0,1,2]:[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
    const facts=matchRecord?.verifiedFacts||candidate.facts.map(f=>f.text);
@@ -2554,4 +2625,4 @@ function publicationFocus(env=process.env){
  return env.FOCUS_SOURCE_URL||pushCommitMessage(env).match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={promotionFromRoundup,reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};

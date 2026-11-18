@@ -85,3 +85,40 @@ test('a call-up or an explicitly denied goal alone is insufficient',()=>{
   assert.equal(nationallyRelevant({...official,title:'Internationals op pad',text}),false);
  }
 });
+
+test('a scorer roundup can suggest a separate, organiser-confirmed promotion without player claims',()=>{
+ const {promotionFromRoundup,validateEvidence}=require('../scripts/automatic-publication');
+ const club={...official,publishedAt,text:official.text+' IJsland promoveerde in de Nations League.'};
+ const table='Group C4 Iceland (14pts), Estonia (12), Bulgaria (4), Luxembourg (3)';
+ const decision='Iceland are confirmed in first place and will be promoted to League B.';
+ const uefa={url:'https://www.uefa.com/uefanationsleague/news/02ab-2209792f2fda-6a523d4500bb-1000--2026-27-nations-league-quarter-final-qualification-promotion/',publishedAt,
+  title:'Nations League qualification, promotion and play-offs',text:[table,decision,
+   'Estonia are confirmed in second place and will enter the League B/C play-offs.',
+   'Bulgaria are confirmed in third place and will remain in League C.',
+   'Luxembourg are confirmed in fourth place and will remain in League C.'].join(' ')};
+ const result=promotionFromRoundup(club,uefa,now);
+ assert.equal(result.topic,'IJsland promoveert in de Nations League');
+ assert.deepEqual(validateEvidence(result,[uefa],now),[]);
+ assert.equal(result.facts.length,5);
+ assert.ok(result.facts.every(f=>uefa.text.includes(f.text)));
+ assert.doesNotMatch(JSON.stringify(result),/Willumsson|Van Bergen|trefzeker/i);
+ for(const other of [{...uefa,text:uefa.text.replace(decision,'Iceland could win promotion to League B.')},
+  {...uefa,url:club.url},{...uefa,publishedAt:'2025-01-01'}])
+  assert.equal(promotionFromRoundup(club,other,now),null);
+});
+
+test('only a fact-checked official final with a solely journalistic rejection goes to the copy editor',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ const draft={headline:'Eerdere kop',standfirst:'Eerdere intro',body:['Eerdere alinea']};
+ const match={homeTeam:'Duitsland',awayTeam:'Nederland',homeScore:5,awayScore:0};
+ const candidate={kind:'announcement',verifiedOfficialFinal:true,match};
+ const payload={draft,match,verifiedFacts:['De wedstrijd eindigde in 5-0.']};
+ let input;
+ const options={router:{complete:async messages=>{input=JSON.parse(messages[1].content);return {skip:true};}}};
+ for(const [reliability,expected] of [[100,true],[60,false]]){
+  await reviseDraft(payload,candidate,[],'Journalistieke kwaliteit lager dan 85.',options,[],
+   {dimensions:{reliability,journalism:80}});
+  assert.deepEqual(input.previousDraft,expected?draft:undefined);
+  assert.deepEqual(input.verifiedFacts,payload.verifiedFacts);
+ }
+});
