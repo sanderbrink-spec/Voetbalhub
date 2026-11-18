@@ -210,8 +210,7 @@ test('98Y: one bounded early retry for current source outage, never lower fact o
  assert.equal(reopenTransientOfficialFinal98Y({...base,status:'review',officialFinalTransientRetry98Y:false},group,now),false);
 });
 
-test('98Y: score-opening and quarter-final draw are proven without generic play opinions',()=>{
- const rich={...article,text:[
+const richFinal={...article,text:[
   'Oranje verloor de uitwedstrijd tegen Duitsland met 5-0.',
   'Nederland eindigde als tweede in groep A2 en bereikte de kwartfinales.',
   'Aan de hoge verwachtingen konden beide ploegen in de eerste helft niet voldoen.',
@@ -224,11 +223,60 @@ test('98Y: score-opening and quarter-final draw are proven without generic play 
   'In de 77e minuut tikte Brajan Gruda de 5-0 binnen.',
   'Vrijdag is de loting voor de kwartfinales van de Nations League.'
  ].join(' ')};
- const rows=officialRecentFinals(knvb,uefa,[rich],now);
+test('98Y: score-opening and quarter-final draw are proven without generic play opinions',()=>{
+ const rows=officialRecentFinals(knvb,uefa,[richFinal],now);
  assert.equal(rows.length,1);
  const {candidate,documents}=rows[0];
  assert.ok(candidate.facts.some(f=>/1-0/.test(f.text)),JSON.stringify(candidate.facts));
  assert.ok(candidate.facts.some(f=>/loting/.test(f.text)),JSON.stringify(candidate.facts));
  assert.ok(candidate.facts.length<=10);
  assert.deepEqual(require('../scripts/automatic-publication').validateEvidence(candidate,documents,now),[]);
+});
+
+
+test('a previously skipped official final is due once with freshly checked substantial evidence',()=>{
+ const {reopenVerifiedOfficialFinalWriter}=require('../scripts/automatic-publication');
+ const {EditorialQueue}=require('../editorial-production45');
+ const {createHash}=require('node:crypto');
+ const {candidate,documents}=officialRecentFinals(knvb,uefa,[richFinal],now)[0];
+ const group=Object.assign(documents,{officialFinalCandidate:candidate});
+ const queue=new EditorialQueue();
+ const job=queue.enqueue(group,now);
+ const skip='Onvoldoende gecontroleerde feiten voor een inhoudelijk concept. Vul zo nodig aanvullende, verschillende feiten aan.';
+ Object.assign(job,{status:'review',failureStage:'generation',failureCategory:'journalistic_rejection',
+  reason:'insufficient_verified_facts',errorHash:createHash('sha256').update(skip).digest('hex'),
+  attempts:1,checkpoint:{draft:'rejected'}});
+ assert.equal(queue.due(job,now),false);
+ const thin=Object.assign(group.slice(),{officialFinalCandidate:{...candidate,facts:candidate.facts.slice(0,4)}});
+ assert.equal(reopenVerifiedOfficialFinalWriter(job,thin,now),false);
+ const conflicting=Object.assign([group[0],group[1],{...group[2],text:'Different score'}],{officialFinalCandidate:candidate});
+ assert.equal(reopenVerifiedOfficialFinalWriter(job,conflicting,now),false);
+ assert.equal(reopenVerifiedOfficialFinalWriter(job,group,now+72*3600000),false);
+ assert.equal(reopenVerifiedOfficialFinalWriter({...job,status:'duplicate'},group,now),false);
+ assert.equal(reopenVerifiedOfficialFinalWriter({...job,failureStage:'quality'},group,now),false);
+ assert.equal(reopenVerifiedOfficialFinalWriter(job,group,now),true);
+ assert.equal(queue.due(job,now),true);
+ assert.equal(job.checkpoint,undefined);
+ job.status='review';
+ assert.equal(reopenVerifiedOfficialFinalWriter(job,group,now),false);
+});
+
+test('official final writer can use minute-based evidence without inventing a half and retains the skip gate',async()=>{
+ const {createEditorialDraft}=require('../editorial-ai');
+ const {candidate,documents}=officialRecentFinals(knvb,uefa,[richFinal],now)[0];
+ const facts=candidate.facts.map(f=>f.text);
+ const requests=[];
+ const router={async complete(messages){requests.push(structuredClone(messages));return {skip:true};}};
+ const input={topic:candidate.topic,category:candidate.category,articleKind:candidate.kind,
+  facts,sourceUrls:documents.map(doc=>doc.url),match:candidate.match,officialFinal:true,automaticPublication:true};
+ const skipped=error=>error.status===422;
+ await assert.rejects(createEditorialDraft(input,{router}),skipped);
+ assert.equal(requests.length,2);
+ assert.match(requests[0][0].content,/speelhelft of ruststand als die expliciet/);
+ assert.match(requests[1].at(-1).content,/bekende tussenstanden zonder speelhelft/);
+ assert.deepEqual(JSON.parse(requests[0][1].content).facts,facts);
+ assert.equal(JSON.parse(requests[0][1].content).editorialAssignment,null);
+ requests.length=0;
+ await assert.rejects(createEditorialDraft({...input,facts:facts.slice(0,4)},{router}),skipped);
+ assert.equal(requests.length,1);
 });

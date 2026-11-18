@@ -233,6 +233,14 @@ function mayDelegateLeadOverlap(issues,{automaticPublication=false,coachPlan=fal
  return Boolean(automaticPublication&&coachPlan&&Array.isArray(issues)&&issues.length===1&&
   issues[0]==='Intro en alinea’s herhalen te veel dezelfde inhoud. Gebruik per alinea andere aangeleverde feiten.');
 }
+const officialFinalWritingGuide=[
+ 'Schrijf een origineel Nederlandstalig verslag van een gespeelde manneninterland. Gebruik de gecontroleerde match voor datum, ploegen en eindstand. Gebruik de aangeleverde bronfeiten voor alle andere beweringen.',
+ 'Noem de eindstand in de kop en intro. Orden de drie bodyalinea’s rond verschillende bewezen feiten, bijvoorbeeld een vroege kans en de openingstreffer, vervolgens latere treffers, en tot slot een bevestigde groepspositie of loting. Kies andere bewezen incidenten wanneer een van die onderwerpen ontbreekt.',
+ 'Gebruik de letterlijk opgegeven minuten en tussenstanden om de gebeurtenissen te ordenen. Schrijf alleen over een speelhelft of ruststand als die expliciet in de feiten is genoemd. Reken een relatieve tijdsaanduiding niet om naar een minuut. Koppel elke treffer uitsluitend aan de daarbij bevestigde speler en tussenstand.',
+ 'Herhaal de eindstand niet in de body. Beschrijf geen spelbeeld, dominantie, oorzaken of gevolgen die de bronnen niet uitdrukkelijk bevestigen. Schrijf in eigen woorden en beschrijf de wedstrijd zonder het verificatieproces te noemen.',
+ 'Geef alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden) en body met precies drie onderscheiden alinea’s van elk 18-120 woorden en minstens 70 tekens. Geef {"skip":true} als zelfs met andere bewezen details geen drie informatieve alinea’s mogelijk zijn.'
+].join(' ');
+
 async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],articleKind,primaryAuthority=null,match=null,compact=false,officialFinal=false,officialReaction=false,automaticPublication=false}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
   // Normal server calls and production share the same provider interface.
   if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
@@ -305,21 +313,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   }else if(automaticPublication&&primaryAuthority==='association_decision'){
    prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. '+(/\b(?:to depart as|steps down as)\b/i.test(topic||'')?federationCoachStyle+' ':'')+'Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Begin de inhoudelijke alinea over opvolging of vervolgstappen met een duidelijke toeschrijving aan '+officialPublisher+', bijvoorbeeld: “'+officialPublisher+' meldt dat …”. Schrijf een volgende functie alleen toe aan de bond als die als enige het nieuws meldt. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
   }
-  if(automaticPublication&&officialFinal&&articleKind==='announcement'&&!primaryAuthority){
-    prompt=[
-     'Je bent Veldio-journalist en schrijft een origineel Nederlands bericht over een gespeelde manneninterland.',
-     'De eindstand is door KNVB en een tweede officiële voetbalbond afzonderlijk bevestigd. Alleen verifiedFacts en de gecontroleerde match mogen feitelijke beweringen onderbouwen.',
-     'De kop behandelt de wedstrijd zelf: noem het bewezen thuis-uitresultaat met exacte eindstand (bijvoorbeeld de score in de kop), niet alleen plaatsing of groepsstatus. Gebruik een andere nieuwsaanleiding dan recente kwalificatieoverzichten in recentHeadlines.',
-     'Geef alleen JSON met headline (5-14 Nederlandse woorden), standfirst (8-35 woorden) en body met precies drie onderscheiden alinea’s (elk 18-120 woorden, minimaal 70 tekens).',
-     'Vertel het wedstrijdverhaal in volgorde. Intro: de exacte bewezen eindstand. Body 1: het belangrijkste bewezen moment vóór rust, zoals een kans of doelpunt. Body 2: het concrete, bewezen scoreverloop na rust, met uitsluitend letterlijk bevestigde minuten en spelers. Body 3: de afzonderlijk bewezen betekenis voor groepspositie of volgende ronde, indien ondersteund. Verplaats die betekenis anders naar de intro en gebruik de derde alinea voor een ander werkelijk bewezen incident. Iedere alinea moet minimaal één nieuw feit bevatten.',
-     'Een bronfeit met 1-0 bewijst uitsluitend de bij die treffer genoemde doelpuntenmaker. Bij 2-0 mag de scorer nooit “de score opende” worden genoemd. Leid geen 41e minuut af uit een gebeurtenis in minuut 32 gevolgd door negen minuten later. Bij 5-0 noem je uitsluitend de bewezen vijfde treffer. Benoem een latere loting alleen als die letterlijk in verifiedFacts staat.',
-     'De redactionele kern is niet alleen de score maar de samenhang tussen bewezen wedstrijdmomenten en de gevolgen. Een eigen invalshoek is toegestaan, maar verzin geen verklaring voor de uitslag, motieven, omslagpunten, ruststand of dominante ploeg. Schrijf in eigen zinnen en vermijd bronformuleringen van tien opeenvolgende woorden.',
-     'Beschrijf balbezit, overwicht, kansen, dominantie, ruststand of de oorzaak van een nederlaag uitsluitend als die details expliciet in verifiedFacts staan. Een doelpunt of eindstand bewijst geen spelbeeld. Gebruik geen vage algemene slotzin.',
-     'Noem geen tussenstand, ruststand, doelpuntenmaker, minuut, ranglijst, kwalificatiegevolg of oorzaak zonder expliciet bewezen grond.',
-     'Geen API-namen, leveranciersnamen of het verificatieproces in de lopende tekst. Kopieer geen bronzinnen. Iedere alinea bevat nieuw feitelijk nieuws en herhaalt niet de eindstand.',
-     'Kan het artikel niet drie eigen alinea’s met voldoende verschillende feiten dragen, geef uitsluitend {"skip":true}. Alle onafhankelijke review-, rechten- en publicatiecontroles blijven verplicht.'
-    ].join(' ');
-   }
+  const isOfficialFinal=automaticPublication&&officialFinal&&articleKind==='announcement'&&!primaryAuthority;
+  if(isOfficialFinal)prompt=officialFinalWritingGuide;
    if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority&&!officialFinal){
    prompt='Schrijf een origineel Nederlands voetbalnieuwsbericht uitsluitend uit facts. Leg het nieuws eenmaal uit in de intro. Verdeel de body in exact drie alinea’s. Gebruik voor elke alinea een ander bewezen thema. Bij een afmelding kan dat de concreet gemelde aanleiding, het besluit van de bond voor de komende interlands en de afzonderlijk gemelde clubplanning zijn. Zet de terugkeer alleen in de intro. Vermijd herhaling, ook in andere woorden. Schrijf alleen wat een bron concreet heeft bevestigd. Gebruik bij een verschil tussen de bronnen expliciete toeschrijving en vermijd relatieve termen zoals morgen. Verzin geen intentie, prognose, herstelduur, beoordeling of gevolg. Schrijf alleen headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+' als JSON. Geef skip bij onvoldoende verschillende feiten.';
   }
@@ -336,7 +331,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Als de gecontroleerde uitspraken onvoldoende stof bieden: antwoord uitsluitend met JSON {"skip":true}. Publiceer nooit zelf.'
    ].join(' ');
   }
-  const messages=resume?.messages||[{role:'system',content:storyStyle+' '+prompt+' Gebruik editorialAssignment als suggestie; de labels voegen geen feiten toe. Noem alleen namen, datums, cijfers en claims die facts ondersteunen. De publicatiedatum is geen bewijs. Geef skip als de feiten onvoldoende stof bieden.'},{role:'user',content:JSON.stringify({topic,category,facts:writerFacts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:assignment})}];
+  const messages=resume?.messages||[{role:'system',content:isOfficialFinal?prompt:storyStyle+' '+prompt+' Gebruik editorialAssignment als suggestie; de labels voegen geen feiten toe. Noem alleen namen, datums, cijfers en claims die facts ondersteunen. De publicatiedatum is geen bewijs. Geef skip als de feiten onvoldoende stof bieden.'},{role:'user',content:JSON.stringify({topic,category,facts:writerFacts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:isOfficialFinal?null:assignment})}];
   // Both writing and its single targeted repair share one 25-second deadline.
   const signal=AbortSignal.timeout(timeoutMs);
   for(let attempt=resume?.attempt||0;attempt<2;attempt++){
@@ -380,8 +375,10 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
       Boolean(officialPublisher)&&facts.length>=3&&assignment.bodySections.length>=1;
      // One extra writing attempt only when a verified first-party decision
      // provides distinct facts. Do not automatically accept the second answer.
-     if(attempt===0&&(sufficientCoachEvidence||verifiedShortDecision||sufficientSelectionEvidence)){
-      const feedback=officialReaction&&verifiedShortDecision?
+     if(attempt===0&&(isOfficialFinal&&match&&facts.length>=7||sufficientCoachEvidence||verifiedShortDecision||sufficientSelectionEvidence)){
+      const feedback=isOfficialFinal?
+       'Kies opnieuw drie verschillende onderbouwde onderwerpen uit facts. Gebruik zo nodig andere geverifieerde gebeurtenissen. Gebruik expliciete minuten of bekende tussenstanden zonder speelhelft, en laat elk detail waarvoor bewijs ontbreekt weg. Houd de drie alinea’s en de exacte eindstand in kop en intro.':
+       officialReaction&&verifiedShortDecision?
        'Je schrijft over een eerstehands reactie van een bondscoach, geen bestuurlijk besluit. Gebruik verifiedFacts[0] voor zijn volledige identiteit en de melding van zijn reactie. Schrijf één originele bondige intro met KNVB als uitgever via OnsOranje. Gebruik verifiedFacts[1] en [2] elk afzonderlijk voor één korte informatieve alinea van 10-65 woorden, met een uitdrukkelijke toeschrijving aan de bondscoach. Geef zijn reacties in eigen woorden weer, zonder nieuwe details, score of onbewezen conclusies. Eén of twee alinea’s zijn voldoende. Geef uitsluitend JSON met headline, standfirst en body. Sla nog steeds over als één van die onderdelen niet zelfstandig uit een verifiedFact volgt.':
       sufficientSelectionEvidence?'Gebruik de verschillende feiten over het bondsbesluit en de bevestigde details uit de bron. Schrijf een volledig artikel met afzonderlijke informatieve alinea’s, zonder opvulling. Geef alleen skip als het ook met deze feiten niet kan.':verifiedShortDecision?
        'Controleer of skip werkelijk noodzakelijk is. Er is een officieel bevestigd besluit plus afzonderlijke brongetrouwe facts. Gebruik het besluit uitsluitend voor de intro en maak één of twee korte bodyalinea’s over concrete andere facts uit editorialAssignment.bodySections. Geen opvulling, bronkopie, verzonnen consequenties, cijfers of extra context. Geef een volledig JSON-concept als de feiten dit toelaten; geef uitsluitend skip als ook het korte formaat onvoldoende onderbouwd is.':
@@ -405,8 +402,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      if(mayDelegateLeadOverlap(issues,{automaticPublication,coachPlan}))return {...draft,qualityReview:{automatedTextChecksPassed:false,needsSpecialistRevision:true,attempts:attempt+1,factVerificationRequired:true,autoPublish:false}};
      const error=new DraftError(502,'Concept na herstel nog niet geschikt: '+issues.join(' '));error.issues=issues;error.rejectedDraft=draft;throw error;
     }
-    messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
+    messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:isOfficialFinal?officialFinalWritingGuide+' Herbouw de tekst met de bestaande feiten en los deze controlepunten op door het onbewezen detail weg te laten of te vervangen door een ander bewezen feit: '+issues.join(' '):'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={repairUnsupportedDecisionTimestamp,attachVerifiedOfficialAttribution,createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
+module.exports={officialFinalWritingGuide,repairUnsupportedDecisionTimestamp,attachVerifiedOfficialAttribution,createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
 
