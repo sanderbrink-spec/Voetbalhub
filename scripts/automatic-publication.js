@@ -71,7 +71,7 @@ const REPO='sanderbrink-spec/Voetbalhub';
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
 const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const host=url=>new URL(url).hostname.replace(/^www\./,'');
-const owner=url=>['knvb.nl','eurojackpotknvbbeker.nl','onsoranje.nl'].includes(host(url))?'knvb.nl':host(url);
+const owner=url=>['knvb.nl','eurojackpotknvbbeker.nl','onsoranje.nl'].includes(host(url))?'knvb.nl':host(url).replace(/^english\.ajax\.nl$/,'ajax.nl');
 function allowedUrl(value){try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password&&config.officialDomains.includes(host(value));}catch{return false;}}
 function plain(html){
  return String(html).replace(/<(script|style|nav|header|footer|aside|noscript|svg|form)\b[^>]*>[\s\S]*?<\/\1>/gi,' ')
@@ -222,18 +222,57 @@ function discoverLinks(html,index){
  const limit=index.url==='https://www.uefa.com/uefanationsleague/'?12:6;
  return [...new Set(urls.map(url=>articleUrl(url,[index])).filter(Boolean))].slice(0,limit);
 }
+// Identify reported goals by named internationals. The event keys only group
+// source signals. The independent evidence and publication gates still apply.
+function internationalScoring(doc){
+ if(!doc.text||!articleUrl(doc.url,config.newsIndexes))return null;
+ const headline=normalize(doc.title);
+ if(/\b(?:liveblog|highlights|samenvatting|voorbeschouwing|terugblik op|historie)\b/.test(headline))return null;
+ const context=/\b(internationals?|interlands?|interlandperiode|international duty|nations league|jong oranje|voor (?:hun|zijn) land|national team)\b/;
+ if(!context.test(headline)&&!(context.test(normalize(doc.text.slice(0,500)))&&
+    /\b(scoort|scoorde|trefzeker|scores|scored|doelpunt|treffer)\b/.test(headline)))return null;
+ const name=String.raw`\p{Lu}[\p{Ll}’'-]+\s+(?:(?:van|den|der|de|ten|ter|dos|da|el)\s+){0,2}\p{Lu}[\p{L}’'-]+`;
+ const scoring=String.raw`(?:scoor(?:t|de|den)|scores|scored|(?:is|was|waren|zijn)\s+(?:(?:ook|internationaal)\s+){0,2}trefzeker|maakte (?:de|het|een) (?:openingstreffer|doelpunt|treffer))`;
+ const pattern=new RegExp('('+name+')(?: en ('+name+'))?(?:\\s+[–—-])?\\s+'+scoring+'\\b','gu');
+ const persons=new Set(),keys=new Set();
+ for(const sentence of doc.text.split(/[.!?\n]+/)){
+  for(const match of sentence.matchAll(pattern)){
+   if(/^(?:\s+(?:niet|nooit|geen|not|no goal))\b/i.test(sentence.slice(match.index+match[0].length)))continue;
+   const opponent=sentence.slice(match.index+match[0].length).match(/^[^,;:]{0,65}?\b(?:tegen|against)\s+((?:Jong |Noord-|Zuid-)?\p{Lu}[\p{L}’-]+)\b/u);
+   for(const person of match.slice(1,3).filter(Boolean)){
+    if(/^(?:Jong |FC |Team |De |Het |The )/.test(person))continue;
+    persons.add(person);
+    // Exact shared reporting, or the same named scorer against the same opponent.
+    if(normalize(sentence).split(' ').length>=8)keys.add('passage '+normalize(sentence));
+    if(opponent)keys.add(normalize(person)+' tegen '+normalize(opponent[1]));
+   }
+  }
+ }
+ return persons.size?{persons:[...persons],keys}:null;
+}
+function addScoringSource(groups,doc,event){
+ const group=groups.find(group=>
+  Math.abs(Date.parse(group[0].publishedAt)-Date.parse(doc.publishedAt))<=48*3600000&&
+  [...group.eventKeys].some(key=>event.keys.has(key)));
+ if(group){
+  group.push(doc);
+  group.eventKeys=new Set([...group.eventKeys].filter(key=>event.keys.has(key)));
+  group.scorers=[...new Set([...group.scorers,...event.persons])];
+ }else groups.push(Object.assign([doc],{eventKeys:event.keys,scorers:event.persons}));
+}
 // National-platform relevance gate. Runs before any paid editorial model call.
-function nationallyRelevant(doc){
+function nationallyRelevant(doc,scoring=internationalScoring(doc)){
  const title=normalize(doc.title||'');
  const body=normalize((doc.text||'').slice(0,1600));
  if(!title||!body)return false;
  // KKD is exceptional coverage only, never routine previews or match listings.
  if(/\b(kkd|keuken kampioen divisie|eerste divisie)\b/.test(title)&&!/\b(promotie|degradatie|kampioen|kampioenschap|titel|ontslag|hoofdtrainer|trainerswissel|fraude|faillissement|knvb|licentie|record)\b/.test(title))return false;
  if(/^(alle informatie|match center|wedstrijdprogramma|wedstrijden|nieuws|home|tickets|ticketinformatie|kaartverkoop|veelgestelde vragen|faq|contact|agenda|overzicht)$/.test(title))return false;
- if(/\b(ticket|tickets|kaartverkoop\w*|seizoenkaart|parkeer|routebeschrijving|openingstijden|fanshop|webshop|merchandise|fotoverslag|trainingsschema|vacature|vrijwilliger|businessclub|hospitality|jeugdopleiding|onder 1[0-9]|onder 2[0-3])\b/.test(title))return false;
+ if(/\b(ticket|tickets|losse verkoop|kaartverkoop\w*|seizoenkaart|parkeer|routebeschrijving|openingstijden|fanshop|webshop|merchandise|fotoverslag|trainingsschema|vacature|vrijwilliger|businessclub|hospitality|jeugdopleiding|onder 1[0-9]|onder 2[0-3])\b/.test(title))return false;
  // Men's Nations League only. A relevant UEFA editorial briefing still needs
  // independent verifiable facts and the existing review/image gates to publish.
  if(/\b(vrouwen|womens|women|wsl|feminin)\b/.test(title))return false;
+ if(scoring)return true;
  if(allowedUrl(doc.url)&&host(doc.url)==='uefa.com'&&/^\/uefanationsleague\/news\//.test(new URL(doc.url).pathname)&&
     /\b(nations league|league a|group a[1-4]|matchday|quarter finals|quarter final|groepswinst)\b/.test(title+' '+body.slice(0,500))&&
     /\b(preview|storylines|players to watch|what each team needs|qualification|qualify|qualified|who is through|quarter finals|quarter final|top spot|promotion|relegation|record|groepswinst|state of play|matchday|knockout stage|group a[1-4])\b/.test(title+' '+body.slice(0,500)))return true;
@@ -543,6 +582,9 @@ function retryFederationStorageFailure(job, doc, now) {
  delete job.checkpoint;
  return true;
 }
+function independentEvidenceIssue(docs){
+ return new Set(docs.map(doc=>owner(doc.url))).size<2?'Twee onafhankelijke bronwebsites zijn vereist.':'';
+}
 function validateEvidence(candidate,docs,now=Date.now()){
  const issues=[];
  if(!candidate||!['preview','announcement'].includes(candidate.kind))return ['Alleen actuele voorbeschouwingen en primaire clubmededelingen zijn toegestaan.'];
@@ -562,7 +604,10 @@ function validateEvidence(candidate,docs,now=Date.now()){
  const shared=candidate.sharedEventEvidence;
  if(!primary&&(!Array.isArray(shared)||new Set(shared.map(e=>docs[e.source]&&owner(docs[e.source].url)).filter(Boolean)).size<2))issues.push('Hoofdgebeurtenis niet bij twee onafhankelijke primaire bronnen bevestigd.');
  else for(const e of shared||[]){if(!docs[e.source]||typeof e.quote!=='string'||e.quote.length<25||!normalize(docs[e.source].text).includes(normalize(e.quote)))issues.push('Onafhankelijke bevestiging ontbreekt in de bron.');else used.add(e.source);}
- if(!primary&&new Set([...used].map(i=>owner(docs[i].url))).size<2)issues.push('Twee onafhankelijke bronwebsites zijn vereist.');
+ if(!primary){
+  const issue=independentEvidenceIssue([...used].map(i=>docs[i]));
+  if(issue)issues.push(issue);
+ }
  if(candidate.kind==='preview'){
   const date=String(candidate.eventDate||'');
   const kickoff=docs.internationalPreview?.kickoff;
@@ -1598,7 +1643,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   report.sources.gdelt={status:'unavailable',links:0};
   report.sourceErrors.push({source:'GDELT',error:error.message,code:error.cause?.code||error.code||error.name});
  }
- const authoritative=[];
+ const authoritative=[],scoringGroups=[];
  const linkFor=doc=>articleUrl(doc.url,config.newsIndexes)||doc.url;
  const discovered=[];
  const linksToRead=fixtureFocus?[...links].filter(url=>host(url)==='onsoranje.nl'):editorialSourceLinks(links,focusSourceUrl);
@@ -1615,14 +1660,14 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.sources.nationsLeagueNews={
   status:indexStatus.some(index=>index.url==='https://www.uefa.com/uefanationsleague/'&&index.status==='ok')?'ok':'unavailable',
   readable:uefaNationsLeague.length,
-  newsworthy:uefaNationsLeague.filter(nationallyRelevant).length,
+  newsworthy:uefaNationsLeague.filter(doc=>nationallyRelevant(doc)).length,
   officialCompetitionStatus:uefaNationsLeague.filter(doc=>primaryAuthority(doc)==='association_decision').length
  };
  const knvbTeamNews=discovered.filter(doc=>allowedUrl(doc.url)&&host(doc.url)==='onsoranje.nl'&&
   new URL(doc.url).pathname.startsWith('/nieuws/nederlands-elftal-mannen/'));
  report.sources.officialOranjeNews={
   readable:knvbTeamNews.length,
-  newsworthy:knvbTeamNews.filter(nationallyRelevant).length,
+  newsworthy:knvbTeamNews.filter(doc=>nationallyRelevant(doc)).length,
   firstPartyTeamAnnouncements:knvbTeamNews.filter(doc=>primaryAuthority(doc)==='association_decision').length
  };
  // An official result must be corroborated by both results lists before
@@ -1681,11 +1726,17 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    continue;
   }
   report.counts.current++;
-  if(!nationallyRelevant(doc)){signal.outcome='no_national_relevance';continue;}
+  const scoring=internationalScoring(doc);
+  if(!nationallyRelevant(doc,scoring)){signal.outcome='no_national_relevance';continue;}
   report.counts.relevant++;
-  if(/\b(?:uitgeschakeld|nederlaag|overwinning|zege|verslaat|wint|won|doelpunten|nabeschouwing|samenvatting|highlights|liveblog|in beeld|komt tekort)\b/i.test(doc.title)){signal.outcome='unsupported_result';continue;}
+  if(!scoring&&/\b(?:uitgeschakeld|nederlaag|overwinning|zege|verslaat|wint|won|doelpunten|nabeschouwing|samenvatting|highlights|liveblog|in beeld|komt tekort)\b/i.test(doc.title)){signal.outcome='unsupported_result';continue;}
   if(!validationOnly&&published.some(a=>articleUrl(a.sources?.[0]?.url,config.newsIndexes)===linkFor(doc))){signal.outcome='duplicate_primary_source';continue;}
   report.counts.eligible++;
+  if(scoring){
+   addScoringSource(scoringGroups,doc,scoring);
+   signal.outcome='international_scorers';
+   continue;
+  }
   const partners=partnerDocuments(doc,[...docs.values()]);
   if(partners.length||primaryAuthority(doc)){
    const authority=primaryAuthority(doc);
@@ -1770,6 +1821,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }
  }
  // Interleave both sources so a noisy news queue cannot starve match coverage.
+ for(const group of scoringGroups){
+  group.sort((a,b)=>a.url.localeCompare(b.url));
+  // A restored retry for the same packet must retain its scoring context.
+  const restored=groups.find(g=>g.length===group.length&&g.every(d=>group.some(other=>other.url===d.url)));
+  if(restored)restored.scorers=group.scorers;
+  else groups.push(group);
+ }
  groups.push(...authoritative);
  groups.sort((a,b)=>editorialPriority(b[0])-editorialPriority(a[0])||Date.parse(b[0].publishedAt)-Date.parse(a[0].publishedAt));
  // Produce the most evidence-rich, verified fixtures first. Brief updates
@@ -2144,6 +2202,20 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     (a.match?.playedAt===matchRecord.match.playedAt&&normalize(a.match.homeTeam)===normalize(matchRecord.match.homeTeam)&&normalize(a.match.awayTeam)===normalize(matchRecord.match.awayTeam)))){
     durable.queue.finish(job,'duplicate',now);continue;
    }
+   report.counts.evidenceChecks++;
+   if(group.scorers){
+    const reason=independentEvidenceIssue(group);
+    report.signals.push({route:'news',stage:'verification',outcome:'international_scorer_evidence_check',
+     topic,event:'international_goals',persons:group.scorers,sources:group.map(({url,publishedAt})=>({url,publishedAt})),
+     ...(reason?{reason}:{})});
+    if(reason){
+     route.rejected++;
+     report.counts.noCorroboration++;
+     report.skipped.push({topic,stage,reason});
+     durable.queue.finish(job,'review',now,{reason:'insufficient_verified_facts',stage,category:'journalistic_rejection'});
+     continue;
+    }
+   }
    const candidate=checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
     group.internationalPreview||group.officialFinalCandidate||group.bootstrap?.candidate||group.officialReactionCandidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
    if(group.length===1&&!matchRecord&&host(group[0].url)==='uefa.com'&&
@@ -2342,7 +2414,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
 function summarizeEditorialFunnel98V(report){
  const outcomes=new Set(['stale_date','missing_date','future_date',
   'no_national_relevance','unsupported_result','duplicate_primary_source',
-  'primary_authority','partner_found','no_corroboration']);
+  'primary_authority','partner_found','no_corroboration','international_scorers']);
  const seen=new Set(),discoveryReasons={};
  for(const signal of report.signals||[]){
   if(!signal.url||!outcomes.has(signal.outcome)||seen.has(signal.url))continue;
@@ -2384,7 +2456,7 @@ function reconcileDeferredPublications(report){
  return report;
 }
 async function run(options={}){
- const report={validationOnly:options.validationOnly===true,validated:[],startedAt:new Date(options.now||Date.now()).toISOString(),commit:process.env.GITHUB_SHA||null,published:[],skipped:[],sourceErrors:[],processingErrors:[],signals:[],assessments:[],sources:{},routes:Object.fromEntries(['news','match'].map(key=>[key,{found:0,selected:0,generated:0,rejected:0,published:0}])),counts:{found:0,readable:0,stale:0,current:0,relevant:0,eligible:0,noCorroboration:0,uniqueGroups:0,queued:0,attempted:0,selected:0,aiRequests:0,generated:0,approved:0,stored:0,publicationAttempts:0,published:0}};
+ const report={validationOnly:options.validationOnly===true,validated:[],startedAt:new Date(options.now||Date.now()).toISOString(),commit:process.env.GITHUB_SHA||null,published:[],skipped:[],sourceErrors:[],processingErrors:[],signals:[],assessments:[],sources:{},routes:Object.fromEntries(['news','match'].map(key=>[key,{found:0,selected:0,generated:0,rejected:0,published:0}])),counts:{found:0,readable:0,stale:0,current:0,relevant:0,eligible:0,noCorroboration:0,uniqueGroups:0,queued:0,evidenceChecks:0,attempted:0,selected:0,aiRequests:0,generated:0,approved:0,stored:0,publicationAttempts:0,published:0}};
  Object.defineProperty(report,'draftSnapshots',{value:[],enumerable:false});
  try{
   await execute({...options,report});
