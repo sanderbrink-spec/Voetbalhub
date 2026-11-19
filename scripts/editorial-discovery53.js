@@ -25,9 +25,13 @@ function officialSourceAuthority(canonicalUrl) {
   // UEFA is competent to confirm its own men's Nations League qualification
   // status and competition decisions. Match previews, pundit commentary,
   // photographs and unrelated UEFA stories are NOT granted single-source status.
-  if(domain==='uefa.com'&&
-     /^\/uefanationsleague\/news\/02[a-z0-9-]+--[^/]*(?:who-is-through|quarter-final-qualification|state-of-play|qualification-promotion|promotion-relegation|knockout-stage-draw)[^/]*\/?$/.test(url.pathname))
-    return 'association_decision';
+  if (domain === 'uefa.com') {
+    const previouslyConfirmed = /^\/uefanationsleague\/news\/02[a-z0-9-]+--[^/]*(?:who-is-through|quarter-final-qualification|state-of-play|qualification-promotion|promotion-relegation|knockout-stage-draw)[^/]*\/?$/.test(url.pathname);
+    // These exact article families report decisions by the competition organiser.
+    // A preview, interpretation or similarly named analysis is not a decision.
+    const decision = /^\/uefanationsleague\/news\/02[a-z0-9-]+--(?:20\d{2}-\d{2}-)?(?:uefa-)?(?:nations-league-)?(?:knockout-stage-and-play-off-draw|quarter-finals-last-eight-confirmed)\/?$/.test(url.pathname);
+    return previouslyConfirmed || decision ? 'association_decision' : '';
+  }
   return ['knvb.nl', 'eurojackpotknvbbeker.nl', 'onsoranje.nl', 'ussoccer.com'].includes(domain)
     ? 'association_decision' : 'club_decision';
 }
