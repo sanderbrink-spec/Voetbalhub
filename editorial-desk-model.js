@@ -71,10 +71,10 @@
       !['club_decision','association_decision'].includes(payload.primaryAuthority)||
       payload.sources?.length!==1||!host(payload.sources[0]?.url)||
       payload.transferStatus||!Array.isArray(facts)||facts.length<1||facts.length>6)return false;
-    // Other UEFA statuses cannot use a generic short-format exception: they
-    // must pass the explicit, literal table/status conditions above.
-    if(facts.length>4&&payload.primaryAuthority==='association_decision'&&
-       /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\//.test(payload.sources[0]?.url||''))return false;
+    // Bondsbesluiten with five-plus facts need an explicit source-specific
+    // proof rule, not the general club-decision exception. This also prevents
+    // a forged publisher type on an unrelated official football domain.
+    if(facts.length>4&&payload.primaryAuthority==='association_decision')return false;
     if(facts.length<=3)return true;
     // A list of disconnected snippets is not a journalistic news decision.
     // Retain the existing full structure unless the primary source facts
