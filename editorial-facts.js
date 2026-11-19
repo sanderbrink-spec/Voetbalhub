@@ -101,6 +101,19 @@
     (uefaVerifiedNames.has(normalize(leading[1]))||
      (' '+normalize(evidence)+' ').includes(' '+normalize(leading[1])+' ')));
   };
+  // UEFA Nations League is the verified name of the competition on UEFA's
+  // first-party status page. The name detector sees only the first two
+  // capitalised words ("UEFA Nations") and must not misclassify that phrase
+  // as an unsupported person. This does NOT validate any match or ranking.
+  const verifiedUefaCompetitionLabel=name=>{
+    if(name!=='UEFA Nations'||publisher!=='UEFA'||!sourceName)return false;
+    try{
+      const u=new URL(sourceName);
+      return u.protocol==='https:'&&u.hostname==='www.uefa.com'&&
+        /^\/uefanationsleague\/news\/02[a-z0-9-]+\/?$/.test(u.pathname)&&
+        /\bUEFA Nations League\b/.test(article);
+    }catch{return false;}
+  };
   const grammaticalStatusName=name=>(/^De KNVB$/i.test(name)&&publisher==='KNVB')||
    (/^De UEFA$/i.test(name)&&publisher==='UEFA')||
     (/^In Groep$/i.test(name)&&publisher==='UEFA'&&/\b(?:group|groep|league a)\b/i.test(supported));
@@ -113,7 +126,7 @@
     return mentioned.length>0&&mentioned.every(([,division])=>
       new RegExp('\\b(?:league '+division+'|group '+division+'[1-4])\\b','i').test(evidence));
   };
-   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!known.includes(normalize(name)));
+   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
