@@ -304,7 +304,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   if(automaticPublication&&compact&&officialPublisher&&!coachPlan){
    prompt=[
     'Je bent de onafhankelijke Nederlandstalige nieuwsredacteur van Veldio.',
-    'Dit is een kort officieel clubbesluit met uitsluitend letterlijk gecontroleerde facts.',
+    'Dit is een kort officieel besluit van een club of bond met uitsluitend gecontroleerde facts.',
     'Schrijf alleen een zelfstandig, origineel nieuwsbericht in JSON met headline (5-14 woorden), standfirst (8-35 woorden), body als array van één of twee alinea’s van elk 10-65 woorden.',
     'De standfirst meldt het geverifieerde besluit en noemt '+officialPublisher+' als de organisatie die het zelf bekendmaakt.',
     'Behandel in de body uitsluitend andere bewezen details uit editorialAssignment.bodySections: bijvoorbeeld de feitelijke aanleiding en het aantoonbare gevolg, als deze aanwezig zijn.',
@@ -400,7 +400,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      // A rich official packet gets at most one second writer attempt, not
      // an automatic approval or a relaxation of any source/quality gate.
      const verifiedShortDecision=automaticPublication&&compact&&!coachPlan&&
-      Boolean(officialPublisher)&&facts.length>=3&&assignment.bodySections.length>=1;
+      Boolean(officialPublisher)&&facts.length>=2&&assignment.bodySections.length>=1;
      // One extra writing attempt only when a verified first-party decision
      // provides distinct facts. Do not automatically accept the second answer.
      if(attempt===0&&(isOfficialFinal&&match&&facts.length>=7||sufficientCoachEvidence||verifiedShortDecision||sufficientSelectionEvidence)){
