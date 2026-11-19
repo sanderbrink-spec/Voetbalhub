@@ -69,8 +69,8 @@ function isRumour(title){
  const value=String(title||'');
  // 'Zou een droom zijn' or 'volgens de trainer' is not transfer gossip.
  const explicit=/\b(?:gerucht|geruchten|transferspeculatie|rumou?r|reportedly|gelinkt|linked|in beeld)\b|geen onlogische stap/i.test(value);
- const transfer=/\b(?:transfer|transfers|transfersom|overstap|bieding|bod|belangstelling|interesse|contacten|contractonderhandelingen)\b|\bnaar\s+(?:PSV|Ajax|Feyenoord|AZ|FC Groningen|FC Twente)\b/i.test(value);
- const uncertain=/\b(?:zou|zouden|mogelijk|geïnteresseerd|interesse|belangstelling|contacten|bieding|bod|volgens|onbevestigd|media|noemen|ontkent|ontkracht)\b|in gesprek met/i.test(value);
+ const transfer=/\b(?:transfer|transfers|transfersom|overstap|bieding|bod|belangstelling|interesse|contacten|contractonderhandelingen)\b|\bnaar\s+(?:PSV|Ajax|Feyenoord|AZ|FC Groningen|FC Twente)\b/i.test(value)||/\bin gesprek met\b/i.test(value)&&/\b(?:PSV|Ajax|Feyenoord|AZ|FC Groningen|FC Twente)\b/i.test(value);
+ const uncertain=/\b(?:zou|zouden|mogelijk|onderzoekt|geïnteresseerd|interesse|belangstelling|contacten|bieding|bod|volgens|onbevestigd|media|noemen|ontkent|ontkracht)\b|in gesprek met/i.test(value);
  return explicit||(transfer&&uncertain);
 }
 function isContradiction(title){
