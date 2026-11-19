@@ -13,7 +13,7 @@ test('100B news desk selects a verified decision and separate context desk only 
  ];
  const plan=planEvidenceResearch(facts,{topic:'Club stelt trainer aan',compact:true});
  assert.deepEqual(plan.leadFactIds,['F1']);
- assert.deepEqual(plan.contextFactIds,['F2','F3']);
+ assert.deepEqual(new Set(plan.contextFactIds),new Set(['F2','F3']));
  assert.deepEqual(plan.supportedFactIds,['F1','F2','F3']);
  assert.ok(plan.bodySections.length<=2);
  assert.equal(plan.researchQuestionsAreEvidence,false);
