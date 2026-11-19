@@ -30,7 +30,7 @@ function officialSourceAuthority(canonicalUrl) {
     // These exact article families report decisions by the competition organiser.
     // A preview, interpretation or similarly named analysis is not a decision.
     const decision = /^\/uefanationsleague\/news\/02[a-z0-9-]+--(?:20\d{2}-\d{2}-)?(?:uefa-)?(?:nations-league-)?(?:knockout-stage-and-play-off-draw|quarter-finals-last-eight-confirmed)\/?$/.test(url.pathname);
-    return previouslyConfirmed || decision ? 'association_decision' : '';
+    return previouslyConfirmed || decision ? 'association_decision' : 'club_decision';
   }
   return ['knvb.nl', 'eurojackpotknvbbeker.nl', 'onsoranje.nl', 'ussoccer.com'].includes(domain)
     ? 'association_decision' : 'club_decision';
