@@ -134,23 +134,24 @@ test('partial outages keep discovery running without AI calls or article writes 
  assert.equal(calls.some(([url,method])=>method==='POST'||url.includes('api.groq.com')),false);
 });
 
-test('archived official cup evidence reaches the writer but publication waits for matching artwork',async()=>{
+test('checked cup evidence reaches the writer but publication waits for matching artwork',async()=>{
  const {fingerprint}=require('../editorial-drafts');
  const {candidate,draft,sourceUrls}=require('../automatic-bootstrap.json').find(entry=>entry.key==='hoek-az-bekerprogramma-2026-11-06');
  const config=require('../automatic-editorial.json');
  const urls=[sourceUrls[0].replace(/\/[^/]+$/,'/bekerprogramma-hsv-hoek-az'),sourceUrls[1].replace(/\/[^/]+$/,'/bekerprogramma-hsv-hoek-az')];
  const title='KNVB Bekerprogramma HSV Hoek en AZ';
- const evidence=candidate.facts.flatMap(fact=>fact.evidence);
+ // The mocked publishers explicitly state the claims attributed to them. Repeat
+ // the bulletin across the fragment boundary to exercise the production chunker.
  const pages=urls.map((url,index)=>{
-  const quotes=[...new Set(evidence.filter(e=>e.source===index).map(e=>e.quote))];
-  const text=title+' '+quotes.join(' ');
+  const quotes=candidate.facts.filter(f=>f.evidence.some(e=>e.source===index)).map(f=>f.text);
+  const text=[title+'.',...quotes,...quotes.slice().reverse()].join(' ');
   return {url,text,title,publishedAt:'2026-11-06T08:00:00Z'};
  });
  const fragments=pages.map(evidenceFragments);
  const references=candidate.facts.map(fact=>({
   text:fact.text,
-  evidence:fact.evidence.map(({source,quote})=>{
-   const fragment=fragments[source].findIndex(text=>text.includes(quote.slice(0,35)));
+  evidence:fact.evidence.map(({source})=>{
+   const fragment=fragments[source].findIndex(text=>text.includes(fact.text));
    assert.notEqual(fragment,-1);
    return {source,fragment};
   })
@@ -1712,4 +1713,85 @@ test('98T official UEFA first-party context appears only as literal audited fact
  assert.ok(packet.facts.length<=10);
  assert.ok(['A1','A2','A3','A4'].every(group=>packet.facts.some(f=>f.text.startsWith('Group '+group))));
  for(const fact of packet.facts)assert.ok(text.includes(fact.evidence[0].quote));
+});
+
+/* Synthetic bulletin on an allowlisted URL. No HTTP requests or live source text. */
+function inventedBulletin(){
+ const contract='Het contract van Linde Vaar loopt tot 30 juni 2028.';
+ const other='Het contract van Ivo Meren loopt tot 30 juni 2030.';
+ const score='FC Nevel won met 3-1 van SV Vennen.';
+ const count='Linde Vaar speelde 18 wedstrijden voor FC Nevel.';
+ const date='De presentatie van Linde Vaar vindt plaats op 4 juli 2026.';
+ const sentences=[other,contract,score,count,date];
+ const doc={url:'https://www.ajax.nl/artikelen/fictieve-test',title:'Fictief contract verlengd',
+  publishedAt:new Date(now-3600000).toISOString(),text:sentences.join(' ')};
+ const verify=(claim,quote=contract,docs=[doc])=>validateEvidence({kind:'announcement',
+  primaryAuthority:'club_decision',sharedEventEvidence:[],facts:[{text:claim,evidence:[{source:0,quote}]}]},docs,now);
+ return {contract,other,score,count,date,sentences,doc,verify};
+}
+
+test('99C-1 binds a contract expiry to its own player, polarity and cited sentence',()=>{
+ const {contract,other,doc,verify}=inventedBulletin();
+ for(const quote of [contract,doc.text]){
+  assert.deepEqual(verify(contract,quote),[]);
+  for(const claim of [contract.replace('2028','2030'),contract.replace('Linde Vaar','Ivo Meren'),
+   contract.replace('loopt tot','loopt niet tot'),contract.replace('tot','vanaf')]){
+   assert.ok(verify(claim,quote).some(issue=>issue.includes('claim_evidence_mismatch')),claim);
+  }
+ }
+ assert.ok(verify(other,contract).some(issue=>issue.includes('claim_evidence_mismatch')));
+ assert.deepEqual(verify(contract.replace('30 juni 2028','2028-06-30')),[]);
+ assert.deepEqual(verify(contract.replace('30 juni 2028','30-06-2028')),[]);
+ assert.ok(verify(contract.replace('30 juni','29 juni')).length);
+});
+
+test('99C-1 verifies results, counts and calendar dates separately within the same bulletin',()=>{
+ const {score,count,date,sentences,doc,verify}=inventedBulletin();
+ const packet={kind:'announcement',primaryAuthority:'club_decision',sharedEventEvidence:[],
+  facts:sentences.map(text=>({text,evidence:[{source:0,quote:text}]}))};
+ assert.deepEqual(validateEvidence(packet,[doc],now),[]);
+ for(const [claim,quote] of [[score.replace('3-1','1-3'),score],[score.replace('won','verloor'),score],
+  [score.replace('FC Nevel','SV Vennen'),score],[count.replace('18','81'),count],
+  [count.replace('wedstrijden','doelpunten'),count],[date.replace('4 juli','5 juli'),date],
+  [date.replace('vindt plaats','is afgelast'),date]]){
+  assert.ok(verify(claim,quote).some(issue=>issue.includes('claim_evidence_mismatch')),claim);
+ }
+ packet.facts[0].evidence.push({source:0,quote:count});
+ assert.ok(validateEvidence(packet,[doc],now).some(issue=>issue.includes('claim_evidence_mismatch')));
+});
+
+test('99C-1 denies clipped values, conditional evidence and restricted source use',()=>{
+ const {contract,doc,verify}=inventedBulletin();
+ const partial=contract.slice(0,-1);
+ for(const text of [partial+'9.',partial+'?',partial+', mits de optie wordt gelicht.',
+  'De club ontkent dat '+partial+'.','Het gerucht luidt: '+partial+'.']){
+  assert.ok(verify(partial,partial,[{...doc,text}]).includes('claim_evidence_mismatch'),text);
+ }
+ assert.ok(verify(contract,contract,[{...doc,sourcePolicy:{status:'link_only'}}]).includes('claim_evidence_mismatch'));
+ assert.deepEqual(verify(contract.replace('loopt tot','eindigt op')),[]);
+});
+
+test('99C-1 a fresh unrelated story cannot refresh the cited announcement',()=>{
+ const {sentences,doc}=inventedBulletin();
+ const second={...doc,url:'https://www.az.nl/inside-az/nieuws/fictieve-test',publishedAt:'2020-01-01'};
+ const packet={kind:'announcement',facts:sentences.map((text,i)=>({text,evidence:[{source:i===1?1:0,quote:text}]})),
+  sharedEventEvidence:[0,1].map(source=>({source,quote:sentences[0]}))};
+ assert.deepEqual(validateEvidence(packet,[doc,{...second,publishedAt:doc.publishedAt}],now),[]);
+ assert.ok(validateEvidence(packet,[doc,second],now).includes('claim_evidence_mismatch'));
+});
+
+test('99C-1 bounded extraction retries the mismatched claim before fuzzy alignment',async()=>{
+ const {contract,other,doc}=inventedBulletin();
+ const wrong=contract.replace('2028','2030');
+ const {extractCandidate}=require('../scripts/automatic-publication');
+ for(const repair of [true,false]){
+  let calls=0;
+  const task=extractCandidate([{...doc,text:contract+' '+other}],{router:{complete:async messages=>{
+   if(calls++)assert.match(messages.at(-1).content,/claim_evidence_mismatch/);
+   return {kind:'announcement',facts:[{text:calls===2&&repair?contract:wrong,evidence:[{source:0,fragment:0}]}]};
+  }}},now);
+  if(repair)assert.equal((await task).facts[0].text,contract);
+  else await assert.rejects(task,/claim_evidence_mismatch/);
+  assert.equal(calls,2);
+ }
 });
