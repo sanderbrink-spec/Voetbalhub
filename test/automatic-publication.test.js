@@ -1885,3 +1885,31 @@ test('99C-5: second reviewer sees independently literal source citations for sta
  assert.ok(!JSON.stringify(ledger).includes('4-0'));
  assert.deepEqual(independentReviewEvidenceLedger({facts:[]},docs),[]);
 });
+
+
+test('99C-5: exact false UEFA Nations name rejection is retried once with fresh proof',()=>{
+ const {reopenUefaCompetitionTitle99C5}=require('../scripts/automatic-publication');
+ const crypto=require('node:crypto');
+ const msg='Concept na herstel nog niet geschikt: Controleer namen die niet in de aangeleverde feiten staan: UEFA Nations.';
+ const at=Date.parse('2026-11-19T18:00:00Z');
+ const doc={url:'https://www.uefa.com/uefanationsleague/news/02ab-2209792f2fda-6a523d4500bb-1000--2026-27-nations-league-quarter-final-qualification-promotion/',
+  title:'2026/27 Nations League: Quarter-final qualification, promotion, play-offs and relegation',
+  text:'UEFA Nations League promotion and qualification decisions.',
+  publishedAt:'2026-11-19T10:00:00Z'};
+ const make=()=>({status:'review',urls:[doc.url],attempts:2,checkpoint:'old',
+   failureStage:'generation',failureCategory:'generator_failure',reason:'generation_error',
+   errorHash:crypto.createHash('sha256').update(msg).digest('hex')});
+ const j=make();
+ assert.equal(reopenUefaCompetitionTitle99C5(j,doc,at),true);
+ assert.equal(j.status,'pending');assert.equal(j.attempts,0);
+ assert.equal(j.checkpoint,undefined);
+ j.status='review';
+ assert.equal(reopenUefaCompetitionTitle99C5(j,doc,at),false);
+ for(const x of [{failureStage:'quality'}, {reason:'insufficient_verified_facts'},
+  {errorHash:'other'}, {urls:['https://www.uefa.com/uefanationsleague/news/other/']},
+  {status:'published'}]){
+  assert.equal(reopenUefaCompetitionTitle99C5({...make(),...x},doc,at),false);
+ }
+ assert.equal(reopenUefaCompetitionTitle99C5(make(),{...doc,publishedAt:'2026-10-01T12:00:00Z'},at),false);
+ assert.equal(reopenUefaCompetitionTitle99C5(make(),{...doc,url:'https://www.ajax.nl/artikelen/uefa-status/'},at),false);
+});
