@@ -66,7 +66,12 @@ function parseFeed(xml,source,now=Date.now()){
  });
 }
 function isRumour(title){
- return /\b(?:gerucht|geruchten|zou|zouden|mogelijk|interesse|belangstelling|contact|gesprek|bieding|bod|volgens|meldt|ontkent|ontkracht|transferspeculatie|reportedly|rumou?r|linked)\b/i.test(title);
+ const value=String(title||'');
+ // 'Zou een droom zijn' or 'volgens de trainer' is not transfer gossip.
+ const explicit=/\b(?:gerucht|geruchten|transferspeculatie|rumou?r|reportedly|gelinkt|linked|in beeld)\b|geen onlogische stap/i.test(value);
+ const transfer=/\b(?:transfer|transfers|transfersom|overstap|bieding|bod|belangstelling|interesse|contacten|contractonderhandelingen)\b|\bnaar\s+(?:PSV|Ajax|Feyenoord|AZ|FC Groningen|FC Twente)\b/i.test(value);
+ const uncertain=/\b(?:zou|zouden|mogelijk|geïnteresseerd|interesse|belangstelling|contacten|bieding|bod|volgens|onbevestigd|media|noemen|ontkent|ontkracht)\b|in gesprek met/i.test(value);
+ return explicit||(transfer&&uncertain);
 }
 function isContradiction(title){
  return /\b(?:ontkent|ontkracht|onjuist|niet waar|geen sprake|geen bod|geen gesprek|ontkend|verzonnen|denies|denied|ruled out|false reports)\b/i.test(title);
@@ -84,7 +89,8 @@ function sharedStory(a,b){
 }
 function classifyLeads(leads){
  const withAgents=leads.map(lead=>({...lead,
-  agentIds:AGENTS.filter(agent=>agent.pattern.test(lead.title)).map(agent=>agent.id),
+  agentIds:AGENTS.filter(agent=>agent.pattern.test(lead.title)&&
+   (agent.id!=='geruchten'||isRumour(lead.title))).map(agent=>agent.id),
   rumour:isRumour(lead.title),contradiction:isContradiction(lead.title),
   verified:false,publicationAllowed:false}));
  const groups=[];
