@@ -133,3 +133,16 @@ test('101 optional media-attributed rumour draft remains unpublished and unverif
   choices:[{message:{content:JSON.stringify(fake)}}]})});
  assert.equal(rejected.draft,null);
 });
+
+
+test('101 rumor classifier excludes unrelated quote about a dream, includes substantiated reporting leads',()=>{
+ const quote="Fortuna-sterkhouder lacht om vraag over landstitel: 'Zou hele goede droom zijn'";
+ assert.equal(N.isRumour(quote),false);
+ const classified=N.classifyLeads([{id:'dream',title:quote,publisher:'vp',url:'https://www.voetbalprimeur.nl/nieuws/dream'}]);
+ assert.equal(classified.leads[0].rumour,false);
+ assert.ok(!classified.leads[0].agentIds.includes('geruchten'));
+ assert.equal(N.isRumour('Transfers PSV: Italiaanse media noemen transfersom voor De Bruyne'),true);
+ assert.equal(N.isRumour("'PSV geen onlogische stap voor De Bruyne'"),true);
+ assert.equal(N.isRumour('De Bruyne mogelijk naar PSV'),true);
+ assert.equal(N.isRumour('PSV bevestigt de transfer van een speler'),false);
+});
