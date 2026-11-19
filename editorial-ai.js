@@ -79,8 +79,20 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  const lowered=x=>String(x||'').toLocaleLowerCase('nl');
  const name=lowered(publisher).replaceAll('u.s.', 'us');
  const signals=['volgens','aldus','meldt','bevestigt','bevestigd','kondigt','schrijft','laat weten','geeft aan','maakt bekend','maakte bekend','bekendgemaakt','bekendmaking'];
- const isNamedAttribution=x=>lowered(x).replaceAll('u.s.', 'us').split(/[.!?](?:\s+|$)/).some(sentence=>
-  sentence.includes(name)&&(signals.some(signal=>sentence.includes(signal))||(sentence.includes('legt ')&&sentence.includes(' uit'))||(sentence.includes('licht ')&&sentence.includes(' toe'))));
+ const isNamedAttribution=x=>lowered(x).replaceAll('u.s.', 'us').split(/[.!?](?:\s+|$)/).some(sentence=>{
+  const index=sentence.indexOf(name);
+  if(index<0)return false;
+  // Keep the previously accepted publisher-clause policy for club news.
+  if(publisher!=='UEFA')return signals.some(signal=>sentence.includes(signal))||
+    (sentence.includes('legt ')&&sentence.includes(' uit'))||
+    (sentence.includes('licht ')&&sentence.includes(' toe'));
+  // A source name elsewhere in the sentence does not make an unrelated
+  // reporting verb an explicit attribution of the published decision.
+  const near=sentence.slice(Math.max(0,index-40),index+name.length+40);
+  return signals.some(signal=>near.includes(signal))||
+    (near.includes('legt ')&&near.includes(' uit'))||
+    (near.includes('licht ')&&near.includes(' toe'));
+ });
  const paragraphs=draft.body.filter(x=>typeof x==='string');
  const lead=String(draft.standfirst||'');
  const result=[];
@@ -102,17 +114,33 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
 // Add only a missing explicit attribution if that club is itself present in
 // verified facts. All factual, originality and independent review gates remain.
 function attachVerifiedOfficialAttribution(draft,{primaryAuthority=null,sourceUrls=[],facts=[]}={}){
- if(!['club_decision','association_decision'].includes(primaryAuthority)||sourceUrls.length!==1||!draft)return draft;
- const publisher=officialPublisherName(sourceUrls[0]);
- // The authenticated first-party HTTPS URL proves who published the news.
- // Source attribution does not add a new fact about the underlying decision.
- if(!publisher)return draft;
- const issues=editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts});
- if(!issues.some(issue=>issue.startsWith('Noem '+publisher+' ')))return draft;
- const intro=String(draft.standfirst||'').trim();
- const attribution='Dat meldt '+publisher+'.';
- if(!/[.!?]$/.test(intro)||intro.split(/\s+/).length+attribution.split(/\s+/).length>35)return draft;
- return {...draft,standfirst:intro+' '+attribution};
+  if(!['club_decision','association_decision'].includes(primaryAuthority)||sourceUrls.length!==1||!draft)return draft;
+  const publisher=officialPublisherName(sourceUrls[0]);
+  // The authenticated publisher is source provenance, not evidence of a new event.
+  // All literal fact, originality, image rights and independent review gates remain.
+  if(!publisher)return draft;
+  const issues=editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts});
+  let result=draft;
+  if(issues.some(issue=>issue.startsWith('Noem '+publisher+' '))){
+    const intro=String(result.standfirst||'').trim();
+    const attribution='Dat meldt '+publisher+'.';
+    if(/[.!?]$/.test(intro)&&intro.split(/\s+/).length+attribution.split(/\s+/).length<=35)
+      result={...result,standfirst:intro+' '+attribution};
+  }
+  // UEFA's first-party status overview supports naming the publisher of the
+  // already verified body facts. Do not add any match result, date or history.
+  // Keep the sentence in an existing substantive paragraph, never add a filler
+  // paragraph to satisfy the shape check.
+  if(publisher==='UEFA'&&issues.some(issue=>issue.startsWith('Schrijf in minstens één'))){
+    const body=[...result.body];
+    const index=body.findIndex(p=>typeof p==='string'&&/[.!?]$/.test(p.trim())&&
+      p.trim().split(/\s+/).length<=110);
+    if(index!==-1){
+      body[index]=body[index].trim()+' UEFA vermeldt deze gegevens in haar officiële overzicht.';
+      result={...result,body};
+    }
+  }
+  return result;
 }
 // A year is not a competition season, and a named job title must appear
 // literally in the independently verified evidence.
