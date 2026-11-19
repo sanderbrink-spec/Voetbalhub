@@ -79,8 +79,16 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  const lowered=x=>String(x||'').toLocaleLowerCase('nl');
  const name=lowered(publisher).replaceAll('u.s.', 'us');
  const signals=['volgens','aldus','meldt','bevestigt','bevestigd','kondigt','schrijft','laat weten','geeft aan','maakt bekend','maakte bekend','bekendgemaakt','bekendmaking'];
- const isNamedAttribution=x=>lowered(x).replaceAll('u.s.', 'us').split(/[.!?](?:\s+|$)/).some(sentence=>
-  sentence.includes(name)&&(signals.some(signal=>sentence.includes(signal))||(sentence.includes('legt ')&&sentence.includes(' uit'))||(sentence.includes('licht ')&&sentence.includes(' toe'))));
+ const isNamedAttribution=x=>lowered(x).replaceAll('u.s.', 'us').split(/[.!?](?:\s+|$)/).some(sentence=>{
+  const index=sentence.indexOf(name);
+  if(index<0)return false;
+  // A source name elsewhere in the sentence does not make an unrelated
+  // reporting verb an explicit attribution of the published decision.
+  const near=sentence.slice(Math.max(0,index-40),index+name.length+40);
+  return signals.some(signal=>near.includes(signal))||
+    (near.includes('legt ')&&near.includes(' uit'))||
+    (near.includes('licht ')&&near.includes(' toe'));
+ });
  const paragraphs=draft.body.filter(x=>typeof x==='string');
  const lead=String(draft.standfirst||'');
  const result=[];
