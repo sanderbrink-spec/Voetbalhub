@@ -1862,7 +1862,7 @@ test('99C-4: official UEFA promotion with a literal group table may become a sho
  const p={articleKind:'announcement',primaryAuthority:'association_decision',category:'Nations League',
   verifiedFacts:facts,sources:[{url:source}]};
  assert.equal(M.briefEligible(p),true);
- assert.equal(M.briefEligible({...p,verifiedFacts:facts.slice(1)}),false);
+ assert.equal(M.briefEligible({...p,verifiedFacts:['No verified group table was published.',...facts.slice(1)]}),false);
  assert.equal(M.briefEligible({...p,verifiedFacts:facts.map(f=>f.replace('Iceland are confirmed in first place and will be promoted','Iceland might be promoted'))}),false);
  assert.equal(M.briefEligible({...p,sources:[{url:'https://www.ajax.nl/artikelen/uefa-bespreking'}]}),false);
 });
