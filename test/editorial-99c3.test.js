@@ -134,3 +134,23 @@ test('99C-3 rejected UEFA review retries a coherent source-scoped story, never a
  assert.match(prompt,/geen reeks losse standen of losstaande landen/);
  assert.match(prompt,/alleen verifiedFacts zijn bewijs/);
 });
+
+
+test('99C-3 official UEFA section identifies Nations League but never verifies people or scores',()=>{
+ const {evidenceIssues}=require('../editorial-facts');
+ const source='https://www.uefa.com/uefanationsleague/news/02ab-example--confirmed-promotion/';
+ const facts=['UEFA confirmed promotion from League C to League B for one participating team.'];
+ const draft={
+  headline:'UEFA bevestigt een promotiebesluit binnen Nations League',
+  standfirst:'UEFA bevestigt de promotie naar een hogere competitieklasse in het toernooi.',
+  body:['Volgens UEFA gaat het om een formele promotiebeslissing die de bond heeft bekendgemaakt.']
+ };
+ const official=evidenceIssues(draft,facts,null,source);
+ assert.ok(!official.some(x=>x.includes('namen die niet')&&x.includes('Nations League')),JSON.stringify(official));
+ const unrelated=evidenceIssues(draft,facts,null,'https://www.fcgroningen.nl/nieuws/nieuw-bericht/');
+ assert.ok(unrelated.some(x=>x.includes('Nations League')));
+ const invented={...draft,body:['Volgens UEFA speelt Erik Janssen in een wedstrijd die met 6-0 eindigt.']};
+ const rejected=evidenceIssues(invented,facts,null,source);
+ assert.ok(rejected.some(x=>x.includes('Erik Janssen')));
+ assert.ok(rejected.some(x=>x.includes('6-0')||x.includes('6')));
+});
