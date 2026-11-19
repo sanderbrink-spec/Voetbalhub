@@ -411,13 +411,13 @@ test('overlap feedback identifies exact copied words while preserving the ten-wo
 });
 
 
-test('primary news is concise for at most three facts and full depth for four or more',()=>{
+test('primary news is concise for up to four sparse facts and full depth from five',()=>{
  const M=require('../editorial-desk-model');
  const docs=[{url:'https://peczwolle.nl/nieuws/aanstelling'}];
  for(const n of [1,2,3,4,5]){
   const facts=Array.from({length:n},(_,i)=>'Concreet vastgelegd feit '+i);
   const payload={articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:facts};
-  assert.equal(M.briefEligible(payload),n<=3);
+  assert.equal(M.briefEligible(payload),n<=4);
  }
  assert.equal(M.briefEligible({articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:Array(6).fill('feit')}),false);
  assert.equal(M.briefEligible({articleKind:'announcement',primaryAuthority:'club_decision',sources:docs,verifiedFacts:['feit'],transferStatus:'confirmed'}),false);
