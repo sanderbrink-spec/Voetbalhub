@@ -1795,3 +1795,74 @@ test('99C-1 bounded extraction retries the mismatched claim before fuzzy alignme
   assert.equal(calls,2);
  }
 });
+
+
+test('99C-4: fresh first-party copy with five or six different proved details may use compact shape',()=>{
+ const M=require('../editorial-desk-model');
+ const article={articleKind:'announcement',primaryAuthority:'club_decision',
+  sources:[{url:'https://www.fcgroningen.nl/nieuws/club-besluit/'}],
+  verifiedFacts:[
+   'De club bevestigt een verandering in de selectie.',
+   'Het besluit heeft betrekking op twee spelers.',
+   'De eerstvolgende training is op donderdag.',
+   'De clubleiding verklaart de achtergrond van het besluit.',
+   'Eén speler keert later terug naar de groep.'
+  ]};
+ assert.equal(M.briefEligible(article),true);
+ assert.equal(M.briefEligible({...article,verifiedFacts:[...article.verifiedFacts,'De club meldt een volgende stap.']}),true);
+ assert.equal(M.briefEligible({...article,verifiedFacts:[...article.verifiedFacts,'Extra stap.','Nog een stap.']}),false);
+ assert.equal(M.briefEligible({...article,verifiedFacts:[...article.verifiedFacts,'De hoofdtrainer wijzigt de staf.']}),false);
+ assert.equal(M.briefEligible({...article,sources:[...article.sources,{url:'https://www.psv.nl/media/artikel/bericht'}]}),false);
+ assert.equal(M.briefEligible({...article,primaryAuthority:null}),false);
+ assert.equal(M.briefEligible({...article,transferStatus:'rumour'}),false);
+ assert.equal(M.briefEligible({...article,articleKind:'match_report'}),false);
+});
+
+test('99C-4: one fresh official rejection gets a full new review but unverifiable and stale jobs remain blocked',()=>{
+ const {reopenFreshPrimaryStoryAfterFormat99C4}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-19T16:30:00Z');
+ const doc={url:'https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-last-eight-confirmed/',
+  title:'Nations League quarter-finals: Last eight confirmed',
+  text:'Nations League quarter finals qualification confirmed by UEFA.',
+  publishedAt:'2026-11-19T10:00:00Z'};
+ const make=()=>({urls:[doc.url],status:'review',attempts:3,checkpoint:'rejected-copy',
+  failureStage:'quality',failureCategory:'journalistic_rejection',reason:'editorial_review_required'});
+ const j=make();
+ assert.equal(reopenFreshPrimaryStoryAfterFormat99C4(j,doc,now),true);
+ assert.equal(j.status,'pending');assert.equal(j.attempts,0);
+ assert.equal(j.checkpoint,undefined);assert.equal(j.nextAttemptAt,now);
+ j.status='review';
+ assert.equal(reopenFreshPrimaryStoryAfterFormat99C4(j,doc,now),false);
+ for(const changes of [
+  {failureStage:'verification'},
+  {failureStage:'publication'},
+  {failureCategory:'temporary_source_failure'},
+  {reason:'claim_evidence_mismatch'},
+  {urls:['https://www.psv.nl/media/artikel/anders']},
+  {status:'published'}
+ ]){
+  const blocked={...make(),...changes};
+  assert.equal(reopenFreshPrimaryStoryAfterFormat99C4(blocked,doc,now),false);
+ }
+ assert.equal(reopenFreshPrimaryStoryAfterFormat99C4(make(),{...doc,publishedAt:'2026-11-12T10:00:00Z'},now),false);
+ assert.equal(reopenFreshPrimaryStoryAfterFormat99C4(make(),{...doc,url:'https://example.com/uefa-story'},now),false);
+});
+
+
+test('99C-4: official UEFA promotion with a literal group table may become a short contextual story',()=>{
+ const M=require('../editorial-desk-model');
+ const source='https://www.uefa.com/uefanationsleague/news/02ab-2209792f2fda-6a523d4500bb-1000--2026-27-nations-league-quarter-final-qualification-promotion/';
+ const facts=[
+  'Group B1 Iceland (15pts), Norway (12), Ireland (8), Latvia (2)',
+  'Iceland are confirmed in first place and will be promoted to League A.',
+  'Norway are confirmed in second place and will enter the play-offs.',
+  'Ireland are confirmed in third place and will remain in League B.',
+  'Latvia are confirmed in fourth place and will be relegated to League C.'
+ ];
+ const p={articleKind:'announcement',primaryAuthority:'association_decision',category:'Nations League',
+  verifiedFacts:facts,sources:[{url:source}]};
+ assert.equal(M.briefEligible(p),true);
+ assert.equal(M.briefEligible({...p,verifiedFacts:['No verified group table was published.',...facts.slice(1)]}),false);
+ assert.equal(M.briefEligible({...p,verifiedFacts:facts.map(f=>f.replace('Iceland are confirmed in first place and will be promoted','Iceland might be promoted'))}),false);
+ assert.equal(M.briefEligible({...p,sources:[{url:'https://www.ajax.nl/artikelen/uefa-bespreking'}]}),false);
+});
