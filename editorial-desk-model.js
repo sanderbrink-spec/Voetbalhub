@@ -59,8 +59,12 @@
     if(payload?.articleKind!=='announcement'||
       !['club_decision','association_decision'].includes(payload.primaryAuthority)||
       payload.sources?.length!==1||!host(payload.sources[0]?.url)||
-      payload.transferStatus||!Array.isArray(facts)||facts.length<1||facts.length>4)return false;
+      payload.transferStatus||!Array.isArray(facts)||facts.length<1||facts.length>6)return false;
     if(facts.length<=3)return true;
+    // Five or six source-verified details can still describe one compact decision.
+    // Avoid forcing three repetitive paragraphs solely because of fact count.
+    // Longer packets and staffing appointments retain the full story format.
+    // This grants no exemption from claim checking or independent editorial review.
     // Complex staffing appointments still require independent body sections.
     return !facts.some(f=>/\b(?:hoofdtrainer|head coach|assistent(?:-trainer|-bondscoach)?|keeperstrainer|interim|technische staf|coach staff)\b/i.test(String(f)));
   };
