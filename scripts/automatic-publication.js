@@ -616,6 +616,125 @@ function retryFederationStorageFailure(job, doc, now) {
 function independentEvidenceIssue(docs){
  return new Set(docs.map(doc=>owner(doc.url))).size<2?'Twee onafhankelijke bronwebsites zijn vereist.':'';
 }
+const calendarMonths='januari februari maart april mei juni juli augustus september oktober november december'.split(' ');
+const monthPattern=calendarMonths.join('|');
+const writtenDate=new RegExp('\\b(\\d{1,2}) ('+monthPattern+') (\\d{4})\\b','giu');
+const guardedClaimPatterns=[
+ /\d/u,
+ /\b(?:contract\w*|overeenkomst|einddatum|looptijd|verlengt|expires|signed)\b/iu,
+ /\b(?:won|wint|wonnen|verloor|verliest|verslaat|versloeg|gewonnen|verloren|lost|draw|defeated|scored|gelijkgespeeld|zege|zegevierde|verslagen|uitgeschakeld|gekwalificeerd|winst|verlies|eindstand|uitslag|gelijkspel|nederlaag|overwinning|promoveert|degradeert)\b/iu,
+ /\b(?:treffers?|doelpunten?|goals?|points?|punten|wedstrijden|aantal|beide|beiden|nul|geen|twee|drie|vier|vijf|zes|zeven|acht|negen|tien|elf|twaalf|[\p{L}]+tien|[\p{L}]*(?:twintig|dertig|veertig|vijftig|zestig|zeventig|tachtig|negentig|honderd|duizend))\b|(?<!\p{L})één(?!\p{L})/iu,
+ /\b(?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag|morgen|gisteren|vandaag)\b/iu,
+ new RegExp('\\b(?:'+monthPattern+')\\b','iu')
+];
+const guardedClaim=text=>guardedClaimPatterns.some(pattern=>pattern.test(text));
+
+// Keep the entire proposition (including the subject, polarity, units and order).
+// Only unambiguous calendar notation and typographical spacing are interchangeable.
+function claimForm(value){
+ const iso=(year,month,day)=>year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+ return value.normalize('NFC').trim().replace(/\s+/gu,' ')
+  .replace(writtenDate,(_,day,month,year)=>iso(year,calendarMonths.indexOf(month.toLowerCase())+1,day))
+  .replace(/\b(\d{1,2})-(\d{1,2})-(\d{4})\b/g,(_,day,month,year)=>iso(year,month,day))
+  .replace(/(\d)\s*[–-]\s*(?=\d)/g,'$1-')
+  .replace(/\.$/u,'')
+  .replace(/^De overeenkomst van (.+?) loopt tot /u,'Het contract van $1 loopt tot ')
+  .replace(/^Het contract van (.+?) eindigt op /u,'Het contract van $1 loopt tot ');
+}
+
+function citedStatement(claim,quote){
+ const wanted=claimForm(claim);
+ if(wanted===claimForm(quote))return true;
+ const sentences=quote.split(/(?<=[.!?])\s+/u);
+ const length=claim.split(/(?<=[.!?])\s+/u).length;
+ return sentences.some((_,i)=>wanted===claimForm(sentences.slice(i,i+length).join(' ')));
+}
+
+function sameEvidenceFact(actual,expected){
+ return expected?.text===actual.text&&expected.evidence.length===actual.evidence.length&&
+  expected.evidence.every((e,i)=>e.source===actual.evidence[i].source&&e.quote===actual.evidence[i].quote);
+}
+
+// Official results indexes are dated by the fixture, not by an article timestamp.
+// Reuse the existing two-register parser. Production retains its original bounded
+// indexes because the excerpts saved for the writer may omit competition headers.
+function verifiedRegisterFact(fact,docs,now){
+ if(fact.evidence.length!==2||docs[1]?.url!==officialFinals98W.KNVB_RESULTS||
+    ![officialFinals98W.UEFA_RESULTS,officialFinals98W.DFB_RESULTS].includes(docs[2]?.url))return false;
+ const registers=docs.finalRegisters||[docs[1],docs[2]];
+ return officialFinals98W.officialRecentFinals(...registers,[docs[0]],now)
+  .some(item=>sameEvidenceFact(fact,item.candidate.facts[0]));
+}
+
+function supportedClaim(fact,docs,candidate,now){
+ if(!fact.evidence.every(e=>e&&Number.isInteger(e.source)&&allowedUrl(docs[e.source]?.url)&&
+    (!docs[e.source]?.sourcePolicy||docs[e.source].sourcePolicy.status==='primary_fact_check_only')))return false;
+ const scoped=guardedClaim(fact.text);
+ if(scoped&&verifiedRegisterFact(fact,docs,now))return true;
+ for(const e of fact.evidence){
+  const doc=docs[e.source];
+  if(!doc||typeof doc.text!=='string'||typeof e.quote!=='string')return false;
+  if(now!==undefined&&(candidate.kind==='announcement'||doc.publishedAt)){
+   const age=now-Date.parse(doc.publishedAt);
+   if(!Number.isFinite(age)||age< -300000||age>config.maxAgeHours*3600000)return false;
+  }
+  if(!scoped)continue;
+  // Match actual characters, including score separators and the final digit.
+  // A clipped quote cannot shorten 20301 to 2030 or start after a negation.
+  if(!literalClaimQuote(doc.text,e.quote))return false;
+  if(citedStatement(fact.text,e.quote)){
+   if(/\b(?:contract\w*|overeenkomst|einddatum|looptijd)\b/iu.test(fact.text)){
+    const body=doc.title&&doc.text.startsWith(doc.title)?doc.text.slice(doc.title.length).trim():doc.text;
+    if(!citedStatement(fact.text,doc.text)&&!citedStatement(fact.text,body))return false;
+   }
+   continue;
+  }
+  // Existing deterministic bilingual extractors bind the entire fact to its
+  // original quote and source. Model-supplied flags never grant this exception.
+  const specific=docs.length===1?confirmedFederationCoachReaction(doc):confirmedTrainingCampDeparture(docs);
+  if(specific?.facts.some(expected=>sameEvidenceFact(fact,expected)))continue;
+  if(appointmentDay(fact.text,e.quote,doc)||historicalPreviewScore(fact.text,e.quote,doc,candidate))continue;
+  return false;
+ }
+ return true;
+}
+
+function literalClaimQuote(text,quote){
+ const compact=s=>s.normalize('NFC').replace(/\s+/gu,' ').trim();
+ const body=compact(text),part=compact(quote);
+ let start=body.indexOf(part);
+ while(start>=0){
+  const prefix=body.slice(0,start),suffix=body.slice(start+part.length);
+  const after=suffix[0]||'';
+  if(!/[\p{L}\d]$/u.test(prefix)&&!(/[\p{L}\d]$/u.test(part)&&/[\p{L}\d]/u.test(after))&&
+     !/\b(?:niet|geen|nooit|not|never|ontkent dat|onjuist dat|onwaar dat|gerucht dat|denies that)\s*$/iu.test(prefix)&&
+     !/^\s*(?:[?!]|,?\s*\b(?:mits|tenzij|indien|unless|provided that|is onjuist)\b)/iu.test(suffix))return true;
+  start=body.indexOf(part,start+1);
+ }
+ return false;
+}
+
+function appointmentDay(text,quote,doc){
+ const day=/^De aanstelling ging in op (\p{L}+) (\p{L}+)\.$/u.exec(text);
+ const start=/^([\p{L} '-]+) joined the club as ([\p{L} '-]+) on (\d{1,2}) (\p{L}+) (\d{4})\.$/u.exec(quote);
+ if(!day||!start||doc.title!==start[1]+' is the new '+start[2])return false;
+ const days='nul een twee drie vier vijf zes zeven acht negen tien elf twaalf dertien veertien vijftien zestien zeventien achttien negentien twintig'.split(' ');
+ const months='january february march april may june july august september october november december'.split(' ');
+ return days[Number(start[3])]===day[1]&&calendarMonths[months.indexOf(start[4].toLowerCase())]===day[2];
+}
+
+function historicalPreviewScore(text,quote,doc,candidate){
+ if(candidate.kind!=='preview'||!/^https:\/\/www\.uefa\.com\/uefanationsleague\/match\/\d+--[a-z-]+\/$/.test(doc.url))return false;
+ const row=/^UEFA Nations League, Netherlands(?:, (\d{2})\/(\d{2}))?: (Netherlands|Germany|Greece) (\d+-\d+) (Netherlands|Germany|Greece)$/u.exec(quote);
+ if(!row)return false;
+ const names={Netherlands:'Nederland',Germany:'Duitsland',Greece:'Griekenland'};
+ if(!doc.url.endsWith('--'+row[3].toLowerCase()+'-vs-'+row[5].toLowerCase()+'/'))return false;
+ const date=row[1]?' op '+Number(row[1])+' '+calendarMonths[Number(row[2])-1]:'';
+ const result=date+': '+names[row[3]]+' '+row[4]+' '+names[row[5]]+'.';
+ return text==='Eerdere ontmoeting in de Nations League'+result||
+  (row[3]==='Netherlands'&&row[5]==='Greece'&&text==='De vorige groepswedstrijd'+result);
+}
+
 function validateEvidence(candidate,docs,now=Date.now()){
  const issues=[];
  if(!candidate||!['preview','announcement'].includes(candidate.kind))return ['Alleen actuele voorbeschouwingen en primaire clubmededelingen zijn toegestaan.'];
@@ -625,9 +744,10 @@ function validateEvidence(candidate,docs,now=Date.now()){
  if(!Array.isArray(facts)||facts.length<(primary?1:4)||facts.length>10)return [primary?'Een onderbouwd officieel besluit is vereist.':'Vier tot tien verschillende onderbouwde feiten zijn vereist.'];
  const used=new Set();
  for(const fact of facts){
-  if(typeof fact.text!=='string'||fact.text.length<25||fact.text.length>1000||!Array.isArray(fact.evidence)||!fact.evidence.length){issues.push('Feit zonder controleerbaar bewijs.');continue;}
+  if(typeof fact?.text!=='string'||fact.text.length<25||fact.text.length>1000||!Array.isArray(fact.evidence)||!fact.evidence.length){issues.push('Feit zonder controleerbaar bewijs.');continue;}
+  if(!supportedClaim(fact,docs,candidate,now))issues.push('claim_evidence_mismatch');
   for(const e of fact.evidence){
-   const doc=docs[e.source];
+   const doc=docs[e?.source];
    if(!doc||!allowedUrl(doc.url)||typeof e.quote!=='string'||e.quote.trim().length<25||e.quote.length>800||!normalize(doc.text).includes(normalize(e.quote))){issues.push('Broncitaat niet letterlijk aangetroffen.');continue;}
    used.add(e.source);
   }
@@ -649,7 +769,7 @@ function validateEvidence(candidate,docs,now=Date.now()){
   const dates=[...used].map(i=>Date.parse(docs[i].publishedAt||''));
   if(!dates.some(t=>Number.isFinite(t)&&t<=now+300000&&t>=now-config.maxAgeHours*3600000))issues.push('Geen betrouwbare actuele brondatum.');
  }
- if(new Set(facts.map(f=>normalize(f.text))).size!==facts.length)issues.push('Dubbele feiten.');
+ if(new Set(facts.map(f=>normalize(f?.text))).size!==facts.length)issues.push('Dubbele feiten.');
  return [...new Set(issues)];
 }
 function overlapPhrases(source,draft){
@@ -871,13 +991,16 @@ function verifiedOfficialCoachDecision(doc){
   category:'clubnieuws',eventDate:'',teams:[],sharedEventEvidence:[],
   facts:taken.map(text=>({text,evidence:[{source:0,quote:text}]}))};
 }
-function alignPrimaryLiteralFacts(candidate){
+function alignPrimaryLiteralFacts(candidate,preserveScoped=false){
  if(!Array.isArray(candidate?.facts))return candidate;
  const stop=new Set('de het een en van voor bij aan om die dat deze dit met zijn haar wordt worden heeft hebben naar over onder uit als ook dan in op tot te der den maar meer vanaf echter sinds tijdens tussen aldus volgens club trainer hoofdtrainer nieuwe nieuw laatste eerste door terug'.split(' '));
  const tokens=value=>[...new Set(normalize(value).split(' ').filter(w=>w.length>=3&&!stop.has(w)))];
  const fixed=[],used=new Set();
  for(const fact of candidate.facts){
   if(typeof fact?.text!=='string'||!Array.isArray(fact.evidence))continue;
+  // Extraction has checked this proposition against every cited fragment.
+  // Keep it intact for the literal-primary gate and its existing retry.
+  if(preserveScoped&&guardedClaim(fact.text)){fixed.push(fact);continue;}
   let chosen=fact.text;
   const quoted=fact.evidence.map(x=>String(x.quote||'')).filter(q=>q.length>=25);
   if(!quoted.some(q=>normalize(q).includes(normalize(fact.text)))){
@@ -938,7 +1061,13 @@ async function extractCandidate(docs,options,now){
   if(candidate.transferStatus==='unconfirmed')delete candidate.transferStatus;
  }
  const hydrated=hydrateEvidence(candidate,fragments);
- const aligned=authority?alignPrimaryLiteralFacts(hydrated):hydrated;
+ const mismatches=hydrated.facts.filter(f=>typeof f.text==='string'&&!supportedClaim(f,docs,hydrated));
+ if(mismatches.length){
+  if(attempt===1)throw Error('claim_evidence_mismatch: feit niet letterlijk of eenduidig onderbouwd.');
+  messages.push({role:'assistant',content:JSON.stringify(candidate)},{role:'user',content:'claim_evidence_mismatch. Herstel de niet-brongetrouwe feiten met volledige, expliciet onderbouwde bronzinnen: '+JSON.stringify(mismatches.map(f=>f.text))});
+  continue;
+ }
+ const aligned=authority?alignPrimaryLiteralFacts(hydrated,true):hydrated;
  if(authority&&aligned.kind==='announcement')aligned.topic=docs[0].title;
  const unsupported=authority?aligned.facts.filter(f=>!f.evidence.some(e=>normalize(e.quote).includes(normalize(f.text)))):[];
  if(!unsupported.length)return aligned;
@@ -1738,7 +1867,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      continue;
     }
     const group=Object.assign(item.documents,{
-     officialFinalCandidate:item.candidate,officialFinalProof:item.proof
+     officialFinalCandidate:item.candidate,officialFinalProof:item.proof,finalRegisters:[knvbResults,secondary]
     });
     groups.push(group);
     report.signals.push({route:'news',outcome:'verified_official_international_final',
@@ -2472,7 +2601,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    report.published.push({route:matchRecord?'match':'news',id:visible.id,url:API+'/articles?id='+encodeURIComponent(visible.id),headline:visible.headline,score:assessment.score,journalism:assessment.scores.journalism,reliability:assessment.scores.reliability,imageUrl:visible.imageUrl,imageCategory:payload.imageReview.imageKind,imageMode:payload.imageReview.mode});published.push(visible);
    durable.queue.finish(job,'published',now);
    console.log('Gepubliceerd met afbeelding:',visible.headline);
-  }catch(e){durable.queue.fail(job,e,now,{stage});const technical=job.failureCategory!=='journalistic_rejection';
+  }catch(e){durable.queue.fail(job,e,now,{stage});
+   if(stage==='verification'&&e.message.includes('claim_evidence_mismatch'))job.reason='claim_evidence_mismatch';
+   const technical=job.failureCategory!=='journalistic_rejection';
    if(!technical)route.rejected++;
    (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message,...(e.attempts?{providerFailures:e.attempts}:{}),...(e.issues?{issues:e.issues}:{}),...(e.rejectedDraft?{rejectedDraft:e.rejectedDraft}:{})});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(['GROQ_DAILY_QUOTA','EDITORIAL_AI_UNAVAILABLE'].includes(e.code)){report.status=e.code==='GROQ_DAILY_QUOTA'?'provider_daily_limit':'providers_unavailable';break;}}
   finally{await durable.save();}
