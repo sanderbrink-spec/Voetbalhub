@@ -336,7 +336,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Je schrijft als Veldio-journalist één origineel Nederlands voetbalnieuwsbericht over de door UEFA bevestigde Nations League-kwalificatie. Het is geen wedstrijdverslag of voorspelling.',
     'Gebruik uitsluitend verifiedFacts, ook voor de plaatsing, onderlinge rangschikking, tijd en ieder cijfer. De bronkop en publicatiedatum zijn geen bewijs voor een extra claim.',
     'Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en body met '+(compact?'1-2 inhoudelijk verschillende alinea’s van 10-65 woorden. Een korte, goede nieuwsselectie is beter dan een lange lijst.':'3-5 werkelijk verschillende alinea’s van 18-120 woorden en elk minstens 70 tekens. Geen opvulling.'),
-    'Kies één opmerkelijk, letterlijk bewijsbaar nieuwsfeit voor kop en intro. Noem UEFA als officiële bevestigende organisatie. Geef de betekenis van dat feit voor de betrokken landen, uitsluitend binnen de brongegevens.',
+    'Kies één opmerkelijk, letterlijk bewijsbaar nieuwsfeit voor kop en intro over één actuele UEFA-beslissing. Noem UEFA als officiële bevestigende organisatie. Geef de betekenis van dat feit voor de betrokken landen, uitsluitend binnen de brongegevens.',
     ...(verifiedDutchTie?[
      'Het bewijs bevat hier een relevante Nederlandse invalshoek: Duitsland, Nederland én Griekenland hebben volgens dezelfde groep A2-tabel ieder '+equalPoints[1]+' punten, maar UEFA bevestigt Duitsland als groepswinnaar en Nederland als nummer twee en kwalificeert beide. Gebruik deze aantoonbare tegenstelling als hoofdverhaal, niet een kale lijst van acht landen.',
      'Verzin NIET waarom Duitsland boven Nederland of Griekenland staat. Leg geen doelsaldo, onderlinge resultaten, tiebreakregels of resterende wedstrijden uit zonder letterlijk bewijs.'
@@ -345,7 +345,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Vermeld niet driemaal dezelfde kwalificatie. Zet geen volledige landentabel in de lopende tekst als die niets nieuws toevoegt. Schrijf vloeiend met gewone Nederlandse voetbaltaal en een logische, inhoudelijke afronding.',
     'Gebruik geen lege waarderingszinnen zoals "dit onderstreept het belang", "een cruciale mijlpaal", "de spanning neemt toe", "UEFA benadrukt" of "de prestaties tonen aan", tenzij dat exact bewezen relevante informatie weergeeft.',
     'Verzin geen Nederlands belang of Nederlandse ploeg als Nederland niet in facts staat. Gebruik alleen expliciet aangetoonde landen. Betrek nooit een derde land, trainer, speler of blessure zonder bronbewijs.',
-    'Beschrijf geen wedstrijdscore, doelpunt, spelbeeld, verwachte uitslag, plaatsingsregel of oorzaak op basis van alleen een tabel. Een gelijk puntenaantal bewijst niet waarom de rangorde zo is.',
+    'Beschrijf geen wedstrijdscore, doelpunt, spelbeeld, verwachte uitslag, plaatsingsregel of oorzaak op basis van alleen een tabel. Een groepstand is geen bewijs voor een wedstrijduitslag. Een gelijk puntenaantal bewijst niet waarom de rangorde zo is.',
     'Schrijf geen letterlijke UEFA-zinnen over. Noem in een inhoudelijke alinea kort dat het UEFA-overzicht de groepsinformatie bevestigt, zonder zinloze bronverantwoording.',
     'Geef alleen skip als zelfs één afgebakende nieuwsaanleiding met nieuwe informatie in de body niet feitelijk kan worden onderbouwd. Geen fictieve context en nooit zelf publiceren.'
    ].join(' ');
