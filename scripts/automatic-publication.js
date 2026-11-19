@@ -1757,9 +1757,57 @@ function reopenFreshPrimaryStoryAfterFormat99C4(job,doc,now=Date.now()){
  return true;
 }
 
+// Run one existing scout dossier through the production writer and independent reviewer.
+// A registration is usable context, never evidence of a transfer agreement.
+async function investigateScoutRegistration({githubToken, fetcher, now, router, report, published}) {
+ const scout=require('./scout-registration102b');
+ const {selection,checkpointBlob}=await scout.readQuestion(githubToken,fetcher,now);
+ const audit=report.scoutResearch={selection,checkpointBlob,unavailable:[],publicationAllowed:false};
+ const result=await scout.researchRegistration(selection,{load:url=>officialPage(url,fetcher),now,plain,audit});
+ const {docs,facts,club,season,playerId}=result;
+ const candidate={topic:selection.player+' in het UEFA-register',kind:'background',facts};
+ const ledger=independentReviewEvidenceLedger(candidate,docs);
+ if(ledger.length!==facts.length || ledger.some((row,i)=>row.citations.length!==facts[i].evidence.length))
+  throw Error('Onvolledige koppeling tussen registerfeit en bewijsplaats.');
+ const packet={
+  question:selection.question, player:selection.player, destination:selection.destination,
+  answer:'Het wedstrijdregister van de UEFA bevestigt de Europese inschrijving en optredens. Een clubmededeling of formeel transferbewijs is nog nodig om de overstap vast te stellen.',
+  relevance:'De huidige Europese rol van de speler geeft een feitelijk aanknopingspunt bij de onderzoeksvraag.',
+  limitations:'De bronnen behoren beide aan UEFA. Een registratie levert geen bewijs voor gesprekken, een overeenkomst, transfersom of de actuele nationale contractstatus. De mogelijke bestemming is alleen interne context.',
+  season, playerId, checkedAt:new Date().toISOString(), facts:facts.map(f=>f.text),
+  evidence:ledger,sources:docs.map(({url,sha256,title})=>({url,sha256,title}))
+ };
+ audit.packet=packet;
+ const messages=[
+  {role:'system',content:'Schrijf een kort, oorspronkelijk Nederlands voetbalverhaal. Alleen facts bevatten vastgestelde voetbalfeiten. Verbind de Europese inschrijving met de concreet aangetoonde speeltijd en bijdrage van de speler. De onderzoeksvraag is geen nieuwsfeit. Laat de mogelijke overstap weg. Gebruik de beperkte reikwijdte van het register waar relevant. Kies een natuurlijke kop, intro en een of twee lopende inhoudelijke alinea’s. Vermijd lijstjes, herhaling en suggesties over toekomst, speeltijd per wedstrijd of een transfer. Geef JSON met headline, standfirst en body als array, of skip bij onvoldoende stof.'},
+  {role:'user',content:JSON.stringify(packet)}
+ ];
+ router.articleId=selection.groupKey;
+ report.providerTrace=router.trace;
+ report.counts.evidenceChecks++;report.counts.attempted++;report.counts.selected++;
+ const draft=await complete(messages,{router},'writing');
+ audit.writer={requestHash:sha(messages[1].content),responseHash:sha(JSON.stringify(draft)),result:draft,trace:router.trace.slice()};
+ if(draft.skip===true){
+  report.skipped.push({topic:candidate.topic,stage:'generation',reason:'Schrijver heeft het gecontroleerde dossier ontvangen en overgeslagen.'});
+  report.status='scout_research_complete';return;
+ }
+ report.counts.generated++;
+ const payload={draft,articleKind:candidate.kind,verifiedFacts:packet.facts,sources:docs.map(({url})=>({url}))};
+ const checks=generationIssues(draft,packet.facts,null,true,'',candidate.kind);
+ const repeated=duplicate(payload,published);
+ const review=await verifyDraft(payload,candidate,docs,{router},published);
+ const assessed=production.assess({review,docs,evidenceIssues:checks,duplicate:repeated,copied:docs.some(d=>overlap(d.text,draft)),now,threshold:config.qualityThreshold});
+ audit.review={modelScores:review.scores,issues:review.issues,preflight:checks,duplicate:repeated,assessment:assessed,trace:router.trace.at(-1)};
+ audit.club=club;
+ report.assessments.push({topic:candidate.topic,revision:0,...assessed,findings:review.issues});
+ report.skipped.push({topic:candidate.topic,stage:'publication',reason:'Het gerucht blijft onbevestigd. De twee UEFA-pagina’s onderbouwen alleen de Europese spelersregistratie.'});
+ report.status='scout_research_complete';
+}
+
 async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),groqIntervalMs,providerRouter,report,focusSourceUrl,discoveryOnly=false,validationOnly=false,singlePublication=false,expectedRevision=process.env.GITHUB_SHA}={}){
  const fixtureFocus=/^https:\/\/www\.onsoranje\.nl\/teams\/185184\/programma\/wedstrijd\/\d+$/.test(focusSourceUrl||'');
- if(focusSourceUrl&&!fixtureFocus&&!articleUrl(focusSourceUrl,config.newsIndexes))throw Error('Ongeldige gerichte nieuwsbron.');
+ const scoutFocus=focusSourceUrl==='scout:registrations';
+ if(focusSourceUrl&&!scoutFocus&&!fixtureFocus&&!articleUrl(focusSourceUrl,config.newsIndexes))throw Error('Ongeldige gerichte nieuwsbron.');
  if(focusSourceUrl)report.focusSourceUrl=focusSourceUrl;
  if(!config.enabled){report.status='disabled';return report;}
  if(!secret||!githubToken)throw Error('HUB_API_SECRET en GitHub-mediatoegang zijn vereist.');
@@ -1773,6 +1821,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  await verifyRevision();
  const publicFeed=await api('/articles?view=all');let published=publicFeed.articles;
  if(!Array.isArray(published))throw Error('Openbare feed niet controleerbaar.');
+ if(scoutFocus){
+  const durable=await production.openQueue({token:githubToken,branch:config.mediaBranch,fetcher,isolated:true});
+  const router=providerRouter||createRouter({groqKey,fetcher,state:durable.capacity,intervalMs:groqIntervalMs??35000,
+   onState:()=>durable.save(),onAttempt:()=>report.counts.aiRequests++});
+  await investigateScoutRegistration({githubToken,fetcher,now,router,report,published});
+  return report;
+ }
  const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(now));
  const todayCount=published.filter(a=>Number.isFinite(Date.parse(a.publishedAt))&&new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(a.publishedAt))===today).length;
  const limit=validationOnly?3:Math.min(singlePublication?1:config.maxPerRun,Math.max(0,config.maxPerDay-todayCount));
@@ -2774,7 +2829,7 @@ async function run(options={}){
  finally{
   report.runMode={singlePublication:options.singlePublication===true,discoveryOnly:options.discoveryOnly===true,validationOnly:options.validationOnly===true};
    report.funnel=summarizeEditorialFunnel98V(report);
-   report.outcome=['completed','discovery_complete','validation_complete'].includes(report.status)?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected'].includes(report.status)?'editorial_blocked':'error';
+   report.outcome=['completed','discovery_complete','validation_complete','scout_research_complete'].includes(report.status)?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected'].includes(report.status)?'editorial_blocked':'error';
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
   fs.writeFileSync('.automatic-output/draft-review.json',JSON.stringify({
@@ -2813,6 +2868,7 @@ function runExitCode(report,env=process.env){
  // A normally empty scheduled news hour is healthy; explicit publication
  // proofs must not be green when they selected a topic but published nothing.
  // Quality rejections remain authoritative and visible in the run artifact.
+ if(report.status==='scout_research_complete')return report.counts.publicationAttempts===0?0:1;
  if(report.validationOnly)return report.status==='validation_complete'&&report.counts.publicationAttempts===0?0:1;
  if(report.focusSourceUrl&&report.counts?.published===0)return 1;
  if(['push','workflow_dispatch'].includes(env.GITHUB_EVENT_NAME)&&
@@ -2851,7 +2907,8 @@ function pushCommitMessage(env){
  return JSON.parse(fs.readFileSync(env.GITHUB_EVENT_PATH,'utf8')).head_commit?.message||'';
 }
 function publicationFocus(env=process.env){
+ if(pushCommitMessage(env).includes('[scout-registrations]'))return 'scout:registrations';
  return env.FOCUS_SOURCE_URL||pushCommitMessage(env).match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
-if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
+if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,scoutResearch:r.scoutResearch,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
 module.exports={reopenUefaCompetitionTitle99C5,independentReviewEvidenceLedger,reopenFreshPrimaryStoryAfterFormat99C4,promotionFromRoundup,reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
