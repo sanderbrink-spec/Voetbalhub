@@ -2103,6 +2103,18 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    job.status='pending';job.attempts=0;job.nextAttemptAt=now;
    delete job.checkpoint;
   }
+  // 99C-3: re-evaluate the exact UEFA status article rejected by the
+  // false "In League" proper-name detector. No old draft or score is reused.
+  // All official evidence, independent review and publication gates run again.
+  if(group.length===1&&!group.matchRecord&&job.status==='review'&&
+     job.failureStage==='quality'&&job.failureCategory==='journalistic_rejection'&&
+     job.errorHash===sha('Kwaliteitscontrole na 2 herschrijvingen: Controleer namen die niet in de aangeleverde feiten staan: In League.')&&
+     !job.uefaStatusVerifiedDivisionRetry99C3&&confirmedUefaQualification(group[0])){
+    job.uefaStatusVerifiedDivisionRetry99C3=true;
+    job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+    delete job.checkpoint;
+    report.signals.push({route:'news',topic:group[0].title,outcome:'uefa_status_verified_division_retry_99c3'});
+  }
   // A refreshed, verified source packet supersedes its older generation
   // failure. Keep the historic diagnostics without marking them as active.
   if(group.length===1&&!group.matchRecord&&confirmedUefaQualification(group[0])){
