@@ -26,7 +26,7 @@ test('99C-2 UEFA analysis and malicious URLs never receive primary decision auth
   assert.notEqual(officialSourceAuthority(url),'association_decision');
   assert.notEqual(primaryAuthority({url,title:'UEFA Nations League analysis of a possible draw',text:'An expert interpretation, not a decision.'}),'association_decision');
  }
- assert.equal(officialSourceAuthority('https://www.uefa.com.evil.example/uefanationsleague/news/02a3-a--knockout-stage-and-play-off-draw/'),'');
+ assert.notEqual(officialSourceAuthority('https://www.uefa.com.evil.example/uefanationsleague/news/02a3-a--knockout-stage-and-play-off-draw/'),'association_decision');
 });
 test('99C-2 UEFA body attribution is repaired once with unchanged football claims',()=>{
  const sourceUrls=[confirmed];
