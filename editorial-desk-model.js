@@ -38,10 +38,20 @@
       /\b(?:gele kaart|gele kaarten|rode kaart|rode kaarten|hands)\b/i.test(facts)&&
       !realStats.test(withoutClock);
   }
-  const briefEligible = payload => payload.articleKind === 'announcement' &&
-    ['club_decision','association_decision'].includes(payload.primaryAuthority) &&
-    payload.sources?.length === 1 && Boolean(host(payload.sources[0]?.url)) &&
-    !payload.transferStatus && payload.verifiedFacts?.length >= 1 && payload.verifiedFacts.length <= 3;
+  // A first-party decision with four independently supported details is not
+  // automatically a three-paragraph story. Choose the shape from the factual
+  // packet, but retain full structure for substantive coaching/staff stories.
+  // This only selects an article FORMAT; it changes no fact or review gate.
+  const briefEligible = payload => {
+    const facts=payload?.verifiedFacts;
+    if(payload?.articleKind!=='announcement'||
+      !['club_decision','association_decision'].includes(payload.primaryAuthority)||
+      payload.sources?.length!==1||!host(payload.sources[0]?.url)||
+      payload.transferStatus||!Array.isArray(facts)||facts.length<1||facts.length>4)return false;
+    if(facts.length<=3)return true;
+    // Complex staffing appointments still require independent body sections.
+    return !facts.some(f=>/\b(?:hoofdtrainer|head coach|assistent(?:-trainer|-bondscoach)?|keeperstrainer|interim|technische staf|coach staff)\b/i.test(String(f)));
+  };
   const compactStructure = 'body (1-2 inhoudelijke alinea’s, elk 10-65 woorden)';
   const standardStructure = 'body (3-5 alinea’s, elk 18-120 woorden en minimaal 70 tekens)';
   function draftIssues(d = {}, compact = false, preview = false) {

@@ -400,7 +400,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
      // A rich official packet gets at most one second writer attempt, not
      // an automatic approval or a relaxation of any source/quality gate.
      const verifiedShortDecision=automaticPublication&&compact&&!coachPlan&&
-      Boolean(officialPublisher)&&facts.length>=3&&assignment.bodySections.length>=1;
+      Boolean(officialPublisher)&&facts.length>=2&&assignment.bodySections.length>=1;
      // One extra writing attempt only when a verified first-party decision
      // provides distinct facts. Do not automatically accept the second answer.
      if(attempt===0&&(isOfficialFinal&&match&&facts.length>=7||sufficientCoachEvidence||verifiedShortDecision||sufficientSelectionEvidence)){
