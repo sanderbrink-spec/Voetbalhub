@@ -71,3 +71,25 @@ test('98Y: KNVB publisher attribution requires verified official host',()=>{
  assert.ok(!F.evidenceIssues(draft,facts,null,official).some(x=>x.includes('De KNVB')));
  assert.ok(F.evidenceIssues(draft,facts,null,'').some(x=>x.includes('De KNVB')));
 });
+
+
+test('99C-3: a verified UEFA league-division opener is grammar, not a fabricated proper name',()=>{
+ const url='https://www.uefa.com/uefanationsleague/news/02ab-22096ba64f4d-f179d6d05013-1000--nations-league-quarter-finals-last-eight-confirmed/';
+ const facts=[
+  'Group A1 France (13pts), Belgium (12), Italy (10), Türkiye (0)',
+  'League A status and quarter-final qualification are confirmed.',
+  'France are confirmed in first place and have qualified for the quarter-finals.'
+ ];
+ const draft={
+  headline:'UEFA bevestigt plaatsen voor de kwartfinales van de Nations League',
+  standfirst:'UEFA heeft de groepsstatus bekendgemaakt.',
+  body:['In League A zijn de officiële groepsposities bekend.']
+ };
+ const issues=F.evidenceIssues(draft,facts,null,url);
+ assert.ok(!issues.some(x=>x.includes('In League')),issues.join(' | '));
+ const unverified={...draft,body:['In League B is een plaats in de kwartfinales bevestigd.']};
+ assert.ok(F.evidenceIssues(unverified,facts,null,url).some(x=>x.includes('In League')));
+ const invented={...draft,body:['In League A heeft Karl Onbekend een plaats veiliggesteld.']};
+ assert.ok(F.evidenceIssues(invented,facts,null,url).some(x=>x.includes('Karl Onbekend')));
+ assert.ok(F.evidenceIssues(draft,facts,null,'https://www.ajax.nl/artikelen/competitie').some(x=>x.includes('In League')));
+});
