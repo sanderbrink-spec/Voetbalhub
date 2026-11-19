@@ -82,6 +82,10 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
  const isNamedAttribution=x=>lowered(x).replaceAll('u.s.', 'us').split(/[.!?](?:\s+|$)/).some(sentence=>{
   const index=sentence.indexOf(name);
   if(index<0)return false;
+  // Keep the previously accepted publisher-clause policy for club news.
+  if(publisher!=='UEFA')return signals.some(signal=>sentence.includes(signal))||
+    (sentence.includes('legt ')&&sentence.includes(' uit'))||
+    (sentence.includes('licht ')&&sentence.includes(' toe'));
   // A source name elsewhere in the sentence does not make an unrelated
   // reporting verb an explicit attribution of the published decision.
   const near=sentence.slice(Math.max(0,index-40),index+name.length+40);
