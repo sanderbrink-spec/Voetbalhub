@@ -1,6 +1,7 @@
 'use strict';
 const { draftIssues, paragraphs, compactStructure, standardStructure, storyStyle, previewStyle, previewWritingFacts, previewAssignment, federationCoachStyle, previewStructure, storyIssues } = require('./editorial-desk-model');
 const { headlineContradictions } = require('./editorial-quality');
+const {planEvidenceResearch}=require('./editorial-investigation100b');
 // Task-specific free-tier GPT-OSS policy. Source extraction stays fast;
 // writing gets deeper reasoning and the independent review gets high effort.
 const editorialModelTasks=Object.freeze({
@@ -274,6 +275,10 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
   const writerFacts=articleKind==='preview'?previewWritingFacts(facts):facts;
   const assignment=articleKind==='preview'?previewAssignment(writerFacts):editorialAssignment(writerFacts,{compact});
+  // Parallel evidence-bound news and context desks: the plan is a writing
+  // guide only and cannot become an unsourced claim or an approval.
+  const investigation=automaticPublication&&articleKind==='announcement'&&!officialFinal?
+   planEvidenceResearch(writerFacts,{topic,compact}):null;
   const coachPlan=primaryAuthority==='club_decision'&&String(topic||'').toLocaleLowerCase('nl').includes('hoofdtrainer')&&facts.length>=4;
   const officialPublisher=['club_decision','association_decision'].includes(primaryAuthority)&&sourceUrls.length===1?officialPublisherName(sourceUrls[0]):null;
   const coachStoryline=primaryAuthority==='club_decision'&&/\bhoofdtrainer\b/i.test(topic||'')&&facts.length>=4?
@@ -370,7 +375,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Als de gecontroleerde uitspraken onvoldoende stof bieden: antwoord uitsluitend met JSON {"skip":true}. Publiceer nooit zelf.'
    ].join(' ');
   }
-  const messages=resume?.messages||[{role:'system',content:isOfficialFinal?prompt:storyStyle+' '+prompt+' Gebruik editorialAssignment als suggestie; de labels voegen geen feiten toe. Noem alleen namen, datums, cijfers en claims die facts ondersteunen. De publicatiedatum is geen bewijs. Geef skip als de feiten onvoldoende stof bieden.'},{role:'user',content:JSON.stringify({topic,category,facts:writerFacts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:isOfficialFinal?null:assignment})}];
+  const messages=resume?.messages||[{role:'system',content:isOfficialFinal?prompt:storyStyle+' '+prompt+' Gebruik editorialAssignment als suggestie; de labels voegen geen feiten toe. Noem alleen namen, datums, cijfers en claims die facts ondersteunen. De publicatiedatum is geen bewijs. Geef skip als de feiten onvoldoende stof bieden.'+(investigation?' '+investigation.newsroomInstruction:'')},{role:'user',content:JSON.stringify({topic,category,facts:writerFacts,allowedNumbers,sourceUrls,recentHeadlines:recentHeadlines.slice(0,20),primaryAuthority,match,compact,automaticPublication,officialPublisher,editorialAssignment:isOfficialFinal?null:assignment,...(investigation?{editorialInvestigationPlan:investigation}:{})})}];
   // Both writing and its single targeted repair share one 25-second deadline.
   const signal=AbortSignal.timeout(timeoutMs);
   for(let attempt=resume?.attempt||0;attempt<2;attempt++){
