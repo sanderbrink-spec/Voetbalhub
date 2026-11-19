@@ -74,3 +74,63 @@ test('99C-3 repeated evidence is not treated as an invented background section',
  const plan=editorialAssignment([x,x,'De overeenkomst is officieel ondertekend.'],{compact:true});
  assert.deepEqual([...plan.leadFactIds,...plan.bodySections.flatMap(s=>s.factIds)].sort(),['F1','F3']);
 });
+
+
+test('99C-3 UEFA writer forms one supported news angle without invented Dutch involvement',async()=>{
+ const facts=[
+  'UEFA confirmed that Iceland earned promotion from its Nations League division.',
+  'UEFA confirmed a separate promotion decision for another participating team.',
+  'The official UEFA status overview confirms the placement of the promoted teams.',
+  'The confirmed status concerns the current Nations League competition.',
+  'UEFA lists the teams in separate divisions in its official decision.'
+ ];
+ const prompts=[];
+ await assert.rejects(createEditorialDraft({
+  topic:'UEFA confirms Nations League qualification',category:'Nations League',
+  facts,sourceUrls:['https://www.uefa.com/uefanationsleague/news/02ab-example--quarter-final-qualification/'],
+  articleKind:'announcement',primaryAuthority:'association_decision',
+  compact:false,automaticPublication:true
+ },{apiKey:'dummy',model:'openai/gpt-oss-120b',fetcher:async(_,options)=>{
+  const request=JSON.parse(options.body);
+  prompts.push(request.messages[0].content);
+  return reply({skip:true});
+ }}),/Onvoldoende gecontroleerde feiten/);
+ assert.equal(prompts.length,2);
+ assert.match(prompts[0],/geen Nederlands belang of Nederlandse ploeg/i);
+ assert.match(prompts[0],/Een groepstand is geen bewijs voor een wedstrijduitslag/);
+ assert.match(prompts[0],/één actuele UEFA-beslissing/);
+});
+test('99C-3 rejected UEFA review retries a coherent source-scoped story, never a guessed Dutch team',async()=>{
+ const {reviseDraft}=require('../scripts/automatic-publication');
+ const facts=[
+  'UEFA confirmed that Iceland earned promotion to a higher Nations League division.',
+  'UEFA confirmed that the group leaders qualified for the next competition stage.',
+  'UEFA confirmed qualification for another participating country.',
+  'UEFA separately confirmed a qualification place for a third participating country.',
+  'UEFA published the official overview of the current qualifying decisions.'
+ ];
+ const source='https://www.uefa.com/uefanationsleague/news/02ab-verified--nations-league-quarter-finals-last-eight-confirmed/';
+ const draft={headline:'UEFA bevestigt de nieuwe kwalificaties voor landen in Nations League',
+  standfirst:'De UEFA heeft officiële beslissingen over kwalificatie en promotie binnen de Nations League bekendgemaakt.',
+  body:[
+   'De organisatie bevestigt de promotie van IJsland naar een hoger niveau binnen het toernooi.',
+   'Het officiële overzicht legt daarnaast de kwalificatie van de groepsleiders vast.',
+   'Ook de andere kwalificatieplaatsen worden afzonderlijk bevestigd in het besluit.'
+  ]};
+ const payload={articleKind:'announcement',draft,verifiedFacts:facts,
+  primaryAuthority:'association_decision',sources:[{url:source}]};
+ const candidate={kind:'announcement',category:'Nations League',
+  topic:'Nations League quarter-finals: Last eight confirmed',
+  primaryAuthority:'association_decision'};
+ let prompt='';
+ const result=await reviseDraft(payload,candidate,[{url:source,title:'Official UEFA status overview',text:facts.join(' '),publishedAt:'2026-11-19T10:00:00Z'}],
+  'Journalistieke kwaliteit lager dan 85.',{router:{complete:async(messages,options)=>{
+   assert.equal(options.task,'revision');
+   prompt=messages[0].content;
+   return {skip:true};
+  }}},[],{dimensions:{journalism:75,reliability:95}});
+ assert.equal(result,null);
+ assert.match(prompt,/Nederlandstalig betekent niet dat het Nederlands elftal betrokken is/);
+ assert.match(prompt,/geen reeks losse standen of losstaande landen/);
+ assert.match(prompt,/alleen verifiedFacts zijn bewijs/);
+});
