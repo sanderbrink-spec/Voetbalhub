@@ -26,7 +26,7 @@ function kind(value){
  if(/\b(?:qualified|qualification|promoted|relegated|confirmed in first place|gekwalificeerd|geplaatst|promoveert|degradeert|groepswinnaar)\b/i.test(s))return 'competition_decision';
  if(/\b(?:benoem|aangesteld|ontslagen|contract|verlengt|tekent|announced|appointed|signed|schorsing|bevestigt)\b/i.test(s))return 'club_or_federation_decision';
  if(/\b(?:eerder|voorheen|vroegere|vorig seizoen|vorige ontmoeting|historie|previous|formerly|last season|in 20\d{2})\b/i.test(s))return 'verified_history';
- if(/\b(?:volgende wedstrijd|komende wedstrijd|eerstvolgende|toekomstige|upcoming|next fixture|next match)\b/i.test(s))return 'verified_next_step';
+ if(/\b(?:volgende wedstrijd|komende wedstrijd|komende (?:competitie)?wedstrijd|eerstvolgende|toekomstige|komende (?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag)|upcoming|next fixture|next match)\b/i.test(s))return 'verified_next_step';
  if(/\b(?:volgens|aldus|verklaart|toelicht|licht toe|said|explained)\b/i.test(s))return 'attributed_reaction';
  if(/\b(?:Group [A-D][1-4]|ranglijst|punten|stand|points|table|positie)\b/i.test(s))return 'verified_standing';
  return 'other_verified_fact';
