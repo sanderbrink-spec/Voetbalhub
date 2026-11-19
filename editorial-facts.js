@@ -104,7 +104,16 @@
   const grammaticalStatusName=name=>(/^De KNVB$/i.test(name)&&publisher==='KNVB')||
    (/^De UEFA$/i.test(name)&&publisher==='UEFA')||
     (/^In Groep$/i.test(name)&&publisher==='UEFA'&&/\b(?:group|groep|league a)\b/i.test(supported));
-   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!known.includes(normalize(name)));
+  // "In League A" is a Dutch sentence opening, not a player or place.
+  // Accept that grammar ONLY for verified UEFA Nations League divisions.
+  // An unverified division (or a fabricated named participant) still fails.
+  const verifiedUefaLeagueOpening=name=>{
+    if(name!=='In League'||!officialUefaLeagueA||publisher!=='UEFA')return false;
+    const mentioned=[...article.matchAll(/\bIn League\s+([A-D])\b/gi)];
+    return mentioned.length>0&&mentioned.every(([,division])=>
+      new RegExp('\\b(?:league '+division+'|group '+division+'[1-4])\\b','i').test(evidence));
+  };
+   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
