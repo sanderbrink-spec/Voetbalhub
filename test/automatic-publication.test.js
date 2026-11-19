@@ -1866,3 +1866,22 @@ test('99C-4: official UEFA promotion with a literal group table may become a sho
  assert.equal(M.briefEligible({...p,verifiedFacts:facts.map(f=>f.replace('Iceland are confirmed in first place and will be promoted','Iceland might be promoted'))}),false);
  assert.equal(M.briefEligible({...p,sources:[{url:'https://www.ajax.nl/artikelen/uefa-bespreking'}]}),false);
 });
+
+
+test('99C-5: second reviewer sees independently literal source citations for status and points',()=>{
+ const {independentReviewEvidenceLedger}=require('../scripts/automatic-publication');
+ const table='Group A2 Germany (11pts), Netherlands (11), Greece (11), Elsewhere (0)';
+ const decision='Germany are confirmed in first place and have qualified for the quarter-finals.';
+ const docs=[{url:'https://www.uefa.com/uefanationsleague/news/02ab-synthetic-status/',text:table+'. '+decision}];
+ const candidate={facts:[
+  {text:table,evidence:[{source:0,quote:table}]},
+  {text:decision,evidence:[{source:0,quote:decision}]},
+  {text:'Germany won a match 4-0.',evidence:[{source:0,quote:'Germany won a match 4-0.'}]}
+ ]};
+ const ledger=independentReviewEvidenceLedger(candidate,docs);
+ assert.deepEqual(ledger.map(entry=>entry.id),['F1','F2']);
+ assert.equal(ledger[0].citations[0].quote,table);
+ assert.equal(ledger[1].citations[0].sourceIndex,0);
+ assert.ok(!JSON.stringify(ledger).includes('4-0'));
+ assert.deepEqual(independentReviewEvidenceLedger({facts:[]},docs),[]);
+});
