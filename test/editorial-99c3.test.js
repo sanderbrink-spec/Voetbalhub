@@ -62,7 +62,7 @@ test('99C-3 writer reconsiders skip for two independent factual statements witho
 test('99C-3 unrelated lone source and fabricated claim are still rejected',()=>{
  const url='https://www.ajax.nl/artikelen/eigen-mededeling';
  const text='Ajax bevestigt de contractverlenging van speler Lucas met een officiële mededeling op de eigen website.';
- const docs=[{url,text,publishedAt:'2026-11-19T11:00:00Z'}];
+ const docs=[{url,title:'Ajax bevestigt contractverlenging',text,publishedAt:'2026-11-19T11:00:00Z'}];
  const fact={text,evidence:[{source:0,quote:text}]};
  const single={kind:'announcement',facts:[fact],sharedEventEvidence:[]};
  const issues=validateEvidence(single,docs,Date.parse('2026-11-19T12:00:00Z'));
