@@ -1847,3 +1847,22 @@ test('99C-4: one fresh official rejection gets a full new review but unverifiabl
  assert.equal(reopenFreshPrimaryStoryAfterFormat99C4(make(),{...doc,publishedAt:'2026-11-12T10:00:00Z'},now),false);
  assert.equal(reopenFreshPrimaryStoryAfterFormat99C4(make(),{...doc,url:'https://example.com/uefa-story'},now),false);
 });
+
+
+test('99C-4: official UEFA promotion with a literal group table may become a short contextual story',()=>{
+ const M=require('../editorial-desk-model');
+ const source='https://www.uefa.com/uefanationsleague/news/02ab-2209792f2fda-6a523d4500bb-1000--2026-27-nations-league-quarter-final-qualification-promotion/';
+ const facts=[
+  'Group B1 Iceland (15pts), Norway (12), Ireland (8), Latvia (2)',
+  'Iceland are confirmed in first place and will be promoted to League A.',
+  'Norway are confirmed in second place and will enter the play-offs.',
+  'Ireland are confirmed in third place and will remain in League B.',
+  'Latvia are confirmed in fourth place and will be relegated to League C.'
+ ];
+ const p={articleKind:'announcement',primaryAuthority:'association_decision',category:'Nations League',
+  verifiedFacts:facts,sources:[{url:source}]};
+ assert.equal(M.briefEligible(p),true);
+ assert.equal(M.briefEligible({...p,verifiedFacts:facts.slice(1)}),false);
+ assert.equal(M.briefEligible({...p,verifiedFacts:facts.map(f=>f.replace('Iceland are confirmed in first place and will be promoted','Iceland might be promoted'))}),false);
+ assert.equal(M.briefEligible({...p,sources:[{url:'https://www.ajax.nl/artikelen/uefa-bespreking'}]}),false);
+});
