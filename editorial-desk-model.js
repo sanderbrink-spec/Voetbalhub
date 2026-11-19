@@ -44,6 +44,18 @@
   // This only selects an article FORMAT; it changes no fact or review gate.
   const briefEligible = payload => {
     const facts=payload?.verifiedFacts;
+    // An official UEFA status overview can contain ten source sentences but
+    // only one meaningful news event. Use a short, selected journalistic angle
+    // rather than forcing three repetitive paragraphs from group tables.
+    // This changes article shape only, never evidence or review thresholds.
+    const officialLeagueStatus=payload?.articleKind==='announcement'&&
+      payload.primaryAuthority==='association_decision'&&!payload.transferStatus&&
+      payload.sources?.length===1&&
+      /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\/02[a-z0-9-]+\/?$/.test(payload.sources[0]?.url||'')&&
+      Array.isArray(facts)&&facts.length>=5&&facts.length<=10&&
+      facts.filter(f=>/\bGroup A[1-4]\b/i.test(String(f))).length>=2&&
+      facts.some(f=>/\bare confirmed in (?:first|second) place and have qualified for the quarter-finals\b/i.test(String(f)));
+    if(officialLeagueStatus)return true;
     if(payload?.articleKind!=='announcement'||
       !['club_decision','association_decision'].includes(payload.primaryAuthority)||
       payload.sources?.length!==1||!host(payload.sources[0]?.url)||

@@ -325,18 +325,29 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   }else if(automaticPublication&&primaryAuthority==='association_decision'&&category==='Nations League'&&
     /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\//.test(sourceUrls[0]||'')&&
     facts.some(f=>/\b(?:confirmed|qualified|guaranteed|secured)\b/i.test(f))){
+   // For a verified table, choose the meaningful event before the paragraph
+   // count. Repeating every qualified country is not independent journalism.
+   const a2=facts.find(f=>/\bGroup A2\b/i.test(f))||'';
+   const equalPoints=a2.match(/\bGermany\s*\((\d+)(?:pts)?\).*?\bNetherlands\s*\((\d+)(?:pts)?\).*?\bGreece\s*\((\d+)(?:pts)?\)/i);
+   const verifiedDutchTie=Boolean(equalPoints&&equalPoints[1]===equalPoints[2]&&equalPoints[2]===equalPoints[3]&&
+     facts.some(f=>/\bGermany are confirmed in first place and have qualified\b/i.test(f))&&
+     facts.some(f=>/\bNetherlands are confirmed in second place and have qualified\b/i.test(f)));
    prompt=[
-    'Je schrijft als Veldio-journalist een zelfstandig Nederlands bericht over de door UEFA bevestigde kwalificatiestatus in de Nations League. GEEN wedstrijdverslag, trainersnieuws of selectienieuws.',
-    'Gebruik uitsluitend verifiedFacts. De bronkop en publicatiedatum voegen geen extra feiten toe.',
-    'Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden), body met 3 inhoudelijk verschillende alinea’s van 18-120 woorden en minstens 70 tekens.',
-    'Kies het belangrijkste bevestigde kwalificatienieuws voor kop en intro, met UEFA als officieel aangewezen bron.',
-    'Groepeer afzonderlijke geverifieerde kwalificatiegevolgen per land of groep. Geef iedere bodyalinea een ander concreet en geverifieerd nieuwsfeit. Herhaal niet de intro of eerdere alinea met andere woorden.',
-    'Maak vooraf een feitenplan vanuit één actuele UEFA-beslissing. Kies een specifiek, letterlijk bewezen hoofdfeit voor de intro; verbind iedere volgende alinea aan precies datzelfde nieuws met een ander afzonderlijk bevestigd feit, niet met een lijst van losse landen. Alleen als verifiedFacts het werkelijk dragen: (1) kwalificatie of promotie, (2) een relevante eigen groepsstatus, (3) de officieel bevestigde andere groepsbeslissing of volgende fase. Vul nooit een ontbrekende schakel aan met algemene uitleg.',
-    'De Engelse landnaam France betekent Frankrijk, Belgium betekent België, England betekent Engeland, Spain betekent Spanje, Italy betekent Italië, Türkiye betekent Turkije. Gebruik alleen landen die letterlijk in verifiedFacts voorkomen. Verzin geen Nederlands belang of Nederlandse ploeg omdat het artikel in het Nederlands wordt geschreven. Gebruik ook geen adjectief zoals Nederlandse, Franse of Duitse als dat land niet expliciet in verifiedFacts voorkomt.',
-    'Schrijf NIET dat een strijd spannend is, dat een wedstrijd nog op het programma staat, dat een ploeg moet winnen of dat een bepaalde uitslag gevolgen heeft zonder letterlijk bevestigd bewijs. Leiden uit een stand geen wedstrijdverloop, kansen, motivatie of kwalificatiescenario af.',
-    'Geen onbewezen uitslagen, opstellingen, groepsnummers, voorspellingen, wedstrijdverloop of gevolgen. Noem een groepspositie alleen als die letterlijk in facts staat.',
-    'Schrijf natuurlijk voetbal-Nederlands met een herkenbare aanleiding, betekenis en gecontroleerd vervolg; geen opsomming van losse statistieken, verplichte Nederlandse invalshoek of algemeen slot. Verwar een groepswinnaar niet met een gewonnen specifieke wedstrijd. Een groepstand is geen bewijs voor een wedstrijduitslag. Geen clubcontracten, stafzaken of personele besluiten.',
-    'Kopieer geen UEFA-zinnen. Bij onvoldoende verschillende feiten voor drie betekenisvolle bodyalinea’s: antwoord uitsluitend met JSON {"skip":true}. Publiceer nooit zelf.'
+    'Je schrijft als Veldio-journalist één origineel Nederlands voetbalnieuwsbericht over de door UEFA bevestigde Nations League-kwalificatie. Het is geen wedstrijdverslag of voorspelling.',
+    'Gebruik uitsluitend verifiedFacts, ook voor de plaatsing, onderlinge rangschikking, tijd en ieder cijfer. De bronkop en publicatiedatum zijn geen bewijs voor een extra claim.',
+    'Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en body met '+(compact?'1-2 inhoudelijk verschillende alinea’s van 10-65 woorden. Een korte, goede nieuwsselectie is beter dan een lange lijst.':'3-5 werkelijk verschillende alinea’s van 18-120 woorden en elk minstens 70 tekens. Geen opvulling.'),
+    'Kies één opmerkelijk, letterlijk bewijsbaar nieuwsfeit voor kop en intro over één actuele UEFA-beslissing. Noem UEFA als officiële bevestigende organisatie. Geef de betekenis van dat feit voor de betrokken landen, uitsluitend binnen de brongegevens.',
+    ...(verifiedDutchTie?[
+     'Het bewijs bevat hier een relevante Nederlandse invalshoek: Duitsland, Nederland én Griekenland hebben volgens dezelfde groep A2-tabel ieder '+equalPoints[1]+' punten, maar UEFA bevestigt Duitsland als groepswinnaar en Nederland als nummer twee en kwalificeert beide. Gebruik deze aantoonbare tegenstelling als hoofdverhaal, niet een kale lijst van acht landen.',
+     'Verzin NIET waarom Duitsland boven Nederland of Griekenland staat. Leg geen doelsaldo, onderlinge resultaten, tiebreakregels of resterende wedstrijden uit zonder letterlijk bewijs.'
+    ]:[]),
+    'Werk de gekozen invalshoek in iedere volgende alinea uit met een ander concreet bronfeit: bijvoorbeeld de bevestigde groepsposities, de andere rechtstreeks vastgestelde kwalificaties, of de expliciet bevestigde volgende fase. Noem alleen maart als de aangeleverde facts zelf die maand vermelden.',
+    'Vermeld niet driemaal dezelfde kwalificatie. Zet geen volledige landentabel in de lopende tekst als die niets nieuws toevoegt. Schrijf vloeiend met gewone Nederlandse voetbaltaal en een logische, inhoudelijke afronding.',
+    'Gebruik geen lege waarderingszinnen zoals "dit onderstreept het belang", "een cruciale mijlpaal", "de spanning neemt toe", "UEFA benadrukt" of "de prestaties tonen aan", tenzij dat exact bewezen relevante informatie weergeeft.',
+    'Verzin geen Nederlands belang of Nederlandse ploeg als Nederland niet in facts staat. Gebruik alleen expliciet aangetoonde landen. Betrek nooit een derde land, trainer, speler of blessure zonder bronbewijs.',
+    'Beschrijf geen wedstrijdscore, doelpunt, spelbeeld, verwachte uitslag, plaatsingsregel of oorzaak op basis van alleen een tabel. Een groepstand is geen bewijs voor een wedstrijduitslag. Een gelijk puntenaantal bewijst niet waarom de rangorde zo is.',
+    'Schrijf geen letterlijke UEFA-zinnen over. Noem in een inhoudelijke alinea kort dat het UEFA-overzicht de groepsinformatie bevestigt, zonder zinloze bronverantwoording.',
+    'Geef alleen skip als zelfs één afgebakende nieuwsaanleiding met nieuwe informatie in de body niet feitelijk kan worden onderbouwd. Geen fictieve context en nooit zelf publiceren.'
    ].join(' ');
   }else if(automaticPublication&&primaryAuthority==='association_decision'){
    prompt='Schrijf een zelfstandig Nederlands nieuwsbericht uitsluitend uit facts. De intro benoemt het besluit en schrijft het toe aan '+officialPublisher+'. '+(/\b(?:to depart as|steps down as)\b/i.test(topic||'')?federationCoachStyle+' ':'')+'Bij een selectieoproep behandelt de body de speler, aansluiting en selectiecontext. Bij een trainersvertrek behandelt de body afzonderlijk de laatste opdracht, tijdelijke opvolging en de officieel aangekondigde vervolgstappen. Begin de inhoudelijke alinea over opvolging of vervolgstappen met een duidelijke toeschrijving aan '+officialPublisher+', bijvoorbeeld: “'+officialPublisher+' meldt dat …”. Schrijf een volgende functie alleen toe aan de bond als die als enige het nieuws meldt. Gebruik alleen onderdelen waarvoor facts bewijs geven. Noem geen onbewezen diagnose, verwachtingen of resultaten. Herhaal het besluit niet en kopieer geen bronzinnen. Geef uitsluitend JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+(compact?compactStructure:standardStructure)+'. Geef skip bij onvoldoende feiten.';
