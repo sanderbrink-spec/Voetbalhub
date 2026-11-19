@@ -106,7 +106,7 @@ test('99C-5: official UEFA Nations League label is not an unverified person',()=
  assert.ok(!valid.includes('UEFA Nations'),valid);
  const fake=F.evidenceIssues(draft,f,null,'https://www.ajax.nl/artikelen/official-status').join('|');
  assert.ok(fake.includes('UEFA Nations'),fake);
- const invented={...draft,body:['UEFA Nations Manager Pierre Onbekend bevestigt promotie.']};
+ const invented={...draft,body:['De UEFA Nations League heeft bericht uitgebracht. Pierre Onbekend bevestigt promotie.']};
  assert.ok(F.evidenceIssues(invented,f,null,official).some(x=>x.includes('Pierre Onbekend')));
  const withoutLeague={...draft,body:['UEFA Nations bevestigt promotie.'],standfirst:'De UEFA heeft het besluit aangekondigd.',headline:'De UEFA meldt de promotie van IJsland'};
  assert.ok(F.evidenceIssues(withoutLeague,f,null,official).some(x=>x.includes('UEFA Nations')));
