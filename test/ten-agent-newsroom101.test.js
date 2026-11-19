@@ -107,3 +107,29 @@ test('101 AI notes remain unpublished internal research, not verified claims',as
  assert.equal(response.publicationAllowed,false);
  assert.equal(response.status,'analysis_only_unverified');
 });
+
+
+test('101 optional media-attributed rumour draft remains unpublished and unverified',async()=>{
+ const group={outlets:['vi','vp'],sources:[
+  {title:'PSV toont interesse in Kevin De Bruyne',url:'https://www.vi.nl/nieuws/a',publisher:'vi'},
+  {title:'De Bruyne in beeld bij PSV',url:'https://www.voetbalprimeur.nl/nieuws/b',publisher:'vp'}
+ ],contradictory:false};
+ const ai={angle:'Mogelijke belangstelling',questions:[],caution:'Bronnen mogen dezelfde anonieme bron gebruiken.',
+  draft:{headline:'Gerucht: PSV in beeld bij De Bruyne',
+   standfirst:'Volgens Voetbal International en VoetbalPrimeur is er belangstelling, maar die is onbevestigd.',
+   body:['De media berichten over mogelijke contacten. Een overstap is niet officieel bevestigd.']}};
+ const agent=N.AGENTS.find(a=>a.id==='geruchten');
+ const note=await N.analyzeWithAI({group,agent,apiKey:'test',fetcher:async()=>Response.json({
+  choices:[{message:{content:JSON.stringify(ai)}}]})});
+ assert.equal(note.status,'analysis_only_unverified');
+ assert.ok(note.draft);
+ assert.equal(note.draft.type,'unverified_rumour_working_copy');
+ assert.equal(note.draft.publicationAllowed,false);
+ assert.equal(note.draft.approved,false);
+ assert.equal(note.verified,false);
+ const fake={...ai,draft:{headline:'PSV heeft definitief De Bruyne vastgelegd',
+  standfirst:'De transfer is afgerond.',body:['Hij heeft getekend.']}};
+ const rejected=await N.analyzeWithAI({group,agent,apiKey:'test',fetcher:async()=>Response.json({
+  choices:[{message:{content:JSON.stringify(fake)}}]})});
+ assert.equal(rejected.draft,null);
+});
