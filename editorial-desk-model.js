@@ -76,6 +76,10 @@
     if(facts.length>4&&payload.primaryAuthority==='association_decision'&&
        /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\//.test(payload.sources[0]?.url||''))return false;
     if(facts.length<=3)return true;
+    // A list of disconnected snippets is not a journalistic news decision.
+    // Retain the existing full structure unless the primary source facts
+    // literally contain an identifiable announcement or decision.
+    if(facts.length>=5&&!facts.some(f=>/\b(?:bevestigt|bevestigd|meldt|bekendgemaakt|besluit|besloten|benoemd|aangesteld|contract|tekent|verlengd|aanvaard|geaccepteerd|announced|confirmed|appointed|signed|agreement|promoted)\b/i.test(String(f))))return false;
     // Five or six source-verified details can still describe one compact decision.
     // Avoid forcing three repetitive paragraphs solely because of fact count.
     // Longer packets and staffing appointments retain the full story format.
