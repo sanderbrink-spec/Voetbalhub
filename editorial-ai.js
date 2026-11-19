@@ -102,17 +102,33 @@ function editorialAttributionIssues(draft,{primaryAuthority=null,sourceUrls=[],f
 // Add only a missing explicit attribution if that club is itself present in
 // verified facts. All factual, originality and independent review gates remain.
 function attachVerifiedOfficialAttribution(draft,{primaryAuthority=null,sourceUrls=[],facts=[]}={}){
- if(!['club_decision','association_decision'].includes(primaryAuthority)||sourceUrls.length!==1||!draft)return draft;
- const publisher=officialPublisherName(sourceUrls[0]);
- // The authenticated first-party HTTPS URL proves who published the news.
- // Source attribution does not add a new fact about the underlying decision.
- if(!publisher)return draft;
- const issues=editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts});
- if(!issues.some(issue=>issue.startsWith('Noem '+publisher+' ')))return draft;
- const intro=String(draft.standfirst||'').trim();
- const attribution='Dat meldt '+publisher+'.';
- if(!/[.!?]$/.test(intro)||intro.split(/\s+/).length+attribution.split(/\s+/).length>35)return draft;
- return {...draft,standfirst:intro+' '+attribution};
+  if(!['club_decision','association_decision'].includes(primaryAuthority)||sourceUrls.length!==1||!draft)return draft;
+  const publisher=officialPublisherName(sourceUrls[0]);
+  // The authenticated publisher is source provenance, not evidence of a new event.
+  // All literal fact, originality, image rights and independent review gates remain.
+  if(!publisher)return draft;
+  const issues=editorialAttributionIssues(draft,{primaryAuthority,sourceUrls,facts});
+  let result=draft;
+  if(issues.some(issue=>issue.startsWith('Noem '+publisher+' '))){
+    const intro=String(result.standfirst||'').trim();
+    const attribution='Dat meldt '+publisher+'.';
+    if(/[.!?]$/.test(intro)&&intro.split(/\s+/).length+attribution.split(/\s+/).length<=35)
+      result={...result,standfirst:intro+' '+attribution};
+  }
+  // UEFA's first-party status overview supports naming the publisher of the
+  // already verified body facts. Do not add any match result, date or history.
+  // Keep the sentence in an existing substantive paragraph, never add a filler
+  // paragraph to satisfy the shape check.
+  if(publisher==='UEFA'&&issues.some(issue=>issue.startsWith('Schrijf in minstens één'))){
+    const body=[...result.body];
+    const index=body.findIndex(p=>typeof p==='string'&&/[.!?]$/.test(p.trim())&&
+      p.trim().split(/\s+/).length<=110);
+    if(index!==-1){
+      body[index]=body[index].trim()+' UEFA vermeldt deze gegevens in haar officiële overzicht.';
+      result={...result,body};
+    }
+  }
+  return result;
 }
 // A year is not a competition season, and a named job title must appear
 // literally in the independently verified evidence.
