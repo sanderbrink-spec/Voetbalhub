@@ -28,9 +28,9 @@ test('99C-3: independent UEFA rewrite retains chosen 1-2 paragraph form and keep
  const payload={articleKind:'announcement',primaryAuthority:'association_decision',
   draft,verifiedFacts:facts,sources:[{url:source}]};
  assert.equal(M.briefEligible(payload),true);
- let prompt='';
+ let prompt='',received;
  const revised=await reviseDraft(payload,candidate,docs,'Journalistieke kwaliteit lager dan 85.',
-  {router:{complete:async messages=>{prompt=messages[0].content;return {skip:true};}}},
+  {router:{complete:async messages=>{prompt=messages[0].content;received=JSON.parse(messages[1].content);return {skip:true};}}},
   [],{dimensions:{journalism:75,reliability:100}});
  assert.equal(revised,null);
  assert.match(prompt,/één of twee inhoudelijk verschillende bodyalinea.s van 10-65 woorden/);
@@ -38,10 +38,28 @@ test('99C-3: independent UEFA rewrite retains chosen 1-2 paragraph form and keep
  assert.match(prompt,/Iedere claim moet worden gedragen door verifiedFacts/);
  assert.match(prompt,/alleen verifiedFacts zijn bewijs/);
  assert.doesNotMatch(prompt,/PRECIES drie bodyalinea.s/);
+ assert.deepEqual(received.previousDraft,draft);
+ assert.match(prompt,/eerdere concept is uitsluitend een te redigeren manuscript/);
+ assert.match(prompt,/Controleer elke behouden zin opnieuw tegen verifiedFacts/);
 });
 
 test('99C-3: absence of official table confirmation does not grant compact form',()=>{
  const payload={articleKind:'announcement',primaryAuthority:'association_decision',
   draft,verifiedFacts:facts.filter(f=>!/^Group A[1-4]/.test(f)),sources:[{url:source}]};
  assert.equal(M.briefEligible(payload),false);
+});
+
+
+test('99C-5: unreliable UEFA drafts cannot be treated as a trustworthy manuscript',async()=>{
+ const payload={articleKind:'announcement',primaryAuthority:'association_decision',
+  draft,verifiedFacts:facts,sources:[{url:source}]};
+ let received,prompt;
+ await reviseDraft(payload,candidate,docs,'Betrouwbaarheid lager dan 90.',
+  {router:{complete:async messages=>{
+   prompt=messages[0].content;
+   received=JSON.parse(messages[1].content);
+   return {skip:true};
+  }}},[],{dimensions:{journalism:75,reliability:75}});
+ assert.ok(!Object.hasOwn(received,'previousDraft'));
+ assert.doesNotMatch(prompt,/eerdere concept is uitsluitend een te redigeren manuscript/);
 });

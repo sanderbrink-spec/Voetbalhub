@@ -1866,3 +1866,50 @@ test('99C-4: official UEFA promotion with a literal group table may become a sho
  assert.equal(M.briefEligible({...p,verifiedFacts:facts.map(f=>f.replace('Iceland are confirmed in first place and will be promoted','Iceland might be promoted'))}),false);
  assert.equal(M.briefEligible({...p,sources:[{url:'https://www.ajax.nl/artikelen/uefa-bespreking'}]}),false);
 });
+
+
+test('99C-5: second reviewer sees independently literal source citations for status and points',()=>{
+ const {independentReviewEvidenceLedger}=require('../scripts/automatic-publication');
+ const table='Group A2 Germany (11pts), Netherlands (11), Greece (11), Elsewhere (0)';
+ const decision='Germany are confirmed in first place and have qualified for the quarter-finals.';
+ const docs=[{url:'https://www.uefa.com/uefanationsleague/news/02ab-synthetic-status/',text:table+'. '+decision}];
+ const candidate={facts:[
+  {text:table,evidence:[{source:0,quote:table}]},
+  {text:decision,evidence:[{source:0,quote:decision}]},
+  {text:'Germany won a match 4-0.',evidence:[{source:0,quote:'Germany won a match 4-0.'}]}
+ ]};
+ const ledger=independentReviewEvidenceLedger(candidate,docs);
+ assert.deepEqual(ledger.map(entry=>entry.id),['F1','F2']);
+ assert.equal(ledger[0].citations[0].quote,table);
+ assert.equal(ledger[1].citations[0].sourceIndex,0);
+ assert.ok(!JSON.stringify(ledger).includes('4-0'));
+ assert.deepEqual(independentReviewEvidenceLedger({facts:[]},docs),[]);
+});
+
+
+test('99C-5: exact false UEFA Nations name rejection is retried once with fresh proof',()=>{
+ const {reopenUefaCompetitionTitle99C5}=require('../scripts/automatic-publication');
+ const crypto=require('node:crypto');
+ const msg='Concept na herstel nog niet geschikt: Controleer namen die niet in de aangeleverde feiten staan: UEFA Nations.';
+ const at=Date.parse('2026-11-19T18:00:00Z');
+ const doc={url:'https://www.uefa.com/uefanationsleague/news/02ab-2209792f2fda-6a523d4500bb-1000--2026-27-nations-league-quarter-final-qualification-promotion/',
+  title:'2026/27 Nations League: Quarter-final qualification, promotion, play-offs and relegation',
+  text:'UEFA Nations League promotion and qualification decisions.',
+  publishedAt:'2026-11-19T10:00:00Z'};
+ const make=()=>({status:'review',urls:[doc.url],attempts:2,checkpoint:'old',
+   failureStage:'generation',failureCategory:'generator_failure',reason:'generation_error',
+   errorHash:crypto.createHash('sha256').update(msg).digest('hex')});
+ const j=make();
+ assert.equal(reopenUefaCompetitionTitle99C5(j,doc,at),true);
+ assert.equal(j.status,'pending');assert.equal(j.attempts,0);
+ assert.equal(j.checkpoint,undefined);
+ j.status='review';
+ assert.equal(reopenUefaCompetitionTitle99C5(j,doc,at),false);
+ for(const x of [{failureStage:'quality'}, {reason:'insufficient_verified_facts'},
+  {errorHash:'other'}, {urls:['https://www.uefa.com/uefanationsleague/news/other/']},
+  {status:'published'}]){
+  assert.equal(reopenUefaCompetitionTitle99C5({...make(),...x},doc,at),false);
+ }
+ assert.equal(reopenUefaCompetitionTitle99C5(make(),{...doc,publishedAt:'2026-10-01T12:00:00Z'},at),false);
+ assert.equal(reopenUefaCompetitionTitle99C5(make(),{...doc,url:'https://www.ajax.nl/artikelen/uefa-status/'},at),false);
+});
