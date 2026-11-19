@@ -69,11 +69,12 @@
   const verifiedLeagueAbbreviation=name=>/^Major League$/i.test(name)&&/\bmls\b/.test(known);
   // UEFA League A status is first-party competition metadata. Match results,
   // standings and named participants still require literal verified facts.
-  let officialUefaLeagueA=false;
+  let officialUefaLeagueA=false, officialUefaCompetition=false;
   try{
    const u=new URL(sourceName);
-   officialUefaLeagueA=u.protocol==='https:'&&u.hostname==='www.uefa.com'&&
-    /^\/uefanationsleague\/news\/02[a-z0-9-]+\/?$/.test(u.pathname)&&
+   officialUefaCompetition=u.protocol==='https:'&&u.hostname==='www.uefa.com'&&
+    /^\/uefanationsleague\/news\/02[a-z0-9-]+\/?$/.test(u.pathname);
+   officialUefaLeagueA=officialUefaCompetition&&
     /\b(?:league a|group a[1-4]|quarter.final)\b/i.test(evidence);
   }catch{}
   // Official UEFA data uses English national-team names. A strict, finite
@@ -93,6 +94,9 @@
      uefaVerifiedNames.add(normalize(target));
   }
   const verifiedUefaStatusGrammar=name=>{
+   // The exact official UEFA Nations League news section supplies the competition
+   // identity only. It never proves a participant, result, group standing or score.
+   if(officialUefaCompetition&&name==='Nations League')return true;
    if(!officialUefaLeagueA)return false;
    if(/^(?:Kwartfinales Nations League|Nations League(?:-kwartfinales?)?)$/.test(name))return true;
    if(/^(?:De )?League A-groep$/.test(name)&&/\b(?:league a|group a[1-4])\b/i.test(evidence))return true;
