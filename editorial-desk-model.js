@@ -56,10 +56,25 @@
       facts.filter(f=>/\bGroup A[1-4]\b/i.test(String(f))).length>=2&&
       facts.some(f=>/\bare confirmed in (?:first|second) place and have qualified for the quarter-finals\b/i.test(String(f)));
     if(officialLeagueStatus)return true;
+    // A verified UEFA promotion may have a group table and a few connected
+    // placement decisions, but not three genuinely separate story angles.
+    // Only the organiser's actual decision and literal group table qualify.
+    const officialPromotion=payload?.articleKind==='announcement'&&
+      payload.primaryAuthority==='association_decision'&&!payload.transferStatus&&
+      payload.sources?.length===1&&
+      /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\/02[a-z0-9-]+\/?$/.test(payload.sources[0]?.url||'')&&
+      Array.isArray(facts)&&facts.length>=5&&facts.length<=8&&
+      facts.some(f=>/^Group [B-D][1-4]\s+/i.test(String(f)))&&
+      facts.some(f=>/\bare confirmed in first place and will be promoted to League [A-C]\b/i.test(String(f)));
+    if(officialPromotion)return true;
     if(payload?.articleKind!=='announcement'||
       !['club_decision','association_decision'].includes(payload.primaryAuthority)||
       payload.sources?.length!==1||!host(payload.sources[0]?.url)||
       payload.transferStatus||!Array.isArray(facts)||facts.length<1||facts.length>6)return false;
+    // Other UEFA statuses cannot use a generic short-format exception: they
+    // must pass the explicit, literal table/status conditions above.
+    if(facts.length>4&&payload.primaryAuthority==='association_decision'&&
+       /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\//.test(payload.sources[0]?.url||''))return false;
     if(facts.length<=3)return true;
     // Five or six source-verified details can still describe one compact decision.
     // Avoid forcing three repetitive paragraphs solely because of fact count.
