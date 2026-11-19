@@ -11,6 +11,7 @@ const norm=value=>String(value||'').normalize('NFD')
 const tokenise=value=>new Set(norm(value).split(/\s+/).filter(w=>w.length>=4&&
  !['heeft','hebben','wordt','werden','voor','tegen','vanaf','volgens','the','and','with','from','een','deze','also','that','official','nieuws','nieuwe','league','club','team'].includes(w)));
 const distinct=(a,b)=>{
+ if(norm(a)===norm(b))return false;
  const left=tokenise(a),right=tokenise(b);
  const overlap=[...left].filter(t=>right.has(t)).length;
  const size=Math.min(left.size,right.size);
