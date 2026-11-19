@@ -120,8 +120,10 @@ async function analyzeWithAI({group,agent,apiKey,fetcher=fetch}){
   'Schrijf geen voetbalfeiten, uitslagen, transferbevestiging of citaten die de titels niet letterlijk ondersteunen.',
   'Een bronpublicatie en onafhankelijk feitelijk bewijs zijn verschillend. Twee kranten kunnen dezelfde journalist citeren.',
   'Behandel elk transferbericht als ONBEVESTIGD; identificeer wat moet worden nagegaan.',
-  'Geef alleen JSON met {"angle":"korte onderzoeksinvalshoek","questions":["onderzoeksvraag"],"caution":"korte beperking"}.',
-  'De output is een INTERNE onderzoeksnotitie, geen artikel en geen publicatie.'
+  'Bij minstens twee verschillende mediabronnen mag je een INTERN concept schrijven over de berichtgeving zelf: kop met GERUCHT of MOGELIJK, intro met expliciete media-attributie, één korte alinea. Zet er duidelijk bij dat de transfer niet bevestigd is. Noem nooit een transfer definitief.',
+  'Schrijf geen zelfstandig bevestigde feiten uit alleen koppen en probeer geen daadwerkelijke nieuwsartikelen na te vertellen.',
+  'Geef alleen JSON met {"angle":"korte onderzoeksinvalshoek","questions":["onderzoeksvraag"],"caution":"korte beperking","draft":{"headline":"Gerucht: ...","standfirst":"Volgens bron X en Y ...; onbevestigd.","body":["Eén korte, zelfstandige alinea over de gemelde belangstelling, met bronvermelding en onzekerheid."]}}.',
+  'De output is uitsluitend een INTERNE onderzoeksnotitie en een NIET-PUBLICEERBAAR werkconcept. Onafhankelijk bewijs en alle bestaande journalistieke poorten zijn nog vereist.'
  ].join(' ');
  try{
   const response=await fetcher('https://api.groq.com/openai/v1/chat/completions',{
@@ -135,9 +137,25 @@ async function analyzeWithAI({group,agent,apiKey,fetcher=fetch}){
   if(!response.ok){await response.body?.cancel();return {status:'provider_http_'+response.status};}
   const result=await response.json(),raw=result.choices?.[0]?.message?.content||'';
   let obj;try{obj=JSON.parse(raw);}catch{return {status:'invalid_ai_json'};}
+  // A working copy can be saved ONLY when its own wording makes the rumor
+  // conditional and names the outlet reporters. It never enters the feed.
+  const d=obj.draft;
+  const names={vi:'Voetbal International',vp:'VoetbalPrimeur',nos:'NOS'};
+  const headline=String(d?.headline||'').slice(0,150),standfirst=String(d?.standfirst||'').slice(0,350);
+  const body=Array.isArray(d?.body)?d.body.slice(0,2).map(x=>String(x).slice(0,500)):[];
+  const combined=[headline,standfirst,...body].join(' ');
+  const credited=(group.outlets||[]).filter(id=>new RegExp(names[id]||'[^a-z]', 'i').test(combined));
+  const draft=group.outlets.length>=2&&credited.length>=2&&
+   /\b(?:gerucht|mogelijk|volgens|onbevestigd)\b/i.test(headline)&&
+   /\b(?:onbevestigd|niet bevestigd|geen bevestiging|niet officieel)\b/i.test(standfirst+' '+body.join(' '))&&
+   body.length>=1&&!/\b(?:is definitief rond|heeft definitief getekend|is officieel afgerond)\b/i.test(combined)?
+   {type:'unverified_rumour_working_copy',headline,standfirst,body,
+    sources:group.sources.map(x=>({publisher:x.publisher,url:x.url})),
+    originalReportingChecked:false,independentEvidenceChecked:false,
+    approved:false,publicationAllowed:false}:null;
   return {status:'analysis_only_unverified',angle:String(obj.angle||'').slice(0,220),
    questions:Array.isArray(obj.questions)?obj.questions.slice(0,3).map(x=>String(x).slice(0,240)):[],
-   caution:String(obj.caution||'').slice(0,260),
+   caution:String(obj.caution||'').slice(0,260),draft,
    // This status is NOT a second sourced report or independent check.
    verified:false,publicationAllowed:false};
  }catch{return {status:'provider_unavailable'};}
