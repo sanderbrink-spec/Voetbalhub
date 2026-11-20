@@ -3,7 +3,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {research}=require('../scripts/eredivisie-research103b');
-const {validateEvidence,preflightArtwork,shouldDraftBeforeArtwork,plain,overlap}=require('../scripts/automatic-publication');
+const {validateEvidence,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,plain,overlap}=require('../scripts/automatic-publication');
 const {EditorialQueue}=require('../editorial-production45');
 const now=Date.parse('2026-11-20T18:00:00Z');
 const f={id:'example-fixture',home:{name:'FC Groningen'},away:{name:'SC Heerenveen'},
@@ -96,4 +96,24 @@ test('104A: alleen geverifieerde clubvoorbeschouwingen mogen vóór beeldvrijgav
  assert.equal(shouldDraftBeforeArtwork(group,{...verified}),false);
  assert.equal(shouldDraftBeforeArtwork([club,league],verified),false);
  assert.equal(shouldDraftBeforeArtwork({clubPreview:{...verified,kind:'report'}},{...verified,kind:'report'}),false);
+});
+
+test('104B: oud beeldretry krijgt precies één nieuw schrijfpoging vóór aftrap',()=>{
+ const candidate={kind:'preview',category:'Eredivisie',fixture:f,kickoff:Date.parse(f.date),
+  facts:[1,2,3,4].map(i=>({text:'Feit '+i,evidence:[{source:0,quote:'Feit '+i}]}))};
+ const group=Object.assign([club,league],{clubPreview:candidate});
+ const queue=new EditorialQueue();
+ const job=queue.enqueue(group,now);
+ job.status='retry';job.reason='awaiting_approved_artwork';
+ job.failureCategory='missing_approved_artwork';job.failureStage='artwork';
+ job.nextAttemptAt=now+6*3600000;
+ assert.equal(queue.due(job,now),false);
+ assert.equal(reopenVerifiedPreviewArtwork104B(job,group,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.nextAttemptAt,now);
+ assert.equal(queue.due(job,now),true);
+ assert.equal(reopenVerifiedPreviewArtwork104B(job,group,now),false);
+ const another={...job,status:'retry',reason:'awaiting_approved_artwork',failureCategory:'missing_approved_artwork',draftFirstRecovery104B:false};
+ assert.equal(reopenVerifiedPreviewArtwork104B(another,group,Date.parse(f.date)+1),false);
+ another.reason='editorial_review_required';
+ assert.equal(reopenVerifiedPreviewArtwork104B(another,group,now),false);
 });
