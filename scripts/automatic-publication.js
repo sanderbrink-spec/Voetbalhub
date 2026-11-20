@@ -66,6 +66,7 @@ const {CREDIT}=require('../football-results52');
 const {articleUrl,officialSourceAuthority,discoverGdelt}=require('./editorial-discovery53');
 const international=require('./editorial-international');
 const {oranjeDrawGroup}=require('./editorial-oranje-draw');
+const {drawWritingBrief}=require('./editorial-draw-copy339');
 const officialFinals98W=require('./editorial-official-finals98w');
 const API='https://voetbalhub-redactie.onrender.com';
 const REPO='sanderbrink-spec/Voetbalhub';
@@ -2668,10 +2669,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    topic=candidate.topic;
    const sourceIndices=matchRecord?matchRecord.sources.map((_,i)=>i):group.officialFinalCandidate?[0,1,2]:[...new Set(candidate.facts.flatMap(f=>f.evidence.map(e=>e.source)).concat(candidate.sharedEventEvidence.map(e=>e.source)))];
    const facts=matchRecord?.verifiedFacts||candidate.facts.map(f=>f.text);
+   const drawBrief=group.drawCandidate?drawWritingBrief(facts):null;
+   if(group.drawCandidate&&!drawBrief)throw Error('Geverifieerd lotingsdossier mist een controleerbaar zelfstandig feitenplan.');
    const sources=sourceIndices.map(i=>({url:group[i].url}));
    await checkpointStep({candidate});
    if(focusSourceUrl)report.focusFacts=facts;
-   const compact=M.briefEligible({articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,transferStatus:candidate.transferStatus,verifiedFacts:facts,sources});
+   const compact=M.briefEligible({articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,transferStatus:candidate.transferStatus,verifiedFacts:facts,sources,verifiedDrawBrief:Boolean(drawBrief)});
    const insufficientStory=M.storyIssues({articleKind:candidate.kind,verifiedFacts:facts});
    if(insufficientStory.length){
     report.skipped.push({topic,reason:insufficientStory.join(' ')});
@@ -2710,13 +2713,13 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(draft?.skip)throw Error('Onvoldoende bewezen feiten voor een origineel wedstrijdverslag.');
     report.generationOrigin='production_ai';
    }else if(!draft){
-    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,match:candidate.match||null,compact,officialFinal:Boolean(group.officialFinalCandidate),officialReaction:Boolean(group.officialReactionCandidate),automaticPublication:true},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
+    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,match:candidate.match||null,compact,officialFinal:Boolean(group.officialFinalCandidate),officialReaction:Boolean(group.officialReactionCandidate),automaticPublication:true,drawBrief},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
     report.generationOrigin='production_ai';
    }
    await checkpointStep({draft,generation:null});
    report.counts.generated++;route.generated++;
    stage='quality';
-   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(group.officialFinalCandidate?{match:candidate.match,officialFinalProof:group.officialFinalProof,factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}}:{}),...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&['onsoranje.nl','uefa.com'].includes(host(sources[0].url))?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
+   const payload={draft,category:candidate.category,verifiedFacts:facts,sources,verifiedDrawBrief:Boolean(drawBrief),editorialChecks:Object.fromEntries(M.checks.map(k=>[k,true])),imageRights:'not_needed',topicTeams:candidate.teams,topicDate:candidate.eventDate,transferStatus:candidate.transferStatus,articleKind:candidate.kind,...(group.officialFinalCandidate?{match:candidate.match,officialFinalProof:group.officialFinalProof,factChecks:{resultVerified:true,namesVerified:true,dateVerified:true,timelineVerified:true}}:{}),...(matchRecord?{imageCategory:'report'}:{...(!group.internationalPreview&&candidate.kind==='announcement'&&sources[0]&&['onsoranje.nl','uefa.com'].includes(host(sources[0].url))?{imageCategory:'international'}:{})}),...(candidate.primaryAuthority?{primaryAuthority:candidate.primaryAuthority}:{}),...(matchRecord?{matchId:matchRecord.matchId,match:matchRecord.match,factChecks:matchRecord.factChecks,...(matchRecord.matchEvidence?{matchEvidence:matchRecord.matchEvidence}:{})}:{}),
     reviewNotes:(validationOnly?'Automatische redactionele validatie. ':'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. ')+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
     if(group.replacePreviewId)payload.replacePreviewId=group.replacePreviewId;
