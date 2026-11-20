@@ -48,10 +48,14 @@ function sentences(draft){
 const confirmation=/\b(?:tekent bij|heeft getekend|transfer is (?:rond|bevestigd)|(?:overstap|komst) (?:is|staat) vast|is (?:definitief )?rond|officialiseert|heeft .* vastgelegd|geen (?:officiële )?bevestiging|niet (?:officieel )?bevestigd door|nergens bevestigd)\b/i;
 const transfer=/\b(?:transfer\w*|overstap|gesprek\w*|belangstelling|interesse|onderhandel\w*|bieding|akkoord|geboden|openingsbod|vraagprijs|miljoen|euro)\b/i;
 const attribution=/\b(?:volgens|meld\w*|ontkent|ontkracht|schr(?:ijft|eef)|bericht\w*|rapporte\w*|citeert|aldus|tekent op|leest|signaleert|noemt|beschrijft)\b/i;
+const agreement=/\b(?:akkoord bereikt|persoonlijk akkoord|deal (?:is )?rond|contract (?:is )?getekend|handtekening gezet|contract gesloten|transfer afgerond)\b/i;
 const amount=/€\s*[\d.,]+|(?:\d+(?:[.,]\d+)?|[\p{L}]+)(?:\s+(?:en een half|en een halve))?\s+(?:miljoen|miljard|ton|euro)\b/giu;
 function hardIssue(text,docs,selection){
  if(/\b(?:onafhankelijke (?:bronnen|meldingen|bevestigingen)|onafhankelijk van elkaar|los van elkaar)\b/i.test(text))return 'Onafhankelijkheid van de oorspronkelijke melders is niet aangetoond.';
  if(confirmation.test(text))return 'Formele transferstatus of algemene afwezigheid van bevestiging valt buiten het onderzochte bewijs.';
+ if(agreement.test(text)&&(!/\b(?:zou|zouden|mogelijk|naar verluidt)\b/i.test(text)||
+   !docs.some(d=>d.kind==='media'&&/\b(?:akkoord|deal|contract|handtekening)\b/i.test(d.text))))
+  return 'Een transferakkoord is niet vastgesteld; alleen een expliciet toegeschreven mogelijk mediabericht kan worden beschreven.';
  if(/\bgeen (?:ondertekende overeenkomst|(?:getekend|ondertekend) (?:akkoord|contract))\b/i.test(text))
   return 'Een ontbrekende handtekening volgt niet uit berichtgeving over de vraagprijs.';
  if(!has(text,selection.destination)&&!transfer.test(text))return null;
@@ -76,6 +80,29 @@ function prepareRevision(draft,docs,selection){
  const rows=sentences(copy);
  const removed=rows.map(r=>({...r,reason:hardIssue(r.text,docs,selection)})).filter(r=>r.reason);
  return {removed,beforeReview:prune(copy,rows,new Set(removed.map(r=>r.id)))};
+}
+
+// A non-conflicting bid and a denial of a meeting are different statements,
+// not contradictory evidence about the same act. Require matching act types.
+function activityTags(text){
+ const words=normalize(text), tags=new Set();
+ if(/\b(?:bod|bieding|geboden|biedt|offer)\b/.test(words))tags.add('offer');
+ if(/\b(?:gesprek|gesprekken|contact|onderhandeling|onderhandelingen|overleg|gesproken)\b/.test(words))tags.add('talks');
+ if(/\b(?:interesse|belangstelling|geinteresseerd)\b/.test(words))tags.add('interest');
+ if(/\b(?:akkoord|contract|handtekening)\b/.test(words))tags.add('agreement');
+ return tags;
+}
+function verifiedConflict(docs){
+ const media=docs.filter(d=>d.kind==='media');
+ return media.some(a=>isContradiction(a.text)&&media.some(b=>b.url!==a.url&&!isContradiction(b.text)&&
+  [...activityTags(a.text)].some(tag=>activityTags(b.text).has(tag))));
+}
+function verifiedRegisterCounts(text,quotes){
+ const raw=quotes.join(' ');
+ const sourceNumbers=new Set([...raw.matchAll(/\b\d+\b/g)].map(m=>Number(m[0])));
+ const numberWords={een:1,eén:1,één:1,twee:2,drie:3,vier:4,vijf:5,zes:6,zeven:7,acht:8,negen:9,tien:10};
+ const claims=[...text.matchAll(/\b(\d+|één|eén|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien)\s+(?:wedstrijden|duels|minuten|assists?|doelpunten)\b/giu)];
+ return claims.every(m=>sourceNumbers.has(/^\d+$/.test(m[1])?Number(m[1]):numberWords[m[1].toLocaleLowerCase('nl')]));
 }
 
 // The reviewer classifies every supplied sentence, chooses literal evidence IDs
@@ -113,6 +140,12 @@ function checkReview(rows,review,docs,selection){
     issues.push('Oorspronkelijke melder ontbreekt bij '+row.id);continue;
    }
   }
+  if(claim.type===types.conflict&&!verifiedConflict(cited)){
+   issues.push('Geen bewezen tegenspraak over dezelfde gebeurtenis bij '+row.id);continue;
+  }
+  if(!isMedia&&!verifiedRegisterCounts(row.text,citations.map(c=>c.quote))){
+   issues.push('Wedstrijdstatistieken ontbreken in het letterlijke registerbewijs bij '+row.id);continue;
+  }
   if(isMedia&&(!cited.some(d=>d.kind==='media')||!attribution.test(row.text))||
      !isMedia&&(!cited.every(d=>d.kind==='register')||transfer.test(row.text)||has(row.text,selection.destination))||
      claim.type===types.conflict&&new Set(cited.filter(d=>d.kind==='media').map(d=>d.url)).size<2||
@@ -123,4 +156,4 @@ function checkReview(rows,review,docs,selection){
  }
  return {issues,removed,used};
 }
-module.exports={types,researchMedia,sentences,prune,hardIssue,prepareRevision,checkReview};
+module.exports={types,researchMedia,sentences,prune,hardIssue,prepareRevision,checkReview,verifiedConflict,verifiedRegisterCounts};
