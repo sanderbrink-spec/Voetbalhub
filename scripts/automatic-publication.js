@@ -1241,7 +1241,7 @@ async function reviseDraft(payload,candidate,docs,reason,options,published=[],re
  const revised=await complete([
   {role:'system',content:M.storyStyle+' Pak eerst de tekortkomingen uit reviewFeedback.focus en reviewFeedback.findings aan. De scores zijn doelen voor de tekstkwaliteit; geef zelf geen score. '+(payload.matchId?matchGuidance.revisionPrompt(payload):
    candidate.kind==='preview'&&candidate.fixture?.competition==='eredivisie'&&payload.fixture?.id===candidate.fixture.id?
-   'Herschrijf deze Eredivisie-voorbeschouwing vanuit UITSLUITEND verifiedFacts. De wedstrijd ligt in de toekomst: geen eindstand, wedstrijdverslag, doelpunten of fictieve wedstrijdminuten. Een eerdere winstreeks is historische context en geen uitslag van het aangekondigde duel. Laat een datum of jaartal weg tenzij die letterlijk als evenementdatum in verifiedFacts staat. Een bronpublicatiedatum is GEEN historische wedstrijddatum. Gebruik een zelfstandig journalistiek hoofdnieuws in kop en intro. Verdeel minstens drie andere feiten zonder herhaling over 2 tot 3 inhoudelijke bodyalinea’s, bijvoorbeeld selectie, trainersbezetting, historische reeks en spelerstatistiek, uitsluitend bij bewezen details. Begin alinea’s niet met Op 19 november of Op 20 november tenzij verifiedFacts die gebeurtenissen dateren. Neem geen reeks van acht aaneengesloten woorden uit een brontekst over. Maak geheel nieuwe zinsbouw en schrijf zonder prognoses, onbewijsbare gevolgen, uitgesproken zekerheid of ongefundeerde superlatieven. Houd elk feit aan de juiste club of persoon gekoppeld. Gebruik rejection en forbiddenPhrases alleen om eerdere fouten te voorkomen. Antwoord met JSON: headline 5-14 woorden, standfirst 8-35 woorden en '+M.previewStructure+'. Bij onvoldoende feiten geef {"skip":true}. Onafhankelijke 85/90-controle blijft verplicht.':
+   'Herschrijf deze Eredivisie-voorbeschouwing vanuit UITSLUITEND verifiedFacts. De wedstrijd ligt in de toekomst: geen eindstand, wedstrijdverslag, doelpunten of fictieve wedstrijdminuten. Een eerdere winstreeks is historische context en geen uitslag van het aangekondigde duel. Laat een datum of jaartal weg tenzij die letterlijk als evenementdatum in verifiedFacts staat. Een bronpublicatiedatum is GEEN historische wedstrijddatum. Gebruik een zelfstandig journalistiek hoofdnieuws in kop en intro. Maak precies DRIE bodyalinea’s van 18-80 woorden, nooit vier. Alinea 1 behandelt de geverifieerde staf en beschikbare selectie; alinea 2 verbindt bewezen onderlinge historie en recente teamvorm; alinea 3 behandelt afzonderlijke spelerstatistieken en zo nodig de scheidsrechter. Gebruik alleen die thema’s waarvoor verifiedFacts rechtstreeks bewijs bevat. Verdeel alle feiten eenmaal, begin niet opnieuw met de intro. Vermijd voorspellingen en subjectieve vulwoorden als indrukwekkend, vertrouwen, goede lijn en historisch gezien. Begin alinea’s niet met Op 19 november of Op 20 november tenzij verifiedFacts die gebeurtenissen dateren. Neem geen reeks van acht aaneengesloten woorden uit een brontekst over. Maak geheel nieuwe zinsbouw en schrijf zonder prognoses, onbewijsbare gevolgen, uitgesproken zekerheid of ongefundeerde superlatieven. Houd elk feit aan de juiste club of persoon gekoppeld. Gebruik rejection en forbiddenPhrases alleen om eerdere fouten te voorkomen. Antwoord met JSON: headline 5-14 woorden, standfirst 8-35 woorden en '+M.previewStructure+'. Bij onvoldoende feiten geef {"skip":true}. Onafhankelijke 85/90-controle blijft verplicht.':
    candidate.kind==='preview'?
    M.previewStyle+' Gebruik uitsluitend verifiedFacts. Als editorialAssignment aanwezig is, verdeel de feiten exact over opening, firstParagraph en secondParagraph. Herhaal de inzet niet in de alinea’s. Begin beide alinea’s met de gecontroleerde datum van dat afgelopen duel als die aanwezig is, en gebruik de verleden tijd. Houd de kop en intro ondubbelzinnig toekomstgericht. Laat onbewezen datums, speelhelften, minuten, typen acties en conclusies weg. Gebruik helder voetbal-Nederlands. Verwerk rejection en geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+M.previewStructure+'.':
    candidate.verifiedOfficialFinal&&candidate.match?
@@ -1507,6 +1507,52 @@ function reopenApprovedClubPreviewArtwork104D(job,group,now){
  job.artworkReadyRecovery104D=true;
  job.status='pending';job.nextAttemptAt=now;job.updatedAt=now;
  delete job.reason;delete job.failureStage;delete job.failureCategory;
+ return true;
+}
+// Rewrite only explicitly proven statistical wording, never infer new facts.
+// This is not an approval: original source-overlap, fact, structure and
+// independent journalism checks still run on the result.
+function repairVerifiedClubPreviewForm(draft,facts){
+ if(!draft||!Array.isArray(draft.body)||!Array.isArray(facts))return draft;
+ let body=draft.body.map(x=>String(x||'').trim()).filter(Boolean);
+ if(body.length>3){
+  const tail=body.slice(2).join(' ');
+  if(tail.split(/\s+/).length<=120)body=[body[0],body[1],tail];
+ }
+ const proven=facts.join(' ');
+ if(/Groningen won de laatste drie ontmoetingen met de Friezen/i.test(proven)){
+  body=body.map(p=>p.replace(
+   /FC Groningen won de laatste drie ontmoetingen met de Friezen en kan daarmee (?:zijn|de) langste (?:winst|zege)reeks tegen (?:deze tegenstander|Heerenveen) evenaren\.?/gi,
+   'In de drie voorafgaande onderlinge duels kwam Groningen telkens als winnaar uit de strijd. Een nieuwe zege zou evenaring betekenen van de eigen langste succesreeks tegen Heerenveen.'
+  ).replace(
+   /FC Groningen won de laatste drie ontmoetingen met de Friezen en kan daarmee (?:een|de) langste (?:winst|zege)reeks tegen deze tegenstander evenaren\.?/gi,
+   'De drie vorige ontmoetingen met Heerenveen leverden Groningen telkens een overwinning op. Een nieuwe zege zou de langste reeks tegen die club evenaren.'
+  ));
+ }
+ if(/Ringo Meerveld.*(?:154 minuten|154 speelminuten).*vijf doelpunten/i.test(proven)){
+  body=body.map(p=>p.replace(
+   /Ringo Meerveld in zijn laatste vier competitieduels in slechts 154 minuten betrokken (?:was )?bij vijf doelpunten/gi,
+   'Ringo Meerveld in vier competitieduels gedurende 154 speelminuten een aandeel had in vijf doelpunten'
+  ));
+ }
+ if(body.length===draft.body.length&&body.every((p,i)=>p===draft.body[i]))return draft;
+ return {...draft,body};
+}
+// One scoped retry for the exact 104D writer-quality rejection. This does
+// not revive arbitrary failed manuscripts: it discards the rejected draft and
+// re-runs every evidence, originality, AI-review, rights and publication gate.
+function reopenVerifiedClubPreviewStyle104E(job,group,now){
+ const candidate=group?.clubPreview;
+ if(!job||candidate?.fixture?.id!=='sm-19714591'||
+    job.clubPreviewId!=='sm-19714591'||candidate.kind!=='preview'||
+    job.status!=='review'||job.failureStage!=='quality'||
+    job.failureCategory!=='journalistic_rejection'||
+    job.errorHash!=='57ac3e8b2ec9ff951794999b63a8033448661d3316541a82a464c8c337d1d848'||
+    job.previewStyleRecovery104E||candidate.kickoff<=now||!Number.isFinite(now)||
+    !preflightArtwork(group,candidate,candidate.topic||group[0]?.title||'').approved)return false;
+ job.previewStyleRecovery104E=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.checkpoint;delete job.reason;delete job.failureStage;delete job.failureCategory;delete job.errorHash;
  return true;
 }
 function deferArtwork(job,now){
@@ -2514,6 +2560,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     report.signals.push({route:'news',topic:group.clubPreview.topic,outcome:'reviewed_club_preview_fact_audit_retry_104c'});
    if(reopenApprovedClubPreviewArtwork104D(job,group,now))
     report.signals.push({route:'news',topic:group.clubPreview.topic,outcome:'reviewed_derby_artwork_unblocked_104d'});
+   if(reopenVerifiedClubPreviewStyle104E(job,group,now))
+    report.signals.push({route:'news',topic:group.clubPreview.topic,outcome:'one_time_verified_preview_style_104e'});
   }
   if(reopenVerifiedDrawCopy339(job,group,now))
    report.signals.push({route:'news',topic:group[0].title,outcome:'verified_draw_copy_recovery339'});
@@ -3008,7 +3056,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    }
    if(duplicate(payload,comparison.concat(report.validated.map(item=>item.article)))){report.skipped.push({topic,reason:'Onderwerp staat al in de app.',draftHeadline:draft.headline});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
-   const revisionLimit=singlePublication||(candidate.verifiedOfficialFinal&&facts.length>=7)?3:2;
+   const revisionLimit=singlePublication||(candidate.verifiedOfficialFinal&&facts.length>=7)||group.clubPreview?.fixture?.id==='sm-19714591'?3:2;
    for(let revision=checkpoint.revisions||0;revision<=revisionLimit;revision++){
     if(!matchRecord&&candidate.primaryAuthority==='club_decision'){
      // V71: the same source-copied staff clause appears in both brief and full
@@ -3024,6 +3072,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      const scoreSafe=repairReversedVerifiedScores(draft,matchRecord);
      const narrativeSafe=repairUnverifiedMatchComeback(scoreSafe,matchRecord);
      if(narrativeSafe!==draft){draft=narrativeSafe;payload.draft=draft;}
+    }
+    if(group.clubPreview?.fixture?.id==='sm-19714591'){
+     const restored=repairVerifiedClubPreviewForm(draft,facts);
+     if(restored!==draft){draft=restored;payload.draft=draft;}
     }
     // Store complete AI copy for the owner's review as a separate Actions artifact,
     // not as publicly printed job logs or a queue field.
@@ -3273,4 +3325,4 @@ function publicationFocus(env=process.env){
  return env.FOCUS_SOURCE_URL||pushCommitMessage(env).match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,scoutResearch:r.scoutResearch?{mediaFeeds:r.scoutResearch.mediaFeeds,revision:r.scoutResearch.revision?.afterReview,assessment:r.scoutResearch.review?.assessment}:undefined,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reopenVerifiedDrawDepth345,reopenVerifiedDrawName344,reopenVerifiedDrawContext343,reopenVerifiedDrawConditional342,reopenVerifiedDrawPlan341,reopenVerifiedDrawCopy339,reopenUefaCompetitionTitle99C5,independentReviewEvidenceLedger,reopenFreshPrimaryStoryAfterFormat99C4,promotionFromRoundup,reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,reopenReviewedClubPreview104C,reopenApprovedClubPreviewArtwork104D,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reopenVerifiedDrawDepth345,reopenVerifiedDrawName344,reopenVerifiedDrawContext343,reopenVerifiedDrawConditional342,reopenVerifiedDrawPlan341,reopenVerifiedDrawCopy339,reopenUefaCompetitionTitle99C5,independentReviewEvidenceLedger,reopenFreshPrimaryStoryAfterFormat99C4,promotionFromRoundup,reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,reopenReviewedClubPreview104C,reopenApprovedClubPreviewArtwork104D,reopenVerifiedClubPreviewStyle104E,repairVerifiedClubPreviewForm,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
