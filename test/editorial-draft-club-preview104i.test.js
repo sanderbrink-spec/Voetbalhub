@@ -3,6 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const {cleanPayload,fingerprint}=require('../editorial-drafts');
 const {verifiedClubPreviewHistory}=require('../editorial-facts');
 const {publicationIssues}=require('../editorial-desk-model');
+const {reopenPreviewStorageFixture104I}=require('../scripts/automatic-publication');
 const f={id:'sm-19714591',competition:'eredivisie',status:'NS',round:'Speelronde 13',
  date:'2026-11-21T20:00:00Z',home:{name:'FC Groningen'},away:{name:'sc Heerenveen'}};
 const d={headline:'Groningen ontvangt Heerenveen met bijzondere voorgeschiedenis',
@@ -52,4 +53,22 @@ test('104I: bestaande officiële UEFA-preview velden blijven onveranderd',()=>{
   date:'2027-03-25',venueName:'Amsterdam'}});
  assert.deepEqual(clean.fixture,{id:'uefa-12',homeTeam:'Nederland',awayTeam:'Portugal',
   date:'2027-03-25',venueName:'Amsterdam'});
+});
+
+test('104I: exact eerder goedgekeurd maar fout opgeschoond dossier wordt één keer opnieuw getoetst',()=>{
+ const c={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
+  fixture:f,kickoff:Date.parse(f.date),facts:facts.map(text=>({text}))};
+ const group=Object.assign([{title:c.topic}],{clubPreview:c});
+ const now=Date.parse('2026-11-20T23:39:00Z');
+ const hash='d1a09eac82e61c71403c8175e5a4c666eb4b0d9039e967d407f4bc7e904fd733';
+ const job={clubPreviewId:f.id,status:'review',failureStage:'storage',failureCategory:'storage_failure',
+  reason:'storage_error',errorHash:hash,copyAndRoleRetry104H:true,checkpoint:'oude-keuring',attempts:2};
+ assert.equal(reopenPreviewStorageFixture104I(job,group,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);assert.equal(job.checkpoint,undefined);
+ const after={...job,status:'review',failureStage:'storage',failureCategory:'storage_failure',reason:'storage_error',errorHash:hash};
+ assert.equal(reopenPreviewStorageFixture104I(after,group,now),false);
+ const base={...after,storageFixtureRetry104I:false};
+ assert.equal(reopenPreviewStorageFixture104I({...base,errorHash:'wrong'},group,now),false);
+ assert.equal(reopenPreviewStorageFixture104I({...base,clubPreviewId:'other'},group,now),false);
+ assert.equal(reopenPreviewStorageFixture104I(base,group,Date.parse(f.date)+1),false);
 });
