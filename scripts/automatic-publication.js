@@ -1517,22 +1517,22 @@ function repairVerifiedClubPreviewForm(draft,facts){
  let body=draft.body.map(x=>String(x||'').trim()).filter(Boolean);
  if(body.length>3){
   const tail=body.slice(2).join(' ');
-  if(tail.split(/\\s+/).length<=120)body=[body[0],body[1],tail];
+  if(tail.split(/\s+/).length<=120)body=[body[0],body[1],tail];
  }
  const proven=facts.join(' ');
  if(/Groningen won de laatste drie ontmoetingen met de Friezen/i.test(proven)){
   body=body.map(p=>p.replace(
-   /FC Groningen won de laatste drie ontmoetingen met de Friezen en kan daarmee (?:zijn|de) langste (?:winst|zege)reeks tegen (?:deze tegenstander|Heerenveen) evenaren\\.?/gi,
+   /FC Groningen won de laatste drie ontmoetingen met de Friezen en kan daarmee (?:zijn|de) langste (?:winst|zege)reeks tegen (?:deze tegenstander|Heerenveen) evenaren\.?/gi,
    'In de drie voorafgaande onderlinge duels kwam Groningen telkens als winnaar uit de strijd. Een nieuwe zege zou evenaring betekenen van de eigen langste succesreeks tegen Heerenveen.'
   ).replace(
-   /FC Groningen won de laatste drie ontmoetingen met de Friezen en kan daarmee (?:een|de) langste (?:winst|zege)reeks tegen deze tegenstander evenaren\\.?/gi,
+   /FC Groningen won de laatste drie ontmoetingen met de Friezen en kan daarmee (?:een|de) langste (?:winst|zege)reeks tegen deze tegenstander evenaren\.?/gi,
    'De drie vorige ontmoetingen met Heerenveen leverden Groningen telkens een overwinning op. Een nieuwe zege zou de langste reeks tegen die club evenaren.'
   ));
  }
  if(/Ringo Meerveld.*(?:154 minuten|154 speelminuten).*vijf doelpunten/i.test(proven)){
   body=body.map(p=>p.replace(
    /Ringo Meerveld in zijn laatste vier competitieduels in slechts 154 minuten betrokken (?:was )?bij vijf doelpunten/gi,
-   'Heerenveen-speler Ringo Meerveld in vier competitieduels gedurende 154 speelminuten een aandeel had in vijf doelpunten'
+   'Ringo Meerveld in vier competitieduels gedurende 154 speelminuten een aandeel had in vijf doelpunten'
   ));
  }
  if(body.length===draft.body.length&&body.every((p,i)=>p===draft.body[i]))return draft;
