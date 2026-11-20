@@ -255,7 +255,7 @@ function repairVerifiedCoachName(draft,facts){
  if(!draft||!Array.isArray(draft.body)||!Array.isArray(facts))return draft;
  const evidence=facts.join(' ');
  if(!/\bCasper Goedkoop\b/i.test(evidence)||!/\bassistent(?:-trainer)?\b/i.test(evidence))return draft;
- const fix=value=>String(value).replace(/\bAssistent-trainer Casper(?:\s+Goedkoop)?\b/g,'Casper Goedkoop');
+ const fix=value=>String(value).replace(/\b(?:Assistent-trainer|Trainer|Hoofdtrainer)\s+(?:Casper(?:\s+Goedkoop)?|Goedkoop)\b/g,'Casper Goedkoop');
  const corrected={...draft,headline:fix(draft.headline),standfirst:fix(draft.standfirst),body:draft.body.map(fix)};
  return JSON.stringify(draft)===JSON.stringify(corrected)?draft:corrected;
 }
