@@ -32,7 +32,7 @@ test('104D: volledig bron- en bestandsgebonden nachtbeeld blijft in catalogus ge
 });
 test('104D: juiste club en preview, geen verslag of andere thuisclub',()=>{
  const match=images.resolve(preview);
- assert.equal(match.article?.imageAssetId,artwork.id);
+ assert.equal(match.article?.imageAssetId,artwork.id,JSON.stringify({assignment:match.assignment,candidate:artwork.id}));
  assert.equal(match.article?.imageReview?.stadiumOccupancy,'empty');
  const away=images.resolve({...preview,fixture:{...preview.fixture,home:{name:'SC Heerenveen'},away:{name:'FC Groningen'}}});
  assert.notEqual(away.article?.imageAssetId,artwork.id);
