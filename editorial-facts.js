@@ -116,6 +116,7 @@
   };
   const grammaticalStatusName=name=>(/^De KNVB$/i.test(name)&&publisher==='KNVB')||
    (/^De UEFA$/i.test(name)&&publisher==='UEFA')||
+   (name==='De UEFA-registraties'&&publisher==='UEFA'&&/^https:\/\/www\.uefa\.com\/uefachampionsleague\/clubs\//.test(sourceName)&&/\bUEFA\b/.test(evidence))||
     (/^In Groep$/i.test(name)&&publisher==='UEFA'&&/\b(?:group|groep|league a)\b/i.test(supported));
   // "In League A" is a Dutch sentence opening, not a player or place.
   // Accept that grammar ONLY for verified UEFA Nations League divisions.
@@ -219,7 +220,9 @@
     payload.sources[0].url:
    payload.articleKind==='announcement'&&['club_decision','association_decision'].includes(payload.primaryAuthority)&&payload.sources?.length===1?
     payload.sources[0].url:'';
-  const issues=evidenceIssues(draft,payload.verifiedFacts||[],match,publisher);
+  const registry=payload.articleKind==='background'&&payload.sources?.find(s=>
+   /^https:\/\/www\.uefa\.com\/uefachampionsleague\/clubs\/(?:players\/)?\d+--[a-z0-9-]+\/(?:squad\/)?$/.test(s?.url||''));
+  const issues=evidenceIssues(draft,payload.verifiedFacts||[],match,publisher||registry?.url||'');
   if(match||(needsMatch(draft)&&!hasOfficialPreviewResult(payload)&&!verifiedUefaCompetitionStatus(payload))){
    if(!match||!String(match.homeTeam||'').trim()||!String(match.awayTeam||'').trim()||normalize(match.homeTeam)===normalize(match.awayTeam)||![match.homeScore,match.awayScore].every(x=>Number.isInteger(x)&&x>=0&&x<=99)||!validDate(match.playedAt))
     issues.push('Wedstrijdverslag: leg thuisploeg, uitploeg, eindstand thuis-uit en wedstrijddatum vast.');

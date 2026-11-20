@@ -30,3 +30,11 @@ Deze bronafspraak is de standaard voor nieuwe redactionele wijzigingen en tests.
 - Concept vooraf door de auteur beoordelen en expliciet goedkeuren; nooit automatisch publiceren.
 - Redactionele toets: concrete wedstrijdvoorbeelden, originele invalshoek, geen herhaling, begrijpelijke taal en relevantie voor de hele Eredivisie.
 - Na vier proefcolumns evalueren op kwaliteit, leestijd en reacties voordat een vaste publicatiefrequentie wordt vastgelegd.
+
+## Onderzoeksroute 102C
+
+VI en VoetbalPrimeur zijn benchmarks voor journalistiek en nieuwsselectie. Flashscore is de referentie voor controleerbare wedstrijdcontext. Clubs en bonden zijn primair voor hun eigen formele besluiten. Gebruik voor wedstrijdgegevens de officiële registratie van UEFA of KNVB, de bestaande Sportmonks-koppeling of aantoonbaar toegestaan Flashscore-materiaal.
+
+Voor deze route leest de scout uitsluitend de aangeboden RSS-omschrijving van VI en VP. Bewaar datum, artikel-URL, aangeleverde auteursvermelding en de bewijsplaats in het interne runrapport. Een kop alleen is een zoekaanwijzing. De uitgever, de auteur en de aangehaalde oorspronkelijke melder kunnen verschillen. Bij onbekende herkomst blijft onafhankelijkheid onbewezen. Een mediamelding onderbouwt uitsluitend wat het medium op die datum rapporteerde. Benoem de concrete tegenspraak en schrijf in eigen woorden. Een spelersregister geeft seizoenscontext. Alleen een afzonderlijk, gebruikt en gedateerd nieuwsfeit draagt de actualiteit.
+
+Gecontroleerd op 20 november 2026. [VI RSS](https://www.vi.nl/pagina/rss-feeds), [VI voorwaarden](https://pxr.nl/voorwaarden-voetbal-international), [VP RSS](https://www.voetbalprimeur.nl/page/rss-feeds), [VP voorwaarden](https://www.voetbalprimeur.nl/pagina/algemene-voorwaarden), [Flashscore voorwaarden](https://www.flashscore.com/terms-of-use/). Deze route kopieert geen artikeltekst naar de feed, opent geen betaalmuur en haalt geen gegevens geautomatiseerd bij Flashscore op.

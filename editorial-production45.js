@@ -19,7 +19,7 @@ function priority(doc) {
  if (/\b(eredivisie|knvb|champions league|europa league|conference league|transfer|trainer)\b/.test(text)) return 3;
  return 2;
 }
-function assess({review, docs, evidenceIssues=[], duplicate=false, copied=false, now=Date.now(), threshold=85, eventDate, eventKickoff}) {
+function assess({review, docs, evidenceIssues=[], duplicate=false, copied=false, now=Date.now(), threshold=85, eventDate, eventKickoff, registerContext=false}) {
  threshold=Math.max(85,Number.isFinite(threshold)?threshold:85);
  const reasons=[]; const scores={};
  for (const key of Object.keys(WEIGHTS)) {
@@ -33,7 +33,10 @@ function assess({review, docs, evidenceIssues=[], duplicate=false, copied=false,
  // event date is the freshness evidence for a preview.
  const event=eventKickoff??Date.parse(eventDate+'T12:00:00Z');
  const upcoming=event>now&&event-now<=8*86400000;
- scores.actuality=Math.min(scores.actuality,upcoming?100:age< -5/60?0:age<=24?100:age<=48?90:age<=72?75:0);
+ // Undated registration is context. Preserve the reviewer's dimension and
+ // independently veto publication until a cited, dated event anchors the story.
+ if(registerContext&&!Number.isFinite(published)&&!upcoming)reasons.push('Gedateerde nieuwsaanleiding ontbreekt bij het UEFA-register.');
+ else scores.actuality=Math.min(scores.actuality,upcoming?100:age< -5/60?0:age<=24?100:age<=48?90:age<=72?75:0);
  if (!review||review.approved!==true||!Array.isArray(review.issues)||review.issues.length) reasons.push('Tweede feitenredacteur heeft geen volledige goedkeuring gegeven.');
  if(evidenceIssues.length) {scores.reliability=0;reasons.push(...evidenceIssues);}
  if(duplicate) {scores.diversity=0;reasons.push('Dubbel onderwerp.');}
