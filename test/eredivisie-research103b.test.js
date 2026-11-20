@@ -130,7 +130,7 @@ test('104C: bewezen vroegere winreeks in preview is geen uitslag van komende wed
  const draft={headline:'Groningen ontvangt Heerenveen na historische reeks',
   standfirst:'Groningen kan de vorige reeks tegen SC Heerenveen evenaren.',
   body:['SC Heerenveen reist met vier opeenvolgende overwinningen naar Groningen.',
-   'De laatste drie onderlinge duels werden door Groningen gewonnen.']};
+   'Groningen won de laatste drie onderlinge duels tegen Heerenveen.']};
  const payload={draft,articleKind:'preview',category:'Eredivisie',fixture:f,
   feedLifecycle:{kind:'preview',expiresAt:f.date},verifiedFacts:facts,
   sources:[{url:club.url},{url:league.url}]};
