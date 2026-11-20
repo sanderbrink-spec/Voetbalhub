@@ -9,13 +9,15 @@ const premium=require('../premium-match-images72');
 const images=require('../image-rotation65');
 const artwork=catalog.assets.find(a=>a.id==='veldio104d-fcgroningen-night-preview');
 const preview={articleKind:'preview',category:'Eredivisie',
- fixture:{id:'sm-104d-check',home:{name:'FC Groningen'},away:{name:'SC Heerenveen'},
+ fixture:{id:'sm-19714591',home:{name:'FC Groningen'},away:{name:'SC Heerenveen'},
  status:'NS',competition:'eredivisie',date:'2026-11-21T20:00:00Z'}};
 
 test('104D: volledig bron- en bestandsgebonden nachtbeeld blijft in catalogus geldig',()=>{
  assert.ok(artwork);
  assert.equal(artwork.approval,'approved');
  assert.equal(artwork.sceneDaypart,'night');
+ assert.equal(artwork.fixtureId,'sm-19714591');
+ assert.equal(artwork.homeClubReusable,false);
  assert.equal(artwork.stadiumOccupancy,'empty');
  assert.equal(artwork.visualReview.assetSha256,artwork.sha256);
  assert.match(artwork.visualReview.reviewer,/AI/);
@@ -34,6 +36,8 @@ test('104D: juiste club en preview, geen verslag of andere thuisclub',()=>{
  assert.equal(match.article?.imageReview?.stadiumOccupancy,'empty');
  const away=images.resolve({...preview,fixture:{...preview.fixture,home:{name:'SC Heerenveen'},away:{name:'FC Groningen'}}});
  assert.notEqual(away.article?.imageAssetId,artwork.id);
+ const anotherFixture=images.resolve({...preview,fixture:{...preview.fixture,id:'sm-19714592'}});
+ assert.notEqual(anotherFixture.article?.imageAssetId,artwork.id);
  const report=images.resolve({...preview,articleKind:'match_report'});
  assert.notEqual(report.article?.imageAssetId,artwork.id);
 });
