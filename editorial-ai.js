@@ -249,6 +249,16 @@ function repairVerifiedDrawStyle(draft,drawBrief){
 class DraftError extends Error {
   constructor(status, message, retryAfter) { super(message); this.status=status; this.retryAfter=retryAfter; }
 }
+// An exact, source-confirmed full name may replace an incomplete hyphenated
+// role-and-given-name label. Never infer a surname or exempt names in audit.
+function repairVerifiedCoachName(draft,facts){
+ if(!draft||!Array.isArray(draft.body)||!Array.isArray(facts))return draft;
+ const evidence=facts.join(' ');
+ if(!/\bCasper Goedkoop\b/i.test(evidence)||!/\bassistent(?:-trainer)?\b/i.test(evidence))return draft;
+ const fix=value=>String(value).replace(/\bAssistent-trainer Casper(?:\s+Goedkoop)?\b/g,'Casper Goedkoop');
+ const corrected={...draft,headline:fix(draft.headline),standfirst:fix(draft.standfirst),body:draft.body.map(fix)};
+ return JSON.stringify(draft)===JSON.stringify(corrected)?draft:corrected;
+}
 function normalizeDraft(text) {
   const cleaned=String(text||'').trim().replace(/^```(?:json)?\s*([\s\S]*?)\s*```$/i,'$1');
   let value;
@@ -457,6 +467,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     const text=data?.choices?.[0]?.message?.content||'';
     const rawDraft=normalizeDraft(text);
     let draft=rawDraft?.skip?rawDraft:attachVerifiedOfficialAttribution(rawDraft,{primaryAuthority,sourceUrls,facts});
+    if(automaticPublication&&clubPreview&&articleKind==='preview'&&!draft?.skip)
+     draft=repairVerifiedCoachName(draft,facts);
     if(automaticPublication&&officialPublisher&&!draft?.skip)
      draft=repairUnsupportedDecisionTimestamp(draft,facts,sourceUrls[0],primaryAuthority);
     if(automaticPublication&&drawBrief&&!draft?.skip)
