@@ -287,14 +287,14 @@ const officialFinalWritingGuide=[
  'Geef alleen JSON met headline (5-14 woorden), standfirst (8-35 woorden) en body met precies drie onderscheiden alinea’s van elk 18-120 woorden en minstens 70 tekens. Geef {"skip":true} als zelfs met andere bewezen details geen drie informatieve alinea’s mogelijk zijn.'
 ].join(' ');
 
-async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],articleKind,primaryAuthority=null,match=null,compact=false,officialFinal=false,officialReaction=false,automaticPublication=false,drawBrief=null}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
+async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadlines=[],articleKind,primaryAuthority=null,match=null,compact=false,officialFinal=false,officialReaction=false,automaticPublication=false,clubPreview=false,drawBrief=null}, {apiKey,model,fetcher=fetch,timeoutMs=25000,router,resume,onProgress=async()=>{}}) {
   // Normal server calls and production share the same provider interface.
   if(!router&&fetcher===fetch)router=require('./editorial-provider-router').createRouter({groqKey:apiKey,timeoutMs});
   const writerFacts=articleKind==='preview'?previewWritingFacts(facts):facts;
   const assignment=articleKind==='preview'?previewAssignment(writerFacts):editorialAssignment(writerFacts,{compact});
   // Parallel evidence-bound news and context desks: the plan is a writing
   // guide only and cannot become an unsourced claim or an approval.
-  const investigation=automaticPublication&&articleKind==='announcement'&&!officialFinal&&!drawBrief?
+  const investigation=automaticPublication&&(articleKind==='announcement'||clubPreview)&&!officialFinal&&!drawBrief?
    buildStoryStrategy(writerFacts,{topic,compact}):null;
   const coachPlan=primaryAuthority==='club_decision'&&String(topic||'').toLocaleLowerCase('nl').includes('hoofdtrainer')&&facts.length>=4;
   const officialPublisher=['club_decision','association_decision'].includes(primaryAuthority)&&sourceUrls.length===1?officialPublisherName(sourceUrls[0]):null;
@@ -374,7 +374,9 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // Number and person inventories are supplied separately so the writer cannot
   // infer dates or staff identities from the current date, title or URL.
   const allowedNumbers=[...new Set(writerFacts.flatMap(f=>String(f).match(/\d+(?:[.,]\d+)?/g)||[]))];
-  if(automaticPublication&&articleKind==='preview'){
+  if(automaticPublication&&clubPreview&&articleKind==='preview'){
+   prompt='Schrijf een zelfstandige Eredivisie-voorbeschouwing. Kies de sterkste met feiten gestaafde invalshoek uit het onderzoeksplan. Gebruik per alinea afzonderlijke feiten uit het clubbericht en het competitiebericht. Parafraseer beide bronnen. Houd verwachtingen en feiten uit elkaar. Geef alleen JSON met headline, standfirst en '+previewStructure+'.';
+  }else if(automaticPublication&&articleKind==='preview'){
    prompt=previewStyle+' Gebruik uitsluitend facts. Als editorialAssignment aanwezig is, reserveer opening uitsluitend voor kop en intro en gebruik firstParagraph en secondParagraph voor precies twee alinea’s van circa twee zinnen. De beschikbare feiten volstaan dan voor die vorm. Beschrijf het concrete eerdere doelpuntenmoment en vervolgens het afzonderlijke recente resultaat en de doelpuntenmaker. Schrijf over de komende wedstrijd in de tegenwoordige of toekomstige tijd. Begin beide alinea’s met de datum van het betreffende eerdere duel als die bewezen is en gebruik voor die duels de verleden tijd. Voeg geen onbewezen datum, helft, precieze minuut, type actie of spelbeeld toe. Gebruik korte idiomatische zinnen zonder woorden als groepstop, meeting of confrontatie. Geef JSON met headline (5-14 woorden), standfirst (8-35 woorden) en '+previewStructure+'.';
   }else if(automaticPublication&&primaryAuthority==='association_decision'&&category==='Nations League'&&
     /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\//.test(sourceUrls[0]||'')&&
