@@ -2241,6 +2241,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   report.counts.eligible++;
   if(draw){
    groups.push(draw);
+   if(draw.profileDiagnostics)
+    report.signals.push({route:'news',topic:doc.title,outcome:'draw_context_source_diagnostics',
+     ...draw.profileDiagnostics,factCount:draw.drawCandidate.facts.length});
    signal.outcome='confirmed_oranje_draw';
    signal.partners=[draw[1].url];
    drawEvidence.set(draw[1].url,doc.url);
