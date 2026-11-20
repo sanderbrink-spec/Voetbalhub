@@ -44,6 +44,16 @@
   // This only selects an article FORMAT; it changes no fact or review gate.
   const briefEligible = payload => {
     const facts=payload?.verifiedFacts;
+    // 102F: the writer and desk must agree on the same short format for
+    // a KNVB/UEFA draw already validated by the separate two-source gate.
+    // This is a format choice, never proof of facts or publication approval.
+    if(payload?.verifiedDrawBrief===true&&payload.articleKind==='announcement'&&
+      !payload.primaryAuthority&&!payload.transferStatus&&
+      Array.isArray(facts)&&facts.length>=4&&facts.length<=8&&
+      payload.sources?.length===2&&
+      /^https:\/\/www\.onsoranje\.nl\/nieuws\/nederlands-elftal-mannen\/\d+\//.test(payload.sources[0]?.url||'')&&
+      /^https:\/\/www\.uefa\.com\/uefanationsleague\/news\//.test(payload.sources[1]?.url||''))
+     return true;
     // An official UEFA status overview can contain ten source sentences but
     // only one meaningful news event. Use a short, selected journalistic angle
     // rather than forcing three repetitive paragraphs from group tables.
