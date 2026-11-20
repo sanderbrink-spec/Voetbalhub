@@ -138,7 +138,18 @@
     return mentioned.length>0&&mentioned.every(([,division])=>
       new RegExp('\\b(?:league '+division+'|group '+division+'[1-4])\\b','i').test(evidence));
   };
-   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!known.includes(normalize(name)));
+   // A sentence-initial role such as "Assistent-trainer Casper Goedkoop"
+  // contains a regex-overlapping false two-word "name" ("Assistent-trainer
+  // Casper"). Do not waive the surname or role evidence: the *complete*
+  // person must occur in the verified facts and the exact role must appear
+  // in the evidence. Unknown or incomplete names remain rejected.
+  const verifiedAssistantTitlePrefix=name=>{
+    const m=/^Assistent-trainer\s+([A-ZÀ-Ý][a-zà-ÿ]+)$/.exec(name);
+    if(!m||!/\bassistent-trainer\b/i.test(evidence))return false;
+    return [...article.matchAll(/\bAssistent-trainer\s+([A-ZÀ-Ý][a-zà-ÿ]+)\s+([A-ZÀ-Ý][a-zà-ÿ]+)\b/g)]
+      .some(full=>full[1]===m[1]&&normalize(evidence).includes(normalize(full[1]+' '+full[2])));
+  };
+  const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!verifiedAssistantTitlePrefix(name)&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
