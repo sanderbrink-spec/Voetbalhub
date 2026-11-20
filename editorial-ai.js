@@ -320,6 +320,22 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Bij onvoldoende feiten: {"skip":true}. Publiceer nooit zelf.'
    ].join(' ');
   }
+  // A third official UEFA profile makes this a sourced football STORY, not
+  // just a two-paragraph fixture list. Standard structure still applies.
+  if(automaticPublication&&drawBrief&&!compact&&drawBrief.plan?.alinea3){
+   prompt=[
+    'Je schrijft een origineel Nederlandstalig voetbalartikel vanuit een gestaafd Oranje-lotingsdossier met KNVB en twee UEFA-documenten.',
+    'Gebruik uitsluitend drawBrief.factCards en het driedelige plan. Bronbewijzen blijven buiten jouw tekst; verzin geen ander voetbalfeit.',
+    'Lever JSON met headline (5-14 woorden), standfirst (8-35 woorden), body met PRECIES drie verschillende alinea’s van 18-120 woorden en minimaal 70 tekens.',
+    'Kop en intro melden de actuele loting en maken duidelijk dat Nederland het opneemt tegen regerend Nations League-winnaar Portugal. De KNVB-lotingsplaats mag uitsluitend in de intro staan.',
+    'Alinea 1: gebruik de bevestigde tweede plaats van Nederland in groep A2 en de groepswinst van Portugal in A4 als sportieve context. Noem Portugese eerdere Nations League-titels uitsluitend indien de betreffende factCard dat bewijst. Geen voorspelling.',
+    'Alinea 2: beschrijf maart 2027 en het feitelijk vastgestelde thuisduel en de return in Portugal. Geen exacte datum of stadion verzinnen.',
+    'Alinea 3: leg uit dat de kwartfinalewinnaar de finaleronde bereikt. De mogelijke halvefinaletegenstander is UITSLUITEND voorwaardelijk, volgens de loting.',
+    'Schrijf één logisch verhaal; herhaal de loting, tegenstander of kwalificatie niet als hoofdfeit in elke alinea.',
+    'Geen opvulzinnen, kale kalenderopsomming, veronderstelde speelwijze of verzonnen citaten. Zeg finaleronde van de Nations League, niet Nations League-finaleronde. Gebruik tweeluik, niet twee-legige confrontatie.',
+    'Bij onvoldoende drie zelfstandige feitenclusters: {"skip":true}. Alle kwaliteitspoorten blijven bindend.'
+   ].join(' ');
+  }
   if(coachPlan&&automaticPublication){
    // Short factual brief replaces the contradictory long generic coaching prompt.
    prompt='Je schrijft als Veldio-journalist een origineel Nederlands nieuwsartikel op basis van uitsluitend verified facts in het gebruikersbericht. '+

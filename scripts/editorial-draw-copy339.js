@@ -30,6 +30,9 @@ function drawWritingBrief(facts) {
  const year=/^The quarter-finals are two-legged ties and take place in March (20\d{2})\.$/u.exec(leg)?.[1];
  if(year && month!=='maart')return null;
  const finals=find(/^Winners advance to the Nations League finals\.$/u);
+ const dutchProfile=find(/^Netherlands.{0,350}How they qualified: Group A2 runners-up$/u);
+ const portugalProfile=find(/^Portugal.{0,350}How they qualified: Group A4 winners(?: Best Nations League performance: Winners \(2018\/19, 2024\/25\))?$/u);
+ if(Boolean(dutchProfile)!==Boolean(portugalProfile))return null;
  const byId = x => 'F' + (facts.indexOf(x) + 1);
  const cards = [
   {id:byId(event),role:'lotingsbesluit',land:'Nederland',tegenstander:opponent,ronde:'kwartfinale',competitie:'Nations League',duels:2},
@@ -41,12 +44,22 @@ function drawWritingBrief(facts) {
  if(titleholder)cards.push({id:byId(titleholder),role:'sportieve inzet',gegeven:opponent+' is de regerend Nations League-winnaar'});
  if(leg)cards.push({id:byId(leg),role:'officiële UEFA-speelperiode',maand:'maart',jaar:Number(year),vorm:'heen- en terugwedstrijd'});
  if(finals)cards.push({id:byId(finals),role:'sportief toernooigevolg',gegeven:'winnaar kwartfinale plaatst zich voor de Nations League-finaleronde'});
+ if(dutchProfile)cards.push({id:byId(dutchProfile),role:'Nederlandse groepsfase',gegeven:'Nederland eindigde als tweede in groep A2'});
+ if(portugalProfile)cards.push({id:byId(portugalProfile),role:'Portugese groepsfase',gegeven:'Portugal won groep A4',
+  ...(portugalProfile.includes('Winners (2018/19, 2024/25)')?{nationsLeagueTitels:['2018/19','2024/25']}: {})});
  if (new Set(cards.map(x=>x.id)).size !== cards.length || cards.length !== facts.length) return null;
  return {
   factCards:cards,
-  plan:{opening:[byId(event),...(titleholder?[byId(titleholder)]:[])],
+  plan:dutchProfile?{
+   opening:[byId(event),...(titleholder?[byId(titleholder)]:[]),byId(drawing)],
+   alinea1:[byId(dutchProfile),byId(portugalProfile)],
+   alinea2:[byId(locations),byId(schedule),...(leg?[byId(leg)]:[])],
+   alinea3:[...(finals?[byId(finals)]:[]),...(semis?[byId(conditional)]:[])]
+  }:{
+   opening:[byId(event),...(titleholder?[byId(titleholder)]:[])],
    alinea1:[byId(locations),byId(schedule),...(leg?[byId(leg)]:[])],
-   alinea2:[byId(drawing),...(semis?[byId(conditional)]:[]),...(finals?[byId(finals)]:[])]},
+   alinea2:[byId(drawing),...(semis?[byId(conditional)]:[]),...(finals?[byId(finals)]:[])]
+  },
   forbiddenInference:['geen exacte speeldatum','geen uitslag','geen automatische halvefinaleplaats','geen zelfbedachte tegenstander']
  };
 }
