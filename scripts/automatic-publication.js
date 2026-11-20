@@ -4,7 +4,7 @@ const crypto=require('node:crypto');
 const M=require('../editorial-desk-model');
 const {hasOfficialPreviewResult}=require('../editorial-facts');
 const {reframeVerifiedStaffPair,reframeVerifiedClubDecision}=require('../editorial-overlap-repair');
-const {officialFinalWritingGuide,repairUnsupportedDecisionTimestamp,generationIssues,createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles}=require('../editorial-ai');
+const {repairVerifiedDrawStyle,officialFinalWritingGuide,repairUnsupportedDecisionTimestamp,generationIssues,createEditorialDraft,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles}=require('../editorial-ai');
 const {fingerprint}=require('../editorial-drafts');
 const brand=require('../brand');
 const config=require('../automatic-editorial.json');
@@ -1188,7 +1188,7 @@ function finalizeCheckedRevision(revised,payload,candidate,docs) {
  if(revised?.skip)return null;
  if(!revised||typeof revised.headline!=='string'||typeof revised.standfirst!=='string'||!Array.isArray(revised.body))
   throw Error('Herschrijving heeft geen geldige artikelstructuur.');
- const draft={headline:revised.headline,standfirst:revised.standfirst,body:revised.body};
+ const draft=payload.verifiedDrawBrief?repairVerifiedDrawStyle({headline:revised.headline,standfirst:revised.standfirst,body:revised.body},drawWritingBrief(payload.verifiedFacts)):{headline:revised.headline,standfirst:revised.standfirst,body:revised.body};
  const sourceUrl=docs?.length===1?docs[0].url:'';
  const primaryAuthority=candidate?.primaryAuthority||'';
  const facts=payload.verifiedFacts||[];
@@ -1343,6 +1343,29 @@ function reopenVerifiedDrawContext343(job,group,now=Date.now()){
     !brief.factCards.some(card=>card.role==='sportief toernooigevolg')||
     validateEvidence(candidate,group,now).length)return false;
  job.drawContextRecovery343=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
+ delete job.reason;delete job.failureStage;delete job.failureCategory;
+ delete job.errorHash;delete job.checkpoint;
+ return true;
+}
+// 344: one exact recovery after a false positive on the verified UEFA
+// finals compound. The terminology is normalized before the unchanged name,
+// evidence, originality, second-review and publication gates.
+function reopenVerifiedDrawName344(job,group,now=Date.now()){
+ const candidate=group?.drawCandidate;
+ const at=Date.parse(group?.[0]?.publishedAt||'');
+ const urls=group?.map(doc=>doc.url).sort();
+ const brief=drawWritingBrief(candidate?.facts?.map(f=>f.text));
+ const previous='Concept na herstel nog niet geschikt: Controleer namen die niet in de aangeleverde feiten staan: Nations League-finaleronde.';
+ if(!job||!candidate||group.length!==2||!Array.isArray(urls)||
+    job.urls?.length!==2||JSON.stringify([...job.urls].sort())!==JSON.stringify(urls)||
+    job.status!=='review'||job.failureStage!=='generation'||
+    job.failureCategory!=='generator_failure'||job.errorHash!==sha(previous)||
+    job.drawNameRecovery344||!Number.isFinite(at)||at>now||
+    now-at>Math.min(config.maxAgeHours,48)*3600000||
+    !brief||!brief.factCards.some(card=>card.role==='sportief toernooigevolg')||
+    validateEvidence(candidate,group,now).length)return false;
+ job.drawNameRecovery344=true;
  job.status='pending';job.attempts=0;job.nextAttemptAt=now;job.updatedAt=now;
  delete job.reason;delete job.failureStage;delete job.failureCategory;
  delete job.errorHash;delete job.checkpoint;
@@ -2370,6 +2393,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    report.signals.push({route:'news',topic:group[0].title,outcome:'verified_draw_conditional_recovery342'});
   if(reopenVerifiedDrawContext343(job,group,now))
    report.signals.push({route:'news',topic:group[0].title,outcome:'verified_draw_context_recovery343'});
+  if(reopenVerifiedDrawName344(job,group,now))
+   report.signals.push({route:'news',topic:group[0].title,outcome:'verified_draw_name_recovery344'});
   if(group.promotionCandidate&&job.status==='review'&&job.reason==='insufficient_verified_facts'&&
      job.failureCategory==='journalistic_rejection'&&!job.promotionAngleRetried){
    job.promotionAngleRetried=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
@@ -3088,4 +3113,4 @@ function publicationFocus(env=process.env){
  return env.FOCUS_SOURCE_URL||pushCommitMessage(env).match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,scoutResearch:r.scoutResearch?{mediaFeeds:r.scoutResearch.mediaFeeds,revision:r.scoutResearch.revision?.afterReview,assessment:r.scoutResearch.review?.assessment}:undefined,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reopenVerifiedDrawContext343,reopenVerifiedDrawConditional342,reopenVerifiedDrawPlan341,reopenVerifiedDrawCopy339,reopenUefaCompetitionTitle99C5,independentReviewEvidenceLedger,reopenFreshPrimaryStoryAfterFormat99C4,promotionFromRoundup,reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reopenVerifiedDrawName344,reopenVerifiedDrawContext343,reopenVerifiedDrawConditional342,reopenVerifiedDrawPlan341,reopenVerifiedDrawCopy339,reopenUefaCompetitionTitle99C5,independentReviewEvidenceLedger,reopenFreshPrimaryStoryAfterFormat99C4,promotionFromRoundup,reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
