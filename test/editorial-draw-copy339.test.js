@@ -113,3 +113,29 @@ test('339: alleen de exacte P1-schrijfblokkade wordt één keer heropend na actu
  conflict.drawCandidate=group.drawCandidate;
  assert.equal(reopenVerifiedDrawCopy339(job(),conflict,at),false);
 });
+
+
+test('339: echt KNVB-patroon uit mislukte P1/102F-run behoudt vijf afzonderlijke bronfeiten',()=>{
+ const productionFacts=[
+  facts[0],
+  'Dat werd vrijdag bepaald tijdens de loting in Nyon, Zwitserland.',
+  'De wedstrijden vinden in maart plaats.',
+  facts[3],
+  facts[4]
+ ];
+ const brief=drawWritingBrief(productionFacts);
+ assert.ok(brief,'correct geverifieerd dossier mag niet stranden vóór de schrijver');
+ assert.equal(brief.factCards.length,5);
+ assert.deepEqual(brief.factCards.map(card=>card.role),
+  ['lotingsbesluit','speelvolgorde','speelperiode','loting','uitsluitend voorwaardelijk vervolg']);
+ assert.equal(brief.factCards.find(card=>card.role==='loting').plaats,'Nyon');
+ assert.equal(brief.factCards.find(card=>card.role==='loting').land,'Zwitserland');
+ assert.equal(brief.factCards.find(card=>card.role==='speelperiode').maand,'maart');
+ assert.deepEqual(brief.plan.alinea1,['F4','F3']);
+ assert.equal(M.briefEligible({articleKind:'announcement',verifiedFacts:productionFacts,
+  verifiedDrawBrief:true,sources}),true);
+ // Preserve closed evidence semantics: changing the factual location or
+ // inserting a new unsupported detail is not a license to publish it.
+ assert.equal(drawWritingBrief([...productionFacts.slice(0,4),
+  'In een eventuele halve finale is Nederland al geplaatst.']),null);
+});
