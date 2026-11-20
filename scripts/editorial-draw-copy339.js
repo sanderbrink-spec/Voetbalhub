@@ -26,7 +26,7 @@ function drawWritingBrief(facts) {
   {id:byId(drawing),role:'loting',dag:draw[1],plaats:draw[2]}
  ];
  if (semis) cards.push({id:byId(conditional),role:'uitsluitend voorwaardelijk vervolg',voorwaarde:'alleen bij bereiken halve finale',tegenstander:'winnaar van '+semis[1]+' tegen '+semis[2]});
- if (new Set(cards.map(x=>x.id)).size !== cards.length) return null;
+ if (new Set(cards.map(x=>x.id)).size !== cards.length || cards.length !== facts.length) return null;
  return {
   factCards:cards,
   plan:{opening:[byId(event)],alinea1:[byId(locations),byId(schedule)],
