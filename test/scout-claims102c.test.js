@@ -45,6 +45,7 @@ test('102D feitelijke tegenspraak moet over dezelfde handeling gaan',()=>{
 test('102D een fout aantal wedstrijden en ongedekt transferakkoord worden geblokkeerd',()=>{
  assert.equal(C.verifiedRegisterCounts('Vier duels, 360 minuten en één assist.',[reg.text]),true);
  assert.equal(C.verifiedRegisterCounts('Vijf duels en 360 minuten.',[reg.text]),false);
+ assert.equal(C.verifiedRegisterCounts('Hij gaf één assist.', ['Assists: 2.']),false);
  assert.equal(C.verifiedRegisterCounts('Hij speelde 365 minuten.',[reg.text]),false);
  assert.ok(C.hardIssue('Volgens VI hebben PSV en Napoli een akkoord bereikt over De Bruyne.',docs,selection));
  assert.ok(C.hardIssue('Volgens VI zou PSV met Napoli een akkoord hebben bereikt over De Bruyne.',docs,selection));
