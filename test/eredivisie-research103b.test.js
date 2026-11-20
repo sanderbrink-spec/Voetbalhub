@@ -3,7 +3,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {research}=require('../scripts/eredivisie-research103b');
-const {validateEvidence,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,reopenReviewedClubPreview104C,plain,overlap}=require('../scripts/automatic-publication');
+const {validateEvidence,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,reopenReviewedClubPreview104C,reopenOverlappingClubPreview104E,plain,overlap}=require('../scripts/automatic-publication');
 const {EditorialQueue}=require('../editorial-production45');
 const factAudit=require('../editorial-facts');
 const deskModel=require('../editorial-desk-model');
@@ -160,4 +160,26 @@ test('104C: alleen exact eerder afgewezen previewdossier krijgt één volledige 
  const other={...job,status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',
   errorHash:'unrelated',reviewedClubPreview104C:false};
  assert.equal(reopenReviewedClubPreview104C(other,group,now),false);
+});
+
+test('104E: uitsluitend exact afgewezen derby-preview krijgt één nieuwe echte schrijfbeoordeling',()=>{
+ const fixture={...f,id:'sm-19714591'};
+ const candidate={kind:'preview',category:'Eredivisie',fixture,kickoff:Date.parse(fixture.date),
+  facts:[1,2,3,4].map(i=>({text:'Gecontroleerd feit '+i,evidence:[{source:0,quote:'Gecontroleerd feit '+i}]}))};
+ const group=Object.assign([club,league],{clubPreview:candidate});
+ assert.equal(preflightArtwork(group,candidate,'FC Groningen – SC Heerenveen').approved,true);
+ const rejection='57ac3e8b2ec9ff951794999b63a8033448661d3316541a82a464c8c337d1d848';
+ const job={clubPreviewId:'sm-19714591',status:'review',failureStage:'quality',
+  failureCategory:'journalistic_rejection',reason:'editorial_review_required',
+  errorHash:rejection,checkpoint:{draft:'stale'},attempts:2};
+ assert.equal(reopenOverlappingClubPreview104E(job,group,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ assert.equal(job.nextAttemptAt,now);assert.equal(job.checkpoint,undefined);
+ assert.equal(reopenOverlappingClubPreview104E({...job,status:'review',failureStage:'quality',
+  failureCategory:'journalistic_rejection',reason:'editorial_review_required',errorHash:rejection},group,now),false);
+ const other={...job,previewRewriteRetry104E:false,status:'review',failureStage:'quality',
+  failureCategory:'journalistic_rejection',reason:'editorial_review_required',errorHash:'unrelated'};
+ assert.equal(reopenOverlappingClubPreview104E(other,group,now),false);
+ assert.equal(reopenOverlappingClubPreview104E({...other,errorHash:rejection},group,Date.parse(fixture.date)+1),false);
+ assert.equal(reopenOverlappingClubPreview104E({...other,errorHash:rejection,clubPreviewId:'different'},group,now),false);
 });
