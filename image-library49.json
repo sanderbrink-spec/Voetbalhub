@@ -3696,6 +3696,63 @@
           "aiNotDocumentary": true
         }
       }
+    },
+    {
+      "id": "veldio104d-fcgroningen-night-preview",
+      "file": "public/stadium74/fcgroningen-night-preview104d.webp",
+      "categories": [
+        "preview"
+      ],
+      "subject": "FC Groningen, voorbeschouwing onder kunstlicht, expliciete niet-documentaire AI-stadionillustratie",
+      "clubs": [
+        "FC Groningen",
+        "*"
+      ],
+      "competitions": [],
+      "daypart": "neutral",
+      "sceneDaypart": "night",
+      "keywords": [
+        "FC Groningen",
+        "groen-wit",
+        "kunstlicht",
+        "avond",
+        "AI-illustratie",
+        "Veldio"
+      ],
+      "variant": "stadium104d-fcgroningen-night-preview",
+      "origin": "OpenAI ImageGen, originele AI-stadionillustratie gegenereerd voor Veldio op 20 november 2026; gen_id ae54c544-17b0-40d4-8b5c-2d6ec1f33a73; originele PNG-SHA256 74836339401fe510069882a22400e8e680ed3859f60a1efdf57b41cd8e982d4e",
+      "rights": "original-ai",
+      "rightsEvidence": "AI-afbeelding in gesprek op opdracht van de eigenaar gegenereerd, zonder invoerfoto of third-party foto; origineel PNG en ingelezen WebP 1672x941 met geverifieerde SHA256. Zichtbaar uitsluitend Veldio-tekst, geen officiële clublogo's, KNVB/Eredivisie-merken, sponsors of personen. Kunstmatig fictief stadion, geen exacte voorstelling van Euroborg.",
+      "approval": "approved",
+      "reviewer": "GPT-6 afzonderlijke visuele QA (AI, geen menselijke audit)",
+      "approvedAt": "2026-11-20",
+      "lastUsed": null,
+      "sha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+      "caption": "AI-illustratie in groen-witte FC Groningen-sfeer onder kunstlicht, geen echte wedstrijdfoto of exacte weergave van Euroborg.",
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "stadiumIdentity": "home:fcgroningen",
+      "homeClubReusable": true,
+      "homeVenueAliases": [],
+      "visualReview": {
+        "score": 8.6,
+        "style": "photorealistic",
+        "assetSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+        "reviewer": "GPT-6 afzonderlijke visuele QA (AI, geen menselijke audit)",
+        "reviewedAt": "2026-11-20",
+        "clubScope": "home-only",
+        "scopeHome": "fcgroningen",
+        "reviewedStadiumIdentity": "home:fcgroningen",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        },
+        "notes": "Visuele beoordeling: geloofwaardig nachtlicht, geheel lege tribunes, groen-witte omgeving, geen andere clubnamen/logo's of sponsors. Stadium is generiek en niet geverifieerd als Euroborg; caption en beeldlabel maken dat expliciet. Score betreft esthetische AI-QA, geen onafhankelijke menselijke stadion- of rechtenaudit."
+      }
     }
   ]
 }
