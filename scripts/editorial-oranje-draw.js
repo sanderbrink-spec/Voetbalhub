@@ -59,23 +59,34 @@ function oranjeDrawGroup(knvb, documents, now) {
       Number.isFinite(Date.parse(doc.publishedAt))&&
       Date.parse(doc.publishedAt)<=now&&
       Date.parse(doc.publishedAt)>=now-config.maxAgeHours*3600000);
+    group.profileDiagnostics={
+      candidateFound:Boolean(contextual),
+      articleCharacters:contextual?.text?.length||0,
+      dutchGroupSeen:Boolean(contextual?.text?.includes('Group A2 runners-up')),
+      portugalGroupSeen:Boolean(contextual?.text?.includes('Group A4 winners'))
+    };
     if(contextual&&opponent==='Portugal'){
       const select=(team,qualification,performance='')=>{
-        const at=contextual.text.indexOf(qualification);
+        // Exact evidence substring, not inferred football status. A country
+        // section can include image captions and link text before the label.
+        const normalized=String(contextual.text||'').replace(/\\s+/gu,' ');
+        const target=qualification.replace(/\\s+/gu,' ');
+        const at=normalized.indexOf(target);
         if(at<0)return '';
-        const prefix=contextual.text.slice(Math.max(0,at-300),at);
+        const prefix=normalized.slice(Math.max(0,at-750),at);
         const index=prefix.lastIndexOf(team);
         if(index<0)return '';
         const from=at-prefix.length+index;
-        const end=at+qualification.length;
-        const suffix=contextual.text.slice(end,end+performance.length);
-        const quote=contextual.text.slice(from,end)+(performance&&suffix===performance?suffix:'');
-        return quote.length>=35&&quote.length<=650?quote:'';
+        const end=at+target.length;
+        const after=normalized.slice(end,end+performance.length);
+        const quote=normalized.slice(from,end)+(performance&&after===performance?after:'');
+        return quote.length>=35&&quote.length<=750?quote:'';
       };
       const dutch=select('Netherlands','How they qualified: Group A2 runners-up');
       const portuguese=select('Portugal','How they qualified: Group A4 winners',
         ' Best Nations League performance: Winners (2018/19, 2024/25)');
       if(dutch&&portuguese){
+        group.profileDiagnostics.attached=true;
         group.push(contextual);
         facts.push({text:dutch,evidence:[{source:2,quote:dutch}]});
         facts.push({text:portuguese,evidence:[{source:2,quote:portuguese}]});

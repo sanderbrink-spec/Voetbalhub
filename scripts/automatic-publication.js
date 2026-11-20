@@ -159,7 +159,13 @@ function extractPage(html,url,responseDate){
   main=html.match(/<div class="Wysiwyg">([\s\S]*?)<\/div>/i)?.[1];
  }
  if(!main)return {url,title,publishedAt,text:''};
- const text=plain(main).slice(0,14000);
+ // The UEFA contenders dossier contains eight long team sections.
+ // Retain complete text when Netherlands and Portugal follow earlier profiles.
+ // Keep the ordinary length cap for all other first-party news.
+ const sourceLimit=host(url)==='uefa.com'&&
+  new URL(url).pathname.startsWith('/uefanationsleague/news/')&&
+  new URL(url).pathname.includes('get-to-know-the-eight')?30000:14000;
+ const text=plain(main).slice(0,sourceLimit);
  if(!publishedAt&&!oranjeArticle){
   const time=main.match(/<time[^>]*datetime=["']([^"']+)["']/i);
   if(time&&Number.isFinite(Date.parse(time[1])))publishedAt=time[1];
@@ -2235,6 +2241,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   report.counts.eligible++;
   if(draw){
    groups.push(draw);
+   if(draw.profileDiagnostics)
+    report.signals.push({route:'news',topic:doc.title,outcome:'draw_context_source_diagnostics',
+     ...draw.profileDiagnostics,factCount:draw.drawCandidate.facts.length});
    signal.outcome='confirmed_oranje_draw';
    signal.partners=[draw[1].url];
    drawEvidence.set(draw[1].url,doc.url);
