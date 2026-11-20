@@ -43,6 +43,8 @@ function cleanPayload(value={}){
   ...(Number.isInteger(value.journalismScore) ? {journalismScore:value.journalismScore} : {}),
   ...(Number.isInteger(value.reliabilityScore) ? {reliabilityScore:value.reliabilityScore} : {}),
   ...(value.primaryAuthority ? {primaryAuthority:String(value.primaryAuthority).slice(0,30)} : {}),
+  // Re-evaluated by the desk after cleaning and again at /publish.
+  ...(value.verifiedDrawBrief===true ? {verifiedDrawBrief:true} : {}),
   ...(value.feedLifecycle ? {feedLifecycle:require('./feed-policy').publicationLifecycle(value.feedLifecycle)} : {}),
   ...(evidence && typeof evidence.url==='string' && typeof evidence.text==='string' ? {matchEvidence:{
    url:evidence.url.slice(0,1500),publishedAt:String(evidence.publishedAt||'').slice(0,100),
