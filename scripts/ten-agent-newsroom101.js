@@ -50,7 +50,9 @@ function articleUrl(value,source){
   if(u.protocol!=='https:'||u.username||u.password||u.port)return null;
   if(!source.articleHosts.includes(u.hostname.toLowerCase().replace(/^www\./,'')))return null;
   if(!/^\/(?:nieuws\/|artikel\/|pro\/)/i.test(u.pathname)&&source.id!=='nos')return null;
-  if(source.id==='nos'&&!/^\/artikel\/\d+/.test(u.pathname))return null;
+  // NOS RSS also links to genuine short news URLs (/l/1234567). These are
+  // discovery signals only, never proof or automatic permission to publish.
+  if(source.id==='nos'&&!(/^\/artikel\/\d+/.test(u.pathname)||/^\/l\/\d+\/?$/.test(u.pathname)))return null;
   return u.origin+u.pathname;
  }catch{return null;}
 }
@@ -84,10 +86,14 @@ function sharedStory(a,b){
  const A=normalize(a.title),B=normalize(b.title);
  const anchor=entities.filter(entity=>new RegExp('(?:^| )'+entity.replace(' ','\\s+')+'(?: |$)').test(A)&&
   new RegExp('(?:^| )'+entity.replace(' ','\\s+')+'(?: |$)').test(B));
- if(anchor.length>=2)return true;
+ // Two club names are not enough to establish one event. This previously
+ // merged unrelated Ajax/Feyenoord stories. A shared named person remains a
+ // strong anchor, while club-only stories need distinctive matching details.
+ const namedPerson=anchor.some(entity=>['bruyne','romano'].includes(entity));
+ if(anchor.length>=2&&namedPerson)return true;
  const stop=new Set('transfer mogelijk gerucht geruchten heeft naar voor over deze volgens meldt club speler nieuwe maakt interesse zou zouden gesprek gesprekken onderhandelt onderhandelingen bod biedt bieding wil gaan kijkt bekijkt naar haar zijn worden wordt hebben met van een nieuws geen sprake niet waar de het aan uit ook bij in op dat dit wie wat welke welke dit er en of the and football confirmed report reports'.split(' '));
  const words=s=>new Set(s.split(' ').filter(t=>t.length>=4&&!stop.has(t)));
- const left=words(A),right=words(B),overlap=[...left].filter(t=>right.has(t));
+ const left=words(A),right=words(B),overlap=[...left].filter(t=>right.has(t)&&!entities.includes(t));
  return anchor.length>=1&&overlap.length>=2;
 }
 function classifyLeads(leads){
@@ -179,6 +185,7 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
  gathered.forEach((r,i)=>r.status==='fulfilled'?incoming.push(...r.value):
   errors.push({source:FEEDS[i].id,error:String(r.reason?.message||'feed_unavailable').slice(0,90)}));
  const byId=new Map(incoming.map(lead=>[lead.id,lead]));
+ const duplicateSignals=incoming.length-byId.size;
  const classified=classifyLeads([...byId.values()].map(({passage,byline,...lead})=>lead));
  const existing=new Map((state.leads||[]).map(x=>[x.id,x]));
  const newLeads=classified.leads.filter(x=>!existing.has(x.id));
@@ -220,6 +227,11 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   status:errors.length===FEEDS.length?'all_sources_unavailable':'monitoring',
   version:101,at:new Date(now).toISOString(),agents:matched,
   feedsOk:FEEDS.length-errors.length,feedErrors:errors,signals:classified.leads.length,
+  duplicateSignals,
+  feedStats:FEEDS.map((feed,i)=>({source:feed.id,
+   accepted:gathered[i].status==='fulfilled'?gathered[i].value.length:0,
+   new:gathered[i].status==='fulfilled'?gathered[i].value.filter(lead=>newLeads.some(n=>n.id===lead.id)).length:0,
+   error:gathered[i].status==='rejected'?String(gathered[i].reason?.message||'feed_unavailable').slice(0,90):null})),
   newSignals:newLeads.length,groups:classified.groups.length,
   multiOutletSignals:classified.groups.filter(g=>g.outlets.length>=2).length,
   rumourGroups:classified.groups.filter(g=>g.rumour).length,

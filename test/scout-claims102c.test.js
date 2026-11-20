@@ -30,9 +30,27 @@ test('102C juiste attributie en bronketen, geen overname of tweede bevestiging',
 });
 test('102C tegenstrijdige VI/VP/ED-berichten vereisen beide bewijsplaatsen',()=>{
  const text='VI meldt belangstelling van PSV, terwijl VoetbalPrimeur het Eindhovens Dagblad citeert over het ontkende gesprek.';
- assert.deepEqual(review(text,C.types.conflict,[1,2],'Eindhovens Dagblad').issues,[]);
+ assert.ok(review(text,C.types.conflict,[1,2],'Eindhovens Dagblad').issues.length,
+  'Belangstelling en een ontkend gesprek zijn niet per definitie tegenspraak');
+ assert.deepEqual(review(text,C.types.media,[1,2],'Eindhovens Dagblad').issues,[]);
  assert.ok(review(text,C.types.conflict,[2],'Eindhovens Dagblad').issues.length);
 });
+test('102D feitelijke tegenspraak moet over dezelfde handeling gaan',()=>{
+ const positive={...vi,text:'Mounir Boualin meldt dat PSV in gesprek is met Kevin De Bruyne.'};
+ const negative={...vp,text:'Volgens het Eindhovens Dagblad ontkent PSV een gesprek met Kevin De Bruyne.'};
+ assert.equal(C.verifiedConflict([positive,negative]),true);
+ assert.equal(C.verifiedConflict([vi,vp]),false);
+ assert.equal(C.verifiedConflict([positive,{...negative,url:'https://www.vi.nl/nieuws/a'}]),false);
+});
+test('102D een fout aantal wedstrijden en ongedekt transferakkoord worden geblokkeerd',()=>{
+ assert.equal(C.verifiedRegisterCounts('Vier duels, 360 minuten en één assist.',[reg.text]),true);
+ assert.equal(C.verifiedRegisterCounts('Vijf duels en 360 minuten.',[reg.text]),false);
+ assert.equal(C.verifiedRegisterCounts('Hij gaf één assist.', ['Assists: 2.']),false);
+ assert.equal(C.verifiedRegisterCounts('Hij speelde 365 minuten.',[reg.text]),false);
+ assert.ok(C.hardIssue('Volgens VI hebben PSV en Napoli een akkoord bereikt over De Bruyne.',docs,selection));
+ assert.ok(C.hardIssue('Volgens VI zou PSV met Napoli een akkoord hebben bereikt over De Bruyne.',docs,selection));
+});
+
 test('102C gerucht blijft toegeschreven, verzonnen bedragen en bevestigingen vallen af',()=>{
  assert.ok(C.hardIssue('De transfer is rond.',docs,selection));
  assert.ok(C.hardIssue('Volgens VI heeft PSV twaalf miljoen euro geboden.',docs,selection));
