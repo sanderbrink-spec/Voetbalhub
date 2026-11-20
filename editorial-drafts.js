@@ -17,10 +17,28 @@ function cleanPayload(value={}){
  const d=value.draft||{};
  const evidence=value.matchEvidence;
  const officialFinal=value.officialFinalProof;
- const fixture=value.articleKind==='preview'&&/^uefa-\d+$/.test(value.fixture?.id||'')?value.fixture:null;
+ const incomingFixture=value.fixture;
+ const uefaPreview=value.articleKind==='preview'&&/^uefa-\d+$/.test(incomingFixture?.id||'');
+ // The newsroom verifies the fixture before writing; do not erase an NS
+ // Eredivisie fixture when saving its approved preview. Without this record,
+ // the shared fact gate mistakes historical winning streaks for the *future*
+ // final score and demands match-report fields.
+ const clubPreview=value.articleKind==='preview'&&/^sm-\d+$/.test(incomingFixture?.id||'')&&
+  incomingFixture.competition==='eredivisie'&&incomingFixture.status==='NS'&&
+  typeof incomingFixture.home?.name==='string'&&incomingFixture.home.name.trim()&&
+  typeof incomingFixture.away?.name==='string'&&incomingFixture.away.name.trim()&&
+  /^20\d\d-\d\d-\d\dT/.test(String(incomingFixture.date||''))&&
+  Number.isFinite(Date.parse(incomingFixture.date));
+ const fixture=(uefaPreview||clubPreview)?incomingFixture:null;
  return {
   draft:{headline:String(d.headline||'').trim().slice(0,200),standfirst:String(d.standfirst||'').trim().slice(0,700),body:Array.isArray(d.body)?d.body.filter(x=>typeof x==='string').map(x=>x.trim().slice(0,6000)).filter(Boolean).slice(0,5):[],why_it_matters:String(d.why_it_matters||'').slice(0,1000)},
-  ...(fixture ? {fixture:{
+  ...(fixture ? {fixture:clubPreview?{
+   id:fixture.id,competition:'eredivisie',status:'NS',
+   date:String(fixture.date).slice(0,35),
+   home:{name:String(fixture.home.name).trim().slice(0,100)},
+   away:{name:String(fixture.away.name).trim().slice(0,100)},
+   round:String(fixture.round||'').slice(0,60)
+  }:{
    id:fixture.id,homeTeam:String(fixture.homeTeam||'').trim().slice(0,100),
    awayTeam:String(fixture.awayTeam||'').trim().slice(0,100),
    date:String(fixture.date||'').slice(0,30),venueName:String(fixture.venueName||'').trim().slice(0,150)
