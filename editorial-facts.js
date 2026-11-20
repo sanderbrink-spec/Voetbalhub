@@ -22,7 +22,18 @@
  const blocks=d=>[d?.headline,d?.standfirst,...(Array.isArray(d?.body)?d.body:[])].filter(Boolean);
  const text=d=>blocks(d).join(' ');
  const scores=value=>[...String(value||'').matchAll(/(?<![\d-])\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b(?![-–]\d)/g)].map(m=>Number(m[1])+'-'+Number(m[2]));
- const needsMatch=d=>scores(text(d)).length>0||/\b(?:verslaat|versloeg|gelijkspel|puntendeling|eindstand|ruststand)\b/i.test(text(d))||(/\b(?:wint|won|overwinning)\b/i.test(text(d))&&/\b(?:wedstrijd|duel|speelronde|slotfase|eredivisie|competitie)\b/i.test(text(d)));
+ // A conditional future qualification is not a played match. In particular,
+ // "als Oranje de kwartfinale wint" must not demand a final score and scorers.
+ // This exemption changes only that hypothetical clause; actual winning,
+ // scores, standings and match-result assertions stay subject to full audit.
+ const withoutConditionalQualification=value=>String(value||'')
+  .replace(/\b(?:als|wanneer|indien)\s+(?:Oranje|Nederland)\s+de kwartfinale wint\b/gi,'[voorwaardelijk vervolg]');
+ const needsMatch=d=>{
+  const prose=withoutConditionalQualification(text(d));
+  return scores(prose).length>0||
+   /\b(?:verslaat|versloeg|gelijkspel|puntendeling|eindstand|ruststand)\b/i.test(prose)||
+   (/\b(?:wint|won|overwinning)\b/i.test(prose)&&/\b(?:wedstrijd|duel|speelronde|slotfase|eredivisie|competitie|kwartfinale)\b/i.test(prose));
+ };
  const validDate=value=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(value||''))return false;const d=new Date(value+'T12:00:00Z');return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===value;};
  function evidenceIssues(draft,facts=[],match=null,sourceName=''){
   const article=text(draft),evidence=facts.filter(x=>typeof x==='string').join(' '),issues=[];
