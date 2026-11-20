@@ -2,7 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {drawWritingBrief}=require('../scripts/editorial-draw-copy339');
-const {reviseDraft,overlapPhrases,reopenVerifiedDrawCopy339,reopenVerifiedDrawPlan341}=require('../scripts/automatic-publication');
+const {reviseDraft,overlapPhrases,reopenVerifiedDrawCopy339,reopenVerifiedDrawPlan341,reopenVerifiedDrawConditional342}=require('../scripts/automatic-publication');
 const {oranjeDrawGroup}=require('../scripts/editorial-oranje-draw');
 const {cleanPayload}=require('../editorial-drafts');
 const crypto=require('node:crypto');
@@ -172,4 +172,50 @@ test('341: alleen live geverifieerde twee-bronnen-loting mag na exact softwarefo
  const wrong=[group[0],{...group[1],text:'Geen KNVB/UEFA bevestiging'}];
  wrong.drawCandidate=group.drawCandidate;
  assert.equal(reopenVerifiedDrawPlan341(newJob(),wrong,now),false);
+});
+
+test('342: de werkelijke tweede herstelversie wordt niet behandeld als gespeeld wedstrijdverslag',()=>{
+ const lastRevised={
+  headline:'Oranje trekt kwartfinale tegen Portugal in Nations League',
+  standfirst:'De loting bevestigt dat Nederland in maart thuis speelt tegen Portugal, met de terugkeer in Portugal in dezelfde maand.',
+  body:[
+   'In de kwartfinale speelt Oranje eerst thuis tegen Portugal, waarna de return-wedstrijd in Portugal plaatsvindt; beide duels staan gepland voor de maand maart.',
+   'De loting vond vrijdag plaats in Nyon, Zwitserland; een eventuele halve finale is alleen mogelijk als Oranje de kwartfinale wint, waarbij de tegenstander de winnaar van de confrontatie Spanje-Frankrijk wordt.'
+  ]
+ };
+ const payload={draft:lastRevised,verifiedFacts:facts,articleKind:'announcement',
+  category:'Nations League',verifiedDrawBrief:true,sources,
+  editorialChecks:{originalSourceReviewed:true,claimsIndependentlyChecked:true,
+   duplicateChecked:true,languageChecked:true}};
+ assert.equal(M.needsMatch(lastRevised),false);
+ const reasons=M.publicationIssues(payload).join(' | ');
+ assert.doesNotMatch(reasons,/Wedstrijdverslag:|Feitencontrole ontbreekt:/);
+ assert.equal(M.needsMatch({...lastRevised,
+  body:[...lastRevised.body,'Oranje heeft Portugal met 2-0 verslagen.']}),true);
+});
+
+test('342: uitsluitend exact bewijsgebonden fout krijgt één nieuwe productieherstelpoging',()=>{
+ const now=Date.parse('2026-11-20T16:00:00Z');
+ const n={url:knvb,title:candidate.topic,publishedAt:'2026-11-20T12:00:00Z',
+  text:facts.join(' ')};
+ const u={url:uefa,title:'UEFA draw',publishedAt:'2026-11-20T12:10:00Z',
+  text:'Knockout stage draw results Quarter-final ties Germany vs Belgium Netherlands vs Portugal The quarter-finals are two-legged ties in March.'};
+ const group=oranjeDrawGroup(n,[u],now);
+ assert.ok(group?.drawCandidate);
+ const reason='Kwaliteitscontrole na 2 herschrijvingen: Wedstrijdverslag: leg thuisploeg, uitploeg, eindstand thuis-uit en wedstrijddatum vast. Feitencontrole ontbreekt: eindstand en thuis-uit. Feitencontrole ontbreekt: namen en clubs. Feitencontrole ontbreekt: datum en weekdag. Feitencontrole ontbreekt: wedstrijdverloop en doelpuntenmakers. Niet-geverifieerde wedstrijdclaim.';
+ const digest=crypto.createHash('sha256').update(reason).digest('hex');
+ const freshJob=()=>({status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',
+  errorHash:digest,urls:[knvb,uefa],checkpoint:{rejectedCopy:true}});
+ const j=freshJob();
+ assert.equal(reopenVerifiedDrawConditional342(j,group,now),true);
+ assert.equal(j.status,'pending');
+ assert.equal(j.checkpoint,undefined);
+ assert.equal(j.drawConditionalRecovery342,true);
+ assert.equal(reopenVerifiedDrawConditional342(j,group,now),false);
+ assert.equal(reopenVerifiedDrawConditional342({...freshJob(),status:'published'},group,now),false);
+ assert.equal(reopenVerifiedDrawConditional342({...freshJob(),errorHash:'0'.repeat(64)},group,now),false);
+ assert.equal(reopenVerifiedDrawConditional342(freshJob(),group,now+72*3600000),false);
+ const bogus=[group[0],{...group[1],text:'Geen loting in de UEFA tekst'}];
+ bogus.drawCandidate=group.drawCandidate;
+ assert.equal(reopenVerifiedDrawConditional342(freshJob(),bogus,now),false);
 });
