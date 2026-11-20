@@ -233,15 +233,15 @@
      !Array.isArray(payload.verifiedFacts)||payload.verifiedFacts.length<4||
      !Array.isArray(payload.sources)||payload.sources.length!==2)return false;
   let domains;
-  try{domains=payload.sources.map(s=>new URL(s.url).hostname.replace(/^www\\./,''));}
+  try{domains=payload.sources.map(s=>new URL(s.url).hostname.replace(/^www\./,''));}
   catch{return false;}
   if(new Set(domains).size!==2||!domains.includes('eredivisie.nl')||
      domains.some(d=>!d||d==='flashscore.nl'))return false;
   const facts=payload.verifiedFacts.join(' '),prose=text(payload.draft);
-  if(!/\\b(?:won|gewonnen|overwinningen|zeges)\\b/i.test(facts)||
-     !/\\b(?:vorige|laatste|eerder|onderlinge|reeks|opeenvolgende|voorgaande)\\b/i.test(prose)||
+  if(!/\b(?:won|gewonnen|overwinningen|zeges)\b/i.test(facts)||
+     !/\b(?:vorige|laatste|eerder|onderlinge|reeks|opeenvolgende|voorgaande)\b/i.test(prose)||
      scores(prose).length||
-     /\\b(?:eindstand|ruststand|uitslag|scoreverloop|doelpuntenmakers|versloeg|verslaat)\\b/i.test(prose))return false;
+     /\b(?:eindstand|ruststand|uitslag|scoreverloop|doelpuntenmakers|versloeg|verslaat)\b/i.test(prose))return false;
   return true;
  }
  function audit(payload){
