@@ -2,7 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {drawWritingBrief}=require('../scripts/editorial-draw-copy339');
-const {reviseDraft,overlapPhrases,reopenVerifiedDrawCopy339}=require('../scripts/automatic-publication');
+const {reviseDraft,overlapPhrases,reopenVerifiedDrawCopy339,reopenVerifiedDrawPlan341}=require('../scripts/automatic-publication');
 const {oranjeDrawGroup}=require('../scripts/editorial-oranje-draw');
 const {cleanPayload}=require('../editorial-drafts');
 const crypto=require('node:crypto');
@@ -138,4 +138,38 @@ test('339: echt KNVB-patroon uit mislukte P1/102F-run behoudt vijf afzonderlijke
  // inserting a new unsupported detail is not a license to publish it.
  assert.equal(drawWritingBrief([...productionFacts.slice(0,4),
   'In een eventuele halve finale is Nederland al geplaatst.']),null);
+});
+
+test('341: alleen live geverifieerde twee-bronnen-loting mag na exact softwarefout eenmaal opnieuw',()=>{
+ const now=Date.parse('2026-11-20T16:00:00Z');
+ const realFacts=[
+  facts[0],
+  'Dat werd vrijdag bepaald tijdens de loting in Nyon, Zwitserland.',
+  'De wedstrijden vinden in maart plaats.',
+  facts[3],facts[4]
+ ];
+ const n={url:knvb,title:candidate.topic,publishedAt:'2026-11-20T12:00:00Z',
+  text:realFacts.join(' ')};
+ const u={url:uefa,title:'UEFA Nations League draw',publishedAt:'2026-11-20T12:10:00Z',
+  text:'Knockout stage draw results Quarter-final ties Germany vs Belgium Netherlands vs Portugal The quarter-finals are two-legged ties in March.'};
+ const group=oranjeDrawGroup(n,[u],now);
+ assert.ok(group?.drawCandidate);
+ const previous='Geverifieerd lotingsdossier mist een controleerbaar zelfstandig feitenplan.';
+ const digest=crypto.createHash('sha256').update(previous).digest('hex');
+ const newJob=()=>({status:'review',failureStage:'verification',
+  failureCategory:'journalistic_rejection',errorHash:digest,
+  urls:[knvb,uefa],checkpoint:{oldRejectedDraft:true}});
+ const job=newJob();
+ assert.equal(reopenVerifiedDrawPlan341(job,group,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.drawPlanRecovery341,true);
+ assert.equal(job.checkpoint,undefined);
+ assert.equal(reopenVerifiedDrawPlan341(job,group,now),false);
+ assert.equal(reopenVerifiedDrawPlan341({...newJob(),status:'published'},group,now),false);
+ assert.equal(reopenVerifiedDrawPlan341({...newJob(),errorHash:'0'.repeat(64)},group,now),false);
+ assert.equal(reopenVerifiedDrawPlan341({...newJob(),failureStage:'quality'},group,now),false);
+ assert.equal(reopenVerifiedDrawPlan341(newJob(),group,now+72*3600000),false);
+ const wrong=[group[0],{...group[1],text:'Geen KNVB/UEFA bevestiging'}];
+ wrong.drawCandidate=group.drawCandidate;
+ assert.equal(reopenVerifiedDrawPlan341(newJob(),wrong,now),false);
 });
