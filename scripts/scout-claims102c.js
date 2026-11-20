@@ -48,7 +48,7 @@ function sentences(draft){
 const confirmation=/\b(?:tekent bij|heeft getekend|transfer is (?:rond|bevestigd)|(?:overstap|komst) (?:is|staat) vast|is (?:definitief )?rond|officialiseert|heeft .* vastgelegd|geen (?:officiële )?bevestiging|niet (?:officieel )?bevestigd door|nergens bevestigd)\b/i;
 const transfer=/\b(?:transfer\w*|overstap|gesprek\w*|belangstelling|interesse|onderhandel\w*|bieding|akkoord|geboden|openingsbod|vraagprijs|miljoen|euro)\b/i;
 const attribution=/\b(?:volgens|meld\w*|ontkent|ontkracht|schr(?:ijft|eef)|bericht\w*|rapporte\w*|citeert|aldus|tekent op|leest|signaleert|noemt|beschrijft)\b/i;
-const agreement=/\b(?:akkoord bereikt|persoonlijk akkoord|deal (?:is )?rond|contract (?:is )?getekend|handtekening gezet|contract gesloten|transfer afgerond)\b/i;
+const agreement=/\b(?:akkoord (?:hebben |heeft |is |zijn )?bereikt|persoonlijk akkoord|deal (?:is )?rond|contract (?:is )?getekend|handtekening gezet|contract gesloten|transfer afgerond)\b/i;
 const amount=/€\s*[\d.,]+|(?:\d+(?:[.,]\d+)?|[\p{L}]+)(?:\s+(?:en een half|en een halve))?\s+(?:miljoen|miljard|ton|euro)\b/giu;
 function hardIssue(text,docs,selection){
  if(/\b(?:onafhankelijke (?:bronnen|meldingen|bevestigingen)|onafhankelijk van elkaar|los van elkaar)\b/i.test(text))return 'Onafhankelijkheid van de oorspronkelijke melders is niet aangetoond.';
@@ -101,7 +101,7 @@ function verifiedRegisterCounts(text,quotes){
  const raw=quotes.join(' ');
  const sourceNumbers=new Set([...raw.matchAll(/\b\d+\b/g)].map(m=>Number(m[0])));
  const numberWords={een:1,eén:1,één:1,twee:2,drie:3,vier:4,vijf:5,zes:6,zeven:7,acht:8,negen:9,tien:10};
- const claims=[...text.matchAll(/\b(\d+|één|eén|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien)\s+(?:wedstrijden|duels|minuten|assists?|doelpunten)\b/giu)];
+ const claims=[...text.matchAll(/(?<![\p{L}\d])(\d+|één|eén|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien)\s+(?:wedstrijden|duels|minuten|assists?|doelpunten)\b/giu)];
  return claims.every(m=>sourceNumbers.has(/^\d+$/.test(m[1])?Number(m[1]):numberWords[m[1].toLocaleLowerCase('nl')]));
 }
 
