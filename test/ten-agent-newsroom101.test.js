@@ -26,6 +26,24 @@ test('101 RSS intake takes headline, publisher and URL only, never copied articl
  assert.equal(N.parseFeed(rss('PSV gelooft in een versterking','https://attacker.example/nieuws/psv'),feed,now).length,0);
  assert.equal(N.parseFeed(rss('PSV bevestigt volgend seizoen','https://www.vi.nl/nieuws/old','Sun, 15 Nov 2026 11:00:00 GMT'),feed,now).length,0);
 });
+test('102D NOS /l/-shortlinks zijn geldige signalen maar geen willekeurige redirects',()=>{
+ const nos=N.FEEDS.find(f=>f.id==='nos');
+ assert.equal(N.articleUrl('https://nos.nl/l/2601234?utm_source=rss',nos),'https://nos.nl/l/2601234');
+ assert.equal(N.parseFeed(rss('Ajax komt met selectie-update','https://nos.nl/l/2601234'),nos,now).length,1);
+ assert.equal(N.articleUrl('https://nos.nl/l/2601234/evil',nos),null);
+ assert.equal(N.articleUrl('https://nos.nl/l/2601234@evil.example',nos),null);
+ assert.equal(N.articleUrl('https://wrong.example/l/2601234',nos),null);
+});
+test('102D twee bekende clubnamen zonder gedeeld concreet verhaal worden niet samengevoegd',()=>{
+ const a={id:'a',title:'Ajax en Feyenoord betrokken bij rechtszaak over oud contract',publisher:'vi',url:'https://www.vi.nl/nieuws/a'};
+ const b={id:'b',title:'Feyenoord en Ajax publiceren opstellingen voor bekerduel',publisher:'vp',url:'https://www.voetbalprimeur.nl/nieuws/b'};
+ assert.equal(N.sharedStory(a,b),false);
+ assert.equal(N.classifyLeads([a,b]).groups.length,2);
+ const c={id:'c',title:'Ajax en Feyenoord treffen elkaar in halve finale KNVB beker',publisher:'vi',url:'https://www.vi.nl/nieuws/c'};
+ const d={id:'d',title:'Feyenoord en Ajax bevestigen halve finale KNVB beker',publisher:'vp',url:'https://www.voetbalprimeur.nl/nieuws/d'};
+ assert.equal(N.sharedStory(c,d),true);
+});
+
 test('101 multiple outlets about De Bruyne / PSV signal a rumor, never confirmed transfer',()=>{
  const leads=[
   {id:'a',url:'https://www.vi.nl/nieuws/a',title:'PSV onderzoekt transfer van Kevin De Bruyne',publisher:'vi',publishedAt:new Date(now).toISOString()},
@@ -61,6 +79,11 @@ test('101 scanner continues on feed outage, persists dedup and scans all ten bea
  };
  const one=await N.scan({fetcher:f,now,runAI:false});
  assert.equal(one.report.feedsOk,2);
+ assert.equal(one.report.duplicateSignals,0);
+ assert.equal(one.report.feedStats.length,3);
+ assert.equal(one.report.feedStats.find(f=>f.source==='vi').accepted,1);
+ assert.equal(one.report.feedStats.find(f=>f.source==='vp').new,1);
+ assert.ok(one.report.feedStats.find(f=>f.source==='nos').error);
  assert.equal(one.report.feedErrors.length,1);
  assert.equal(one.report.newSignals,2);
  assert.equal(one.report.rumourGroups,1);
