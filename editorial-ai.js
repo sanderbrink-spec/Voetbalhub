@@ -373,7 +373,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   }
   const isOfficialFinal=automaticPublication&&officialFinal&&articleKind==='announcement'&&!primaryAuthority;
   if(isOfficialFinal)prompt=officialFinalWritingGuide;
-   if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority&&!officialFinal){
+   if(automaticPublication&&articleKind==='announcement'&&!primaryAuthority&&!officialFinal&&!drawBrief){
    prompt='Schrijf een origineel Nederlands voetbalnieuwsbericht uitsluitend uit facts. Leg het nieuws eenmaal uit in de intro. Verdeel de body in exact drie alinea’s. Gebruik voor elke alinea een ander bewezen thema. Bij een afmelding kan dat de concreet gemelde aanleiding, het besluit van de bond voor de komende interlands en de afzonderlijk gemelde clubplanning zijn. Zet de terugkeer alleen in de intro. Vermijd herhaling, ook in andere woorden. Schrijf alleen wat een bron concreet heeft bevestigd. Gebruik bij een verschil tussen de bronnen expliciete toeschrijving en vermijd relatieve termen zoals morgen. Verzin geen intentie, prognose, herstelduur, beoordeling of gevolg. Schrijf alleen headline (5-14 woorden), standfirst (8-35 woorden) en '+standardStructure+' als JSON. Geef skip bij onvoldoende verschillende feiten.';
   }
   if(automaticPublication&&officialReaction){
