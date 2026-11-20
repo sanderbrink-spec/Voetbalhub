@@ -2,7 +2,10 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {drawWritingBrief}=require('../scripts/editorial-draw-copy339');
-const {reviseDraft,overlapPhrases}=require('../scripts/automatic-publication');
+const {reviseDraft,overlapPhrases,reopenVerifiedDrawCopy339}=require('../scripts/automatic-publication');
+const {oranjeDrawGroup}=require('../scripts/editorial-oranje-draw');
+const {cleanPayload}=require('../editorial-drafts');
+const crypto=require('node:crypto');
 const {createEditorialDraft}=require('../editorial-ai');
 const M=require('../editorial-desk-model');
 
@@ -73,4 +76,40 @@ test('339: herstelschrijver ontvangt geen oude bronkopie, geen bronpassages en b
  assert.equal(user.drawBrief.factCards.length,5);
  const content=JSON.stringify(user);
  for(const line of facts)assert.ok(!content.includes(line));
+});
+
+test('339: de goedgekeurde conceptopslag bewaart hetzelfde compacte format voor de servercontrole',()=>{
+ const draft={headline:'Oranje treft Portugal in kwartfinale van de Nations League',
+  standfirst:'De KNVB meldt dat Nederland na de loting tweemaal tegenover Portugal staat.',
+  body:['De eerste ontmoeting is in Nederland, terwijl Portugal daarna gastheer is. Beide duels staan voor maart op het programma.',
+        'De loting vond vrijdag in Nyon plaats. Pas bij het bereiken van de halve finale komt de winnaar van Spanje tegen Frankrijk in beeld.']};
+ const p=cleanPayload({draft,articleKind:'announcement',verifiedFacts:facts,sources,
+  verifiedDrawBrief:true,editorialChecks:{originalSourceReviewed:true,claimsIndependentlyChecked:true,duplicateChecked:true,languageChecked:true}});
+ assert.equal(p.verifiedDrawBrief,true);
+ assert.equal(M.briefEligible(p),true);
+ assert.ok(!M.publicationIssues(p).some(x=>/3 tot 5 alinea|Tekst: 3 tot 5/.test(x)));
+});
+test('339: alleen de exacte P1-schrijfblokkade wordt één keer heropend na actuele tweede broncontrole',()=>{
+ const at=Date.parse('2026-11-20T16:00:00Z');
+ const n={url:knvb,title:candidate.topic,publishedAt:'2026-11-20T12:00:00Z',
+  text:facts.slice(0,4).join(' ')};
+ const u={url:uefa,title:'UEFA Nations League draw',publishedAt:'2026-11-20T12:10:00Z',
+  text:'Knockout stage draw results Quarter-final ties Germany vs Belgium Netherlands vs Portugal The quarter-finals are two-legged ties in March.'};
+ const group=oranjeDrawGroup(n,[u],at);
+ assert.ok(group);
+ const error='Concept na herstel nog niet geschikt: Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.';
+ const sha=crypto.createHash('sha256').update(error).digest('hex');
+ const job=()=>({status:'review',failureStage:'generation',failureCategory:'generator_failure',
+  errorHash:sha,urls:[knvb,uefa],checkpoint:{oldRejectedDraft:true}});
+ const a=job();
+ assert.equal(reopenVerifiedDrawCopy339(a,group,at),true);
+ assert.equal(a.status,'pending');
+ assert.equal(a.checkpoint,undefined);
+ assert.equal(reopenVerifiedDrawCopy339(a,group,at),false);
+ assert.equal(reopenVerifiedDrawCopy339({...job(),errorHash:'0'.repeat(64)},group,at),false);
+ assert.equal(reopenVerifiedDrawCopy339({...job(),status:'published'},group,at),false);
+ assert.equal(reopenVerifiedDrawCopy339(job(),group,at+72*3600*1000),false);
+ const conflict=[group[0],{...group[1],text:'Geen bevestiging van Nederland versus Portugal'}];
+ conflict.drawCandidate=group.drawCandidate;
+ assert.equal(reopenVerifiedDrawCopy339(job(),conflict,at),false);
 });
