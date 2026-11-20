@@ -65,6 +65,7 @@ const matchEvidence122=require('../editorial-match-evidence122');
 const {CREDIT}=require('../football-results52');
 const {articleUrl,officialSourceAuthority,discoverGdelt}=require('./editorial-discovery53');
 const international=require('./editorial-international');
+const {oranjeDrawGroup}=require('./editorial-oranje-draw');
 const officialFinals98W=require('./editorial-official-finals98w');
 const API='https://voetbalhub-redactie.onrender.com';
 const REPO='sanderbrink-spec/Voetbalhub';
@@ -2076,12 +2077,19 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    continue;
   }
   report.counts.current++;
+  const draw=oranjeDrawGroup(doc,uefaNationsLeague,now);
   const scoring=internationalScoring(doc);
-  if(!nationallyRelevant(doc,scoring)){signal.outcome='no_national_relevance';continue;}
+  if(!draw&&!nationallyRelevant(doc,scoring)){signal.outcome='no_national_relevance';continue;}
   report.counts.relevant++;
   if(!scoring&&/\b(?:uitgeschakeld|nederlaag|overwinning|zege|verslaat|wint|won|doelpunten|nabeschouwing|samenvatting|highlights|liveblog|in beeld|komt tekort)\b/i.test(doc.title)){signal.outcome='unsupported_result';continue;}
   if(!validationOnly&&published.some(a=>articleUrl(a.sources?.[0]?.url,config.newsIndexes)===linkFor(doc))){signal.outcome='duplicate_primary_source';continue;}
   report.counts.eligible++;
+  if(draw){
+   groups.push(draw);
+   signal.outcome='confirmed_oranje_draw';
+   signal.partners=[draw[1].url];
+   continue;
+  }
   if(scoring){
    addScoringSource(scoringGroups,doc,scoring);
    signal.outcome='international_scorers';
@@ -2632,7 +2640,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     }
    }
    const candidate=group.promotionCandidate||checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
-    group.internationalPreview||group.officialFinalCandidate||group.bootstrap?.candidate||group.officialReactionCandidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
+    group.drawCandidate||group.internationalPreview||group.officialFinalCandidate||group.bootstrap?.candidate||group.officialReactionCandidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
    if(group.length===1&&!matchRecord&&host(group[0].url)==='uefa.com'&&
       candidate?.primaryAuthority==='association_decision'&&Array.isArray(candidate.facts))
      report.signals.push({route:'news',topic:group[0].title,outcome:'uefa_status_literal_facts',facts:candidate.facts.length});
