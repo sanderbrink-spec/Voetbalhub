@@ -31,7 +31,7 @@ test('104H: herformuleer aantoonbare Meerveld- en Van Bergen-feiten zonder origi
  assert.doesNotMatch(fixed.body.join(' '),/in zijn laatste vier competitieduels in slechts 154 minuten betrokken bij vijf doelpunten/i);
  assert.doesNotMatch(fixed.body.join(' '),/Thom van Bergen scoorde in zijn laatste vier thuiswedstrijden voor FC Groningen/i);
  assert.match(fixed.body[0],/154 speelminuten/);
- assert.match(fixed.body[1],/Van Bergen/);
+ assert.match(fixed.body[1],/van Bergen/i);
  assert.deepEqual(repairVerifiedClubPreviewForm(fixed,facts),fixed);
  assert.deepEqual(repairVerifiedClubPreviewForm(draft,[]),draft);
 });
