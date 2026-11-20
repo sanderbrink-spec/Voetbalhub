@@ -40,10 +40,21 @@ function oranjeDrawGroup(knvb, documents, now) {
     if (details.some(line => line.startsWith('De eerste wedstrijd')) &&
         list.includes(english+' vs Netherlands')) continue;
     const group = [knvb, uefa];
+    const facts=[core,...new Set(details)].map(text => ({text,evidence:[{source:0,quote:text}]}));
+    // Add meaningful tournament stakes from the SAME independent UEFA draw
+    // report. Keep each original English passage intact: the independent
+    // evidence gate rejects paraphrased or invented contextual claims.
+    const titleholder=new RegExp('\\bNetherlands take on titleholders '+english+'\\b','iu').exec(uefa.text)?.[0];
+    const leg=/The quarter-finals are two-legged ties and take place in March 20\d{2}\./u.exec(uefa.text)?.[0];
+    const finals=/Winners advance to the Nations League finals\./u.exec(uefa.text)?.[0];
+    for(const quote of [titleholder,leg,finals]){
+      if(quote&&!facts.some(fact=>fact.text===quote))
+        facts.push({text:quote,evidence:[{source:1,quote}]});
+    }
     group.drawCandidate = {
       kind:'announcement', topic:knvb.title, category:'Nations League', teams:['Nederland',opponent],
       sharedEventEvidence:[{source:0,quote:core},{source:1,quote:list}],
-      facts:[core,...new Set(details)].map(text => ({text,evidence:[{source:0,quote:text}]}))
+      facts
     };
     return group;
   }
