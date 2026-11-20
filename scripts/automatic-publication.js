@@ -2838,7 +2838,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
 function summarizeEditorialFunnel98V(report){
  const outcomes=new Set(['stale_date','missing_date','future_date',
   'no_national_relevance','unsupported_result','duplicate_primary_source',
-  'primary_authority','partner_found','no_corroboration','international_scorers']);
+  'primary_authority','partner_found','no_corroboration','international_scorers',
+  'confirmed_oranje_draw','used_as_draw_evidence']);
  const seen=new Set(),discoveryReasons={};
  for(const signal of report.signals||[]){
   if(!signal.url||!outcomes.has(signal.outcome)||seen.has(signal.url))continue;

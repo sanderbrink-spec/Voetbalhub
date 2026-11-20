@@ -71,6 +71,7 @@ test('ontdekking telt twee bevestigingen als één onderwerp zonder verliesmeldi
   const r = await run({now,fetcher,expectedRevision:null,secret:'test',githubToken:'test',discoveryOnly:true});
   assert.equal(r.counts.uniqueGroups,1);
   assert.equal(r.counts.noCorroboration,0);
+  assert.deepEqual(r.funnel.discoveryReasons,{used_as_draw_evidence:1,confirmed_oranje_draw:1});
   assert.equal(r.signals.find(s=>s.url===uefa.url).outcome,'used_as_draw_evidence');
   assert.equal(r.counts.aiRequests,0);
   assert.equal(r.counts.publicationAttempts,0);
