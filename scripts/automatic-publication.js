@@ -1995,6 +1995,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   report.sourceErrors.push({source:'GDELT',error:error.message,code:error.cause?.code||error.code||error.name});
  }
  const authoritative=[],scoringGroups=[];
+ const drawEvidence=new Map();
  const linkFor=doc=>articleUrl(doc.url,config.newsIndexes)||doc.url;
  const discovered=[];
  const linksToRead=fixtureFocus?[...links].filter(url=>host(url)==='onsoranje.nl'):editorialSourceLinks(links,focusSourceUrl);
@@ -2088,6 +2089,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    groups.push(draw);
    signal.outcome='confirmed_oranje_draw';
    signal.partners=[draw[1].url];
+   drawEvidence.set(draw[1].url,doc.url);
    continue;
   }
   if(scoring){
@@ -2109,6 +2111,15 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }else{
    signal.outcome='no_corroboration';
    report.counts.noCorroboration++;
+  }
+ }
+ // The organiser can sort ahead of the federation. Credit the evidence once
+ // both signals have been seen, regardless of discovery order.
+ for(const signal of report.signals){
+  if(signal.outcome==='no_corroboration'&&drawEvidence.has(signal.url)){
+   signal.outcome='used_as_draw_evidence';
+   signal.partners=[drawEvidence.get(signal.url)];
+   report.counts.noCorroboration--;
   }
  }
  report.routes.news.found=linksToRead.length;

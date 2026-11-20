@@ -19,7 +19,8 @@ function oranjeDrawGroup(knvb, documents, now) {
   const fresh = time => time <= now && time >= now - config.maxAgeHours * 3600000;
   if (!fresh(at)) return null;
 
-  const core = new RegExp('(?:^|[.!?]\\s+|Foto:\\s+)((?:Oranje|Nederland) speelt in de kwartfinale van de Nations League (?:twee keer )?tegen '+opponent+'\\.)','u').exec(knvb.text)?.[1];
+  const body = knvb.text.startsWith(knvb.title) ? knvb.text.slice(knvb.title.length).trimStart() : knvb.text;
+  const core = new RegExp('(?:^|[.!?]\\s+|Foto:\\s+)((?:Oranje|Nederland) speelt in de kwartfinale van de Nations League (?:twee keer )?tegen '+opponent+'\\.)','u').exec(body)?.[1];
   if (!core) return null;
   // Keep entire source statements. Ignore photo captions, history and predictions.
   const details = [...knvb.text.matchAll(/(?:^|(?<=[.!?])\s+)((?:Dat werd (?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag) bepaald tijdens de loting in [^.!?]{2,65}|De wedstrijden worden in [\p{L}]+ gespeeld|De eerste wedstrijd is in Nederland, de return wordt gespeeld in [\p{L}]+|In een eventuele halve finale treft Oranje de winnaar van het duel tussen [\p{L}]+ en [\p{L}]+)\.)/gu)]

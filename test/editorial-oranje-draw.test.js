@@ -47,3 +47,31 @@ test('beide actuele officiële bronnen, een eenduidige beslissing en voldoende c
     [knvb,{...uefa,publishedAt:'2026-11-21T12:00:00Z'}],
   ]) assert.equal(oranjeDrawGroup(national,[organiser],now),null);
 });
+
+test('ontdekking telt twee bevestigingen als één onderwerp zonder verliesmelding', async t => {
+  const fs = require('node:fs'), path = require('node:path'), os = require('node:os');
+  const initial = process.cwd();
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(),'veldio-draw-'));
+  process.chdir(temporary);
+  t.after(() => { process.chdir(initial); fs.rmSync(temporary,{recursive:true,force:true}); });
+  const {run} = require('../scripts/automatic-publication');
+  const nationalIndex = 'https://www.onsoranje.nl/knvb_node/categorie/nederlands-elftal-mannen';
+  const organiserIndex = 'https://www.uefa.com/uefanationsleague/';
+  const page = doc => {
+    const body = '<h1>'+doc.title+'</h1><p>'+doc.text+'</p><p>'+('Toernooidocumentatie. '.repeat(8))+'</p>';
+    const article = doc === knvb ? '<div class="Template--article">'+body+'<div class="PageTags"></div></div>' : '<article>'+body+'</article>';
+    return '<meta property="article:published_time" content="'+doc.publishedAt+'">'+article;
+  };
+  const pages = new Map([[nationalIndex,'<a href="'+knvb.url+'">Loting</a>'],[organiserIndex,'<a href="'+uefa.url+'">Draw</a>'],[knvb.url,page(knvb)],[uefa.url,page(uefa)]]);
+  const fetcher = async url => {
+    if (pages.has(url)) return new Response(pages.get(url));
+    if (url.endsWith('/articles?view=all')) return Response.json({articles:[]});
+    return Response.json({},{status:404});
+  };
+  const r = await run({now,fetcher,expectedRevision:null,secret:'test',githubToken:'test',discoveryOnly:true});
+  assert.equal(r.counts.uniqueGroups,1);
+  assert.equal(r.counts.noCorroboration,0);
+  assert.equal(r.signals.find(s=>s.url===uefa.url).outcome,'used_as_draw_evidence');
+  assert.equal(r.counts.aiRequests,0);
+  assert.equal(r.counts.publicationAttempts,0);
+});
