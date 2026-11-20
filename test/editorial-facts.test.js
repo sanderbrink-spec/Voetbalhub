@@ -111,3 +111,31 @@ test('99C-5: official UEFA Nations League label is not an unverified person',()=
  const withoutLeague={...draft,body:['UEFA Nations bevestigt promotie.'],standfirst:'De UEFA heeft het besluit aangekondigd.',headline:'De UEFA meldt de promotie van IJsland'};
  assert.ok(F.evidenceIssues(withoutLeague,f,null,official).some(x=>x.includes('UEFA Nations')));
 });
+
+
+test('342: voorwaardelijke winst in toekomstige kwartfinale is geen gespeelde uitslag',()=>{
+ const draft={
+  headline:'Oranje treft Portugal in de kwartfinale van de Nations League',
+  standfirst:'De loting koppelde Nederland aan Portugal voor een tweeluik in maart.',
+  body:[
+   'Eerst speelt Oranje in Nederland, daarna volgt de return in Portugal.',
+   'Een halve finale is alleen mogelijk als Oranje de kwartfinale wint. Dan wacht de winnaar van Spanje tegen Frankrijk.'
+  ]};
+ const facts=[
+  'Oranje speelt in de kwartfinale van de Nations League twee keer tegen Portugal.',
+  'Dat werd vrijdag bepaald tijdens de loting in Nyon, Zwitserland.',
+  'De wedstrijden worden in maart gespeeld.',
+  'De eerste wedstrijd is in Nederland, de return wordt gespeeld in Portugal.',
+  'In een eventuele halve finale treft Oranje de winnaar van het duel tussen Spanje en Frankrijk.'
+ ];
+ assert.equal(F.needsMatch(draft),false);
+ const p={draft,articleKind:'announcement',category:'Nations League',verifiedFacts:facts,
+  verifiedDrawBrief:true,sources:[
+   {url:'https://www.onsoranje.nl/nieuws/nederlands-elftal-mannen/82847/loting'},
+   {url:'https://www.uefa.com/uefanationsleague/news/02ab-example--knockout-ties/'}]};
+ const issues=F.audit(p);
+ assert.ok(!issues.some(x=>/Wedstrijdverslag:|Feitencontrole ontbreekt:/.test(x)),issues.join(' | '));
+ assert.equal(F.needsMatch({...draft,body:[...draft.body,'Oranje wint het duel van Portugal.']}),true);
+ assert.equal(F.needsMatch({...draft,body:[...draft.body,'De eindstand is 1-0.']}),true);
+ assert.equal(F.needsMatch({headline:'Oranje verslaat Portugal in de kwartfinale'}),true);
+});
