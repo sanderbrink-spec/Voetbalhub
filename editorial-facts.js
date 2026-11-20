@@ -138,7 +138,10 @@
     return mentioned.length>0&&mentioned.every(([,division])=>
       new RegExp('\\b(?:league '+division+'|group '+division+'[1-4])\\b','i').test(evidence));
   };
-   const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!known.includes(normalize(name)));
+   // A club's Dutch demonym is not a new player or person. This narrowly
+  // grounded alias is valid only when FC Groningen is explicitly in evidence.
+  const verifiedClubDemonym=name=>name==='De Groningers'&&/\bfc groningen\b/.test(known);
+  const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!verifiedClubDemonym(name)&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
