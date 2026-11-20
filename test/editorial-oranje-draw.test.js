@@ -76,3 +76,21 @@ test('ontdekking telt twee bevestigingen als één onderwerp zonder verliesmeldi
   assert.equal(r.counts.aiRequests,0);
   assert.equal(r.counts.publicationAttempts,0);
 });
+
+
+test('341: de werkelijke KNVB-varianten leveren alle vijf feiten op aan de schrijffase',()=>{
+ const national={...knvb,text:[
+  'Oranje speelt in de kwartfinale van de Nations League twee keer tegen Portugal.',
+  'Dat werd vrijdag bepaald tijdens de loting in Nyon, Zwitserland.',
+  'De wedstrijden vinden in maart plaats.',
+  'De eerste wedstrijd is in Nederland, de return wordt gespeeld in Portugal.',
+  'In een eventuele halve finale treft Oranje de winnaar van het duel tussen Spanje en Frankrijk.'
+ ].join(' ')};
+ const group=oranjeDrawGroup(national,[uefa],now);
+ assert.ok(group?.drawCandidate);
+ assert.equal(group.drawCandidate.facts.length,5);
+ assert.equal(group.drawCandidate.facts[2].text,'De wedstrijden vinden in maart plaats.');
+ assert.deepEqual(validateEvidence(group.drawCandidate,group,now),[]);
+ assert.equal(require('../scripts/editorial-draw-copy339').drawWritingBrief(
+  group.drawCandidate.facts.map(f=>f.text)).factCards.length,5);
+});
