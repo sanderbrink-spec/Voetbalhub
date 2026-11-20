@@ -3,8 +3,10 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {research}=require('../scripts/eredivisie-research103b');
-const {validateEvidence,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,plain,overlap}=require('../scripts/automatic-publication');
+const {validateEvidence,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,reopenReviewedClubPreview104C,plain,overlap}=require('../scripts/automatic-publication');
 const {EditorialQueue}=require('../editorial-production45');
+const factAudit=require('../editorial-facts');
+const deskModel=require('../editorial-desk-model');
 const now=Date.parse('2026-11-20T18:00:00Z');
 const f={id:'example-fixture',home:{name:'FC Groningen'},away:{name:'SC Heerenveen'},
  date:'2026-11-21T20:00:00Z',status:'NS',round:'Speelronde 13',competition:'eredivisie'};
@@ -116,4 +118,46 @@ test('104B: oud beeldretry krijgt precies één nieuw schrijfpoging vóór aftra
  assert.equal(reopenVerifiedPreviewArtwork104B(another,group,Date.parse(f.date)+1),false);
  another.reason='editorial_review_required';
  assert.equal(reopenVerifiedPreviewArtwork104B(another,group,now),false);
+});
+
+test('104C: bewezen vroegere winreeks in preview is geen uitslag van komende wedstrijd',()=>{
+ const facts=[
+  'FC Groningen ontvangt SC Heerenveen, dat met vier opeenvolgende overwinningen naar Groningen afreist.',
+  'Groningen won de laatste drie onderlinge ontmoetingen met SC Heerenveen.',
+  'Thom van Bergen scoorde in zijn laatste vier thuiswedstrijden.',
+  'De assistent-trainer leidt de afsluitende training voor de derby.'
+ ];
+ const draft={headline:'Groningen ontvangt Heerenveen na historische reeks',
+  standfirst:'Groningen kan de vorige reeks tegen SC Heerenveen evenaren.',
+  body:['SC Heerenveen reist met vier opeenvolgende overwinningen naar Groningen.',
+   'De laatste drie onderlinge duels werden door Groningen gewonnen.']};
+ const payload={draft,articleKind:'preview',category:'Eredivisie',fixture:f,
+  feedLifecycle:{kind:'preview',expiresAt:f.date},verifiedFacts:facts,
+  sources:[{url:club.url},{url:league.url}]};
+ assert.equal(factAudit.needsMatch(draft),true);
+ assert.equal(factAudit.verifiedClubPreviewHistory(payload),true);
+ assert.equal(deskModel.verifiedClubPreviewHistory(payload),true);
+ assert.ok(!factAudit.audit(payload).some(x=>/Wedstrijdverslag:|Feitencontrole ontbreekt/.test(x)));
+ assert.deepEqual(deskModel.matchSourceStyleIssues(payload),[]);
+ const falseScore={...payload,draft:{...draft,body:[...draft.body,'Groningen won het toekomstige duel met 3-0.']}};
+ assert.equal(factAudit.verifiedClubPreviewHistory(falseScore),false);
+ assert.ok(factAudit.audit(falseScore).some(x=>/Wedstrijdverslag:|Feitencontrole ontbreekt/.test(x)));
+ assert.equal(factAudit.verifiedClubPreviewHistory({...payload,fixture:{...f,status:'FT'}}),false);
+ assert.equal(factAudit.verifiedClubPreviewHistory({...payload,sources:[{url:club.url},{url:club.url}]}),false);
+ assert.equal(factAudit.verifiedClubPreviewHistory({...payload,articleKind:'match_report'}),false);
+});
+test('104C: alleen exact eerder afgewezen previewdossier krijgt één volledige nieuwe beoordeling',()=>{
+ const candidate={kind:'preview',category:'Eredivisie',fixture:f,kickoff:Date.parse(f.date),
+  facts:[1,2,3,4].map(x=>({text:'feit '+x,evidence:[{source:0,quote:'feit '+x}]}))};
+ const group=Object.assign([club,league],{clubPreview:candidate});
+ const job={status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',
+  errorHash:'ac6e80c689a9336a0c2b20b8ba9f06b900cd8f000ae8a5182a24312f8c8dfc86',
+  checkpoint:'reject-this-old-draft',attempts:1};
+ assert.equal(reopenReviewedClubPreview104C(job,group,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+ assert.equal(job.checkpoint,undefined);
+ assert.equal(reopenReviewedClubPreview104C(job,group,now),false);
+ const other={...job,status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',
+  errorHash:'unrelated',reviewedClubPreview104C:false};
+ assert.equal(reopenReviewedClubPreview104C(other,group,now),false);
 });
