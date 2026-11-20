@@ -48,7 +48,10 @@ function assess({review, docs, evidenceIssues=[], duplicate=false, copied=false,
  if(score<threshold) reasons.push('Redactiescore lager dan '+threshold+'.');
  return {version:45,score,scores,threshold,approved:reasons.length===0,reasons,checkedAt:new Date(now).toISOString()};
 }
-const queueKey=docs=>crypto.createHash('sha256').update(JSON.stringify(docs.map(d=>[d.url,crypto.createHash('sha256').update(d.text).digest('hex')]))).digest('hex');
+const queueKey=docs=>docs.clubPreview
+ ?crypto.createHash('sha256').update(JSON.stringify(['club-preview',docs.clubPreview.fixture.id,docs.clubPreview.kickoff,
+   docs.clubPreview.facts,docs.map(doc=>doc.url)])).digest('hex')
+ :crypto.createHash('sha256').update(JSON.stringify(docs.map(d=>[d.url,crypto.createHash('sha256').update(d.text).digest('hex')]))).digest('hex');
 class EditorialQueue {
  constructor(records=[]) {
   if(!Array.isArray(records))throw Error('Ongeldige redactiewachtrij.');
@@ -124,4 +127,4 @@ async function openQueue({token,branch,fetcher=fetch,isolated=false}) {
  }
  return {queue,save,capacity};
 }
-module.exports={WEIGHTS,MINIMUM_SCORES,priority,assess,EditorialQueue,openQueue};
+module.exports={WEIGHTS,MINIMUM_SCORES,priority,assess,queueKey,EditorialQueue,openQueue};

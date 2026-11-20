@@ -769,7 +769,7 @@ function validateEvidence(candidate,docs,now=Date.now()){
  }
  if(candidate.kind==='preview'){
   const date=String(candidate.eventDate||'');
-  const kickoff=docs.internationalPreview?.kickoff;
+  const kickoff=(docs.internationalPreview||docs.clubPreview)?.kickoff;
   const time=kickoff??Date.parse(date+'T23:59:59+01:00');
   const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Amsterdam'}).format(new Date(now));
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(time)||(kickoff==null?date<=today:time<=now)||time>now+(config.previewHorizonDays+1)*86400000)issues.push('Wedstrijd niet binnen het actuele vooruitblikvenster.');
@@ -1442,7 +1442,7 @@ function retryInternationalPreviewArtwork(job, candidate, now) {
 // to lower the independent editorial quality or to publish unapproved media.
 function preflightArtwork(group,candidate,topic,resolver=require('../image-rotation65').resolve){
  const match=group.matchRecord;
- const fixture=group.internationalPreview?.fixture;
+ const fixture=(group.internationalPreview||group.clubPreview)?.fixture;
  if(!match&&!fixture)return {checked:false,approved:false};
  const probe=match
   ?{articleKind:match.articleKind,imageCategory:'report',matchId:match.matchId,match:match.match,category:match.category}
@@ -1785,6 +1785,7 @@ function reopenObservedMatchCopyFailure(job,now){
 }
 function groupEvidenceHash(group) {
  const documents=group.map(d=>({url:d.url,text:d.text,publishedAt:d.publishedAt}));
+ if(group.clubPreview)return production.queueKey(group);
  return sha(JSON.stringify(group.matchRecord ? [documents,group.matchRecord.verifiedFacts] : documents));
 }
 function reusableCheckpointPriority(job,group,secret,now=Date.now()){
@@ -2090,6 +2091,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  // Publish up to the configured limit only when each independent quality gate passes.
  // Verified Sportmonks goal timelines may enrich match writing; no quota target bypasses review.
  const matchGroups=[];
+ let eredivisieFixtures=[];
  for(const [competition, endpoint] of [
   ['eredivisie','/integrations/football?competition=eredivisie'],
   ['premierleague','/integrations/football?competition=premierleague'],
@@ -2102,6 +2104,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const snapshot=await editorialMatchSnapshot(competition,endpoint,api,now,report.signals);
   if(!Array.isArray(snapshot.fixtures)||!['available','cached'].includes(snapshot.status))throw Error('Wedstrijdbron tijdelijk niet beschikbaar.');
   // Reject accidental cross-league records before counting or drafting.
+  if(competition==='eredivisie')eredivisieFixtures=snapshot.fixtures;
   const fixtures=selectPublicationFixtures(snapshot.fixtures,now).filter(fixture=>fixture.competition===competition);
   report.routes.match.found+=fixtures.length;
   report.sources[competition]={status:'ok'};
@@ -2120,7 +2123,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  }
  report.sources.match={status:['eredivisie','premierleague','knvbbeker','eredivisieplayoffs','kkd','championsleague'].some(key=>report.sources[key].status==='ok')?'ok':'unavailable'};
 
- for(const job of durable.queue.records.filter(j=>!j.matchId&&durable.queue.due(j,now))){const group=(await Promise.all(job.urls.map(load))).filter(Boolean);if(group.length===job.urls.length){if(durable.queue.enqueue(group,now).id!==job.id)durable.queue.finish(job,'superseded',now);groups.push(group);}else{durable.queue.fail(job,Error('Primaire bron tijdelijk onbereikbaar'),now);}}
+ for(const job of durable.queue.records.filter(j=>j.clubPreviewId&&j.previewKickoff<=now&&
+  ['pending','retry'].includes(j.status)))durable.queue.finish(job,'skipped',now,{reason:'fixture_started',stage:'selection'});
+ for(const job of durable.queue.records.filter(j=>!j.matchId&&!j.clubPreviewId&&durable.queue.due(j,now))){const group=(await Promise.all(job.urls.map(load))).filter(Boolean);if(group.length===job.urls.length){if(durable.queue.enqueue(group,now).id!==job.id)durable.queue.finish(job,'superseded',now);groups.push(group);}else{durable.queue.fail(job,Error('Primaire bron tijdelijk onbereikbaar'),now);}}
  for(const urls of config.sourceGroups){
   const prepared=bootstrap.find(p=>JSON.stringify(p.sourceUrls)===JSON.stringify(urls));
   if(prepared?.candidate.kind==='preview'&&prepared.candidate.eventDate<=today)continue;
@@ -2378,6 +2383,24 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   Number(matchGuidance.isRichMatch(a.matchRecord))||
   (b.matchRecord?.verifiedFacts?.length||0)-(a.matchRecord?.verifiedFacts?.length||0));
  const sportmonksOnly=!fixtureFocus&&process.env.EDITORIAL_SPORTMONKS_ONLY==='true';
+ if(!focusSourceUrl&&!sportmonksOnly&&report.sources.eredivisie?.status==='ok'){
+  if(!eredivisieFixtures.some(f=>f.status==='NS')){
+   try{const calendar=await api('/integrations/football?competition=eredivisie');
+    if(['available','cached'].includes(calendar.status))eredivisieFixtures=calendar.fixtures||[];
+   }catch(error){report.sourceErrors.push({source:'Eredivisieprogramma',error:error.message});}
+  }
+  let leads=[];
+  try{leads=(await require('./ten-agent-newsroom101').readState({token:githubToken,fetcher})).state.leads||[];}
+  catch(error){report.sourceErrors.push({source:'Tien nieuwsagents',error:error.message});}
+  const research=await require('./eredivisie-research103b').research({
+   fixtures:eredivisieFixtures,docs:discovered,matchGroups,leads,now,
+   loadRound:url=>officialPage(url,fetcher),plain,validate:validateEvidence,artwork:preflightArtwork,published
+  });
+  report.dossierResearch={topics:research.topics,deep:research.deep};
+  const investigated=new Set(research.groups.map(group=>group[0].url));
+  for(let i=groups.length-1;i>=0;i--)if(investigated.has(groups[i][0].url))groups.splice(i,1);
+  groups.unshift(...research.groups);
+ }
  const scheduled=scheduleEditorialGroups(groups,matchGroups,{sportmonksOnly});
  if(sportmonksOnly){
   report.testScope='verified_sportmonks_match_reports_only';
@@ -2423,6 +2446,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(seenGroups.has(key))continue;
   seenGroups.add(key);
   const job=durable.queue.enqueue(group,now);
+  if(group.clubPreview){
+   job.clubPreviewId=group.clubPreview.fixture.id;
+   job.previewKickoff=group.clubPreview.kickoff;
+  }
   if(reopenVerifiedDrawCopy339(job,group,now))
    report.signals.push({route:'news',topic:group[0].title,outcome:'verified_draw_copy_recovery339'});
   if(reopenVerifiedDrawPlan341(job,group,now))
@@ -2784,13 +2811,16 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   (a.group.internationalPreview?.kickoff||0)-(b.group.internationalPreview?.kickoff||0)||
   reusableCheckpointPriority(b.job,b.group,secret,now)-
   reusableCheckpointPriority(a.job,a.group,secret,now));
- for(const {group,job} of runnable.slice(0,8)){
+ let processingSlots=0;
+ for(const {group,job} of runnable){
+  if(processingSlots>=8)break;
   if((validationOnly?report.counts.approved:report.published.length)>=limit)break;
   const matchRecord=group.matchRecord;
   const route=matchRecord?report.routes.match:report.routes.news;
   // A dry run can recheck existing copy without weakening production deduplication.
   const comparison=published.filter(article=>(!group.replacePreviewId||article.id!==group.replacePreviewId)&&
    (!validationOnly||article.sources?.[0]?.url!==group[0].url));
+  processingSlots++;
   let topic=group[0].title,stage='verification';
   report.counts.attempted++;
   try{
@@ -2820,7 +2850,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
      continue;
     }
    }
-   const candidate=group.promotionCandidate||checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
+   const candidate=group.clubPreview||group.promotionCandidate||checkpoint.candidate||(matchRecord?{topic,kind:matchRecord.articleKind,category:matchRecord.category}:
     group.drawCandidate||group.internationalPreview||group.officialFinalCandidate||group.bootstrap?.candidate||group.officialReactionCandidate||group.officialCoachCandidate||group.officialDisciplinaryCandidate||(group.length===1&&(confirmedUefaQualification(group[0])||confirmedFederationCoachDeparture(group[0])||confirmedClubHonoraryMembership(group[0])))||confirmedTrainingCampDeparture(group)||await extractCandidate(group,ai,now));
    if(group.length===1&&!matchRecord&&host(group[0].url)==='uefa.com'&&
       candidate?.primaryAuthority==='association_decision'&&Array.isArray(candidate.facts))
@@ -2854,6 +2884,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    // fixture artwork cannot be published. No generic/incorrect match images.
    const art=preflightArtwork(group,candidate,topic);
    if(art.checked&&!art.approved){
+    if(matchRecord||group.clubPreview||group.internationalPreview)processingSlots--;
     deferArtwork(job,now);
     const reason='Geen passend goedgekeurd artikelbeeld beschikbaar.';
     report.skipped.push({topic,stage:'artwork',reason});
@@ -2882,7 +2913,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(draft?.skip)throw Error('Onvoldoende bewezen feiten voor een origineel wedstrijdverslag.');
     report.generationOrigin='production_ai';
    }else if(!draft){
-    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,match:candidate.match||null,compact,officialFinal:Boolean(group.officialFinalCandidate),officialReaction:Boolean(group.officialReactionCandidate),automaticPublication:true,drawBrief},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
+    draft=await createEditorialDraft({topic,category:candidate.category,facts,sourceUrls:sources.map(s=>s.url),recentHeadlines:comparison.slice(0,20).map(a=>a.headline),articleKind:candidate.kind,primaryAuthority:candidate.primaryAuthority,match:candidate.match||null,compact,officialFinal:Boolean(group.officialFinalCandidate),officialReaction:Boolean(group.officialReactionCandidate),automaticPublication:true,clubPreview:Boolean(group.clubPreview),drawBrief},{apiKey:groqKey,model,fetcher:ai.fetcher,router,resume:checkpoint.generation,onProgress:generation=>checkpointStep({generation}),timeoutMs:180000});
     report.generationOrigin='production_ai';
    }
    await checkpointStep({draft,generation:null});
@@ -2892,9 +2923,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     reviewNotes:(validationOnly?'Automatische redactionele validatie. ':'Automatisch gepubliceerd op expliciet verzoek van de eigenaar. ')+(group.some(d=>d.storedEvidenceSourceRun)?'Primaire officiële bron tijdelijk onbereikbaar: eerder live vastgelegde bronpassages uit workflow 42510782131 gebruikt en herbeoordeeld, niet opnieuw live opgehaald. ':'Primaire bronpagina’s live opgehaald, bronnen en bewijsplaatsen gecontroleerd. ')+'Cijfers, namen, datum, duplicaten, originaliteit en artikelstructuur gecontroleerd. Een tweede AI-redacteur controleerde de volledige tekst tegen de broncitaten. Geen voorafgaande menselijke goedkeuring. Bronhashes: '+group.map(d=>sha(d.text)).join(', ')};
    if(candidate.kind==='preview'){
     if(group.replacePreviewId)payload.replacePreviewId=group.replacePreviewId;
-    if(group.internationalPreview?.fixture)payload.fixture=group.internationalPreview.fixture;
+    const preview=group.clubPreview||group.internationalPreview;
+    if(preview?.fixture)payload.fixture=preview.fixture;
     const zone=new Intl.DateTimeFormat('en',{timeZone:'Europe/Amsterdam',timeZoneName:'longOffset'}).formatToParts(new Date(candidate.eventDate+'T12:00:00Z')).find(x=>x.type==='timeZoneName').value.replace('GMT','');
-    payload.feedLifecycle={kind:'preview',expiresAt:new Date(group.internationalPreview?.kickoff??Date.parse(candidate.eventDate+'T23:59:59'+zone)).toISOString()};
+    payload.feedLifecycle={kind:'preview',expiresAt:new Date(preview?.kickoff??Date.parse(candidate.eventDate+'T23:59:59'+zone)).toISOString()};
    }
    if(duplicate(payload,comparison.concat(report.validated.map(item=>item.article)))){report.skipped.push({topic,reason:'Onderwerp staat al in de app.',draftHeadline:draft.headline});durable.queue.finish(job,'duplicate',now);continue;}
    let assessment;
