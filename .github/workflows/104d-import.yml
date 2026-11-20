@@ -1,0 +1,50 @@
+name: Temporary verified 104D image transfer
+on:
+  push:
+    branches: ['work/104d-night-image-import']
+    paths: ['.github/workflows/104d-import.yml']
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and verify original AI image
+        env:
+          SOURCE_URL: 'https://d2jqrm6oza8nb6.cloudfront.net/datasets/41f05dc1-5423-4308-aa40-5037a7a6856d.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjQxMmEyNDRmMDhjNzY5ZSIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTM2MDk2NH0.MV-lZGy-QqJ4boX3jcNRybeEAKXpcYX_sG5_jjTHhjA'
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 2 --connect-timeout 10 --max-time 90 "$SOURCE_URL" -o /tmp/v104d-source.png
+          echo '74836339401fe510069882a22400e8e680ed3859f60a1efdf57b41cd8e982d4e  /tmp/v104d-source.png' | sha256sum --check
+      - name: Encode original image as repository WebP
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow==12.3.0
+          python3 - <<'PY'
+          from PIL import Image
+          import hashlib
+          from pathlib import Path
+          src=Path('/tmp/v104d-source.png')
+          out=Path('public/stadium74/fcgroningen-night-preview104d.webp')
+          im=Image.open(src)
+          assert im.size==(1672,941),f'Unexpected image size: {im.size}'
+          assert im.mode=='RGB',f'Unexpected image mode: {im.mode}'
+          out.parent.mkdir(parents=True,exist_ok=True)
+          im.save(out,'WEBP',quality=87,method=6)
+          assert out.stat().st_size > 80000 and out.stat().st_size < 1000000
+          print('SOURCE_SHA256',hashlib.sha256(src.read_bytes()).hexdigest())
+          print('OUTPUT_SHA256',hashlib.sha256(out.read_bytes()).hexdigest())
+          print('OUTPUT_SIZE',out.stat().st_size)
+          PY
+      - name: Commit verified illustration on staging branch only
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/stadium74/fcgroningen-night-preview104d.webp
+          git commit -m '104D: archive original AI night stadium illustration (pending independent review)'
+          git push origin HEAD:work/104d-night-image-import
