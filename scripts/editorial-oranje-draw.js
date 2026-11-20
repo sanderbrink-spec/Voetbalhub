@@ -54,6 +54,7 @@ function oranjeDrawGroup(knvb, documents, now) {
     // An actual official contenders profile supplies TEAM CONTEXT. Do not
     // infer performance from the draw, and keep original text for the audit.
     const contextual=documents.find(doc=>doc!==uefa&&
+      (articleUrl(doc.url,config.newsIndexes)||'').startsWith('https://www.uefa.com/uefanationsleague/news/')&&
       (articleUrl(doc.url,config.newsIndexes)||'').includes('get-to-know-the-eight')&&
       Number.isFinite(Date.parse(doc.publishedAt))&&
       Date.parse(doc.publishedAt)<=now&&
