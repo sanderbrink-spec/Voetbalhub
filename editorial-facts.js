@@ -221,6 +221,29 @@
      /\b(?:wint|won|gewonnen|overwinning)\s+van\b/i.test(prose))return false;
   return true;
  }
+ // An upcoming Eredivisie preview can cite independently proven *past* wins
+ // without becoming a report of the fixture that has not been played.
+ // This is only a story-type distinction: numerical, naming, originality
+ // and the independent review checks still run unmodified.
+ function verifiedClubPreviewHistory(payload){
+  if(payload?.articleKind!=='preview'||payload.category!=='Eredivisie'||payload.match||payload.matchId||
+     payload.feedLifecycle?.kind!=='preview'||payload.fixture?.competition!=='eredivisie'||
+     payload.fixture?.status!=='NS'||!payload.fixture?.id||
+     !validDate(String(payload.fixture?.date||'').slice(0,10))||
+     !Array.isArray(payload.verifiedFacts)||payload.verifiedFacts.length<4||
+     !Array.isArray(payload.sources)||payload.sources.length!==2)return false;
+  let domains;
+  try{domains=payload.sources.map(s=>new URL(s.url).hostname.replace(/^www\./,''));}
+  catch{return false;}
+  if(new Set(domains).size!==2||!domains.includes('eredivisie.nl')||
+     domains.some(d=>!d||d==='flashscore.nl'))return false;
+  const facts=payload.verifiedFacts.join(' '),prose=text(payload.draft);
+  if(!/\b(?:won|gewonnen|overwinningen|zeges)\b/i.test(facts)||
+     !/\b(?:vorige|laatste|eerder|onderlinge|reeks|opeenvolgende|voorgaande)\b/i.test(prose)||
+     scores(prose).length||
+     /\b(?:eindstand|ruststand|uitslag|scoreverloop|doelpuntenmakers|versloeg|verslaat)\b/i.test(prose))return false;
+  return true;
+ }
  function audit(payload){
   const draft=payload.draft||{},match=payload.match||null;
   const publisher=payload.sources?.[0]?.url==='https://www.sportmonks.com/football-api/'?'Sportmonks Football API':
@@ -234,13 +257,13 @@
   const registry=payload.articleKind==='background'&&payload.sources?.find(s=>
    /^https:\/\/www\.uefa\.com\/uefachampionsleague\/clubs\/(?:players\/)?\d+--[a-z0-9-]+\/(?:squad\/)?$/.test(s?.url||''));
   const issues=evidenceIssues(draft,payload.verifiedFacts||[],match,publisher||registry?.url||'');
-  if(match||(needsMatch(draft)&&!hasOfficialPreviewResult(payload)&&!verifiedUefaCompetitionStatus(payload))){
+  if(match||(needsMatch(draft)&&!hasOfficialPreviewResult(payload)&&!verifiedUefaCompetitionStatus(payload)&&!verifiedClubPreviewHistory(payload))){
    if(!match||!String(match.homeTeam||'').trim()||!String(match.awayTeam||'').trim()||normalize(match.homeTeam)===normalize(match.awayTeam)||![match.homeScore,match.awayScore].every(x=>Number.isInteger(x)&&x>=0&&x<=99)||!validDate(match.playedAt))
     issues.push('Wedstrijdverslag: leg thuisploeg, uitploeg, eindstand thuis-uit en wedstrijddatum vast.');
    for(const [key,label] of [['resultVerified','eindstand en thuis-uit'],['namesVerified','namen en clubs'],['dateVerified','datum en weekdag'],['timelineVerified','wedstrijdverloop en doelpuntenmakers']])if(payload.factChecks?.[key]!==true)issues.push('Feitencontrole ontbreekt: '+label+'.');
   }
   return [...new Set(issues)];
  }
- return {audit,evidenceIssues,needsMatch,hasOfficialPreviewResult,officialPublisherName,verifiedUefaCompetitionStatus};
+ return {audit,evidenceIssues,needsMatch,hasOfficialPreviewResult,verifiedClubPreviewHistory,officialPublisherName,verifiedUefaCompetitionStatus};
 });
 

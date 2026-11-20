@@ -127,7 +127,7 @@
   // might lose essential match facts and must be rewritten and rechecked.
   function matchSourceStyleIssues(payload = {}) {
     const d=payload.draft || {};
-    if (!['match_report','score_update'].includes(payload.articleKind) && !payload.match && !factAudit.needsMatch(d)) return [];
+    if (!['match_report','score_update'].includes(payload.articleKind) && !payload.match && (!factAudit.needsMatch(d) || factAudit.verifiedClubPreviewHistory(payload))) return [];
     const requiredCredit='Football data provided by the Football-Data.org API';
     const body=Array.isArray(d.body)?d.body:[];
     const text=[d.headline,d.standfirst,...body.filter(p=>payload.sources?.[0]?.url!=='https://www.football-data.org/'||p!==requiredCredit)]
@@ -265,5 +265,5 @@
   function queue(items, options = {}, now = Date.now()) {
     return items.filter(x => !excludedBy(x, options, now)).sort((a,b) => options.sort === 'score' ? (Number(b.qualityReview?.qualityScore) || 0) - (Number(a.qualityReview?.qualityScore) || 0) : (date(b) || Date.parse(b.createdAt) || 0) - (date(a) || Date.parse(a.createdAt) || 0));
   }
-  return { storyStyle, previewStyle, previewWritingFacts, previewAssignment, federationCoachStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, verifiedUefaCompetitionStatus:factAudit.verifiedUefaCompetitionStatus, draftIssues, excludedBy, publicationIssues, officialInternationalFinal, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
+  return { storyStyle, previewStyle, previewWritingFacts, previewAssignment, federationCoachStyle, previewStructure, storyIssues, officialDisciplinaryCardNotice, briefEligible, compactStructure, standardStructure, factAuditIssues:factAudit.audit, needsMatch:factAudit.needsMatch, verifiedClubPreviewHistory:factAudit.verifiedClubPreviewHistory, verifiedUefaCompetitionStatus:factAudit.verifiedUefaCompetitionStatus, draftIssues, excludedBy, publicationIssues, officialInternationalFinal, matchSourceStyleIssues, requiresFlashscore, host, paragraphs, date, rssOnly, warnings, queue, checks };
 });
