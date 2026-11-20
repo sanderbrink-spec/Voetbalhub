@@ -23,7 +23,7 @@ function oranjeDrawGroup(knvb, documents, now) {
   const core = new RegExp('(?:^|[.!?]\\s+|Foto:\\s+)((?:Oranje|Nederland) speelt in de kwartfinale van de Nations League (?:twee keer )?tegen '+opponent+'\\.)','u').exec(body)?.[1];
   if (!core) return null;
   // Keep entire source statements. Ignore photo captions, history and predictions.
-  const details = [...knvb.text.matchAll(/(?:^|(?<=[.!?])\s+)((?:Dat werd (?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag) bepaald tijdens de loting in [^.!?]{2,65}|De wedstrijden worden in [\p{L}]+ gespeeld|De eerste wedstrijd is in Nederland, de return wordt gespeeld in [\p{L}]+|In een eventuele halve finale treft Oranje de winnaar van het duel tussen [\p{L}]+ en [\p{L}]+)\.)/gu)]
+  const details = [...knvb.text.matchAll(/(?:^|(?<=[.!?])\s+)((?:Dat werd (?:maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag) bepaald tijdens de loting in [^.!?]{2,65}|De wedstrijden (?:worden in [\p{L}]+ gespeeld|vinden in [\p{L}]+ plaats)|De eerste wedstrijd is in Nederland, de return wordt gespeeld in [\p{L}]+|In een eventuele halve finale treft Oranje de winnaar van het duel tussen [\p{L}]+ en [\p{L}]+)\.)/gu)]
     .map(match => match[1]);
   if (details.some(line => line.startsWith('De eerste wedstrijd') && !line.endsWith('in '+opponent+'.'))) return null;
   if (new Set(details).size < 3 || !details.some(line => line.includes('tijdens de loting'))) return null;
