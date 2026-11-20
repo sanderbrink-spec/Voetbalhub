@@ -1,7 +1,7 @@
 'use strict';
 const { draftIssues, paragraphs, compactStructure, standardStructure, storyStyle, previewStyle, previewWritingFacts, previewAssignment, federationCoachStyle, previewStructure, storyIssues } = require('./editorial-desk-model');
 const { headlineContradictions } = require('./editorial-quality');
-const {planEvidenceResearch}=require('./editorial-investigation100b');
+const {buildStoryStrategy}=require('./editorial-newsroom-strategy103');
 // Task-specific free-tier GPT-OSS policy. Source extraction stays fast;
 // writing gets deeper reasoning and the independent review gets high effort.
 const editorialModelTasks=Object.freeze({
@@ -295,7 +295,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
   // Parallel evidence-bound news and context desks: the plan is a writing
   // guide only and cannot become an unsourced claim or an approval.
   const investigation=automaticPublication&&articleKind==='announcement'&&!officialFinal&&!drawBrief?
-   planEvidenceResearch(writerFacts,{topic,compact}):null;
+   buildStoryStrategy(writerFacts,{topic,compact}):null;
   const coachPlan=primaryAuthority==='club_decision'&&String(topic||'').toLocaleLowerCase('nl').includes('hoofdtrainer')&&facts.length>=4;
   const officialPublisher=['club_decision','association_decision'].includes(primaryAuthority)&&sourceUrls.length===1?officialPublisherName(sourceUrls[0]):null;
   const coachStoryline=primaryAuthority==='club_decision'&&/\bhoofdtrainer\b/i.test(topic||'')&&facts.length>=4?
