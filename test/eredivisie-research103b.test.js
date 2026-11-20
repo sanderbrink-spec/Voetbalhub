@@ -3,7 +3,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {research}=require('../scripts/eredivisie-research103b');
-const {validateEvidence,preflightArtwork,plain,overlap}=require('../scripts/automatic-publication');
+const {validateEvidence,preflightArtwork,shouldDraftBeforeArtwork,plain,overlap}=require('../scripts/automatic-publication');
 const {EditorialQueue}=require('../editorial-production45');
 const now=Date.parse('2026-11-20T18:00:00Z');
 const f={id:'example-fixture',home:{name:'FC Groningen'},away:{name:'SC Heerenveen'},
@@ -80,4 +80,20 @@ test('negen beeldblokkades bereiken de rechtencontrole zonder modelverzoek of pu
   providerRouter:{configured:()=>[{enabled:true}],trace:[],hasReviewCapacity:()=>true}});
  assert.equal(report.skipped.filter(r=>r.stage==='artwork').length,9);
  assert.equal(report.counts.aiRequests,0);assert.equal(report.counts.selected,0);
+});
+
+test('104A: alleen geverifieerde clubvoorbeschouwingen mogen vóór beeldvrijgave naar de schrijver',()=>{
+ const verified={kind:'preview',category:'Eredivisie',fixture:f,facts:[
+  {text:'A',evidence:[{source:0,quote:'A'}]},
+  {text:'B',evidence:[{source:0,quote:'B'}]},
+  {text:'C',evidence:[{source:1,quote:'C'}]},
+  {text:'D',evidence:[{source:1,quote:'D'}]}
+ ]};
+ const group=Object.assign([club,league],{clubPreview:verified});
+ assert.equal(shouldDraftBeforeArtwork(group,verified),true);
+ assert.equal(preflightArtwork(group,verified,'FC Groningen – SC Heerenveen').approved,false);
+ assert.equal(shouldDraftBeforeArtwork(group,{...verified,facts:[]}),false);
+ assert.equal(shouldDraftBeforeArtwork(group,{...verified}),false);
+ assert.equal(shouldDraftBeforeArtwork([club,league],verified),false);
+ assert.equal(shouldDraftBeforeArtwork({clubPreview:{...verified,kind:'report'}},{...verified,kind:'report'}),false);
 });
