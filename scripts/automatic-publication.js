@@ -1265,8 +1265,9 @@ function reopenVerifiedDrawCopy339(job,group,now=Date.now()){
  const urls=group?.map(doc=>doc.url).sort();
  if(!job||!candidate||!Array.isArray(urls)||urls.length!==2||
     job.urls?.length!==2||JSON.stringify([...job.urls].sort())!==JSON.stringify(urls)||
-    job.status!=='review'||job.failureStage!=='quality'||
-    job.failureCategory!=='journalistic_rejection'||!(/^[a-f0-9]{64}$/i).test(job.errorHash||'')||
+    job.status!=='review'||job.failureStage!=='generation'||
+    job.failureCategory!=='generator_failure'||
+    job.errorHash!==sha('Concept na herstel nog niet geschikt: Tekst: 3 tot 5 alinea’s, elk minimaal 70 tekens en 18 tot 120 woorden.')||
     job.drawCopyRecovery339||!Number.isFinite(at)||at>now||
     now-at>Math.min(config.maxAgeHours,48)*3600000||
     !drawWritingBrief(candidate.facts?.map(f=>f.text))||
