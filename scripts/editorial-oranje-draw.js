@@ -66,25 +66,32 @@ function oranjeDrawGroup(knvb, documents, now) {
       portugalGroupSeen:Boolean(contextual?.text?.includes('Group A4 winners'))
     };
     if(contextual&&opponent==='Portugal'){
-      const select=(team,qualification,performance='')=>{
-        // Exact evidence substring, not inferred football status. A country
-        // section can include image captions and link text before the label.
-        const normalized=String(contextual.text||'').replace(/\\s+/gu,' ');
-        const target=qualification.replace(/\\s+/gu,' ');
-        const at=normalized.indexOf(target);
+      const select=(team,groupLabel,performance='')=>{
+        // UEFA's web presentation may separate the "How they qualified"
+        // label, colon and group result with markup. Match the literal group
+        // result while requiring its country heading and qualification label.
+        // Never infer a missing country or qualifying position.
+        const normalized=String(contextual.text||'').replace(/\s+/gu,' ');
+        const at=normalized.indexOf(groupLabel);
         if(at<0)return '';
-        const prefix=normalized.slice(Math.max(0,at-750),at);
-        const index=prefix.lastIndexOf(team);
-        if(index<0)return '';
-        const from=at-prefix.length+index;
-        const end=at+target.length;
-        const after=normalized.slice(end,end+performance.length);
-        const quote=normalized.slice(from,end)+(performance&&after===performance?after:'');
+        const labelAt=normalized.lastIndexOf('How they qualified',at);
+        if(labelAt<0||at-labelAt>110)return '';
+        const teamAt=normalized.lastIndexOf(team,labelAt);
+        if(teamAt<0||labelAt-teamAt>700)return '';
+        let end=at+groupLabel.length;
+        // Include the historical titles only when the precise UEFA passage
+        // follows immediately after the same country's qualification.
+        const suffix=normalized.slice(end,end+performance.length);
+        if(performance&&suffix===performance)end+=performance.length;
+        const quote=normalized.slice(teamAt,end);
         return quote.length>=35&&quote.length<=750?quote:'';
       };
-      const dutch=select('Netherlands','How they qualified: Group A2 runners-up');
-      const portuguese=select('Portugal','How they qualified: Group A4 winners',
+      const dutch=select('Netherlands','Group A2 runners-up');
+      const portuguese=select('Portugal','Group A4 winners',
         ' Best Nations League performance: Winners (2018/19, 2024/25)');
+      group.profileDiagnostics.dutchQualificationLabelSeen=Boolean(contextual.text.includes('How they qualified'));
+      group.profileDiagnostics.dutchFactFound=Boolean(dutch);
+      group.profileDiagnostics.portugalFactFound=Boolean(portuguese);
       if(dutch&&portuguese){
         group.profileDiagnostics.attached=true;
         group.push(contextual);
