@@ -3,7 +3,7 @@
 // P3/102F: source quotations remain in the reviewer ledger, not the writer's
 // prose context. Only call this after the official KNVB/UEFA evidence gate.
 function drawWritingBrief(facts) {
- if (!Array.isArray(facts) || facts.length < 4 || facts.length > 8 ||
+ if (!Array.isArray(facts) || facts.length < 4 || facts.length > 10 ||
      facts.some(x => typeof x !== 'string')) return null;
  const find = pattern => facts.find(x => pattern.test(x)) || '';
  const event = find(/^(?:Oranje|Nederland) speelt in de kwartfinale van de Nations League (?:twee keer )?tegen /u);
@@ -18,6 +18,18 @@ function drawWritingBrief(facts) {
  const conditional = find(/^In een eventuele halve finale treft Oranje de winnaar van het duel tussen /u);
  const semis = conditional ? /^In een eventuele halve finale treft Oranje de winnaar van het duel tussen ([\p{L} -]+) en ([\p{L} -]+)\./u.exec(conditional) : null;
  if (conditional && !semis) return null;
+ // The added context is admitted only when the original UEFA wording
+ // describes this same opponent and a provable tournament consequence.
+ const translated={Spanje:'Spain',Frankrijk:'France',Duitsland:'Germany',
+  Engeland:'England',België:'Belgium',Noorwegen:'Norway',
+  Italië:'Italy',Kroatië:'Croatia',Denemarken:'Denmark',Zwitserland:'Switzerland'};
+ const titleholder=find(/^Netherlands take on titleholders [A-Za-z -]+$/u);
+ const titleCountry=/^Netherlands take on titleholders ([A-Za-z -]+)$/u.exec(titleholder)?.[1];
+ if(titleholder && titleCountry!==(translated[opponent]||opponent))return null;
+ const leg=find(/^The quarter-finals are two-legged ties and take place in March 20\d{2}\.$/u);
+ const year=/^The quarter-finals are two-legged ties and take place in March (20\d{2})\.$/u.exec(leg)?.[1];
+ if(year && month!=='maart')return null;
+ const finals=find(/^Winners advance to the Nations League finals\.$/u);
  const byId = x => 'F' + (facts.indexOf(x) + 1);
  const cards = [
   {id:byId(event),role:'lotingsbesluit',land:'Nederland',tegenstander:opponent,ronde:'kwartfinale',competitie:'Nations League',duels:2},
@@ -26,11 +38,15 @@ function drawWritingBrief(facts) {
   {id:byId(drawing),role:'loting',dag:draw[1],plaats:draw[2],...(draw[3]?{land:draw[3]}:{})}
  ];
  if (semis) cards.push({id:byId(conditional),role:'uitsluitend voorwaardelijk vervolg',voorwaarde:'alleen bij bereiken halve finale',tegenstander:'winnaar van '+semis[1]+' tegen '+semis[2]});
+ if(titleholder)cards.push({id:byId(titleholder),role:'sportieve inzet',gegeven:opponent+' is de regerend Nations League-winnaar'});
+ if(leg)cards.push({id:byId(leg),role:'officiële UEFA-speelperiode',maand:'maart',jaar:Number(year),vorm:'heen- en terugwedstrijd'});
+ if(finals)cards.push({id:byId(finals),role:'sportief toernooigevolg',gegeven:'winnaar kwartfinale plaatst zich voor de Nations League-finaleronde'});
  if (new Set(cards.map(x=>x.id)).size !== cards.length || cards.length !== facts.length) return null;
  return {
   factCards:cards,
-  plan:{opening:[byId(event)],alinea1:[byId(locations),byId(schedule)],
-   alinea2:[byId(drawing),...(semis?[byId(conditional)]:[])]},
+  plan:{opening:[byId(event),...(titleholder?[byId(titleholder)]:[])],
+   alinea1:[byId(locations),byId(schedule),...(leg?[byId(leg)]:[])],
+   alinea2:[byId(drawing),...(semis?[byId(conditional)]:[]),...(finals?[byId(finals)]:[])]},
   forbiddenInference:['geen exacte speeldatum','geen uitslag','geen automatische halvefinaleplaats','geen zelfbedachte tegenstander']
  };
 }
