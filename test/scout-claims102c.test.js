@@ -67,3 +67,21 @@ test('102C ontbrekend of vervalst zinsbewijs en onbekende bronindex blokkeren',(
   assert.ok(C.checkReview(rows,{claims},docs,selection).issues.length);
  }
 });
+test('102C productiereplay behoudt ED-ontkenning en verwijdert onbewezen handtekening en registerdatum',()=>{
+ const line='Het Eindhovens Dagblad ontkent dat er een gesprek met de PSV-leiding was (VoetbalPrimeur, 17 november 2026).';
+ const copy={headline:'Geen officiële bevestiging van de transfer',standfirst:'Een toekomstige overstap naar PSV is rond.',body:[
+ 'De Bruyne speelde vier wedstrijden en 360 minuten (UEFA, 20 nov 2026) en gaf één assist (UEFA, 20 nov 2026).',
+ line,'La Gazzetta meldt dat er nog geen ondertekende overeenkomst is (VoetbalPrimeur).']};
+ const {beforeReview}=C.prepareRevision(copy,docs,selection);
+ assert.deepEqual(beforeReview.body,['De Bruyne speelde vier wedstrijden en 360 minuten en gaf één assist.',line]);
+ assert.deepEqual(review(line,C.types.media,[2],'Eindhovens Dagblad via VoetbalPrimeur').issues,[]);
+ assert.ok(review(line,C.types.media,[2],'Eindhovens Dagblad via Andere Krant').issues.length);
+});
+test('102C extra revisie kan nooit naar betaalde OpenAI of onbevestigde providers uitwijken',async()=>{
+ const {EditorialProviderRouter}=require('../editorial-provider-router');
+ let calls=0;
+ const router=new EditorialProviderRouter({openaiKey:'configured',groqKey:'configured',geminiKey:'unconfirmed',
+  fetcher:async()=>{calls++;throw Error('Onverwacht netwerkverzoek.');}});
+ await assert.rejects(router.complete([],{task:'revision',freeOnly:true}),{code:'EDITORIAL_AI_UNAVAILABLE'});
+ assert.equal(calls,0);
+});

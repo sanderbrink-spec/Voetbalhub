@@ -74,7 +74,7 @@ class EditorialProviderRouter{
   // Serialize callers sharing a capacity ledger; reserve before issuing I/O.
   const next=this.pending.then(()=>this._complete(messages,options));this.pending=next.catch(()=>{});return next;
  }
- async _complete(messages,{task='extraction',requestOptions={},signal,writer=this.lastWriter,articleId=this.articleId||null}={}){
+ async _complete(messages,{task='extraction',requestOptions={},freeOnly=false,signal,writer=this.lastWriter,articleId=this.articleId||null}={}){
   const spec=TASKS[task];if(!spec)throw new RangeError('Onbekende redactietaak');
   const attempts=[],estimate=Math.ceil(JSON.stringify(messages).length/3)+spec.budget;
   // Prefer the existing stronger GPT-OSS writer; reserve OpenAI where possible
@@ -82,6 +82,7 @@ class EditorialProviderRouter{
   let order=task==='review'||(this.preferOpenAIWriter&&['writing','revision'].includes(task))
    ?['openai','groq','gemini','openrouter']:['groq','openai','gemini','openrouter'];
   if(task==='review'&&writer)order.sort((a,b)=>((a===writer.provider?2:(a==='gemini'?'gemini':a==='openai'?'openai':'gpt-oss')===writer.family?1:0)-(b===writer.provider?2:(b==='gemini'?'gemini':b==='openai'?'openai':'gpt-oss')===writer.family?1:0)));
+  if(freeOnly)order=order.filter(p=>p==='gemini'||p==='openrouter');
   for(const provider of order){
    if(signal?.aborted)throw signal.reason;
    if(!this.keys[provider]||(provider==='gemini'&&!this.geminiFreeTierConfirmed))continue;

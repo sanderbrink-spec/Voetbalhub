@@ -47,11 +47,13 @@ function sentences(draft){
 
 const confirmation=/\b(?:tekent bij|heeft getekend|transfer is (?:rond|bevestigd)|(?:overstap|komst) (?:is|staat) vast|is (?:definitief )?rond|officialiseert|heeft .* vastgelegd|geen (?:officiële )?bevestiging|niet (?:officieel )?bevestigd door|nergens bevestigd)\b/i;
 const transfer=/\b(?:transfer\w*|overstap|gesprek\w*|belangstelling|interesse|onderhandel\w*|bieding|akkoord|geboden|openingsbod|vraagprijs|miljoen|euro)\b/i;
-const attribution=/\b(?:volgens|meld\w*|schr(?:ijft|eef)|bericht\w*|rapporte\w*|citeert|aldus|tekent op|leest|signaleert|noemt|beschrijft)\b/i;
+const attribution=/\b(?:volgens|meld\w*|ontkent|ontkracht|schr(?:ijft|eef)|bericht\w*|rapporte\w*|citeert|aldus|tekent op|leest|signaleert|noemt|beschrijft)\b/i;
 const amount=/€\s*[\d.,]+|(?:\d+(?:[.,]\d+)?|[\p{L}]+)(?:\s+(?:en een half|en een halve))?\s+(?:miljoen|miljard|ton|euro)\b/giu;
 function hardIssue(text,docs,selection){
  if(/\b(?:onafhankelijke (?:bronnen|meldingen|bevestigingen)|onafhankelijk van elkaar|los van elkaar)\b/i.test(text))return 'Onafhankelijkheid van de oorspronkelijke melders is niet aangetoond.';
  if(confirmation.test(text))return 'Formele transferstatus of algemene afwezigheid van bevestiging valt buiten het onderzochte bewijs.';
+ if(/\bgeen (?:ondertekende overeenkomst|(?:getekend|ondertekend) (?:akkoord|contract))\b/i.test(text))
+  return 'Een ontbrekende handtekening volgt niet uit berichtgeving over de vraagprijs.';
  if(!has(text,selection.destination)&&!transfer.test(text))return null;
  const sources=docs.filter(d=>d.kind==='media'&&(has(text,d.publisher)||(d.publisher==='Voetbal International'&&has(text,'VI'))));
  if(!sources.length||!attribution.test(text))return 'Een gedateerde mediamelding vereist toeschrijving in dezelfde zin.';
@@ -65,6 +67,15 @@ function prune(draft,rows,removed){
   return subset.some(r=>removed.has(r.id))?subset.filter(r=>!removed.has(r.id)).map(r=>r.text).join(' '):block;
  });
  return {headline:blocks[0],standfirst:blocks[1],body:blocks.slice(2).filter(Boolean)};
+}
+
+function prepareRevision(draft,docs,selection){
+ // A parenthetical access date is not part of a statistic in an undated register.
+ const clean=part=>part.replace(/\s*\(UEFA,\s*\d{1,2}\s+(?:jan|feb|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec)[\p{L}.]*\s+\d{4}\)/giu,'');
+ const copy={headline:clean(draft.headline),standfirst:clean(draft.standfirst),body:draft.body.map(clean)};
+ const rows=sentences(copy);
+ const removed=rows.map(r=>({...r,reason:hardIssue(r.text,docs,selection)})).filter(r=>r.reason);
+ return {removed,beforeReview:prune(copy,rows,new Set(removed.map(r=>r.id)))};
 }
 
 // The reviewer classifies every supplied sentence, chooses literal evidence IDs
@@ -86,7 +97,13 @@ function checkReview(rows,review,docs,selection){
   const cited=citations.map(c=>docs[c.source]);
   const isMedia=claim.type!==types.official;
   if(isMedia){
-   const origin=typeof claim.origin==='string'?claim.origin.trim():'';
+   // A reviewer can return both links in the chain. Verify the outlet against
+   // the cited document, then check the original reporter against its text.
+   const chain=typeof claim.origin==='string'?claim.origin.trim().split(/\s+via\s+/i):[];
+   const [origin,outlet]=chain;
+   if(chain.length>2||(outlet&&!cited.some(d=>has(d.publisher,outlet)))){
+    issues.push('Oncontroleerbare doorplaatsing bij '+row.id);continue;
+   }
    if(!origin||(origin.toLowerCase()!=='onbekend'&&!cited.some(d=>
       has(d.text,origin)||d.publisher===origin||d.byline===origin))){
     issues.push('Oncontroleerbare oorspronkelijke melder bij '+row.id);continue;
@@ -106,4 +123,4 @@ function checkReview(rows,review,docs,selection){
  }
  return {issues,removed,used};
 }
-module.exports={types,researchMedia,sentences,prune,hardIssue,checkReview};
+module.exports={types,researchMedia,sentences,prune,hardIssue,prepareRevision,checkReview};
