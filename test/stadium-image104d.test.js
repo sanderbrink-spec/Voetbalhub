@@ -41,3 +41,26 @@ test('104D: juiste club en preview, geen verslag of andere thuisclub',()=>{
  const report=images.resolve({...preview,articleKind:'match_report'});
  assert.notEqual(report.article?.imageAssetId,artwork.id);
 });
+
+test('104D: alleen verzegeld oud previewconcept wordt eenmaal hervat wanneer rechtenbeeld beschikbaar is',()=>{
+ const {reopenApprovedClubPreviewArtwork104D}=require('../scripts/automatic-publication');
+ const fixture=preview.fixture;
+ const candidate={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
+  fixture,kickoff:Date.parse(fixture.date),facts:Array.from({length:5},(_,i)=>({text:'F'+i,evidence:[{source:0}]}))};
+ const group=Object.assign([{url:'https://fcgroningen.nl/nieuws/',title:candidate.topic}],{clubPreview:candidate});
+ const now=Date.parse('2026-11-20T23:15:00Z');
+ const job={clubPreviewId:'sm-19714591',status:'retry',failureStage:'artwork',
+  failureCategory:'missing_approved_artwork',reason:'awaiting_approved_artwork',
+  nextAttemptAt:now+6*3600000,checkpoint:'sealed-reviewed-manuscript'};
+ assert.equal(reopenApprovedClubPreviewArtwork104D(job,group,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.nextAttemptAt,now);
+ assert.equal(job.checkpoint,'sealed-reviewed-manuscript');
+ assert.equal(reopenApprovedClubPreviewArtwork104D(job,group,now),false);
+ const other={...job,status:'retry',failureStage:'artwork',
+  failureCategory:'missing_approved_artwork',reason:'awaiting_approved_artwork',artworkReadyRecovery104D:false};
+ assert.equal(reopenApprovedClubPreviewArtwork104D(other,{...group,clubPreview:{...candidate,fixture:{...fixture,id:'sm-19714592'}}},now),false);
+ assert.equal(reopenApprovedClubPreviewArtwork104D({...other,checkpoint:null},group,now),false);
+ assert.equal(reopenApprovedClubPreviewArtwork104D({...other,status:'review'},group,now),false);
+ assert.equal(reopenApprovedClubPreviewArtwork104D({...other},group,Date.parse(fixture.date)+1000),false);
+});
