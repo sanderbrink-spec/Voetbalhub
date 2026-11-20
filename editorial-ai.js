@@ -229,6 +229,23 @@ function repairUnsupportedDecisionTimestamp(draft,facts=[],sourceUrl='',authorit
  return evidenceIssues(candidate,facts,null,sourceUrl).some(x=>x.includes('publicatietijdstip'))?draft:candidate;
 }
 
+// Correct only proven Dutch terminology. This cannot add a new fact.
+function repairVerifiedDrawStyle(draft,drawBrief){
+ if(!draft||!Array.isArray(draft.body)||!Array.isArray(drawBrief?.factCards))return draft;
+ const hasFinals=drawBrief.factCards.some(card=>card.role==='sportief toernooigevolg'&&
+  card.gegeven==='winnaar kwartfinale plaatst zich voor de Nations League-finaleronde');
+ const hasTwoLegs=drawBrief.factCards.some(card=>card.role==='officiële UEFA-speelperiode'&&card.vorm==='heen- en terugwedstrijd');
+ if(!hasFinals&&!hasTwoLegs)return draft;
+ const rewrite=value=>{
+  if(typeof value!=='string')return value;
+  let result=value;
+  if(hasFinals)result=result.replace(/Nations League[-‐‑‒–—]finaleronde/gu,'finaleronde van de Nations League');
+  if(hasTwoLegs)result=result.replace(/twee[-‐‑‒–—]?legige confrontatie/giu,'tweeluik');
+  return result;
+ };
+ const updated={...draft,headline:rewrite(draft.headline),standfirst:rewrite(draft.standfirst),body:draft.body.map(rewrite)};
+ return JSON.stringify(updated)===JSON.stringify(draft)?draft:updated;
+}
 class DraftError extends Error {
   constructor(status, message, retryAfter) { super(message); this.status=status; this.retryAfter=retryAfter; }
 }
@@ -296,7 +313,7 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Kop: noem de bevestigde tegenstander als concreet lotingsnieuws, bijvoorbeeld dat Oranje Portugal treft. Gebruik geen onnatuurlijke formulering als trekt de kwartfinale of krijgt een kwartfinalist.',
     'Intro: beschrijf het door de loting vaststaande tweeluik. Maak het sportief interessant: als factCards expliciet aangeven dat Portugal de titel verdedigt, noem dat als bewezen inzet in de opening. Vermeld de lotingsdag en plaats alleen hier, indien bewezen. Zet niet al alle vervolginformatie in de intro.',
     'Bodyalinea één: beschrijf de speelvolgorde en de door UEFA gecontroleerde maand en eventueel het jaartal. Schrijf terugwedstrijd, niet terugkeer of eerste leg. Herhaal de lotingsplaats, tegenstander en -dag niet.',
-    'Bodyalinea twee: leg de concrete inzet van de kwartfinale uit als factCards de plaatsing voor de finaleronde bevestigen, en daarna de uitsluitend eventuele halvefinaletegenstander. Maak de voorwaarde expliciet. Geef geen vaststaande halvefinaleplaats, nieuw tegenstanderfeit of voorspelling.',
+    'Bodyalinea twee: leg de concrete inzet van de kwartfinale uit als factCards de plaatsing voor de finaleronde bevestigen, en daarna de uitsluitend eventuele halvefinaletegenstander. Maak de voorwaarde expliciet. Schrijf finaleronde van de Nations League, nooit Nations League-finaleronde. Geef geen vaststaande halvefinaleplaats, nieuw tegenstanderfeit of voorspelling.',
     'Vertel een samenhangend nieuwsbericht met het bevestigde sportieve belang centraal, geen losse kalenderzinnen of opsomming. Verdeel de feiten over de onderdelen zonder dezelfde gebeurtenis opnieuw te formuleren. Gebruik elk nieuw sportief contextfeit hoogstens eenmaal. Als die context ontbreekt, kies een kort bericht of skip.',
     'Noem geen exacte speeldatum, uitslag, quote, extra land, selectie of analyse. Schrijf geen reeks van tien opeenvolgende bronwoorden over.',
     'Schrijf zelfstandig, niet als letterlijke vertaling of doorlopende samenvatting van bronzinnen. Twee sterke alinea\'s zijn beter dan drie herhalende alinea\'s.',
@@ -424,6 +441,8 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     let draft=rawDraft?.skip?rawDraft:attachVerifiedOfficialAttribution(rawDraft,{primaryAuthority,sourceUrls,facts});
     if(automaticPublication&&officialPublisher&&!draft?.skip)
      draft=repairUnsupportedDecisionTimestamp(draft,facts,sourceUrls[0],primaryAuthority);
+    if(automaticPublication&&drawBrief&&!draft?.skip)
+     draft=repairVerifiedDrawStyle(draft,drawBrief);
     if(draft?.skip){
      const sufficientSelectionEvidence=automaticPublication&&primaryAuthority==='association_decision'&&facts.length>=4;
      const sufficientCoachEvidence=automaticPublication&&coachPlan&&officialPublisher&&facts.length>=7&&
@@ -465,5 +484,5 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     messages.push({role:'assistant',content:String(text).slice(0,12000)},{role:'user',content:isOfficialFinal?officialFinalWritingGuide+' Herbouw de tekst met de bestaande feiten en los deze controlepunten op door het onbewezen detail weg te laten of te vervangen door een ander bewezen feit: '+issues.join(' '):'Herstel uitsluitend de onderstaande problemen met dezelfde aangeleverde feiten. Voeg geen nieuwe feiten of cijfers toe. Als herstel meer feiten vereist, geef {"skip":true,"reason":"onvoldoende feiten"}. Controlepunten: '+issues.join(' ')});
   }
 }
-module.exports={officialFinalWritingGuide,repairUnsupportedDecisionTimestamp,attachVerifiedOfficialAttribution,createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
+module.exports={repairVerifiedDrawStyle,officialFinalWritingGuide,repairUnsupportedDecisionTimestamp,attachVerifiedOfficialAttribution,createEditorialDraft,DraftError,normalizeDraft,generationIssues,groqEditorialOptions,editorialAssignment,officialPublisherName,editorialAttributionIssues,officialCoachStructureIssues,unsupportedInterpretationIssues,unverifiedTimelineAndRoles,mayDelegateLeadOverlap};
 
