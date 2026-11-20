@@ -139,3 +139,21 @@ test('342: voorwaardelijke winst in toekomstige kwartfinale is geen gespeelde ui
  assert.equal(F.needsMatch({...draft,body:[...draft.body,'De eindstand is 1-0.']}),true);
  assert.equal(F.needsMatch({headline:'Oranje verslaat Portugal in de kwartfinale'}),true);
 });
+
+test('104F: geverifieerde assistent-titel plus volledige naam is geen verzonnen persoon',()=>{
+ const facts=[
+  'Zo leidt de assistent-trainer de afsluitende trainingen in aanloop naar het thuisduel met sc Heerenveen.',
+  'Casper Goedkoop zal voor het eerst in zijn periode als trainer bij FC Groningen hoofdtrainer Dick Lukkien vervangen.'
+ ];
+ const draft={headline:'Assistent-trainer Casper Goedkoop leidt derbytraining',
+  standfirst:'Casper Goedkoop leidt de trainingen voor het duel.',
+  body:['De assistent-trainer heeft tijdens de voorbereiding de leiding.']};
+ const issues=F.evidenceIssues(draft,facts);
+ assert.ok(!issues.some(x=>x.includes('Assistent-trainer Casper')),'bewezen volledige persoonsnaam moet slagen');
+ for(const headline of ['Assistent-trainer Casper Fantasie leidt training','Assistent-trainer Casper leidt training']){
+  const altered=F.evidenceIssues({...draft,headline},facts);
+  assert.ok(altered.some(x=>x.includes('Assistent-trainer Casper')),'onbewezen of onvolledige naam moet blokkeren');
+ }
+ const noRole=F.evidenceIssues(draft,[facts[1]]);
+ assert.ok(noRole.some(x=>x.includes('Assistent-trainer Casper')),'niet-bewezen functietitel mag niet worden geaccepteerd');
+});
