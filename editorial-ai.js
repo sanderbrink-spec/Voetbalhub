@@ -235,12 +235,15 @@ function repairVerifiedDrawStyle(draft,drawBrief){
  const hasFinals=drawBrief.factCards.some(card=>card.role==='sportief toernooigevolg'&&
   card.gegeven==='winnaar kwartfinale plaatst zich voor de Nations League-finaleronde');
  const hasTwoLegs=drawBrief.factCards.some(card=>card.role==='officiële UEFA-speelperiode'&&card.vorm==='heen- en terugwedstrijd');
- if(!hasFinals&&!hasTwoLegs)return draft;
+ const hasTitleholder=drawBrief.factCards.some(card=>card.role==='sportieve inzet'&&
+  /regerend winnaar van de Nations League/.test(card.gegeven));
+ if(!hasFinals&&!hasTwoLegs&&!hasTitleholder)return draft;
  const rewrite=value=>{
   if(typeof value!=='string')return value;
   let result=value;
   if(hasFinals)result=result.replace(/Nations League[-‐‑‒–—]finaleronde/gu,'finaleronde van de Nations League');
   if(hasTwoLegs)result=result.replace(/twee[-‐‑‒–—]?legige confrontatie/giu,'tweeluik');
+  if(hasTitleholder)result=result.replace(/Nations League[-‐‑‒–—](?:winnaar|kampioen|titelhouder)/giu,'winnaar van de Nations League');
   return result;
  };
  const updated={...draft,headline:rewrite(draft.headline),standfirst:rewrite(draft.standfirst),body:draft.body.map(rewrite)};
@@ -337,12 +340,12 @@ async function createEditorialDraft({topic,category,facts,sourceUrls,recentHeadl
     'Je schrijft een origineel Nederlandstalig voetbalartikel vanuit een gestaafd Oranje-lotingsdossier met KNVB en twee UEFA-documenten.',
     'Gebruik uitsluitend drawBrief.factCards en het driedelige plan. Bronbewijzen blijven buiten jouw tekst; verzin geen ander voetbalfeit.',
     'Lever JSON met headline (5-14 woorden), standfirst (8-35 woorden), body met PRECIES drie verschillende alinea’s van 18-120 woorden en minimaal 70 tekens.',
-    'Kop en intro melden de actuele loting en maken duidelijk dat Nederland het opneemt tegen regerend Nations League-winnaar Portugal. De KNVB-lotingsplaats mag uitsluitend in de intro staan.',
+    'Kop en intro melden de actuele loting en maken duidelijk dat Nederland het opneemt tegen Portugal, de regerend winnaar van de Nations League. De KNVB-lotingsplaats mag uitsluitend in de intro staan.',
     'Alinea 1: gebruik de bevestigde tweede plaats van Nederland in groep A2 en de groepswinst van Portugal in A4 als sportieve context. Noem Portugese eerdere Nations League-titels uitsluitend indien de betreffende factCard dat bewijst. Geen voorspelling.',
     'Alinea 2: beschrijf maart 2027 en het feitelijk vastgestelde thuisduel en de return in Portugal. Geen exacte datum of stadion verzinnen.',
     'Alinea 3: leg uit dat de kwartfinalewinnaar de finaleronde bereikt. De mogelijke halvefinaletegenstander is UITSLUITEND voorwaardelijk, volgens de loting.',
     'Schrijf één logisch verhaal; herhaal de loting, tegenstander of kwalificatie niet als hoofdfeit in elke alinea.',
-    'Geen opvulzinnen, kale kalenderopsomming, veronderstelde speelwijze of verzonnen citaten. Zeg finaleronde van de Nations League, niet Nations League-finaleronde. Gebruik tweeluik, niet twee-legige confrontatie.',
+    'Geen opvulzinnen, kale kalenderopsomming, veronderstelde speelwijze of verzonnen citaten. Verbind groepswinst niet causaal aan de status van titelhouder; geen suggestie dat het tweeluik een eerlijk speelveld garandeert. Claim niet dat exacte speeldagen onbekend zijn als het dossier die niet vermeldt. Gebruik korte, natuurlijke Nederlandse zinnen. Zeg finaleronde van de Nations League, niet Nations League-finaleronde. Gebruik tweeluik, niet twee-legige confrontatie.',
     'Bij onvoldoende drie zelfstandige feitenclusters: {"skip":true}. Alle kwaliteitspoorten blijven bindend.'
    ].join(' ');
   }
