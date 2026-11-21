@@ -182,7 +182,10 @@ function classifyFinalStatus105A(report,{editorialBlocker,sourcesUnavailable=fal
 function publicationBlocker(report){
  const c=report?.counts||{};
  if(c.published>0)return null;
- if(c.uniqueGroups>0&&c.queued===0&&c.attempted===0&&report.queue?.awaitingApprovedArtwork>0)
+ // queued counts jobs that were due before preflight, not actual writing
+ // attempts. All image-blocked jobs are still queued for their later retry.
+ const blockedByImageThisRun=(report.skipped||[]).some(item=>item.stage==='artwork');
+ if(c.uniqueGroups>0&&c.attempted===0&&blockedByImageThisRun&&report.queue?.awaitingApprovedArtwork>0)
   return 'editorial_waiting_for_artwork';
  if(c.uniqueGroups>0&&c.queued===0&&c.attempted===0&&report.queue?.review>0)
   return 'editorial_stalled';

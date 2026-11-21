@@ -13,7 +13,7 @@ test('105A reports image-deferred matches and their next retry without changing 
  assert.equal(queue.awaitingApprovedArtwork,1);
  assert.deepEqual(queue.artworkDossiers,[{matchId:'sm-19715873',clubPreviewId:null,nextAttemptAt:new Date(now-60000).toISOString(),due:true}]);
  assert.equal(queue.technicalReview,1);
- const report={counts:{uniqueGroups:11,queued:0,attempted:0,published:0},queue,processingErrors:[],published:[]};
+ const report={counts:{uniqueGroups:11,queued:0,attempted:0,published:0},queue,skipped:[{stage:'artwork',reason:'Geen passend goedgekeurd artikelbeeld beschikbaar.'}],processingErrors:[],published:[]};
  const blocker=publicationBlocker(report);
  assert.equal(blocker,'editorial_waiting_for_artwork');
  assert.equal(classifyFinalStatus105A(report,{editorialBlocker:blocker}),'editorial_waiting_for_artwork');
@@ -40,4 +40,20 @@ test('105A matching image gate defers only unillustrated fixtures, never ordinar
  assert.deepEqual(missing,{blocked:true,reason:'No club-specific approved stadium photo',matchId:'sm-19715873'});
  assert.equal(matchArtworkPreflight105A(group,()=>({checked:true,approved:true})).blocked,false);
  assert.equal(matchArtworkPreflight105A([{title:'Official club decision'}],()=>{throw Error('No fixture image needed')}).blocked,false);
+});
+
+test('105A real scenario: 10 initially queued match stories can all block on images without false success',()=>{
+ const report={
+  counts:{uniqueGroups:12,queued:10,attempted:0,generated:0,published:0},
+  queue:{review:25,retry:10,technicalReview:1,awaitingApprovedArtwork:10},
+  skipped:Array.from({length:10},(_,i)=>({topic:'fixture-'+i,stage:'artwork',reason:'Geen passend goedgekeurd artikelbeeld beschikbaar.'})),
+  processingErrors:[],published:[]
+ };
+ const blocker=publicationBlocker(report);
+ assert.equal(blocker,'editorial_waiting_for_artwork');
+ assert.equal(classifyFinalStatus105A(report,{editorialBlocker:blocker}),'editorial_waiting_for_artwork');
+ const {runExitCode}=require('../scripts/automatic-publication');
+ assert.equal(runExitCode({...report,status:blocker,outcome:'editorial_blocked',validationOnly:false},{}),1);
+ const noCurrentHold={...report,skipped:[]};
+ assert.notEqual(publicationBlocker(noCurrentHold),'editorial_waiting_for_artwork');
 });
