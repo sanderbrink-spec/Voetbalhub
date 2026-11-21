@@ -166,12 +166,12 @@ function extractPage(html,url,responseDate){
   new URL(url).pathname.startsWith('/uefanationsleague/news/')&&
   new URL(url).pathname.includes('get-to-know-the-eight');
  const sourceLimit=officialProfile?30000:14000;
- // The ordinary HTML sanitizer removes site <header> blocks. On UEFA's
+ // The ordinary sanitizer removes site <header> blocks. On UEFA's
  // multi-team profile these can also contain the actual <h3> country labels,
  // leaving qualification lines orphaned. Preserve ONLY the two exact team
  // headings from this known official profile, not navigation or other markup.
- const mainWithTeamLabels=officialProfile?main.replace(/<header\\b[^>]*>[\\s\\S]*?<\\/header>/gi,block=>{
-  const heading=block.match(/<h[2-6]\\b[^>]*>([\\s\\S]*?)<\\/h[2-6]>/i)?.[1]||'';
+ const mainWithTeamLabels=officialProfile?main.replace(/<header\b[^>]*>[\s\S]*?<\/header>/gi,block=>{
+  const heading=block.match(/<h[2-6]\b[^>]*>([\s\S]*?)<\/h[2-6]>/i)?.[1]||'';
   const country=plain(heading);
   return /^(?:Netherlands|Portugal)$/.test(country)?' '+country+' ':block;
  }):main;
