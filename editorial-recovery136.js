@@ -154,13 +154,40 @@ function reopenUtrechtNecVerifiedGoalClauseV71(job,record,now=Date.now()){
  return true;
 }
 
+// Fase 105A: distinguish old queue records from failures in this run.
+function summarizeQueue105A(records=[],now=Date.now(),focusSourceUrl){
+ const review=records.filter(j=>j.status==='review');
+ const retry=records.filter(j=>j.status==='retry');
+ const technical=review.filter(j=>j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&
+  (!focusSourceUrl||j.urls?.[0]===focusSourceUrl));
+ const artwork=retry.filter(j=>j.failureCategory==='missing_approved_artwork'&&
+  j.reason==='awaiting_approved_artwork');
+ return {
+  review:review.length,retry:retry.length,technicalReview:technical.length,
+  awaitingApprovedArtwork:artwork.length,
+  artworkDossiers:artwork.slice(0,20).map(j=>({
+   matchId:j.matchId||null,clubPreviewId:j.clubPreviewId||null,
+   nextAttemptAt:Number.isFinite(j.nextAttemptAt)?new Date(j.nextAttemptAt).toISOString():null,
+   due:Number.isFinite(j.nextAttemptAt)&&j.nextAttemptAt<=now
+  }))
+ };
+}
+function classifyFinalStatus105A(report,{editorialBlocker,sourcesUnavailable=false}={}){
+ // Backlog failures remain visible as queue.technicalReview but never pretend
+ // to be an error thrown during a fresh run with no processing attempts.
+ if(report.processingErrors?.length)return 'processing_errors';
+ if(report.published?.length)return 'completed';
+ return editorialBlocker||(sourcesUnavailable?'sources_unavailable':'no_new_verified_articles');
+}
 function publicationBlocker(report){
  const c=report?.counts||{};
  if(c.published>0)return null;
+ if(c.uniqueGroups>0&&c.queued===0&&c.attempted===0&&report.queue?.awaitingApprovedArtwork>0)
+  return 'editorial_waiting_for_artwork';
  if(c.uniqueGroups>0&&c.queued===0&&c.attempted===0&&report.queue?.review>0)
   return 'editorial_stalled';
  if(c.generated>0&&c.approved===0&&c.published===0)
   return 'editorial_rejected';
  return null;
 }
-module.exports={REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,reopenUtrechtNecDualScorerV71,reopenUtrechtNecVerifiedGoalClauseV71,publicationBlocker};
+module.exports={summarizeQueue105A,classifyFinalStatus105A,REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,reopenUtrechtNecDualScorerV71,reopenUtrechtNecVerifiedGoalClauseV71,publicationBlocker};
