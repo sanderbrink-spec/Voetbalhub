@@ -45,7 +45,7 @@ test('343: verified UEFA context contributes original title-holder and competiti
   assert.equal(fact.text,fact.evidence[0].quote);
  const brief=drawWritingBrief(facts.map(f=>f.text));
  assert.equal(brief.factCards.length,8);
- assert.equal(brief.factCards.find(x=>x.role==='sportieve inzet').gegeven,'Portugal is de regerend Nations League-winnaar');
+ assert.equal(brief.factCards.find(x=>x.role==='sportieve inzet').gegeven,'Portugal is de regerend winnaar van de Nations League');
  assert.equal(brief.factCards.find(x=>x.role==='officiële UEFA-speelperiode').jaar,2027);
  assert.match(brief.factCards.find(x=>x.role==='sportief toernooigevolg').gegeven,/finaleronde/);
  assert.equal(brief.factCards.find(x=>x.role==='uitsluitend voorwaardelijk vervolg').voorwaarde,'alleen bij bereiken halve finale');

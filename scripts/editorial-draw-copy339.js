@@ -41,7 +41,7 @@ function drawWritingBrief(facts) {
   {id:byId(drawing),role:'loting',dag:draw[1],plaats:draw[2],...(draw[3]?{land:draw[3]}:{})}
  ];
  if (semis) cards.push({id:byId(conditional),role:'uitsluitend voorwaardelijk vervolg',voorwaarde:'alleen bij bereiken halve finale',tegenstander:'winnaar van '+semis[1]+' tegen '+semis[2]});
- if(titleholder)cards.push({id:byId(titleholder),role:'sportieve inzet',gegeven:opponent+' is de regerend Nations League-winnaar'});
+ if(titleholder)cards.push({id:byId(titleholder),role:'sportieve inzet',gegeven:opponent+' is de regerend winnaar van de Nations League'});
  if(leg)cards.push({id:byId(leg),role:'officiële UEFA-speelperiode',maand:'maart',jaar:Number(year),vorm:'heen- en terugwedstrijd'});
  if(finals)cards.push({id:byId(finals),role:'sportief toernooigevolg',gegeven:'winnaar kwartfinale plaatst zich voor de Nations League-finaleronde'});
  if(dutchProfile)cards.push({id:byId(dutchProfile),role:'Nederlandse groepsfase',gegeven:'Nederland eindigde als tweede in groep A2'});

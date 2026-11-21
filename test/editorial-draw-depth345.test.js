@@ -4,8 +4,8 @@ const assert=require('node:assert/strict');
 const crypto=require('node:crypto');
 const {oranjeDrawGroup}=require('../scripts/editorial-oranje-draw');
 const {drawWritingBrief}=require('../scripts/editorial-draw-copy339');
-const {validateEvidence,reopenVerifiedDrawDepth345,reviseDraft}=require('../scripts/automatic-publication');
-const {createEditorialDraft}=require('../editorial-ai');
+const {validateEvidence,reopenVerifiedDrawTitleholder105B,reopenVerifiedDrawDepth345,reviseDraft}=require('../scripts/automatic-publication');
+const {createEditorialDraft,repairVerifiedDrawStyle}=require('../editorial-ai');
 const M=require('../editorial-desk-model');
 
 const now=Date.parse('2026-11-20T18:20:00Z');
@@ -92,4 +92,39 @@ test('345: one old two-source rejection may be revived only with new verified th
  const corrupt=[group[0],group[1],{...group[2],text:'Geen profielbewijs'}];
  corrupt.drawCandidate=group.drawCandidate;
  assert.equal(reopenVerifiedDrawDepth345(job(),corrupt,now),false);
+});
+
+
+test('105B: proven titleholder has natural language and no fabricated proper-name exemption',()=>{
+ const brief=drawWritingBrief(group.drawCandidate.facts.map(f=>f.text));
+ assert.ok(brief.factCards.some(c=>c.role==='sportieve inzet'&&
+  c.gegeven==='Portugal is de regerend winnaar van de Nations League'));
+ const original={headline:'Oranje tegen regerend Nations League-winnaar Portugal',
+  standfirst:'Oranje treft de regerend Nations League-kampioen Portugal.',
+  body:['De Nations League-winnaar speelt zijn return thuis.']};
+ const fixed=repairVerifiedDrawStyle(original,brief);
+ assert.equal(fixed.headline,'Oranje tegen regerend winnaar van de Nations League Portugal');
+ assert.equal(fixed.standfirst,'Oranje treft de regerend winnaar van de Nations League Portugal.');
+ assert.equal(fixed.body[0],'De winnaar van de Nations League speelt zijn return thuis.');
+ assert.strictEqual(repairVerifiedDrawStyle(original,{factCards:[]}),original);
+});
+
+test('105B: only recorded three-official-source generation rejection may retry once',()=>{
+ const error='Concept na herstel nog niet geschikt: Controleer namen die niet in de aangeleverde feiten staan: Nations League-winnaar.';
+ const errorHash=crypto.createHash('sha256').update(error).digest('hex');
+ const make=()=>({status:'review',attempts:1,failureStage:'generation',
+  failureCategory:'generator_failure',reason:'generation_error',errorHash,
+  urls:group.map(d=>d.url),checkpoint:{rejected:true}});
+ const job=make();
+ assert.equal(reopenVerifiedDrawTitleholder105B(job,group,now),true);
+ assert.equal(job.status,'pending');
+ assert.equal(job.drawTitleholderRecovery105B,true);
+ assert.equal(job.checkpoint,undefined);
+ assert.equal(reopenVerifiedDrawTitleholder105B(job,group,now),false);
+ assert.equal(reopenVerifiedDrawTitleholder105B({...make(),errorHash:'a'.repeat(64)},group,now),false);
+ assert.equal(reopenVerifiedDrawTitleholder105B({...make(),urls:[group[0].url,group[1].url]},group,now),false);
+ assert.equal(reopenVerifiedDrawTitleholder105B(make(),group,now+72*3600000),false);
+ const tampered=[group[0],group[1],{...group[2],text:'no country qualifications'}];
+ tampered.drawCandidate=group.drawCandidate;
+ assert.equal(reopenVerifiedDrawTitleholder105B(make(),tampered,now),false);
 });
