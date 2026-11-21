@@ -30,8 +30,8 @@ function drawWritingBrief(facts) {
  const year=/^The quarter-finals are two-legged ties and take place in March (20\d{2})\.$/u.exec(leg)?.[1];
  if(year && month!=='maart')return null;
  const finals=find(/^Winners advance to the Nations League finals\.$/u);
- const dutchProfile=find(/^Netherlands.{0,350}How they qualified: Group A2 runners-up$/u);
- const portugalProfile=find(/^Portugal.{0,350}How they qualified: Group A4 winners(?: Best Nations League performance: Winners \(2018\/19, 2024\/25\))?$/u);
+ const dutchProfile=find(/^Netherlands.{0,350}How they qualified\s*:\s*Group A2 runners-up$/u);
+ const portugalProfile=find(/^Portugal.{0,350}How they qualified\s*:\s*Group A4 winners(?: Best Nations League performance\s*:\s*Winners \(2018\/19, 2024\/25\))?$/u);
  if(Boolean(dutchProfile)!==Boolean(portugalProfile))return null;
  const byId = x => 'F' + (facts.indexOf(x) + 1);
  const cards = [

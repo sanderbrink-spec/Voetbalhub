@@ -52,3 +52,33 @@ test('347: ordinary sources remain capped and unverified profiles are not used',
  assert.equal(group.length,2);
  assert.equal(group.drawCandidate.facts.length,8);
 });
+
+
+test('105A live: UEFA bold label colon spacing retains both exact, independently auditable profiles',()=>{
+ const body='<article><h1>UEFA quarter-final contenders</h1>'+
+  '<h3>Netherlands</h3>'+
+  '<figure>Denzel Dumfries and Donyell Malen celebrate on Matchday 5</figure>'+
+  '<p><b>How they qualified</b>: Group A2 runners-up<br/><b>Best Nations League performance</b>: Runners-up (2018/19)</p>'+
+  '<h3>Portugal</h3>'+
+  '<figure>All smiles for Portugal during their win in Wales</figure>'+
+  '<p><b>How they qualified</b>: Group A4 winners<br/><b>Best Nations League performance</b>: Winners (2018/19, 2024/25)</p>'+
+  '</article>';
+ const html='<meta property="article:published_time" content="2026-11-20T07:00:00Z">'+body;
+ const doc=extractPage(html,profileUrl,'2026-11-20T07:00:00Z');
+ assert.match(doc.text,/How they qualified : Group A2 runners-up/);
+ assert.match(doc.text,/How they qualified : Group A4 winners/);
+ const group=oranjeDrawGroup(knvb,[uefa,doc],now);
+ assert.equal(group?.length,3,JSON.stringify(group?.profileDiagnostics));
+ assert.equal(group.drawCandidate.facts.length,10);
+ assert.equal(group.profileDiagnostics.netherlandsSectionExtracted,true);
+ assert.equal(group.profileDiagnostics.portugalSectionExtracted,true);
+ assert.deepEqual(validateEvidence(group.drawCandidate,group,now),[]);
+ const brief=drawWritingBrief(group.drawCandidate.facts.map(f=>f.text));
+ assert.equal(brief?.factCards?.length,10);
+ assert.deepEqual(brief?.factCards?.find(c=>c.role==='Portugese groepsfase')?.nationsLeagueTitels,
+  ['2018/19','2024/25']);
+ const incorrect=extractPage(html.replace('Group A4 winners','Group A4 runners-up'),profileUrl,'2026-11-20T07:00:00Z');
+ const blocked=oranjeDrawGroup(knvb,[uefa,incorrect],now);
+ assert.equal(blocked?.length,2,'contradictory Portuguese qualification cannot be attributed');
+ assert.equal(blocked?.drawCandidate?.facts?.length,8);
+});
