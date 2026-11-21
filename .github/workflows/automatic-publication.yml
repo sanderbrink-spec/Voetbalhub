@@ -150,10 +150,12 @@ jobs:
             const qualityTitle = '[Veldio] Redactie: geen publiceerbare artikelen';
             const qualityAlert = issues.find(issue => issue.title === qualityTitle);
             const awaitingReview = report?.signals?.some(signal => signal.outcome === 'queue_review');
-            const editorialBlock = report && !failed && report.counts.published === 0 && (report.counts.generated > 0 || report.counts.attempted > 0 || awaitingReview);
+            const editorialBlock = report && !failed && report.counts.published === 0 && (report.counts.generated > 0 || report.counts.attempted > 0 || awaitingReview || report.queue?.awaitingApprovedArtwork > 0);
             if (editorialBlock) {
               const body = ['Geen artikel gepubliceerd na controle van kandidaatonderwerpen of bij een redactionele beoordelingswachtrij.',
                 'Dit is een redactionele waarschuwing. Verlaag geen kwaliteitsnormen.',
+                'Wachten op rechtengecontroleerd beeld: '+(report.queue?.awaitingApprovedArtwork || 0),
+                'Oudere technische reviews (niet noodzakelijk fouten van deze run): '+(report.queue?.technicalReview || 0),
                 'Run: '+context.serverUrl+'/'+owner+'/'+repo+'/actions/runs/'+context.runId,
                 'Tellingen: '+JSON.stringify(report.counts),
                 ...report.skipped.map(item => '- '+item.topic+': '+item.reason),
