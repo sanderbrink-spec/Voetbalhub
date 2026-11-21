@@ -22,4 +22,14 @@ const url='https://www.uefa.com/uefanationsleague/news/02ab-2219b45e1aa6-7834fde
   const rawAt=html.indexOf(marker);
   console.log('MATCH',JSON.stringify({team,markerMatches:cases,rawOccurrence:rawAt,rawNear:rawAt<0?null:html.slice(Math.max(0,rawAt-500),rawAt).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').slice(-210),headings:doc.text.match(new RegExp(team+'[^.]{0,200}How they qualified:','g'))?.slice(0,2)||[]}));
  }
+
+ for(const marker of ['Group A2 runners-up','Group A4 winners','How they qualified','Netherlands','Portugal']){
+   const at=doc.text.indexOf(marker);
+   console.log('MARKER',JSON.stringify({marker,index:at,
+    near:at<0?null:doc.text.slice(Math.max(0,at-220),Math.min(doc.text.length,at+140)),
+    codepoints:at<0?[]:[...doc.text.slice(Math.max(0,at-18),at+20)].map(c=>c.codePointAt(0))
+   }));
+   const raw=html.indexOf(marker);
+   console.log('RAW_MARKER',JSON.stringify({marker,index:raw,near:raw<0?null:html.slice(Math.max(0,raw-240),raw+105)}));
+ }
 })().catch(e=>{console.error('DIAGNOSTIC_ERROR '+e.message);process.exitCode=1;});
