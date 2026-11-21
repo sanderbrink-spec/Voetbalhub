@@ -95,6 +95,8 @@ function oranjeDrawGroup(knvb, documents, now) {
       const dutch=select('Netherlands','How they qualified: Group A2 runners-up');
       const portuguese=select('Portugal','How they qualified: Group A4 winners',
         ' Best Nations League performance: Winners (2018/19, 2024/25)');
+      group.profileDiagnostics.netherlandsSectionExtracted=Boolean(dutch);
+      group.profileDiagnostics.portugalSectionExtracted=Boolean(portuguese);
       if(dutch&&portuguese){
         group.profileDiagnostics.attached=true;
         group.push(contextual);

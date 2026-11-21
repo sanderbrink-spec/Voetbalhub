@@ -162,10 +162,20 @@ function extractPage(html,url,responseDate){
  // The UEFA contenders dossier contains eight long team sections.
  // Retain complete text when Netherlands and Portugal follow earlier profiles.
  // Keep the ordinary length cap for all other first-party news.
- const sourceLimit=host(url)==='uefa.com'&&
+ const officialProfile=host(url)==='uefa.com'&&
   new URL(url).pathname.startsWith('/uefanationsleague/news/')&&
-  new URL(url).pathname.includes('get-to-know-the-eight')?30000:14000;
- const text=plain(main).slice(0,sourceLimit);
+  new URL(url).pathname.includes('get-to-know-the-eight');
+ const sourceLimit=officialProfile?30000:14000;
+ // The ordinary sanitizer removes site <header> blocks. On UEFA's
+ // multi-team profile these can also contain the actual <h3> country labels,
+ // leaving qualification lines orphaned. Preserve ONLY the two exact team
+ // headings from this known official profile, not navigation or other markup.
+ const mainWithTeamLabels=officialProfile?main.replace(/<header\b[^>]*>[\s\S]*?<\/header>/gi,block=>{
+  const heading=block.match(/<h[2-6]\b[^>]*>([\s\S]*?)<\/h[2-6]>/i)?.[1]||'';
+  const country=plain(heading);
+  return /^(?:Netherlands|Portugal)$/.test(country)?' '+country+' ':block;
+ }):main;
+ const text=plain(mainWithTeamLabels).slice(0,sourceLimit);
  if(!publishedAt&&!oranjeArticle){
   const time=main.match(/<time[^>]*datetime=["']([^"']+)["']/i);
   if(time&&Number.isFinite(Date.parse(time[1])))publishedAt=time[1];
