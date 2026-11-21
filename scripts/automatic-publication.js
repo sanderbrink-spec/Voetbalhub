@@ -3037,7 +3037,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.counts.uniqueGroups=seenGroups.size;
  report.counts.queued=jobs.size;
  await durable.save();
- report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
+ report.queue=editorialRecovery136.summarizeQueue105A(durable.queue.records,now,focusSourceUrl);
  if(!jobs.size)return report;
  const model=config.model;
  report.model=model;
@@ -3300,7 +3300,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    (technical?report.processingErrors:report.skipped).push({topic,stage,reason:e.message,...(e.attempts?{providerFailures:e.attempts}:{}),...(e.issues?{issues:e.issues}:{}),...(e.rejectedDraft?{rejectedDraft:e.rejectedDraft}:{})});console.log('Controle houdt onderwerp tegen:',topic,'-',e.message);if(['GROQ_DAILY_QUOTA','EDITORIAL_AI_UNAVAILABLE'].includes(e.code)){report.status=e.code==='GROQ_DAILY_QUOTA'?'provider_daily_limit':'providers_unavailable';break;}}
   finally{await durable.save();}
  }
- report.queue={review:durable.queue.records.filter(j=>j.status==='review').length,retry:durable.queue.records.filter(j=>j.status==='retry').length,technicalReview:durable.queue.records.filter(j=>j.status==='review'&&j.failureCategory&&j.failureCategory!=='journalistic_rejection'&&(!focusSourceUrl||j.urls[0]===focusSourceUrl)).length};
+ report.queue=editorialRecovery136.summarizeQueue105A(durable.queue.records,now,focusSourceUrl);
  return report;
 }
 // Fase 98V: link discovery is not article rejection. Each source URL belongs
@@ -3362,14 +3362,14 @@ async function run(options={}){
     report.sources.match.status==='unavailable'&&report.sources.officialIndexes.every(source=>source.status==='unavailable')&&!report.counts.readable;
    const editorialBlocker=editorialRecovery136.publicationBlocker(report);
    if(editorialBlocker)report.signals.push({route:'editorial',outcome:editorialBlocker,reason:'Goedkeuring niet bereikt; verlaag geen kwaliteitsnormen.'});
-   report.status=report.processingErrors.length||report.queue?.technicalReview?'processing_errors':report.published.length?'completed':editorialBlocker|| (sourcesUnavailable?'sources_unavailable':'no_new_verified_articles');
+   report.status=editorialRecovery136.classifyFinalStatus105A(report,{editorialBlocker,sourcesUnavailable});
   }
   return report;
  }catch(error){report.status='failed';report.error=error.message;throw error;}
  finally{
   report.runMode={singlePublication:options.singlePublication===true,discoveryOnly:options.discoveryOnly===true,validationOnly:options.validationOnly===true};
    report.funnel=summarizeEditorialFunnel98V(report);
-   report.outcome=['completed','discovery_complete','validation_complete','scout_research_complete'].includes(report.status)?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected'].includes(report.status)?'editorial_blocked':'error';
+   report.outcome=['completed','discovery_complete','validation_complete','scout_research_complete'].includes(report.status)?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected','editorial_waiting_for_artwork'].includes(report.status)?'editorial_blocked':'error';
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
   fs.writeFileSync('.automatic-output/draft-review.json',JSON.stringify({
