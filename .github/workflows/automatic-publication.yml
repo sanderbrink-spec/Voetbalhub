@@ -14,6 +14,8 @@ on:
       - 'editorial-desk-model.js'
       - 'automatic-bootstrap.json'
       - 'scripts/automatic-publication.js'
+      - 'scripts/editorial-oranje-draw.js'
+      - 'scripts/editorial-draw-copy339.js'
       - 'scripts/editorial-international.js'
       - 'scripts/editorial-official-finals98w.js'
       - 'test/editorial-official-finals98w.test.js'
