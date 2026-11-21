@@ -3059,6 +3059,20 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   // A dry run can recheck existing copy without weakening production deduplication.
   const comparison=published.filter(article=>(!group.replacePreviewId||article.id!==group.replacePreviewId)&&
    (!validationOnly||article.sources?.[0]?.url!==group[0].url));
+  // 105A: matches with no rights-cleared, club-accurate image cannot be
+  // published. Park before consuming writer/reviewer budget or attempt slots.
+  // This leaves available capacity for independently checked club news.
+  if(matchRecord){
+   const image=preflightArtwork(group,{kind:matchRecord.articleKind,category:matchRecord.category},group[0].title);
+   if(image.checked&&!image.approved){
+    deferArtwork(job,now);
+    report.skipped.push({topic:group[0].title,stage:'artwork',reason:'Geen passend goedgekeurd artikelbeeld beschikbaar.'});
+    report.signals.push({route:'match',topic:group[0].title,matchId:matchRecord.matchId,
+      outcome:'awaiting_approved_artwork',reason:image.reason,nextAttemptAt:new Date(job.nextAttemptAt).toISOString()});
+    await durable.save();
+    continue;
+   }
+  }
   processingSlots++;
   let topic=group[0].title,stage='verification';
   report.counts.attempted++;
