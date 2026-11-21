@@ -25,3 +25,19 @@ test('105A never hides fresh technical failures, approvals or absent evidence',(
  assert.equal(classifyFinalStatus105A({...historical,published:[{id:'confirmed'}]},{editorialBlocker:'editorial_stalled'}),'completed');
  assert.equal(classifyFinalStatus105A({processingErrors:[],published:[]},{sourcesUnavailable:true}),'sources_unavailable');
 });
+
+test('105A matching image gate defers only unillustrated fixtures, never ordinary club news',()=>{
+ const {matchArtworkPreflight105A}=require('../scripts/automatic-publication');
+ const group=[{title:'Helmond Sport tegen FC Dordrecht'}];
+ group.matchRecord={matchId:'sm-19715873',articleKind:'match_report',category:'kkd'};
+ const missing=matchArtworkPreflight105A(group,(received,candidate,topic)=>{
+  assert.equal(received,group);
+  assert.equal(candidate.kind,'match_report');
+  assert.equal(candidate.category,'kkd');
+  assert.equal(topic,group[0].title);
+  return {checked:true,approved:false,reason:'No club-specific approved stadium photo'};
+ });
+ assert.deepEqual(missing,{blocked:true,reason:'No club-specific approved stadium photo',matchId:'sm-19715873'});
+ assert.equal(matchArtworkPreflight105A(group,()=>({checked:true,approved:true})).blocked,false);
+ assert.equal(matchArtworkPreflight105A([{title:'Official club decision'}],()=>{throw Error('No fixture image needed')}).blocked,false);
+});
