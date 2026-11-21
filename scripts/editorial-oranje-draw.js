@@ -66,21 +66,31 @@ function oranjeDrawGroup(knvb, documents, now) {
       portugalGroupSeen:Boolean(contextual?.text?.includes('Group A4 winners'))
     };
     if(contextual&&opponent==='Portugal'){
+      // A long UEFA article may mention a group position in an earlier
+      // summary before the actual team's section. Inspect every exact match,
+      // not just indexOf's first hit. Keep a short, literal evidence quote:
+      // the independent reviewer must still find it in this source.
       const select=(team,qualification,performance='')=>{
-        // Exact evidence substring, not inferred football status. A country
-        // section can include image captions and link text before the label.
-        const normalized=String(contextual.text||'').replace(/\\s+/gu,' ');
-        const target=qualification.replace(/\\s+/gu,' ');
-        const at=normalized.indexOf(target);
-        if(at<0)return '';
-        const prefix=normalized.slice(Math.max(0,at-750),at);
-        const index=prefix.lastIndexOf(team);
-        if(index<0)return '';
-        const from=at-prefix.length+index;
-        const end=at+target.length;
-        const after=normalized.slice(end,end+performance.length);
-        const quote=normalized.slice(from,end)+(performance&&after===performance?after:'');
-        return quote.length>=35&&quote.length<=750?quote:'';
+        const normalized=String(contextual.text||'').replace(/\s+/gu,' ');
+        const target=qualification.replace(/\s+/gu,' ');
+        let at=normalized.indexOf(target);
+        while(at>=0){
+          const prefix=normalized.slice(Math.max(0,at-350),at);
+          const mentions=[...prefix.matchAll(new RegExp('(?:^|\\s)'+team+'(?=\\s|$)','g'))];
+          for(let index=mentions.length-1;index>=0;index--){
+            const mention=mentions[index];
+            const from=at-prefix.length+mention.index+(mention[0].startsWith(' ')?1:0);
+            // A different qualification statement must not be crossed to
+            // attribute a neighbouring team section to this country.
+            if(/How they qualified:/iu.test(normalized.slice(from,at)))continue;
+            const end=at+target.length;
+            const suffix=performance&&normalized.slice(end,end+performance.length)===performance?performance:'';
+            const quote=normalized.slice(from,end)+suffix;
+            if(quote.length>=35&&quote.length<=350)return quote;
+          }
+          at=normalized.indexOf(target,at+target.length);
+        }
+        return '';
       };
       const dutch=select('Netherlands','How they qualified: Group A2 runners-up');
       const portuguese=select('Portugal','How they qualified: Group A4 winners',
