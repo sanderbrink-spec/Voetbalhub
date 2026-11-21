@@ -13,7 +13,7 @@ test('105A reports image-deferred matches and their next retry without changing 
  assert.equal(queue.awaitingApprovedArtwork,1);
  assert.deepEqual(queue.artworkDossiers,[{matchId:'sm-19715873',clubPreviewId:null,nextAttemptAt:new Date(now-60000).toISOString(),due:true}]);
  assert.equal(queue.technicalReview,1);
- const report={counts:{uniqueGroups:11,queued:0,attempted:0,published:0},queue,processingErrors:[],published:[]};
+ const report={counts:{uniqueGroups:11,queued:0,attempted:0,published:0},queue,skipped:[{stage:'artwork',reason:'Geen passend goedgekeurd artikelbeeld beschikbaar.'}],processingErrors:[],published:[]};
  const blocker=publicationBlocker(report);
  assert.equal(blocker,'editorial_waiting_for_artwork');
  assert.equal(classifyFinalStatus105A(report,{editorialBlocker:blocker}),'editorial_waiting_for_artwork');
