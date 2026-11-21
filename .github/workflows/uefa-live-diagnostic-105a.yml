@@ -1,0 +1,19 @@
+name: One-time UEFA live source diagnosis 105A
+on:
+  push:
+    branches: [diagnostic/uefa-live-105a]
+    paths:
+      - 'scripts/diagnose-uefa-live-105a.js'
+      - '.github/workflows/uefa-live-diagnostic-105a.yml'
+permissions:
+  contents: read
+jobs:
+  verify-live-page:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node scripts/diagnose-uefa-live-105a.js
