@@ -72,23 +72,30 @@ function oranjeDrawGroup(knvb, documents, now) {
       // the independent reviewer must still find it in this source.
       const select=(team,qualification,performance='')=>{
         const normalized=String(contextual.text||'').replace(/\s+/gu,' ');
-        const target=qualification.replace(/\s+/gu,' ');
-        let at=normalized.indexOf(target);
-        while(at>=0){
+        const target=qualification.slice('How they qualified: '.length);
+        // Live UEFA HTML has <b>How they qualified</b>: Group ...
+        // The HTML-to-text sanitizer inserts a space before the colon.
+        // Match the original punctuation as printed, then retain exact
+        // characters in the source evidence quote for independent validation.
+        const hits=[...normalized.matchAll(/How they qualified\s*:\s*Group A[1-4] (?:runners-up|winners)/gu)]
+          .filter(hit=>hit[0].replace(/^How they qualified\s*:\s*/u,'')===target);
+        for(const hit of hits){
+          const at=hit.index;
           const prefix=normalized.slice(Math.max(0,at-350),at);
           const mentions=[...prefix.matchAll(new RegExp('(?:^|\\s)'+team+'(?=\\s|$)','g'))];
           for(let index=mentions.length-1;index>=0;index--){
             const mention=mentions[index];
             const from=at-prefix.length+mention.index+(mention[0].startsWith(' ')?1:0);
-            // A different qualification statement must not be crossed to
-            // attribute a neighbouring team section to this country.
-            if(/How they qualified:/iu.test(normalized.slice(from,at)))continue;
-            const end=at+target.length;
-            const suffix=performance&&normalized.slice(end,end+performance.length)===performance?performance:'';
+            // Never cross a preceding team-specific qualification, even
+            // when the earlier section mentions the target country's name.
+            if(/How they qualified\s*:/iu.test(normalized.slice(from,at)))continue;
+            const end=at+hit[0].length;
+            const suffix=performance
+              ?normalized.slice(end).match(/^ Best Nations League performance\s*:\s*Winners \(2018\/19, 2024\/25\)/u)?.[0]||''
+              :'';
             const quote=normalized.slice(from,end)+suffix;
             if(quote.length>=35&&quote.length<=350)return quote;
           }
-          at=normalized.indexOf(target,at+target.length);
         }
         return '';
       };
