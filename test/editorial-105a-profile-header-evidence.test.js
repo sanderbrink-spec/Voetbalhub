@@ -54,5 +54,6 @@ test('105A: global header navigation and other sites remain excluded from articl
  assert.doesNotMatch(wrong.text,/Italy/);
  const group=oranjeDrawGroup(knvb,[uefa,wrong],now);
  assert.equal(group?.length,2);
- assert.equal(group?.profileDiagnostics?.attached,true);
+ assert.equal(group?.profileDiagnostics?.netherlandsSectionExtracted,false);
+ assert.equal(group?.profileDiagnostics?.portugalSectionExtracted,true);
 });
