@@ -1,8 +1,155 @@
 {
   "rightsPolicyVersion": 26,
-  "rightsExpiresAt": 1795087952113,
-  "count": 18,
+  "rightsExpiresAt": 1795394644122,
+  "count": 19,
   "articles": [
+    {
+      "feedLifecycle": {
+        "kind": "preview",
+        "expiresAt": "2026-11-21T20:00:00.000Z"
+      },
+      "id": "d46198fc-09b4-4cc6-b905-d61ac998a32b",
+      "articleKind": "preview",
+      "status": "published",
+      "author": "Veldio Redactie",
+      "headline": "SC Heerenveen reist met vier zeges naar Groningen",
+      "standfirst": "FC Groningen ontvangt SC Heerenveen, dat vier duels op rij won. De Groningers kunnen hun langste reeks tegen de Friezen evenaren.",
+      "body": [
+        "Casper Goedkoop neemt bij FC Groningen de honneurs waar als hoofdtrainer, terwijl de selectie slechts enkele langdurig geblesseerden en geschorsten mist. Assistent-trainer leidt de laatste trainingen voor het thuisduel met Heerenveen.",
+        "Groningen won de laatste drie ontmoetingen met Heerenveen en kan daarmee een even lange reeks neerzetten. Heerenveen komt echter met vertrouwen, na vier opeenvolgende overwinningen in de Eredivisie.",
+        "Ringo Meerveld was in zijn laatste vier competitiewedstrijden betrokken bij vijf doelpunten, eenzelfde aantal als in zijn voorgaande 24 duels. Voor FC Groningen was Thom van Bergen in ieder van zijn vier recentste thuisduels trefzeker."
+      ],
+      "why_it_matters": "",
+      "category": "Eredivisie",
+      "publishedAt": "2026-11-20T23:56:33.641Z",
+      "fixture": {
+        "id": "sm-19714591",
+        "competition": "eredivisie",
+        "status": "NS",
+        "date": "2026-11-21T20:00:00.000Z",
+        "home": {
+          "name": "FC Groningen"
+        },
+        "away": {
+          "name": "SC Heerenveen"
+        },
+        "round": "Speelronde 13"
+      },
+      "verifiedFacts": [
+        "Zo leidt de assistent-trainer de afsluitende trainingen in aanloop naar het thuisduel met sc Heerenveen.",
+        "FC Groningen ontvangt sc Heerenveen, dat met vier opeenvolgende overwinningen naar Groningen afreist.",
+        "Groningen won de laatste drie ontmoetingen met de Friezen en kan zijn langste winstreeks tegen Heerenveen evenaren.",
+        "Thom van Bergen scoorde in zijn laatste vier thuiswedstrijden voor FC Groningen.",
+        "Bij Heerenveen was Ringo Meerveld in zijn laatste vier competitieduels in slechts 154 minuten betrokken bij vijf doelpunten, evenveel als in zijn 24 wedstrijden daarvoor.",
+        "Casper Goedkoop zal voor het eerst in zijn periode als trainer bij FC Groningen hoofdtrainer Dick Lukkien vervangen.",
+        "Selectie Voor de Derby van het Noorden mist FC Groningen alleen de langdurig geblesseerden Malcolm Jeng, Rijk Janse en Travis Hernes en de geschorsten Etienne Vaessen en Hans Hateboer.",
+        "FC Groningen – sc Heerenveen staat zaterdagavond tijdens speelronde 13 van de VriendenLoterij Eredivisie vanaf 21.00 uur onder leiding van scheidsrechter Alex Bos."
+      ],
+      "sources": [
+        {
+          "url": "https://www.fcgroningen.nl/nieuws/goedkoop-neemt-honneurs-waar-bij-derby-van-het-noorden/"
+        },
+        {
+          "url": "https://eredivisie.nl/nieuws/vooruitblik-speelronde-13/"
+        }
+      ],
+      "editorialChecks": {
+        "originalSourceReviewed": true,
+        "claimsIndependentlyChecked": true,
+        "duplicateChecked": true,
+        "languageChecked": true
+      },
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/stadium74/fcgroningen-night-preview104d.webp",
+      "imageSource": "Veldio · illustratie",
+      "imageCredit": "Veldio",
+      "imageRights": "cleared",
+      "imageReview": {
+        "method": "approved-library49",
+        "mode": "approved-library",
+        "pipelineVersion": 49,
+        "assetSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+        "kitVerified": true,
+        "playerIdentityVerified": true,
+        "aiDisclosureVerified": true,
+        "clubs": [
+          "FC Groningen",
+          "sc Heerenveen"
+        ],
+        "imageKind": "preview",
+        "stadiumOccupancy": "empty",
+        "stadiumIdentity": "home:fcgroningen",
+        "imageIdentity": "2d05da8ffc2c2cf5525707aca1e74f2da5f70c08a6210efeb3ef936b5a844f83",
+        "generated": true,
+        "qualityTier": "reviewed-fixture",
+        "visualQualityScore": 8.6,
+        "visualQualityStatus": "premium-reviewed",
+        "fixtureId": "sm-19714591",
+        "noOfficialLogos": true,
+        "noRecognizablePeople": true,
+        "noDocumentaryClaim": true
+      },
+      "autoPublish": false,
+      "imageAssetId": "veldio104d-fcgroningen-night-preview",
+      "imageCaption": "AI-illustratie in groen-witte FC Groningen-sfeer onder kunstlicht, geen echte wedstrijdfoto of exacte weergave van Euroborg.",
+      "imageVariants": [
+        {
+          "id": "veldio104d-fcgroningen-night-preview",
+          "url": "https://voetbalhub-redactie.onrender.com/stadium74/fcgroningen-night-preview104d.webp",
+          "caption": "AI-illustratie in groen-witte FC Groningen-sfeer onder kunstlicht, geen echte wedstrijdfoto of exacte weergave van Euroborg.",
+          "credit": "Veldio",
+          "source": "Veldio · illustratie",
+          "rights": "cleared",
+          "review": {
+            "method": "approved-library49",
+            "mode": "approved-library",
+            "pipelineVersion": 49,
+            "assetSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+            "kitVerified": true,
+            "playerIdentityVerified": true,
+            "aiDisclosureVerified": true,
+            "clubs": [
+              "FC Groningen",
+              "sc Heerenveen"
+            ],
+            "imageKind": "preview",
+            "stadiumOccupancy": "empty",
+            "stadiumIdentity": "home:fcgroningen",
+            "imageIdentity": "2d05da8ffc2c2cf5525707aca1e74f2da5f70c08a6210efeb3ef936b5a844f83",
+            "generated": true,
+            "qualityTier": "reviewed-fixture",
+            "visualQualityScore": 8.6,
+            "visualQualityStatus": "premium-reviewed",
+            "fixtureId": "sm-19714591",
+            "noOfficialLogos": true,
+            "noRecognizablePeople": true,
+            "noDocumentaryClaim": true
+          }
+        }
+      ],
+      "imageRotation": {
+        "method": "approved-article-v69",
+        "count": 1,
+        "maximum": 6,
+        "selectedId": "veldio104d-fcgroningen-night-preview",
+        "context": {
+          "category": "preview",
+          "clubs": [
+            "FC Groningen",
+            "SC Heerenveen"
+          ],
+          "fixtureId": "sm-19714591",
+          "competition": "Eredivisie",
+          "daypart": "neutral",
+          "venueName": "",
+          "imageKind": "preview",
+          "stadiumOccupancy": "empty",
+          "stadiumIdentity": "home:fcgroningen",
+          "imageIdentity": "2d05da8ffc2c2cf5525707aca1e74f2da5f70c08a6210efeb3ef936b5a844f83"
+        },
+        "reason": "ordered-fixture"
+      },
+      "feedState": "current"
+    },
     {
       "id": "b96da9ec-9930-4c1d-85aa-f0b9f6b2694a",
       "articleKind": "announcement",
@@ -2637,6 +2784,6 @@
     }
   ],
   "imagePolicyVersion": 69,
-  "mirroredAt": "2026-11-17T23:32:31.493Z",
+  "mirroredAt": "2026-11-21T12:44:03.943Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
