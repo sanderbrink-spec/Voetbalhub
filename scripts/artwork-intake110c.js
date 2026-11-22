@@ -32,7 +32,15 @@ function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
      entry.kind!=='report'||entry.stadiumOccupancy!=='full')
     throw Error('Onveilige doelpad- of beeldtypegegevens.');
   const known=audit.rows.find(x=>x.matchId===entry.fixtureId);
-  if(!known||!auditStates.has(known.classification)||known.homeTeam!==entry.homeTeam||
+  // After the sliding 72-hour source window drops an old fixture, record an
+  // unresolved archive entry instead of failing the whole daily audit.
+  if(!known){
+   records.push({fixtureId:entry.fixtureId,status:'missing_current_fixture_evidence',
+    sha256:entry.webpSha256,path:entry.suggestedRepoPath,
+    nextAction:'Niet importeren of publiceren zonder nieuwe onafhankelijke broncontrole.'});
+   continue;
+  }
+  if(!auditStates.has(known.classification)||known.homeTeam!==entry.homeTeam||
      known.awayTeam!==entry.awayTeam||known.competition!==entry.competition||
      known.playedAt!==entry.playedAt||known.daypart!==entry.daypart||
      known.fixtureSource!==entry.fixtureSource||
@@ -45,7 +53,10 @@ function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
     throw Error('Bestaande afbeelding met ander bestand voor hetzelfde fixture-ID.');
   const file=path.resolve(root,entry.suggestedRepoPath);
   if(!file.startsWith(root+path.sep))throw Error('Onveilig bronpad.');
-  let status='awaiting_exact_binary_import';
+  const auditTime=Date.parse(audit.generatedAt),kickoff=Date.parse(entry.playedAt);
+  const stillFresh=Number.isFinite(auditTime)&&Number.isFinite(kickoff)&&
+    auditTime>=kickoff&&auditTime-kickoff<=36*3600000;
+  let status=stillFresh?'awaiting_exact_binary_import':'archived_source_not_priority';
   if(fs.existsSync(file)){
    const actual=sha256(fs.readFileSync(file));
    if(actual!==entry.webpSha256)throw Error('Bestandshash wijkt af van de bronvermelding.');
@@ -58,6 +69,8 @@ function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
    status,sha256:entry.webpSha256,path:entry.suggestedRepoPath,
    nextAction:status==='awaiting_exact_binary_import'?
     'Importeer exacte WEBP en controleer SHA256; niets vrijgeven.':
+    status==='archived_source_not_priority'?
+    'Wedstrijd is niet meer actueel; verifieer redactionele noodzaak vóór nieuwe import.':
     status==='awaiting_pending_catalog_registration'?
     'Registreer uitsluitend approval=pending en exact dezelfde SHA256.':
     'Laat originele bron, commerciële rechten, kwaliteit en stadioncontext afzonderlijk beoordelen.'
