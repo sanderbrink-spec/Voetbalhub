@@ -92,6 +92,22 @@ function candidate(fixture, now) {
   }[kind];
   if (description) verifiedFacts.push('Volgens de Sportmonks-wedstrijdregistratie '+description+' in minuut '+minute+(extra?'+'+extra:'')+'.');
  }
+ // Preserve both named teams and the precise registered statistics. No
+ // extrapolated dominance, xG or player performances without independent proof.
+ if(sportmonks&&fixture.verifiedStats){
+  for(const [key,label,suffix] of [
+   ['shots','schoten',''],['shotsOnTarget','schoten op doel',''],
+   ['corners','hoekschoppen',''],['possession','balbezit','%']
+  ]){
+   const values=fixture.verifiedStats[key];
+   if(!values||![values.home,values.away].every(Number.isFinite)||
+     values.home<0||values.away<0||values.home>150||values.away>150||
+     (key!=='possession'&&(!Number.isSafeInteger(values.home)||!Number.isSafeInteger(values.away)))||
+     (key==='possession'&&(values.home>100||values.away>100||Math.abs(values.home+values.away-100)>2)))continue;
+   verifiedFacts.push('Sportmonks registreerde voor '+match.homeTeam+' '+values.home+suffix+
+     ' en voor '+match.awayTeam+' '+values.away+suffix+' bij '+label+'.');
+  }
+ }
  const sources = [{url:sportmonks?SM:supplemented?FD:OPEN}];
  // A half-time score alone does not establish an editorially rich match report.
  // Only a complete, checked goal sequence or independently verified event
