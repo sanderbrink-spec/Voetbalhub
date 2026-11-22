@@ -32,8 +32,10 @@ function articlesChecks(articles,now=Date.now()){
 function footballChecks(key,s,now=Date.now()){
  const checks=[],add=(name,status,detail)=>checks.push({id:'football.'+key+'.'+name,status,detail});
  const date=Date.parse(s.updatedAt),age=now-date;
- add('available',['available','cached'].includes(s.status)&&s.fixtures?.length?'pass':'fail',s.message||s.status||'Status ontbreekt');
- add('freshness',Number.isFinite(date)&&age>=-5*60000&&age<=36*3600000&&Number(s.rightsExpiresAt)>now?'pass':'fail','Bijgewerkt: '+(s.updatedAt||'onbekend'));
+ const available=['available','cached'].includes(s.status)&&Array.isArray(s.fixtures)&&s.fixtures.length>0;
+ add('available',available?'pass':'fail',s.message||s.status||'Status ontbreekt');
+ // A newly generated timestamp for an empty failure response is not a fresh source.
+ add('freshness',available&&Number.isFinite(date)&&age>=-5*60000&&age<=36*3600000&&Number(s.rightsExpiresAt)>now?'pass':'fail','Bijgewerkt: '+(s.updatedAt||'onbekend'));
  if(s.status==='cached')add('synchronization','fail','Bronuitval; alleen eerder gecontroleerde cache beschikbaar');
  const fixtures=s.fixtures||[],ids=new Set();
  for(const f of fixtures){

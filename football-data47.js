@@ -175,10 +175,26 @@ function create({fetcher=fetch,redis,clock=Date.now,resultsToken=process.env.FOO
      const value={...envelope(key,[],now),source:'Veldio',sourceDetails:null,status:'unavailable',message:'Geen actuele, vrijgegeven gegevensbron. Redactionele invoer beschikbaar.'};
      cache.set(key,{at:now,value,ttl:15*60000});return value;
     }
-    const r=await fetcher('https://api.openligadb.de/getmatchdata/'+PROVIDERS[key].shortcut+'/'+(new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear()),{headers:{'User-Agent':'Veldio/48 (redactie.veldio@gmail.com)'},signal:AbortSignal.timeout(12000)});
-    if(!r.ok)throw Error('Bron HTTP '+r.status);
-    const value=fromOpenLiga(JSON.parse(await sourceBody(r)),now,key,{displayNames:false});
-    cache.set(key,{at:now,value,ttl:15*60000});return value;
+    let openLigaError;
+    try{
+     const r=await fetcher('https://api.openligadb.de/getmatchdata/'+PROVIDERS[key].shortcut+'/'+(new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear()),{headers:{'User-Agent':'Veldio/48 (redactie.veldio@gmail.com)'},signal:AbortSignal.timeout(12000)});
+     if(!r.ok){await r.body?.cancel();throw Error('Bron HTTP '+r.status);}
+     const value=fromOpenLiga(JSON.parse(await sourceBody(r)),now,key,{displayNames:false});
+     cache.set(key,{at:now,value,ttl:15*60000});return value;
+    }catch(e){openLigaError=e;}
+    // La Liga alone has a documented free-tier, credentialed second source.
+    // Validate a complete 380-match dataset instead of publishing a partial table.
+    if(key==='laliga'&&resultsToken){
+     try{
+      const fallback=await require('./football-laliga108').load({token:resultsToken,fetcher,now,sourceBody});
+      const value=envelope(key,fallback.fixtures,now,fallback.source);
+      if(fallback.fixtures.some(f=>f.status==='AWAITING'&&Date.parse(f.date)<now-24*3600000)){
+       value.standings=[];value.standingsNote='Geen betrouwbare stand: gespeelde wedstrijden zonder bevestigde eindstand.';
+      }
+      cache.set(key,{at:now,value,ttl:15*60000});return value;
+     }catch(e){console.warn('football47 La Liga reservebron niet beschikbaar:',e.message);}
+    }
+    throw openLigaError;
    }catch(e){
     console.error('football47',key,e.message);
     const value=hit&&hit.value.rightsExpiresAt>now&&hit.value.fixtures?.length?{...currentManual(hit.value,now),status:'cached',message:'Bron tijdelijk niet bereikbaar. Laatste gecontroleerde gegevens.'}:{...envelope(key,[],now),status:'source_unavailable',message:'Wedstrijdbron tijdelijk niet bereikbaar.'};
