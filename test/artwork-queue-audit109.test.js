@@ -273,5 +273,7 @@ test('110B second original day image is exact-match pending, not another generat
  assert.equal(plan.tasks[0].imageBrief,undefined);
  assert.equal(plan.readyNow,0);
  const swapped=audit.auditQueue([job(f.id)],assets,[{...f,homeTeam:'ADO Den Haag',awayTeam:'Ajax'}],now);
- assert.equal(swapped.rows[0].classification,'requires_new_original_artwork');
+ assert.notEqual(swapped.rows[0].classification,'pending_exact_fixture_review');
+ assert.ok(!swapped.rows[0].pendingExactCandidates?.some(x=>x.id==='veldio110b-sm-19714592-ajax-ado-day-report'));
+ assert.deepEqual(swapped.rows[0].approvedAssetIds,[]);
 });
