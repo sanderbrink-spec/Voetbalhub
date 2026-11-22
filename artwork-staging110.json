@@ -1,7 +1,7 @@
 {
   "schemaVersion": 110,
   "generatedAt": "2026-11-22",
-  "note": "Exacte WEBP staat nu op aparte GitHub-branch als pending-artwork. Geen zelfstandige rechtenvrijgave, geen productiewijziging totdat CI en PR zijn gevalideerd.",
+  "note": "Twee originele gegenereerde stadionbeelden staan als pending in GitHub met eigen SHA256 en fixturecontext; geen publicatievrijgave verleend.",
   "items": [
     {
       "fixtureId": "sm-19715868",
@@ -30,6 +30,34 @@
       "assetId": "veldio110b-sm-19715868-eindhoven-rkc-report",
       "pngSha256": "7d215a308da20063b2125934cdef2521ffc8dd2aa230155719078e82446ecc4c",
       "transferVerification": "GitHub Actions SHA256 checked original WEBP against recorded b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885; one-time import workflow removed prior to PR"
+    },
+    {
+      "fixtureId": "sm-19714592",
+      "homeTeam": "Ajax",
+      "awayTeam": "ADO Den Haag",
+      "playedAt": "2026-11-22T13:30:00.000Z",
+      "verifiedCompetition": "Eredivisie",
+      "verifiedDaypart": "day",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "generation": "OpenAI ChatGPT ImageGen",
+      "generationId": "8a974e45-4f03-45de-b789-7d9069d4de76",
+      "originalImageFormat": "PNG",
+      "pngSha256": "a66b84f160f8a0eda4b28d324c527b3b054337bcfa648d61da89498885da3840",
+      "webpOutput": "veldio-sm-19714592-ajax-ado-day.webp",
+      "webpDimensions": [
+        1280,
+        720
+      ],
+      "webpSha256": "c5d0655f730675579c17846fea822177f7ea0e9ba3be85544ed277031da1e4dd",
+      "status": "uploaded_repo_pending_review",
+      "approval": "pending",
+      "visualAssessment": "not_yet_independently_approved",
+      "commercialRightsEvidence": "requires_exact_file_provenance_and_source_input_verification",
+      "assetId": "veldio110b-sm-19714592-ajax-ado-day-report",
+      "repoFile": "public/match-covers110/sm-19714592-ajax-ado-day.webp",
+      "transferVerification": "Eenmalige GitHub Actions import met SHA256-vergelijking van exact WEBP-bestand; tijdelijke overdrachtsworkflow na succes verwijderd.",
+      "nextAction": "Definitieve visuele eindcontrole en commerciële rechtenbeoordeling op exact SHA256-bestand; pending behouden tot expliciet bewijs en goedkeuring."
     }
   ]
 }
