@@ -6,6 +6,8 @@ on:
     paths:
       - 'scripts/artwork-queue-audit109.js'
       - 'scripts/artwork-production-plan110.js'
+      - 'scripts/artwork-intake110c.js'
+      - 'artwork-intake110c.json'
       - '.github/workflows/artwork-queue-audit109.yml'
   schedule:
     - cron: '47 8 * * *'
@@ -27,7 +29,7 @@ jobs:
       - name: Install pinned project dependencies
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: Test queue audit safety invariants
-        run: node --test test/artwork-queue-audit109.test.js test/artwork-production-plan110.test.js
+        run: node --test test/artwork-queue-audit109.test.js test/artwork-production-plan110.test.js test/artwork-intake110c.test.js
       - name: Retrieve editorial queue without exposing encrypted drafts
         shell: bash
         run: |
@@ -117,6 +119,22 @@ jobs:
             '- Eerste prioriteit: '+(p.firstBatch.join(', ')||'geen')+'\n'+
             '- Automatisch gegenereerd of goedgekeurd: **0**\n');
           NODE
+      - name: Report staged originals without claiming rights or publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/artwork-intake110c.js \
+            --audit .automatic-output/artwork-audit109.json \
+            --intake artwork-intake110c.json \
+            --out .automatic-output/artwork-intake-status110c.json
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const data=JSON.parse(fs.readFileSync('.automatic-output/artwork-intake-status110c.json','utf8'));
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+            '\n### 110C: exacte beeldherkomst en onafhankelijke rechtencontrole\n\n'+
+            '- Beeldstatussen: '+JSON.stringify(data.summary)+'\n'+
+            '- Automatisch goedgekeurd/gepubliceerd: **0**\n');
+          NODE
       - name: Upload sanitized audit (never upload sealed draft checkpoints)
         uses: actions/upload-artifact@v4
         with:
@@ -124,5 +142,6 @@ jobs:
           path: |
             .automatic-output/artwork-audit109.json
             .automatic-output/artwork-production-plan110.json
+            .automatic-output/artwork-intake-status110c.json
           if-no-files-found: error
           retention-days: 14
