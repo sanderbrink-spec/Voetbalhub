@@ -82,7 +82,19 @@ function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
  for(const id of conflictingIds)evidence.delete(id);
  const blocked=records.filter(j=>j?.status==='retry'&&j?.reason==='awaiting_approved_artwork'&&
    j?.failureStage==='artwork'&&/^(?:sm|uefa)-\d+$/.test(j?.matchId||''));
- const rows=blocked.map(job=>{
+ // One image per verified fixture. Several retry records may refer to the same
+ // still-unapproved artwork. Keep only the newest for the read-only planning
+ // snapshot; never mutate, acknowledge or delete the underlying job records.
+ const sortedBlocked=[...blocked].sort((a,b)=>
+   (dateMs(b.createdAt)||0)-(dateMs(a.createdAt)||0)||
+   (dateMs(b.nextAttemptAt)||0)-(dateMs(a.nextAttemptAt)||0)||
+   String(a.id||'').localeCompare(String(b.id||'')));
+ const seenMatchIds=new Set();
+ const uniqueBlocked=sortedBlocked.filter(job=>{
+  if(seenMatchIds.has(job.matchId))return false;
+  seenMatchIds.add(job.matchId);return true;
+ });
+ const rows=uniqueBlocked.map(job=>{
   const base={matchId:job.matchId,status:job.status,reason:job.reason,
    createdAt:dateMs(job.createdAt)?new Date(dateMs(job.createdAt)).toISOString():null,
    nextAttemptAt:dateMs(job.nextAttemptAt)?new Date(dateMs(job.nextAttemptAt)).toISOString():null,
@@ -171,7 +183,9 @@ function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
  }).sort((a,b)=>(dateMs(b.createdAt)||0)-(dateMs(a.createdAt)||0)||a.matchId.localeCompare(b.matchId));
  const counts=rows.reduce((o,x)=>(o[x.classification]=(o[x.classification]||0)+1,o),{});
  return {schemaVersion:109,generatedAt:new Date(now).toISOString(),
-  queueRecords:records.length,artworkRetries:rows.length,classified:counts,
+  queueRecords:records.length,artworkRetries:rows.length,
+  artworkRetryRecords:blocked.length,duplicateArtworkRetryRecords:blocked.length-rows.length,
+  classified:counts,
   blockedWithoutVerifiedFixture:counts.requires_verified_fixture||0,
   verifiedFixtureCount:evidence.size,fixtureConflicts:conflictingIds.size,
   verifiedCoverageByCompetition:[...evidence.values()].reduce((out,fixture)=>{

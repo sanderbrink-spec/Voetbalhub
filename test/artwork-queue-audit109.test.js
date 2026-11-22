@@ -277,3 +277,34 @@ test('110B second original day image is exact-match pending, not another generat
  assert.ok(!swapped.rows[0].pendingExactCandidates?.some(x=>x.id==='veldio110b-sm-19714592-ajax-ado-day-report'));
  assert.deepEqual(swapped.rows[0].approvedAssetIds,[]);
 });
+
+test('110E repeated retry records for one fixture generate one rights-safe audit and one plan',()=>{
+ const older=job('sm-19715868',{id:'old',createdAt:now-7200000,nextAttemptAt:now+1000});
+ const newer=job('sm-19715868',{id:'new',createdAt:now-600000,nextAttemptAt:now+2000});
+ const other=job('sm-19714592',{id:'other',createdAt:now-1800000});
+ const result=audit.auditQueue([older,other,newer],assets,[],now);
+ assert.equal(result.queueRecords,3);
+ assert.equal(result.artworkRetryRecords,3);
+ assert.equal(result.artworkRetries,2);
+ assert.equal(result.duplicateArtworkRetryRecords,1);
+ assert.equal(result.rows.length,2);
+ assert.equal(result.rows.find(x=>x.matchId==='sm-19715868').createdAt,new Date(newer.createdAt).toISOString());
+ assert.ok(!JSON.stringify(result).includes('secret-checkpoint-payload'));
+ const plan=require('../scripts/artwork-production-plan110').plan(result,now);
+ assert.equal(plan.tasks.length,2);
+ assert.equal(plan.counts.verify_fixture,2);
+ assert.equal(plan.safety.createsImage,false);
+ assert.equal(plan.safety.approvesImage,false);
+ assert.equal(plan.safety.publishesArticle,false);
+});
+test('110E duplicates never suppress conflicting source fixture identities',()=>{
+ const x=fact('sm-19714594','FC Utrecht','NEC Nijmegen');
+ const y={...x,awayTeam:'Ajax'};
+ const a=audit.auditQueue([job(x.id),job(x.id,{createdAt:now-300000})],assets,[x,y],now);
+ assert.equal(a.artworkRetryRecords,2);
+ assert.equal(a.artworkRetries,1);
+ assert.equal(a.duplicateArtworkRetryRecords,1);
+ assert.equal(a.fixtureConflicts,1);
+ assert.equal(a.rows[0].classification,'requires_verified_fixture');
+ assert.deepEqual(a.rows[0].approvedAssetIds,[]);
+});
