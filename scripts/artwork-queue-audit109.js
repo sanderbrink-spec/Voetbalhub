@@ -115,24 +115,58 @@ function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
      requiresRework:reasons.length>0,
      ...(reasons.length?{reviewBlockReasons:[...new Set(reasons)]}:{})};
    }).sort((a,b)=>a.id.localeCompare(b.id));
+  // Fixture-specific originals are distinct from reusable home-stadium scenes.
+  // A validated on-repository pending image is a review task, not a reason to
+  // generate another image. It can NEVER bypass the approved-only selection.
+  const pendingExact=assets.filter(x=>x.approval==='pending'&&
+    x.fixtureId===job.matchId&&x.imageKind==='report'&&
+    x.categories?.includes('report')&&x.stadiumOccupancy==='full'&&
+    Array.isArray(x.clubs)&&x.clubs.length===2&&
+    norm(x.clubs[0])===norm(match.homeTeam)&&
+    norm(x.clubs[1])===norm(match.awayTeam)&&
+    x.competitions?.includes(match.competition)&&
+    x.stadiumIdentity==='home:'+norm(match.homeTeam)&&
+    typeof x.sha256==='string'&&/^[a-f0-9]{64}$/.test(x.sha256))
+   .map(x=>{
+    const prior=screenings.get(x.id);
+    const failed=prior?.sha256===x.sha256&&
+      Number.isFinite(prior.fullResolutionAssessment?.score)&&
+      prior.fullResolutionAssessment.score<8.5;
+    const reasons=[
+      ...(historicalFindings[x.id]?[historicalFindings[x.id].reason]:[]),
+      ...(withheld.get(x.id)?[withheld.get(x.id).reason]:[]),
+      ...(failed?['Exact bestand had eerdere beoordeling onder 8,5.']:[])
+    ];
+    return {id:x.id,sha256:x.sha256,reviewRequired:true,
+     contextMatchesDaypart:library.daypartMatches(x,context.daypart),
+     requiresRework:reasons.length>0,
+     ...(reasons.length?{reviewBlockReasons:[...new Set(reasons)]}:{})};
+   }).sort((a,b)=>a.id.localeCompare(b.id));
+  const exactCompatible=pendingExact.filter(x=>x.contextMatchesDaypart);
+  const exactReviewable=exactCompatible.filter(x=>!x.requiresRework);
   const compatible=pending.filter(x=>x.contextMatchesDaypart);
   const reviewable=compatible.filter(x=>!x.requiresRework);
+  const hasAnyPending=pendingExact.length+pending.length>0;
   const classification=approved.length?'approved_match_available':
-   !pending.length?'requires_new_original_artwork':
+   !hasAnyPending?'requires_new_original_artwork':
    context.daypart==='neutral'?'requires_verified_daypart':
+   exactReviewable.length?'pending_exact_fixture_review':
    reviewable.length?'pending_home_image_review':
-   compatible.length?'requires_image_rework':'requires_matching_scene_artwork';
+   exactCompatible.length||compatible.length?'requires_image_rework':
+   'requires_matching_scene_artwork';
   return {...base,classification,homeTeam:match.homeTeam,awayTeam:match.awayTeam,
    playedAt:match.playedAt,competition:match.competition,
    fixtureSource:match.source,fixtureVerifiedAt:match.verifiedAt,
    daypart:context.daypart,daypartEvidence:context.daypart==='neutral'?'insufficient_venue_coordinates':'solar_venue_coordinates',
    approvedAssetIds:approved,pendingHomeCandidates:pending,
+   pendingExactCandidates:pendingExact,
    why:approved.length?'Passend reeds goedgekeurd beeld gevonden; controleer alsnog actuele factcheck en publicatiepoort.':
+    classification==='pending_exact_fixture_review'?'Originele afbeelding bestaat voor exact deze wedstrijd, maar is NOG NIET onafhankelijk goedgekeurd.':
     classification==='requires_verified_daypart'?'Er bestaan pending beelden, maar verifieer eerst stadionlocatie en zonstand; neutraal dagdeel is geen vrijbrief.':
-    classification==='requires_matching_scene_artwork'?'Pending thuisclubbeelden hebben een ander daadwerkelijk dagdeel dan de wedstrijd.':
-    classification==='requires_image_rework'?'Pending thuisclubbeelden met passend dagdeel hebben vastgestelde kwaliteits- of rechtenrisico’s.':
-    pending.length?'Passend dagdeel en thuisclub, maar definitieve individuele beeld- en rechtencontrole ontbreekt.':
-    'Geen bestaand goedgekeurd of pending thuisclubbeeld in de gecontroleerde catalogus.'
+    classification==='requires_matching_scene_artwork'?'Bestaande pending afbeeldingen hebben een afwijkend werkelijk dagdeel.':
+    classification==='requires_image_rework'?'Bestaande pending afbeeldingen hebben vastgestelde kwaliteits- of rechtenrisico’s.':
+    hasAnyPending?'Passend dagdeel en wedstrijdcontext, maar definitieve individuele beeld- en rechtencontrole ontbreekt.':
+    'Geen bestaand goedgekeurd of pending wedstrijdbeeld in de gecontroleerde catalogus.'
   };
  }).sort((a,b)=>(dateMs(b.createdAt)||0)-(dateMs(a.createdAt)||0)||a.matchId.localeCompare(b.matchId));
  const counts=rows.reduce((o,x)=>(o[x.classification]=(o[x.classification]||0)+1,o),{});
