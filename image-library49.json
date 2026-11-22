@@ -2295,15 +2295,11 @@
         "*"
       ],
       "homeClubReusable": true,
-      "homeVenueAliases": [
-        "711 Stadion",
-        "BUKO Stadion",
-        "Schoonenberg Stadion"
-      ],
+      "homeVenueAliases": [],
       "competitions": [
         "Eredivisie"
       ],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -2314,8 +2310,8 @@
       "variant": "report-night-uitgesneden-stadionconcept-73",
       "origin": "Veldio / OpenAI ImageGen; per clubsegment uitgesneden uit eerder gegenereerde collage en opgeschaald",
       "rights": "original-ai",
-      "rightsEvidence": "AI-gegeneerde illustratie uit Veldio-conversatie; geen derde partij-fotografie gebruikt. Copyright-, sponsor- en stadionrecht-eindcontrole staat nog open. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
+      "rightsEvidence": "AI-gegeneerde illustratie uit Veldio-conversatie; geen derde partij-fotografie gebruikt. Copyright-, sponsor- en stadionrecht-eindcontrole staat nog open.",
+      "approval": "pending",
       "lastUsed": null,
       "sha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
       "caption": "Veldio · AI-illustratie bij Telstar. Geen foto van een echte wedstrijd of exacte weergave van het stadion.",
@@ -2324,27 +2320,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:telstar",
       "intakeStatus": "pending-visual-and-legal-review",
-      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score.",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.6,
-        "style": "photorealistic",
-        "assetSha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "telstar",
-        "reviewedStadiumIdentity": "home:telstar",
-        "notes": "Kleinschalige overdekte thuistribune, volledig bezet, zonder waarneembare externe logo's; alleen generieke thuisclubcontext, geen exacte stadionfoto. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score."
     },
     {
       "id": "veldio73-willem-ii-preview-day",
@@ -2422,13 +2398,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:willemii",
       "intakeStatus": "pending-visual-and-legal-review",
-      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score.",
-      "visualReviewHold": {
-        "status": "needs_revision",
-        "reviewedAt": "2026-11-22",
-        "reviewer": "ChatGPT visuele QA",
-        "reason": "Stadion vrijwel identiek aan eerder Telstar-segment; Willem II-thuisstadioncontext onvoldoende overtuigend. Broncollage en opschaling vereisen nieuwe visuele review."
-      }
+      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score."
     },
     {
       "id": "veldio74-adodenhaag-preview",
@@ -2534,13 +2504,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:ajax",
       "homeClubReusable": true,
-      "homeVenueAliases": [],
-      "visualReviewHold": {
-        "status": "needs_revision",
-        "reviewedAt": "2026-11-22",
-        "reviewer": "ChatGPT visuele QA",
-        "reason": "Grote AFC AJAX-sjaal en clubtypografie in tribunes; mogelijke officiële clubuitingen en merkrisico's nog niet voldoende uitgesloten."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio74-az-preview",
@@ -2589,7 +2553,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -2599,9 +2563,9 @@
       "variant": "stadium74-az-report",
       "origin": "ChatGPT gegenereerde originele stadionillustratie, bronbestand a_cinematic_high_detail_stadium_interior_scene_in.png",
       "rights": "original-ai",
-      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "621fa5ef5cfbeb4297c0037fbfd93f7dc2442ec054b68eb574b3375e20ad10da",
       "caption": "Veldio AI-illustratie bij AZ. Geen echte wedstrijdfoto of fotografisch exacte weergave van het stadion.",
@@ -2610,28 +2574,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:az",
       "homeClubReusable": true,
-      "homeVenueAliases": [
-        "AFAS Stadion"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.7,
-        "style": "photorealistic",
-        "assetSha256": "621fa5ef5cfbeb4297c0037fbfd93f7dc2442ec054b68eb574b3375e20ad10da",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "az",
-        "reviewedStadiumIdentity": "home:az",
-        "notes": "Volle rood-witte tribunes en AZ-tekst, Veldio-bebording, avondlicht; geen herkenbaar officieel clubembleem of externe sponsor waarneembaar. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio74-excelsiorrotterdam-preview",
@@ -2701,13 +2644,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:excelsiorrotterdam",
       "homeClubReusable": true,
-      "homeVenueAliases": [],
-      "visualReviewHold": {
-        "status": "needs_revision",
-        "reviewedAt": "2026-11-22",
-        "reviewer": "ChatGPT visuele QA",
-        "reason": "Cirkelvormige rood-zwarte clubemblemen zichtbaar op supportersbanners; mogelijk officiële logo's. Niet inzetten zonder vervanging."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio74-fcgroningen-preview",
@@ -2756,7 +2693,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -2766,9 +2703,9 @@
       "variant": "stadium74-fcgroningen-report",
       "origin": "ChatGPT gegenereerde originele stadionillustratie, bronbestand veldio_in_een_bruisend_voetbalstadion.png",
       "rights": "original-ai",
-      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
       "caption": "Veldio AI-illustratie bij FC Groningen. Geen echte wedstrijdfoto of fotografisch exacte weergave van het stadion.",
@@ -2777,28 +2714,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:fcgroningen",
       "homeClubReusable": true,
-      "homeVenueAliases": [
-        "Euroborg"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 9,
-        "style": "photorealistic",
-        "assetSha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "fcgroningen",
-        "reviewedStadiumIdentity": "home:fcgroningen",
-        "notes": "Volledige groen-witte tribunes, Euroborg-achtige dakconstructie en Veldio-bebording; originele AI-illustratie, geen bewijs van echte wedstrijd. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio74-fctwente-report",
@@ -2812,7 +2728,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -2823,9 +2739,9 @@
       "variant": "stadium76-veldio74-fctwente-report-no-score-pending",
       "origin": "Originele Veldio AI-illustratie, fase 76; bron: veldio_stadion_onder_stormlucht.png",
       "rights": "original-ai",
-      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
       "caption": "Veldio AI-illustratie. Geen echte wedstrijdfoto, geen echte wedstrijdstand.",
@@ -2834,29 +2750,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:fctwente",
       "homeClubReusable": true,
-      "homeVenueAliases": [
-        "De Grolsch Veste",
-        "Grolsch Veste"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.7,
-        "style": "photorealistic",
-        "assetSha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "fctwente",
-        "reviewedStadiumIdentity": "home:fctwente",
-        "notes": "Volle rood-witte tribunes en avondverlichting; geen zichtbare derde-partijsponsor of officieel logo, geen exacte stadionidentiteit geclaimd. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio74-fcutrecht-preview",
@@ -2905,7 +2799,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -2915,9 +2809,9 @@
       "variant": "stadium74-fcutrecht-report",
       "origin": "ChatGPT gegenereerde originele stadionillustratie, bronbestand veldio-fc-utrecht-verslag-avond.webp",
       "rights": "original-ai",
-      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
       "caption": "Veldio AI-illustratie bij FC Utrecht. Geen echte wedstrijdfoto of fotografisch exacte weergave van het stadion.",
@@ -2926,29 +2820,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:fcutrecht",
       "homeClubReusable": true,
-      "homeVenueAliases": [
-        "Stadion Galgenwaard",
-        "Galgenwaard"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.8,
-        "style": "photorealistic",
-        "assetSha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "fcutrecht",
-        "reviewedStadiumIdentity": "home:fcutrecht",
-        "notes": "Volle rood-witte tribunes, passende overkapping en uitsluitend Veldio-merk op de borden; geen wedstrijddocumentatie. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio74-feyenoord-preview",
@@ -3068,7 +2940,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -3078,9 +2950,9 @@
       "variant": "stadium74-goaheadeagles-report",
       "origin": "ChatGPT gegenereerde originele stadionillustratie, bronbestand veldio_onder_de_stadionlichten.png",
       "rights": "original-ai",
-      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
       "caption": "Veldio AI-illustratie bij Go Ahead Eagles. Geen echte wedstrijdfoto of fotografisch exacte weergave van het stadion.",
@@ -3089,29 +2961,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:goaheadeagles",
       "homeClubReusable": true,
-      "homeVenueAliases": [
-        "De Adelaarshorst",
-        "Adelaarshorst"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.7,
-        "style": "photorealistic",
-        "assetSha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "goaheadeagles",
-        "reviewedStadiumIdentity": "home:goaheadeagles",
-        "notes": "Kleine volle rood-gele thuistribunes, passend bij Deventer; geen officieel embleem of sponsor waarneembaar. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio74-necnijmegen-preview",
@@ -3216,13 +3066,7 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:peczwolle",
       "homeClubReusable": true,
-      "homeVenueAliases": [],
-      "visualReviewHold": {
-        "status": "needs_revision",
-        "reviewedAt": "2026-11-22",
-        "reviewer": "ChatGPT visuele QA",
-        "reason": "Rood-hartmotieven en Friese vlaggen corresponderen met Heerenveen, niet overtuigend met PEC Zwolle. Verkeerde thuisclubcontext."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio74-telstar-preview",
@@ -3271,7 +3115,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -3282,9 +3126,9 @@
       "variant": "stadium76-veldio75-adodenhaag-report-no-score-pending",
       "origin": "Originele Veldio AI-illustratie, fase 76; bron: nachtelijke_voetbalavond_met_veldio_glow.png",
       "rights": "original-ai",
-      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "18d7beadd3137bc85174433fd9f359380099835a6d2406927718f5db58b152e1",
       "caption": "Veldio AI-illustratie. Geen echte wedstrijdfoto, geen echte wedstrijdstand.",
@@ -3295,30 +3139,7 @@
       "homeClubReusable": true,
       "sourceNativeCropWidth": 1672,
       "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
-      "homeVenueAliases": [
-        "Werktalent Stadion",
-        "Bingoal Stadion",
-        "Cars Jeans Stadion"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.6,
-        "style": "photorealistic",
-        "assetSha256": "18d7beadd3137bc85174433fd9f359380099835a6d2406927718f5db58b152e1",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "adodenhaag",
-        "reviewedStadiumIdentity": "home:adodenhaag",
-        "notes": "Groen-gele supporters, volle tribunes en AI-disclaimer; geen duidelijk extern merk of clublogo zichtbaar. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio75-fctwente-preview",
@@ -3371,7 +3192,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "twilight",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -3382,9 +3203,9 @@
       "variant": "stadium76-veldio75-feyenoord-report-no-score-pending",
       "origin": "Originele Veldio AI-illustratie, fase 76; bron: neonverlicht_veldio_stadion_bij_avondlicht.png",
       "rights": "original-ai",
-      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
       "caption": "Veldio AI-illustratie. Geen echte wedstrijdfoto, geen echte wedstrijdstand.",
@@ -3395,29 +3216,7 @@
       "homeClubReusable": true,
       "sourceNativeCropWidth": 792,
       "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
-      "homeVenueAliases": [
-        "De Kuip",
-        "Stadion Feijenoord"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 9,
-        "style": "photorealistic",
-        "assetSha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "feyenoord",
-        "reviewedStadiumIdentity": "home:feyenoord",
-        "notes": "Grote volle rood-witte stadionkom tijdens schemer, alleen Veldio-reclame; geen officiële merktekens duidelijk waarneembaar. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio75-fortunasittard-report",
@@ -3454,13 +3253,7 @@
       "homeClubReusable": true,
       "sourceNativeCropWidth": 1672,
       "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
-      "homeVenueAliases": [],
-      "visualReviewHold": {
-        "status": "needs_revision",
-        "reviewedAt": "2026-11-22",
-        "reviewer": "ChatGPT visuele QA",
-        "reason": "Supporters domineren geel-zwart zonder herkenbare groen-gele Fortuna Sittard-context; clubidentiteit te onzeker."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio75-necnijmegen-report",
@@ -3474,7 +3267,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -3484,9 +3277,9 @@
       "variant": "stadium77-veldio75-necnijmegen-report-native-raster-pending",
       "origin": "Origineel Veldio AI-beeld uit gesprek: a_highly_detailed_cinematic_night_time_football_s.png; fase 77 nieuwe volledige rasteruitsnede",
       "rights": "original-ai",
-      "rightsEvidence": "Herkomst: Veldio AI-illustratie. Handmatige controle van merken, sponsoruitingen, stadionuiterlijk en commerciële rechten blijft vereist. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Herkomst: Veldio AI-illustratie. Handmatige controle van merken, sponsoruitingen, stadionuiterlijk en commerciële rechten blijft vereist.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "952ecc36540a420234b939fa80fe6950e7c65c57990701bf0aec864104f77fdb",
       "caption": "Veldio AI-illustratie voor N.E.C. Nijmegen. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
@@ -3497,31 +3290,8 @@
       "homeClubReusable": true,
       "sourceNativeCropWidth": 1672,
       "qualityReviewNote": "Nieuw 1672x941 bronraster. Stadionvorm, clubidentiteit, Veldio-branding en commerciële rechten nog onafhankelijk controleren; geen score toegekend.",
-      "homeVenueAliases": [
-        "Goffertstadion",
-        "De Goffert",
-        "Goffert Stadion"
-      ],
-      "sourceNativeCropHeight": 941,
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.6,
-        "style": "photorealistic",
-        "assetSha256": "952ecc36540a420234b939fa80fe6950e7c65c57990701bf0aec864104f77fdb",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "necnijmegen",
-        "reviewedStadiumIdentity": "home:necnijmegen",
-        "notes": "Kleinschalige volle rood-zwarte tribunes met Veldio-borden; generieke De Goffert-sfeer, geen exacte architectuur geclaimd. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": [],
+      "sourceNativeCropHeight": 941
     },
     {
       "id": "veldio75-psv-preview",
@@ -3573,7 +3343,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "twilight",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -3584,9 +3354,9 @@
       "variant": "stadium76-veldio75-psv-report-no-score-pending",
       "origin": "Originele Veldio AI-illustratie, fase 76; bron: neonlicht_in_het_veldio_stadion.png",
       "rights": "original-ai",
-      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "c203fa573d6d6548fafbd60780225c83e649420af2d29c3738610d1b2bda2deb",
       "caption": "Veldio AI-illustratie. Geen echte wedstrijdfoto, geen echte wedstrijdstand.",
@@ -3597,28 +3367,7 @@
       "homeClubReusable": true,
       "sourceNativeCropWidth": 757,
       "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
-      "homeVenueAliases": [
-        "Philips Stadion"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.7,
-        "style": "photorealistic",
-        "assetSha256": "c203fa573d6d6548fafbd60780225c83e649420af2d29c3738610d1b2bda2deb",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "psv",
-        "reviewedStadiumIdentity": "home:psv",
-        "notes": "Volle rood-witte stadiontribunes tijdens schemer, originele Veldio-signage; geen duidelijk officieel clublogo. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio75-sccambuur-preview",
@@ -3670,7 +3419,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "twilight",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -3680,9 +3429,9 @@
       "variant": "stadium78-sccambuur-report-native-review",
       "origin": "Origineel Veldio AI-beeld uit gesprek: a_wide_cinematic_high_detail_sports_stadium_scen.png; volledige 1672x941 bron, fase 78",
       "rights": "original-ai",
-      "rightsEvidence": "AI-herkomst uit Veldio-conversatie gedocumenteerd; definitieve visuele stadion-, merken- en commerciële rechtencontrole blijft verplicht. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "AI-herkomst uit Veldio-conversatie gedocumenteerd; definitieve visuele stadion-, merken- en commerciële rechtencontrole blijft verplicht.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
       "caption": "Veldio AI-illustratie voor SC Cambuur. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
@@ -3693,30 +3442,8 @@
       "homeClubReusable": true,
       "sourceNativeCropWidth": 1672,
       "qualityReviewNote": "Native bron is 1672×941 in plaats van een opgeschaald collagefragment. Geen onafhankelijk scorebewijs; blijft pending.",
-      "homeVenueAliases": [
-        "Kooi Stadion",
-        "Cambuur Stadion"
-      ],
-      "sourceNativeCropHeight": 941,
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.7,
-        "style": "photorealistic",
-        "assetSha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "sccambuur",
-        "reviewedStadiumIdentity": "home:sccambuur",
-        "notes": "Geel-blauwe supporters en SC Cambuur-woordmarkering in schemer, geen officieel clublogo of externe sponsor duidelijk zichtbaar. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": [],
+      "sourceNativeCropHeight": 941
     },
     {
       "id": "veldio75-scheerenveen-preview",
@@ -3767,7 +3494,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "night",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -3777,9 +3504,9 @@
       "variant": "stadium75-scheerenveen-report",
       "origin": "Veldio eerder gegenereerd AI-beeld; uitsnede van a_cinematic_high_detail_wide_angle_stadium_scene.png",
       "rights": "original-ai",
-      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Concept afkomstig uit een eerder gegenereerde AI-illustratie voor Veldio. Niet rechtenvrij verklaard; stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "17e6a12ac2f5dbaa75adf791a49d93d2af4c7d03810c52b5352e680e94896152",
       "caption": "Veldio AI-illustratie voor sc Heerenveen. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
@@ -3790,28 +3517,7 @@
       "homeClubReusable": true,
       "sourceNativeCropWidth": 720,
       "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
-      "homeVenueAliases": [
-        "Abe Lenstra Stadion"
-      ],
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 8.6,
-        "style": "photorealistic",
-        "assetSha256": "17e6a12ac2f5dbaa75adf791a49d93d2af4c7d03810c52b5352e680e94896152",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "scheerenveen",
-        "reviewedStadiumIdentity": "home:scheerenveen",
-        "notes": "Blauw-witte volle tribunes met Friese vlaggen in avondcontext, Veldio-scorebord; niet als echt wedstrijdbeeld inzetten. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": []
     },
     {
       "id": "veldio75-spartarotterdam-preview",
@@ -3864,7 +3570,7 @@
         "*"
       ],
       "competitions": [],
-      "daypart": "twilight",
+      "daypart": "neutral",
       "sceneDaypart": "night",
       "keywords": [
         "stadion",
@@ -3875,9 +3581,9 @@
       "variant": "stadium77-veldio75-spartarotterdam-report-native-raster-pending",
       "origin": "Origineel Veldio AI-beeld uit gesprek: neonverlichte_voetbalavond_in_veldio_stadion.png; fase 77 nieuwe volledige rasteruitsnede",
       "rights": "original-ai",
-      "rightsEvidence": "Herkomst: Veldio AI-illustratie. Handmatige controle van merken, sponsoruitingen, stadionuiterlijk en commerciële rechten blijft vereist. Visueel gecontroleerd 2026-11-22 op waarneembare logo's, reclame en foto-hergebruik, op basis van gedocumenteerde Veldio/ImageGen-bron en toestemming eigenaar. Geen onafhankelijke juridische garantie of documentair stadionbewijs.",
-      "approval": "approved",
-      "reviewer": "ChatGPT visuele controle op verzoek Veldio-eigenaar, 2026-11-22",
+      "rightsEvidence": "Herkomst: Veldio AI-illustratie. Handmatige controle van merken, sponsoruitingen, stadionuiterlijk en commerciële rechten blijft vereist.",
+      "approval": "pending",
+      "reviewer": "",
       "lastUsed": null,
       "sha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
       "caption": "Veldio AI-illustratie. Geen echte wedstrijdfoto, geen echte wedstrijdstand.",
@@ -3888,30 +3594,8 @@
       "homeClubReusable": true,
       "sourceNativeCropWidth": 1672,
       "qualityReviewNote": "Nieuw 1672x941 bronraster. Stadionvorm, clubidentiteit, Veldio-branding en commerciële rechten nog onafhankelijk controleren; geen score toegekend.",
-      "homeVenueAliases": [
-        "Het Kasteel",
-        "Sparta Stadion Het Kasteel"
-      ],
-      "sourceNativeCropHeight": 941,
-      "approvedAt": "2026-11-22",
-      "visualReview": {
-        "score": 9,
-        "style": "photorealistic",
-        "assetSha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
-        "checked": {
-          "photorealism": true,
-          "clubNames": true,
-          "stadiumContext": true,
-          "rights": true,
-          "aiNotDocumentary": true
-        },
-        "reviewer": "ChatGPT visuele QA, geen onafhankelijke juridische audit",
-        "reviewedAt": "2026-11-22",
-        "clubScope": "home-only",
-        "scopeHome": "spartarotterdam",
-        "reviewedStadiumIdentity": "home:spartarotterdam",
-        "notes": "Kasteelachtige stadionomgeving passend bij Sparta en volle rood-witte tribunes tijdens schemer, geen externe sponsor duidelijk zichtbaar. Alleen hergebruik bij passende thuisclub en gecontroleerd avond-/schemertijdstip. Enkel originele illustratie, niet een echt stadion- of wedstrijdfoto."
-      }
+      "homeVenueAliases": [],
+      "sourceNativeCropHeight": 941
     },
     {
       "id": "veldio97c-nederland-griekenland-preview",
