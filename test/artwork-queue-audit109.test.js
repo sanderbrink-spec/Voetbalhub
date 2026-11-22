@@ -141,7 +141,7 @@ test('109C unresolved historic or independent-quality holds never count as ready
 });
 
 test('109C Sportmonks fixture venue include drives safe daypart; invalid/mismatched venue never does',()=>{
- const item={id:'sm-19715873',status:'FT',resultSource:'Sportmonks Football API',
+ const item={id:'sm-19715873',competition:'eredivisie',status:'FT',resultSource:'Sportmonks Football API',
   home:{name:'FC Twente'},away:{name:'Ajax'},
   date:'2026-11-21T19:00:00Z',checkedAt:'2026-11-22T19:00:00Z',
   venueId:1001,venueName:'De Grolsch Veste',
