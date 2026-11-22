@@ -139,3 +139,30 @@ test('109C unresolved historic or independent-quality holds never count as ready
  assert.equal(g.rows[0].classification,'requires_image_rework');
  assert.ok(g.rows[0].pendingHomeCandidates.some(x=>x.reviewBlockReasons.some(reason=>reason.includes('8,5'))));
 });
+
+test('109C Sportmonks fixture venue include drives safe daypart; invalid/mismatched venue never does',()=>{
+ const item={id:'sm-19715873',status:'FT',resultSource:'Sportmonks Football API',
+  home:{name:'FC Twente'},away:{name:'Ajax'},
+  date:'2026-11-21T19:00:00Z',checkedAt:'2026-11-22T19:00:00Z',
+  venueId:1001,venueName:'De Grolsch Veste',
+  venue:{id:1001,name:'De Grolsch Veste',latitude:52.237,longitude:6.837,
+   image_path:'unapproved-provider-photo-no-copy'}};
+ const provider=f=>({source:'Sportmonks Football API',status:'available',
+  competition:'eredivisie',fixtures:[f]});
+ const evidence=audit.sportmonksEvidence(provider(item));
+ assert.equal(evidence.length,1);
+ assert.equal(evidence[0].venue.latitude,52.237);
+ assert.ok(!JSON.stringify(evidence).includes('unapproved-provider-photo-no-copy'));
+ const night=audit.auditQueue([job(item.id)],assets,evidence,now);
+ assert.equal(night.rows[0].daypart,'night');
+ assert.equal(night.rows[0].daypartEvidence,'solar_venue_coordinates');
+ assert.equal(night.rows[0].classification,'pending_home_image_review');
+ const dayItem={...item,date:'2026-11-21T12:00:00Z'};
+ const day=audit.auditQueue([job(item.id)],assets,audit.sportmonksEvidence(provider(dayItem)),now);
+ assert.equal(day.rows[0].daypart,'day');
+ assert.equal(day.rows[0].classification,'requires_matching_scene_artwork');
+ const wrongVenue={...item,venue:{...item.venue,id:999}};
+ const without=audit.auditQueue([job(item.id)],assets,audit.sportmonksEvidence(provider(wrongVenue)),now);
+ assert.equal(without.rows[0].daypart,'neutral');
+ assert.equal(without.rows[0].classification,'requires_verified_daypart');
+});
