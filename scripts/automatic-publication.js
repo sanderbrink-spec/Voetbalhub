@@ -2966,6 +2966,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(editorialRecovery136.reopenVerifiedMatch(job,group.matchRecord,now)){
     report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_match_writer_recovery_v136'});
    }
+   if(editorialRecovery136.reopenVerifiedMatchNames106C(job,group.matchRecord,now))
+    report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_match_name_identity_retry_106c'});
    reopenRichSportmonksV132(job,group.matchRecord,now);
    if(!job.matchOutputV5&&job.status==='review'){job.status='pending';job.attempts=0;job.nextAttemptAt=now;}
    job.matchOutputV5=true;
