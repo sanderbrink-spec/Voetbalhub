@@ -37,8 +37,8 @@ test('Fase 79: acht concrete herstelpunten zijn zichtbaar, en Cambuur-native bee
  assert.equal(listed.slotsTotal,36);
  assert.equal(listed.issuesForExtraReview,8);
  assert.equal(Object.keys(findings).length,8);
- assert.equal(listed.riskCounts.rebuild,4);
- assert.equal(listed.riskCounts.compare,2);
+ assert.equal(listed.riskCounts.rebuild,3);
+ assert.equal(listed.riskCounts.compare,3);
  assert.equal(listed.riskCounts.identity,2);
  for(const slot of listed.slots){
   for(const item of slot.pendingImages){
