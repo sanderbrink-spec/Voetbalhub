@@ -136,7 +136,7 @@ test('98S recent-only Sportmonks feed accepts a verified small match window with
   const u=new URL(url);
   assert.equal(u.hostname,'api.sportmonks.com');
   assert.equal(u.searchParams.get('filters'),'fixtureLeagues:72');
-  assert.equal(u.searchParams.get('include'),'participants;scores;round;events');
+  assert.equal(u.searchParams.get('include'),'participants;scores;round;events;statistics');
   assert.equal(u.searchParams.get('page'),'1');
   return new Response(JSON.stringify({data:[recent,upcoming,old,invalidScore],pagination:{has_more:false}}));
  }});
