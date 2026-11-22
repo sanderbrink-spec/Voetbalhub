@@ -144,7 +144,7 @@
       "club": "Excelsior Rotterdam",
       "kind": "report",
       "recommendation": "hold_for_rework",
-      "reason": "Ronde clubemblemen zichtbaar in supportersvak, mogelijk officieel clublogo; vervanging nodig."
+      "reason": "De naam Woudestein op het verslagbeeld is correct sinds 2025/2026. De ronde clubemblemen in het supportersvak kunnen officiële Excelsior-logo's zijn; visueel herstel en rechtencontrole blijven nodig."
     },
     {
       "id": "veldio74-peczwolle-report",
@@ -182,7 +182,7 @@
       "club": "AZ",
       "kind": "report",
       "recommendation": "hold_for_rework",
-      "reason": "Historisch herstelpunt in stadium-review-findings79.json: sponsorvermelding op eerdere controle, herstel en nieuwe merk-/sponsorreview vereist.",
+      "reason": "De exacte naam AFAS Stadion is feitelijk correct en geen zelfstandige sponsorblokkade. Individuele stadioncontext-, oorspronkelijke AI-herkomst-, invoerbeelden- en commerciële rechtencontrole zijn nog onbewezen. Fase-79-herstelvermelding is feitelijk gecorrigeerd; geen vrijgave.",
       "preliminaryVisualScore": 8.7,
       "sceneDaypart": "night"
     },
