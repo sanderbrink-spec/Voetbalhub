@@ -96,9 +96,16 @@ function sharedStory(a,b){
  const left=words(A),right=words(B),overlap=[...left].filter(t=>right.has(t)&&!entities.includes(t));
  return anchor.length>=1&&overlap.length>=2;
 }
+// A football headline not matching the fixed club dictionary still deserves
+// independent research. Keep exactly ten specialists and route the residual
+// news beat to the existing background editor, without inventing verification.
+function assignAgents(title){
+ const matched=AGENTS.filter(agent=>agent.pattern.test(title)).map(agent=>agent.id);
+ return {agentIds:matched.length?matched:['achtergrond'],fallbackAssigned:matched.length===0};
+}
 function classifyLeads(leads){
  const withAgents=leads.map(lead=>({...lead,
-  agentIds:AGENTS.filter(agent=>agent.pattern.test(lead.title)).map(agent=>agent.id),
+  ...assignAgents(lead.title),
   rumour:isRumour(lead.title),contradiction:isContradiction(lead.title),
   verified:false,publicationAllowed:false}));
  const groups=[];
@@ -245,6 +252,9 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
    new:gathered[i].status==='fulfilled'?gathered[i].value.filter(lead=>newLeads.some(n=>n.id===lead.id)).length:0,
    error:gathered[i].status==='rejected'?String(gathered[i].reason?.message||'feed_unavailable').slice(0,90):null})),
   expectedScanMinutes:15,detectionLatency:detectionLatency(newLeads,now),
+  unassignedSignals:classified.leads.filter(l=>!l.agentIds.length).length,
+  generalFallbackSignals:classified.leads.filter(l=>l.fallbackAssigned).length,
+  newFallbackSignals:newLeads.filter(l=>l.fallbackAssigned).length,
   newSignals:newLeads.length,groups:classified.groups.length,
   multiOutletSignals:classified.groups.filter(g=>g.outlets.length>=2).length,
   rumourGroups:classified.groups.filter(g=>g.rumour).length,
@@ -287,4 +297,4 @@ if(require.main===module)main().then(report=>{
  console.log(JSON.stringify({status:report.status,signals:report.signals,newSignals:report.newSignals,agents:report.agents,rumourGroups:report.rumourGroups,aiCalls:report.aiCalls,publicationAttempts:0,published:0,feedErrors:report.feedErrors}));
  if(report.feedsOk===0)process.exitCode=1;
 }).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,dailyBudget,analyzeWithAI,scan,readState,writeState,main};
+module.exports={FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,dailyBudget,analyzeWithAI,scan,readState,writeState,main};
