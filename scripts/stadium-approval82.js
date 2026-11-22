@@ -9,6 +9,7 @@ const crypto=require('node:crypto');
 const root=path.resolve(__dirname,'..');
 const manifestPath=path.join(root,'image-library49.json');
 const findings=require('../stadium-review-findings79.json').findings;
+const historicalScreenings=require('../stadium-screening84.json').candidates;
 const gate=require('../premium-match-images72');
 const library=require('../image-library49');
 const norm=require('../stadium-venue74').norm;
@@ -30,6 +31,9 @@ function verify(review,{assets=require(manifestPath).assets,base=root}={}){
  const a=assetById(review.assetId,assets);
  if(a.approval!=='pending')throw Error('Beeld is niet in afwachting van beoordeling.');
  if(findings[a.id])throw Error('Bekend herstelprobleem: herstel eerst het beeld en voer de risicoherbeoordeling uit.');
+ const prior=historicalScreenings.find(x=>x.id===a.id&&x.sha256===a.sha256)?.fullResolutionAssessment;
+ if(prior && Number.isFinite(prior.score) && prior.score<8.5)
+  throw Error('Eerdere volledige-resolutiebeoordeling onder 8,5: eerst een verbeterd beeld met nieuwe SHA256 aanleveren.');
  if(review.assetSha256!==a.sha256)throw Error('Beeld is gewijzigd: oude beoordeling niet geldig.');
  if(review.club!==a.clubs[0]||review.kind!==a.imageKind)throw Error('Club of beeldtype komt niet overeen.');
  if(!Number.isFinite(review.score)||review.score<8.5||review.score>10)throw Error('Kwaliteitsscore minimaal 8,5/10 vereist.');
