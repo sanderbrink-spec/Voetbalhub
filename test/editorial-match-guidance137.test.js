@@ -83,3 +83,25 @@ test('v138 repairs the previously rejected v137 packet once and never bypasses f
  const stale={...job,writerRecoveryRevision:'match-evidence-plan-137'};
  assert.equal(recovery.reopenVerifiedMatch(stale,{...record,publishedAt:'2026-11-06T11:00:00Z'},now),false);
 });
+
+test('106C: one source-backed replay for only two current, exact name rejections',()=>{
+ const crypto=require('node:crypto');
+ const at=Date.parse('2026-11-22T16:36:00Z');
+ for(const [matchId,proof,unknown] of [
+  ['sm-19714585','Bruno Martins Indi','Indi van Sparta'],
+  ['sm-19714590','Willem II','Willem II-speler']]){
+  const reason='Kwaliteitscontrole na 2 herschrijvingen: Controleer namen die niet in de aangeleverde feiten staan: '+unknown+'.';
+  const record={matchId,articleKind:'match_report',publishedAt:'2026-11-21T18:00:00Z',verifiedFacts:['Match verified: '+proof]};
+  const base={matchId,status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',attempts:2,errorHash:crypto.createHash('sha256').update(reason).digest('hex'),checkpoint:{draft:{headline:'rejected'}},writerRecoveryRevision:'match-structure-gate-138'};
+  assert.equal(recovery.reopenVerifiedMatchNames106C({...base},{...record,verifiedFacts:['unrelated']},at),false);
+  assert.equal(recovery.reopenVerifiedMatchNames106C({...base,errorHash:'mismatch'},record,at),false);
+  assert.equal(recovery.reopenVerifiedMatchNames106C({...base},record,at+50*3600000),false);
+  const job={...base};
+  assert.equal(recovery.reopenVerifiedMatchNames106C(job,record,at),true);
+  assert.equal(job.status,'pending');assert.equal(job.attempts,0);
+  assert.equal(job.checkpoint,undefined);assert.equal(job.nameIdentityRecovery106C,true);
+  job.status='review';assert.equal(recovery.reopenVerifiedMatchNames106C(job,record,at),false);
+ }
+ assert.equal(recovery.reopenVerifiedMatchNames106C({matchId:'sm-111',status:'review'},
+  {matchId:'sm-111',articleKind:'match_report',publishedAt:'2026-11-21T18:00:00Z',verifiedFacts:['Bruno Martins Indi']},at),false);
+});
