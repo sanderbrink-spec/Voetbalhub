@@ -1913,3 +1913,25 @@ test('99C-5: exact false UEFA Nations name rejection is retried once with fresh 
  assert.equal(reopenUefaCompetitionTitle99C5(make(),{...doc,publishedAt:'2026-10-01T12:00:00Z'},at),false);
  assert.equal(reopenUefaCompetitionTitle99C5(make(),{...doc,url:'https://www.ajax.nl/artikelen/uefa-status/'},at),false);
 });
+
+test('106A only fresh, rich verified match reports can be drafted before artwork',()=>{
+ const {shouldDraftVerifiedMatchBeforeArtwork,matchArtworkPreflight105A}=require('../scripts/automatic-publication');
+ const time=Date.parse('2026-11-22T12:00:00Z');
+ const record={matchId:'sm-19714591',articleKind:'match_report',
+  verifiedFacts:['Eindstand','Ruststand','Doelpunt 1','Doelpunt 2','Doelpunt 3','Wedstrijdcontext'],
+  match:{playedAt:'2026-11-21T20:00:00Z',homeTeam:'FC Groningen',awayTeam:'SC Heerenveen'}};
+ const group={matchRecord:record,0:{title:'FC Groningen tegen SC Heerenveen'}};
+ assert.equal(shouldDraftVerifiedMatchBeforeArtwork(group,time),true);
+ const art=matchArtworkPreflight105A(group,()=>({checked:true,approved:false,reason:'Geen passend goedgekeurd artikelbeeld'}));
+ assert.equal(art.blocked,true,'schrijfbevoegdheid is geen beeldvrijgave');
+ assert.equal(shouldDraftVerifiedMatchBeforeArtwork({...group,matchRecord:{...record,verifiedFacts:record.verifiedFacts.slice(0,3)}},time),false);
+ assert.equal(shouldDraftVerifiedMatchBeforeArtwork({...group,matchRecord:{...record,articleKind:'score_update'}},time),false);
+ assert.equal(shouldDraftVerifiedMatchBeforeArtwork({...group,matchRecord:{...record,match:{...record.match,playedAt:'2026-11-19T20:00:00Z'}}},time),false);
+ assert.equal(shouldDraftVerifiedMatchBeforeArtwork({...group,matchRecord:{...record,match:{...record.match,playedAt:'2026-11-23T20:00:00Z'}}},time),false);
+ assert.equal(shouldDraftVerifiedMatchBeforeArtwork({...group,matchRecord:{...record,match:{...record.match,playedAt:'invalid'}}},time),false);
+ assert.equal(shouldDraftVerifiedMatchBeforeArtwork({0:group[0]},time),false);
+ const source=require('node:fs').readFileSync(require('node:path').join(__dirname,'../scripts/automatic-publication.js'),'utf8');
+ assert.match(source,/let matchDraftFirstRemaining=2/);
+ assert.match(source,/if\(finalArt.checked&&!finalArt.approved\)/);
+ assert.match(source,/deferArtwork\(job,now\)/);
+});
