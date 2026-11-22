@@ -47,12 +47,23 @@ def article_reader(device, suffix):
     if refresh.wait(timeout=12):
         refresh.click()
     card = device(text=headline)
-    for _ in range(8):
-        if card.wait(timeout=4):
+    # A 160% system font displays substantially fewer rows per screen.
+    # Do not scroll past an empty/slow-loading feed while Render restarts.
+    # Both font sizes must still find the exact verified article.
+    for attempt in range(32):
+        if card.wait(timeout=2):
             break
-        device.swipe_ext("up", scale=0.6)
+        hierarchy = device.dump_hierarchy()
+        if "Nieuws bijwerken" in hierarchy and attempt < 22:
+            time.sleep(1)
+            continue
+        device.swipe_ext("up", scale=0.48)
     else:
-        raise AssertionError("Corrected live article not visible in Android news")
+        capture(device, "news-article-missing-" + suffix)
+        (OUT / ("news-article-missing-" + suffix + ".txt")).write_text(
+            "Article: " + headline + "\\n" + device.dump_hierarchy(), encoding="utf-8")
+        raise AssertionError("Corrected live article not visible in Android news at " + suffix +
+                             " font size after 32 bounded scans")
     capture(device, "news-" + suffix)
     card.click()
     title = device(text=headline)
