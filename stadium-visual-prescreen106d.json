@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 106,
+  "createdAt": "2026-11-22",
+  "scope": "18 original AI report-image concepts currently awaiting independent final approval",
+  "method": "Visual AI prescreen of exact repository WEBP bytes; no independent human verification or legal opinion. Prior unresolved phase-79 warnings override candidate status; no prior safety finding is dismissed based on AI-only screening.",
+  "approvalGranted": 0,
+  "finalIndependentReviewCompleted": 0,
+  "requirement": "A human must inspect each exact SHA256 asset, verify provenance/rights/stadium context and complete scripts/stadium-approval82.js individual review. No bulk approval; unresolved historical repair findings must be addressed before acceptance.",
+  "restrictions": [
+    "Not documentary match photos",
+    "No unofficial declaration of commercial rights",
+    "No reuse on wrong home club, opponent context or daypart",
+    "No publishing without article fact/rights/image checks"
+  ],
+  "candidates": [
+    {
+      "id": "veldio74-fcgroningen-report",
+      "file": "public/stadium74/fcgroningen-report.webp",
+      "sha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
+      "club": "FC Groningen",
+      "kind": "report",
+      "preliminaryVisualScore": 9,
+      "sceneDaypart": "night",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Groen-witte volle tribunes, Euroborg-achtige overkapping, heldere AI-disclaimer.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio74-fctwente-report",
+      "file": "public/stadium74/fctwente-report.webp",
+      "sha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
+      "club": "FC Twente",
+      "kind": "report",
+      "preliminaryVisualScore": 8.7,
+      "sceneDaypart": "night",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Volle rood-witte tribunes met avondverlichting, geen duidelijke externe sponsor of officieel embleem.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio74-fcutrecht-report",
+      "file": "public/stadium74/fcutrecht-report.webp",
+      "sha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
+      "club": "FC Utrecht",
+      "kind": "report",
+      "preliminaryVisualScore": 8.8,
+      "sceneDaypart": "night",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Volle rood-witte tribunes en geschikte overkapping, uitsluitend Veldio-borden.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio75-adodenhaag-report",
+      "file": "public/stadium75/adodenhaag-report.webp",
+      "sha256": "18d7beadd3137bc85174433fd9f359380099835a6d2406927718f5db58b152e1",
+      "club": "ADO Den Haag",
+      "kind": "report",
+      "preliminaryVisualScore": 8.6,
+      "sceneDaypart": "night",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Groen-gele thuisclubkleuren, bezette tribunes, Veldio-signage en AI-disclaimer.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio75-feyenoord-report",
+      "file": "public/stadium75/feyenoord-report.webp",
+      "sha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
+      "club": "Feyenoord",
+      "kind": "report",
+      "preliminaryVisualScore": 9,
+      "sceneDaypart": "twilight",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Volle rood-witte stadionkom tijdens avondschemer, geen duidelijk officieel embleem.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio75-necnijmegen-report",
+      "file": "public/stadium75/necnijmegen-report.webp",
+      "sha256": "952ecc36540a420234b939fa80fe6950e7c65c57990701bf0aec864104f77fdb",
+      "club": "N.E.C. Nijmegen",
+      "kind": "report",
+      "preliminaryVisualScore": 8.6,
+      "sceneDaypart": "night",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Volle rood-zwarte tribunes, generieke thuisclubomgeving en Veldio-borden.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio75-psv-report",
+      "file": "public/stadium75/psv-report.webp",
+      "sha256": "c203fa573d6d6548fafbd60780225c83e649420af2d29c3738610d1b2bda2deb",
+      "club": "PSV",
+      "kind": "report",
+      "preliminaryVisualScore": 8.7,
+      "sceneDaypart": "twilight",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Volle rood-witte tribunes bij avondschemer en uitsluitend Veldio-promotie duidelijk herkenbaar.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio75-sccambuur-report",
+      "file": "public/stadium75/sccambuur-report.webp",
+      "sha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
+      "club": "SC Cambuur",
+      "kind": "report",
+      "preliminaryVisualScore": 8.7,
+      "sceneDaypart": "twilight",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Geel-blauwe tribunes en SC Cambuur-tekst in avondsfeer, zonder duidelijk officieel embleem.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio75-scheerenveen-report",
+      "file": "public/stadium75/scheerenveen-report.webp",
+      "sha256": "17e6a12ac2f5dbaa75adf791a49d93d2af4c7d03810c52b5352e680e94896152",
+      "club": "sc Heerenveen",
+      "kind": "report",
+      "preliminaryVisualScore": 8.6,
+      "sceneDaypart": "night",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Volle blauw-witte tribunes met Friese vlaggen, duidelijk als AI-illustratie gemarkeerd.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    },
+    {
+      "id": "veldio75-spartarotterdam-report",
+      "file": "public/stadium75/spartarotterdam-report.webp",
+      "sha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
+      "club": "Sparta Rotterdam",
+      "kind": "report",
+      "preliminaryVisualScore": 9,
+      "sceneDaypart": "twilight",
+      "sceneAudience": "full",
+      "recommendation": "human_review_candidate",
+      "visualFindings": "Kasteelachtige stadionarchitectuur, rood-wit publiek en avondschemer, Veldio-signage.",
+      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
+    }
+  ],
+  "withheld": [
+    {
+      "id": "veldio73-willem-ii-report-evening",
+      "file": "public/club-stadiums73/willem-ii-report-evening.webp",
+      "sha256": "83ab3e9e1a74fc01a32a8b0aa254a0e8b6cc708a94c73fa4006e54c0b5c4ac6e",
+      "club": "Willem II",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Stadionontwerp vrijwel identiek aan Telstar-versie en past onvoldoende overtuigend bij Willem II."
+    },
+    {
+      "id": "veldio74-ajax-report",
+      "file": "public/stadium74/ajax-report.webp",
+      "sha256": "0507173b3936e2cf29ee08594bb5ea25764eac88440fae2af4fa9ca7fa5aba75",
+      "club": "Ajax",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Grote AFC AJAX- en tribune-uitingen, onvoldoende zekerheid dat officiële clubmerktekens zijn uitgesloten."
+    },
+    {
+      "id": "veldio74-excelsiorrotterdam-report",
+      "file": "public/stadium74/excelsiorrotterdam-report.webp",
+      "sha256": "602c041ca65ac2cca23222e9facf751683b05f4e7015232240b78de92996369b",
+      "club": "Excelsior Rotterdam",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Ronde clubemblemen zichtbaar in supportersvak, mogelijk officieel clublogo; vervanging nodig."
+    },
+    {
+      "id": "veldio74-peczwolle-report",
+      "file": "public/stadium74/peczwolle-report.webp",
+      "sha256": "0c4ea1c8c5f91dbe086c8e751b281348940c32993909267428f62f396dac20d4",
+      "club": "PEC Zwolle",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Friese vlaggen met rode hartvormen verwijzen naar sc Heerenveen, niet PEC Zwolle."
+    },
+    {
+      "id": "veldio75-fortunasittard-report",
+      "file": "public/stadium75/fortunasittard-report.webp",
+      "sha256": "8a0c7e8378153d1f7a5fd961b2754a2625aedd5f253c2914f56a7ee697f3494a",
+      "club": "Fortuna Sittard",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Geel-zwarte massa en vlaggen onvoldoende passend bij groen-geel Fortuna Sittard."
+    },
+    {
+      "id": "veldio73-telstar-report-evening",
+      "file": "public/club-stadiums73/telstar-report-evening.webp",
+      "sha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
+      "club": "Telstar",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Historisch herstelpunt in stadium-review-findings79.json: sterke visuele gelijkenis met Willem II, dus eerst onderscheidende thuisstadioncontrole vereist.",
+      "preliminaryVisualScore": 8.6,
+      "sceneDaypart": "night"
+    },
+    {
+      "id": "veldio74-az-report",
+      "file": "public/stadium74/az-report.webp",
+      "sha256": "621fa5ef5cfbeb4297c0037fbfd93f7dc2442ec054b68eb574b3375e20ad10da",
+      "club": "AZ",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Historisch herstelpunt in stadium-review-findings79.json: sponsorvermelding op eerdere controle, herstel en nieuwe merk-/sponsorreview vereist.",
+      "preliminaryVisualScore": 8.7,
+      "sceneDaypart": "night"
+    },
+    {
+      "id": "veldio74-goaheadeagles-report",
+      "file": "public/stadium74/goaheadeagles-report.webp",
+      "sha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
+      "club": "Go Ahead Eagles",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Historisch herstelpunt in stadium-review-findings79.json: Adelaarshorst-tribunevorm en rood-gele clubidentiteit niet onafhankelijk geverifieerd.",
+      "preliminaryVisualScore": 8.7,
+      "sceneDaypart": "night"
+    }
+  ]
+}
