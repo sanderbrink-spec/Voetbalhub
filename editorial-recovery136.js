@@ -20,6 +20,34 @@ function reopenVerifiedMatch(job,record,now=Date.now()){
  delete job.checkpoint;
  return true;
 }
+// 106C: repeat only two documented 22 November name-identity rejections.
+// Preserve all fact, originality, score, image-rights and independent review gates.
+const observedMatchNameRejections106C=Object.freeze({
+ 'sm-19714585':{
+  reason:'Kwaliteitscontrole na 2 herschrijvingen: Controleer namen die niet in de aangeleverde feiten staan: Indi van Sparta.',
+  evidence:'Bruno Martins Indi'
+ },
+ 'sm-19714590':{
+  reason:'Kwaliteitscontrole na 2 herschrijvingen: Controleer namen die niet in de aangeleverde feiten staan: Willem II-speler.',
+  evidence:'Willem II'
+ }
+});
+function reopenVerifiedMatchNames106C(job,record,now=Date.now()){
+ const observed=observedMatchNameRejections106C[record?.matchId];
+ const at=Date.parse(record?.publishedAt||'');
+ if(!job||!observed||job.matchId!==record.matchId||
+   record.articleKind!=='match_report'||!Array.isArray(record.verifiedFacts)||
+   !record.verifiedFacts.some(f=>typeof f==='string'&&f.includes(observed.evidence))||
+   !Number.isFinite(at)||at>now||now-at>48*3600000||
+   job.status!=='review'||job.failureStage!=='quality'||
+   job.failureCategory!=='journalistic_rejection'||job.nameIdentityRecovery106C||
+   job.errorHash!==require('node:crypto').createHash('sha256').update(observed.reason).digest('hex'))
+  return false;
+ job.nameIdentityRecovery106C=true;
+ job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ delete job.checkpoint;
+ return true;
+}
 // The live Utrecht-NEC reviewer rejected an unsupported 3-2, unproven
 // comeback and minute 58 in the wrong paragraph (run 42649713550).
 // PR #189 subsequently corrected the incident/goal chronology. Permit
@@ -193,4 +221,4 @@ function publicationBlocker(report){
   return 'editorial_rejected';
  return null;
 }
-module.exports={summarizeQueue105A,classifyFinalStatus105A,REVISION,reopenVerifiedMatch,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,reopenUtrechtNecDualScorerV71,reopenUtrechtNecVerifiedGoalClauseV71,publicationBlocker};
+module.exports={summarizeQueue105A,classifyFinalStatus105A,REVISION,reopenVerifiedMatch,reopenVerifiedMatchNames106C,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,reopenUtrechtNecDualScorerV71,reopenUtrechtNecVerifiedGoalClauseV71,publicationBlocker};
