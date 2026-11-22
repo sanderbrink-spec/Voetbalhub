@@ -2,7 +2,7 @@
   "schemaVersion": 106,
   "createdAt": "2026-11-22",
   "scope": "18 original AI report-image concepts currently awaiting independent final approval",
-  "method": "Visual AI prescreen of exact repository WEBP bytes; no independent human verification or legal opinion.",
+  "method": "Visual AI prescreen of exact repository WEBP bytes; no independent human verification or legal opinion. Prior unresolved phase-79 warnings override candidate status; no prior safety finding is dismissed based on AI-only screening.",
   "approvalGranted": 0,
   "finalIndependentReviewCompleted": 0,
   "requirement": "A human must inspect each exact SHA256 asset, verify provenance/rights/stadium context and complete scripts/stadium-approval82.js individual review. No bulk approval; unresolved historical repair findings must be addressed before acceptance.",
@@ -13,32 +13,6 @@
     "No publishing without article fact/rights/image checks"
   ],
   "candidates": [
-    {
-      "id": "veldio73-telstar-report-evening",
-      "file": "public/club-stadiums73/telstar-report-evening.webp",
-      "sha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
-      "club": "Telstar",
-      "kind": "report",
-      "preliminaryVisualScore": 8.6,
-      "sceneDaypart": "night",
-      "sceneAudience": "full",
-      "recommendation": "human_review_candidate",
-      "visualFindings": "Kleine volle avondtribune, enkel Veldio-signage, clubcontext aannemelijk maar geen exacte stadionidentiteit bewezen.",
-      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
-    },
-    {
-      "id": "veldio74-az-report",
-      "file": "public/stadium74/az-report.webp",
-      "sha256": "621fa5ef5cfbeb4297c0037fbfd93f7dc2442ec054b68eb574b3375e20ad10da",
-      "club": "AZ",
-      "kind": "report",
-      "preliminaryVisualScore": 8.7,
-      "sceneDaypart": "night",
-      "sceneAudience": "full",
-      "recommendation": "human_review_candidate",
-      "visualFindings": "Volle rood-witte tribunes met AZ-woordmerk in stadion, geen herkenbaar officieel embleem zichtbaar.",
-      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
-    },
     {
       "id": "veldio74-fcgroningen-report",
       "file": "public/stadium74/fcgroningen-report.webp",
@@ -76,19 +50,6 @@
       "sceneAudience": "full",
       "recommendation": "human_review_candidate",
       "visualFindings": "Volle rood-witte tribunes en geschikte overkapping, uitsluitend Veldio-borden.",
-      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
-    },
-    {
-      "id": "veldio74-goaheadeagles-report",
-      "file": "public/stadium74/goaheadeagles-report.webp",
-      "sha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
-      "club": "Go Ahead Eagles",
-      "kind": "report",
-      "preliminaryVisualScore": 8.7,
-      "sceneDaypart": "night",
-      "sceneAudience": "full",
-      "recommendation": "human_review_candidate",
-      "visualFindings": "Volle rood-gele kleinere tribunes, passend bij thuisclub, geen merkconflict zichtbaar.",
       "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
     },
     {
@@ -228,6 +189,39 @@
       "kind": "report",
       "recommendation": "hold_for_rework",
       "reason": "Geel-zwarte massa en vlaggen onvoldoende passend bij groen-geel Fortuna Sittard."
+    },
+    {
+      "id": "veldio73-telstar-report-evening",
+      "file": "public/club-stadiums73/telstar-report-evening.webp",
+      "sha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
+      "club": "Telstar",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Historisch herstelpunt in stadium-review-findings79.json: sterke visuele gelijkenis met Willem II, dus eerst onderscheidende thuisstadioncontrole vereist.",
+      "preliminaryVisualScore": 8.6,
+      "sceneDaypart": "night"
+    },
+    {
+      "id": "veldio74-az-report",
+      "file": "public/stadium74/az-report.webp",
+      "sha256": "621fa5ef5cfbeb4297c0037fbfd93f7dc2442ec054b68eb574b3375e20ad10da",
+      "club": "AZ",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Historisch herstelpunt in stadium-review-findings79.json: sponsorvermelding op eerdere controle, herstel en nieuwe merk-/sponsorreview vereist.",
+      "preliminaryVisualScore": 8.7,
+      "sceneDaypart": "night"
+    },
+    {
+      "id": "veldio74-goaheadeagles-report",
+      "file": "public/stadium74/goaheadeagles-report.webp",
+      "sha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
+      "club": "Go Ahead Eagles",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "reason": "Historisch herstelpunt in stadium-review-findings79.json: Adelaarshorst-tribunevorm en rood-gele clubidentiteit niet onafhankelijk geverifieerd.",
+      "preliminaryVisualScore": 8.7,
+      "sceneDaypart": "night"
     }
   ]
 }
