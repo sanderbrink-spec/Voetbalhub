@@ -6,6 +6,11 @@ const rows=require('./image-library49.json').assets;
 const findings=require('./stadium-review-findings79.json').findings;
 const screenings=new Map(require('./stadium-screening84.json').candidates.map(x=>[x.id,x]));
 const {norm}=require('./stadium-venue74');
+function previouslyFailedExactImage(a){
+ const screening=screenings.get(a.id);
+ const assessment=screening?.sha256===a.sha256?screening.fullResolutionAssessment:null;
+ return Boolean(assessment&&Number.isFinite(assessment.score)&&assessment.score<8.5);
+}
 function overview(){
  const slots=list.clubs.flatMap(club=>['preview','report'].map(kind=>{
   const declared=club.slots[kind];
@@ -24,10 +29,11 @@ function overview(){
     pendingImages:staged.map(a=>({id:a.id,sha256:a.sha256,
     reviewUrl:'/editorial/stadium-review74/'+a.id+'/image',
     originalSourceWidth:a.sourceNativeCropWidth||null,
-    qualityStatus:'requires-independent-review',rightsStatus:'requires-independent-review',
+    qualityStatus:previouslyFailedExactImage(a)?'requires-replacement':'requires-independent-review',rightsStatus:'requires-independent-review',
     minQualityScore:8.5,knownIssue:findings[a.id]||null,
     reviewPriority:findings[a.id]?'repair-first':'first-review',
-    canRequestApproval:!findings[a.id],
+    canRequestApproval:!findings[a.id]&&!previouslyFailedExactImage(a),
+    ...(previouslyFailedExactImage(a)?{reviewBlockReason:'Bestaande volledige-resolutiescore onder 8,5. Nieuw beeld vereist.'}:{}),
     ...(screenings.get(a.id)?.sha256===a.sha256 && screenings.get(a.id).fullResolutionAssessment
      ?{fullResolutionAssessment:screenings.get(a.id).fullResolutionAssessment}:{}),
     preliminaryScreening:screenings.get(a.id)?{
@@ -50,6 +56,7 @@ function overview(){
   counts,riskCounts,reviewPlan:{firstReview:slots.filter(s=>s.pendingImages.some(a=>a.reviewPriority==='first-review')).length,
   repairFirst:slots.filter(s=>s.pendingImages.some(a=>a.reviewPriority==='repair-first')).length,
   approved:slots.filter(s=>s.state==='approved-for-use').length,
+  failedFullResolution:slots.flatMap(s=>s.pendingImages||[]).filter(a=>a.qualityStatus==='requires-replacement').length,
   rule:'Geen groepsvrijgave: individuele beoordeling en minimaal 8,5, bewijs van beeldrechten en expliciete goedkeuring verplicht.'},
   issuesForExtraReview:Object.values(riskCounts).reduce((n,x)=>n+x,0),slots};
 }
