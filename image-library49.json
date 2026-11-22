@@ -3833,6 +3833,45 @@
       "stadiumIdentity": "home:ajax",
       "intakeStatus": "pending-independent-review",
       "artworkNote": "Eigen originele dagillustratie met volle rood-witte tribunes en uitsluitend Veldio-signage. Exacte bron- en WEBP-hashes geregistreerd. Rechtencontrole, feitelijke stadioncontext, score >=8,5/10 en definitieve individuele vrijgave ontbreken nog."
+    },
+    {
+      "id": "veldio110d-sm-19722098-hull-brighton-day-report",
+      "file": "public/match-covers110/sm-19722098-hull-brighton-day.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "Hull City – Brighton & Hove Albion, wedstrijdverslag",
+      "clubs": [
+        "Hull City",
+        "Brighton & Hove Albion"
+      ],
+      "competitions": [
+        "Premier League"
+      ],
+      "daypart": "day",
+      "sceneDaypart": "day",
+      "keywords": [
+        "Hull City",
+        "Brighton & Hove Albion",
+        "volle tribunes",
+        "daglicht",
+        "Veldio"
+      ],
+      "variant": "match-report-110d-hull-brighton-day",
+      "origin": "Originele OpenAI ChatGPT ImageGen stadionillustratie voor Veldio (22 november 2026), gen_id 79cd024d-c50e-46b5-bce3-e766279a29b8; bron-PNG SHA256 a421796730e5880dc4a993546c799104ad63a4c02eb3689195c08a25950d6feb; geen invoerfoto's.",
+      "rights": "original-ai",
+      "rightsEvidence": "Originele PNG in ChatGPT Library teruggevonden en SHA256 geverifieerd. Werkelijke 1280x720 WEBP-conversie via Pillow RGB LANCZOS quality85 method4, SHA256 1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef. Commerciële rechten en definitieve beeldkwaliteit vereisen nog onafhankelijke beoordeling; geen goedkeuring.",
+      "approval": "pending",
+      "lastUsed": null,
+      "sha256": "1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef",
+      "caption": "Veldio · AI-illustratie bij Hull City – Brighton & Hove Albion. Geen echte wedstrijdfoto of exacte weergave van het stadion.",
+      "questionIds": [],
+      "fixtureId": "sm-19722098",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:hullcity",
+      "intakeStatus": "pending-independent-review",
+      "artworkNote": "Originele amberzwarte thuis- en blauwe uitvaksfeer in fictief volledig gevuld dagstadion. Exacte bron en WEBP bytes herleidbaar, geen officiële clublogo's beoogd. Rechten, eindkwaliteit en stadioncontext nog onafhankelijk te beoordelen; geen publicatie."
     }
   ]
 }

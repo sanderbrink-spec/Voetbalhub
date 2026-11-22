@@ -1,7 +1,7 @@
 {
   "schemaVersion": 110,
   "generatedAt": "2026-11-22",
-  "note": "Twee originele gegenereerde stadionbeelden staan als pending in GitHub met eigen SHA256 en fixturecontext; geen publicatievrijgave verleend.",
+  "note": "Drie originele ImageGen-wedstrijdillustraties staan uitsluitend als pending in GitHub met afzonderlijke hashes; geen commerciële of redactionele publicatievrijgave.",
   "items": [
     {
       "fixtureId": "sm-19715868",
@@ -58,6 +58,35 @@
       "repoFile": "public/match-covers110/sm-19714592-ajax-ado-day.webp",
       "transferVerification": "Eenmalige GitHub Actions import met SHA256-vergelijking van exact WEBP-bestand; tijdelijke overdrachtsworkflow na succes verwijderd.",
       "nextAction": "Definitieve visuele eindcontrole en commerciële rechtenbeoordeling op exact SHA256-bestand; pending behouden tot expliciet bewijs en goedkeuring."
+    },
+    {
+      "fixtureId": "sm-19722098",
+      "homeTeam": "Hull City",
+      "awayTeam": "Brighton & Hove Albion",
+      "playedAt": "2026-11-22T14:00:00.000Z",
+      "verifiedCompetition": "Premier League",
+      "verifiedDaypart": "day",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "generation": "OpenAI ChatGPT ImageGen",
+      "generationId": "79cd024d-c50e-46b5-bce3-e766279a29b8",
+      "originalImageFormat": "PNG",
+      "pngSha256": "a421796730e5880dc4a993546c799104ad63a4c02eb3689195c08a25950d6feb",
+      "webpOutput": "veldio-sm-19722098-hull-brighton-day.webp",
+      "webpDimensions": [
+        1280,
+        720
+      ],
+      "webpSha256": "1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef",
+      "status": "uploaded_repo_pending_review",
+      "approval": "pending",
+      "visualAssessment": "not_yet_independently_approved",
+      "commercialRightsEvidence": "requires_independent_exact_file_origin_and_commercial_rights_review",
+      "sourceVerification": "Original generated PNG recovered from ChatGPT Library; SHA256 verified against the original 110C intake and dimensions 1672x941. No external input image.",
+      "conversion": "RGB Pillow resize 1280x720 Lanczos quality85 method4. Different derivative from unimported 110C planned hash; new actual hash tracked without treating as original old WEBP.",
+      "repoFile": "public/match-covers110/sm-19722098-hull-brighton-day.webp",
+      "assetId": "veldio110d-sm-19722098-hull-brighton-day-report",
+      "nextAction": "Controleer echte GitHub-bytes en SHA256, beoordeel afzonderlijk commerciële rechten, visuele kwaliteit en stadioncontext. Behoud pending tot expliciete vrijgave."
     }
   ]
 }

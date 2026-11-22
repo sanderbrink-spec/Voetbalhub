@@ -1,10 +1,11 @@
 'use strict';
-// Veldio 110C: exact-binary provenance gate for staged match artwork.
+// Veldio 110C/110D: exact-binary provenance gate for staged match artwork.
 // Never invents a reviewer, approves commercial rights, or publishes articles.
 const fs=require('node:fs');
 const path=require('node:path');
 const crypto=require('node:crypto');
 const auditStates=new Set(['requires_new_original_artwork','requires_matching_scene_artwork','requires_image_rework']);
+const statuses=new Set(['source_generated_not_in_repository','uploaded_repo_pending_review']);
 function sha256(buf){return crypto.createHash('sha256').update(buf).digest('hex');}
 function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
  if(!batch||batch.schemaVersion!==1103||!Array.isArray(batch.artworks)||
@@ -21,7 +22,7 @@ function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
      !Number.isSafeInteger(entry.webpDimensions?.[0])||
      !Number.isSafeInteger(entry.webpDimensions?.[1])||
      entry.webpDimensions[0]!==1280||entry.webpDimensions[1]!==720||
-     entry.approval!=='pending'||entry.status!=='source_generated_not_in_repository'||
+     entry.approval!=='pending'||!statuses.has(entry.status)||
      entry.sourceInputImagesUsed!==false)
     throw Error('Ongeldig of dubbel beeldgegeven.');
   seen.add(entry.fixtureId);
@@ -40,7 +41,7 @@ function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
     nextAction:'Niet importeren of publiceren zonder nieuwe onafhankelijke broncontrole.'});
    continue;
   }
-  if(!auditStates.has(known.classification)||known.homeTeam!==entry.homeTeam||
+  if(!(auditStates.has(known.classification)||(known.classification==='pending_exact_fixture_review'&&entry.status==='uploaded_repo_pending_review'))||known.homeTeam!==entry.homeTeam||
      known.awayTeam!==entry.awayTeam||known.competition!==entry.competition||
      known.playedAt!==entry.playedAt||known.daypart!==entry.daypart||
      known.fixtureSource!==entry.fixtureSource||
@@ -53,6 +54,11 @@ function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
     throw Error('Bestaande afbeelding met ander bestand voor hetzelfde fixture-ID.');
   const file=path.resolve(root,entry.suggestedRepoPath);
   if(!file.startsWith(root+path.sep))throw Error('Onveilig bronpad.');
+  if(entry.status==='uploaded_repo_pending_review'){
+    if(!fs.existsSync(file))throw Error('Als geupload registreerd beeldbestand ontbreekt.');
+    if(!matched.some(x=>x.sha256===entry.webpSha256&&x.approval==='pending'))
+      throw Error('Geupload beeld heeft geen exacte pending-catalogusregistratie.');
+  }
   const auditTime=Date.parse(audit.generatedAt),kickoff=Date.parse(entry.playedAt);
   const stillFresh=Number.isFinite(auditTime)&&Number.isFinite(kickoff)&&
     auditTime>=kickoff&&auditTime-kickoff<=36*3600000;
