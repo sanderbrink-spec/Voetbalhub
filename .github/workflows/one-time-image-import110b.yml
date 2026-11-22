@@ -1,0 +1,33 @@
+name: One-time source image import 110B
+on:
+  push:
+    branches:
+      - feat/110b-asset-eindhoven-pending
+    paths:
+      - '.github/workflows/one-time-image-import110b.yml'
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.repository == 'sanderbrink-spec/Voetbalhub'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import exact original bytes, never approve
+        env:
+          SOURCE_URL: 'https://d2jqrm6oza8nb6.cloudfront.net/datasets/37a86206-caf8-4d05-a11f-cb177731d518.webp?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMGFmZGZlYTBjZTdlZDc3ZiIsImJ1Y2tldCI6InJ1bndheS1kYXRhc2V0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NTUxODc1Mn0.FxmbQYMzV7BNi510uWqPE9-Mn8ymnd9tyLOEACtyvM0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          target='public/match-covers110/sm-19715868-fceindhoven-rkc-twilight.webp'
+          mkdir -p "$(dirname "$target")"
+          curl --fail --location --silent --show-error --max-time 45 \
+            "$SOURCE_URL" --output "$target"
+          echo "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885  $target" | sha256sum --check --status
+          file "$target" | grep -q 'Web/P image'
+          git config user.name 'veldio-artwork-import[bot]'
+          git config user.email 'veldio-artwork-import@users.noreply.github.com'
+          git add -- "$target"
+          git commit -m '110B: import exact original FC Eindhoven match illustration as unapproved image'
+          git push origin "HEAD:feat/110b-asset-eindhoven-pending"
