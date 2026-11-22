@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1103,
+  "createdAt": "2026-11-22",
+  "scope": "rights-safe handoff of a fresh Veldio match illustration",
+  "policy": {
+    "noAutomaticApproval": true,
+    "noAutomaticPublication": true,
+    "commercialRightsRequiresSeparateReview": true,
+    "minScore": 8.5,
+    "requiresVerifiedOriginalHash": true,
+    "requiresVerifiedVenue": true
+  },
+  "artworks": [
+    {
+      "fixtureId": "sm-19722098",
+      "homeTeam": "Hull City",
+      "awayTeam": "Brighton & Hove Albion",
+      "competition": "Premier League",
+      "playedAt": "2026-11-22T14:00:00.000Z",
+      "fixtureSource": "Sportmonks",
+      "fixtureVerifiedAt": "2026-11-22T22:16:36.749Z",
+      "daypart": "day",
+      "daypartEvidence": "solar_venue_coordinates",
+      "kind": "report",
+      "stadiumOccupancy": "full",
+      "origin": "OpenAI ChatGPT ImageGen",
+      "generationId": "79cd024d-c50e-46b5-bce3-e766279a29b8",
+      "sourceFormat": "PNG",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "sourceSha256": "a421796730e5880dc4a993546c799104ad63a4c02eb3689195c08a25950d6feb",
+      "webpFilename": "veldio-sm-19722098-hull-brighton-day.webp",
+      "webpDimensions": [
+        1280,
+        720
+      ],
+      "webpSha256": "70b1b96825275c1c41f3baacbb6e0989632822801c3ccd6da34f28a98ffaa9bb",
+      "suggestedRepoPath": "public/match-covers110/sm-19722098-hull-brighton-day.webp",
+      "caption": "AI-illustratie bij Hull City – Brighton & Hove Albion, geen echte wedstrijdfoto.",
+      "illustratedVenue": "fictief stadionbeeld, geen exacte locatieclaim",
+      "sourceInputImagesUsed": false,
+      "status": "source_generated_not_in_repository",
+      "rightsStatus": "requires_exact_file_origin_and_commercial_rights_review",
+      "qualityStatus": "requires_independent_full_resolution_8_5_review",
+      "approval": "pending"
+    }
+  ]
+}
