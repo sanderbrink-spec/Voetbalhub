@@ -50,10 +50,11 @@ test('109A missing source, mismatch fixture id and missing date do not count as 
 test('109A pending generic stadium concept remains unapproved and cannot fill an image-blocked job',()=>{
  const f=fact('sm-19715873','FC Twente','Onbekende bezoekers');
  const r=audit.auditQueue([job(f.id)],assets,[f],now);
- assert.equal(r.rows[0].classification,'pending_home_image_review');
+ assert.equal(r.rows[0].classification,'requires_verified_daypart');
  assert.deepEqual(r.rows[0].approvedAssetIds,[]);
  assert.ok(r.rows[0].pendingHomeCandidates.some(x=>x.id==='veldio74-fctwente-report'));
  assert.ok(r.rows[0].pendingHomeCandidates.every(x=>x.reviewRequired===true));
+ assert.ok(r.rows[0].pendingHomeCandidates.every(x=>x.contextMatchesDaypart===false));
  assert.equal(r.rows[0].daypart,'neutral');
  assert.equal(r.rows[0].daypartEvidence,'insufficient_venue_coordinates');
 });
@@ -105,4 +106,36 @@ test('109A unverified provider status, wrong competition and unsafe payload neve
   const result=audit.auditQueue([job('sm-19714594')],assets,found,now);
   assert.equal(result.classified.requires_verified_fixture,1);
  }
+});
+
+test('109C triage only offers pending home images for verified matching daylight and without unresolved holds',()=>{
+ const source=fact('sm-19715873','FC Twente','Onbekende bezoekers',{
+  venue:{latitude:52.237,longitude:6.837}
+ });
+ const daytime={...source,playedAt:'2026-11-21T12:00:00Z'};
+ const daylight=audit.auditQueue([job(source.id)],assets,[daytime],now);
+ assert.equal(daylight.rows[0].daypart,'day');
+ assert.equal(daylight.rows[0].classification,'requires_matching_scene_artwork');
+ const candidates=daylight.rows[0].pendingHomeCandidates;
+ assert.ok(candidates.some(x=>x.id==='veldio74-fctwente-report'));
+ assert.ok(candidates.every(x=>!x.contextMatchesDaypart));
+ const evening=audit.auditQueue([job(source.id)],assets,[source],now);
+ assert.equal(evening.rows[0].daypart,'night');
+ assert.equal(evening.rows[0].classification,'pending_home_image_review');
+ assert.ok(evening.rows[0].pendingHomeCandidates.some(x=>x.contextMatchesDaypart));
+ assert.equal(evening.rows[0].approvedAssetIds.length,0);
+});
+
+test('109C unresolved historic or independent-quality holds never count as ready for independent approval',()=>{
+ const stamp={venue:{latitude:52.6,longitude:4.7}};
+ const az=fact('sm-198','AZ','PSV',stamp);
+ const azNight=audit.auditQueue([job(az.id)],assets,[az],now);
+ assert.equal(azNight.rows[0].daypart,'night');
+ assert.equal(azNight.rows[0].classification,'requires_image_rework');
+ assert.ok(azNight.rows[0].pendingHomeCandidates.every(x=>x.requiresRework));
+ assert.equal(azNight.rows[0].approvedAssetIds.length,0);
+ const groningen=fact('sm-199','FC Groningen','PSV',{venue:{latitude:53.205,longitude:6.594}});
+ const g=audit.auditQueue([job(groningen.id)],assets,[groningen],now);
+ assert.equal(g.rows[0].classification,'requires_image_rework');
+ assert.ok(g.rows[0].pendingHomeCandidates.some(x=>x.reviewBlockReasons.some(reason=>reason.includes('8,5'))));
 });
