@@ -10,9 +10,9 @@ const premium=require('../premium-match-images72');
 const approvals=require('../scripts/stadium-approval82');
 const data=require('../image-library49.json');
 
-test('106D exact per-image prescreen records 13 candidates and 5 unresolved risks without release',()=>{
- assert.equal(review.candidates.length,13);
- assert.equal(review.withheld.length,5);
+test('106D exact per-image prescreen records 10 candidates and 8 held risks without release',()=>{
+ assert.equal(review.candidates.length,10);
+ assert.equal(review.withheld.length,8);
  assert.equal(review.approvalGranted,0);
  assert.equal(review.finalIndependentReviewCompleted,0);
  const ids=[...review.candidates,...review.withheld].map(x=>x.id);
@@ -48,5 +48,7 @@ test('106D plausible concepts are not falsely promoted to final legal or visual 
  for(const entry of review.withheld){
   assert.equal(entry.recommendation,'hold_for_rework',entry.id);
   assert.ok(entry.reason.length>45,entry.id);
+  if(['veldio73-telstar-report-evening','veldio74-az-report','veldio74-goaheadeagles-report'].includes(entry.id))
+   assert.match(entry.reason,/Historisch herstelpunt/,entry.id);
  }
 });
