@@ -207,15 +207,33 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
  const duplicateSignals=incoming.length-byId.size;
  const classified=classifyLeads([...byId.values()].map(({passage,byline,...lead})=>lead));
  const existing=new Map((state.leads||[]).map(x=>[x.id,x]));
- const newLeads=classified.leads.filter(x=>!existing.has(x.id));
+ // A compact first-seen ledger is independent of the 300-item UI/history cap.
+ // Otherwise evicted RSS items are repeatedly billed as fresh when feeds reorder.
+ const retentionMs=7*86400000;
+ const seen=new Map();
+ for(const entry of [...(state.seenIds||[]),...(state.leads||[]).map(x=>({id:x.id,seenAt:x.seenAt}))]){
+  if(typeof entry?.id!=='string'||!/^[a-f0-9]{64}$/.test(entry.id))continue;
+  const timestamp=Date.parse(entry.seenAt);
+  if(!Number.isFinite(timestamp)||timestamp>now||now-timestamp>retentionMs)continue;
+  const prior=seen.get(entry.id);
+  if(!prior||timestamp< Date.parse(prior))seen.set(entry.id,new Date(timestamp).toISOString());
+ }
+ const newLeads=classified.leads.filter(x=>!seen.has(x.id));
+ for(const lead of newLeads)seen.set(lead.id,new Date(now).toISOString());
+ const seenIds=[...seen].map(([id,seenAt])=>({id,seenAt}))
+  .sort((a,b)=>Date.parse(b.seenAt)-Date.parse(a.seenAt)).slice(0,10000);
  const currentDay=new Date(now).toISOString().slice(0,10);
  const next={
   version:101,day:currentDay,aiCallsToday:state.day===currentDay?(state.aiCallsToday||0):0,
-  lastScanAt:new Date(now).toISOString(),
-  leads:[...classified.leads.map(lead=>({...existing.get(lead.id),...lead,seenAt:existing.get(lead.id)?.seenAt||new Date(now).toISOString()})),
-   ...(state.leads||[]).filter(lead=>!byId.has(lead.id))].filter(lead=>
-    now-Date.parse(lead.publishedAt)<=7*86400000).slice(0,300),
-  researchNotes:(state.researchNotes||[]).filter(note=>now-Date.parse(note.at)<=7*86400000).slice(-60)
+  lastScanAt:new Date(now).toISOString(),seenIds,
+  leads:[...classified.leads.map(lead=>({...existing.get(lead.id),...lead,seenAt:seen.get(lead.id)||new Date(now).toISOString()})),
+   ...(state.leads||[]).filter(lead=>!byId.has(lead.id)).map(lead=>({
+    ...lead,...assignAgents(lead.title),
+    rumour:isRumour(lead.title),contradiction:isContradiction(lead.title),
+    verified:false,publicationAllowed:false
+   }))].filter(lead=>
+    now-Date.parse(lead.publishedAt)<=retentionMs).slice(0,300),
+  researchNotes:(state.researchNotes||[]).filter(note=>now-Date.parse(note.at)<=retentionMs).slice(-60)
  };
  const matched=AGENTS.map(agent=>({id:agent.id,name:agent.name,beat:agent.beat,
   scanned:classified.leads.filter(l=>l.agentIds.includes(agent.id)).length,
@@ -255,6 +273,7 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   unassignedSignals:classified.leads.filter(l=>!l.agentIds.length).length,
   generalFallbackSignals:classified.leads.filter(l=>l.fallbackAssigned).length,
   newFallbackSignals:newLeads.filter(l=>l.fallbackAssigned).length,
+  seenIdsRetained:seenIds.length,seenIdsTruncated:seen.size>seenIds.length,
   newSignals:newLeads.length,groups:classified.groups.length,
   multiOutletSignals:classified.groups.filter(g=>g.outlets.length>=2).length,
   rumourGroups:classified.groups.filter(g=>g.rumour).length,
