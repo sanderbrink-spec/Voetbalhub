@@ -1935,3 +1935,27 @@ test('106A only fresh, rich verified match reports can be drafted before artwork
  assert.match(source,/if\(finalArt.checked&&!finalArt.approved\)/);
  assert.match(source,/deferArtwork\(job,now\)/);
 });
+
+test('106B only one matching artwork retry may be reopened for a fresh verified draft',()=>{
+ const {reopenFreshVerifiedMatchDraft106B}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-22T12:00:00Z');
+ const record={matchId:'sm-19714591',articleKind:'match_report',verifiedFacts:['A','B','C','D','E','F'],
+  match:{playedAt:'2026-11-21T20:00:00Z',homeTeam:'FC Groningen',awayTeam:'SC Heerenveen'}};
+ const group={matchRecord:record,0:{title:'FC Groningen – SC Heerenveen'}};
+ const job={status:'retry',failureStage:'artwork',failureCategory:'missing_approved_artwork',
+  reason:'awaiting_approved_artwork',nextAttemptAt:now+6*3600000,attempts:0};
+ assert.equal(reopenFreshVerifiedMatchDraft106B(job,group,now),true);
+ assert.equal(job.status,'pending');assert.equal(job.nextAttemptAt,now);
+ assert.equal(job.draftFirstRecovery106B,true);
+ assert.equal(job.failureStage,undefined);
+ assert.equal(reopenFreshVerifiedMatchDraft106B(job,group,now),false);
+ const pending={status:'retry',failureStage:'artwork',failureCategory:'missing_approved_artwork',reason:'awaiting_approved_artwork'};
+ for(const change of [
+   {failureStage:'quality'},{failureCategory:'journalistic_rejection'},
+   {reason:'editorial_review_required'},{status:'review'},{checkpoint:'encrypted'},{draftFirstRecovery106B:true}
+ ]){
+  assert.equal(reopenFreshVerifiedMatchDraft106B({...pending,...change},group,now),false);
+ }
+ const old={...group,matchRecord:{...record,match:{...record.match,playedAt:'2026-11-19T15:00:00Z'}}};
+ assert.equal(reopenFreshVerifiedMatchDraft106B({...pending},old,now),false);
+});
