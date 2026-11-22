@@ -3753,6 +3753,46 @@
         "notes": "Fictieve, fotorealistische groen-witte avondstadionillustratie; lege tribunes, geen echte sponsor- of clublogo's, geen exact Euroborg-beeld. Uitsluitend voor het officieel geverifieerde duel sm-19714591, andere wedstrijden niet toegestaan. Niet-menselijke AI-QA 8,6/10."
       },
       "fixtureId": "sm-19714591"
+    },
+    {
+      "id": "veldio110b-sm-19715868-eindhoven-rkc-report",
+      "file": "public/match-covers110/sm-19715868-fceindhoven-rkc-twilight.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "FC Eindhoven – RKC Waalwijk, wedstrijdverslag",
+      "clubs": [
+        "FC Eindhoven",
+        "RKC Waalwijk"
+      ],
+      "competitions": [
+        "Keuken Kampioen Divisie"
+      ],
+      "daypart": "twilight",
+      "sceneDaypart": "twilight",
+      "keywords": [
+        "FC Eindhoven",
+        "RKC Waalwijk",
+        "voetbalstadion",
+        "avondschemer",
+        "kunstlicht",
+        "Veldio"
+      ],
+      "variant": "match-report-110b-fc-eindhoven-rkc-twilight",
+      "origin": "OpenAI ChatGPT ImageGen, origineel voor Veldio vervaardigd op 22 november 2026; gen_id 0ab7c5bf-2b39-4d94-9d29-2be3e0e1f5cd; originele PNG SHA256 7d215a308da20063b2125934cdef2521ffc8dd2aa230155719078e82446ecc4c",
+      "rights": "original-ai",
+      "rightsEvidence": "Exacte AI-herkomstketen: originele 1672x941 PNG is voor deze opdracht gemaakt zonder externe foto als invoer. 1280x720 WEBP heeft SHA256 b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885. Definitieve commerciële rechten- en visuele eindcontrole nog niet afgerond; niet vrijgegeven.",
+      "approval": "pending",
+      "lastUsed": null,
+      "sha256": "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885",
+      "caption": "Veldio · originele AI-illustratie bij FC Eindhoven – RKC Waalwijk. Geen echte foto van deze wedstrijd of het Jan Louwers Stadion.",
+      "questionIds": [],
+      "fixtureId": "sm-19715868",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:fceindhoven",
+      "intakeStatus": "pending-independent-review",
+      "artworkNote": "Gecontroleerde bronbestanden en exacte SHA256; clubkleuren, stadioncontext, merktekens en commerciële rechten vereisen afzonderlijke eindcontrole. Geen fictieve score of goedkeuring."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 110,
   "generatedAt": "2026-11-22",
-  "note": "Buiten de GitHub-repository gegenereerde concepten. Bestand mag NIET worden opgenomen in image-library49.json voordat de echte WEBP-bytehash klopt en onafhankelijke rechten-/kwaliteitscontrole is afgerond.",
+  "note": "Exacte WEBP staat nu op aparte GitHub-branch als pending-artwork. Geen zelfstandige rechtenvrijgave, geen productiewijziging totdat CI en PR zijn gevalideerd.",
   "items": [
     {
       "fixtureId": "sm-19715868",
@@ -21,11 +21,15 @@
         720
       ],
       "webpSha256": "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885",
-      "status": "staged_external_not_in_repository",
+      "status": "uploaded_repo_pending_review",
       "approval": "pending",
       "visualAssessment": "not_yet_independently_approved",
       "commercialRightsEvidence": "requires_exact_file_provenance_and_source_input_verification",
-      "nextAction": "Importeer uitsluitend exact overeenkomend origineel bestand in GitHub op een afzonderlijke PR; verifieer SHA256, controleer de matchcontext en doorloop bestaande onafhankelijke beeldvrijgave. Geen directe publicatie."
+      "nextAction": "Verifieer de beeldkwaliteit, de juiste FC Eindhoven-sfeer, geen clublogo's of externe sponsors en de commerciële gebruiksrechten op exact dezelfde WEBP-hash. Behoud pending tot onafhankelijke expliciete goedkeuring. Pas daarna hercontrole artikel.",
+      "repoFile": "public/match-covers110/sm-19715868-fceindhoven-rkc-twilight.webp",
+      "assetId": "veldio110b-sm-19715868-eindhoven-rkc-report",
+      "pngSha256": "7d215a308da20063b2125934cdef2521ffc8dd2aa230155719078e82446ecc4c",
+      "transferVerification": "GitHub Actions SHA256 checked original WEBP against recorded b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885; one-time import workflow removed prior to PR"
     }
   ]
 }
