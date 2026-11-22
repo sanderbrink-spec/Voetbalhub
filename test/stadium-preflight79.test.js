@@ -44,7 +44,7 @@ test('Fase 79: acht concrete herstelpunten zijn zichtbaar, en Cambuur-native bee
   for(const item of slot.pendingImages){
    assert.deepEqual(item.knownIssue,findings[item.id]||null);
    assert.ok(item.minQualityScore>=8.5);
-   assert.equal(item.qualityStatus,'requires-independent-review');
+   assert.equal(item.qualityStatus,item.fullResolutionAssessment?.score<8.5?'requires-replacement':'requires-independent-review');
   }
  }
  for(const kind of ['preview','report']){
