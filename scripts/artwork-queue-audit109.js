@@ -32,6 +32,20 @@ function verifiedFixture(row,matchId){
 // Convert only the verified final results returned by Veldio's protected
 // first-party Sportmonks endpoint; publisher headlines are not fixture proof.
 // No endpoint secret, statistics, source text, or draft body is persisted.
+// Keep only provider-verified coordinates bound to the same fixture venue ID.
+// A generic home-club name is not evidence of the exact venue or sun position.
+function sportmonksVenue(fixture){
+ const venue=fixture?.venue;
+ if(!venue||!Number.isSafeInteger(fixture.venueId)||fixture.venueId<=0||
+    !Number.isSafeInteger(venue.id)||venue.id!==fixture.venueId||
+    typeof fixture.venueName!=='string'||fixture.venueName!==venue.name||
+    venue.name.trim().length<2||venue.name.length>120||
+    !Number.isFinite(venue.latitude)||Math.abs(venue.latitude)>90||
+    !Number.isFinite(venue.longitude)||Math.abs(venue.longitude)>180||
+    (venue.latitude===0&&venue.longitude===0))return null;
+ return {venueId:venue.id,venueName:venue.name,
+  venue:{id:venue.id,name:venue.name,latitude:venue.latitude,longitude:venue.longitude}};
+}
 function sportmonksEvidence(response){
  if(response?.source!=='Sportmonks Football API'||response?.status!=='available'||
    response?.competition!=='eredivisie'||!Array.isArray(response.fixtures)||
@@ -42,7 +56,8 @@ function sportmonksEvidence(response){
    typeof f.away?.name==='string'&&dateMs(f.date)&&dateMs(f.checkedAt))
  .map(f=>({id:f.id,homeTeam:f.home.name,awayTeam:f.away.name,
   competition:'Eredivisie',playedAt:f.date,verifiedAt:f.checkedAt,
-  evidenceSource:'Sportmonks'}));
+  evidenceSource:'Sportmonks',
+  ...(sportmonksVenue(f)||{})}));
 }
 function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
  const records=Array.isArray(queue)?queue:queue?.records;
@@ -128,4 +143,4 @@ function main(argv=process.argv.slice(2)){
  return r;
 }
 if(require.main===module){try{main();}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={auditQueue,verifiedFixture,sportmonksEvidence,main};
+module.exports={auditQueue,verifiedFixture,sportmonksVenue,sportmonksEvidence,main};
