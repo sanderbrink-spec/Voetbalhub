@@ -67,3 +67,15 @@ test('110C duplicate or conflicting image registry cannot silently replace exist
  const approved=[{fixtureId:hull.fixtureId,sha256:hull.webpSha256,approval:'approved'}];
  assert.throws(()=>Intake.validate(Batch,audit(hull),approved,repo),/goedgekeurd/);
 });
+
+test('110C a fixture outside the current source window cannot pass as verified artwork',()=>{
+ const p=Intake.validate(Batch,{...audit(hull),rows:[]},Catalog,repo);
+ assert.equal(p.artworks[0].status,'missing_current_fixture_evidence');
+ assert.equal(p.safety.approvesImages,false);
+});
+test('110C stale unimported images are deprioritized even with archived fixture evidence',()=>{
+ const old=audit(hull);old.generatedAt='2026-11-25T22:16:37.441Z';
+ const p=Intake.validate(Batch,old,Catalog,repo);
+ assert.equal(p.artworks[0].status,'archived_source_not_priority');
+ assert.equal(p.safety.publishesArticles,false);
+});
