@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 110,
+  "generatedAt": "2026-11-22",
+  "note": "Buiten de GitHub-repository gegenereerde concepten. Bestand mag NIET worden opgenomen in image-library49.json voordat de echte WEBP-bytehash klopt en onafhankelijke rechten-/kwaliteitscontrole is afgerond.",
+  "items": [
+    {
+      "fixtureId": "sm-19715868",
+      "homeTeam": "FC Eindhoven",
+      "awayTeam": "RKC Waalwijk",
+      "playedAt": "2026-11-21T15:30:00.000Z",
+      "verifiedCompetition": "Keuken Kampioen Divisie",
+      "verifiedDaypart": "twilight",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "generation": "OpenAI ChatGPT ImageGen",
+      "generationId": "0ab7c5bf-2b39-4d94-9d29-2be3e0e1f5cd",
+      "originalImageFormat": "PNG",
+      "webpOutput": "veldio-sm-19715868-fceindhoven-rkc-twilight.webp",
+      "webpDimensions": [
+        1280,
+        720
+      ],
+      "webpSha256": "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885",
+      "status": "staged_external_not_in_repository",
+      "approval": "pending",
+      "visualAssessment": "not_yet_independently_approved",
+      "commercialRightsEvidence": "requires_exact_file_provenance_and_source_input_verification",
+      "nextAction": "Importeer uitsluitend exact overeenkomend origineel bestand in GitHub op een afzonderlijke PR; verifieer SHA256, controleer de matchcontext en doorloop bestaande onafhankelijke beeldvrijgave. Geen directe publicatie."
+    }
+  ]
+}
