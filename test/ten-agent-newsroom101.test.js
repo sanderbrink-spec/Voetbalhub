@@ -7,6 +7,40 @@ const rss=(title,url,date='Thu, 19 Nov 2026 18:00:00 GMT')=>
  '<rss version="2.0"><channel><item><title><![CDATA['+title+']]></title>'+
  '<link>'+url+'</link><pubDate>'+date+'</pubDate><description>Only a lead, not evidence.</description></item></channel></rss>';
 
+test('107A-2 every football RSS headline is assigned without creating an eleventh agent',()=>{
+ const unseen='Reis doet oude club HSV met assist pijn in beladen Nordderby';
+ const assigned=N.assignAgents(unseen);
+ assert.deepEqual(assigned.agentIds,['achtergrond']);
+ assert.equal(assigned.fallbackAssigned,true);
+ const known=N.assignAgents('FC Groningen en PSV bereiden oefenduel voor');
+ assert.ok(known.agentIds.includes('groningen'));
+ assert.ok(known.agentIds.includes('psv'));
+ assert.equal(known.fallbackAssigned,false);
+ const groups=N.classifyLeads([
+  {id:'fresh',url:'https://www.vi.nl/nieuws/hsv-reis',title:unseen,publisher:'vi'},
+  {id:'known',url:'https://www.vi.nl/nieuws/psv-groningen',title:'PSV speelt tegen FC Groningen',publisher:'vi'}
+ ]);
+ assert.equal(groups.leads.length,2);
+ assert.ok(groups.leads.every(x=>x.agentIds.length));
+ assert.equal(groups.leads[0].publicationAllowed,false);
+ assert.equal(groups.leads[0].verified,false);
+ assert.equal(groups.leads[0].fallbackAssigned,true);
+ assert.equal(groups.groups.length,2);
+ assert.equal(N.AGENTS.length,10);
+});
+test('107A-2 residual leads are counted without bypassing the daily AI budget',async()=>{
+ const single='<rss version="2.0"><channel><item><title>Reis doet oude club HSV met assist pijn in beladen Nordderby</title>'+
+  '<link>https://www.vi.nl/nieuws/hsv-reis</link><pubDate>Thu, 19 Nov 2026 18:00:00 GMT</pubDate></item></channel></rss>';
+ const result=await N.scan({fetcher:async url=>new Response(url.includes('vi.nl')?single:'<rss version="2.0"><channel></channel></rss>'),
+  now,state:{day:'2026-11-19',aiCallsToday:10},apiKey:'test',runAI:true});
+ assert.equal(result.report.generalFallbackSignals,1);
+ assert.equal(result.report.newFallbackSignals,1);
+ assert.equal(result.report.unassignedSignals,0);
+ assert.equal(result.report.aiCalls,0);
+ assert.equal(result.report.aiCallsToday,10);
+ assert.equal(result.report.publicationAttempts,0);
+ assert.equal(result.report.published,0);
+});
 test('101 exactly ten specialized agents cover every scan and include rumor verification',()=>{
  assert.equal(N.AGENTS.length,10);
  assert.equal(new Set(N.AGENTS.map(a=>a.id)).size,10);
