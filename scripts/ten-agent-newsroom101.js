@@ -174,6 +174,18 @@ async function analyzeWithAI({group,agent,apiKey,fetcher=fetch,passages=[]}){
    verified:false,publicationAllowed:false};
  }catch{return {status:'provider_unavailable'};}
 }
+// Discovery latency measures first observation of a feed item, not actual
+// reporting speed or approval/publication delay. RSS dates may lag the story.
+function detectionLatency(leads,now){
+ const delays=leads.map(lead=>Date.parse(lead.publishedAt))
+  .filter(time=>Number.isFinite(time)&&time<=now)
+  .map(time=>Math.round((now-time)/6000)/10).sort((a,b)=>a-b);
+ const at=quantile=>delays.length?delays[Math.ceil(delays.length*quantile)-1]:null;
+ return {kind:'rss_publication_to_first_observation',count:delays.length,
+  medianMinutes:at(0.5),p95Minutes:at(0.95),
+  within15Minutes:delays.filter(n=>n<=15).length,
+  note:'Gebaseerd op gepubliceerde RSS-datums; geen garantie op realtime publicatie.'};
+}
 async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}={}){
  const gathered=await Promise.allSettled(FEEDS.map(async source=>{
   const response=await fetcher(source.url,{headers:{Accept:'application/rss+xml, text/xml'},
@@ -232,6 +244,7 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
    accepted:gathered[i].status==='fulfilled'?gathered[i].value.length:0,
    new:gathered[i].status==='fulfilled'?gathered[i].value.filter(lead=>newLeads.some(n=>n.id===lead.id)).length:0,
    error:gathered[i].status==='rejected'?String(gathered[i].reason?.message||'feed_unavailable').slice(0,90):null})),
+  expectedScanMinutes:15,detectionLatency:detectionLatency(newLeads,now),
   newSignals:newLeads.length,groups:classified.groups.length,
   multiOutletSignals:classified.groups.filter(g=>g.outlets.length>=2).length,
   rumourGroups:classified.groups.filter(g=>g.rumour).length,
@@ -274,4 +287,4 @@ if(require.main===module)main().then(report=>{
  console.log(JSON.stringify({status:report.status,signals:report.signals,newSignals:report.newSignals,agents:report.agents,rumourGroups:report.rumourGroups,aiCalls:report.aiCalls,publicationAttempts:0,published:0,feedErrors:report.feedErrors}));
  if(report.feedsOk===0)process.exitCode=1;
 }).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={FEEDS,AGENTS,MAX_AI_DAILY,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,dailyBudget,analyzeWithAI,scan,readState,writeState,main};
+module.exports={FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,dailyBudget,analyzeWithAI,scan,readState,writeState,main};
