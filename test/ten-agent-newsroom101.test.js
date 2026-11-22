@@ -7,6 +7,50 @@ const rss=(title,url,date='Thu, 19 Nov 2026 18:00:00 GMT')=>
  '<rss version="2.0"><channel><item><title><![CDATA['+title+']]></title>'+
  '<link>'+url+'</link><pubDate>'+date+'</pubDate><description>Only a lead, not evidence.</description></item></channel></rss>';
 
+test('107A-3 evicted headline stays deduplicated through seven-day seen ledger',async()=>{
+ const {createHash}=require('node:crypto');
+ const url='https://www.vi.nl/nieuws/old-headline';
+ const id=createHash('sha256').update(url).digest('hex');
+ const older=new Date(now-24*3600000).toISOString();
+ const state={day:'2026-11-19',aiCallsToday:10,
+  seenIds:[{id,seenAt:older}],
+  leads:Array.from({length:300},(_,i)=>({id:'a'.repeat(62)+String(i).padStart(2,'0'),title:'Legacy headline',
+   publishedAt:older,seenAt:older}))};
+ const f=async feed=>new Response(feed.includes('vi.nl')?
+  rss('Een nieuw verslag over de wedstrijd van PSV',url):
+  '<rss version="2.0"><channel></channel></rss>');
+ const one=await N.scan({fetcher:f,now,state,runAI:false});
+ assert.equal(one.report.newSignals,0);
+ assert.equal(one.report.aiCalls,0);
+ assert.equal(one.state.seenIds.some(x=>x.id===id),true);
+ const two=await N.scan({fetcher:f,now:now+15*60000,state:one.state,runAI:false});
+ assert.equal(two.report.newSignals,0);
+ assert.equal(two.report.publicationAttempts,0);
+});
+test('107A-3 existing 300-record archive reclassifies orphan headlines without treating them as new',async()=>{
+ const {createHash}=require('node:crypto');
+ const url='https://www.vi.nl/nieuws/legacy-unassigned';
+ const id=createHash('sha256').update(url).digest('hex');
+ const prior={id,url,title:'Reis doet oude club HSV met assist pijn in beladen Nordderby',
+  publisher:'vi',agentIds:[],publishedAt:new Date(now-3600000).toISOString(),
+  seenAt:new Date(now-30*60000).toISOString()};
+ const f=async()=>new Response('<rss version="2.0"><channel></channel></rss>');
+ const result=await N.scan({fetcher:f,now,state:{leads:[prior]},runAI:false});
+ assert.equal(result.report.newSignals,0);
+ assert.equal(result.state.leads[0].agentIds[0],'achtergrond');
+ assert.equal(result.state.leads[0].fallbackAssigned,true);
+ assert.equal(result.state.leads[0].publicationAllowed,false);
+ assert.equal(result.state.seenIds.length,1);
+});
+test('107A-3 expired seen IDs are pruned, but future timestamps cannot poison dedup',async()=>{
+ const id='a'.repeat(64);
+ const state={seenIds:[{id,seenAt:new Date(now-8*86400000).toISOString()},
+  {id:'b'.repeat(64),seenAt:new Date(now+3600000).toISOString()}]};
+ const result=await N.scan({fetcher:async()=>new Response('<rss version="2.0"><channel></channel></rss>'),
+  now,state,runAI:false});
+ assert.equal(result.state.seenIds.length,0);
+ assert.equal(result.report.newSignals,0);
+});
 test('107A-2 every football RSS headline is assigned without creating an eleventh agent',()=>{
  const unseen='Reis doet oude club HSV met assist pijn in beladen Nordderby';
  const assigned=N.assignAgents(unseen);
