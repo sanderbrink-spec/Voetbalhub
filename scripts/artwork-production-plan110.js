@@ -6,7 +6,7 @@ const path=require('node:path');
 const AUDIT_STATES=new Set([
  'requires_new_original_artwork','requires_matching_scene_artwork',
  'requires_image_rework','pending_home_image_review','requires_verified_daypart',
- 'requires_verified_fixture','approved_match_available'
+ 'requires_verified_fixture','pending_exact_fixture_review','approved_match_available'
 ]);
 const DAYS=new Set(['day','twilight','night']);
 function safeTeam(s){
@@ -69,7 +69,7 @@ function plan(audit,now=Date.now()){
   let action;
   if(!sourceVerified)action='verify_fixture';
   else if(row.classification==='approved_match_available')action='recheck_existing_approval';
-  else if(row.classification==='pending_home_image_review')action='independent_rights_review';
+  else if(['pending_home_image_review','pending_exact_fixture_review'].includes(row.classification))action='independent_rights_review';
   else if(row.classification==='requires_verified_daypart'||!sceneVerified)action='verify_venue_first';
   else if(row.classification==='requires_image_rework')action='replace_failed_image';
   else if(row.classification==='requires_matching_scene_artwork')action='generate_matching_daypart';
@@ -87,6 +87,9 @@ function plan(audit,now=Date.now()){
    freshForEditorial: fresh,
    readyToPrepareOriginal:ready,
    ...(canBrief&&sourceVerified&&sceneVerified?{imageBrief:brief(row)}:{}),
+   ...(row.pendingExactCandidates?.length?{existingExactCandidates:row.pendingExactCandidates
+     .map(c=>({id:c.id,requiresRework:c.requiresRework,
+       contextMatchesDaypart:c.contextMatchesDaypart,reviewRequired:true}))}:{}),
    ...(row.pendingHomeCandidates?.length?{existingCandidates:row.pendingHomeCandidates
      .map(c=>({id:c.id,requiresRework:c.requiresRework,
        contextMatchesDaypart:c.contextMatchesDaypart,reviewRequired:true}))}:{})
