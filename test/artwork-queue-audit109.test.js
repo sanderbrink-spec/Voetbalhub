@@ -216,3 +216,42 @@ test('109D unavailable subscriber coverage is not misrepresented as fixture veri
  assert.deepEqual(audit.sportmonksEvidenceBatch([unavailable]),[]);
  assert.throws(()=>audit.sportmonksEvidenceBatch(Array.from({length:5},()=>unavailable)),/vier competities/);
 });
+
+test('110B exact verified fixture art is a pending review, never a missing image or an approved report',()=>{
+ const fixture=fact('sm-19715868','FC Eindhoven','RKC Waalwijk',{
+  competition:'Keuken Kampioen Divisie',playedAt:'2026-11-21T15:30:00Z',
+  venueId:402,venueName:'Jan Louwers Stadion',
+  venue:{latitude:51.45,longitude:5.48}
+ });
+ const a=audit.auditQueue([job(fixture.id)],assets,[fixture],now);
+ assert.equal(a.rows[0].daypart,'twilight');
+ assert.equal(a.rows[0].classification,'pending_exact_fixture_review');
+ assert.deepEqual(a.rows[0].approvedAssetIds,[]);
+ assert.ok(a.rows[0].pendingExactCandidates.some(x=>
+  x.id==='veldio110b-sm-19715868-eindhoven-rkc-report'&&
+  x.reviewRequired===true&&x.requiresRework===false&&x.contextMatchesDaypart===true));
+ const reversed=audit.auditQueue([job(fixture.id)],assets,
+  [{...fixture,homeTeam:'RKC Waalwijk',awayTeam:'FC Eindhoven'}],now);
+ assert.equal(reversed.rows[0].classification,'requires_new_original_artwork');
+ const noon=audit.auditQueue([job(fixture.id)],assets,
+  [{...fixture,playedAt:'2026-11-21T12:00:00Z'}],now);
+ assert.equal(noon.rows[0].classification,'requires_matching_scene_artwork');
+ assert.equal(noon.rows[0].pendingExactCandidates[0].contextMatchesDaypart,false);
+});
+
+test('110B pending exact report never becomes a publication claim through the production plan',()=>{
+ const planner=require('../scripts/artwork-production-plan110');
+ const fixture=fact('sm-19715868','FC Eindhoven','RKC Waalwijk',{
+  competition:'Keuken Kampioen Divisie',playedAt:'2026-11-21T15:30:00Z',
+  venueId:402,venueName:'Jan Louwers Stadion',venue:{latitude:51.45,longitude:5.48}
+ });
+ const a=audit.auditQueue([job(fixture.id)],assets,[fixture],now);
+ const plan=planner.plan(a,now);
+ assert.equal(plan.readyNow,0);
+ assert.equal(plan.counts.independent_rights_review,1);
+ assert.equal(plan.tasks[0].action,'independent_rights_review');
+ assert.equal(plan.tasks[0].existingExactCandidates[0].reviewRequired,true);
+ assert.equal(plan.tasks[0].imageBrief,undefined);
+ assert.equal(plan.safety.createsImage,false);
+ assert.equal(plan.safety.approvesImage,false);
+});
