@@ -1,18 +1,35 @@
 'use strict';
 const test=require('node:test');
 const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const crypto=require('node:crypto');
 const staging=require('../artwork-staging110.json');
-const library=require('../image-library49.json').assets;
-test('110A generated originals never imply publication rights or local GitHub bytes',()=>{
+const catalog=require('../image-library49.json').assets;
+const images=require('../image-library49');
+const premium=require('../premium-match-images72');
+test('110B exact source image bytes imported but approval remains pending',()=>{
  assert.equal(staging.items.length,1);
+ assert.doesNotThrow(()=>images.validate(catalog));
  for(const item of staging.items){
   assert.match(item.fixtureId,/^sm-\d+$/);
   assert.match(item.webpSha256,/^[a-f0-9]{64}$/);
+  assert.match(item.pngSha256,/^[a-f0-9]{64}$/);
   assert.deepEqual(item.webpDimensions,[1280,720]);
-  assert.equal(item.status,'staged_external_not_in_repository');
+  assert.equal(item.status,'uploaded_repo_pending_review');
   assert.equal(item.approval,'pending');
   assert.equal(item.visualAssessment,'not_yet_independently_approved');
-  assert.equal(library.some(x=>x.fixtureId===item.fixtureId&&x.sha256===item.webpSha256),false);
-  assert.match(item.nextAction,/SHA256/);
+  const asset=catalog.find(a=>a.id===item.assetId);
+  assert.ok(asset,item.assetId);
+  assert.equal(asset.file,item.repoFile);
+  assert.equal(asset.sha256,item.webpSha256);
+  assert.equal(asset.fixtureId,item.fixtureId);
+  assert.equal(asset.approval,'pending');
+  assert.equal(asset.reviewer,undefined);
+  assert.equal(asset.visualReview,undefined);
+  assert.equal(premium.accepted(asset),false);
+  const bytes=fs.readFileSync(path.resolve(__dirname,'..',asset.file));
+  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),item.webpSha256);
+  assert.match(item.nextAction,/eindcontrole|goedkeuring/i);
  }
 });
