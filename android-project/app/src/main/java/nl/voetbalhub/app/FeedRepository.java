@@ -18,7 +18,7 @@ public final class FeedRepository {
  private static final ArrayList<Listener> listeners=new ArrayList<>();
  private static final java.util.concurrent.ExecutorService NETWORK=Executors.newFixedThreadPool(2);
  private static JSONObject snapshot;
- private static boolean loading,failed;
+ private static boolean loading,failed,slow;
  private static long lastAttempt;
  private static int generation;
  private static java.util.concurrent.Future<?> pending;
@@ -39,6 +39,8 @@ public final class FeedRepository {
   if(!listeners.contains(listener))listeners.add(listener);listener.changed(snapshot,loading,failed);
  }
  public static void unsubscribe(Listener listener){listeners.remove(listener);}
+ // A slow server must not keep the screen in a blocking loading state.
+ static boolean awaitingSlowResponse(){return slow;}
  static void artworkChanged(){
   for(Listener listener:new ArrayList<>(listeners))if(listener instanceof FeedPanel)((FeedPanel)listener).artworkChanged();
   notifyListeners();
@@ -58,10 +60,19 @@ public final class FeedRepository {
   }catch(org.json.JSONException ignored){}
  }
  public static void refresh(boolean force){
-  if(loading||context==null||!force&&lastAttempt>0&&android.os.SystemClock.elapsedRealtime()-lastAttempt<30000)return;
-  lastAttempt=android.os.SystemClock.elapsedRealtime();loading=true;failed=false;notifyListeners();
+  if(context==null||loading||(!force&&pending!=null&&!pending.isDone())||
+     (!force&&lastAttempt>0&&android.os.SystemClock.elapsedRealtime()-lastAttempt<30000))return;
+  // An explicit retry replaces a slow request. Late responses from the old request
+  // cannot override the new snapshot because every request has a generation ID.
+  if(pending!=null&&!pending.isDone())pending.cancel(true);
+  lastAttempt=android.os.SystemClock.elapsedRealtime();loading=true;failed=false;slow=false;notifyListeners();
   final int request=++generation;final String address=endpoint;
-  final Runnable expired=()->{if(request!=generation||!loading)return;generation++;loading=false;failed=true;if(pending!=null)pending.cancel(true);notifyListeners();};
+  // Soft deadline: restore usable controls after 12s without throwing away an
+  // in-flight response from a Render cold start. Hard deadline remains 50s.
+  final Runnable slowNotice=()->{if(request!=generation||!loading)return;loading=false;slow=true;notifyListeners();};
+  UI.postDelayed(slowNotice,12000);
+  final Runnable expired=()->{if(request!=generation)return;generation++;UI.removeCallbacks(slowNotice);
+   loading=false;slow=false;failed=true;if(pending!=null)pending.cancel(true);notifyListeners();};
   UI.postDelayed(expired,50000);
   pending=NETWORK.submit(()->{
    JSONObject result=null;
@@ -73,7 +84,8 @@ public final class FeedRepository {
    UI.post(()->{
     if(request!=generation)return;
     UI.removeCallbacks(expired);
-    loading=false;
+    UI.removeCallbacks(slowNotice);
+    loading=false;slow=false;
     failed=data==null;
     if(data!=null){
      snapshot=Branding.response(data);
