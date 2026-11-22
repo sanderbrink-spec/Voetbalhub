@@ -5,6 +5,10 @@ const fs=require('node:fs');
 const path=require('node:path');
 const rotation=require('../image-rotation65');
 const {norm}=require('../stadium-venue74');
+const library=require('../image-library49');
+const historicalFindings=require('../stadium-review-findings79.json').findings;
+const withheld=new Map(require('../stadium-visual-prescreen106d.json').withheld.map(item=>[item.id,item]));
+const screenings=new Map(require('../stadium-screening84.json').candidates.map(item=>[item.id,item]));
 
 function dateMs(value){
  const ms=typeof value==='number'?value:Date.parse(value||'');
@@ -62,18 +66,40 @@ function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
   const pending=assets.filter(x=>x.approval==='pending'&&x.homeClubReusable===true&&
    x.imageKind==='report'&&x.stadiumOccupancy==='full'&&x.clubs?.length===2&&
    norm(x.clubs[0])===norm(match.homeTeam)&&x.clubs[1]==='*')
-   .map(x=>({id:x.id,sha256:x.sha256,sceneDaypart:x.sceneDaypart||x.daypart,
-    reviewRequired:true,contextMatchesDaypart:(x.sceneDaypart||x.daypart)===context.daypart}))
-   .sort((a,b)=>a.id.localeCompare(b.id));
+   .map(x=>{
+    const historical=historicalFindings[x.id];
+    const held=withheld.get(x.id);
+    const screened=screenings.get(x.id);
+    const rejectedScore=screened?.sha256===x.sha256&&
+      Number.isFinite(screened.fullResolutionAssessment?.score)&&
+      screened.fullResolutionAssessment.score<8.5;
+    const reasons=[
+     ...(historical?[historical.reason]:[]),
+     ...(held?[held.reason]:[]),
+     ...(rejectedScore?['Eerdere beoordeling van exact bestand onder 8,5.']:[])
+    ];
+    return {id:x.id,sha256:x.sha256,sceneDaypart:x.sceneDaypart||x.daypart,
+     reviewRequired:true,contextMatchesDaypart:library.daypartMatches(x,context.daypart),
+     requiresRework:reasons.length>0,
+     ...(reasons.length?{reviewBlockReasons:[...new Set(reasons)]}:{})};
+   }).sort((a,b)=>a.id.localeCompare(b.id));
+  const compatible=pending.filter(x=>x.contextMatchesDaypart);
+  const reviewable=compatible.filter(x=>!x.requiresRework);
   const classification=approved.length?'approved_match_available':
-   pending.length?'pending_home_image_review':'requires_new_original_artwork';
+   !pending.length?'requires_new_original_artwork':
+   context.daypart==='neutral'?'requires_verified_daypart':
+   reviewable.length?'pending_home_image_review':
+   compatible.length?'requires_image_rework':'requires_matching_scene_artwork';
   return {...base,classification,homeTeam:match.homeTeam,awayTeam:match.awayTeam,
    playedAt:match.playedAt,competition:match.competition,
    fixtureSource:match.source,fixtureVerifiedAt:match.verifiedAt,
    daypart:context.daypart,daypartEvidence:context.daypart==='neutral'?'insufficient_venue_coordinates':'solar_venue_coordinates',
    approvedAssetIds:approved,pendingHomeCandidates:pending,
    why:approved.length?'Passend reeds goedgekeurd beeld gevonden; controleer alsnog actuele factcheck en publicatiepoort.':
-    pending.length?'Beeld bestaat voor dezelfde thuisclub, maar is NIET vrijgegeven en dagdeel kan afwijken.':
+    classification==='requires_verified_daypart'?'Er bestaan pending beelden, maar verifieer eerst stadionlocatie en zonstand; neutraal dagdeel is geen vrijbrief.':
+    classification==='requires_matching_scene_artwork'?'Pending thuisclubbeelden hebben een ander daadwerkelijk dagdeel dan de wedstrijd.':
+    classification==='requires_image_rework'?'Pending thuisclubbeelden met passend dagdeel hebben vastgestelde kwaliteits- of rechtenrisico’s.':
+    pending.length?'Passend dagdeel en thuisclub, maar definitieve individuele beeld- en rechtencontrole ontbreekt.':
     'Geen bestaand goedgekeurd of pending thuisclubbeeld in de gecontroleerde catalogus.'
   };
  }).sort((a,b)=>(dateMs(b.createdAt)||0)-(dateMs(a.createdAt)||0)||a.matchId.localeCompare(b.matchId));
