@@ -7,6 +7,37 @@ const CREDIT='Sportmonks Football API';
 const EVENT_PARSER_REVISION=138;
 const SOURCE={name:CREDIT,eventParserRevision:EVENT_PARSER_REVISION,url:'https://www.sportmonks.com/football-api/',license:'Sportmonks subscription; commercial display rights subject to contract',commercial:null,cost:'trial/subscription',refreshMinutes:15,databaseDownload:null};
 const finalStates=new Set([5,7,8]);
+// Verified match statistics are supplementary evidence, never a replacement for
+// final scores or independently approved editorial claims. Sportmonks v3 fixture
+// statistic type IDs: 34 corners, 42 total shots, 45 possession, 86 on target.
+const FIXTURE_STATS={corners:34,shots:42,possession:45,shotsOnTarget:86};
+function verifiedTeamStatistics(row,homeId,awayId){
+ if(!Array.isArray(row?.statistics)||row.statistics.length>200)return {};
+ const result={};
+ for(const [metric,typeId] of Object.entries(FIXTURE_STATS)){
+  const records=row.statistics.filter(stat=>stat?.fixture_id===row.id&&stat.type_id===typeId);
+  // Only a single result from each verified participant can support a fact.
+  if(records.length!==2||new Set(records.map(stat=>stat.participant_id)).size!==2||
+    !records.some(stat=>stat.participant_id===homeId)||
+    !records.some(stat=>stat.participant_id===awayId))continue;
+  const number=value=>{
+   if(typeof value==='string'&&/^\\d{1,3}(?:\\.\\d{1,2})?$/.test(value))value=Number(value);
+   return typeof value==='number'&&Number.isFinite(value)?value:null;
+  };
+  const home=number(records.find(stat=>stat.participant_id===homeId)?.data?.value);
+  const away=number(records.find(stat=>stat.participant_id===awayId)?.data?.value);
+  if(home===null||away===null||home<0||away<0)continue;
+  if(metric==='possession'){
+   if(home>100||away>100||Math.abs(home+away-100)>2)continue;
+  }else if(!Number.isSafeInteger(home)||!Number.isSafeInteger(away)||home>150||away>150)continue;
+  result[metric]={home,away};
+ }
+ // Reject contradictory figures, do not silently turn a bad statistic into prose.
+ if(result.shotsOnTarget&&result.shots&&
+   (result.shotsOnTarget.home>result.shots.home||result.shotsOnTarget.away>result.shots.away))
+  delete result.shotsOnTarget;
+ return result;
+}
 function parseFixture(row,competition,now,verifiedLeagueId=LEAGUES[competition]){
  if(!row||row.league_id!==verifiedLeagueId||!Number.isSafeInteger(row.id))throw Error('Ongeldig Sportmonks competitierecord');
  const home=row.participants?.find(p=>p.meta?.location==='home'),away=row.participants?.find(p=>p.meta?.location==='away');
@@ -23,6 +54,7 @@ function parseFixture(row,competition,now,verifiedLeagueId=LEAGUES[competition])
    else goals=current;
  }
  const halftime=score('1ST_HALF');
+ const verifiedStats=status==='FT'?verifiedTeamStatistics(row,home.id,away.id):{};
  const rawRound=String(row.round?.name||'').trim();
  const round=/^\d{1,2}$/.test(rawRound)?'Speelronde '+rawRound:
    /^(?:Speelronde|Round)\s+(\d{1,2})$/i.test(rawRound)?'Speelronde '+rawRound.match(/\d{1,2}/)[0]:'';
@@ -30,6 +62,7 @@ function parseFixture(row,competition,now,verifiedLeagueId=LEAGUES[competition])
   home:{id:'sm-'+home.id,name:home.name},away:{id:'sm-'+away.id,name:away.name},goals,
   ...(status==='FT'&&halftime&&[halftime.home,halftime.away].every(Number.isInteger)&&halftime.home<=goals.home&&halftime.away<=goals.away?{halfTime:halftime}:{}),
   checkedAt:new Date(now).toISOString(),resultSource:CREDIT,
+  ...(Object.keys(verifiedStats).length?{verifiedStats}:{}),
   ...(status==='FT'?{resultExpiresAt:now+36*3600000,goalTimeline:confirmedGoals(row,goals),incidents:confirmedIncidents(row,home.id,away.id),eventCoverage:Array.isArray(row.events)&&row.events.length<=150?'sportmonks':'unavailable',matchEvents:verifiedMatchEvents(row,home.id,away.id,goals)}:{})};
 }
 // Sportmonks v3 event types: missed penalty, direct red and second yellow.
@@ -198,7 +231,7 @@ async function loadRecent({fetcher=fetch,token,now=Date.now(),sourceBody,competi
  for(let page=1;page<=3;page++){
   const url=new URL(prefix);
   url.searchParams.set('api_token',token);
-  url.searchParams.set('include','participants;scores;round;events');
+  url.searchParams.set('include','participants;scores;round;events;statistics');
   url.searchParams.set('filters','fixtureLeagues:'+leagueId);
   url.searchParams.set('per_page','50');
   url.searchParams.set('page',String(page));
@@ -247,4 +280,4 @@ async function statisticsCoverage({fixtureId,token,fetcher=fetch,sourceBody}){
   return {status:valid.length?'available':'no_data',fixtureId,records:valid.length,types:new Set(valid.map(row=>row.type_id)).size};
  }catch{return {status:'unavailable'};}
 }
-module.exports={statisticsCoverage,EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load,loadRecent};
+module.exports={statisticsCoverage,verifiedTeamStatistics,EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load,loadRecent};
