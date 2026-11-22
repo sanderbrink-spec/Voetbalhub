@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/artwork-queue-audit109.js'
+      - 'scripts/artwork-production-plan110.js'
       - '.github/workflows/artwork-queue-audit109.yml'
   schedule:
     - cron: '47 8 * * *'
@@ -26,7 +27,7 @@ jobs:
       - name: Install pinned project dependencies
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: Test queue audit safety invariants
-        run: node --test test/artwork-queue-audit109.test.js
+        run: node --test test/artwork-queue-audit109.test.js test/artwork-production-plan110.test.js
       - name: Retrieve editorial queue without exposing encrypted drafts
         shell: bash
         run: |
@@ -99,10 +100,29 @@ jobs:
             '- Automatisch goedgekeurd: **0**\n'+
             '- Bericht: alleen bewijsadministratie; geen inhoud of beeld vrijgegeven.\n');
           NODE
+      - name: Build rights-safe image production briefs from verified audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/artwork-production-plan110.js \
+            --audit .automatic-output/artwork-audit109.json \
+            --out .automatic-output/artwork-production-plan110.json
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const p=JSON.parse(fs.readFileSync('.automatic-output/artwork-production-plan110.json','utf8'));
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+            '\n### Beeldproductie, alleen na externe kwaliteits- en rechtencontrole\n\n'+
+            '- Verse dossiers met verifieerbaar dagdeel: '+p.readyNow+'\n'+
+            '- Actietypen: '+JSON.stringify(p.counts)+'\n'+
+            '- Eerste prioriteit: '+(p.firstBatch.join(', ')||'geen')+'\n'+
+            '- Automatisch gegenereerd of goedgekeurd: **0**\n');
+          NODE
       - name: Upload sanitized audit (never upload sealed draft checkpoints)
         uses: actions/upload-artifact@v4
         with:
           name: veldio-artwork-evidence-audit
-          path: .automatic-output/artwork-audit109.json
+          path: |
+            .automatic-output/artwork-audit109.json
+            .automatic-output/artwork-production-plan110.json
           if-no-files-found: error
           retention-days: 14
