@@ -5,6 +5,10 @@ const fs=require('node:fs');
 const path=require('node:path');
 const rotation=require('../image-rotation65');
 const {norm}=require('../stadium-venue74');
+const library=require('../image-library49');
+const historicalFindings=require('../stadium-review-findings79.json').findings;
+const withheld=new Map(require('../stadium-visual-prescreen106d.json').withheld.map(item=>[item.id,item]));
+const screenings=new Map(require('../stadium-screening84.json').candidates.map(item=>[item.id,item]));
 
 function dateMs(value){
  const ms=typeof value==='number'?value:Date.parse(value||'');
@@ -28,6 +32,20 @@ function verifiedFixture(row,matchId){
 // Convert only the verified final results returned by Veldio's protected
 // first-party Sportmonks endpoint; publisher headlines are not fixture proof.
 // No endpoint secret, statistics, source text, or draft body is persisted.
+// Keep only provider-verified coordinates bound to the same fixture venue ID.
+// A generic home-club name is not evidence of the exact venue or sun position.
+function sportmonksVenue(fixture){
+ const venue=fixture?.venue;
+ if(!venue||!Number.isSafeInteger(fixture.venueId)||fixture.venueId<=0||
+    !Number.isSafeInteger(venue.id)||venue.id!==fixture.venueId||
+    typeof fixture.venueName!=='string'||fixture.venueName!==venue.name||
+    venue.name.trim().length<2||venue.name.length>120||
+    !Number.isFinite(venue.latitude)||Math.abs(venue.latitude)>90||
+    !Number.isFinite(venue.longitude)||Math.abs(venue.longitude)>180||
+    (venue.latitude===0&&venue.longitude===0))return null;
+ return {venueId:venue.id,venueName:venue.name,
+  venue:{id:venue.id,name:venue.name,latitude:venue.latitude,longitude:venue.longitude}};
+}
 function sportmonksEvidence(response){
  if(response?.source!=='Sportmonks Football API'||response?.status!=='available'||
    response?.competition!=='eredivisie'||!Array.isArray(response.fixtures)||
@@ -38,7 +56,8 @@ function sportmonksEvidence(response){
    typeof f.away?.name==='string'&&dateMs(f.date)&&dateMs(f.checkedAt))
  .map(f=>({id:f.id,homeTeam:f.home.name,awayTeam:f.away.name,
   competition:'Eredivisie',playedAt:f.date,verifiedAt:f.checkedAt,
-  evidenceSource:'Sportmonks'}));
+  evidenceSource:'Sportmonks',
+  ...(sportmonksVenue(f)||{})}));
 }
 function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
  const records=Array.isArray(queue)?queue:queue?.records;
@@ -62,18 +81,40 @@ function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
   const pending=assets.filter(x=>x.approval==='pending'&&x.homeClubReusable===true&&
    x.imageKind==='report'&&x.stadiumOccupancy==='full'&&x.clubs?.length===2&&
    norm(x.clubs[0])===norm(match.homeTeam)&&x.clubs[1]==='*')
-   .map(x=>({id:x.id,sha256:x.sha256,sceneDaypart:x.sceneDaypart||x.daypart,
-    reviewRequired:true,contextMatchesDaypart:(x.sceneDaypart||x.daypart)===context.daypart}))
-   .sort((a,b)=>a.id.localeCompare(b.id));
+   .map(x=>{
+    const historical=historicalFindings[x.id];
+    const held=withheld.get(x.id);
+    const screened=screenings.get(x.id);
+    const rejectedScore=screened?.sha256===x.sha256&&
+      Number.isFinite(screened.fullResolutionAssessment?.score)&&
+      screened.fullResolutionAssessment.score<8.5;
+    const reasons=[
+     ...(historical?[historical.reason]:[]),
+     ...(held?[held.reason]:[]),
+     ...(rejectedScore?['Eerdere beoordeling van exact bestand onder 8,5.']:[])
+    ];
+    return {id:x.id,sha256:x.sha256,sceneDaypart:x.sceneDaypart||x.daypart,
+     reviewRequired:true,contextMatchesDaypart:library.daypartMatches(x,context.daypart),
+     requiresRework:reasons.length>0,
+     ...(reasons.length?{reviewBlockReasons:[...new Set(reasons)]}:{})};
+   }).sort((a,b)=>a.id.localeCompare(b.id));
+  const compatible=pending.filter(x=>x.contextMatchesDaypart);
+  const reviewable=compatible.filter(x=>!x.requiresRework);
   const classification=approved.length?'approved_match_available':
-   pending.length?'pending_home_image_review':'requires_new_original_artwork';
+   !pending.length?'requires_new_original_artwork':
+   context.daypart==='neutral'?'requires_verified_daypart':
+   reviewable.length?'pending_home_image_review':
+   compatible.length?'requires_image_rework':'requires_matching_scene_artwork';
   return {...base,classification,homeTeam:match.homeTeam,awayTeam:match.awayTeam,
    playedAt:match.playedAt,competition:match.competition,
    fixtureSource:match.source,fixtureVerifiedAt:match.verifiedAt,
    daypart:context.daypart,daypartEvidence:context.daypart==='neutral'?'insufficient_venue_coordinates':'solar_venue_coordinates',
    approvedAssetIds:approved,pendingHomeCandidates:pending,
    why:approved.length?'Passend reeds goedgekeurd beeld gevonden; controleer alsnog actuele factcheck en publicatiepoort.':
-    pending.length?'Beeld bestaat voor dezelfde thuisclub, maar is NIET vrijgegeven en dagdeel kan afwijken.':
+    classification==='requires_verified_daypart'?'Er bestaan pending beelden, maar verifieer eerst stadionlocatie en zonstand; neutraal dagdeel is geen vrijbrief.':
+    classification==='requires_matching_scene_artwork'?'Pending thuisclubbeelden hebben een ander daadwerkelijk dagdeel dan de wedstrijd.':
+    classification==='requires_image_rework'?'Pending thuisclubbeelden met passend dagdeel hebben vastgestelde kwaliteits- of rechtenrisico’s.':
+    pending.length?'Passend dagdeel en thuisclub, maar definitieve individuele beeld- en rechtencontrole ontbreekt.':
     'Geen bestaand goedgekeurd of pending thuisclubbeeld in de gecontroleerde catalogus.'
   };
  }).sort((a,b)=>(dateMs(b.createdAt)||0)-(dateMs(a.createdAt)||0)||a.matchId.localeCompare(b.matchId));
@@ -102,4 +143,4 @@ function main(argv=process.argv.slice(2)){
  return r;
 }
 if(require.main===module){try{main();}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={auditQueue,verifiedFixture,sportmonksEvidence,main};
+module.exports={auditQueue,verifiedFixture,sportmonksVenue,sportmonksEvidence,main};

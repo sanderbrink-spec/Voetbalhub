@@ -14,6 +14,7 @@ const base=(club,kind='report')=>({
  subject:club+' neutrale thuisstadionafbeelding',clubs:[club,'*'],
  categories:[kind],competitions:['Eredivisie'],daypart:'neutral',
  imageKind:kind,stadiumOccupancy:kind==='report'?'full':'empty',
+ sceneDaypart:'night',
  stadiumIdentity:'home:'+club.toLowerCase().replace(/[^a-z0-9]/g,''),
  homeVenueAliases:['Stadion '+club],variant:'base-'+kind,
  visualReview:{...source.visualReview,reviewedAt:'2026-11-11',clubScope:'home-only',
@@ -22,7 +23,9 @@ const base=(club,kind='report')=>({
 const article=(home,away,kind='match_report',extra={})=>({
  id:'reuse73-'+home+'-'+away,
  status:'published',articleKind:kind,category:'Eredivisie',matchId:'sm-112233',
- headline:'Test verslag',match:{homeTeam:home,awayTeam:away,...extra}
+ headline:'Test verslag',match:{homeTeam:home,awayTeam:away,
+  date:'2026-11-21T19:00:00Z',...extra,
+  venue:{latitude:52.2,longitude:5.3,...extra.venue}}
 });
 
 test('Fase 73: three requested binaries are in repository and image desk, but remain unpublished pending review',()=>{
@@ -53,7 +56,7 @@ test('Fase 73: a reviewed home-only artwork safely serves more than one opponent
  assert.deepEqual(rotation.eligible(article('Telstar','PSV'),[image]).map(x=>x.id),[image.id]);
  assert.equal(rotation.eligible(article('Ajax','Telstar'),[image]).length,0);
  assert.equal(rotation.eligible(article('Willem II','Telstar'),[image]).length,0);
- const ctx={category:'report',clubs:['Telstar','Ajax'],competition:'Eredivisie',daypart:'neutral'};
+ const ctx={category:'report',clubs:['Telstar','Ajax'],competition:'Eredivisie',daypart:'night'};
  assert.equal(library.choose(ctx,[image]).id,image.id);
  assert.equal(library.choose({...ctx,clubs:['PSV','Telstar']},[image]),null);
 });

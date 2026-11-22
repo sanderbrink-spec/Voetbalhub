@@ -50,7 +50,7 @@ function eligible(article, rows = library.catalog(), ctx = context(article)) {
     (!ctx.imageKind || legacyArchive ||
       stadium74.allowedForMatch(asset,{...ctx,category:ctx.imageKind})) &&
     (!asset.competitions.length || asset.competitions.includes(ctx.competition)) &&
-    (asset.daypart === 'neutral' || asset.daypart === ctx.daypart) &&
+    library.daypartMatches(asset, ctx.daypart) &&
     (!asset.venueId || asset.venueId === ctx.venueId) &&
     (matches ? asset.clubs.length === 2 &&
       (asset.homeClubReusable ? (asset.clubs[1] === '*' && normalize(asset.clubs[0]) === normalize(ctx.clubs[0])) :

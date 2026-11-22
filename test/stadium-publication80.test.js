@@ -24,7 +24,7 @@ test('Fase 80: goedgekeurde stadionbeelden zijn per thuisclub en beeldtype selec
   const pending={...a,approval:'pending',reviewer:'',visualReview:undefined};
   assert.equal(premium.accepted(pending),false,a.id);
   const club=a.clubs[0],opponent=norm(club)==='ajax'?'PSV':'Ajax';
-  const ctx={category:a.imageKind,clubs:[club,opponent],daypart:'neutral',
+  const ctx={category:a.imageKind,clubs:[club,opponent],daypart:a.sceneDaypart,
    competition:'Eredivisie',stadiumIdentity:'home:'+norm(club),articleId:'synthetic-'+a.id};
   const selected=library.choose(ctx,reviewed);
   assert.equal(selected?.id,a.id,a.id);
