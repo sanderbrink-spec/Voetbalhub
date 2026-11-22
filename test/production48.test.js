@@ -59,3 +59,13 @@ test('intentional skipped publication on deployment does not hide the latest rea
  const c=M.workflowChecks([run,skipped],now)[0];assert.equal(c.status,'pass');assert.match(c.detail,/Run 1:/);
  assert.equal(M.workflowChecks([skipped],now)[0].status,'fail');
 });
+
+test('108A unavailable competitions cannot pass freshness through a generated timestamp',()=>{
+ const {footballChecks}=require('../scripts/production-health48');
+ const now=Date.parse('2026-11-22T19:00:00Z');
+ const snapshot={status:'source_unavailable',fixtures:[],standings:[],
+  updatedAt:new Date(now).toISOString(),rightsExpiresAt:now+36*3600000};
+ const c=footballChecks('laliga',snapshot,now);
+ assert.equal(c.find(x=>x.id==='football.laliga.available').status,'fail');
+ assert.equal(c.find(x=>x.id==='football.laliga.freshness').status,'fail');
+});
