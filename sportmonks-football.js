@@ -38,6 +38,27 @@ function verifiedTeamStatistics(row,homeId,awayId){
   delete result.shotsOnTarget;
  return result;
 }
+// Sportmonks v3 returns latitude/longitude as strings inside the optional
+// fixture venue include. Only expose coordinates when the included venue ID
+// matches the fixture's explicit venue_id. Never infer a venue from club name.
+function verifiedVenue(row){
+ const venue=row?.venue;
+ if(!venue||!Number.isSafeInteger(row.venue_id)||row.venue_id<=0||
+   !Number.isSafeInteger(venue.id)||venue.id!==row.venue_id||
+   typeof venue.name!=='string'||venue.name.trim().length<2||
+   venue.name.trim().length>120||/[\x00-\x1f]/.test(venue.name))return null;
+ const coordinate=value=>{
+  if(typeof value==='string'){
+   if(!/^-?\d{1,3}(?:\.\d{1,8})?$/.test(value.trim()))return null;
+   value=Number(value.trim());
+  }
+  return typeof value==='number'&&Number.isFinite(value)?value:null;
+ };
+ const latitude=coordinate(venue.latitude),longitude=coordinate(venue.longitude);
+ if(latitude===null||longitude===null||Math.abs(latitude)>90||Math.abs(longitude)>180||
+    (latitude===0&&longitude===0))return null;
+ return {id:venue.id,name:venue.name.trim(),latitude,longitude};
+}
 function parseFixture(row,competition,now,verifiedLeagueId=LEAGUES[competition]){
  if(!row||row.league_id!==verifiedLeagueId||!Number.isSafeInteger(row.id))throw Error('Ongeldig Sportmonks competitierecord');
  const home=row.participants?.find(p=>p.meta?.location==='home'),away=row.participants?.find(p=>p.meta?.location==='away');
@@ -55,6 +76,7 @@ function parseFixture(row,competition,now,verifiedLeagueId=LEAGUES[competition])
  }
  const halftime=score('1ST_HALF');
  const verifiedStats=status==='FT'?verifiedTeamStatistics(row,home.id,away.id):{};
+ const venue=verifiedVenue(row);
  const rawRound=String(row.round?.name||'').trim();
  const round=/^\d{1,2}$/.test(rawRound)?'Speelronde '+rawRound:
    /^(?:Speelronde|Round)\s+(\d{1,2})$/i.test(rawRound)?'Speelronde '+rawRound.match(/\d{1,2}/)[0]:'';
@@ -62,6 +84,7 @@ function parseFixture(row,competition,now,verifiedLeagueId=LEAGUES[competition])
   home:{id:'sm-'+home.id,name:home.name},away:{id:'sm-'+away.id,name:away.name},goals,
   ...(status==='FT'&&halftime&&[halftime.home,halftime.away].every(Number.isInteger)&&halftime.home<=goals.home&&halftime.away<=goals.away?{halfTime:halftime}:{}),
   checkedAt:new Date(now).toISOString(),resultSource:CREDIT,
+  ...(venue?{venue,venueId:venue.id,venueName:venue.name}:{}),
   ...(Object.keys(verifiedStats).length?{verifiedStats}:{}),
   ...(status==='FT'?{resultExpiresAt:now+36*3600000,goalTimeline:confirmedGoals(row,goals),incidents:confirmedIncidents(row,home.id,away.id),eventCoverage:Array.isArray(row.events)&&row.events.length<=150?'sportmonks':'unavailable',matchEvents:verifiedMatchEvents(row,home.id,away.id,goals)}:{})};
 }
@@ -231,7 +254,7 @@ async function loadRecent({fetcher=fetch,token,now=Date.now(),sourceBody,competi
  for(let page=1;page<=3;page++){
   const url=new URL(prefix);
   url.searchParams.set('api_token',token);
-  url.searchParams.set('include','participants;scores;round;events;statistics');
+  url.searchParams.set('include','participants;scores;round;events;statistics;venue');
   url.searchParams.set('filters','fixtureLeagues:'+leagueId);
   url.searchParams.set('per_page','50');
   url.searchParams.set('page',String(page));
@@ -280,4 +303,4 @@ async function statisticsCoverage({fixtureId,token,fetcher=fetch,sourceBody}){
   return {status:valid.length?'available':'no_data',fixtureId,records:valid.length,types:new Set(valid.map(row=>row.type_id)).size};
  }catch{return {status:'unavailable'};}
 }
-module.exports={statisticsCoverage,verifiedTeamStatistics,EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load,loadRecent};
+module.exports={statisticsCoverage,verifiedTeamStatistics,verifiedVenue,EVENT_PARSER_REVISION,LEAGUES,CREDIT,SOURCE,parseFixture,confirmedGoals,verifiedMatchEvents,load,loadRecent};
