@@ -3793,6 +3793,46 @@
       "stadiumIdentity": "home:fceindhoven",
       "intakeStatus": "pending-independent-review",
       "artworkNote": "Gecontroleerde bronbestanden en exacte SHA256; clubkleuren, stadioncontext, merktekens en commerciële rechten vereisen afzonderlijke eindcontrole. Geen fictieve score of goedkeuring."
+    },
+    {
+      "id": "veldio110b-sm-19714592-ajax-ado-day-report",
+      "file": "public/match-covers110/sm-19714592-ajax-ado-day.webp",
+      "categories": [
+        "report"
+      ],
+      "subject": "Ajax – ADO Den Haag, wedstrijdverslag",
+      "clubs": [
+        "Ajax",
+        "ADO Den Haag"
+      ],
+      "competitions": [
+        "Eredivisie"
+      ],
+      "daypart": "day",
+      "sceneDaypart": "day",
+      "keywords": [
+        "Ajax",
+        "ADO Den Haag",
+        "voetbalstadion",
+        "daglicht",
+        "volle tribunes",
+        "Veldio"
+      ],
+      "variant": "match-report-110b-ajax-ado-day",
+      "origin": "OpenAI ChatGPT ImageGen, voor Veldio gegenereerde originele stadionimpressie op 22 november 2026; gen_id 8a974e45-4f03-45de-b789-7d9069d4de76; bron-PNG SHA256 a66b84f160f8a0eda4b28d324c527b3b054337bcfa648d61da89498885da3840",
+      "rights": "original-ai",
+      "rightsEvidence": "Exacte ImageGen-bron en eigen WEBP-conversie met SHA256 c5d0655f730675579c17846fea822177f7ea0e9ba3be85544ed277031da1e4dd; geen documentaire wedstrijdfoto of officiële clublogo's beoogd. Definitieve commerciële rechten- en visuele beoordeling nog open; geen gebruiksvrijgave.",
+      "approval": "pending",
+      "lastUsed": null,
+      "sha256": "c5d0655f730675579c17846fea822177f7ea0e9ba3be85544ed277031da1e4dd",
+      "caption": "Veldio · originele AI-stadionillustratie bij Ajax – ADO Den Haag. Geen echte wedstrijdfoto of exacte afbeelding van de Johan Cruijff ArenA.",
+      "questionIds": [],
+      "fixtureId": "sm-19714592",
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "stadiumIdentity": "home:ajax",
+      "intakeStatus": "pending-independent-review",
+      "artworkNote": "Eigen originele dagillustratie met volle rood-witte tribunes en uitsluitend Veldio-signage. Exacte bron- en WEBP-hashes geregistreerd. Rechtencontrole, feitelijke stadioncontext, score >=8,5/10 en definitieve individuele vrijgave ontbreken nog."
     }
   ]
 }

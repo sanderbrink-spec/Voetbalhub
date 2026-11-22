@@ -255,3 +255,25 @@ test('110B pending exact report never becomes a publication claim through the pr
  assert.equal(plan.safety.createsImage,false);
  assert.equal(plan.safety.approvesImage,false);
 });
+
+test('110B second original day image is exact-match pending, not another generation job',()=>{
+ const f=fact('sm-19714592','Ajax','ADO Den Haag',{
+  competition:'Eredivisie',playedAt:'2026-11-22T13:30:00Z',
+  venueId:1001,venueName:'Johan Cruijff ArenA',
+  venue:{latitude:52.314,longitude:4.941}
+ });
+ const report=audit.auditQueue([job(f.id)],assets,[f],now);
+ assert.equal(report.rows[0].daypart,'day');
+ assert.equal(report.rows[0].classification,'pending_exact_fixture_review');
+ assert.equal(report.rows[0].approvedAssetIds.length,0);
+ assert.ok(report.rows[0].pendingExactCandidates.some(x=>x.id==='veldio110b-sm-19714592-ajax-ado-day-report'&&
+  x.contextMatchesDaypart&&x.reviewRequired&&!x.requiresRework));
+ const plan=require('../scripts/artwork-production-plan110').plan(report,now);
+ assert.equal(plan.tasks[0].action,'independent_rights_review');
+ assert.equal(plan.tasks[0].imageBrief,undefined);
+ assert.equal(plan.readyNow,0);
+ const swapped=audit.auditQueue([job(f.id)],assets,[{...f,homeTeam:'ADO Den Haag',awayTeam:'Ajax'}],now);
+ assert.notEqual(swapped.rows[0].classification,'pending_exact_fixture_review');
+ assert.ok(!swapped.rows[0].pendingExactCandidates?.some(x=>x.id==='veldio110b-sm-19714592-ajax-ado-day-report'));
+ assert.deepEqual(swapped.rows[0].approvedAssetIds,[]);
+});
