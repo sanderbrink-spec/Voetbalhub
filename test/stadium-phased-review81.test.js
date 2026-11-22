@@ -17,7 +17,7 @@ test('Fase 81: gefaseerde beeldreview heeft precies 28 reguliere en 8 herstelgev
  assert.equal(p.filter(a=>a.reviewPriority==='first-review').length,data.reviewPlan.firstReview);
  assert.equal(p.filter(a=>a.reviewPriority==='repair-first').length,data.reviewPlan.repairFirst);
  assert.equal(approved.length,data.reviewPlan.approved);
- assert.equal(p.filter(a=>a.canRequestApproval).length,data.reviewPlan.firstReview);
+ assert.equal(p.filter(a=>a.canRequestApproval).length,data.reviewPlan.firstReview-data.reviewPlan.failedFullResolution);
  assert.ok(p.filter(a=>a.reviewPriority==='repair-first').every(a=>a.knownIssue));
  assert.ok(p.filter(a=>a.reviewPriority==='first-review').every(a=>!a.knownIssue));
  assert.deepEqual(new Set(data.slots.map(s=>s.club)).size,18);
