@@ -11,7 +11,7 @@ function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
     !batch.policy?.noAutomaticApproval||!batch.policy?.noAutomaticPublication||
     !batch.policy?.commercialRightsRequiresSeparateReview||
     !audit?.safety?.readOnly||audit?.safety?.unlocksPublications!==false||
-    !Array.isArray(audit.rows)||!Array.isArray(assets))
+    !Array.isArray(audit.rows)||!Array.isArray(assets)||batch.artworks.length>100)
   throw Error('Ongeldige of onveilige beeldinvoer.');
  const seen=new Set(),records=[];
  for(const entry of batch.artworks){
@@ -22,13 +22,13 @@ function validate(batch,audit,assets=[],root=path.resolve(__dirname,'..')){
      !Number.isSafeInteger(entry.webpDimensions?.[1])||
      entry.webpDimensions[0]!==1280||entry.webpDimensions[1]!==720||
      entry.approval!=='pending'||entry.status!=='source_generated_not_in_repository'||
-     !entry.sourceInputImagesUsed===false)
+     entry.sourceInputImagesUsed!==false)
     throw Error('Ongeldig of dubbel beeldgegeven.');
   seen.add(entry.fixtureId);
-  const expectedPath='public/match-covers110/'+entry.fixtureId+'-'+
-   (entry.webpFilename||'').replace(/^\S*?sm-\d+-/,'');
-  if(!entry.webpFilename?.startsWith(entry.fixtureId+'-')||
-     entry.suggestedRepoPath!==expectedPath||!/^[a-z0-9-]+\.webp$/.test(entry.webpFilename)||
+  const normalizedFile=entry.webpFilename?.replace(/^veldio-/,'');
+  const expectedPath='public/match-covers110/'+normalizedFile;
+  if(!normalizedFile?.startsWith(entry.fixtureId+'-')||
+     entry.suggestedRepoPath!==expectedPath||!/^[a-z0-9-]+\.webp$/.test(normalizedFile)||
      entry.kind!=='report'||entry.stadiumOccupancy!=='full')
     throw Error('Onveilige doelpad- of beeldtypegegevens.');
   const known=audit.rows.find(x=>x.matchId===entry.fixtureId);
