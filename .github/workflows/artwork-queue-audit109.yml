@@ -34,24 +34,48 @@ jobs:
           mkdir -p .automatic-output
           git fetch --no-tags --depth=1 origin editorial-media
           git show FETCH_HEAD:editorial-queue45.json > .automatic-output/private-queue.tmp
-      - name: Obtain only verified recent Eredivisie finals through existing Render integration
+      - name: Obtain verified recent finals from four subscribed competitions
         env:
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
         shell: bash
         run: |
           set -euo pipefail
-          # User approved one Sportmonks month, not ongoing paid data use.
+          # Only the current consented month. No new plan or paid add-on.
           if [[ -z "${HUB_API_SECRET:-}" || "$(date -u +%Y%m%d)" -ge 20261222 ]]; then
-            echo "No verified Sportmonks integration enabled for this audit."
+            echo "Provider not configured or one-month evaluation elapsed."
             exit 0
           fi
-          if ! curl --fail --silent --show-error --max-time 45 \
-            -H "Authorization: Bearer ${HUB_API_SECRET}" \
-            'https://voetbalhub-redactie.onrender.com/editorial-sportmonks-recent?competition=eredivisie' \
-            -o .automatic-output/private-sportmonks.tmp; then
-            rm -f .automatic-output/private-sportmonks.tmp
-            echo "::warning::Sportmonks snapshot unavailable; audit will mark unknown matches as unresolved."
-          fi
+          for competition in eredivisie kkd premierleague knvbbeker; do
+            target=".automatic-output/private-sportmonks-${competition}.tmp"
+            if ! curl --fail --silent --show-error --max-time 45 \
+              -H "Authorization: Bearer ${HUB_API_SECRET}" \
+              "https://voetbalhub-redactie.onrender.com/editorial-sportmonks-recent?competition=${competition}" \
+              -o "${target}"; then
+              rm -f "${target}"
+              echo "::warning::Verified ${competition} results unavailable; no guesses in audit."
+            fi
+          done
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const names=['eredivisie','kkd','premierleague','knvbbeker'];
+          const snapshots=[];
+          for(const name of names){
+            const path='.automatic-output/private-sportmonks-'+name+'.tmp';
+            if(!fs.existsSync(path))continue;
+            try{
+              const record=JSON.parse(fs.readFileSync(path,'utf8'));
+              if(record?.competition===name&&
+                ['available','source_unavailable','empty_recent_window'].includes(record?.status)){
+                snapshots.push(record);
+              }
+            }catch{
+              console.log('Unparseable provider response: '+name);
+            }finally{fs.rmSync(path,{force:true});}
+          }
+          if(snapshots.length)fs.writeFileSync(
+            '.automatic-output/private-sportmonks.tmp',JSON.stringify(snapshots));
+          console.log('Provider competition statuses received: '+snapshots.length+'/4');
+          NODE
       - name: Produce read-only evidence-gap report
         shell: bash
         run: |
@@ -69,6 +93,9 @@ jobs:
             '## Veldio artwork audit 109A\n\n'+
             '- Vastgelopen beeldtaken: '+a.artworkRetries+'\n'+
             '- Zonder verifieerbare wedstrijdsnapshot: '+a.blockedWithoutVerifiedFixture+'\n'+
+            '- Met geverifieerde wedstrijdcontext: '+a.verifiedFixtureCount+'\n'+
+            '- Conflicterende wedstrijd-ID’s: '+a.fixtureConflicts+'\n'+
+            '- Competitiedekking: '+JSON.stringify(a.verifiedCoverageByCompetition)+'\n'+
             '- Automatisch goedgekeurd: **0**\n'+
             '- Bericht: alleen bewijsadministratie; geen inhoud of beeld vrijgegeven.\n');
           NODE

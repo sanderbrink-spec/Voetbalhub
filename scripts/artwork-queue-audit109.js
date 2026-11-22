@@ -9,6 +9,8 @@ const library=require('../image-library49');
 const historicalFindings=require('../stadium-review-findings79.json').findings;
 const withheld=new Map(require('../stadium-visual-prescreen106d.json').withheld.map(item=>[item.id,item]));
 const screenings=new Map(require('../stadium-screening84.json').candidates.map(item=>[item.id,item]));
+const COMPETITION_LABELS=Object.freeze({eredivisie:'Eredivisie',kkd:'Keuken Kampioen Divisie',premierleague:'Premier League',knvbbeker:'KNVB Beker'});
+
 
 function dateMs(value){
  const ms=typeof value==='number'?value:Date.parse(value||'');
@@ -47,22 +49,37 @@ function sportmonksVenue(fixture){
   venue:{id:venue.id,name:venue.name,latitude:venue.latitude,longitude:venue.longitude}};
 }
 function sportmonksEvidence(response){
+ const competition=response?.competition;
  if(response?.source!=='Sportmonks Football API'||response?.status!=='available'||
-   response?.competition!=='eredivisie'||!Array.isArray(response.fixtures)||
+   !Object.hasOwn(COMPETITION_LABELS,competition)||!Array.isArray(response.fixtures)||
    response.fixtures.length>500)return [];
- return response.fixtures.filter(f=>f?.status==='FT'&&
+ return response.fixtures.filter(f=>f?.competition===competition&&f?.status==='FT'&&
    f?.resultSource==='Sportmonks Football API'&&typeof f.id==='string'&&
    /^sm-\d+$/.test(f.id)&&typeof f.home?.name==='string'&&
    typeof f.away?.name==='string'&&dateMs(f.date)&&dateMs(f.checkedAt))
  .map(f=>({id:f.id,homeTeam:f.home.name,awayTeam:f.away.name,
-  competition:'Eredivisie',playedAt:f.date,verifiedAt:f.checkedAt,
+  competition:COMPETITION_LABELS[competition],playedAt:f.date,verifiedAt:f.checkedAt,
   evidenceSource:'Sportmonks',
   ...(sportmonksVenue(f)||{})}));
+}
+function sportmonksEvidenceBatch(snapshots){
+ const responses=Array.isArray(snapshots)?snapshots:[snapshots];
+ if(responses.length>4)throw Error('Maximaal vier competities in een audit.');
+ return responses.flatMap(sportmonksEvidence);
 }
 function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
  const records=Array.isArray(queue)?queue:queue?.records;
  if(!Array.isArray(records)||!Array.isArray(assets)||!Array.isArray(fixtureEvidence))throw Error('Ongeldige auditinvoer.');
- const evidence=new Map(fixtureEvidence.filter(x=>x&&typeof x.id==='string').map(x=>[x.id,x]));
+ const evidence=new Map();
+ const conflictingIds=new Set();
+ for(const row of fixtureEvidence){
+  if(!row||typeof row.id!=='string')continue;
+  const prior=evidence.get(row.id);
+  if(prior&&['homeTeam','awayTeam','competition','playedAt','venueId','venueName'].some(key=>
+     String(prior[key]??'')!==String(row[key]??'')))conflictingIds.add(row.id);
+  else if(!prior)evidence.set(row.id,row);
+ }
+ for(const id of conflictingIds)evidence.delete(id);
  const blocked=records.filter(j=>j?.status==='retry'&&j?.reason==='awaiting_approved_artwork'&&
    j?.failureStage==='artwork'&&/^(?:sm|uefa)-\d+$/.test(j?.matchId||''));
  const rows=blocked.map(job=>{
@@ -122,6 +139,10 @@ function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
  return {schemaVersion:109,generatedAt:new Date(now).toISOString(),
   queueRecords:records.length,artworkRetries:rows.length,classified:counts,
   blockedWithoutVerifiedFixture:counts.requires_verified_fixture||0,
+  verifiedFixtureCount:evidence.size,fixtureConflicts:conflictingIds.size,
+  verifiedCoverageByCompetition:[...evidence.values()].reduce((out,fixture)=>{
+   out[fixture.competition]=(out[fixture.competition]||0)+1;return out;
+  },{}),
   safety:{readOnly:true,unlocksPublications:false,qualityThresholdUnchanged:true,
    approvedAssetsOnlyFromExistingCatalog:true,checkpointNeverEmitted:true,
    warning:'Onbekende wedstrijdcontext betekent NOOIT veilig hergebruik of toestemming tot publicatie.'},rows};
@@ -135,7 +156,7 @@ function main(argv=process.argv.slice(2)){
  if(!opts.queue)throw Error('--queue vereist');
  const read=p=>JSON.parse(fs.readFileSync(path.resolve(p),'utf8'));
  if(opts.fixtures&&opts.sportmonks)throw Error('Eén bewijsbron per auditaanroep');
- const evidence=opts.fixtures?read(opts.fixtures):opts.sportmonks?sportmonksEvidence(read(opts.sportmonks)):[];
+ const evidence=opts.fixtures?read(opts.fixtures):opts.sportmonks?sportmonksEvidenceBatch(read(opts.sportmonks)):[];
  const r=auditQueue(read(opts.queue),require('../image-library49.json').assets,evidence);
  if(opts.out)fs.writeFileSync(path.resolve(opts.out),JSON.stringify(r,null,2)+'\n');
  process.stdout.write(JSON.stringify({artworkRetries:r.artworkRetries,classified:r.classified,
@@ -143,4 +164,4 @@ function main(argv=process.argv.slice(2)){
  return r;
 }
 if(require.main===module){try{main();}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={auditQueue,verifiedFixture,sportmonksVenue,sportmonksEvidence,main};
+module.exports={auditQueue,verifiedFixture,sportmonksVenue,sportmonksEvidence,sportmonksEvidenceBatch,COMPETITION_LABELS,main};

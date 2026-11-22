@@ -71,7 +71,7 @@ test('109A only actual artwork-stage retries are considered and counters are con
 
 test('109A protected provider response is sanitized to independently checked Eredivisie finals',()=>{
  const base={source:'Sportmonks Football API',status:'available',competition:'eredivisie'};
- const f={id:'sm-19714594',status:'FT',resultSource:'Sportmonks Football API',
+ const f={id:'sm-19714594',competition:'eredivisie',status:'FT',resultSource:'Sportmonks Football API',
   home:{name:'FC Utrecht'},away:{name:'NEC Nijmegen'},
   date:'2026-11-21T19:00:00.000Z',checkedAt:'2026-11-22T19:00:00.000Z',
   verifiedStats:{shots:{home:9,away:12}},
@@ -95,7 +95,7 @@ test('109A protected provider response is sanitized to independently checked Ere
 });
 test('109A unverified provider status, wrong competition and unsafe payload never authenticate fixture context',()=>{
  const base={source:'Sportmonks Football API',competition:'eredivisie',status:'available',
-  fixtures:[{id:'sm-19714594',status:'FT',resultSource:'Sportmonks Football API',
+  fixtures:[{id:'sm-19714594',competition:'eredivisie',status:'FT',resultSource:'Sportmonks Football API',
     home:{name:'FC Utrecht'},away:{name:'NEC Nijmegen'},
     date:'2026-11-21T19:00:00Z',checkedAt:'2026-11-22T19:00:00Z'}]};
  for(const x of [{...base,status:'source_unavailable'},
@@ -141,7 +141,7 @@ test('109C unresolved historic or independent-quality holds never count as ready
 });
 
 test('109C Sportmonks fixture venue include drives safe daypart; invalid/mismatched venue never does',()=>{
- const item={id:'sm-19715873',status:'FT',resultSource:'Sportmonks Football API',
+ const item={id:'sm-19715873',competition:'eredivisie',status:'FT',resultSource:'Sportmonks Football API',
   home:{name:'FC Twente'},away:{name:'Ajax'},
   date:'2026-11-21T19:00:00Z',checkedAt:'2026-11-22T19:00:00Z',
   venueId:1001,venueName:'De Grolsch Veste',
@@ -165,4 +165,54 @@ test('109C Sportmonks fixture venue include drives safe daypart; invalid/mismatc
  const without=audit.auditQueue([job(item.id)],assets,audit.sportmonksEvidence(provider(wrongVenue)),now);
  assert.equal(without.rows[0].daypart,'neutral');
  assert.equal(without.rows[0].classification,'requires_verified_daypart');
+});
+
+test('109D four Sportmonks competitions share one report without converting foreign league rows',()=>{
+ const leagues=[
+  ['eredivisie','Eredivisie','sm-9001'],
+  ['kkd','Keuken Kampioen Divisie','sm-9002'],
+  ['premierleague','Premier League','sm-9003'],
+  ['knvbbeker','KNVB Beker','sm-9004']
+ ];
+ const snapshots=leagues.map(([competition,label,id])=>({
+  status:'available',source:'Sportmonks Football API',competition,
+  fixtures:[{id,competition,status:'FT',resultSource:'Sportmonks Football API',
+   home:{name:'Home '+id},away:{name:'Away '+id},
+   date:'2026-11-21T19:00:00Z',checkedAt:'2026-11-22T19:00:00Z'}]
+ }));
+ const result=audit.sportmonksEvidenceBatch(snapshots);
+ assert.equal(result.length,4);
+ assert.deepEqual(result.map(r=>r.competition),leagues.map(r=>r[1]));
+ const checked=audit.auditQueue(leagues.map(x=>job(x[2])),assets,result,now);
+ assert.equal(checked.artworkRetries,4);
+ assert.equal(checked.verifiedFixtureCount,4);
+ assert.equal(checked.blockedWithoutVerifiedFixture,0);
+ assert.deepEqual(Object.keys(checked.verifiedCoverageByCompetition).sort(),
+  leagues.map(x=>x[1]).sort());
+ const mismatched={...snapshots[1],fixtures:snapshots[0].fixtures};
+ assert.deepEqual(audit.sportmonksEvidence(mismatched),[]);
+});
+
+test('109D duplicates with incompatible fixture identities are unsafe and never overwrite proofs',()=>{
+ const a=fact('sm-9005','FC Utrecht','NEC Nijmegen');
+ const b={...a,homeTeam:'Ajax'};
+ const report=audit.auditQueue([job(a.id)],assets,[a,b],now);
+ assert.equal(report.fixtureConflicts,1);
+ assert.equal(report.verifiedFixtureCount,0);
+ assert.equal(report.blockedWithoutVerifiedFixture,1);
+ assert.equal(report.rows[0].classification,'requires_verified_fixture');
+ assert.deepEqual(report.rows[0].approvedAssetIds,[]);
+ const duplicate=audit.auditQueue([job(a.id)],assets,[a,{...a}],now);
+ assert.equal(duplicate.fixtureConflicts,0);
+ assert.equal(duplicate.verifiedFixtureCount,1);
+ assert.equal(duplicate.rows[0].classification,'requires_verified_daypart');
+});
+
+test('109D unavailable subscriber coverage is not misrepresented as fixture verification',()=>{
+ const unavailable={source:'Sportmonks Football API',competition:'kkd',status:'source_unavailable',
+  fixtures:[{id:'sm-9006',competition:'kkd',status:'FT',
+   resultSource:'Sportmonks Football API',home:{name:'A'},away:{name:'B'},
+   date:'2026-11-21T19:00:00Z',checkedAt:'2026-11-22T19:00:00Z'}]};
+ assert.deepEqual(audit.sportmonksEvidenceBatch([unavailable]),[]);
+ assert.throws(()=>audit.sportmonksEvidenceBatch(Array.from({length:5},()=>unavailable)),/vier competities/);
 });
