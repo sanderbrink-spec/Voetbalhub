@@ -29,14 +29,34 @@ jobs:
           mkdir -p .automatic-output
           git fetch --no-tags --depth=1 origin editorial-media
           git show FETCH_HEAD:editorial-queue45.json > .automatic-output/private-queue.tmp
+      - name: Obtain only verified recent Eredivisie finals through existing Render integration
+        env:
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # User approved one Sportmonks month, not ongoing paid data use.
+          if [[ -z "${HUB_API_SECRET:-}" || "$(date -u +%Y%m%d)" -ge 20261222 ]]; then
+            echo "No verified Sportmonks integration enabled for this audit."
+            exit 0
+          fi
+          if ! curl --fail --silent --show-error --max-time 45 \
+            -H "Authorization: Bearer ${HUB_API_SECRET}" \
+            'https://voetbalhub-redactie.onrender.com/editorial-sportmonks-recent?competition=eredivisie' \
+            -o .automatic-output/private-sportmonks.tmp; then
+            rm -f .automatic-output/private-sportmonks.tmp
+            echo "::warning::Sportmonks snapshot unavailable; audit will mark unknown matches as unresolved."
+          fi
       - name: Produce read-only evidence-gap report
         shell: bash
         run: |
           set -euo pipefail
-          trap 'rm -f .automatic-output/private-queue.tmp' EXIT
-          node scripts/artwork-queue-audit109.js \
-            --queue .automatic-output/private-queue.tmp \
-            --out .automatic-output/artwork-audit109.json
+          trap 'rm -f .automatic-output/private-queue.tmp .automatic-output/private-sportmonks.tmp' EXIT
+          args=(--queue .automatic-output/private-queue.tmp --out .automatic-output/artwork-audit109.json)
+          if [[ -f .automatic-output/private-sportmonks.tmp ]]; then
+            args+=(--sportmonks .automatic-output/private-sportmonks.tmp)
+          fi
+          node scripts/artwork-queue-audit109.js "${args[@]}"
           node - <<'NODE'
           const fs=require('node:fs');
           const a=JSON.parse(fs.readFileSync('.automatic-output/artwork-audit109.json','utf8'));
