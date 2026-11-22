@@ -95,6 +95,44 @@ test('101 scanner continues on feed outage, persists dedup and scans all ten bea
  assert.equal(two.report.publicationAttempts,0);
  assert.equal(two.report.published,0);
 });
+test('107A schedule uses quarter-hour RSS discovery without reducing editorial gates',()=>{
+ const fs=require('node:fs');
+ const workflow=fs.readFileSync(require('node:path').join(__dirname,'../.github/workflows/ten-agent-newsroom101.yml'),'utf8');
+ assert.match(workflow,/cron:\s*'7,22,37,52 \* \* \* \*'/);
+ assert.match(workflow,/cancel-in-progress: false/);
+ assert.match(workflow,/node scripts\/ten-agent-newsroom101\.js/);
+ assert.equal(N.MAX_AI_DAILY,10);
+});
+test('107A latency is measured from RSS dates to first observation, not a publication guarantee',()=>{
+ const at=(minutes)=>new Date(now-minutes*60000).toISOString();
+ const leads=[{publishedAt:at(30)},{publishedAt:at(1)},{publishedAt:at(20)},
+  {publishedAt:new Date(now+60000).toISOString()}];
+ const lag=N.detectionLatency(leads,now);
+ assert.equal(lag.kind,'rss_publication_to_first_observation');
+ assert.equal(lag.count,3);
+ assert.equal(lag.medianMinutes,20);
+ assert.equal(lag.p95Minutes,30);
+ assert.equal(lag.within15Minutes,1);
+ assert.equal(N.detectionLatency([],now).medianMinutes,null);
+});
+test('107A repeated news scan only reports latency for genuinely new deduplicated leads',async()=>{
+ const feed=(source)=>source.includes('vi.nl')
+  ?rss('PSV denkt aan Kevin De Bruyne transfer','https://www.vi.nl/nieuws/psv-bruyne')
+  :source.includes('voetbalprimeur.nl')
+  ?rss('PSV praat mogelijk over Kevin De Bruyne','https://www.voetbalprimeur.nl/nieuws/psv-bruyne')
+  :rss('KNVB selecteert Oranje-aanvoerder voor interland','https://nos.nl/artikel/12345');
+ const fetcher=async url=>new Response(feed(url),{status:200});
+ const first=await N.scan({fetcher,now,state:{},apiKey:'',runAI:false});
+ assert.equal(first.report.expectedScanMinutes,15);
+ assert.equal(first.report.newSignals,3);
+ assert.equal(first.report.detectionLatency.count,3);
+ assert.equal(first.report.aiCalls,0);
+ const second=await N.scan({fetcher,now:now+15*60000,state:first.state,apiKey:'',runAI:false});
+ assert.equal(second.report.newSignals,0);
+ assert.equal(second.report.detectionLatency.count,0);
+ assert.equal(second.report.detectionLatency.p95Minutes,null);
+ assert.equal(second.report.publicationAttempts,0);
+});
 test('101 every scout respects daily AI cap and no model key means zero paid requests',async()=>{
  assert.equal(N.dailyBudget({day:'2026-11-19',aiCallsToday:10},now),0);
  assert.equal(N.dailyBudget({day:'2026-11-18',aiCallsToday:100},now),10);
