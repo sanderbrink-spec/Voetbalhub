@@ -9,7 +9,8 @@ const catalog=require('../image-library49.json').assets;
 const images=require('../image-library49');
 const premium=require('../premium-match-images72');
 test('110B exact source image bytes imported but approval remains pending',()=>{
- assert.equal(staging.items.length,1);
+ assert.equal(staging.items.length,2);
+ assert.deepEqual(staging.items.map(x=>x.fixtureId).sort(),['sm-19714592','sm-19715868']);
  assert.doesNotThrow(()=>images.validate(catalog));
  for(const item of staging.items){
   assert.match(item.fixtureId,/^sm-\d+$/);
