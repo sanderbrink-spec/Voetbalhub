@@ -53,3 +53,12 @@ test('the independent facts audit must never treat an ISO date as a football sco
  },rich.verifiedFacts);
  assert.ok(issues.some(x=>x.includes('Uitslag of tussenstand wijkt af')),issues.join(' | '));
 });
+
+test('106C: writing and revision require exact verified names and club relations',()=>{
+ for(const prompt of [guide.writingPrompt(rich),guide.revisionPrompt(rich)]){
+  assert.match(prompt,/volledige, letterlijk bewezen naam/);
+  assert.match(prompt,/Willem II-speler/);
+  assert.match(prompt,/uitsluitend als verifiedFacts die relatie daadwerkelijk bevestigt/);
+ }
+ assert.match(guide.revisionPrompt(rich),/namenafwijzing/);
+});
