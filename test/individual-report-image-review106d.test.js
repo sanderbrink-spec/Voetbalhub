@@ -48,7 +48,9 @@ test('106D plausible concepts are not falsely promoted to final legal or visual 
  for(const entry of review.withheld){
   assert.equal(entry.recommendation,'hold_for_rework',entry.id);
   assert.ok(entry.reason.length>45,entry.id);
-  if(['veldio73-telstar-report-evening','veldio74-az-report','veldio74-goaheadeagles-report'].includes(entry.id))
+  if(['veldio73-telstar-report-evening','veldio74-goaheadeagles-report'].includes(entry.id))
    assert.match(entry.reason,/Historisch herstelpunt/,entry.id);
+  if(entry.id==='veldio74-az-report')
+   assert.match(entry.reason,/AFAS Stadion.*feitelijk correct/,entry.id);
  }
 });
