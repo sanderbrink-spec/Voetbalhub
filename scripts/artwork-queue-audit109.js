@@ -25,6 +25,21 @@ function verifiedFixture(row,matchId){
   source:row.evidenceSource,verifiedAt:row.verifiedAt
  };
 }
+// Convert only the verified final results returned by Veldio's protected
+// first-party Sportmonks endpoint; publisher headlines are not fixture proof.
+// No endpoint secret, statistics, source text, or draft body is persisted.
+function sportmonksEvidence(response){
+ if(response?.source!=='Sportmonks Football API'||response?.status!=='available'||
+   response?.competition!=='eredivisie'||!Array.isArray(response.fixtures)||
+   response.fixtures.length>500)return [];
+ return response.fixtures.filter(f=>f?.status==='FT'&&
+   f?.resultSource==='Sportmonks Football API'&&typeof f.id==='string'&&
+   /^sm-\d+$/.test(f.id)&&typeof f.home?.name==='string'&&
+   typeof f.away?.name==='string'&&dateMs(f.date)&&dateMs(f.checkedAt))
+ .map(f=>({id:f.id,homeTeam:f.home.name,awayTeam:f.away.name,
+  competition:'Eredivisie',playedAt:f.date,verifiedAt:f.checkedAt,
+  evidenceSource:'Sportmonks'}));
+}
 function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
  const records=Array.isArray(queue)?queue:queue?.records;
  if(!Array.isArray(records)||!Array.isArray(assets)||!Array.isArray(fixtureEvidence))throw Error('Ongeldige auditinvoer.');
@@ -73,17 +88,18 @@ function auditQueue(queue,assets,fixtureEvidence=[],now=Date.now()){
 function main(argv=process.argv.slice(2)){
  const opts={};
  for(let i=0;i<argv.length;i+=2){
-  if(!['--queue','--fixtures','--out'].includes(argv[i])||!argv[i+1]||opts[argv[i]])throw Error('Gebruik --queue PATH [--fixtures PATH] [--out PATH]');
+  if(!['--queue','--fixtures','--sportmonks','--out'].includes(argv[i])||!argv[i+1]||opts[argv[i]])throw Error('Gebruik --queue PATH [--fixtures PATH | --sportmonks PATH] [--out PATH]');
   opts[argv[i].slice(2)]=argv[i+1];
  }
  if(!opts.queue)throw Error('--queue vereist');
  const read=p=>JSON.parse(fs.readFileSync(path.resolve(p),'utf8'));
- const r=auditQueue(read(opts.queue),require('../image-library49.json').assets,
-   opts.fixtures?read(opts.fixtures):[]);
+ if(opts.fixtures&&opts.sportmonks)throw Error('Eén bewijsbron per auditaanroep');
+ const evidence=opts.fixtures?read(opts.fixtures):opts.sportmonks?sportmonksEvidence(read(opts.sportmonks)):[];
+ const r=auditQueue(read(opts.queue),require('../image-library49.json').assets,evidence);
  if(opts.out)fs.writeFileSync(path.resolve(opts.out),JSON.stringify(r,null,2)+'\n');
  process.stdout.write(JSON.stringify({artworkRetries:r.artworkRetries,classified:r.classified,
   output:opts.out||'stdout_only'})+'\n');
  return r;
 }
 if(require.main===module){try{main();}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={auditQueue,verifiedFixture,main};
+module.exports={auditQueue,verifiedFixture,sportmonksEvidence,main};
