@@ -21,7 +21,7 @@ function verifiedTeamStatistics(row,homeId,awayId){
     !records.some(stat=>stat.participant_id===homeId)||
     !records.some(stat=>stat.participant_id===awayId))continue;
   const number=value=>{
-   if(typeof value==='string'&&/^\\d{1,3}(?:\\.\\d{1,2})?$/.test(value))value=Number(value);
+   if(typeof value==='string'&&/^\d{1,3}(?:\.\d{1,2})?$/.test(value))value=Number(value);
    return typeof value==='number'&&Number.isFinite(value)?value:null;
   };
   const home=number(records.find(stat=>stat.participant_id===homeId)?.data?.value);
