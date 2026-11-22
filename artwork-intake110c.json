@@ -36,15 +36,16 @@
         1280,
         720
       ],
-      "webpSha256": "70b1b96825275c1c41f3baacbb6e0989632822801c3ccd6da34f28a98ffaa9bb",
+      "webpSha256": "1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef",
       "suggestedRepoPath": "public/match-covers110/sm-19722098-hull-brighton-day.webp",
       "caption": "AI-illustratie bij Hull City – Brighton & Hove Albion, geen echte wedstrijdfoto.",
       "illustratedVenue": "fictief stadionbeeld, geen exacte locatieclaim",
       "sourceInputImagesUsed": false,
-      "status": "source_generated_not_in_repository",
+      "status": "uploaded_repo_pending_review",
       "rightsStatus": "requires_exact_file_origin_and_commercial_rights_review",
       "qualityStatus": "requires_independent_full_resolution_8_5_review",
-      "approval": "pending"
+      "approval": "pending",
+      "derivativeInfo": "Nieuwe RGB WEBP-conversie van exact eerder geregistreerde PNG, Pillow resize 1280x720 LANCZOS, quality=85, method=4; eerdere niet-geimporteerde WEBP-hash uit 110C vervangen door daadwerkelijk overgedragen bestand."
     }
   ]
 }

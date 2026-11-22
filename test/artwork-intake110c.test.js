@@ -19,17 +19,19 @@ const audit=(entry,classification='requires_new_original_artwork')=>({
   fixtureSource:entry.fixtureSource,classification
  }]
 });
-test('110C independently verified, non-imported image remains staged and never approved',()=>{
+test('110D exact Hull–Brighton WEBP import is pending independent review and never approved',()=>{
  const r=Intake.validate(Batch,audit(hull),Catalog,repo);
  assert.equal(r.artworks.length,1);
- assert.equal(r.artworks[0].status,'awaiting_exact_binary_import');
- assert.deepEqual(r.summary,{awaiting_exact_binary_import:1});
+ assert.equal(r.artworks[0].status,'ready_for_independent_review');
+ assert.deepEqual(r.summary,{ready_for_independent_review:1});
  assert.equal(r.safety.approvesImages,false);
  assert.equal(r.safety.publishesArticles,false);
  assert.equal(r.safety.approvalThreshold,8.5);
  assert.equal(r.artworks[0].fixtureId,'sm-19722098');
  assert.equal(r.artworks[0].classification,'requires_new_original_artwork');
- assert.ok(!fs.existsSync(path.join(repo,hull.suggestedRepoPath)));
+ assert.ok(fs.existsSync(path.join(repo,hull.suggestedRepoPath)));
+ assert.equal(Intake.sha256(fs.readFileSync(path.join(repo,hull.suggestedRepoPath))),hull.webpSha256);
+ assert.equal(Catalog.find(x=>x.fixtureId===hull.fixtureId).approval,'pending');
 });
 test('110C reject changed opponent, daytime, source or unsafe destination',()=>{
  for(const change of [
@@ -41,7 +43,7 @@ test('110C reject changed opponent, daytime, source or unsafe destination',()=>{
  for(const change of [
   {webpSha256:'bad'},
   {webpFilename:'../escape.webp'}, {suggestedRepoPath:'../escape.webp'},
-  {approval:'approved'}, {status:'uploaded_repo_pending_review'}, {sourceInputImagesUsed:true}
+  {approval:'approved'}, {status:'approved'}, {sourceInputImagesUsed:true}
  ]){
   assert.throws(()=>Intake.validate({...Batch,artworks:[{...hull,...change}]},audit(hull),Catalog,repo));
  }
@@ -73,9 +75,22 @@ test('110C a fixture outside the current source window cannot pass as verified a
  assert.equal(p.artworks[0].status,'missing_current_fixture_evidence');
  assert.equal(p.safety.approvesImages,false);
 });
-test('110C stale unimported images are deprioritized even with archived fixture evidence',()=>{
+test('110D stale but verified imported binary remains pending review, not publication',()=>{
  const old=audit(hull);old.generatedAt='2026-11-25T22:16:37.441Z';
  const p=Intake.validate(Batch,old,Catalog,repo);
- assert.equal(p.artworks[0].status,'archived_source_not_priority');
+ assert.equal(p.artworks[0].status,'ready_for_independent_review');
  assert.equal(p.safety.publishesArticles,false);
+});
+
+test('110D an uploaded declaration without actual bytes or exact pending registration must fail closed',()=>{
+ const otherAssets=Catalog.filter(x=>x.fixtureId!==hull.fixtureId);
+ assert.throws(()=>Intake.validate(Batch,audit(hull),otherAssets,repo),/catalogusregistratie/);
+ const wrongRoot=path.resolve(repo,'missing-artwork110d');
+ assert.throws(()=>Intake.validate(Batch,audit(hull),Catalog,wrongRoot),/beeldbestand ontbreekt/);
+});
+test('110D imported fixture is recognized as pending exact review in production audit',()=>{
+ const r=Intake.validate(Batch,audit(hull,'pending_exact_fixture_review'),Catalog,repo);
+ assert.equal(r.artworks[0].status,'ready_for_independent_review');
+ assert.equal(r.safety.approvesImages,false);
+ assert.equal(r.safety.publishesArticles,false);
 });

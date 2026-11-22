@@ -8,9 +8,9 @@ const staging=require('../artwork-staging110.json');
 const catalog=require('../image-library49.json').assets;
 const images=require('../image-library49');
 const premium=require('../premium-match-images72');
-test('110B exact source image bytes imported but approval remains pending',()=>{
- assert.equal(staging.items.length,2);
- assert.deepEqual(staging.items.map(x=>x.fixtureId).sort(),['sm-19714592','sm-19715868']);
+test('110B/110D exact source image bytes imported but approval remains pending',()=>{
+ assert.equal(staging.items.length,3);
+ assert.deepEqual(staging.items.map(x=>x.fixtureId).sort(),['sm-19714592','sm-19715868','sm-19722098']);
  assert.doesNotThrow(()=>images.validate(catalog));
  for(const item of staging.items){
   assert.match(item.fixtureId,/^sm-\d+$/);
@@ -31,6 +31,6 @@ test('110B exact source image bytes imported but approval remains pending',()=>{
   assert.equal(premium.accepted(asset),false);
   const bytes=fs.readFileSync(path.resolve(__dirname,'..',asset.file));
   assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),item.webpSha256);
-  assert.match(item.nextAction,/eindcontrole|goedkeuring/i);
+  assert.match(item.nextAction,/eindcontrole|goedkeuring|vrijgave/i);
  }
 });
