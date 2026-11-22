@@ -10,7 +10,7 @@ const names={
  'adodenhaag':['Werktalent Stadion','Bingoal Stadion','Cars Jeans Stadion'],
  'ajax':['Johan Cruijff Arena','Amsterdam Arena'],
  'az':['AFAS Stadion'],
- 'excelsiorrotterdam':['Van Donge & De Roo Stadion','Woudestein','Stadion Woudestein'],
+ // From 2025/26 the official name is again Woudestein; the former sponsor\n // name Van Donge & De Roo must not validate a CURRENT fixture venue.\n 'excelsiorrotterdam':['Woudestein','Stadion Woudestein'],
  'fcgroningen':['Euroborg'],
  'fctwente':['De Grolsch Veste','Grolsch Veste'],
  'fcutrecht':['Stadion Galgenwaard','Galgenwaard'],
