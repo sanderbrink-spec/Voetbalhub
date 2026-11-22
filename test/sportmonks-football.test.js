@@ -136,7 +136,7 @@ test('98S recent-only Sportmonks feed accepts a verified small match window with
   const u=new URL(url);
   assert.equal(u.hostname,'api.sportmonks.com');
   assert.equal(u.searchParams.get('filters'),'fixtureLeagues:72');
-  assert.equal(u.searchParams.get('include'),'participants;scores;round;events;statistics');
+  assert.equal(u.searchParams.get('include'),'participants;scores;round;events;statistics;venue');
   assert.equal(u.searchParams.get('page'),'1');
   return new Response(JSON.stringify({data:[recent,upcoming,old,invalidScore],pagination:{has_more:false}}));
  }});
@@ -158,4 +158,27 @@ test('98S recent-only window rejects foreign leagues and incomplete pagination',
  }));}}),/paginering onvolledig/);
  assert.equal(calls,3);
  await assert.rejects(SM.loadRecent({token:'',now,sourceBody:async r=>r.text()}),/niet geconfigureerd/);
+});
+
+test('109C stadium coordinates need matching venue_id and valid Sportmonks venue fields',()=>{
+ const stadium={id:1001,name:'De Grolsch Veste',latitude:'52.237000',longitude:'6.837000'};
+ const source={...match(1789),venue_id:1001,venue:stadium};
+ const fixture=SM.parseFixture(source,'eredivisie',now);
+ assert.deepEqual(fixture.venue,{id:1001,name:'De Grolsch Veste',latitude:52.237,longitude:6.837});
+ assert.equal(fixture.venueName,'De Grolsch Veste');
+ assert.equal(fixture.venueId,1001);
+ for(const variant of [
+  {...source,venue_id:1002},
+  {...source,venue:{...stadium,latitude:'wrong'}},
+  {...source,venue:{...stadium,latitude:'-91.0'}},
+  {...source,venue:{...stadium,longitude:'181'}},
+  {...source,venue:{...stadium,name:'x'}},
+  {...source,venue:{...stadium,latitude:'0',longitude:'0'}},
+  {...source,venue:null}
+ ]){
+  const invalid=SM.parseFixture(variant,'eredivisie',now);
+  assert.equal(invalid.venue,undefined);
+  assert.equal(invalid.venueId,undefined);
+  assert.equal(invalid.venueName,undefined);
+ }
 });
