@@ -1,0 +1,81 @@
+name: Artwork queue evidence audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/artwork-queue-audit109.js'
+      - '.github/workflows/artwork-queue-audit109.yml'
+  schedule:
+    - cron: '47 8 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: artwork-audit109
+  cancel-in-progress: false
+jobs:
+  evidence-audit:
+    if: github.repository == 'sanderbrink-spec/Voetbalhub'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned project dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Test queue audit safety invariants
+        run: node --test test/artwork-queue-audit109.test.js
+      - name: Retrieve editorial queue without exposing encrypted drafts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .automatic-output
+          git fetch --no-tags --depth=1 origin editorial-media
+          git show FETCH_HEAD:editorial-queue45.json > .automatic-output/private-queue.tmp
+      - name: Obtain only verified recent Eredivisie finals through existing Render integration
+        env:
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # User approved one Sportmonks month, not ongoing paid data use.
+          if [[ -z "${HUB_API_SECRET:-}" || "$(date -u +%Y%m%d)" -ge 20261222 ]]; then
+            echo "No verified Sportmonks integration enabled for this audit."
+            exit 0
+          fi
+          if ! curl --fail --silent --show-error --max-time 45 \
+            -H "Authorization: Bearer ${HUB_API_SECRET}" \
+            'https://voetbalhub-redactie.onrender.com/editorial-sportmonks-recent?competition=eredivisie' \
+            -o .automatic-output/private-sportmonks.tmp; then
+            rm -f .automatic-output/private-sportmonks.tmp
+            echo "::warning::Sportmonks snapshot unavailable; audit will mark unknown matches as unresolved."
+          fi
+      - name: Produce read-only evidence-gap report
+        shell: bash
+        run: |
+          set -euo pipefail
+          trap 'rm -f .automatic-output/private-queue.tmp .automatic-output/private-sportmonks.tmp' EXIT
+          args=(--queue .automatic-output/private-queue.tmp --out .automatic-output/artwork-audit109.json)
+          if [[ -f .automatic-output/private-sportmonks.tmp ]]; then
+            args+=(--sportmonks .automatic-output/private-sportmonks.tmp)
+          fi
+          node scripts/artwork-queue-audit109.js "${args[@]}"
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const a=JSON.parse(fs.readFileSync('.automatic-output/artwork-audit109.json','utf8'));
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+            '## Veldio artwork audit 109A\n\n'+
+            '- Vastgelopen beeldtaken: '+a.artworkRetries+'\n'+
+            '- Zonder verifieerbare wedstrijdsnapshot: '+a.blockedWithoutVerifiedFixture+'\n'+
+            '- Automatisch goedgekeurd: **0**\n'+
+            '- Bericht: alleen bewijsadministratie; geen inhoud of beeld vrijgegeven.\n');
+          NODE
+      - name: Upload sanitized audit (never upload sealed draft checkpoints)
+        uses: actions/upload-artifact@v4
+        with:
+          name: veldio-artwork-evidence-audit
+          path: .automatic-output/artwork-audit109.json
+          if-no-files-found: error
+          retention-days: 14
