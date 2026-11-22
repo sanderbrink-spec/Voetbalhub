@@ -53,6 +53,22 @@ test('Fase 82: alle acht bekende risicobeelden blijven buiten individuele vrijga
  assert.equal(Object.keys(findings).length,8);
  for(const id of Object.keys(findings))assert.throws(()=>reviewTool.verify(syntheticDossier(id)),/Bekend herstelprobleem/);
 });
+test('106D-2 a rejected full-resolution quality score cannot be overwritten for the same hash',()=>{
+ const desk=require('../stadium-desk74').overview();
+ for(const [id,score] of [['veldio74-fcgroningen-report',8],['veldio75-sccambuur-report',7.5]]){
+  const asset=rows.find(a=>a.id===id);
+  assert.equal(asset.approval,'pending');
+  const slot=desk.slots.find(s=>s.pendingAssetIds.includes(id));
+  const item=slot.pendingImages.find(a=>a.id===id);
+  assert.equal(item.fullResolutionAssessment.score,score);
+  assert.equal(item.qualityStatus,'requires-replacement');
+  assert.equal(item.canRequestApproval,false);
+  assert.match(item.reviewBlockReason,/Nieuw beeld vereist/);
+  // Even a fabricated high rating and every checkbox must not override the
+  // older exact-SHA failed assessment.
+  assert.throws(()=>reviewTool.verify(syntheticDossier(id)),/Eerdere volledige-resolutiebeoordeling onder 8,5/);
+ }
+});
 test('Fase 82: reviewdossier en UI blijven individueel, niet als batch of automatische goedkeuring',()=>{
  const fs=require('node:fs'),path=require('node:path');
  const js=fs.readFileSync(path.join(__dirname,'../public/desk.js'),'utf8');

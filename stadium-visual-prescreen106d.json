@@ -2,7 +2,7 @@
   "schemaVersion": 106,
   "createdAt": "2026-11-22",
   "scope": "18 original AI report-image concepts currently awaiting independent final approval",
-  "method": "Visual AI prescreen of exact repository WEBP bytes; no independent human verification or legal opinion. Prior unresolved phase-79 warnings override candidate status; no prior safety finding is dismissed based on AI-only screening.",
+  "method": "Visual AI prescreen of exact repository WEBP bytes; no independent human verification or legal opinion. Prior unresolved phase-79 warnings override candidate status; no prior safety finding is dismissed based on AI-only screening. Existing exact-SHA full-resolution assessments under 8.5 always overrule newer preliminary AI scores. These images cannot be approved unchanged.",
   "approvalGranted": 0,
   "finalIndependentReviewCompleted": 0,
   "requirement": "A human must inspect each exact SHA256 asset, verify provenance/rights/stadium context and complete scripts/stadium-approval82.js individual review. No bulk approval; unresolved historical repair findings must be addressed before acceptance.",
@@ -13,19 +13,6 @@
     "No publishing without article fact/rights/image checks"
   ],
   "candidates": [
-    {
-      "id": "veldio74-fcgroningen-report",
-      "file": "public/stadium74/fcgroningen-report.webp",
-      "sha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
-      "club": "FC Groningen",
-      "kind": "report",
-      "preliminaryVisualScore": 9,
-      "sceneDaypart": "night",
-      "sceneAudience": "full",
-      "recommendation": "human_review_candidate",
-      "visualFindings": "Groen-witte volle tribunes, Euroborg-achtige overkapping, heldere AI-disclaimer.",
-      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
-    },
     {
       "id": "veldio74-fctwente-report",
       "file": "public/stadium74/fctwente-report.webp",
@@ -102,19 +89,6 @@
       "sceneAudience": "full",
       "recommendation": "human_review_candidate",
       "visualFindings": "Volle rood-witte tribunes bij avondschemer en uitsluitend Veldio-promotie duidelijk herkenbaar.",
-      "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
-    },
-    {
-      "id": "veldio75-sccambuur-report",
-      "file": "public/stadium75/sccambuur-report.webp",
-      "sha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
-      "club": "SC Cambuur",
-      "kind": "report",
-      "preliminaryVisualScore": 8.7,
-      "sceneDaypart": "twilight",
-      "sceneAudience": "full",
-      "recommendation": "human_review_candidate",
-      "visualFindings": "Geel-blauwe tribunes en SC Cambuur-tekst in avondsfeer, zonder duidelijk officieel embleem.",
       "rightsMetadata": "Repository says original-ai; independent human confirmation of origin and any third-party marks still required."
     },
     {
@@ -222,6 +196,28 @@
       "reason": "Historisch herstelpunt in stadium-review-findings79.json: Adelaarshorst-tribunevorm en rood-gele clubidentiteit niet onafhankelijk geverifieerd.",
       "preliminaryVisualScore": 8.7,
       "sceneDaypart": "night"
+    },
+    {
+      "id": "veldio74-fcgroningen-report",
+      "file": "public/stadium74/fcgroningen-report.webp",
+      "sha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
+      "club": "FC Groningen",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "priorIndependentScore": 8,
+      "priorSource": "stadium-screening84.json, exact SHA256",
+      "reason": "Bestaande volledige-resolutiebeoordeling geeft 8/10 voor exact dit bestand, lager dan de publicatiegrens van 8,5. Een latere AI-screening kan dit niet overrulen. Herstel originele illustratie en bewijs herkomst voor nieuwe controle."
+    },
+    {
+      "id": "veldio75-sccambuur-report",
+      "file": "public/stadium75/sccambuur-report.webp",
+      "sha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
+      "club": "SC Cambuur",
+      "kind": "report",
+      "recommendation": "hold_for_rework",
+      "priorIndependentScore": 7.5,
+      "priorSource": "stadium-screening84.json, exact SHA256",
+      "reason": "Bestaande volledige-resolutiebeoordeling geeft 7,5/10 voor exact dit bestand, lager dan de publicatiegrens van 8,5. Een latere AI-screening kan dit niet overrulen. Herstel originele illustratie en bewijs herkomst voor nieuwe controle."
     }
   ]
 }

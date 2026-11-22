@@ -393,6 +393,10 @@ $('loadStadiumReview').onclick=async()=>{
     const stage=document.createElement('p');stage.className='muted';
     stage.textContent=asset.reviewPriority==='first-review'?'Prioriteit 1: afzonderlijke eindcontrole vereist vóór publicatie.':'Prioriteit 2: eerst herstellen, vervolgens opnieuw beoordelen.';
     card.appendChild(stage);
+    if(asset.reviewBlockReason){
+     const block=document.createElement('p');block.className='warn';
+     block.textContent='Niet vrijgeven: '+asset.reviewBlockReason;card.appendChild(block);
+    }
     if(asset.knownIssue){
      const warning=document.createElement('p');warning.className='warn';
      warning.textContent='Extra controle ('+asset.knownIssue.level+'): '+asset.knownIssue.reason;

@@ -11,8 +11,8 @@ const approvals=require('../scripts/stadium-approval82');
 const data=require('../image-library49.json');
 
 test('106D exact per-image prescreen records 10 candidates and 8 held risks without release',()=>{
- assert.equal(review.candidates.length,10);
- assert.equal(review.withheld.length,8);
+ assert.equal(review.candidates.length,8);
+ assert.equal(review.withheld.length,10);
  assert.equal(review.approvalGranted,0);
  assert.equal(review.finalIndependentReviewCompleted,0);
  const ids=[...review.candidates,...review.withheld].map(x=>x.id);
