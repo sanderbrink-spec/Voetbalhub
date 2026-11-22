@@ -67,3 +67,42 @@ test('109A only actual artwork-stage retries are considered and counters are con
  assert.equal(Object.values(r.classified).reduce((a,b)=>a+b,0),1);
  assert.deepEqual(Object.keys(r.rows[0]).filter(k=>/secret|checkpoint|urls/.test(k)),[]);
 });
+
+test('109A protected provider response is sanitized to independently checked Eredivisie finals',()=>{
+ const base={source:'Sportmonks Football API',status:'available',competition:'eredivisie'};
+ const f={id:'sm-19714594',status:'FT',resultSource:'Sportmonks Football API',
+  home:{name:'FC Utrecht'},away:{name:'NEC Nijmegen'},
+  date:'2026-11-21T19:00:00.000Z',checkedAt:'2026-11-22T19:00:00.000Z',
+  verifiedStats:{shots:{home:9,away:12}},
+  securityToken:'must-never-appear'};
+ const converted=audit.sportmonksEvidence({...base,fixtures:[f,
+  {...f,id:'sm-999',status:'LIVE'},
+  {...f,id:'sm-123',resultSource:'unverified'},
+  {...f,id:'sm-124',date:'not-a-date'}]});
+ assert.equal(converted.length,1);
+ assert.deepEqual(converted[0],{
+  id:'sm-19714594',homeTeam:'FC Utrecht',awayTeam:'NEC Nijmegen',
+  playedAt:'2026-11-21T19:00:00.000Z',
+  verifiedAt:'2026-11-22T19:00:00.000Z',
+  competition:'Eredivisie',evidenceSource:'Sportmonks'
+ });
+ assert.ok(!JSON.stringify(converted).includes('securityToken'));
+ assert.ok(!JSON.stringify(converted).includes('must-never-appear'));
+ const matching=audit.auditQueue([job('sm-19714594')],assets,converted,now);
+ assert.equal(matching.rows[0].classification,'approved_match_available');
+ assert.ok(matching.rows[0].approvedAssetIds.includes('veldio72-utrecht-nec-report'));
+});
+test('109A unverified provider status, wrong competition and unsafe payload never authenticate fixture context',()=>{
+ const base={source:'Sportmonks Football API',competition:'eredivisie',status:'available',
+  fixtures:[{id:'sm-19714594',status:'FT',resultSource:'Sportmonks Football API',
+    home:{name:'FC Utrecht'},away:{name:'NEC Nijmegen'},
+    date:'2026-11-21T19:00:00Z',checkedAt:'2026-11-22T19:00:00Z'}]};
+ for(const x of [{...base,status:'source_unavailable'},
+  {...base,competition:'kkd'},{...base,source:'Unknown'},
+  {...base,fixtures:'untrusted'}]){
+  const found=audit.sportmonksEvidence(x);
+  assert.deepEqual(found,[]);
+  const result=audit.auditQueue([job('sm-19714594')],assets,found,now);
+  assert.equal(result.classified.requires_verified_fixture,1);
+ }
+});
