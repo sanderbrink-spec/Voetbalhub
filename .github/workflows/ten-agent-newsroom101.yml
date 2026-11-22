@@ -7,7 +7,8 @@ on:
       - 'scripts/ten-agent-newsroom101.js'
       - '.github/workflows/ten-agent-newsroom101.yml'
   schedule:
-    - cron: '7,37 * * * *'
+    # Light RSS discovery only; daily AI-call cap remains unchanged.
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -30,7 +31,7 @@ jobs:
         run: |
           node --test test/ten-agent-newsroom101.test.js
           node --check scripts/ten-agent-newsroom101.js
-      - name: Scan three publisher RSS feeds using ten specialist beats
+      - name: Scan three RSS feeds with ten specialist beats and deduplicate leads
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
