@@ -1,6 +1,11 @@
 name: Artwork queue evidence audit
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/artwork-queue-audit109.js'
+      - '.github/workflows/artwork-queue-audit109.yml'
   schedule:
     - cron: '47 8 * * *'
 permissions:
