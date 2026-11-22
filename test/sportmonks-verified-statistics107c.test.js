@@ -70,7 +70,7 @@ test('107C: rich stats use the same bounded recent-fixture API request',async()=
   sourceBody:async response=>JSON.stringify(response.data),
   fetcher:async url=>{
    calls++;
-   assert.match(url,/api\\.sportmonks\\.com/);
+   assert.match(url,/api\.sportmonks\.com/);
    const includes=new URL(url).searchParams.get('include').split(';');
    assert.ok(includes.includes('statistics'));
    assert.ok(includes.includes('events'));
