@@ -24,6 +24,12 @@ function soleRegisteredGoal(sentence,goals){
 // ambiguous here unless a separate exact event check resolves it.
 function namedScoringEvents(text,goals){
  if(!/\b(?:scoor\w*|doelpunt\w*|treffer\w*|maakte|gelijk\w*|voorsprong|opende|winnende)\b/iu.test(text))return [];
+ // An explicit score in the clause must match a sourced event and player.
+ // Never scrub an unsupported result (e.g. 8-4) while removing an interval.
+ const statedScores=[...text.matchAll(/(?<!\d)(\d{1,2})\s*[-–‑]\s*(\d{1,2})(?!\d)/gu)]
+  .map(m=>Number(m[1])+'-'+Number(m[2]));
+ if(statedScores.some(score=>!goals.some(g=>g.home+'-'+g.away===score&&
+    text.toLocaleLowerCase('nl').includes(g.player.toLocaleLowerCase('nl')))))return [];
  const events=[];
  for(const goal of goals){
   if(goals.filter(g=>g.player===goal.player).length!==1)continue;
