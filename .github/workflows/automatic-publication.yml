@@ -111,6 +111,10 @@ jobs:
         if: ${{ always() && hashFiles('scripts/editorial-desk-diagnostic111.js') != '' }}
         run: node scripts/editorial-desk-diagnostic111.js .automatic-output/report.json .automatic-output/desk-diagnostic111.json
 
+      - name: Audit trained scout handoffs and independent editorial scores (112D, read-only)
+        if: ${{ always() && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[validate-editorial-generation]')) || (github.event_name == 'workflow_dispatch' && inputs.validation_only)) }}
+        run: node scripts/editorial-desk-evaluation112d.js .automatic-output/report.json .automatic-output/desk-evaluation112d.json
+
       - name: Keep editorial run report
         if: always()
         uses: actions/upload-artifact@v4
