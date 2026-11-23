@@ -18,7 +18,7 @@ function matchScoutHandoff(group,notes,now=Date.now()){
     !Array.isArray(group.agents)||!Array.isArray(notes))return null;
  const urls=new Set(group.sources.map(s=>s?.url).filter(u=>typeof u==='string'&&u.startsWith('https://')));
  const candidates=notes.filter(n=>{
-  if(!n||n.groupKey!==group.id||!group.agents.includes(n.agentId)||
+  if(!n||!/^[a-f0-9]{24}$/.test(String(n.groupKey||''))||!group.agents.includes(n.agentId)||
      n.status!=='analysis_only_unverified'||n.verified!==false||
      n.publicationAllowed!==false||!Array.isArray(n.subjects)||
      n.subjects.length===0||n.subjects.some(url=>!urls.has(url)))return false;
@@ -35,7 +35,8 @@ function matchScoutHandoff(group,notes,now=Date.now()){
   if(!questions.length)continue;
   return {
    kind:'unverified_scout_questions_only',
-   groupKey:group.id,agentId:n.agentId,at:n.at,
+   groupKey:group.id,originalGroupKey:n.groupKey,agentId:n.agentId,at:n.at,
+   sourceMatchMode:n.groupKey===group.id?'exact_dossier_and_sources':'exact_sources_after_dossier_regrouping',
    questions,sourceUrls:[...new Set(n.subjects)],
    sourceEvidenceVerified:false,
    originalReporterIndependenceVerified:false,
