@@ -3,6 +3,7 @@
 const {buildStoryStrategy} = require('../editorial-newsroom-strategy103');
 const {articleUrl} = require('./editorial-discovery53');
 const {AGENTS, isRumour, classifyLeads} = require('./ten-agent-newsroom101');
+const {buildScoutHandoffs}=require('./editorial-scout-handoff112');
 const config = require('../automatic-editorial.json');
 const league = 'https://eredivisie.nl/nieuws/vooruitblik-speelronde-';
 const clubSites = {
@@ -102,7 +103,7 @@ function investigate(f,club,organiser,now,plain) {
  if(!ledger.some(row=>row.newFromCompetition))return;
  return {group:Object.assign(docs,{clubPreview:candidate}),ledger,gaps};
 }
-async function research({fixtures,docs,matchGroups,leads,now,loadRound,plain,validate,artwork,published=[]}) {
+async function research({fixtures,docs,matchGroups,leads,researchNotes=[],now,loadRound,plain,validate,artwork,published=[]}) {
  const topics=[],groups=[],seen=new Set(),rounds=new Map();
  let deep=0;
  const upcoming=fixtures.filter(f=>f.competition==='eredivisie'&&f.status==='NS'&&f.home?.name&&f.away?.name&&
@@ -110,6 +111,8 @@ async function research({fixtures,docs,matchGroups,leads,now,loadRound,plain,val
  const currentLeads=leads.filter(s=>fresh(s,now)&&typeof s.title==='string'&&typeof s.url==='string');
  const scoutTopics=[];
  const classified=classifyLeads(currentLeads);
+ const scoutHandoffs=buildScoutHandoffs(classified.groups,researchNotes,now);
+ const questionHandoffByGroup=new Map(scoutHandoffs.map(x=>[x.groupKey,x]));
  const beats=new Set(),usedPersons=new Set();
  for(const g of classified.groups){
   // A briefing on a match is already covered by its fixture dossier.
@@ -122,6 +125,8 @@ async function research({fixtures,docs,matchGroups,leads,now,loadRound,plain,val
   const sources=g.sources.map(s=>s.url);
   const relevant=docs.filter(d=>fresh(d,now)&&tokens.filter(t=>normalize(d.title).includes(t)).length>=2);
   scoutTopics.push({topic:g.subject,sources,scouts:g.agents,primaryCandidates:relevant.map(d=>d.url),
+   ...(questionHandoffByGroup.has(g.id)?{researchQuestions:questionHandoffByGroup.get(g.id).questions,
+    questionsAreUnverified:true,questionSourceIds:questionHandoffByGroup.get(g.id).sourceUrls}:{}),
    status:g.rumour?'attributed_unconfirmed':'no_verified_transfer_decision'});
   beats.add(beat);tokens.forEach(t=>usedPersons.add(t));
   if(scoutTopics.length===3)break;
@@ -169,6 +174,7 @@ async function research({fixtures,docs,matchGroups,leads,now,loadRound,plain,val
   topics.push({topic:m.topic,fixtureId:m.matchId,sources:m.sources.map(s=>s.url),verifiedFacts:m.verifiedFacts.length,
    status:artwork(group,{},m.topic).approved?'verified_match':'awaiting_approved_artwork'});
  }
- return {topics,groups,deep};
+ // Read-only scout questions do not create publication candidates or verified facts.
+ return {topics,groups,deep,scoutHandoffs,scoutHandoffCount:scoutHandoffs.length};
 }
 module.exports={research,investigate,clubEvidence,competitionEvidence};

@@ -2683,14 +2683,18 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(['available','cached'].includes(calendar.status))eredivisieFixtures=calendar.fixtures||[];
    }catch(error){report.sourceErrors.push({source:'Eredivisieprogramma',error:error.message});}
   }
-  let leads=[];
-  try{leads=(await require('./ten-agent-newsroom101').readState({token:githubToken,fetcher})).state.leads||[];}
+  let leads=[],researchNotes=[];
+  try{const scoutState=(await require('./ten-agent-newsroom101').readState({token:githubToken,fetcher})).state;
+   leads=Array.isArray(scoutState.leads)?scoutState.leads:[];
+   researchNotes=Array.isArray(scoutState.researchNotes)?scoutState.researchNotes:[];}
   catch(error){report.sourceErrors.push({source:'Tien nieuwsagents',error:error.message});}
   const research=await require('./eredivisie-research103b').research({
-   fixtures:eredivisieFixtures,docs:discovered,matchGroups,leads,now,
+   fixtures:eredivisieFixtures,docs:discovered,matchGroups,leads,researchNotes,now,
    loadRound:url=>officialPage(url,fetcher),plain,validate:validateEvidence,artwork:preflightArtwork,published
   });
-  report.dossierResearch={topics:research.topics,deep:research.deep};
+  report.dossierResearch={topics:research.topics,deep:research.deep,
+   scoutHandoffs:research.scoutHandoffs||[],scoutHandoffCount:research.scoutHandoffCount||0,
+   scoutHandoffPurpose:'internal_questions_only_not_evidence'};
   const investigated=new Set(research.groups.map(group=>group[0].url));
   for(let i=groups.length-1;i>=0;i--)if(investigated.has(groups[i][0].url))groups.splice(i,1);
   groups.unshift(...research.groups);
