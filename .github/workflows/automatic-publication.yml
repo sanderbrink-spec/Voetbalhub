@@ -107,6 +107,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node scripts/automatic-publication.js
+      - name: Diagnose publication desk bottlenecks (111B, read-only)
+        if: ${{ always() && hashFiles('scripts/editorial-desk-diagnostic111.js') != '' }}
+        run: node scripts/editorial-desk-diagnostic111.js .automatic-output/report.json .automatic-output/desk-diagnostic111.json
+
       - name: Keep editorial run report
         if: always()
         uses: actions/upload-artifact@v4
