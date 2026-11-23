@@ -22,6 +22,21 @@ test('daily control catches failed, missing and stale automatic jobs',()=>{
  for(const change of [{conclusion:'failure'},{created_at:'2026-10-01T00:00:00Z'}])assert.equal(M.workflowChecks([{...run,...change}],now)[0].status,'fail');
  assert.ok(M.workflowChecks([],now).every(c=>c.status==='fail'));
 });
+test('validation-only editorial push does not masquerade as latest scheduled publication',()=>{
+ const path='.github/workflows/automatic-publication.yml';
+ const scheduled={path,status:'completed',conclusion:'success',id:101,event:'schedule',created_at:new Date(now-3600000).toISOString()};
+ const safe={...scheduled,id:102,created_at:new Date(now).toISOString(),event:'push',conclusion:'failure',
+  head_commit:{message:'112G: safe newsroom rehearsal [validate-editorial-generation]'}};
+ const result=M.workflowChecks([scheduled,safe],now).find(c=>c.id==='task.automatic-publication.yml');
+ assert.equal(result.status,'pass');
+ assert.match(result.detail,/Run 101: success/);
+ assert.equal(M.workflowChecks([safe],now)[0].status,'fail');
+ assert.match(M.workflowChecks([safe],now)[0].detail,/Geen recente afgeronde taak/);
+ const realPush={...safe,id:103,head_commit:{message:'Publish real verified news [publish-verified-news]'}};
+ assert.match(M.workflowChecks([scheduled,realPush],now)[0].detail,/Run 103: failure/);
+ const unrelatedFailed={...safe,path:'.github/workflows/eredivisie.yml'};
+ assert.match(M.workflowChecks([unrelatedFailed],now).find(c=>c.id==='task.eredivisie.yml').detail,/Run 102: failure/);
+});
 test('link probes cannot follow arbitrary/private destinations or include credentials',async()=>{
  for(const u of ['http://ajax.nl','https://127.0.0.1/a','https://ajax.nl.evil.com/a','https://name:secret@ajax.nl/a','https://ajax.nl:8080/a'])assert.equal(M.allowedLink(u),false);
  assert.equal(M.allowedLink('https://www.ajax.nl/a'),true);
