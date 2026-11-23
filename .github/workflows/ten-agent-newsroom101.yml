@@ -7,6 +7,7 @@ on:
       - 'scripts/ten-agent-newsroom101.js'
       - 'scripts/newsroom-training112.js'
       - 'test/newsroom-training112.test.js'
+      - 'test/ten-agent-single-source112b.test.js'
       - '.github/workflows/ten-agent-newsroom101.yml'
   schedule:
     # Light RSS discovery only; daily AI-call cap remains unchanged.
@@ -31,7 +32,7 @@ jobs:
           node-version: '24'
       - name: Validate ten-agent monitoring and safety policy
         run: |
-          node --test test/ten-agent-newsroom101.test.js test/newsroom-training112.test.js
+          node --test test/ten-agent-newsroom101.test.js test/newsroom-training112.test.js test/ten-agent-single-source112b.test.js
           node --check scripts/ten-agent-newsroom101.js
           node --check scripts/newsroom-training112.js
       - name: Scan three RSS feeds with ten specialist beats and deduplicate leads
