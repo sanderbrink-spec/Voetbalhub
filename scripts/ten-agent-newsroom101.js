@@ -76,7 +76,7 @@ function parseFeed(xml,source,now=Date.now(),{research=false}={}){
  });
 }
 function isRumour(title){
- return /\b(?:gerucht|geruchten|zou|zouden|mogelijk|interesse|belangstelling|contact|gesprek|bieding|bod|volgens|meldt|ontkent|ontkracht|transferspeculatie|reportedly|rumou?r|linked)\b/i.test(title);
+ return /\b(?:gerucht|geruchten|zou|zouden|mogelijk|interesse|belangstelling|contact|gesprek|bieding|bod|volgens|ontkent|ontkracht|transferspeculatie|reportedly|rumou?r|linked)\b/i.test(title);
 }
 function isContradiction(title){
  return /\b(?:ontkent|ontkracht|onjuist|niet waar|geen sprake|geen bod|geen gesprek|ontkend|verzonnen|denies|denied|ruled out|false reports)\b/i.test(title);
