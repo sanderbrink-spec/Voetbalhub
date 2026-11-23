@@ -1,10 +1,12 @@
 'use strict';
 const {repairUnsupportedGoalGap111}=require('./editorial-match-gap111');
+const {repairProofBoundMatchLanguage112F}=require('./editorial-match-copyedit112f');
 // Remove only unsupported generic "comeback" language while preserving every
 // verified goal, scorer and scoreboard receipt. This is a preflight cleanup,
 // not a waiver of the independent factual or 85/90 editorial review.
 const SCORE=/(?<![\d-])\b(\d{1,2})\s*[-–]\s*(\d{1,2})\b(?![-–]\d)/g;
 function repairUnverifiedMatchComeback(draft,record){
+ draft=repairProofBoundMatchLanguage112F(draft,record);
  draft=repairUnsupportedGoalGap111(draft,record);
  if(!draft||!Array.isArray(draft.body)||!record?.matchId||
     !['match_report','score_update'].includes(record.articleKind)||
