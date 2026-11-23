@@ -74,8 +74,10 @@
    (/^De Duitse$/.test(name)&&/\bduitsland\b/.test(known))||
    (/^De Nederlandse$/i.test(name)&&/\bnederland\b/.test(known))||
    (/^De Amerikaanse$/i.test(name)&&/\b(?:amerikaans[e]?|u s soccer|usmnt)\b/.test(known));
-  // 112G: a proved Eredivisiewedstrijd is grammar, not a person.
-  const competitionPhrasing=/^(?:(?:De|Het|Een) Eredivisie(?:wedstrijd|-wedstrijd|-speelronde)?|In de Eredivisie(?:wedstrijd|-wedstrijd|-speelronde)?)$/i;
+  // Preserve the established grammatical league phrases. Separately allow
+  // the unhyphenated compound only when Eredivisie is in verified evidence.
+  const competitionPhrasing=/^(?:(?:De|Het|Een) Eredivisie(?:-wedstrijd|-speelronde)?|In de Eredivisie(?:-wedstrijd|-speelronde)?)$/i;
+  const verifiedCompetitionCompound=name=>/^De Eredivisiewedstrijd$/i.test(name)&&/\beredivisie\b/.test(known);
   const verifiedStadiumArticle=name=>/^(?:De Johan|Het Olympiastadion)$/i.test(name)&&
    (name.toLowerCase().includes('johan')?/\bjohan cruijff arena\b/.test(known):/\bolympiastadion\b/.test(known));
   const verifiedLeagueAbbreviation=name=>/^Major League$/i.test(name)&&/\bmls\b/.test(known);
@@ -142,7 +144,7 @@
    // A club's Dutch demonym is not a new player or person. This narrowly
   // grounded alias is valid only when FC Groningen is explicitly in evidence.
   const verifiedClubDemonym=name=>name==='De Groningers'&&/\bfc groningen\b/.test(known);
-  const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!(competitionPhrasing.test(name)&&/\beredivisie\b/.test(known))&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!verifiedClubDemonym(name)&&!known.includes(normalize(name)));
+  const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedCompetitionCompound(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!verifiedClubDemonym(name)&&!known.includes(normalize(name)));
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
