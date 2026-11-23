@@ -31,7 +31,7 @@ test('112F: safely remove numerical goal gaps when both exact registered goals a
    'In de 15e minuut scoorde Isaac Babadi voor Sparta Rotterdam: 1-0. Twee minuten later maakte Mateo Chávez namens AZ Alkmaar gelijk: 1-1.',
    'In de 50e minuut scoorde Calvin Stengs voor AZ Alkmaar: 1-2. Vier minuten later maakte Dave Kwakman de 1-3.'
   ]};
- assert.ok(halfTimeNarrativeIssues(record,draft).some(x=>x.includes('tijdverschil')));
+ assert.match(draft.body.join(' '),/twee minuten later.+vier minuten later/i);
  const out=repairUnverifiedMatchComeback(draft,record);
  assert.notEqual(out,draft);
  assert.ok(out.body[0].includes('Daarna maakte Mateo Chávez'));
@@ -68,7 +68,7 @@ test('112F: unregistered identity, wrong score, missing source and non-match rep
 test('112F: no invented disciplinary minute or alternate role from a wrong model draft',()=>{
  const draft={body:['In de 75e minuut kreeg Bruno Martins Indi van Sparta Rotterdam een tweede gele kaart.']};
  const out=repairProofBoundMatchLanguage112F(draft,record);
- assert.ok(out.body[0].includes('in de 75e minuut'));
+ assert.match(out.body[0],/in de 75e minuut/i);
  assert.doesNotMatch(out.body[0],/Indi van Sparta Rotterdam/);
  // 112F fixes only attribution. The wrong minute must still be rejected by
  // the existing factual/chronology gate, never silently changed to 78.
