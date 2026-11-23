@@ -1,14 +1,27 @@
 name: Veldio editorial watchdog
 on:
+  # One checked recovery run after this watchdog fix first reaches main.
+  push:
+    branches: [main]
+    paths: ['.github/workflows/editorial-watchdog.yml']
   schedule:
     - cron: '48 * * * *'
   workflow_dispatch:
+  # Reuse the already running scouts as a heartbeat if GitHub drops cron events.
+  workflow_run:
+    workflows: ['Veldio 10 AI news scouts']
+    types: [completed]
 permissions:
   actions: write
   issues: write
   contents: read
+concurrency:
+  group: veldio-editorial-watchdog
+  cancel-in-progress: false
 jobs:
   monitor:
+    # Never run privileged recovery from a PR or an unscheduled scout push.
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'schedule' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -19,6 +32,7 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const workflow_id = 'automatic-publication.yml';
+            const {recoveryWindow} = require('./scripts/editorial-watchdog113');
             const title = '[Veldio] Automatische redactie: herhaalde uitvoeringsfouten';
             const {data} = await github.rest.actions.listWorkflowRuns({
               owner, repo, workflow_id, event: 'schedule', per_page: 20
@@ -53,11 +67,11 @@ jobs:
               // Recover a dropped GitHub schedule through the existing watchdog.
               // Never overlap a live publication run or repeatedly dispatch within 90 minutes.
               const {data:all} = await github.rest.actions.listWorkflowRuns({owner,repo,workflow_id,per_page:20});
-              const latest = all.workflow_runs[0];
-              const active = all.workflow_runs.some(run => run.status !== 'completed');
-              const recentlyStarted = latest && Date.now()-new Date(latest.created_at).getTime() < 90*60000;
-              if (!active && !recentlyStarted) {
-                await github.rest.actions.createWorkflowDispatch({owner,repo,workflow_id,ref:'main'});
+              // Ignore completed safe writing tests, but never overlap an active job.
+              const decision = recoveryWindow(all.workflow_runs);
+              if (decision.allowed) {
+                // Same broad source scope as the normal schedule, not only Sportmonks.
+                await github.rest.actions.createWorkflowDispatch({owner,repo,workflow_id,ref:'main',inputs:{sportmonks_only:'false',validation_only:'false'}});
                 core.notice('Ontbrekende planning: één vervangende redactieronde aangevraagd.');
               } else {
                 core.notice('Ontbrekende planning gesignaleerd; een recente of lopende ronde voorkomt een dubbele start.');
