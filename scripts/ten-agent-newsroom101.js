@@ -177,7 +177,9 @@ async function analyzeWithAI({group,agent,apiKey,fetcher=fetch,passages=[],prior
   'Schrijf geen voetbalfeiten, uitslagen, transferbevestiging of citaten die de titels niet letterlijk ondersteunen.',
   'Een bronpublicatie en onafhankelijk feitelijk bewijs zijn verschillend. Twee kranten kunnen dezelfde journalist citeren.',
   'Behandel elk transferbericht als ONBEVESTIGD; identificeer wat moet worden nagegaan.',
-  'Bij minstens twee verschillende mediabronnen mag je een INTERN concept schrijven over de berichtgeving zelf: kop met GERUCHT of MOGELIJK, intro met expliciete media-attributie, één korte alinea. Beschrijf de onzekerheid van de bron, trek geen algemene conclusie over ontbrekende bevestiging. Noem nooit een transfer definitief.',
+  group.outlets?.length===1?
+   'ÉÉN BRON: onderzoek alleen een concrete, gedateerde RSS-bronpassage. Geef hoogstens een onderzoeksinvalshoek, één specifieke controlevraag en een onzekerheidswaarschuwing. Maak GEEN concept of artikel; een enkel medium is geen onafhankelijke bevestiging.':
+   'MEERDERE MEDIA: alleen bij een onbevestigd gerucht mag je een INTERN werkconcept over de toegeschreven berichtgeving maken, met GERUCHT of MOGELIJK in de kop en expliciete bronvermelding. Twee uitgevers kunnen dezelfde oorspronkelijke melder citeren. Noem nooit een transfer definitief.',
   'Schrijf geen zelfstandig bevestigde feiten uit alleen koppen en probeer geen daadwerkelijke nieuwsartikelen na te vertellen.',
   'Geef alleen JSON met {"angle":"korte onderzoeksinvalshoek","questions":["onderzoeksvraag"],"caution":"korte beperking","draft":{"headline":"Gerucht: ...","standfirst":"Volgens bron X en Y ...; onbevestigd.","body":["Eén korte, zelfstandige alinea over de gemelde belangstelling, met bronvermelding en onzekerheid."]}}.',
   'De output is uitsluitend een INTERNE onderzoeksnotitie en een NIET-PUBLICEERBAAR werkconcept. Onafhankelijk bewijs en alle bestaande journalistieke poorten zijn nog vereist.'
@@ -218,8 +220,11 @@ async function analyzeWithAI({group,agent,apiKey,fetcher=fetch,passages=[],prior
     'Stellige AI-claim is niet bewezen; zelfstandig brononderzoek vereist.':String(obj.angle||'').slice(0,220),
    questions:Array.isArray(obj.questions)?obj.questions.slice(0,3).map(x=>String(x).slice(0,240)):[],
    caution:String(obj.caution||'').slice(0,260),draft,
-   // This status is NOT a second sourced report or independent check.
-   verified:false,publicationAllowed:false,trainingAudit:audit};
+   // A sole media passage is never independent verification, even if the
+   // model returns a draft, score, or apparent official confirmation.
+   verified:false,publicationAllowed:false,trainingAudit:audit,
+   singleOutletResearch:group.outlets?.length===1,
+   independentEvidenceChecked:false};
  }catch{return {status:'provider_unavailable'};}
 }
 // Discovery latency measures first observation of a feed item, not actual
@@ -281,18 +286,23 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   new: newLeads.filter(l=>l.agentIds.includes(agent.id)).length}));
  const candidates=prioritizeResearchGroups(classified.groups.filter(g=>g.agents.length&&g.sources.some(s=>newLeads.some(x=>x.url===s.url))));
  const knownNotes=new Set(next.researchNotes.map(n=>n.agentId+':'+n.groupKey));
- let calls=0;
+ let calls=0,singleOutletResearchCalls=0,singleOutletWithoutPassage=0;
  if(runAI&&apiKey&&dailyBudget(next,now)>0){
   for(const group of candidates){
    if(calls>=Math.min(MAX_AI_PER_SCAN,dailyBudget(next,now)))break;
-   // Prefer a second outlet but never call it independent corroboration.
-   if(group.outlets.length<2&&!group.contradictory)continue;
-   const agent=chooseResearchAgent(group);
-   if(!agent||knownNotes.has(agent.id+':'+group.id))continue;
-   // Mark the request as spent even after a provider error to prevent retry storms.
-   calls++;next.aiCallsToday++;
+   // A single media outlet may now open an INTERNAL investigative question,
+   // but only when a dated substantive RSS excerpt is actually available.
+   // Title-only solo leads are skipped. Neither is independent evidence.
    const passages=group.sources.slice(0,5).map(s=>byId.get(sha(s.url))).filter(s=>s?.passage)
     .map(({url,publisherName,byline,publishedAt,passage})=>({url,publisherName,byline,publishedAt,passage}));
+   const solo=group.outlets.length===1;
+   if(solo&&!passages.some(p=>typeof p.passage==='string'&&p.passage.trim().length>=120&&
+      group.sources.some(source=>source.url===p.url))) {singleOutletWithoutPassage++;continue;}
+   const agent=chooseResearchAgent(group);
+   if(!agent||knownNotes.has(agent.id+':'+group.id))continue;
+   // Both cases share the existing capped call, never a second research call.
+   calls++;next.aiCallsToday++;
+   if(solo)singleOutletResearchCalls++;
    const priorNotes=next.researchNotes.filter(n=>n.agentId===agent.id).slice(-3);
    const note=await analyzeWithAI({group,agent,apiKey,fetcher,passages,priorNotes});
    next.researchNotes.push({groupKey:group.id,agentId:agent.id,at:new Date(now).toISOString(),
@@ -318,6 +328,8 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   rumourGroups:classified.groups.filter(g=>g.rumour).length,
   contradictions:classified.groups.filter(g=>g.contradictory).length,
   aiCalls:calls,aiCallsToday:next.aiCallsToday,aiDailyLimit:MAX_AI_DAILY,
+  singleOutletResearchCalls,singleOutletWithoutPassage,
+  singleOutletAllowedOnlyAsUnverifiedResearch:true,
   candidates:candidates.slice(0,12),
   training:training.coverage(AGENTS),
   trainingAudits:next.researchNotes.filter(n=>n.at===new Date(now).toISOString()&&n.trainingAudit)
