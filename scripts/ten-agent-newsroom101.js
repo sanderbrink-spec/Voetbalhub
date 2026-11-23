@@ -129,6 +129,26 @@ function classifyLeads(leads){
   status:g.leads.some(x=>x.rumour)?'gerucht_niet_bevestigd':'signaal_onderzoek_nodig'
  }))};
 }
+// 111C: spend capped research calls on ordinary football news before rumours.
+// Different outlets alone do NOT establish independent confirmation.
+function researchPriority(group={}){
+ const outlets=Array.isArray(group.outlets)?new Set(group.outlets).size:0;
+ if(outlets>=2&&!group.rumour&&!group.contradictory)return 4;
+ if(outlets>=2&&group.contradictory)return 3;
+ if(outlets>=2&&group.rumour)return 2;
+ if(group.contradictory)return 1;
+ return 0;
+}
+function prioritizeResearchGroups(groups=[]){
+ if(!Array.isArray(groups))return [];
+ const latest=group=>Math.max(0,...(Array.isArray(group.sources)?group.sources:[])
+  .map(s=>Date.parse(s?.publishedAt||'')).filter(Number.isFinite));
+ return [...groups].sort((a,b)=>
+  researchPriority(b)-researchPriority(a)||
+  new Set(b.outlets||[]).size-new Set(a.outlets||[]).size||
+  latest(b)-latest(a)||
+  String(a.id||'').localeCompare(String(b.id||'')));
+}
 function dailyBudget(state,now=Date.now()){
  const day=new Date(now).toISOString().slice(0,10);
  return state.day===day?Math.max(0,MAX_AI_DAILY-(state.aiCallsToday||0)):MAX_AI_DAILY;
@@ -238,8 +258,7 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
  const matched=AGENTS.map(agent=>({id:agent.id,name:agent.name,beat:agent.beat,
   scanned:classified.leads.filter(l=>l.agentIds.includes(agent.id)).length,
   new: newLeads.filter(l=>l.agentIds.includes(agent.id)).length}));
- const candidates=classified.groups.filter(g=>g.agents.length&&g.sources.some(s=>newLeads.some(x=>x.url===s.url)))
-  .sort((a,b)=>Number(b.rumour)-Number(a.rumour)||b.outlets.length-a.outlets.length);
+ const candidates=prioritizeResearchGroups(classified.groups.filter(g=>g.agents.length&&g.sources.some(s=>newLeads.some(x=>x.url===s.url))));
  const knownNotes=new Set(next.researchNotes.map(n=>n.agentId+':'+n.groupKey));
  let calls=0;
  if(runAI&&apiKey&&dailyBudget(next,now)>0){
@@ -280,6 +299,9 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   contradictions:classified.groups.filter(g=>g.contradictory).length,
   aiCalls:calls,aiCallsToday:next.aiCallsToday,aiDailyLimit:MAX_AI_DAILY,
   candidates:candidates.slice(0,12),
+  researchPriorityOrder:candidates.slice(0,12).map(g=>({groupId:g.id,
+   priority:researchPriority(g),multipleOutlets:g.outlets.length>=2,
+   independenceVerified:false,rumour:g.rumour,contradictory:g.contradictory})),
   publicationAttempts:0,published:0,
   warning:'RSS-signalen zijn niet onafhankelijk geverifieerd. Geruchten mogen uitsluitend na aparte bron- en rechtencontrole als gerucht worden gepubliceerd.'
  };
@@ -316,4 +338,4 @@ if(require.main===module)main().then(report=>{
  console.log(JSON.stringify({status:report.status,signals:report.signals,newSignals:report.newSignals,agents:report.agents,rumourGroups:report.rumourGroups,aiCalls:report.aiCalls,publicationAttempts:0,published:0,feedErrors:report.feedErrors}));
  if(report.feedsOk===0)process.exitCode=1;
 }).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,dailyBudget,analyzeWithAI,scan,readState,writeState,main};
+module.exports={FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,researchPriority,prioritizeResearchGroups,dailyBudget,analyzeWithAI,scan,readState,writeState,main};
