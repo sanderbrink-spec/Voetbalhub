@@ -35,6 +35,7 @@ test('113A: unknown push content is not mistakenly classified as a harmless vali
 });
 test('113A: existing watchdog listens only to successful scheduled main scouts and keeps one dispatch gate',()=>{
  const yaml=fs.readFileSync('.github/workflows/editorial-watchdog.yml','utf8');
+ assert.match(yaml,/push:\s*\n\s+branches: \[main\]\s*\n\s+paths: \['\.github\/workflows\/editorial-watchdog\.yml'\]/);
  assert.match(yaml,/workflow_run:\s*\n\s+workflows:\s*\['Veldio 10 AI news scouts'\]/);
  assert.match(yaml,/github\.event\.workflow_run\.event == 'schedule'/);
  assert.match(yaml,/github\.event\.workflow_run\.conclusion == 'success'/);
