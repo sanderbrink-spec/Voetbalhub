@@ -1520,6 +1520,18 @@ function shouldDraftVerifiedMatchBeforeArtwork(group,now){
   record.verifiedFacts.length>=6&&Number.isFinite(now)&&Number.isFinite(age)&&
   age>=0&&age<=36*3600000);
 }
+// 112E: only in isolated, non-publishing validation, let up to two verified,
+// evidence-rich match dossiers reach the unchanged writer and independent
+// review even when the matching image has not been cleared for publication.
+// An unapproved image is NEVER publishable; no production override is allowed.
+function shouldValidateMatchCopyWithoutArtwork(group,now){
+ const rec=group?.matchRecord;
+ const age=now-Date.parse(rec?.match?.playedAt||rec?.match?.date||'');
+ return Boolean(rec?.matchId&&rec.articleKind==='match_report'&&
+  matchGuidance.isRichMatch(rec)&&Array.isArray(rec.verifiedFacts)&&
+  rec.verifiedFacts.length>=8&&matchGuidance.paragraphPlan(rec).events>=2&&
+  Number.isFinite(age)&&age>=0&&age<=Math.min(72,config.maxAgeHours)*3600000);
+}
 // A prior six-hour media retry should not hide the new bounded draft-first
 // capability. Reopen at most two fresh rich reports exactly once, and only
 // when their sole previous reason is missing artwork. Rejected text and old
@@ -3139,11 +3151,14 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   reusableCheckpointPriority(a.job,a.group,secret,now));
  let processingSlots=0;
  let matchDraftFirstRemaining=2;
+ if(validationOnly)matchDraftFirstRemaining=0;
+ let validationCopyProbeRemaining=2;
  for(const {group,job} of runnable){
   if(processingSlots>=8)break;
   if((validationOnly?report.counts.approved:report.published.length)>=limit)break;
   const matchRecord=group.matchRecord;
   const route=matchRecord?report.routes.match:report.routes.news;
+  let validationCopyProbe=false;
   // A dry run can recheck existing copy without weakening production deduplication.
   const comparison=published.filter(article=>(!group.replacePreviewId||article.id!==group.replacePreviewId)&&
    (!validationOnly||article.sources?.[0]?.url!==group[0].url));
@@ -3154,12 +3169,16 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   if(matchRecord){
    const image=matchArtworkPreflight105A(group);
    if(image.blocked){
+    const dryRun=validationOnly&&validationCopyProbeRemaining>0&&
+     shouldValidateMatchCopyWithoutArtwork(group,now);
     const draftFirst=matchDraftFirstRemaining>0&&
      shouldDraftVerifiedMatchBeforeArtwork(group,now);
-    if(draftFirst){
-     matchDraftFirstRemaining--;
+    if(dryRun||draftFirst){
+     if(dryRun){validationCopyProbe=true;validationCopyProbeRemaining--;}
+     else matchDraftFirstRemaining--;
      report.signals.push({route:'match',topic:group[0].title,matchId:matchRecord.matchId,
-      outcome:'verified_match_draft_first',reason:image.reason});
+      outcome:dryRun?'validation_copy_only_without_artwork':'verified_match_draft_first',
+      unapprovedArtworkRemainsBlocked:true,reason:image.reason});
     }else{
      deferArtwork(job,now);
      report.skipped.push({topic:group[0].title,stage:'artwork',reason:'Geen passend goedgekeurd artikelbeeld beschikbaar.'});
@@ -3234,8 +3253,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    // A multi-source, already-verified Eredivisie preview must first reach
    // the writer and independent quality review, then await cleared artwork.
    const art=preflightArtwork(group,candidate,topic);
-   const draftFirst=shouldDraftBeforeArtwork(group,candidate)||
-    shouldDraftVerifiedMatchBeforeArtwork(group,now);
+   const draftFirst=validationCopyProbe||shouldDraftBeforeArtwork(group,candidate)||
+    (!validationOnly&&shouldDraftVerifiedMatchBeforeArtwork(group,now));
    if(art.checked&&!art.approved&&!draftFirst){
     if(matchRecord||group.internationalPreview)processingSlots--;
     deferArtwork(job,now);
@@ -3247,7 +3266,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    if(draftFirst&&art.checked&&!art.approved){
     // The sealed checkpoint belongs to this exact evidence packet.
     // Do not re-spend provider budget merely to recheck the catalog.
-    if(checkpoint.artworkPending){
+    if(checkpoint.artworkPending&&!validationCopyProbe){
      deferArtwork(job,now);
      report.skipped.push({topic,stage:'artwork',reason:'Gereviewd concept wacht op goedgekeurd beeld.'});
      report.signals.push({route:'news',topic,outcome:'reviewed_draft_waiting_for_artwork',reason:art.reason});
@@ -3563,4 +3582,4 @@ function publicationFocus(env=process.env){
  return env.FOCUS_SOURCE_URL||pushCommitMessage(env).match(/^Editorial-Source: (https:\/\/\S+)$/m)?.[1];
 }
 if(require.main===module)focusedProductionRun({secret:process.env.HUB_API_SECRET,groqKey:process.env.GROQ_API_KEY,githubToken:process.env.GITHUB_TOKEN,focusSourceUrl:publicationFocus(),singlePublication:pushCommitMessage(process.env).includes('[publish-one]'),discoveryOnly:process.env.EDITORIAL_DISCOVERY_ONLY==='true',validationOnly:process.env.EDITORIAL_VALIDATION_ONLY==='true'}).then(r=>{console.log(JSON.stringify({status:r.status,outcome:r.outcome,model:r.model,modelPolicy:r.modelPolicy,providers:r.providers,providerTrace:r.providerTrace,scoutResearch:r.scoutResearch?{mediaFeeds:r.scoutResearch.mediaFeeds,revision:r.scoutResearch.revision?.afterReview,assessment:r.scoutResearch.review?.assessment}:undefined,queue:r.queue,counts:r.counts,routes:r.routes,officialCoverage:{nationsLeague:r.sources?.nationsLeagueNews||null,oranje:r.sources?.officialOranjeNews||null},skipped:r.skipped,sourceErrors:r.sourceErrors,processingErrors:r.processingErrors,signals:r.signals,assessments:r.assessments,focusFacts:r.focusFacts,repeatedProcessing:r.repeatedProcessing,validated:r.validated.map(({topic,score,scores,article})=>({topic,score,scores,headline:article.headline})),published:r.published}));process.exitCode=runExitCode(r);}).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={reopenFreshVerifiedMatchDraft106B,shouldDraftVerifiedMatchBeforeArtwork,matchArtworkPreflight105A,reopenVerifiedDrawTitleholder105B,reopenVerifiedDrawDepth345,reopenVerifiedDrawName344,reopenVerifiedDrawContext343,reopenVerifiedDrawConditional342,reopenVerifiedDrawPlan341,reopenVerifiedDrawCopy339,reopenUefaCompetitionTitle99C5,independentReviewEvidenceLedger,reopenFreshPrimaryStoryAfterFormat99C4,promotionFromRoundup,reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,reopenReviewedClubPreview104C,reopenApprovedClubPreviewArtwork104D,reopenVerifiedClubPreviewStyle104E,reopenVerifiedCoachName104F,reopenVerifiedClubDemonym104G,reopenClubPreviewCopyAndRole104H,reopenPreviewStorageFixture104I,reopenVerifiedSourceSentences104J,repairVerifiedClubPreviewForm,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
+module.exports={reopenFreshVerifiedMatchDraft106B,shouldDraftVerifiedMatchBeforeArtwork,shouldValidateMatchCopyWithoutArtwork,matchArtworkPreflight105A,reopenVerifiedDrawTitleholder105B,reopenVerifiedDrawDepth345,reopenVerifiedDrawName344,reopenVerifiedDrawContext343,reopenVerifiedDrawConditional342,reopenVerifiedDrawPlan341,reopenVerifiedDrawCopy339,reopenUefaCompetitionTitle99C5,independentReviewEvidenceLedger,reopenFreshPrimaryStoryAfterFormat99C4,promotionFromRoundup,reopenVerifiedOfficialFinalWriter,reopenTransientOfficialFinal98Y,reopenOfficialFinalQuality98Y,editorialMatchSnapshot,preflightArtwork,shouldDraftBeforeArtwork,reopenVerifiedPreviewArtwork104B,reopenReviewedClubPreview104C,reopenApprovedClubPreviewArtwork104D,reopenVerifiedClubPreviewStyle104E,reopenVerifiedCoachName104F,reopenVerifiedClubDemonym104G,reopenClubPreviewCopyAndRole104H,reopenPreviewStorageFixture104I,reopenVerifiedSourceSentences104J,repairVerifiedClubPreviewForm,deferArtwork,confirmedUefaQualification,retryUefaQualificationExtraction,reopenCompactOranjeReaction98V,reopenInterviewFeedback98V,confirmedFederationCoachReaction,reopenUefaStatusAttributionV98O,reopenUefaNarrativeV98P,scheduleEditorialGroups,retryFederationStorageFailure,reopenReviewedMatchArtworkV71,selectPublicationFixtures,finalizeCheckedRevision,reopenVerifiedHateboerDateV71,reopenUnsupportedDecisionTimeV71,repairUnsupportedDecisionTimestamp,reusableCheckpointPriority,independentReviewRejection,reconcileDeferredPublications,summarizeEditorialFunnel98V,matchGenerationIsCompact,confirmedTrainingCampDeparture,confirmedFederationCoachDeparture,reopenRichSportmonksV132,reopenObservedMatchCopyFailure,preservedOfficialPecEvidence,oneOffVerifiedEditorialDraft,reopenVerifiedManuscriptV109,reopenPolishedManuscriptV110,reopenDuplicateLeadForSpecialistV108,reopenPrematureSkipV107,reopenVerifiedJsonFailureV100,strictRevisionFormat,providerErrorDetails,complete,repairUniqueVerifiedNameTypo,editorialRewriteFeedback,recoverCompleteBodyV91,editorialSourceLinks,recoverCoachCoverageV89,recoverOfficialStatementsV88,recoverVerifiedPhraseRewriteV74,reframeVerifiedClubDecision,recoverIndependentOriginalityV73,recoverFullStoryOverlap,recoverCoachStoryline,verifiedOfficialCoachDecision,verifiedOfficialDisciplinaryDecision,recoverOfficialCoachDecision,recoverLiteralEvidenceRejection,alignPrimaryLiteralFacts,recoverRichVerifiedContext,recoverVerifiedNameRewrite,overlapPhrases,reframeVerifiedStaffPair:(draft,facts,docs)=>reframeVerifiedStaffPair(draft,facts,docs,overlapPhrases),publicationFocus,recoverGeneration,recoverEditorialBrief,recoverMisclassifiedOverlap,reviseDraft,verifyDraft,editorialPriority,nationallyRelevant,primaryAuthority,partnerDocuments,officialPage,sourceText,runExitCode,uploadCover,allowedUrl,plain,extractPage,discoverLinks,validateEvidence,duplicate,overlap,compactSource,pacedGroq,selectModel,evidenceFragments,hydrateEvidence,extractCandidate,run};
