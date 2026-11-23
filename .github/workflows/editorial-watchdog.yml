@@ -1,5 +1,9 @@
 name: Veldio editorial watchdog
 on:
+  # One checked recovery run after this watchdog fix first reaches main.
+  push:
+    branches: [main]
+    paths: ['.github/workflows/editorial-watchdog.yml']
   schedule:
     - cron: '48 * * * *'
   workflow_dispatch:
