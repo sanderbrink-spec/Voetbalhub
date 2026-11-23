@@ -41,6 +41,12 @@ test('113A: existing watchdog listens only to successful scheduled main scouts a
  assert.match(yaml,/github\.event\.workflow_run\.conclusion == 'success'/);
  assert.match(yaml,/github\.event\.workflow_run\.head_branch == 'main'/);
  assert.match(yaml,/group: veldio-editorial-watchdog/);
+ // github-script loads a local module. The live 113A run failed because
+ // the workflow omitted checkout; ensure checkout precedes github-script.
+ const checkout=yaml.indexOf('uses: actions/checkout@v4');
+ const script=yaml.indexOf('uses: actions/github-script@v7');
+ assert.ok(checkout>0&&script>checkout,'local module must exist before github-script executes');
+ assert.ok(fs.existsSync('scripts/editorial-watchdog113.js'));
  assert.match(yaml,/recoveryWindow\(all\.workflow_runs\)/);
  assert.match(yaml,/sportmonks_only:'false'/);
  assert.match(yaml,/validation_only:'false'/);
