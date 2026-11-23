@@ -3,6 +3,11 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const newsroom=require('../scripts/ten-agent-newsroom101');
 const now=Date.parse('2026-11-19T18:30:00Z');
+test('111C: a club that merely announces news is not a transfer rumor',()=>{
+ assert.equal(newsroom.isRumour('Ajax meldt nieuwe trainer voor jeugdteam'),false);
+ assert.equal(newsroom.isRumour('PSV onderzoekt mogelijk een transfer'),true);
+ assert.equal(newsroom.isRumour('PSV ontkent transfergerucht'),true);
+});
 test('111C: ordinary multi-outlet news is researched before speculation; conflicting reports remain worthwhile',()=>{
  const groups=[
   {id:'rumour',rumour:true,contradictory:false,outlets:['vi','vp'],sources:[{publishedAt:'2026-11-19T18:20:00Z'}]},
