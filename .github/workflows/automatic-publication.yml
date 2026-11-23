@@ -11,6 +11,7 @@ on:
       - 'editorial-match-gap111.js'
       - 'editorial-match-copyedit112f.js'
       - 'test/editorial-match-copyedit112f.test.js'
+      - 'test/editorial-112g-real-validation.test.js'
       - 'editorial-match-evidence122.js'
       - 'editorial-match-guidance133.js'
       - 'editorial-recovery136.js'
