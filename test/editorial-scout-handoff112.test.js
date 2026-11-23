@@ -41,6 +41,18 @@ test('112C: exact verified metadata and one current source yield questions, not 
  assert.equal(JSON.stringify(item).includes('Gemodelleerd concept'),false);
  assert.equal(JSON.stringify(item).includes('Gevoelige onbewezen'),false);
 });
+test('112C: regrouping with the same exact source URL preserves questions, never source authority',()=>{
+ const {group}=make();
+ const prior={...note(group),groupKey:'f'.repeat(24)};
+ const result=H.matchScoutHandoff(group,[prior],now);
+ assert.ok(result);
+ assert.equal(result.sourceMatchMode,'exact_sources_after_dossier_regrouping');
+ assert.equal(result.originalGroupKey,'f'.repeat(24));
+ assert.equal(result.publicationAllowed,false);
+ assert.equal(result.sourceEvidenceVerified,false);
+ const exact=H.matchScoutHandoff(group,[note(group)],now);
+ assert.equal(exact.sourceMatchMode,'exact_dossier_and_sources');
+});
 test('112C: mismatched group, source, assigned role, future timestamp, forged proof or approved publication fail closed',()=>{
  const {group}=make();
  const corrupt=[
