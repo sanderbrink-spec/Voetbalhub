@@ -3150,7 +3150,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   reusableCheckpointPriority(b.job,b.group,secret,now)-
   reusableCheckpointPriority(a.job,a.group,secret,now));
  let processingSlots=0;
- let matchDraftFirstRemaining=validationOnly?0:2;
+ let matchDraftFirstRemaining=2;
+ if(validationOnly)matchDraftFirstRemaining=0;
  let validationCopyProbeRemaining=2;
  for(const {group,job} of runnable){
   if(processingSlots>=8)break;
