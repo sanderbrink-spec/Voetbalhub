@@ -190,9 +190,21 @@ function summarizeQueue105A(records=[],now=Date.now(),focusSourceUrl){
   (!focusSourceUrl||j.urls?.[0]===focusSourceUrl));
  const artwork=retry.filter(j=>j.failureCategory==='missing_approved_artwork'&&
   j.reason==='awaiting_approved_artwork');
+ // A queue retry is not necessarily one new artwork. The displayed list is
+ // capped at twenty items, so never use it as a total unique-dossier count.
+ const artworkIdentity=j=>typeof j.matchId==='string'&&j.matchId.trim()?
+  'match:'+j.matchId.trim():
+  typeof j.clubPreviewId==='string'&&j.clubPreviewId.trim()?
+  'clubPreview:'+j.clubPreviewId.trim():null;
+ const namedArtwork=artwork.map(artworkIdentity).filter(Boolean);
+ const uniqueArtwork=new Set(namedArtwork);
  return {
   review:review.length,retry:retry.length,technicalReview:technical.length,
   awaitingApprovedArtwork:artwork.length,
+  uniqueArtworkDossiers:uniqueArtwork.size,
+  duplicateArtworkRetries:namedArtwork.length-uniqueArtwork.size,
+  unidentifiedArtworkRetries:artwork.length-namedArtwork.length,
+  artworkDossiersTruncated:artwork.length>20,
   artworkDossiers:artwork.slice(0,20).map(j=>({
    matchId:j.matchId||null,clubPreviewId:j.clubPreviewId||null,
    nextAttemptAt:Number.isFinite(j.nextAttemptAt)?new Date(j.nextAttemptAt).toISOString():null,
