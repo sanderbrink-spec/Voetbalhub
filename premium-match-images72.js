@@ -60,6 +60,10 @@ function brandingAllowed(asset) {
 function accepted(asset) {
  if(!asset || asset.approval!=='approved' || !asset.reviewer ||
     !asset.rightsEvidence) return false;
+ // A later individual review takes precedence over any legacy approval.
+ // A manual review is valid only for the exact reviewed bytes.
+ const manual=asset.manualReview115;
+ if(manual && (manual.status!=='passed' || manual.assetSha256!==asset.sha256 || manual.brandingVerified!==true || manual.contextVerified!==true)) return false;
  // Known visual defects apply to every catalog category, not just match art.
  if(knownDefectBlocked(asset)) return false;
  const audit=asset.brandingAudit115;
