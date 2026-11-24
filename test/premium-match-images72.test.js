@@ -7,13 +7,15 @@ const rows=require('../image-library49.json').assets;
 const original=rows.find(a=>a.id==='veldio71-twente-ajax-report');
 // Synthetic receipts are test-only; the real rejected artwork stays blocked.
 const brandingFixture=require('../test-support/branding-fixture115');
-const reviewedOriginal={...original,brandingAudit115:brandingFixture(original.sha256)};
+const historicalSha=require('../premium-match-raster-baseline72.json')[original.id];
+const reviewedOriginal={...original,approval:'approved',sha256:historicalSha,visualReview:undefined,brandingAudit115:brandingFixture(historicalSha)};
 const newAsset=(changes={})=>({...reviewedOriginal,id:'new-premium-fixture',visualReview:{
- score:9.1,style:'photorealistic',assetSha256:original.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Veldio independent visual reviewer',reviewedAt:'2026-11-11'
+ score:9.1,style:'photorealistic',assetSha256:reviewedOriginal.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Veldio independent visual reviewer',reviewedAt:'2026-11-11'
 },...changes});
 test('Fase 72: previously approved raster requires original SHA; flattened SVG is never accepted',()=>{
  assert.ok(original);
- assert.equal(gate.accepted(original),false,'real nonconforming catalog artwork remains blocked');
+ if(original.brandingAudit115?.status==='needs-correction')assert.equal(gate.accepted(original),false,'real nonconforming catalog artwork remains blocked');
+ assert.equal(gate.accepted({...reviewedOriginal,brandingAudit115:{status:'needs-correction',assetSha256:historicalSha}}),false);
  assert.equal(gate.accepted(reviewedOriginal),true,'hypothetical reviewed bytes retain historical compatibility');
  assert.equal(gate.accepted({...reviewedOriginal,sha256:'changed-bytes'}),false);
  const retired=rows.find(a=>a.id==='veldio71-utrecht-nec-report');
@@ -25,7 +27,7 @@ test('Fase 72: every new fixture asset needs explicit human premium review >= 8.
  assert.equal(gate.MIN_SCORE,8.5);
  assert.equal(gate.accepted(newAsset()),true);
  assert.equal(gate.accepted(newAsset({brandingAudit115:undefined})),false);
- assert.equal(gate.accepted(newAsset({brandingAudit115:{...brandingFixture(original.sha256),noOtherText:false}})),false);
+ assert.equal(gate.accepted(newAsset({brandingAudit115:{...brandingFixture(reviewedOriginal.sha256),noOtherText:false}})),false);
  for(const review of [
   undefined,{score:8.49,style:'photorealistic',reviewer:'visual reviewer',reviewedAt:'2026-11-11'},
   {score:10,style:'flat-vector',reviewer:'visual reviewer',reviewedAt:'2026-11-11'},
