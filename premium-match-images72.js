@@ -3,6 +3,7 @@
 // reviewed SHA256 hashes. This is a compatibility list, NOT a new 8.5 score.
 // Every NEW match asset needs an explicit dated visual approval and score.
 const historical = require('./premium-match-raster-baseline72.json');
+const brandingBaseline115 = require('./branding-review-baseline115.json');
 const MATCH = new Set(['preview','report','match-analysis','recap']);
 const MIN_SCORE = 8.5;
 const isMatch = asset => Boolean(asset && (asset.fixtureId || asset.imageKind ||
@@ -29,10 +30,26 @@ function reviewedPremium(asset) {
        .replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'') &&
      q.reviewedStadiumIdentity===asset.stadiumIdentity)));
 }
+// New or changed match artwork needs an explicit review of the actual raster.
+// The fixed hash snapshot only preserves previous approvals during re-audit;
+// it is NOT a statement that those images comply with the new rule.
+function brandingAllowed(asset) {
+ const audit=asset?.brandingAudit115;
+ if(audit?.assetSha256===asset?.sha256 && audit?.status==='needs-correction') return false;
+ if(brandingBaseline115[asset?.id]===asset?.sha256 && typeof asset?.sha256==='string') return true;
+ return Boolean(audit?.status==='passed' && audit.assetSha256===asset?.sha256 &&
+   audit.veldioOnly===true && audit.noOtherText===true && audit.noThirdPartyLogos===true &&
+   audit.disclosureOutsideImage===true &&
+   typeof audit.reviewer==='string' && audit.reviewer.trim().length>=3 &&
+   /^20\d\d-\d\d-\d\d$/.test(audit.reviewedAt||'') &&
+   Number.isFinite(Date.parse(audit.reviewedAt)) &&
+   /AI[- ]illustratie/i.test(asset?.caption||''));
+}
 function accepted(asset) {
  if(!asset || asset.approval!=='approved' || !asset.reviewer ||
     !asset.rightsEvidence) return false;
  if(!isMatch(asset)) return true;
+ if(!brandingAllowed(asset)) return false;
  // A machine-readable fixture approval does not establish photographic quality.
  if(isRetiredVector(asset) || !/\.(webp|png|jpe?g)$/i.test(asset.file||'') ||
     asset.file.startsWith('public/match-covers64/') ||
@@ -51,4 +68,4 @@ function isRetiredReference(article,assets=[]) {
      (typeof article.imageUrl==='string' && article.imageUrl.endsWith(publicUrl));
  });
 }
-module.exports={MIN_SCORE,isMatch,isRetiredVector,reviewedPremium,accepted,isRetiredReference};
+module.exports={MIN_SCORE,isMatch,isRetiredVector,reviewedPremium,brandingAllowed,accepted,isRetiredReference};
