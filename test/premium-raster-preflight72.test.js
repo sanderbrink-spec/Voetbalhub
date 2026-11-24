@@ -11,7 +11,8 @@ const premium=require('../premium-match-images72');
 const rows=require('../image-library49.json').assets;
 const source=rows.find(a=>a.id==='veldio71-twente-ajax-report');
 const checks={photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true};
-const reviewed=(change={})=>({...source,id:'veldio72-test-raster-dryrun',
+const reviewed=(change={})=>({...source,id:'veldio72-test-raster-dryrun',manualReview115:undefined,
+ brandingAudit115:require('../test-support/branding-fixture115')(change.sha256||source.sha256),
  visualReview:{score:9,style:'photorealistic',assetSha256:source.sha256,checked:checks,
  reviewer:'Independent visual reviewer',reviewedAt:'2026-11-11'},...change});
 function incoming(asset){
