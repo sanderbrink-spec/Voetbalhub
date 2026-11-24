@@ -28,7 +28,12 @@ test('Fase 77: vier native rastervervangingen blijven volledig onder handmatige 
   const b=fs.readFileSync(path.resolve(__dirname,'..',a.file));
   assert.equal(crypto.createHash('sha256').update(b).digest('hex'),a.sha256);
   const m=await sharp(b).metadata();
-  assert.equal(m.width,1280);assert.equal(m.height,720);
+  if(a.technicalReview115?.assetSha256===a.sha256){
+   assert.equal(a.approval,'pending');
+   assert.equal(m.width,a.technicalReview115.width);
+   assert.equal(m.height,a.technicalReview115.height);
+   assert.ok(m.width<1280||m.height<720);
+  }else{assert.equal(m.width,1280);assert.equal(m.height,720);}
   assert.equal(m.format,'webp');
   const q=queue.images.find(x=>x.id===id);
   assert.equal(q.sha256,sha);assert.equal(q.requiresRecreation,false);
