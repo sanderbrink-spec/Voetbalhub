@@ -5,12 +5,17 @@ const gate=require('../premium-match-images72');
 const library=require('../image-library49');
 const rows=require('../image-library49.json').assets;
 const original=rows.find(a=>a.id==='veldio71-twente-ajax-report');
-const newAsset=(changes={})=>({...original,id:'new-premium-fixture',visualReview:{
+// Synthetic receipts are test-only; the real rejected artwork stays blocked.
+const brandingFixture=require('../test-support/branding-fixture115');
+const reviewedOriginal={...original,brandingAudit115:brandingFixture(original.sha256)};
+const newAsset=(changes={})=>({...reviewedOriginal,id:'new-premium-fixture',visualReview:{
  score:9.1,style:'photorealistic',assetSha256:original.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Veldio independent visual reviewer',reviewedAt:'2026-11-11'
 },...changes});
 test('Fase 72: previously approved raster requires original SHA; flattened SVG is never accepted',()=>{
- assert.ok(original && gate.accepted(original));
- assert.equal(gate.accepted({...original,sha256:'changed-bytes'}),false);
+ assert.ok(original);
+ assert.equal(gate.accepted(original),false,'real nonconforming catalog artwork remains blocked');
+ assert.equal(gate.accepted(reviewedOriginal),true,'hypothetical reviewed bytes retain historical compatibility');
+ assert.equal(gate.accepted({...reviewedOriginal,sha256:'changed-bytes'}),false);
  const retired=rows.find(a=>a.id==='veldio71-utrecht-nec-report');
  assert.equal(gate.accepted({...retired,approval:'approved',visualReview:{score:10,style:'photorealistic',reviewer:'fake approval',reviewedAt:'2026-11-11'}}),false);
  assert.equal(gate.isRetiredVector(retired),true);
@@ -19,6 +24,8 @@ test('Fase 72: previously approved raster requires original SHA; flattened SVG i
 test('Fase 72: every new fixture asset needs explicit human premium review >= 8.5',()=>{
  assert.equal(gate.MIN_SCORE,8.5);
  assert.equal(gate.accepted(newAsset()),true);
+ assert.equal(gate.accepted(newAsset({brandingAudit115:undefined})),false);
+ assert.equal(gate.accepted(newAsset({brandingAudit115:{...brandingFixture(original.sha256),noOtherText:false}})),false);
  for(const review of [
   undefined,{score:8.49,style:'photorealistic',reviewer:'visual reviewer',reviewedAt:'2026-11-11'},
   {score:10,style:'flat-vector',reviewer:'visual reviewer',reviewedAt:'2026-11-11'},
