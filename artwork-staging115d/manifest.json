@@ -1,0 +1,41 @@
+{
+  "scope": "New candidates only; no release",
+  "assets": [
+    {
+      "id": "veldio69-rumour-1",
+      "file": "artwork-staging115d/veldio69-rumour-1.webp",
+      "originalFile": "public/article-art69/rumour-1.webp",
+      "originalSha256": "04d545be13e06698985794ac8e080322b7506152b4750a6380f688e0aa6f6252",
+      "sha256": "5be0631dfab34a769d6e220ad1ca6e78ffcdaab28a5038d574022ae433851ed3",
+      "crop": {
+        "left": 224,
+        "top": 90,
+        "width": 1056,
+        "height": 594
+      },
+      "reason": "Krantenpagina bevat tekstachtige drukregels; vervangen of verwijderen voor strikte tekstregel.",
+      "status": "candidate-pending-individual-review",
+      "publicationApproved": false,
+      "rightsVerified": false,
+      "contextVerified": false
+    },
+    {
+      "id": "veldio69-history-1",
+      "file": "artwork-staging115d/veldio69-history-1.webp",
+      "originalFile": "public/article-art69/history-1.webp",
+      "originalSha256": "ced2caf52018b09b64e8ca5634b85d01af99a41e199b3995cc47e172e3d9babc",
+      "sha256": "18a417d7d7e93d14d15d8dc699519271efbd5d86916fed395d413ed7299c0345",
+      "crop": {
+        "left": 0,
+        "top": 70,
+        "width": 960,
+        "height": 540
+      },
+      "reason": "Ingelijste historische teamfoto heeft onduidelijke herkomst; vervangen door eigen neutrale illustratie zonder groepsfoto.",
+      "status": "candidate-pending-individual-review",
+      "publicationApproved": false,
+      "rightsVerified": false,
+      "contextVerified": false
+    }
+  ]
+}
