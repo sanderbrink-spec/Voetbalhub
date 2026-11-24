@@ -28,3 +28,19 @@ test('known defects or stale review hashes cannot be bypassed by changing file b
  assert.equal(accepted({...original,brandingAudit115:{status:'already-rejected',assetSha256:sha}}),false);
  assert.equal(accepted({...original,brandingAudit115:audit}),true);
 });
+
+test('known defective catalogue bytes stay blocked even after removal or relabelling of the audit',()=>{
+ const queue=require('../branding-correction-queue115.json').items;
+ for(const id of ['match64-sm-19714595','groningen43']){
+  const item=queue.find(x=>x.id===id);
+  assert.ok(item);
+  const old={id,sha256:item.originalSha256,approval:'approved',reviewer:'Visual QA',rightsEvidence:'Documented',categories:['news'],caption:base.caption};
+  assert.equal(brandingAllowed(old),false);
+  assert.equal(accepted(old),false);
+  assert.equal(accepted({...old,brandingAudit115:{...audit,assetSha256:old.sha256}}),false);
+  const replacement={...old,sha256:sha};
+  assert.equal(accepted(replacement),false);
+  assert.equal(accepted({...replacement,brandingAudit115:{status:'text-screen-pass-only',assetSha256:sha}}),false);
+  assert.equal(accepted({...replacement,brandingAudit115:audit}),true);
+ }
+});
