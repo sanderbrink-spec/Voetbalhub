@@ -62,7 +62,7 @@
   const allowedScores=new Set(scores(supported));
   const unknownScores=[...new Set(scores(article))].filter(x=>!allowedScores.has(x));
   if(unknownScores.length)issues.push('Uitslag of tussenstand wijkt af van de gecontroleerde feiten: '+unknownScores.join(', ')+'. Controleer ook de volgorde thuis-uit.');
-  const names=blocks(draft).flatMap(block=>[...String(block).matchAll(/\b(?:(?:De )?League A-groep|Kwartfinales Nations League)\b|\b(?:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’\-]+|FC|SC|AZ|PSV)(?:\s+(?:van|de|der|den|ten|ter))?\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ'’\-]+\b/g)].map(m=>m[0]));
+  const nameOccurrences=blocks(draft).flatMap(block=>[...String(block).matchAll(/\b(?:(?:De )?League A-groep|Kwartfinales Nations League)\b|\b(?:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’\-]+|FC|SC|AZ|PSV)(?:\s+(?:van|de|der|den|ten|ter))?\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ'’\-]+\b/g)].map(m=>({name:m[0],suffix:String(block).slice(m.index+m[0].length)})));
   const known=normalize(supported);
   const sentenceStarters=new Set(['Voor','Volgens','Ook','Tegen','Na','Bij','Zonder','Sinds','Tijdens']);
   // Match introductions like "De Eredivisie-wedstrijd" are grammar, not invented
@@ -78,6 +78,13 @@
   // the unhyphenated compound only when Eredivisie is in verified evidence.
   const competitionPhrasing=/^(?:(?:De|Het|Een) Eredivisie(?:-wedstrijd|-speelronde)?|In de Eredivisie(?:-wedstrijd|-speelronde)?)$/i;
   const verifiedCompetitionCompound=name=>/^De Eredivisiewedstrijd$/i.test(name)&&/\beredivisie\b/.test(known);
+  // A sentence-opening preposition is not a player name when it immediately
+  // continues as a fully spelled, independently evidenced competition title.
+  // Check the suffix at this exact match: another league mention elsewhere
+  // must never forgive an unsupported person/place called "In de Premier".
+  const verifiedCompetitionOpening=({name,suffix})=>
+   (name==='In de Premier'&&/^ League\b/.test(suffix)&&/\bpremier league\b/.test(known))||
+   (name==='In de Keuken'&&/^ Kampioen Divisie\b/.test(suffix)&&/\bkeuken kampioen divisie\b/.test(known));
   const verifiedStadiumArticle=name=>/^(?:De Johan|Het Olympiastadion)$/i.test(name)&&
    (name.toLowerCase().includes('johan')?/\bjohan cruijff arena\b/.test(known):/\bolympiastadion\b/.test(known));
   const verifiedLeagueAbbreviation=name=>/^Major League$/i.test(name)&&/\bmls\b/.test(known);
@@ -144,7 +151,7 @@
    // A club's Dutch demonym is not a new player or person. This narrowly
   // grounded alias is valid only when FC Groningen is explicitly in evidence.
   const verifiedClubDemonym=name=>name==='De Groningers'&&/\bfc groningen\b/.test(known);
-  const missingNames=[...new Set(names)].filter(name=>!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedCompetitionCompound(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!verifiedClubDemonym(name)&&!known.includes(normalize(name)));
+  const missingNames=[...new Set(nameOccurrences.filter(entry=>{const name=entry.name;return !verifiedCompetitionOpening(entry)&&!grammaticalStatusName(name)&&!verifiedUefaCompetitionLabel(name)&&!verifiedUefaLeagueOpening(name)&&!verifiedStadiumArticle(name)&&!verifiedLeagueAbbreviation(name)&&!competitionPhrasing.test(name)&&!verifiedCompetitionCompound(name)&&!verifiedGeographicArticle(name)&&!sentenceStarters.has(name.split(' ')[0])&&!verifiedUefaStatusGrammar(name)&&!verifiedClubDemonym(name)&&!known.includes(normalize(name));}).map(entry=>entry.name))];
   if(missingNames.length)issues.push('Controleer namen die niet in de aangeleverde feiten staan: '+missingNames.join(', ')+'.');
   const quotations=[...article.matchAll(/[“"]([^”"\n]{10,})[”"]/g)].map(m=>m[1]);
   if(quotations.some(q=>!normalize(evidence).includes(normalize(q))))issues.push('Citaat ontbreekt letterlijk in de gecontroleerde feiten. Controleer de uitspraak en de spreker.');
