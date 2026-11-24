@@ -2320,7 +2320,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:telstar",
       "intakeStatus": "pending-visual-and-legal-review",
-      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score."
+      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score.",
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
+        "notes": "Clubnaam, wedstrijdverslag en AI-disclaimer in beeld; lage collagekwaliteit en vervormde Veldio-borden."
+      }
     },
     {
       "id": "veldio73-willem-ii-preview-day",
@@ -2359,7 +2366,14 @@
       "stadiumOccupancy": "empty",
       "stadiumIdentity": "home:willemii",
       "intakeStatus": "pending-visual-and-legal-review",
-      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score."
+      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score.",
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "bdcea15054bfa71eab70e32e06b79688273b5a0051b160e7e0a8500b88886d9b",
+        "notes": "Clubnaam, voorbeschouwing en AI-disclaimer in beeld; stadionidentiteit herbeoordelen."
+      }
     },
     {
       "id": "veldio73-willem-ii-report-evening",
@@ -2398,7 +2412,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:willemii",
       "intakeStatus": "pending-visual-and-legal-review",
-      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score."
+      "artworkNote": "Origineel vervaardigd uit circa 640x360 segment; 1280x720 WebP is opgeschaald. Geen verzonnen 8,5-score.",
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "83ab3e9e1a74fc01a32a8b0aa254a0e8b6cc708a94c73fa4006e54c0b5c4ac6e",
+        "notes": "Clubnaam, wedstrijdverslag en AI-disclaimer in beeld; sterk vergelijkbaar met Telstar-illustratie; stadionidentiteit herbeoordelen."
+      }
     },
     {
       "id": "veldio74-adodenhaag-preview",
@@ -3834,7 +3855,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:fceindhoven",
       "intakeStatus": "pending-independent-review",
-      "artworkNote": "Gecontroleerde bronbestanden en exacte SHA256; clubkleuren, stadioncontext, merktekens en commerciële rechten vereisen afzonderlijke eindcontrole. Geen fictieve score of goedkeuring."
+      "artworkNote": "Gecontroleerde bronbestanden en exacte SHA256; clubkleuren, stadioncontext, merktekens en commerciële rechten vereisen afzonderlijke eindcontrole. Geen fictieve score of goedkeuring.",
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885",
+        "notes": "AI-disclaimer in zwarte badge rechtsonder; geen vrijgave."
+      }
     },
     {
       "id": "veldio110b-sm-19714592-ajax-ado-day-report",
@@ -3874,7 +3902,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:ajax",
       "intakeStatus": "pending-independent-review",
-      "artworkNote": "Eigen originele dagillustratie met volle rood-witte tribunes en uitsluitend Veldio-signage. Exacte bron- en WEBP-hashes geregistreerd. Rechtencontrole, feitelijke stadioncontext, score >=8,5/10 en definitieve individuele vrijgave ontbreken nog."
+      "artworkNote": "Eigen originele dagillustratie met volle rood-witte tribunes en uitsluitend Veldio-signage. Exacte bron- en WEBP-hashes geregistreerd. Rechtencontrole, feitelijke stadioncontext, score >=8,5/10 en definitieve individuele vrijgave ontbreken nog.",
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "c5d0655f730675579c17846fea822177f7ea0e9ba3be85544ed277031da1e4dd",
+        "notes": "AI-disclaimer in zwarte badge rechtsonder en onduidelijke tribuneopschriften; geen vrijgave."
+      }
     },
     {
       "id": "veldio110d-sm-19722098-hull-brighton-day-report",
