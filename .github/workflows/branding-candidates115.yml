@@ -185,6 +185,14 @@ jobs:
               if(review?.status!=='text-screen-pass-only') continue;
               if(!/^[a-zA-Z0-9_-]+$/.test(item.id)||review.publicationApproved!==false||review.rightsVerified!==false||review.contextVerified!==false) throw Error('Unexpected review state '+item.id);
               const asset=catalog.find(a=>a.id===item.id);
+              if(item.correctedSha256){
+                if(!asset || asset.file!==item.file || asset.approval!=='pending' || asset.sha256!==item.correctedSha256 || review.candidateSha256!==item.correctedSha256 || review.originalSha256!==item.originalSha256) throw Error('Installed candidate binding mismatch '+item.id);
+                const file=dir+'/'+item.id+'.webp';
+                const bytes=fs.readFileSync(asset.file);
+                if(sha(bytes)!==item.correctedSha256 || sha(fs.readFileSync(file))!==item.correctedSha256) throw Error('Installed candidate bytes mismatch '+item.id);
+                rows.push({id:item.id,file,originalFile:asset.file,originalSha256:item.originalSha256,sha256:sha(bytes),caption:asset.caption,reviewStatus:'text-screen-pass-only',publicationApproved:false,rightsVerified:false,contextVerified:false});
+                continue;
+              }
               if(!asset || asset.file!==item.file || asset.sha256!==item.originalSha256 || review.originalSha256!==item.originalSha256) throw Error('Original review binding mismatch '+item.id);
               const src=fs.readFileSync(asset.file);
               if(sha(src)!==item.originalSha256) throw Error('Source bytes changed '+item.id);

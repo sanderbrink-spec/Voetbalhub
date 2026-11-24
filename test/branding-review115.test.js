@@ -44,3 +44,21 @@ test('known defective catalogue bytes stay blocked even after removal or relabel
   assert.equal(accepted({...replacement,brandingAudit115:audit}),true);
  }
 });
+
+test('installed corrected candidates are still pending and hash-bound to staging',()=>{
+ const queue=require('../branding-correction-queue115.json').items;
+ const catalog=require('../image-library49.json').assets;
+ const manifest=require('../artwork-staging115/manifest.json').assets;
+ const fs=require('node:fs'),crypto=require('node:crypto'),path=require('node:path');
+ const digest=file=>crypto.createHash('sha256').update(fs.readFileSync(path.resolve(__dirname,'..',file))).digest('hex');
+ for(const item of queue.filter(x=>x.status==='pixels-corrected-pending-review')){
+  const asset=catalog.find(x=>x.id===item.id),row=manifest.find(x=>x.id===item.id);
+  assert.equal(asset.approval,'pending');
+  assert.equal(asset.sha256,item.correctedSha256);
+  assert.equal(row.sha256,asset.sha256);
+  assert.equal(digest(asset.file),asset.sha256);
+  assert.equal(digest(row.file),asset.sha256);
+  assert.equal(accepted(asset),false);
+  assert.equal(asset.correction115.publicationApproved,false);
+ }
+});
