@@ -1,6 +1,6 @@
 {
   "scope": "Complete catalogue, distinct from production approval flag",
-  "sourceCommit": "cf1d0d18c96f880db4a418f8cd2d8a449d882868",
+  "sourceCommit": "bef4f243c1f0f1f7a7514ff217371bc9cff95d80",
   "total": 122,
   "items": [
     {
@@ -263,9 +263,9 @@
     },
     {
       "id": "veldio69-rumour-1",
-      "sha256": "04d545be13e06698985794ac8e080322b7506152b4750a6380f688e0aa6f6252",
-      "status": "requires-correction",
-      "notes": "Krantenpagina bevat tekstachtige drukregels; vervangen of verwijderen voor strikte tekstregel."
+      "sha256": "5be0631dfab34a769d6e220ad1ca6e78ffcdaab28a5038d574022ae433851ed3",
+      "status": "manual-pass",
+      "notes": "Gericht uitgesneden: blanco notitieblok, pen, telefoon, bal en lamp; alle krantenregels buiten beeld. Geen leesbare tekst, externe logo's of personen. Geschikt voor generieke transfergeruchten."
     },
     {
       "id": "veldio69-contract-1",
@@ -335,9 +335,9 @@
     },
     {
       "id": "veldio69-history-1",
-      "sha256": "ced2caf52018b09b64e8ca5634b85d01af99a41e199b3995cc47e172e3d9babc",
-      "status": "requires-correction",
-      "notes": "Ingelijste historische teamfoto heeft onduidelijke herkomst; vervangen door eigen neutrale illustratie zonder groepsfoto."
+      "sha256": "18a417d7d7e93d14d15d8dc699519271efbd5d86916fed395d413ed7299c0345",
+      "status": "manual-pass",
+      "notes": "Gericht uitgesneden: historische leren voetbal, oude schoen en beker; ingelijste teamfoto volledig buiten beeld. Geen tekst, externe merken of personen. Geschikt voor generieke voetbalgeschiedenis."
     },
     {
       "id": "veldio69-twente-3",
@@ -735,5 +735,6 @@
       "status": "requires-correction",
       "notes": "Stadionidentiteit onvoldoende; wedstrijdcontext open."
     }
-  ]
+  ],
+  "manualPassed": 31
 }

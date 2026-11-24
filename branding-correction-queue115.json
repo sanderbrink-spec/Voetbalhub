@@ -3036,6 +3036,52 @@
         "publicationApproved": false
       },
       "correctedSha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f"
+    },
+    {
+      "id": "veldio69-rumour-1",
+      "file": "public/article-art69/rumour-1.webp",
+      "originalSha256": "04d545be13e06698985794ac8e080322b7506152b4750a6380f688e0aa6f6252",
+      "previousApproval": "approved",
+      "clubs": [],
+      "category": [
+        "rumour"
+      ],
+      "defect": "Krantenpagina bevat tekstachtige drukregels; vervangen of verwijderen voor strikte tekstregel.",
+      "status": "pixels-corrected-approved",
+      "correctedSha256": "5be0631dfab34a769d6e220ad1ca6e78ffcdaab28a5038d574022ae433851ed3",
+      "finalReview115": {
+        "assetSha256": "5be0631dfab34a769d6e220ad1ca6e78ffcdaab28a5038d574022ae433851ed3",
+        "qualityScore": 8.7,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT individual raster review 115D",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true
+      },
+      "correctionSource": "artwork-staging115d/veldio69-rumour-1.webp"
+    },
+    {
+      "id": "veldio69-history-1",
+      "file": "public/article-art69/history-1.webp",
+      "originalSha256": "ced2caf52018b09b64e8ca5634b85d01af99a41e199b3995cc47e172e3d9babc",
+      "previousApproval": "approved",
+      "clubs": [],
+      "category": [
+        "history"
+      ],
+      "defect": "Ingelijste historische teamfoto heeft onduidelijke herkomst; vervangen door eigen neutrale illustratie zonder groepsfoto.",
+      "status": "pixels-corrected-approved",
+      "correctedSha256": "18a417d7d7e93d14d15d8dc699519271efbd5d86916fed395d413ed7299c0345",
+      "finalReview115": {
+        "assetSha256": "18a417d7d7e93d14d15d8dc699519271efbd5d86916fed395d413ed7299c0345",
+        "qualityScore": 8.8,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT individual raster review 115D",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true
+      },
+      "correctionSource": "artwork-staging115d/veldio69-history-1.webp"
     }
   ],
   "candidateReviewSummary115": {
@@ -3045,5 +3091,10 @@
     "publicationApproved": 7,
     "scope": "Actual inspected candidate bytes; no rights/context certification or catalogue release. ADO preview second crop reproduces via existing staging job.",
     "installedPendingFinalReview": 11
+  },
+  "additionalReviews115d": {
+    "newlyIdentifiedDefects": 2,
+    "correctedAndApproved": 2,
+    "scope": "Historical initial counts preserved; two subsequently detected editorial defects corrected."
   }
 }

@@ -9,6 +9,11 @@ const catalog=require('../image-library49.json').assets;
  const rows=[];
  for(const p of plan){
   const a=catalog.find(x=>x.id===p.id);
+  if(a?.correction115?.status==='pixels-corrected-approved'&&a.correction115.originalSha256===p.originalSha256){
+   const existing=JSON.parse(fs.readFileSync(out+'/manifest.json','utf8')).assets.find(x=>x.id===p.id);
+   if(!existing||existing.originalSha256!==p.originalSha256||existing.sha256!==a.sha256||sha(fs.readFileSync(existing.file))!==a.sha256||sha(fs.readFileSync(a.file))!==a.sha256)throw Error('Installed crop hash mismatch '+p.id);
+   rows.push(existing);continue;
+  }
   if(!a||a.file!==p.file||a.sha256!==p.originalSha256||a.brandingAudit115?.status!=='needs-correction')throw Error('Unexpected source binding '+p.id);
   const bytes=fs.readFileSync(p.file);
   if(sha(bytes)!==p.originalSha256)throw Error('Source hash mismatch '+p.id);
