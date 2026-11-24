@@ -2504,7 +2504,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:ajax",
       "homeClubReusable": true,
-      "homeVenueAliases": []
+      "homeVenueAliases": [],
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "0507173b3936e2cf29ee08594bb5ea25764eac88440fae2af4fa9ca7fa5aba75",
+        "notes": "AFC Ajax, Eredivisie, wedstrijdverslag, sjaalopschriften en clubembleem zichtbaar. Nieuwe illustratie vereist."
+      }
     },
     {
       "id": "veldio74-az-preview",
@@ -2714,7 +2721,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:fcgroningen",
       "homeClubReusable": true,
-      "homeVenueAliases": []
+      "homeVenueAliases": [],
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
+        "notes": "AI-tekst in zwarte badge rechtsonder en afwijkende sjaaldetails. Geen vrijgave."
+      }
     },
     {
       "id": "veldio74-fctwente-report",
@@ -2750,7 +2764,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:fctwente",
       "homeClubReusable": true,
-      "homeVenueAliases": []
+      "homeVenueAliases": [],
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
+        "notes": "AI-tekst rechtsonder en kleine onduidelijke tribuneopschriften. Geen vrijgave."
+      }
     },
     {
       "id": "veldio74-fcutrecht-preview",
@@ -2820,7 +2841,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:fcutrecht",
       "homeClubReusable": true,
-      "homeVenueAliases": []
+      "homeVenueAliases": [],
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
+        "notes": "AI-tekst rechtsonder; overige Veldio-branding, volle avondtribunes. Geen vrijgave."
+      }
     },
     {
       "id": "veldio74-feyenoord-preview",
@@ -2961,7 +2989,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:goaheadeagles",
       "homeClubReusable": true,
-      "homeVenueAliases": []
+      "homeVenueAliases": [],
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
+        "notes": "AI-tekst rechtsonder; Veldio-branding en rood-gele volle tribunes. Geen vrijgave."
+      }
     },
     {
       "id": "veldio74-necnijmegen-preview",
@@ -3595,7 +3630,14 @@
       "sourceNativeCropWidth": 1672,
       "qualityReviewNote": "Nieuw 1672x941 bronraster. Stadionvorm, clubidentiteit, Veldio-branding en commerciële rechten nog onafhankelijk controleren; geen score toegekend.",
       "homeVenueAliases": [],
-      "sourceNativeCropHeight": 941
+      "sourceNativeCropHeight": 941,
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
+        "notes": "Dubbele AI-tekst rechtsonder en onduidelijke tribuneopschriften. Geen vrijgave."
+      }
     },
     {
       "id": "veldio97c-nederland-griekenland-preview",
@@ -3871,7 +3913,14 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:hullcity",
       "intakeStatus": "pending-independent-review",
-      "artworkNote": "Originele amberzwarte thuis- en blauwe uitvaksfeer in fictief volledig gevuld dagstadion. Exacte bron en WEBP bytes herleidbaar, geen officiële clublogo's beoogd. Rechten, eindkwaliteit en stadioncontext nog onafhankelijk te beoordelen; geen publicatie."
+      "artworkNote": "Originele amberzwarte thuis- en blauwe uitvaksfeer in fictief volledig gevuld dagstadion. Exacte bron en WEBP bytes herleidbaar, geen officiële clublogo's beoogd. Rechten, eindkwaliteit en stadioncontext nog onafhankelijk te beoordelen; geen publicatie.",
+      "brandingAudit115": {
+        "status": "needs-correction",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visuele inspectie van GitHub-raster",
+        "assetSha256": "1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef",
+        "notes": "AI-tekst in zwarte badge rechtsonder. Geen vrijgave."
+      }
     }
   ]
 }
