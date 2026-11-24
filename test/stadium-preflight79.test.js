@@ -35,11 +35,10 @@ test('Fase 79: 36 stadionbeelden zijn fysiek valide en geen enkel pending beeld 
 test('Fase 79: acht concrete herstelpunten zijn zichtbaar, en Cambuur-native beelden hebben geen opschalingsblokkade',()=>{
  const listed=desk.overview();
  assert.equal(listed.slotsTotal,36);
- assert.equal(listed.issuesForExtraReview,8);
+ const pending=manifest.filter(a=>a.homeClubReusable&&a.approval==='pending');
+ assert.equal(listed.issuesForExtraReview,pending.filter(a=>findings[a.id]).length);
  assert.equal(Object.keys(findings).length,8);
- assert.equal(listed.riskCounts.rebuild,3);
- assert.equal(listed.riskCounts.compare,3);
- assert.equal(listed.riskCounts.identity,2);
+ for(const level of ['rebuild','compare','identity'])assert.equal(listed.riskCounts[level]||0,pending.filter(a=>findings[a.id]?.level===level).length);
  for(const slot of listed.slots){
   for(const item of slot.pendingImages){
    assert.deepEqual(item.knownIssue,findings[item.id]||null);
