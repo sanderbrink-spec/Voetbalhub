@@ -13,7 +13,13 @@
       "upscaled": false,
       "repositoryImported": false,
       "publicationApproved": false,
-      "status": "awaiting-binary-import-and-independent-review"
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "3bc940e3330f16741c840a0950aabf34f5cd03770175b8740f1f01ed6a02492b"
+      }
     },
     {
       "id": "veldio75-fctwente-preview",
@@ -25,7 +31,13 @@
       "upscaled": false,
       "repositoryImported": false,
       "publicationApproved": false,
-      "status": "awaiting-binary-import-and-independent-review"
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "56d79c31b3ade4c27603181970e3ed272164d1ebcc8c1ca6d980991f6de9cb77"
+      }
     },
     {
       "id": "veldio75-sccambuur-preview",
@@ -37,7 +49,13 @@
       "upscaled": false,
       "repositoryImported": false,
       "publicationApproved": false,
-      "status": "awaiting-binary-import-and-independent-review"
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "fa8b89e750924f88177f2b93f6a58af37ec5d5e592f84608adf47470fe6bfd95"
+      }
     },
     {
       "id": "veldio74-az-preview",
@@ -49,7 +67,13 @@
       "upscaled": false,
       "repositoryImported": false,
       "publicationApproved": false,
-      "status": "awaiting-binary-import-and-independent-review"
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "24188b352154fbaefb1765af352d710c299d0e5b10ccb565529503518ab6294c"
+      }
     },
     {
       "id": "veldio69-twente-6",
@@ -61,7 +85,13 @@
       "upscaled": false,
       "repositoryImported": false,
       "publicationApproved": false,
-      "status": "awaiting-binary-import-and-independent-review"
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "07012f3c952cea6a480c73c333d89a413bf1b5dfe66358bc52679a411358fab2"
+      }
     }
   ]
 }
