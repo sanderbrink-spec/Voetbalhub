@@ -4,6 +4,7 @@
 // Every NEW match asset needs an explicit dated visual approval and score.
 const historical = require('./premium-match-raster-baseline72.json');
 const brandingBaseline115 = require('./branding-review-baseline115.json');
+const knownDefects115 = new Map(require('./branding-correction-queue115.json').items.map(item => [item.id, item.originalSha256]));
 const MATCH = new Set(['preview','report','match-analysis','recap']);
 const MIN_SCORE = 8.5;
 const isMatch = asset => Boolean(asset && (asset.fixtureId || asset.imageKind ||
@@ -33,10 +34,8 @@ function reviewedPremium(asset) {
 // New or changed match artwork needs an explicit review of the actual raster.
 // The fixed hash snapshot only preserves previous approvals during re-audit;
 // it is NOT a statement that those images comply with the new rule.
-function brandingAllowed(asset) {
+function fullBrandingReview(asset) {
  const audit=asset?.brandingAudit115;
- if(audit && (audit.assetSha256!==asset?.sha256 || ['needs-correction','already-rejected'].includes(audit.status))) return false;
- if(brandingBaseline115[asset?.id]===asset?.sha256 && typeof asset?.sha256==='string') return true;
  return Boolean(audit?.status==='passed' && audit.assetSha256===asset?.sha256 &&
    audit.veldioOnly===true && audit.noOtherText===true && audit.noThirdPartyLogos===true &&
    audit.disclosureOutsideImage===true &&
@@ -45,10 +44,24 @@ function brandingAllowed(asset) {
    Number.isFinite(Date.parse(audit.reviewedAt)) &&
    /AI[- ]illustratie/i.test(asset?.caption||''));
 }
+function knownDefectBlocked(asset) {
+ if(!knownDefects115.has(asset?.id)) return false;
+ // The original defective bytes must never be released via legacy approval,
+ // a removed audit, or a candidate-only text review.
+ return asset.sha256===knownDefects115.get(asset.id) || !fullBrandingReview(asset);
+}
+function brandingAllowed(asset) {
+ if(knownDefectBlocked(asset)) return false;
+ const audit=asset?.brandingAudit115;
+ if(audit && (audit.assetSha256!==asset?.sha256 || ['needs-correction','already-rejected'].includes(audit.status))) return false;
+ if(brandingBaseline115[asset?.id]===asset?.sha256 && typeof asset?.sha256==='string') return true;
+ return fullBrandingReview(asset);
+}
 function accepted(asset) {
  if(!asset || asset.approval!=='approved' || !asset.reviewer ||
     !asset.rightsEvidence) return false;
  // Known visual defects apply to every catalog category, not just match art.
+ if(knownDefectBlocked(asset)) return false;
  const audit=asset.brandingAudit115;
  if(audit && (audit.assetSha256!==asset.sha256 || ['needs-correction','already-rejected'].includes(audit.status))) return false;
  if(!isMatch(asset)) return true;
