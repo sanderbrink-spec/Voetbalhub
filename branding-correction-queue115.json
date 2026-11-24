@@ -33,7 +33,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "2955414b38ddc8a7a4435d1d83d1450ff39f0d239c2e632e574beb0144008aee",
+        "originalSha256": "c5d0655f730675579c17846fea822177f7ea0e9ba3be85544ed277031da1e4dd",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Tribuneopschriften blijven zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio110b-sm-19715868-eindhoven-rkc-report",
@@ -198,7 +217,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "913db78758a2f10c08b075263edc8f676d6e4db312cf03bd3165dd2fbfadd57e",
+        "originalSha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Tribuneopschriften en onvolledige bezetting.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "groningen43",
@@ -1658,7 +1696,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "7d72c1ec4d0a813134a514faa3db733137bb2f0e5ab49a517365658fd49c568d",
+        "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Veldio-woordmerk onderaan afgesneden; kleinere uitsnede nodig.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-ajax-preview",
@@ -1893,7 +1950,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "2636e4286566e17e74a9cd3801d6aea5b0f36f4e24a5f22d3613a0ddfacd8d4f",
+        "originalSha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection at native size; SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle groen-witte avondtribunes; uitsluitend Veldio en eigen slogan, geen leesbare andere opschriften. Context en rechten nog open.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-fctwente-report",
@@ -1920,7 +1996,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "6205e0d635bacbf4b9f386e3928ac497da2aa1f5439c3c8d687fd53764e6d473",
+        "originalSha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Tribuneopschriften blijven zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-fcutrecht-preview",
@@ -2177,7 +2272,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "6ad39fcf8bf58eef25629b28bbb090c3c1056c989c1f95fbee978e3700f02814",
+        "originalSha256": "56b2be8b618a1060df8168d4aab5c5aa9413c4521532523d711d54db7f8891fb",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection at native size; SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-groen-zwarte dagtribunes; uitsluitend Veldio en eigen slogan. Context en rechten nog open.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-peczwolle-preview",
@@ -2396,7 +2510,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "5b27adf778a75202d8ddd6b5818b8b67278d2ce3866ea57efee8bd8e9d7ffd05",
+        "originalSha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Afwijkende tribuneopschriften blijven zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-fortunasittard-report",
@@ -2523,7 +2656,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "df6a497f6d18c69c87db72f748c36dd861d1d9d657648d92e64686d9b5c387bc",
+        "originalSha256": "c203fa573d6d6548fafbd60780225c83e649420af2d29c3738610d1b2bda2deb",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Niet-Veldio tribuneopschriften blijven zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-sccambuur-preview",
@@ -2596,7 +2748,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "0c4c98de82e970a9f5893131266417f48310275054a2902a7b0df58f96ebdda6",
+        "originalSha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "SC CAMBUUR op dak blijft zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-scheerenveen-preview",
@@ -2623,7 +2794,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "45fd09b3b5d82f7c9f0789ab5b43332cb6c675dcae03038512cd6ba29587580c",
+        "originalSha256": "ff98fa290dcd7a1e70e187686184b3e5fead3c17682a5583708d736a681abc42",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Onleesbare dakopschriften blijven zichtbaar; onvoldoende scherp.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-scheerenveen-report",
@@ -2650,7 +2840,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "021fc37de48f922edef5e2ca74a44e935bd85ca6a1b94708d96730e1f49eacc4",
+        "originalSha256": "17e6a12ac2f5dbaa75adf791a49d93d2af4c7d03810c52b5352e680e94896152",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Onleesbare dakopschriften blijven zichtbaar; onvoldoende scherp.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-spartarotterdam-preview",
@@ -2700,10 +2909,10 @@
     }
   ],
   "candidateReviewSummary115": {
-    "textScreenPassed": 15,
-    "needsFurtherPixelCorrection": 1,
-    "candidatesReviewed": 16,
+    "textScreenPassed": 17,
+    "needsFurtherPixelCorrection": 10,
+    "candidatesReviewed": 27,
     "publicationApproved": 0,
-    "scope": "Actual candidate bytes reviewed, catalogue unchanged; all candidate SHA256 hashes verified locally. No rights or context certification."
+    "scope": "17 text-screen-only passes, 10 candidates with remaining defects. Actual candidate hashes checked, no rights/context certification or catalogue release."
   }
 }
