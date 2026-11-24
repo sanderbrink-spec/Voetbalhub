@@ -8,7 +8,7 @@ const registered=require('../image-library49.json').assets;
 const original=registered.find(a=>a.id==='veldio74-fctwente-report');
 function inMemoryApproval(){
  const home=library.context?require('../stadium-venue74').norm(original.clubs[0]):'fctwente';
- return {...original,brandingAudit115:require('../test-support/branding-fixture115')(original.sha256),approval:'approved',reviewer:'synthetic test only, not a real review',
+ return {...original,id:'synthetic-daypart109c',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(original.sha256),approval:'approved',reviewer:'synthetic test only, not a real review',
   approvedAt:'2026-11-22',visualReview:{
    score:9,style:'photorealistic',assetSha256:original.sha256,
    checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},
