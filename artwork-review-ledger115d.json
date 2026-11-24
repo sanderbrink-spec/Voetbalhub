@@ -504,8 +504,8 @@
     {
       "id": "veldio74-adodenhaag-preview",
       "sha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
-      "status": "manual-pass",
-      "notes": "Lege overdekte enkelvoudige tribune, donkergroene en gele stoelen conform WerkTalent Stadion. Illustratief perspectief en eigen Veldio-signage; geen documentaire claim."
+      "status": "requires-resolution-repair",
+      "notes": "Lege overdekte enkelvoudige tribune, donkergroene en gele stoelen conform WerkTalent Stadion. Illustratief perspectief en eigen Veldio-signage; geen documentaire claim. Native raster 1024×576; minimum 1280×720. Visuele beoordeling behouden, geen vrijgave."
     },
     {
       "id": "veldio74-ajax-preview",
@@ -546,8 +546,8 @@
     {
       "id": "veldio74-fcgroningen-preview",
       "sha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
-      "status": "manual-pass",
-      "notes": "Groene tribunes in twee ringen, open dak en daglicht; grote fictieve Veldio-reclame en niet-letterlijke stoelpatronen. Past bij de herkenbare Euroborg-context als illustratie."
+      "status": "requires-resolution-repair",
+      "notes": "Groene tribunes in twee ringen, open dak en daglicht; grote fictieve Veldio-reclame en niet-letterlijke stoelpatronen. Past bij de herkenbare Euroborg-context als illustratie. Native raster 1136×639; minimum 1280×720. Visuele beoordeling behouden, geen vrijgave."
     },
     {
       "id": "veldio74-fcgroningen-report",
@@ -576,8 +576,8 @@
     {
       "id": "veldio74-feyenoord-preview",
       "sha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
-      "status": "manual-pass",
-      "notes": "Karakteristieke ovale tribunes met twee niveaus en doorlopend gebogen stalen dak, consistent met De Kuip. Stoelkleuren zijn artistiek rood-wit in plaats van exacte weergave; geen documentaire claim."
+      "status": "requires-resolution-repair",
+      "notes": "Karakteristieke ovale tribunes met twee niveaus en doorlopend gebogen stalen dak, consistent met De Kuip. Stoelkleuren zijn artistiek rood-wit in plaats van exacte weergave; geen documentaire claim. Native raster 1136×639; minimum 1280×720. Visuele beoordeling behouden, geen vrijgave."
     },
     {
       "id": "veldio74-fortunasittard-preview",
@@ -588,14 +588,14 @@
     {
       "id": "veldio74-goaheadeagles-preview",
       "sha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
-      "status": "manual-pass",
-      "notes": "Compacte afzonderlijke overdekte tribunes vlak bij veld, rood-geel, lichtmast, leeg bij daglicht. Geen exacte kopie."
+      "status": "requires-resolution-repair",
+      "notes": "Compacte afzonderlijke overdekte tribunes vlak bij veld, rood-geel, lichtmast, leeg bij daglicht. Geen exacte kopie. Native raster 1136×639; minimum 1280×720. Visuele beoordeling behouden, geen vrijgave."
     },
     {
       "id": "veldio74-goaheadeagles-report",
       "sha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
-      "status": "manual-pass",
-      "notes": "Compacte overdekte tribunes, rood-geel, volle tribunes onder kunstlicht; herkenbare context, geen documentaire claim."
+      "status": "requires-resolution-repair",
+      "notes": "Compacte overdekte tribunes, rood-geel, volle tribunes onder kunstlicht; herkenbare context, geen documentaire claim. Native raster 1136×639; minimum 1280×720. Visuele beoordeling behouden, geen vrijgave."
     },
     {
       "id": "veldio74-necnijmegen-preview",
@@ -630,8 +630,8 @@
     {
       "id": "veldio75-fctwente-preview",
       "sha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
-      "status": "manual-pass",
-      "notes": "Rode tribunes in twee lagen en rode dakconstructie sluiten aan bij Grolsch Veste; leeg bij daglicht. Artistieke afwijkingen toegestaan, geen exacte documentaire foto."
+      "status": "requires-resolution-repair",
+      "notes": "Rode tribunes in twee lagen en rode dakconstructie sluiten aan bij Grolsch Veste; leeg bij daglicht. Artistieke afwijkingen toegestaan, geen exacte documentaire foto. Native raster 1136×639; minimum 1280×720. Visuele beoordeling behouden, geen vrijgave."
     },
     {
       "id": "veldio75-feyenoord-report",
@@ -666,8 +666,8 @@
     {
       "id": "veldio75-sccambuur-preview",
       "sha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
-      "status": "manual-pass",
-      "notes": "Lege steile blauw-gele losse tribunes dicht bij veld met hoge lichtmasten; correspondeert met Kooi Stadion. Geen nagebootste officiële opschriften; stoelpatroon illustratief."
+      "status": "requires-resolution-repair",
+      "notes": "Lege steile blauw-gele losse tribunes dicht bij veld met hoge lichtmasten; correspondeert met Kooi Stadion. Geen nagebootste officiële opschriften; stoelpatroon illustratief. Native raster 1136×639; minimum 1280×720. Visuele beoordeling behouden, geen vrijgave."
     },
     {
       "id": "veldio75-sccambuur-report",
@@ -736,5 +736,5 @@
       "notes": "Stadionidentiteit onvoldoende; wedstrijdcontext open."
     }
   ],
-  "manualPassed": 31
+  "manualPassed": 24
 }
