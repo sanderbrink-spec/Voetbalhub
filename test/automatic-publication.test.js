@@ -194,8 +194,9 @@ test('checked cup evidence reaches the writer but publication waits for matching
 for(const hasHalf of [true,false])test('registered match uses compact format with halftime='+hasHalf+' during source outage and recovers legacy queue once',async t=>{
  const library=require('../image-library49');
  const rows=library.catalog();
- const example=rows.find(asset=>asset.id==='groningen43');
- t.mock.method(library,'catalog',()=>[...rows,{...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
+ const example=require('../image-library49.json').assets.find(asset=>asset.id==='groningen43');
+ const syntheticBranding=require('../test-support/branding-fixture115')(example.sha256);
+ t.mock.method(library,'catalog',()=>[...rows,{...example,manualReview115:undefined,brandingAudit115:syntheticBranding,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
   imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fctwente',
   visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}}]);
  const {fingerprint}=require('../editorial-drafts');
