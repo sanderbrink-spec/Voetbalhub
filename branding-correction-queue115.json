@@ -6,7 +6,7 @@
     "textScreenOnly": 33,
     "rejected": 1
   },
-  "warning": "18 corrected raster candidates installed; four passed internal final review on review branch only, 14 remain pending. Original defect hashes retained; production not deployed.",
+  "warning": "18 corrected raster candidates installed; seven passed internal final review on review branch only, 11 remain pending. Original defect hashes retained; production not deployed.",
   "items": [
     {
       "id": "veldio110b-sm-19714592-ajax-ado-day-report",
@@ -1692,7 +1692,7 @@
       "sceneDaypart": "day",
       "defect": "AI-disclaimer onderaan. Geen vrijgave.",
       "priority": 3,
-      "status": "pixels-corrected-pending-review",
+      "status": "pixels-corrected-approved",
       "required": [
         "correct or replace original raster",
         "inspect actual pixels at native resolution",
@@ -1738,7 +1738,20 @@
         "contextVerified": false,
         "publicationApproved": false
       },
-      "correctedSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6"
+      "correctedSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+      "finalReview115": {
+        "assetSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
+        "contextSources": [
+          "https://adodenhaag.nl/nl/club/werktalent-stadion/geschiedenis",
+          "https://sportdaten.spiegel.de/spielort/ve617/werktalent-stadion/profil/"
+        ]
+      }
     },
     {
       "id": "veldio74-ajax-preview",
@@ -2120,7 +2133,7 @@
       "sceneDaypart": "day",
       "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
       "priority": 3,
-      "status": "pixels-corrected-pending-review",
+      "status": "pixels-corrected-approved",
       "required": [
         "correct or replace original raster",
         "inspect actual pixels at native resolution",
@@ -2147,7 +2160,21 @@
         "contextVerified": false,
         "publicationApproved": false
       },
-      "correctedSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08"
+      "correctedSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+      "finalReview115": {
+        "assetSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
+        "contextSources": [
+          "https://www.dekuip.com/en/stadion-feijenoord/history",
+          "https://www.zja.nl/en/Feijenoord-stadium-Rotterdam",
+          "https://www.dekuip.com/en/tour-museum/tours/stadium-tour"
+        ]
+      }
     },
     {
       "id": "veldio74-fortunasittard-preview",
@@ -2782,7 +2809,7 @@
       "sceneDaypart": "day",
       "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
       "priority": 3,
-      "status": "pixels-corrected-pending-review",
+      "status": "pixels-corrected-approved",
       "required": [
         "correct or replace original raster",
         "inspect actual pixels at native resolution",
@@ -2809,7 +2836,21 @@
         "contextVerified": false,
         "publicationApproved": false
       },
-      "correctedSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea"
+      "correctedSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+      "finalReview115": {
+        "assetSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
+        "contextSources": [
+          "https://cambuur.nl/stadion058/algemeen/",
+          "https://www.tsv.nl/project/cambuur-stadion/",
+          "https://www.vi.nl/nieuws/1658810/cambuur-voetbalt-in-nieuw-onaf-stadion-de-hele-stad-is-hieraan-toe"
+        ]
+      }
     },
     {
       "id": "veldio75-sccambuur-report",
@@ -3001,8 +3042,8 @@
     "textScreenPassed": 18,
     "needsFurtherPixelCorrection": 9,
     "candidatesReviewed": 27,
-    "publicationApproved": 4,
+    "publicationApproved": 7,
     "scope": "Actual inspected candidate bytes; no rights/context certification or catalogue release. ADO preview second crop reproduces via existing staging job.",
-    "installedPendingFinalReview": 14
+    "installedPendingFinalReview": 11
   }
 }

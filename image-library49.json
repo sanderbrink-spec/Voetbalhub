@@ -3504,9 +3504,9 @@
       "variant": "stadium76-veldio74-adodenhaag-preview-no-score-pending",
       "origin": "Originele Veldio AI-illustratie, fase 76; bron: veldio_stadion_in_groen_en_geel.png",
       "rights": "original-ai",
-      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.; Gecorrigeerde kandidaat SHA256 5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6; geen nieuwe rechtenvrijgave.",
-      "approval": "pending",
-      "reviewer": "",
+      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.; Gecorrigeerde kandidaat SHA256 5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6; geen nieuwe rechtenvrijgave.; Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
       "caption": "Veldio AI-illustratie. Geen echte wedstrijdfoto, geen echte wedstrijdstand.",
@@ -3531,10 +3531,10 @@
         "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
         "stagingFile": "artwork-staging115/veldio74-adodenhaag-preview.webp",
         "sourceGitBlob": "b1ce61a400697e061247e295ca2eba343d5806f2",
-        "status": "pixels-corrected-pending-review",
-        "rightsVerified": false,
-        "contextVerified": false,
-        "publicationApproved": false,
+        "status": "pixels-corrected-approved",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
         "visualPrecheck": {
           "score": 8.5,
           "minimum": 8.5,
@@ -3551,6 +3551,45 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "approvedAt": "2026-11-24",
+      "visualReview": {
+        "score": 8.5,
+        "style": "photorealistic",
+        "assetSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        },
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "clubScope": "home-only",
+        "scopeHome": "adodenhaag",
+        "reviewedStadiumIdentity": "home:adodenhaag",
+        "notes": "Lege overdekte enkelvoudige tribune, donkergroene en gele stoelen conform WerkTalent Stadion. Illustratief perspectief en eigen Veldio-signage; geen documentaire claim.",
+        "contextSources": [
+          "https://adodenhaag.nl/nl/club/werktalent-stadion/geschiedenis",
+          "https://sportdaten.spiegel.de/spielort/ve617/werktalent-stadion/profil/"
+        ]
+      },
+      "manualReview115": {
+        "status": "passed",
+        "assetSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "qualityScore": 8.5,
+        "brandingVerified": true,
+        "contextVerified": true,
+        "rightsReview": "Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
+        "notes": "Lege overdekte enkelvoudige tribune, donkergroene en gele stoelen conform WerkTalent Stadion. Illustratief perspectief en eigen Veldio-signage; geen documentaire claim.",
+        "contextSources": [
+          "https://adodenhaag.nl/nl/club/werktalent-stadion/geschiedenis",
+          "https://sportdaten.spiegel.de/spielort/ve617/werktalent-stadion/profil/"
+        ],
+        "publicationApproved": true
       }
     },
     {
@@ -4092,7 +4131,9 @@
           "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
           "contextVerified": false,
           "rightsVerified": false,
-          "publicationApproved": false
+          "publicationApproved": false,
+          "contextCheck": "requires-further-context-or-replacement",
+          "contextNotes": "Referentiefoto en architect tonen doorlopende dakconstructie; kandidaat toont afwijkende open hoek en losse boogdaken. Context onvoldoende."
         }
       }
     },
@@ -4163,7 +4204,9 @@
           "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
           "contextVerified": false,
           "rightsVerified": false,
-          "publicationApproved": false
+          "publicationApproved": false,
+          "contextCheck": "requires-further-context-or-replacement",
+          "contextNotes": "Zelfde afwijkende dakconstructie als preview, context onvoldoende."
         }
       }
     },
@@ -4190,9 +4233,9 @@
       "variant": "stadium76-veldio74-feyenoord-preview-no-score-pending",
       "origin": "Originele Veldio AI-illustratie, fase 76; bron: veldio_in_een_lege_voetbaltempel.png",
       "rights": "original-ai",
-      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.; Gecorrigeerde kandidaat SHA256 7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08; geen nieuwe rechtenvrijgave.",
-      "approval": "pending",
-      "reviewer": "",
+      "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.; Gecorrigeerde kandidaat SHA256 7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08; geen nieuwe rechtenvrijgave.; Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
       "caption": "Veldio AI-illustratie. Geen echte wedstrijdfoto, geen echte wedstrijdstand.",
@@ -4217,10 +4260,10 @@
         "originalSha256": "1ae94dcbd2af8aae52f73a0bc8f9393951530f3a6b65fd95b5f8afa5bbaae213",
         "stagingFile": "artwork-staging115/veldio74-feyenoord-preview.webp",
         "sourceGitBlob": "e71033c9c1b4655dd41113ee24a27f4911257d4b",
-        "status": "pixels-corrected-pending-review",
-        "rightsVerified": false,
-        "contextVerified": false,
-        "publicationApproved": false,
+        "status": "pixels-corrected-approved",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
         "visualPrecheck": {
           "score": 8.6,
           "minimum": 8.5,
@@ -4237,6 +4280,47 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "approvedAt": "2026-11-24",
+      "visualReview": {
+        "score": 8.5,
+        "style": "photorealistic",
+        "assetSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        },
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "clubScope": "home-only",
+        "scopeHome": "feyenoord",
+        "reviewedStadiumIdentity": "home:feyenoord",
+        "notes": "Karakteristieke ovale tribunes met twee niveaus en doorlopend gebogen stalen dak, consistent met De Kuip. Stoelkleuren zijn artistiek rood-wit in plaats van exacte weergave; geen documentaire claim.",
+        "contextSources": [
+          "https://www.dekuip.com/en/stadion-feijenoord/history",
+          "https://www.zja.nl/en/Feijenoord-stadium-Rotterdam",
+          "https://www.dekuip.com/en/tour-museum/tours/stadium-tour"
+        ]
+      },
+      "manualReview115": {
+        "status": "passed",
+        "assetSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "qualityScore": 8.5,
+        "brandingVerified": true,
+        "contextVerified": true,
+        "rightsReview": "Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
+        "notes": "Karakteristieke ovale tribunes met twee niveaus en doorlopend gebogen stalen dak, consistent met De Kuip. Stoelkleuren zijn artistiek rood-wit in plaats van exacte weergave; geen documentaire claim.",
+        "contextSources": [
+          "https://www.dekuip.com/en/stadion-feijenoord/history",
+          "https://www.zja.nl/en/Feijenoord-stadium-Rotterdam",
+          "https://www.dekuip.com/en/tour-museum/tours/stadium-tour"
+        ],
+        "publicationApproved": true
       }
     },
     {
@@ -4306,7 +4390,9 @@
           "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
           "contextVerified": false,
           "rightsVerified": false,
-          "publicationApproved": false
+          "publicationApproved": false,
+          "contextCheck": "requires-further-context-or-replacement",
+          "contextNotes": "Referentiefoto toont afwijkend stadion en donkere zitplaatsen; kleuren alleen zijn onvoldoende."
         }
       }
     },
@@ -4744,7 +4830,9 @@
           "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
           "contextVerified": false,
           "rightsVerified": false,
-          "publicationApproved": false
+          "publicationApproved": false,
+          "contextCheck": "requires-further-context-or-replacement",
+          "contextNotes": "Actuele verbouwing 2025 en afwijkende tribuneconfiguratie nog niet afdoende te rijmen met raster."
         }
       }
     },
@@ -5210,9 +5298,9 @@
       "variant": "stadium78-sccambuur-preview-native-review",
       "origin": "Origineel Veldio AI-beeld uit gesprek: a_crisp_ultra_realistic_wide_angle_stadium_scene.png; volledige 1672x941 bron, fase 78",
       "rights": "original-ai",
-      "rightsEvidence": "AI-herkomst uit Veldio-conversatie gedocumenteerd; definitieve visuele stadion-, merken- en commerciële rechtencontrole blijft verplicht.; Gecorrigeerde kandidaat SHA256 b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea; geen nieuwe rechtenvrijgave.",
-      "approval": "pending",
-      "reviewer": "",
+      "rightsEvidence": "AI-herkomst uit Veldio-conversatie gedocumenteerd; definitieve visuele stadion-, merken- en commerciële rechtencontrole blijft verplicht.; Gecorrigeerde kandidaat SHA256 b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea; geen nieuwe rechtenvrijgave.; Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
+      "approval": "approved",
+      "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
       "caption": "Veldio AI-illustratie voor SC Cambuur. Geen echte wedstrijdfoto. Beeld wacht op kwaliteits- en rechtencontrole.",
@@ -5240,10 +5328,10 @@
         "originalSha256": "9f68d0d22bc48d1e76b4a8e32cf38d8fee8738cfba965aad3491945cdba9b871",
         "stagingFile": "artwork-staging115/veldio75-sccambuur-preview.webp",
         "sourceGitBlob": "c4412288d6ea86e64a376d94c0a4e62566ec1bb7",
-        "status": "pixels-corrected-pending-review",
-        "rightsVerified": false,
-        "contextVerified": false,
-        "publicationApproved": false,
+        "status": "pixels-corrected-approved",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
         "visualPrecheck": {
           "score": 8.5,
           "minimum": 8.5,
@@ -5261,6 +5349,47 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "approvedAt": "2026-11-24",
+      "visualReview": {
+        "score": 8.5,
+        "style": "photorealistic",
+        "assetSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        },
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "clubScope": "home-only",
+        "scopeHome": "sccambuur",
+        "reviewedStadiumIdentity": "home:sccambuur",
+        "notes": "Lege steile blauw-gele losse tribunes dicht bij veld met hoge lichtmasten; correspondeert met Kooi Stadion. Geen nagebootste officiële opschriften; stoelpatroon illustratief.",
+        "contextSources": [
+          "https://cambuur.nl/stadion058/algemeen/",
+          "https://www.tsv.nl/project/cambuur-stadion/",
+          "https://www.vi.nl/nieuws/1658810/cambuur-voetbalt-in-nieuw-onaf-stadion-de-hele-stad-is-hieraan-toe"
+        ]
+      },
+      "manualReview115": {
+        "status": "passed",
+        "assetSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "qualityScore": 8.5,
+        "brandingVerified": true,
+        "contextVerified": true,
+        "rightsReview": "Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
+        "notes": "Lege steile blauw-gele losse tribunes dicht bij veld met hoge lichtmasten; correspondeert met Kooi Stadion. Geen nagebootste officiële opschriften; stoelpatroon illustratief.",
+        "contextSources": [
+          "https://cambuur.nl/stadion058/algemeen/",
+          "https://www.tsv.nl/project/cambuur-stadion/",
+          "https://www.vi.nl/nieuws/1658810/cambuur-voetbalt-in-nieuw-onaf-stadion-de-hele-stad-is-hieraan-toe"
+        ],
+        "publicationApproved": true
       }
     },
     {
