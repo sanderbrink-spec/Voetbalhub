@@ -62,3 +62,17 @@ test('installed corrected candidates are still pending and hash-bound to staging
   assert.equal(asset.correction115.publicationApproved,false);
  }
 });
+
+test('final reviewed corrected candidates remain hash-bound and satisfy existing publication gate',()=>{
+ const queue=require('../branding-correction-queue115.json').items;
+ const catalog=require('../image-library49.json').assets;
+ const fs=require('node:fs'),crypto=require('node:crypto'),path=require('node:path');
+ for(const item of queue.filter(x=>x.status==='pixels-corrected-approved')){
+  const asset=catalog.find(x=>x.id===item.id);
+  assert.equal(asset.sha256,item.correctedSha256);
+  assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.resolve(__dirname,'..',asset.file))).digest('hex'),asset.sha256);
+  assert.equal(item.finalReview115.assetSha256,asset.sha256);
+  assert.equal(accepted(asset),true);
+  assert.equal(accepted({...asset,sha256:item.originalSha256}),false);
+ }
+});

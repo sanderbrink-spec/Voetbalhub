@@ -6,7 +6,7 @@
     "textScreenOnly": 33,
     "rejected": 1
   },
-  "warning": "18 corrected raster candidates installed on the review branch only, still pending final context, rights and visual review. No new publication approval; original defect hashes retained.",
+  "warning": "18 corrected raster candidates installed; four passed internal final review on review branch only, 14 remain pending. Original defect hashes retained; production not deployed.",
   "items": [
     {
       "id": "veldio110b-sm-19714592-ajax-ado-day-report",
@@ -1920,7 +1920,7 @@
       "sceneDaypart": "day",
       "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
       "priority": 3,
-      "status": "pixels-corrected-pending-review",
+      "status": "pixels-corrected-approved",
       "required": [
         "correct or replace original raster",
         "inspect actual pixels at native resolution",
@@ -1947,7 +1947,20 @@
         "contextVerified": false,
         "publicationApproved": false
       },
-      "correctedSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9"
+      "correctedSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+      "finalReview115": {
+        "assetSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
+        "contextSources": [
+          "https://www.rollecate.nl/en/projects/euroborg-groningen",
+          "https://www.dagjeweg.nl/nieuwsredactie/26491/Stap-in-de-voetsporen-van-je-voetbalhelden%21"
+        ]
+      }
     },
     {
       "id": "veldio74-fcgroningen-report",
@@ -2201,7 +2214,7 @@
       "sceneDaypart": "day",
       "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
       "priority": 3,
-      "status": "pixels-corrected-pending-review",
+      "status": "pixels-corrected-approved",
       "required": [
         "correct or replace original raster",
         "inspect actual pixels at native resolution",
@@ -2228,7 +2241,20 @@
         "contextVerified": false,
         "publicationApproved": false
       },
-      "correctedSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887"
+      "correctedSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+      "finalReview115": {
+        "assetSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
+        "contextSources": [
+          "https://eredivisie.com/news/the-stands-of-go-ahead-eagles/",
+          "https://www.coliseum-online.com/go-ahead-eagles-home-stadium-rejig-go-ahead/"
+        ]
+      }
     },
     {
       "id": "veldio74-goaheadeagles-report",
@@ -2248,7 +2274,7 @@
       "sceneDaypart": "night",
       "defect": "AI-tekst rechtsonder; Veldio-branding en rood-gele volle tribunes. Geen vrijgave.",
       "priority": 3,
-      "status": "pixels-corrected-pending-review",
+      "status": "pixels-corrected-approved",
       "required": [
         "correct or replace original raster",
         "inspect actual pixels at native resolution",
@@ -2275,7 +2301,20 @@
         "contextVerified": false,
         "publicationApproved": false
       },
-      "correctedSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e"
+      "correctedSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+      "finalReview115": {
+        "assetSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+        "qualityScore": 8.6,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
+        "contextSources": [
+          "https://eredivisie.com/news/the-stands-of-go-ahead-eagles/",
+          "https://www.coliseum-online.com/go-ahead-eagles-home-stadium-rejig-go-ahead/"
+        ]
+      }
     },
     {
       "id": "veldio74-necnijmegen-preview",
@@ -2490,7 +2529,7 @@
       "sceneDaypart": "day",
       "defect": "Dubbele AI-disclaimer rechtsonder. Geen vrijgave.",
       "priority": 3,
-      "status": "pixels-corrected-pending-review",
+      "status": "pixels-corrected-approved",
       "required": [
         "correct or replace original raster",
         "inspect actual pixels at native resolution",
@@ -2517,7 +2556,20 @@
         "contextVerified": false,
         "publicationApproved": false
       },
-      "correctedSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703"
+      "correctedSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+      "finalReview115": {
+        "assetSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+        "qualityScore": 8.8,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true,
+        "contextSources": [
+          "https://www.twentefans.nl/aanpassing-in-grolsch-veste-indrukwekkende-lichtshows-mogelijk/",
+          "https://www.whsports.nl/en/projects/new-business-seats-for-fc-twente"
+        ]
+      }
     },
     {
       "id": "veldio75-feyenoord-report",
@@ -2949,8 +3001,8 @@
     "textScreenPassed": 18,
     "needsFurtherPixelCorrection": 9,
     "candidatesReviewed": 27,
-    "publicationApproved": 0,
+    "publicationApproved": 4,
     "scope": "Actual inspected candidate bytes; no rights/context certification or catalogue release. ADO preview second crop reproduces via existing staging job.",
-    "installedPendingFinalReview": 18
+    "installedPendingFinalReview": 14
   }
 }
