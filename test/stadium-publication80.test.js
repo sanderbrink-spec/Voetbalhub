@@ -9,7 +9,7 @@ const staged=require('../image-library49.json').assets.filter(a=>a.homeClubReusa
 // All receipts in this test are synthetic fixtures. No real image is approved or released.
 function syntheticApproved(a){
  const home=norm(a.clubs[0]);
- return {...a,approval:'approved',reviewer:'Synthetic QA only',visualReview:{
+ return {...a,brandingAudit115:require('../test-support/branding-fixture115')(a.sha256),approval:'approved',reviewer:'Synthetic QA only',visualReview:{
   score:8.5,style:'photorealistic',assetSha256:a.sha256,
   checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},
   reviewer:'Synthetic QA only',reviewedAt:'2026-11-12',
@@ -21,7 +21,7 @@ test('Fase 80: goedgekeurde stadionbeelden zijn per thuisclub en beeldtype selec
  const reviewed=staged.map(syntheticApproved);
  for(const a of reviewed)assert.equal(premium.accepted(a),true,a.id);
  for(const a of staged){
-  const pending={...a,approval:'pending',reviewer:'',visualReview:undefined};
+  const pending={...a,brandingAudit115:require('../test-support/branding-fixture115')(a.sha256),approval:'pending',reviewer:'',visualReview:undefined};
   assert.equal(premium.accepted(pending),false,a.id);
   const club=a.clubs[0],opponent=norm(club)==='ajax'?'PSV':'Ajax';
   const ctx={category:a.imageKind,clubs:[club,opponent],daypart:a.sceneDaypart,

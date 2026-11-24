@@ -38,6 +38,12 @@ jobs:
             for (const id of targets) {
               const asset = catalog.find(a => a.id === id);
               const item = queue.find(a => a.id === id);
+              if (asset && item && item.correctedSha256 === asset.sha256 && item.originalSha256 !== asset.sha256) {
+                const current = fs.readFileSync(asset.file);
+                if (sha(current) !== item.correctedSha256) throw Error('Correction hash mismatch: ' + id);
+                results.push({id, status:'already-corrected', sha256:asset.sha256});
+                continue;
+              }
               if (!asset || !item || asset.approval !== 'pending' || item.status !== 'pixels-not-corrected' || !/AI-(tekst|disclaimer)/i.test(item.defect)) throw Error('Unexpected audit state: ' + id);
               const original = fs.readFileSync(asset.file);
               if (sha(original) !== item.originalSha256 || sha(original) !== asset.sha256) throw Error('Source hash changed: ' + id);
