@@ -25,7 +25,12 @@ test('Fase 75: 13 extra review-only images are SHA bound, not automatically publ
   const b=fs.readFileSync(path.join(__dirname,'..',a.file));
   assert.equal(crypto.createHash('sha256').update(b).digest('hex'),a.sha256);
   const meta=await sharp(b).metadata();
-  assert.equal(meta.width,1280);assert.equal(meta.height,720);assert.equal(meta.format,'webp');
+  if(a.technicalReview115?.assetSha256===a.sha256){
+   assert.equal(a.approval,'pending');
+   assert.equal(meta.width,a.technicalReview115.width);
+   assert.equal(meta.height,a.technicalReview115.height);
+   assert.ok(meta.width<1280||meta.height<720);
+  }else{assert.equal(meta.width,1280);assert.equal(meta.height,720);}assert.equal(meta.format,'webp');
  }
  library.validate(all);
  assert.equal(review.clubs.length,18);
