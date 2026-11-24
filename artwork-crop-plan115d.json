@@ -1,0 +1,24 @@
+[
+  {
+    "id": "veldio69-rumour-1",
+    "file": "public/article-art69/rumour-1.webp",
+    "originalSha256": "04d545be13e06698985794ac8e080322b7506152b4750a6380f688e0aa6f6252",
+    "crop": [
+      224,
+      90,
+      1056
+    ],
+    "reason": "Krantenpagina bevat tekstachtige drukregels; vervangen of verwijderen voor strikte tekstregel."
+  },
+  {
+    "id": "veldio69-history-1",
+    "file": "public/article-art69/history-1.webp",
+    "originalSha256": "ced2caf52018b09b64e8ca5634b85d01af99a41e199b3995cc47e172e3d9babc",
+    "crop": [
+      0,
+      70,
+      960
+    ],
+    "reason": "Ingelijste historische teamfoto heeft onduidelijke herkomst; vervangen door eigen neutrale illustratie zonder groepsfoto."
+  }
+]

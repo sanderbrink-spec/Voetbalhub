@@ -1,0 +1,739 @@
+{
+  "scope": "Complete catalogue, distinct from production approval flag",
+  "sourceCommit": "cf1d0d18c96f880db4a418f8cd2d8a449d882868",
+  "total": 122,
+  "items": [
+    {
+      "id": "heerenveen43",
+      "sha256": "f005717efb788dc10730a0ff39e026eebc4702ba8f6330d34e0c5c1e727c3f51",
+      "status": "requires-context-or-replacement",
+      "notes": "Blauw-witte en rood-zwart-groene sjaals; volle onscherpe tribunes, exacte thuisstadioncontext niet aantoonbaar."
+    },
+    {
+      "id": "feyenoord43",
+      "sha256": "8e3ddf291ee355d6dec7bf2b43f22ee7f0c86354e20a2fd30756a63bb9e61ed3",
+      "status": "requires-context-or-replacement",
+      "notes": "Rood-witte en groen-gele sjaals; volle tribunes, exacte thuisstadioncontext niet aantoonbaar."
+    },
+    {
+      "id": "ajax43",
+      "sha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
+      "status": "requires-context-or-replacement",
+      "notes": "Rood-witte en rood-zwart-witte sjaal; volle tribunes, stadioncontext niet aantoonbaar."
+    },
+    {
+      "id": "psv43",
+      "sha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
+      "status": "requires-context-or-replacement",
+      "notes": "Rood-witte en rood-wit-blauwe sjaals; volle tribunes, stadioncontext niet aantoonbaar."
+    },
+    {
+      "id": "midtjylland43",
+      "sha256": "922f7b6956799d7b782ee65131342e8d5748695bfb4196ddae6886f20bbc3447",
+      "status": "requires-context-or-replacement",
+      "notes": "Kleedkamer met correcte sjaalkleuren; geen zichtbaar leeg stadion voor oorspronkelijke preview."
+    },
+    {
+      "id": "willem43",
+      "sha256": "d397f4a696a9866375474f2f72d6b5d3ebd361f4feacfce13225966b46002e2f",
+      "status": "requires-context-or-replacement",
+      "notes": "Correcte sjaalkleuren, maar volle tribune bij oorspronkelijke voorbeschouwing."
+    },
+    {
+      "id": "emmen43",
+      "sha256": "0a6a3c6709eb1f85b83a56cacc9a89c96f826069a02c8d6c54033fede78bb5b1",
+      "status": "requires-context-or-replacement",
+      "notes": "Correcte sjaalkleuren, maar volle tribune bij oorspronkelijke voorbeschouwing."
+    },
+    {
+      "id": "groningen43",
+      "sha256": "bacf9ec40555f9b15435667da78761b13f37b02f4ffd5a6e272fff8fd273ff98",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "neutral-arena49",
+      "sha256": "9827c7dbb48ac6142389ba4c0edfb6084e876592ef97eb771e2559f7af5ccc4a",
+      "status": "manual-pass",
+      "notes": "Fictieve arena met bal; geen tekst, clublogo of herkenbaar persoon. Alleen neutrale sfeerillustratie."
+    },
+    {
+      "id": "rules49-penalty-mark",
+      "sha256": "a8b205deaa26d250feb08cdfb7d735e2548c9f402e9cff1fa705b8315b65f7c3",
+      "status": "manual-pass",
+      "notes": "Eigen schematisch raster; strafschopstip correct gemarkeerd, geen antwoordmaat."
+    },
+    {
+      "id": "rules49-centre-circle",
+      "sha256": "782c0a4489a99626c0f23c787455da74674ca4a89cf1d947873e436e3c6ed419",
+      "status": "manual-pass",
+      "notes": "Eigen schematisch raster; middencirkel en middelpunt zichtbaar, geen antwoordmaat."
+    },
+    {
+      "id": "rules49-goal-height",
+      "sha256": "6af05996d024b4ee7b4a640af56be4d30835a12f3c297ef54e999c1e9ae8a87a",
+      "status": "manual-pass",
+      "notes": "Eigen schematisch raster; doelpositie gemarkeerd. Geen hoogtemeting in bovenaanzicht; uitsluitend ter illustratie van de vraag, niet als uitlegdiagram."
+    },
+    {
+      "id": "match64-sm-19714595",
+      "sha256": "3fcfdf04a7894e90bea45de06e516720c4f1eea4ca57a863e8db7f450f72e20d",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "match64-sm-19714596",
+      "sha256": "4ddd5187fd656c585594b872ff42aefb8e0e987b1bb80d82b5f6a8797b99ead6",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "match64-sm-19714597",
+      "sha256": "76d88206f12b6a4378c94c9cb4c3b212ef2523b9cddef26fd1a9aa10c1914600",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio-fc-groningen-ajax-01",
+      "sha256": "d193a26a8778d60e895828805abbdbfb9c5b3c29f8e9af84d1edfca37df4904f",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-psv-fc-twente-01",
+      "sha256": "29f23bdf1bd940a1592764962473285ba947fe6a5a52658dd194270c1aaa6208",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-feyenoord-az-01",
+      "sha256": "2c550a6e3c72d2b8fede3f2459d898d4ae564dc63459ae32282c929a16587a6b",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-fc-utrecht-sc-heerenveen-01",
+      "sha256": "f3aff9f2ddeb01bee1fdacba2bfffe59d16be796c0cbf40334fbfed4451050ec",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-go-ahead-eagles-nec-01",
+      "sha256": "c6e6a6e127c2d52f9af64e4627ff27e082be32170247f7b85c28a4c67eff3591",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-ajax-psv-01",
+      "sha256": "b398ad7252fc383cd342dbef024ba17c5fe986f38872aef4ca540661dd7dc637",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-az-fc-groningen-01",
+      "sha256": "086435d412f4396290649fa87198b2713e9b01fc8fc5c63cc749a4e69d1b5ba4",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-fc-twente-feyenoord-01",
+      "sha256": "6e7332e6bdd673866c42cb56b8249c54d00228610dda393b47bc833c86ae3954",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-sc-heerenveen-pec-zwolle-01",
+      "sha256": "1387aee9cfa3334cf798d33b6437da17875eb82bb89f318de160bbd2ac0c0380",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio-nec-fc-utrecht-01",
+      "sha256": "19ebf1fad1080f68b01ea4ecebaded9019738962886dfefbe49d00704912c2b3",
+      "status": "needs-correction",
+      "notes": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform."
+    },
+    {
+      "id": "veldio69-ado-1",
+      "sha256": "462581379a4dae209b7aa752a0234ec6f585403e4ad1f50733c1f3a0a6652682",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-ado-2",
+      "sha256": "01e4c5bd9f05c459abe3eff34d8825374fb702001d68aec26e00926601632635",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-ado-3",
+      "sha256": "7cb813fca91f3b39e83c40a479b31a704396478aec0026c3a08489020cf82913",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-ado-4",
+      "sha256": "16e0c56a4a28389c6088629146490277ab89c103ac7abacc07b4e2671bf71e91",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-ado-5",
+      "sha256": "4b5582af6e00fd32f31c3c427e8f6a6f9f51243236ffd4e9b660d937c3a8d806",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-ado-6",
+      "sha256": "ebe25f62460c4a7798fb12df18527554c61b6c2903cc29f01ed4b84f283d2269",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-twente-1",
+      "sha256": "da984ec416df32cb8c9b7b2c631c598b6b58000f4e6901fffc0a98d65e40e9f5",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-twente-2",
+      "sha256": "9dfb1d3e2fa1ac5dabc11ee3161488aeacb2c02abfc2ff4d052b3a2b3060d2cb",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-heerenveen-1",
+      "sha256": "33532b03e9aba483c21f1393c73d9b51b90ca433a88cc10d5dd317519f214d1e",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-heerenveen-2",
+      "sha256": "f96113ba21a541bc8907eaa69ace0ac9cb18305f005fb2587e65a8a8414db428",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-column-1",
+      "sha256": "d4baf53fe43c8d0987304fa80d16a1d36fa55db931d742a577a674f200b7ecd8",
+      "status": "manual-pass",
+      "notes": "Schrift en voetbal in clubhuis; geen opschriften."
+    },
+    {
+      "id": "veldio69-club-1",
+      "sha256": "ea436ae1778a3c402bacb93c1249c39d135da9b09cd9c329ef23503d8c94a195",
+      "status": "manual-pass",
+      "notes": "Generieke clubomgeving, trainingsmateriaal zonder merken."
+    },
+    {
+      "id": "veldio69-az-3",
+      "sha256": "6839393609767467afefcc658b89fa9c160e83b48a44985b99124db2506265a3",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-az-4",
+      "sha256": "55f1e5d8d1c2cba2c226ed8554a688f928c99a6bcb5e4560b55d24c6c5bb0250",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-midtjylland-1",
+      "sha256": "6e1b91257956a24fd7efc02d838c0234b2a1a3b942919a673bb204d11512dafa",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-groningen-1",
+      "sha256": "b868d96ff9ba677fa6de1a86a8f96c809bc4f786336ff81ba8a8ff50b602b69e",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-nec-1",
+      "sha256": "9cc1b006b7145921195b241eea099f4c267cd94039bd8e30514e6e4670c36b92",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-transfer-1",
+      "sha256": "ffc83c5d1f0c426685ab97476d826d619a4f0dfc4d0a75fc479fc62be314052f",
+      "status": "manual-pass",
+      "notes": "Koffer en bal op perron; geen herkenbare locatieclaims of merk."
+    },
+    {
+      "id": "veldio69-rumour-1",
+      "sha256": "04d545be13e06698985794ac8e080322b7506152b4750a6380f688e0aa6f6252",
+      "status": "requires-correction",
+      "notes": "Krantenpagina bevat tekstachtige drukregels; vervangen of verwijderen voor strikte tekstregel."
+    },
+    {
+      "id": "veldio69-contract-1",
+      "sha256": "06ea9160355a5f0f99bdc83bd63b358282b37e8e0f71be567f82026c22254f57",
+      "status": "manual-pass",
+      "notes": "Blanco papier, pen en voetbal; geen fictieve contracttekst."
+    },
+    {
+      "id": "veldio69-tactics-1",
+      "sha256": "0b17e38b0f52a961c1f9424a607a792c4c9911a8aae04a928e31dff15b2ec90b",
+      "status": "manual-pass",
+      "notes": "Schematisch tactiekbord; alleen algemene illustratie, geen feitelijke opstelling."
+    },
+    {
+      "id": "veldio69-injury-1",
+      "sha256": "f9ec5a8b16ad47050132841644bf8ddf43950ad29bbfb6f392792505deee09c2",
+      "status": "manual-pass",
+      "notes": "Verband en voetbalschoen, geen personen of logo."
+    },
+    {
+      "id": "veldio69-suspension-1",
+      "sha256": "f577c13ecdfa151af12f4ef8a42c6712f58ead3edf7c250b5cc3e74816c9011b",
+      "status": "manual-pass",
+      "notes": "Rode kaart en generieke bal; geen merken."
+    },
+    {
+      "id": "veldio69-interview-1",
+      "sha256": "64b6f0377f4a2158d1f3b13c90e2d94fe342f0d2978b0fac99d0b2df9a9d1522",
+      "status": "manual-pass",
+      "notes": "Microfoon en leeg sponsorbord; geen zichtbare externe sponsor."
+    },
+    {
+      "id": "veldio69-competition-1",
+      "sha256": "f89d23bc924150bab7f333ce5b023e2ce66ebf845ee704ad3c658dc57f60144d",
+      "status": "manual-pass",
+      "notes": "Fluit en vlag met generieke arena; geen leesbare reclame."
+    },
+    {
+      "id": "veldio69-championship-1",
+      "sha256": "3f0172c247e39982ca291bdb4a170688b3bda052bd5a15a1306de8c87f423944",
+      "status": "manual-pass",
+      "notes": "Generieke beker zonder herkenbaar officieel embleem."
+    },
+    {
+      "id": "veldio69-analysis-1",
+      "sha256": "c8e40de72ed7cc46c79486ae7ff437d204e38283034960d663d34efee6617ed6",
+      "status": "manual-pass",
+      "notes": "Vergrootglas en tactiekbord, geen feitelijke dataclaim."
+    },
+    {
+      "id": "veldio69-supporters-1",
+      "sha256": "cdfd030e7e1a432d046a430fea84a8f02af9c5f86c2df489fa612e9e6321448d",
+      "status": "manual-pass",
+      "notes": "Blanco groen-zwarte sjaals, geen clubnamen."
+    },
+    {
+      "id": "veldio69-youth-1",
+      "sha256": "067457f67b66cf0a841bbadeb31ec9dbcde4076390fea95bf3a110ee869326a6",
+      "status": "manual-pass",
+      "notes": "Trainingsmateriaal en kleine schoenen; geen kinderen afgebeeld."
+    },
+    {
+      "id": "veldio69-international-1",
+      "sha256": "237bdaba0fc2991d5ef0a1790f3cbb93d4494803ef2ce8e7ac18d27c83e343bb",
+      "status": "manual-pass",
+      "notes": "Blanco vaantjes en generieke arena, geen federatielogo."
+    },
+    {
+      "id": "veldio69-history-1",
+      "sha256": "ced2caf52018b09b64e8ca5634b85d01af99a41e199b3995cc47e172e3d9babc",
+      "status": "requires-correction",
+      "notes": "Ingelijste historische teamfoto heeft onduidelijke herkomst; vervangen door eigen neutrale illustratie zonder groepsfoto."
+    },
+    {
+      "id": "veldio69-twente-3",
+      "sha256": "e9c633ee1b04e5d62a56f3c63817778ccdd932a9d1edfb6cc10fb8305f6d365c",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-twente-4",
+      "sha256": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-twente-5",
+      "sha256": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-twente-6",
+      "sha256": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-heerenveen-3",
+      "sha256": "ef37df34a4aa0bae5b35a05c92aa7d6e29303c280002ba3353dd7b622be0c55f",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-heerenveen-4",
+      "sha256": "68ef0bd92ae7ad5b743d65e7bba1aeab3a517d2be4cf369106a9bfeeec891c6b",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-heerenveen-5",
+      "sha256": "1c57deab8fd14d72312f25d4b55581299e6d98b5a5df8cc9e83b2c756b53c6f9",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-heerenveen-6",
+      "sha256": "5bc8cdacb3991a51578f2c6163d0215048b8b52ead639e31bdaa0143dcca446a",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-az-5",
+      "sha256": "218b161b985a92169d2d52be28fa82462ff5c2b29817b24c7e552feceed5662e",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-az-6",
+      "sha256": "d74b18c17a1eb1338a8c8c013655a6a606811cdf7bbab64a508eb45da7677485",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-az-7",
+      "sha256": "e7e6de8a57c6393f122b2870916bc13a437aa693ea3e91a3232c28712b4a3fc8",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-az-8",
+      "sha256": "3f61983a59f1986bb6137d4c0d2c8683627a474e25150f3bce39a18580ebcdc3",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio69-column-2",
+      "sha256": "fbe9a0cb2f7572bcd2df6ca78a6b5d93caf1fecb266c23ac9ab0a0f06c8dac8e",
+      "status": "manual-pass",
+      "notes": "Blanco schrift, sjaal en koffie; geen merkopschrift."
+    },
+    {
+      "id": "veldio69-club-2",
+      "sha256": "9b18d048d002b60a324b7f7bfefe4ad508ed5b13cdc94a565b1d9e4fd74c2362",
+      "status": "manual-pass",
+      "notes": "Trainingsmateriaal bij generieke clubomgeving."
+    },
+    {
+      "id": "veldio69-transfer-2",
+      "sha256": "aaa862062a0d41e3d88f15bb22d5ed7ff2e6a72cd4fd4d3fc0cb4d0b8385a7cc",
+      "status": "manual-pass",
+      "notes": "Generieke kleedkamer, tas en shirt zonder duidelijk clubembleem."
+    },
+    {
+      "id": "veldio69-analysis-2",
+      "sha256": "ae7c6d24aef460c651eea99f143c302e896978de9301f930565e99a307ff9dd7",
+      "status": "manual-pass",
+      "notes": "Blanco clipboards en miniatuurbord; geen fictieve cijfers."
+    },
+    {
+      "id": "veldio71-az-groningen-report",
+      "sha256": "95e630e0ead899c933b9298de086c4f66b5a5b5c2f3d5fbf7eff5b5d70b6d3d5",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio71-twente-ajax-report",
+      "sha256": "5301898c31b055a7efd1fdecc0fc8f4b887e4e9d85e387e1f165348ac3f120e0",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio71-ado-sparta-report",
+      "sha256": "47b90fc169afeb389bd2b3b7dbcc1ff5ac76e622ab4bc385bced2bb91c58e3f0",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio71-heerenveen-feyenoord-report",
+      "sha256": "ed5c353fd065b8cc719c8d24d8c8455a3a648cf9ca2841a0818f8916e13d5a3f",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio71-willem-ii-pec-zwolle-preview",
+      "sha256": "fd494587a3956e929124ab1ebc6acf827d6a11b7372cc80bde875bb6868c8394",
+      "status": "requires-context-or-replacement",
+      "notes": "Lege tribune en correcte sjaalkleuren; specifieke thuisstadionidentiteit onvoldoende."
+    },
+    {
+      "id": "veldio71-emmen-den-bosch-preview",
+      "sha256": "82f327ad15966ce15640935e442c4cf04c7d71fbf61c6671f491e9f61bb74a0c",
+      "status": "requires-context-or-replacement",
+      "notes": "Lege tribune en correcte sjaalkleuren; specifieke thuisstadionidentiteit onvoldoende."
+    },
+    {
+      "id": "veldio71-utrecht-nec-report",
+      "sha256": "a31c74ac718732885b083e63644bb271fd8a8e59c48580eeb337508599ddb7db",
+      "status": "already-rejected",
+      "notes": "Reeds afgekeurd vectorbeeld; geen rasterkeuring of nieuwe vrijgave. Broncode geïnspecteerd."
+    },
+    {
+      "id": "veldio72-utrecht-nec-report",
+      "sha256": "b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e",
+      "status": "needs-correction",
+      "notes": "Clubnamen op sjaals; niet conform."
+    },
+    {
+      "id": "veldio73-telstar-report-evening",
+      "sha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
+      "status": "needs-correction",
+      "notes": "Clubnaam, wedstrijdverslag en AI-disclaimer in beeld; lage collagekwaliteit en vervormde Veldio-borden."
+    },
+    {
+      "id": "veldio73-willem-ii-preview-day",
+      "sha256": "bdcea15054bfa71eab70e32e06b79688273b5a0051b160e7e0a8500b88886d9b",
+      "status": "needs-correction",
+      "notes": "Clubnaam, voorbeschouwing en AI-disclaimer in beeld; stadionidentiteit herbeoordelen."
+    },
+    {
+      "id": "veldio73-willem-ii-report-evening",
+      "sha256": "83ab3e9e1a74fc01a32a8b0aa254a0e8b6cc708a94c73fa4006e54c0b5c4ac6e",
+      "status": "needs-correction",
+      "notes": "Clubnaam, wedstrijdverslag en AI-disclaimer in beeld; sterk vergelijkbaar met Telstar-illustratie; stadionidentiteit herbeoordelen."
+    },
+    {
+      "id": "veldio74-adodenhaag-preview",
+      "sha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+      "status": "manual-pass",
+      "notes": "Lege overdekte enkelvoudige tribune, donkergroene en gele stoelen conform WerkTalent Stadion. Illustratief perspectief en eigen Veldio-signage; geen documentaire claim."
+    },
+    {
+      "id": "veldio74-ajax-preview",
+      "sha256": "4baaab87ec555bcebc5209f56682a32ef7553ee21531de0c06f4c566d4e2d2eb",
+      "status": "needs-correction",
+      "notes": "AJAX, Eredivisie, voorbeschouwing en andere tekst; clubembleem. Geen vrijgave."
+    },
+    {
+      "id": "veldio74-ajax-report",
+      "sha256": "0507173b3936e2cf29ee08594bb5ea25764eac88440fae2af4fa9ca7fa5aba75",
+      "status": "needs-correction",
+      "notes": "AFC Ajax, Eredivisie, wedstrijdverslag, sjaalopschriften en clubembleem zichtbaar. Nieuwe illustratie vereist."
+    },
+    {
+      "id": "veldio74-az-preview",
+      "sha256": "1f473af42de2d2ce937321c2b14825adc9cacfea7afd205f9d4f88bfdf100180",
+      "status": "needs-correction",
+      "notes": "AFAS Stadion en AI-disclaimer; publiek en schemering ondanks lege dagpreview. Geen vrijgave."
+    },
+    {
+      "id": "veldio74-az-report",
+      "sha256": "621fa5ef5cfbeb4297c0037fbfd93f7dc2442ec054b68eb574b3375e20ad10da",
+      "status": "needs-correction",
+      "notes": "AZ in stoelen, AFAS Stadion en AI-disclaimer. Geen vrijgave."
+    },
+    {
+      "id": "veldio74-excelsiorrotterdam-preview",
+      "sha256": "c1c3783b77e7661a58a4a461212e59abd1b17ffd7bc285c5e32c39c9a0314990",
+      "status": "needs-correction",
+      "notes": "Van Donge & De Roo Stadion en Excelsior Rotterdam. Geen vrijgave."
+    },
+    {
+      "id": "veldio74-excelsiorrotterdam-report",
+      "sha256": "602c041ca65ac2cca23222e9facf751683b05f4e7015232240b78de92996369b",
+      "status": "needs-correction",
+      "notes": "Excelsior Rotterdam, Woudestein, supportersbanners en emblemen. Geen vrijgave."
+    },
+    {
+      "id": "veldio74-fcgroningen-preview",
+      "sha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+      "status": "manual-pass",
+      "notes": "Groene tribunes in twee ringen, open dak en daglicht; grote fictieve Veldio-reclame en niet-letterlijke stoelpatronen. Past bij de herkenbare Euroborg-context als illustratie."
+    },
+    {
+      "id": "veldio74-fcgroningen-report",
+      "sha256": "2636e4286566e17e74a9cd3801d6aea5b0f36f4e24a5f22d3613a0ddfacd8d4f",
+      "status": "requires-correction",
+      "notes": "Onvoldoende volle tribunes."
+    },
+    {
+      "id": "veldio74-fctwente-report",
+      "sha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
+      "status": "needs-correction",
+      "notes": "AI-tekst rechtsonder en kleine onduidelijke tribuneopschriften. Geen vrijgave."
+    },
+    {
+      "id": "veldio74-fcutrecht-preview",
+      "sha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+      "status": "requires-further-context-or-replacement",
+      "notes": "Referentiefoto en architect tonen doorlopende dakconstructie; kandidaat toont afwijkende open hoek en losse boogdaken. Context onvoldoende."
+    },
+    {
+      "id": "veldio74-fcutrecht-report",
+      "sha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+      "status": "requires-further-context-or-replacement",
+      "notes": "Zelfde afwijkende dakconstructie als preview, context onvoldoende."
+    },
+    {
+      "id": "veldio74-feyenoord-preview",
+      "sha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+      "status": "manual-pass",
+      "notes": "Karakteristieke ovale tribunes met twee niveaus en doorlopend gebogen stalen dak, consistent met De Kuip. Stoelkleuren zijn artistiek rood-wit in plaats van exacte weergave; geen documentaire claim."
+    },
+    {
+      "id": "veldio74-fortunasittard-preview",
+      "sha256": "13ce69e32cd2d654be10e6a697e58d93e8207d06140affcb0cae1871fce7a3c9",
+      "status": "requires-further-context-or-replacement",
+      "notes": "Referentiefoto toont afwijkend stadion en donkere zitplaatsen; kleuren alleen zijn onvoldoende."
+    },
+    {
+      "id": "veldio74-goaheadeagles-preview",
+      "sha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+      "status": "manual-pass",
+      "notes": "Compacte afzonderlijke overdekte tribunes vlak bij veld, rood-geel, lichtmast, leeg bij daglicht. Geen exacte kopie."
+    },
+    {
+      "id": "veldio74-goaheadeagles-report",
+      "sha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+      "status": "manual-pass",
+      "notes": "Compacte overdekte tribunes, rood-geel, volle tribunes onder kunstlicht; herkenbare context, geen documentaire claim."
+    },
+    {
+      "id": "veldio74-necnijmegen-preview",
+      "sha256": "6ad39fcf8bf58eef25629b28bbb090c3c1056c989c1f95fbee978e3700f02814",
+      "status": "requires-correction",
+      "notes": "Vervormde X-achtige logo's; branding niet definitief akkoord."
+    },
+    {
+      "id": "veldio74-peczwolle-preview",
+      "sha256": "ff5351c698778cb0b34d423f98ac3a0f666ae92c5abdf25954cbb7501822516f",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer; Friese pompeblêden passen niet bij PEC Zwolle. Geen vrijgave."
+    },
+    {
+      "id": "veldio74-peczwolle-report",
+      "sha256": "0c4ea1c8c5f91dbe086c8e751b281348940c32993909267428f62f396dac20d4",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer; Friese vlaggen/pompeblêden bij PEC Zwolle. Geen vrijgave."
+    },
+    {
+      "id": "veldio74-telstar-preview",
+      "sha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+      "status": "requires-further-context-or-replacement",
+      "notes": "Actuele verbouwing 2025 en afwijkende tribuneconfiguratie nog niet afdoende te rijmen met raster."
+    },
+    {
+      "id": "veldio75-adodenhaag-report",
+      "sha256": "bcad8cd8eaf0bca4d4eb91a9efee6187de93d076941f2268ec92e4575cf83022",
+      "status": "requires-correction",
+      "notes": "Opvallende lege stoelvakken."
+    },
+    {
+      "id": "veldio75-fctwente-preview",
+      "sha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+      "status": "manual-pass",
+      "notes": "Rode tribunes in twee lagen en rode dakconstructie sluiten aan bij Grolsch Veste; leeg bij daglicht. Artistieke afwijkingen toegestaan, geen exacte documentaire foto."
+    },
+    {
+      "id": "veldio75-feyenoord-report",
+      "sha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer en tribuneopschriften. Geen vrijgave."
+    },
+    {
+      "id": "veldio75-fortunasittard-report",
+      "sha256": "8a0c7e8378153d1f7a5fd961b2754a2625aedd5f253c2914f56a7ee697f3494a",
+      "status": "needs-correction",
+      "notes": "Dubbele AI-disclaimer; zwart-geel in plaats van groen-geel. Geen vrijgave."
+    },
+    {
+      "id": "veldio75-necnijmegen-report",
+      "sha256": "952ecc36540a420234b939fa80fe6950e7c65c57990701bf0aec864104f77fdb",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer en rood-zwarte vlaggen zonder duidelijke NEC-groene identiteit. Geen vrijgave."
+    },
+    {
+      "id": "veldio75-psv-preview",
+      "sha256": "1c18518c6a92c9e49d69d6bb3b8cb96c1bb2d61552215263a232e058f708a090",
+      "status": "requires-correction",
+      "notes": "Stadionidentiteit twijfelachtig."
+    },
+    {
+      "id": "veldio75-psv-report",
+      "sha256": "c203fa573d6d6548fafbd60780225c83e649420af2d29c3738610d1b2bda2deb",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer en onduidelijke sponsorachtige tribuneopschriften. Geen vrijgave."
+    },
+    {
+      "id": "veldio75-sccambuur-preview",
+      "sha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+      "status": "manual-pass",
+      "notes": "Lege steile blauw-gele losse tribunes dicht bij veld met hoge lichtmasten; correspondeert met Kooi Stadion. Geen nagebootste officiële opschriften; stoelpatroon illustratief."
+    },
+    {
+      "id": "veldio75-sccambuur-report",
+      "sha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
+      "status": "needs-correction",
+      "notes": "SC Cambuur op dak en AI-disclaimer; schemering i.p.v. nacht herbeoordelen. Geen vrijgave."
+    },
+    {
+      "id": "veldio75-scheerenveen-preview",
+      "sha256": "ff98fa290dcd7a1e70e187686184b3e5fead3c17682a5583708d736a681abc42",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer en onleesbare dakopschriften; zacht raster. Geen vrijgave."
+    },
+    {
+      "id": "veldio75-scheerenveen-report",
+      "sha256": "17e6a12ac2f5dbaa75adf791a49d93d2af4c7d03810c52b5352e680e94896152",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer en onleesbare dakopschriften; zacht raster. Geen vrijgave."
+    },
+    {
+      "id": "veldio75-spartarotterdam-preview",
+      "sha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f",
+      "status": "requires-correction",
+      "notes": "Officiële clubbron bevestigt kasteel aan lange zijde; afbeelding toont doel ervoor. Vervangen door juiste oriëntatie."
+    },
+    {
+      "id": "veldio75-spartarotterdam-report",
+      "sha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
+      "status": "needs-correction",
+      "notes": "Dubbele AI-tekst rechtsonder en onduidelijke tribuneopschriften. Geen vrijgave."
+    },
+    {
+      "id": "veldio97c-nederland-griekenland-preview",
+      "sha256": "d560f2d335a79e4ed004e9ed5f1ca253a791957d8bc273e7eda43b4d0af3222b",
+      "status": "needs-correction",
+      "notes": "Landnamen op sjaals."
+    },
+    {
+      "id": "veldio97c-duitsland-nederland-preview",
+      "sha256": "cf4f08dcae8e48bd0c8b700a3403f79e4d463f607e35c658d25a60faddde6b0e",
+      "status": "needs-correction",
+      "notes": "Landnamen op sjaals."
+    },
+    {
+      "id": "veldio104d-fcgroningen-night-preview",
+      "sha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer rechtsonder."
+    },
+    {
+      "id": "veldio110b-sm-19715868-eindhoven-rkc-report",
+      "sha256": "8c9a1ff62a260f50305591172fb277d50492575fcebf2eaf2f9b7ffe91b3ba84",
+      "status": "requires-correction",
+      "notes": "Uitclub geel-blauw niet voldoende zichtbaar; precieze locatie en wedstrijdcontext open."
+    },
+    {
+      "id": "veldio110b-sm-19714592-ajax-ado-day-report",
+      "sha256": "c5d0655f730675579c17846fea822177f7ea0e9ba3be85544ed277031da1e4dd",
+      "status": "needs-correction",
+      "notes": "AI-disclaimer in zwarte badge rechtsonder en onduidelijke tribuneopschriften; geen vrijgave."
+    },
+    {
+      "id": "veldio110d-sm-19722098-hull-brighton-day-report",
+      "sha256": "0c0276636351c43db98b346f0faae39e715b5c89489bc0eac2a61935a76a9b3d",
+      "status": "requires-correction",
+      "notes": "Stadionidentiteit onvoldoende; wedstrijdcontext open."
+    }
+  ]
+}
