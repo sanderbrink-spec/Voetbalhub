@@ -1,0 +1,517 @@
+{
+  "sourceCommit": "4edaf630cb5983769a66b3206f218ab313339b28",
+  "scope": "34 owner-rejected rasters; replacement artwork only. Owner JA is aesthetic approval, not permission to retain prohibited text or publish.",
+  "style": {
+    "visual": "Premium editorial sports photography look, natural textures and optics, believable architecture and stadium scale, natural daylight or floodlights, no cheap CGI, no graphic poster composition.",
+    "branding": "Only Veldio logo or wordmark, naturally integrated on ball, flag or pitch boards. No club/stadium names, sponsor signs, official crests, shirt manufacturer logos, lettering on scarves, watermarks or captions inside image. AI disclosure remains outside raster.",
+    "context": "Recognizable club colors, architecture and correct home team; empty stands for previews, full for match reports, correct daypart; no misleading depiction of real match events.",
+    "technical": "Native >=1280x720, exact 16:9, distinct compositions, verify SHA256, independent visual/rights/context review, owner re-review before publication."
+  },
+  "items": [
+    {
+      "id": "ajax43",
+      "number": 6,
+      "subject": "Ajax / AZ",
+      "rejectedSha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
+      "targetFile": "public/news43/ajax43.webp",
+      "category": null,
+      "occupancy": null,
+      "daypart": null,
+      "knownDefect": "Owner rejected; visual fidelity and unwanted lettering require re-evaluation",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "psv43",
+      "number": 7,
+      "subject": "PSV / Willem II",
+      "rejectedSha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
+      "targetFile": "public/news43/psv43.webp",
+      "category": null,
+      "occupancy": null,
+      "daypart": null,
+      "knownDefect": "Owner rejected; visual fidelity and unwanted lettering require re-evaluation",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "midtjylland43",
+      "number": 8,
+      "subject": "Ajax / FC Midtjylland",
+      "rejectedSha256": "922f7b6956799d7b782ee65131342e8d5748695bfb4196ddae6886f20bbc3447",
+      "targetFile": "public/news43/midtjylland43.webp",
+      "category": null,
+      "occupancy": null,
+      "daypart": null,
+      "knownDefect": "Owner rejected; visual fidelity and unwanted lettering require re-evaluation",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "match64-sm-19714595",
+      "number": 12,
+      "subject": "FC Twente – Ajax",
+      "rejectedSha256": "3fcfdf04a7894e90bea45de06e516720c4f1eea4ca57a863e8db7f450f72e20d",
+      "targetFile": "public/match-covers64/sm-19714595.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "neutral",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "match64-sm-19714596",
+      "number": 13,
+      "subject": "SC Heerenveen – Feyenoord",
+      "rejectedSha256": "4ddd5187fd656c585594b872ff42aefb8e0e987b1bb80d82b5f6a8797b99ead6",
+      "targetFile": "public/match-covers64/sm-19714596.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "neutral",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "match64-sm-19714597",
+      "number": 14,
+      "subject": "ADO Den Haag – Sparta Rotterdam",
+      "rejectedSha256": "76d88206f12b6a4378c94c9cb4c3b212ef2523b9cddef26fd1a9aa10c1914600",
+      "targetFile": "public/match-covers64/sm-19714597.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "neutral",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio-fc-groningen-ajax-01",
+      "number": 15,
+      "subject": "FC Groningen – Ajax",
+      "rejectedSha256": "d193a26a8778d60e895828805abbdbfb9c5b3c29f8e9af84d1edfca37df4904f",
+      "targetFile": "public/match-rotations65/veldio-fc-groningen-ajax-01.webp",
+      "category": [
+        "preview",
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "night",
+      "knownDefect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio-psv-fc-twente-01",
+      "number": 16,
+      "subject": "PSV – FC Twente",
+      "rejectedSha256": "29f23bdf1bd940a1592764962473285ba947fe6a5a52658dd194270c1aaa6208",
+      "targetFile": "public/match-rotations65/veldio-psv-fc-twente-01.webp",
+      "category": [
+        "preview",
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "night",
+      "knownDefect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio-az-fc-groningen-01",
+      "number": 21,
+      "subject": "AZ – FC Groningen",
+      "rejectedSha256": "086435d412f4396290649fa87198b2713e9b01fc8fc5c63cc749a4e69d1b5ba4",
+      "targetFile": "public/match-rotations65/veldio-az-fc-groningen-01.webp",
+      "category": [
+        "preview",
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "day",
+      "knownDefect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio-fc-twente-feyenoord-01",
+      "number": 22,
+      "subject": "FC Twente – Feyenoord",
+      "rejectedSha256": "6e7332e6bdd673866c42cb56b8249c54d00228610dda393b47bc833c86ae3954",
+      "targetFile": "public/match-rotations65/veldio-fc-twente-feyenoord-01.webp",
+      "category": [
+        "preview",
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "night",
+      "knownDefect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio-nec-fc-utrecht-01",
+      "number": 24,
+      "subject": "NEC – FC Utrecht",
+      "rejectedSha256": "19ebf1fad1080f68b01ea4ecebaded9019738962886dfefbe49d00704912c2b3",
+      "targetFile": "public/match-rotations65/veldio-nec-fc-utrecht-01.webp",
+      "category": [
+        "preview",
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "night",
+      "knownDefect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-ado-3",
+      "number": 27,
+      "subject": "ADO Den Haag – Sparta Rotterdam",
+      "rejectedSha256": "7cb813fca91f3b39e83c40a479b31a704396478aec0026c3a08489020cf82913",
+      "targetFile": "public/article-art69/ado-3.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "neutral",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-twente-1",
+      "number": 31,
+      "subject": "FC Twente – Ajax",
+      "rejectedSha256": "da984ec416df32cb8c9b7b2c631c598b6b58000f4e6901fffc0a98d65e40e9f5",
+      "targetFile": "public/article-art69/twente-1.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "neutral",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-heerenveen-1",
+      "number": 33,
+      "subject": "SC Heerenveen – Feyenoord",
+      "rejectedSha256": "33532b03e9aba483c21f1393c73d9b51b90ca433a88cc10d5dd317519f214d1e",
+      "targetFile": "public/article-art69/heerenveen-1.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "neutral",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-groningen-1",
+      "number": 38,
+      "subject": "FC Groningen – FC Emmen",
+      "rejectedSha256": "b868d96ff9ba677fa6de1a86a8f96c809bc4f786336ff81ba8a8ff50b602b69e",
+      "targetFile": "public/article-art69/groningen-1.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "neutral",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-nec-1",
+      "number": 39,
+      "subject": "NEC – FC Groningen",
+      "rejectedSha256": "9cc1b006b7145921195b241eea099f4c267cd94039bd8e30514e6e4670c36b92",
+      "targetFile": "public/article-art69/nec-1.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "neutral",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-twente-5",
+      "number": 42,
+      "subject": "FC Twente – Ajax",
+      "rejectedSha256": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
+      "targetFile": "public/article-art69/twente-5.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "day",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-heerenveen-3",
+      "number": 43,
+      "subject": "SC Heerenveen – Feyenoord",
+      "rejectedSha256": "ef37df34a4aa0bae5b35a05c92aa7d6e29303c280002ba3353dd7b622be0c55f",
+      "targetFile": "public/article-art69/heerenveen-3.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "day",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-heerenveen-5",
+      "number": 45,
+      "subject": "SC Heerenveen – Feyenoord",
+      "rejectedSha256": "1c57deab8fd14d72312f25d4b55581299e6d98b5a5df8cc9e83b2c756b53c6f9",
+      "targetFile": "public/article-art69/heerenveen-5.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "day",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-az-5",
+      "number": 47,
+      "subject": "AZ – FC Groningen",
+      "rejectedSha256": "218b161b985a92169d2d52be28fa82462ff5c2b29817b24c7e552feceed5662e",
+      "targetFile": "public/article-art69/az-5.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "twilight",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-az-6",
+      "number": 48,
+      "subject": "AZ – FC Groningen",
+      "rejectedSha256": "d74b18c17a1eb1338a8c8c013655a6a606811cdf7bbab64a508eb45da7677485",
+      "targetFile": "public/article-art69/az-6.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "twilight",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio69-az-8",
+      "number": 50,
+      "subject": "AZ – FC Groningen",
+      "rejectedSha256": "3f61983a59f1986bb6137d4c0d2c8683627a474e25150f3bce39a18580ebcdc3",
+      "targetFile": "public/article-art69/az-8.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": null,
+      "daypart": "twilight",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio71-az-groningen-report",
+      "number": 51,
+      "subject": "AZ – FC Groningen",
+      "rejectedSha256": "95e630e0ead899c933b9298de086c4f66b5a5b5c2f3d5fbf7eff5b5d70b6d3d5",
+      "targetFile": "public/article-art71/az-groningen-report.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": "full",
+      "daypart": "twilight",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio71-heerenveen-feyenoord-report",
+      "number": 54,
+      "subject": "SC Heerenveen – Feyenoord",
+      "rejectedSha256": "ed5c353fd065b8cc719c8d24d8c8455a3a648cf9ca2841a0818f8916e13d5a3f",
+      "targetFile": "public/article-art71/heerenveen-feyenoord-report.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": "full",
+      "daypart": "day",
+      "knownDefect": "Clubnamen op sjaals; niet conform.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio71-willem-ii-pec-zwolle-preview",
+      "number": 55,
+      "subject": "Willem II / PEC Zwolle",
+      "rejectedSha256": "fd494587a3956e929124ab1ebc6acf827d6a11b7372cc80bde875bb6868c8394",
+      "targetFile": "public/article-art71/willem-ii-pec-zwolle-preview.webp",
+      "category": null,
+      "occupancy": null,
+      "daypart": null,
+      "knownDefect": "Owner rejected; visual fidelity and unwanted lettering require re-evaluation",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio71-emmen-den-bosch-preview",
+      "number": 56,
+      "subject": "FC Emmen / FC Den Bosch",
+      "rejectedSha256": "82f327ad15966ce15640935e442c4cf04c7d71fbf61c6671f491e9f61bb74a0c",
+      "targetFile": "public/article-art71/emmen-den-bosch-preview.webp",
+      "category": null,
+      "occupancy": null,
+      "daypart": null,
+      "knownDefect": "Owner rejected; visual fidelity and unwanted lettering require re-evaluation",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio74-ajax-preview",
+      "number": 61,
+      "subject": "Ajax, voorbeschouwing overdag",
+      "rejectedSha256": "4baaab87ec555bcebc5209f56682a32ef7553ee21531de0c06f4c566d4e2d2eb",
+      "targetFile": "public/stadium74/ajax-preview.webp",
+      "category": [
+        "preview"
+      ],
+      "occupancy": "empty",
+      "daypart": "day",
+      "knownDefect": "AJAX, Eredivisie, voorbeschouwing en andere tekst; clubembleem. Geen vrijgave.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio74-ajax-report",
+      "number": 62,
+      "subject": "Ajax, wedstrijdverslag in avondsetting",
+      "rejectedSha256": "0507173b3936e2cf29ee08594bb5ea25764eac88440fae2af4fa9ca7fa5aba75",
+      "targetFile": "public/stadium74/ajax-report.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": "full",
+      "daypart": "night",
+      "knownDefect": "AFC Ajax, Eredivisie, wedstrijdverslag, sjaalopschriften en clubembleem zichtbaar. Nieuwe illustratie vereist.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio74-excelsiorrotterdam-preview",
+      "number": 64,
+      "subject": "Excelsior Rotterdam, voorbeschouwing overdag",
+      "rejectedSha256": "c1c3783b77e7661a58a4a461212e59abd1b17ffd7bc285c5e32c39c9a0314990",
+      "targetFile": "public/stadium74/excelsiorrotterdam-preview.webp",
+      "category": [
+        "preview"
+      ],
+      "occupancy": "empty",
+      "daypart": "day",
+      "knownDefect": "Van Donge & De Roo Stadion en Excelsior Rotterdam. Geen vrijgave.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio74-excelsiorrotterdam-report",
+      "number": 65,
+      "subject": "Excelsior Rotterdam, wedstrijdverslag in avondsetting",
+      "rejectedSha256": "602c041ca65ac2cca23222e9facf751683b05f4e7015232240b78de92996369b",
+      "targetFile": "public/stadium74/excelsiorrotterdam-report.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": "full",
+      "daypart": "night",
+      "knownDefect": "Excelsior Rotterdam, Woudestein, supportersbanners en emblemen. Geen vrijgave.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio74-fcutrecht-preview",
+      "number": 68,
+      "subject": "FC Utrecht, voorbeschouwing overdag",
+      "rejectedSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+      "targetFile": "public/stadium74/fcutrecht-preview.webp",
+      "category": [
+        "preview"
+      ],
+      "occupancy": "empty",
+      "daypart": "day",
+      "knownDefect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio74-fcutrecht-report",
+      "number": 69,
+      "subject": "FC Utrecht, wedstrijdverslag in avondsetting",
+      "rejectedSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+      "targetFile": "public/stadium74/fcutrecht-report.webp",
+      "category": [
+        "report"
+      ],
+      "occupancy": "full",
+      "daypart": "night",
+      "knownDefect": "AI-tekst rechtsonder; overige Veldio-branding, volle avondtribunes. Geen vrijgave.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio74-feyenoord-preview",
+      "number": 70,
+      "subject": "Feyenoord, voorbeschouwing overdag",
+      "rejectedSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+      "targetFile": "public/stadium74/feyenoord-preview.webp",
+      "category": [
+        "preview"
+      ],
+      "occupancy": "empty",
+      "daypart": "day",
+      "knownDefect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    },
+    {
+      "id": "veldio74-telstar-preview",
+      "number": 77,
+      "subject": "Telstar, voorbeschouwing overdag",
+      "rejectedSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+      "targetFile": "public/stadium74/telstar-preview.webp",
+      "category": [
+        "preview"
+      ],
+      "occupancy": "empty",
+      "daypart": "day",
+      "knownDefect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "status": "replacement-required",
+      "publicationApproved": false
+    }
+  ]
+}
