@@ -1,6 +1,6 @@
 {
   "scope": "Non-public staging only; not used by production catalogue",
-  "count": 17,
+  "count": 18,
   "assets": [
     {
       "id": "veldio110b-sm-19715868-eindhoven-rkc-report",
@@ -33,6 +33,18 @@
       "originalSha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
       "sha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
       "caption": "Veldio AI-illustratie bij FC Utrecht. Geen echte wedstrijdfoto of fotografisch exacte weergave van het stadion.",
+      "reviewStatus": "text-screen-pass-only",
+      "publicationApproved": false,
+      "rightsVerified": false,
+      "contextVerified": false
+    },
+    {
+      "id": "veldio74-adodenhaag-preview",
+      "file": "artwork-staging115/veldio74-adodenhaag-preview.webp",
+      "originalFile": "public/stadium74/adodenhaag-preview.webp",
+      "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
+      "sha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+      "caption": "Veldio AI-illustratie. Geen echte wedstrijdfoto, geen echte wedstrijdstand.",
       "reviewStatus": "text-screen-pass-only",
       "publicationApproved": false,
       "rightsVerified": false,
