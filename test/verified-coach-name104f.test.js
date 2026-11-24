@@ -22,7 +22,7 @@ test('104F: alleen volledig bewezen Casper Goedkoop wordt uit onvolledige rolnaa
  assert.deepEqual(repairVerifiedCoachName(draft,['Assistent-trainer Casper is genoemd.']),draft);
  assert.deepEqual(repairVerifiedCoachName(draft,['Casper Goedkoop is genoemd.']),draft);
 });
-test('104F: bekende generatorafwijzing uitsluitend eenmaal opnieuw met volledig verse controle',()=>{
+test('104F: bekende generatorafwijzing uitsluitend eenmaal opnieuw met volledig verse controle',t=>{
  const candidate={fixture,kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
  kickoff:Date.parse(fixture.date)};
  const group=Object.assign([{title:candidate.topic}],{clubPreview:candidate});
@@ -30,6 +30,12 @@ test('104F: bekende generatorafwijzing uitsluitend eenmaal opnieuw met volledig 
  reason:'insufficient_verified_facts',errorHash:'88bf273c7239a1571b66588dfda8209f1164594085cadd3dead5a76693b1f825',
  checkpoint:'rejected-writer',attempts:2};
  const now=Date.parse('2026-11-20T23:15:00Z');
+ assert.equal(reopenVerifiedCoachName104F({...job},group,now),false);
+ const lib=require('../image-library49');
+ const raw=require('../image-library49.json').assets.find(x=>x.id==='veldio104d-fcgroningen-night-preview');
+ const synthetic={...raw,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
+ const actual=lib.catalog();
+ t.mock.method(lib,'catalog',()=>[...actual,synthetic]);
  assert.equal(reopenVerifiedCoachName104F(job,group,now),true);
  assert.equal(job.status,'pending');assert.equal(job.checkpoint,undefined);
  assert.equal(reopenVerifiedCoachName104F(job,group,now),false);
