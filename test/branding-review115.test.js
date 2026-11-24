@@ -76,3 +76,19 @@ test('final reviewed corrected candidates remain hash-bound and satisfy existing
   assert.equal(accepted({...asset,sha256:item.originalSha256}),false);
  }
 });
+
+test('later individual review overrides legacy acceptance and cannot be reused for different bytes',()=>{
+ const original={id:'editorial-manual-review-115',sha256:sha,approval:'approved',reviewer:'Visual QA',rightsEvidence:'Documented',categories:['news']};
+ const manual={status:'passed',assetSha256:sha,brandingVerified:true,contextVerified:true};
+ assert.equal(accepted({...original,manualReview115:manual}),true);
+ for(const status of ['requires-context-or-replacement','requires-correction','requires-further-context-or-replacement']) {
+  assert.equal(accepted({...original,manualReview115:{...manual,status}}),false);
+ }
+ assert.equal(accepted({...original,manualReview115:{...manual,assetSha256:'b'.repeat(64)}}),false);
+ assert.equal(accepted({...original,manualReview115:{...manual,contextVerified:false}}),false);
+ assert.equal(accepted({...original,manualReview115:{...manual,brandingVerified:false}}),false);
+ const catalog=require('../image-library49.json').assets;
+ for(const asset of catalog.filter(x=>x.manualReview115 && x.manualReview115.status!=='passed')) {
+  assert.equal(accepted(asset),false,asset.id);
+ }
+});
