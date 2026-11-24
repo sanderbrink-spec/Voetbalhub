@@ -321,6 +321,16 @@ function nationallyRelevant(doc,scoring=internationalScoring(doc)){
  // Men's Nations League only. A relevant UEFA editorial briefing still needs
  // independent verifiable facts and the existing review/image gates to publish.
  if(/\b(vrouwen|womens|women|wsl|feminin)\b/.test(title))return false;
+ // Major stadium-capacity developments are nationally relevant football
+ // infrastructure news. Require a permitted first-party source, an explicit
+ // structural stadium-plan headline, and tangible capacity/seat evidence.
+ // Grass maintenance, routine facilities and supporter ticket notices do not
+ // satisfy this gate. Plans remain plans, never an approved construction permit.
+ const firstPartyStadiumPlan=allowedUrl(doc.url)&&
+  /\b(?:groter stadion|nieuw stadion|stadionuitbreid\w*|stadioncapaciteit|uitbreiding (?:van |met )?(?:het )?stadion)\b/.test(title)&&
+  /\b(?:capaciteit|plaatsen|toeschouwers)\b/.test(body)&&
+  /\b(?:plannen|planvorming|ontwikkel\w*|uitbreid\w*|vergunning\w*|bouw\w*|verbouw\w*)\b/.test(body);
+ if(firstPartyStadiumPlan)return true;
  if(scoring)return true;
  if(allowedUrl(doc.url)&&host(doc.url)==='uefa.com'&&/^\/uefanationsleague\/news\//.test(new URL(doc.url).pathname)&&
     /\b(nations league|league a|group a[1-4]|matchday|quarter finals|quarter final|groepswinst)\b/.test(title+' '+body.slice(0,500))&&
