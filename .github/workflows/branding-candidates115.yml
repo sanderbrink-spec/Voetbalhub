@@ -145,6 +145,16 @@ jobs:
           path: artwork-remaining115/
           if-no-files-found: error
 
+      - name: Export standalone offline owner image review
+        env:
+          REVIEW_COMMIT: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/export-owner-image-review115d.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldio-beeldkeuring-offline
+          path: veldio-review-export/veldio-beeldkeuring.html
+          if-no-files-found: error
+
   stage-reviewed:
     needs: crop
     if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'review/115a-veldio-only-branding'
