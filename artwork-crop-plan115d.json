@@ -20,5 +20,38 @@
       960
     ],
     "reason": "Ingelijste historische teamfoto heeft onduidelijke herkomst; vervangen door eigen neutrale illustratie zonder groepsfoto."
+  },
+  {
+    "id": "veldio104d-fcgroningen-night-preview",
+    "file": "public/stadium74/fcgroningen-night-preview104d.webp",
+    "originalSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+    "crop": [
+      0,
+      0,
+      1136
+    ],
+    "reason": "Verwijder uitsluitend disclaimer onderaan; behoud nachtelijke lege tribunes en Veldio-scorebord."
+  },
+  {
+    "id": "veldio75-feyenoord-report",
+    "file": "public/stadium75/feyenoord-report.webp",
+    "originalSha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
+    "crop": [
+      0,
+      0,
+      1184
+    ],
+    "reason": "Verwijder disclaimer rechtsonder; behoud volle tribunes, ovale dakvorm en Veldio-borden; vaandels nader beoordelen."
+  },
+  {
+    "id": "veldio74-fctwente-report",
+    "file": "public/stadium74/fctwente-report.webp",
+    "originalSha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
+    "crop": [
+      0,
+      0,
+      1152
+    ],
+    "reason": "Verwijder disclaimer onderaan; behoud volle tribunes en rode dakspanten. Controleer resterende kleine tribuneopschriften."
   }
 ]
