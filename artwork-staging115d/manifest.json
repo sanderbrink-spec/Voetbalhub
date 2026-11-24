@@ -36,6 +36,60 @@
       "publicationApproved": false,
       "rightsVerified": false,
       "contextVerified": false
+    },
+    {
+      "id": "veldio104d-fcgroningen-night-preview",
+      "file": "artwork-staging115d/veldio104d-fcgroningen-night-preview.webp",
+      "originalFile": "public/stadium74/fcgroningen-night-preview104d.webp",
+      "originalSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+      "sha256": "b30d0ce96bf77e1473dc6782fb6a31797fefd472374a89ccf571f210f977b987",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1472,
+        "height": 828
+      },
+      "reason": "Verwijder uitsluitend disclaimer onderaan; behoud nachtelijke lege tribunes en Veldio-scorebord.",
+      "status": "candidate-pending-individual-review",
+      "publicationApproved": false,
+      "rightsVerified": false,
+      "contextVerified": false
+    },
+    {
+      "id": "veldio75-feyenoord-report",
+      "file": "artwork-staging115d/veldio75-feyenoord-report.webp",
+      "originalFile": "public/stadium75/feyenoord-report.webp",
+      "originalSha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
+      "sha256": "4015ce3b13f41b297bb76634135ff1ff36e6600bd974789528a9d5994abc6378",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1184,
+        "height": 666
+      },
+      "reason": "Verwijder disclaimer rechtsonder; behoud volle tribunes, ovale dakvorm en Veldio-borden; vaandels nader beoordelen.",
+      "status": "candidate-pending-individual-review",
+      "publicationApproved": false,
+      "rightsVerified": false,
+      "contextVerified": false
+    },
+    {
+      "id": "veldio74-fctwente-report",
+      "file": "artwork-staging115d/veldio74-fctwente-report.webp",
+      "originalFile": "public/stadium74/fctwente-report.webp",
+      "originalSha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
+      "sha256": "e004ff9463fd2c47583f155f2c09c9ecf118eb8472fe02a072e46a8e3726f95e",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1152,
+        "height": 648
+      },
+      "reason": "Verwijder disclaimer onderaan; behoud volle tribunes en rode dakspanten. Controleer resterende kleine tribuneopschriften.",
+      "status": "candidate-pending-individual-review",
+      "publicationApproved": false,
+      "rightsVerified": false,
+      "contextVerified": false
     }
   ]
 }
