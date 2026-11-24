@@ -16,7 +16,7 @@ test('Fase 72: previously approved raster requires original SHA; flattened SVG i
  assert.ok(original);
  if(original.brandingAudit115?.status==='needs-correction')assert.equal(gate.accepted(original),false,'real nonconforming catalog artwork remains blocked');
  assert.equal(gate.accepted({...reviewedOriginal,brandingAudit115:{status:'needs-correction',assetSha256:historicalSha}}),false);
- assert.equal(gate.accepted(reviewedOriginal),true,'hypothetical reviewed bytes retain historical compatibility');
+ assert.equal(gate.accepted(reviewedOriginal),false,'known defective historical bytes must remain blocked even with a new receipt');
  assert.equal(gate.accepted({...reviewedOriginal,sha256:'changed-bytes'}),false);
  const retired=rows.find(a=>a.id==='veldio71-utrecht-nec-report');
  assert.equal(gate.accepted({...retired,approval:'approved',visualReview:{score:10,style:'photorealistic',reviewer:'fake approval',reviewedAt:'2026-11-11'}}),false);
