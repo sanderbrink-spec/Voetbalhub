@@ -6,9 +6,12 @@ const rotation=require('../image-rotation65');
 const premium=require('../premium-match-images72');
 const intake=require('../stadium-intake73.json');
 const source=require('../image-library49.json').assets.find(a=>a.id==='veldio72-utrecht-nec-report');
+const brandingFixture=require('../test-support/branding-fixture115');
+// In-memory test fixture only; never alters the real catalogue or rights status.
+const reviewedSource={...source,approval:'approved',brandingAudit115:brandingFixture(source.sha256)};
 
 const base=(club,kind='report')=>({
- ...source,
+ ...reviewedSource,
  id:'synthetic-'+club.toLowerCase().replace(/[^a-z]/g,'')+'-'+kind,
  fixtureId:undefined,homeClubReusable:true,
  subject:club+' neutrale thuisstadionafbeelding',clubs:[club,'*'],
@@ -44,8 +47,9 @@ test('Fase 73: three requested binaries are in repository and image desk, but re
   assert.equal(a.clubs[1],'*');
   assert.equal(a.fixtureId,undefined);
   assert.equal(crypto.createHash('sha256').update(fs.readFileSync(a.file)).digest('hex'),a.sha256);
-  assert.equal(premium.accepted(a),a.approval==='approved');
-  assert.equal(library.catalog().some(x=>x.id===a.id),a.approval==='approved');
+  const blocked=['needs-correction','already-rejected'].includes(a.brandingAudit115?.status) || (a.brandingAudit115 && a.brandingAudit115.assetSha256!==a.sha256);
+  if(blocked || a.approval==='pending')assert.equal(premium.accepted(a),false);
+  assert.equal(library.catalog().some(x=>x.id===a.id),premium.accepted(a));
  }
  assert.doesNotThrow(()=>library.validate(rows));
 });
@@ -74,10 +78,12 @@ test('Fase 73: full/empty occupancy and reviewed 8.5 remain mandatory',()=>{
  assert.equal(premium.accepted({...report,visualReview:{...report.visualReview,checked:{...report.visualReview.checked,rights:false}}}),false);
  assert.equal(premium.accepted({...report,clubs:['Willem II','Ajax']}),false);
  assert.equal(premium.accepted({...report,fixtureId:'sm-123'}),false);
+ assert.equal(premium.accepted({...report,brandingAudit115:{...report.brandingAudit115,noThirdPartyLogos:false}}),false);
+ assert.equal(premium.accepted({...report,brandingAudit115:{...report.brandingAudit115,assetSha256:'stale'}}),false);
 });
 test('Fase 73: fixture-specific originals always outrank reusable stadium image',()=>{
  const generic=base('FC Utrecht');
- const exact={...source};
+ const exact={...reviewedSource};
  const ctx={category:'report',fixtureId:source.fixtureId,clubs:source.clubs,competition:'Eredivisie',daypart:'neutral'};
  assert.equal(library.choose(ctx,[generic,exact]).id,source.id);
 });
