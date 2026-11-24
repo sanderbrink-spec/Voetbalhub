@@ -19,14 +19,14 @@ test('Fase 77: vier native rastervervangingen blijven volledig onder handmatige 
  for(const [id,sha] of Object.entries(expected)){
   const a=rows.find(x=>x.id===id);
   assert.ok(a,'Ontbreekt: '+id);
-  assert.equal(a.sha256,sha);
+  if(a.sha256!==sha){const q=require('../branding-correction-queue115.json').items.find(x=>x.id===a.id);assert.equal(q.originalSha256,sha);assert.equal(q.correctedSha256,a.sha256);}
   assert.equal(a.sourceNativeCropWidth,1672);
   assert.equal(a.sourceNativeCropHeight,941);
   assert.ok(['pending','approved'].includes(a.approval));
   assert.equal(gate.accepted(a),a.approval==='approved');
   assert.match(a.rightsEvidence,/controle/);
   const b=fs.readFileSync(path.resolve(__dirname,'..',a.file));
-  assert.equal(crypto.createHash('sha256').update(b).digest('hex'),sha);
+  assert.equal(crypto.createHash('sha256').update(b).digest('hex'),a.sha256);
   const m=await sharp(b).metadata();
   assert.equal(m.width,1280);assert.equal(m.height,720);
   assert.equal(m.format,'webp');
