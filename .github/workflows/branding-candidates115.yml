@@ -81,3 +81,66 @@ jobs:
           name: veldio-115b-cropped-review-candidates
           path: artwork-candidates115/
           if-no-files-found: error
+
+      - name: Export all remaining source images and make targeted candidate crops
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const crypto = require('node:crypto');
+          const sharp = require('sharp');
+          const sha = b => crypto.createHash('sha256').update(b).digest('hex');
+          const catalog = require('./image-library49.json').assets;
+          const queue = require('./branding-correction-queue115.json').items;
+          // Coordinates refer to the displayed 1280x720 reference view.
+          // Each output is a candidate only, never approval. Some still contain
+          // unrelated stand signage and will require a new illustration.
+          const crops = {
+            'veldio110b-sm-19714592-ajax-ado-day-report': [32,0,1136],
+            'veldio75-spartarotterdam-report': [32,0,1136],
+            'veldio74-adodenhaag-preview': [32,0,1136],
+            'veldio74-necnijmegen-preview': [32,0,1136],
+            'veldio74-fcgroningen-report': [32,0,1136],
+            'veldio74-fctwente-report': [32,0,1136],
+            'veldio75-feyenoord-report': [32,0,1136],
+            'veldio75-psv-report': [32,0,1136],
+            'veldio75-scheerenveen-preview': [32,0,1136],
+            'veldio75-scheerenveen-report': [32,0,1136],
+            'veldio75-sccambuur-report': [32,0,1136]
+          };
+          (async () => {
+            const dir = 'artwork-remaining115';
+            fs.mkdirSync(dir+'/sources',{recursive:true});
+            fs.mkdirSync(dir+'/candidates',{recursive:true});
+            const report = [];
+            for(const item of queue){
+              if(item.candidateReview115?.status==='text-screen-pass-only' || item.correctedSha256) continue;
+              const asset = catalog.find(a=>a.id===item.id);
+              if(!asset || asset.approval==='rejected' || item.status!=='pixels-not-corrected' || !/^[a-zA-Z0-9_-]+$/.test(item.id) || asset.file!==item.file) throw Error('Invalid source state '+item.id);
+              const bytes = fs.readFileSync(asset.file);
+              if(sha(bytes)!==item.originalSha256 || sha(bytes)!==asset.sha256) throw Error('Source hash mismatch '+item.id);
+              const meta=await sharp(bytes).metadata();
+              const source='sources/'+item.id+'.'+meta.format;
+              fs.writeFileSync(dir+'/'+source,bytes);
+              const row={id:item.id,source,originalSha256:sha(bytes),width:meta.width,height:meta.height,clubs:item.clubs,category:item.category,occupancy:item.occupancy,sceneDaypart:item.sceneDaypart,defect:item.defect,approval:false,status:'replacement-or-manual-correction-required'};
+              if(crops[item.id] && meta.width>=720 && Math.abs(meta.width/meta.height-16/9)<=0.025){
+                const [x,y,w]=crops[item.id];
+                const width=Math.floor(meta.width*w/1280/16)*16;
+                const crop={left:Math.floor(meta.width*x/1280),top:Math.floor(meta.height*y/720),width,height:width*9/16};
+                if(crop.left+crop.width<=meta.width && crop.top+crop.height<=meta.height){
+                  const candidate=await sharp(bytes).extract(crop).webp({quality:92}).toBuffer();
+                  const file='candidates/'+item.id+'.webp';
+                  fs.writeFileSync(dir+'/'+file,candidate);
+                  Object.assign(row,{candidate:file,candidateSha256:sha(candidate),crop,status:'candidate-pending-individual-review'});
+                }
+              }
+              report.push(row);
+            }
+            fs.writeFileSync(dir+'/report.json',JSON.stringify(report,null,2));
+            console.log(JSON.stringify({remainingSources:report.length,candidates:report.filter(x=>x.candidate).length,approvalCount:0}));
+          })().catch(e=>{console.error(e);process.exitCode=1;});
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldio-115c-remaining-source-and-candidate-batch
+          path: artwork-remaining115/
+          if-no-files-found: error
