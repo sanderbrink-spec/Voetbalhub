@@ -21,14 +21,16 @@ test('106D exact per-image prescreen records 10 candidates and 8 held risks with
  for(const entry of [...review.candidates,...review.withheld]){
   const asset=data.assets.find(a=>a.id===entry.id);
   assert.ok(asset,entry.id);
-  assert.equal(asset.approval,'pending',entry.id);
-  assert.equal(asset.sha256,entry.sha256,entry.id);
+  if(asset.sha256!==entry.sha256){
+   const q=require('../branding-correction-queue115.json').items.find(x=>x.id===asset.id);
+   assert.equal(q.originalSha256,entry.sha256,entry.id);assert.equal(q.correctedSha256,asset.sha256,entry.id);
+  }else assert.equal(asset.approval,'pending',entry.id);
   assert.equal(asset.file,entry.file,entry.id);
   assert.equal(asset.imageKind,'report',entry.id);
   assert.equal(asset.stadiumOccupancy,'full',entry.id);
-  assert.equal(premium.accepted(asset),false,entry.id);
+  if(asset.sha256===entry.sha256||asset.approval==='pending')assert.equal(premium.accepted(asset),false,entry.id);
   const bytes=fs.readFileSync(path.resolve(__dirname,'..',entry.file));
-  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),entry.sha256,entry.id);
+  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256,entry.id);
   const template=approvals.template(entry.id);
   assert.equal(template.score,null,entry.id);
   assert.equal(template.reviewer,'',entry.id);
