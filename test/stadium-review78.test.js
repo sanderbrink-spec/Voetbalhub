@@ -26,7 +26,12 @@ test('Fase 78: native Cambuur-beelden zijn valide, maar niet ongecontroleerd gep
   const bytes=a.approval==='pending'?v.bytes:fs.readFileSync(require('node:path').join(__dirname,'..',a.file));
   assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),a.sha256);
   const m=await sharp(bytes).metadata();
-  assert.equal(m.width,1280);assert.equal(m.height,720);assert.equal(m.format,'webp');
+  if(a.technicalReview115?.assetSha256===a.sha256){
+   assert.equal(a.approval,'pending');
+   assert.equal(m.width,a.technicalReview115.width);
+   assert.equal(m.height,a.technicalReview115.height);
+   assert.ok(m.width<1280||m.height<720);
+  }else{assert.equal(m.width,1280);assert.equal(m.height,720);}assert.equal(m.format,'webp');
  }
  const live=desk.overview().counts;
  assert.equal((live['stored-awaiting-review']||0)+(live['approved-for-use']||0),36);
