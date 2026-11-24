@@ -14,7 +14,7 @@ test('104G: echte Groningse clubbijnaam mag, een ongedekte bijnaam blijft verbod
   .some(x=>x.includes('De Amsterdammers')));
 });
 
-test('104G: heropent uitsluitend exact bewezen en eerder afgewezen derby één keer vóór aftrap',()=>{
+test('104G: heropent uitsluitend exact bewezen en eerder afgewezen derby één keer vóór aftrap',t=>{
  const f={id:'sm-19714591',competition:'eredivisie',status:'NS',date:'2026-11-21T20:00:00Z',
   home:{name:'FC Groningen'},away:{name:'sc Heerenveen'}};
  const candidate={kind:'preview',topic:'FC Groningen – SC Heerenveen',category:'Eredivisie',
@@ -30,6 +30,12 @@ test('104G: heropent uitsluitend exact bewezen en eerder afgewezen derby één k
  const job={clubPreviewId:f.id,status:'review',failureStage:'generation',
   failureCategory:'journalistic_rejection',reason:'insufficient_verified_facts',
   errorHash:hash,verifiedCoachNameRecovery104F:true,attempts:1,checkpoint:'afgekeurd'};
+ assert.equal(reopenVerifiedClubDemonym104G({...job},group,now),false);
+ const lib=require('../image-library49');
+ const raw=require('../image-library49.json').assets.find(x=>x.id==='veldio104d-fcgroningen-night-preview');
+ const synthetic={...raw,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
+ const actual=lib.catalog();
+ t.mock.method(lib,'catalog',()=>[...actual,synthetic]);
  assert.equal(reopenVerifiedClubDemonym104G(job,group,now),true);
  assert.equal(job.status,'pending');assert.equal(job.attempts,0);assert.equal(job.checkpoint,undefined);
  assert.equal(reopenVerifiedClubDemonym104G({...job,status:'review',failureStage:'generation',
