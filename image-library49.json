@@ -3543,7 +3543,7 @@
       "origin": "Originele Veldio AI-illustratie, fase 76; bron: veldio_stadion_in_groen_en_geel.png",
       "rights": "original-ai",
       "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.; Gecorrigeerde kandidaat SHA256 5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6; geen nieuwe rechtenvrijgave.; Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
-      "approval": "approved",
+      "approval": "pending",
       "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
@@ -3569,10 +3569,10 @@
         "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
         "stagingFile": "artwork-staging115/veldio74-adodenhaag-preview.webp",
         "sourceGitBlob": "b1ce61a400697e061247e295ca2eba343d5806f2",
-        "status": "pixels-corrected-approved",
+        "status": "pixels-corrected-pending-review",
         "rightsVerified": true,
         "contextVerified": true,
-        "publicationApproved": true,
+        "publicationApproved": false,
         "visualPrecheck": {
           "score": 8.5,
           "minimum": 8.5,
@@ -3627,7 +3627,16 @@
           "https://adodenhaag.nl/nl/club/werktalent-stadion/geschiedenis",
           "https://sportdaten.spiegel.de/spielort/ve617/werktalent-stadion/profil/"
         ],
-        "publicationApproved": true
+        "publicationApproved": false
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+        "width": 1024,
+        "height": 576,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -3905,7 +3914,7 @@
       "origin": "ChatGPT gegenereerde originele stadionillustratie, bronbestand veldio_in_een_groen_wit_stadion.png",
       "rights": "original-ai",
       "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist.; Gecorrigeerde kandidaat SHA256 43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9; geen nieuwe rechtenvrijgave.; Interne beoordeling: gedocumenteerde oorspronkelijke Veldio ChatGPT-generatie in catalogus, geen herkenbare externe merken of personen in werkelijk raster; uitsluitend als AI-illustratie. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
-      "approval": "approved",
+      "approval": "pending",
       "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
@@ -3931,10 +3940,10 @@
         "originalSha256": "67ebc44c0f5468f8f496276a5689b4450426efc638f9f4e8b30f28818c08e052",
         "stagingFile": "artwork-staging115/veldio74-fcgroningen-preview.webp",
         "sourceGitBlob": "8a21ab6dd36b37cda564e8868d268c7fa6b715af",
-        "status": "pixels-corrected-approved",
+        "status": "pixels-corrected-pending-review",
         "rightsVerified": true,
         "contextVerified": true,
-        "publicationApproved": true,
+        "publicationApproved": false,
         "visualPrecheck": {
           "score": 8.7,
           "minimum": 8.5,
@@ -3987,7 +3996,16 @@
           "https://www.rollecate.nl/en/projects/euroborg-groningen",
           "https://www.dagjeweg.nl/nieuwsredactie/26491/Stap-in-de-voetsporen-van-je-voetbalhelden%21"
         ],
-        "publicationApproved": true
+        "publicationApproved": false
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4057,6 +4075,15 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "2636e4286566e17e74a9cd3801d6aea5b0f36f4e24a5f22d3613a0ddfacd8d4f",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4173,6 +4200,15 @@
           "contextCheck": "requires-further-context-or-replacement",
           "contextNotes": "Referentiefoto en architect tonen doorlopende dakconstructie; kandidaat toont afwijkende open hoek en losse boogdaken. Context onvoldoende."
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4246,6 +4282,15 @@
           "contextCheck": "requires-further-context-or-replacement",
           "contextNotes": "Zelfde afwijkende dakconstructie als preview, context onvoldoende."
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4272,7 +4317,7 @@
       "origin": "Originele Veldio AI-illustratie, fase 76; bron: veldio_in_een_lege_voetbaltempel.png",
       "rights": "original-ai",
       "rightsEvidence": "Herkomst: oorspronkelijke Veldio AI-illustratie uit ChatGPT. Uitdrukkelijke visuele, stadion-, sponsor- en IE-rechtenreview vereist vóór commercieel gebruik.; Gecorrigeerde kandidaat SHA256 7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08; geen nieuwe rechtenvrijgave.; Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
-      "approval": "approved",
+      "approval": "pending",
       "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
@@ -4298,10 +4343,10 @@
         "originalSha256": "1ae94dcbd2af8aae52f73a0bc8f9393951530f3a6b65fd95b5f8afa5bbaae213",
         "stagingFile": "artwork-staging115/veldio74-feyenoord-preview.webp",
         "sourceGitBlob": "e71033c9c1b4655dd41113ee24a27f4911257d4b",
-        "status": "pixels-corrected-approved",
+        "status": "pixels-corrected-pending-review",
         "rightsVerified": true,
         "contextVerified": true,
-        "publicationApproved": true,
+        "publicationApproved": false,
         "visualPrecheck": {
           "score": 8.6,
           "minimum": 8.5,
@@ -4358,7 +4403,16 @@
           "https://www.zja.nl/en/Feijenoord-stadium-Rotterdam",
           "https://www.dekuip.com/en/tour-museum/tours/stadium-tour"
         ],
-        "publicationApproved": true
+        "publicationApproved": false
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4432,6 +4486,15 @@
           "contextCheck": "requires-further-context-or-replacement",
           "contextNotes": "Referentiefoto toont afwijkend stadion en donkere zitplaatsen; kleuren alleen zijn onvoldoende."
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "13ce69e32cd2d654be10e6a697e58d93e8207d06140affcb0cae1871fce7a3c9",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4457,7 +4520,7 @@
       "origin": "ChatGPT gegenereerde originele stadionillustratie, bronbestand veldio_stadion_in_rood_en_geel.png",
       "rights": "original-ai",
       "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist.; Gecorrigeerde kandidaat SHA256 baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887; geen nieuwe rechtenvrijgave.; Interne beoordeling: gedocumenteerde oorspronkelijke Veldio ChatGPT-generatie in catalogus, geen herkenbare externe merken of personen in werkelijk raster; uitsluitend als AI-illustratie. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
-      "approval": "approved",
+      "approval": "pending",
       "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
@@ -4483,10 +4546,10 @@
         "originalSha256": "f821d644c469ec912f35f3c2ba57140b4818cc00f3596b23f6dd65c379125560",
         "stagingFile": "artwork-staging115/veldio74-goaheadeagles-preview.webp",
         "sourceGitBlob": "9dc4191f676844fdd853b084e6505f490cfcc75e",
-        "status": "pixels-corrected-approved",
+        "status": "pixels-corrected-pending-review",
         "rightsVerified": true,
         "contextVerified": true,
-        "publicationApproved": true,
+        "publicationApproved": false,
         "visualPrecheck": {
           "score": 8.8,
           "minimum": 8.5,
@@ -4541,7 +4604,16 @@
           "https://eredivisie.com/news/the-stands-of-go-ahead-eagles/",
           "https://www.coliseum-online.com/go-ahead-eagles-home-stadium-rejig-go-ahead/"
         ],
-        "publicationApproved": true
+        "publicationApproved": false
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4567,7 +4639,7 @@
       "origin": "ChatGPT gegenereerde originele stadionillustratie, bronbestand veldio_onder_de_stadionlichten.png",
       "rights": "original-ai",
       "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist.; Gecorrigeerde kandidaat SHA256 bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e; geen nieuwe rechtenvrijgave.; Interne beoordeling: gedocumenteerde oorspronkelijke Veldio ChatGPT-generatie in catalogus, geen herkenbare externe merken of personen in werkelijk raster; uitsluitend als AI-illustratie. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
-      "approval": "approved",
+      "approval": "pending",
       "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
@@ -4593,10 +4665,10 @@
         "originalSha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
         "stagingFile": "artwork-staging115/veldio74-goaheadeagles-report.webp",
         "sourceGitBlob": "87dbef83cdb66af709a63ce62c71fb2e9e65f3b2",
-        "status": "pixels-corrected-approved",
+        "status": "pixels-corrected-pending-review",
         "rightsVerified": true,
         "contextVerified": true,
-        "publicationApproved": true,
+        "publicationApproved": false,
         "visualPrecheck": {
           "score": 8.8,
           "minimum": 8.5,
@@ -4651,7 +4723,16 @@
           "https://eredivisie.com/news/the-stands-of-go-ahead-eagles/",
           "https://www.coliseum-online.com/go-ahead-eagles-home-stadium-rejig-go-ahead/"
         ],
-        "publicationApproved": true
+        "publicationApproved": false
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4717,6 +4798,15 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "6ad39fcf8bf58eef25629b28bbb090c3c1056c989c1f95fbee978e3700f02814",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4872,6 +4962,15 @@
           "contextCheck": "requires-further-context-or-replacement",
           "contextNotes": "Actuele verbouwing 2025 en afwijkende tribuneconfiguratie nog niet afdoende te rijmen met raster."
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4946,6 +5045,15 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "bcad8cd8eaf0bca4d4eb91a9efee6187de93d076941f2268ec92e4575cf83022",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -4972,7 +5080,7 @@
       "origin": "Origineel Veldio AI-beeld uit gesprek: a_crisp_high_detail_realistic_cgi_stadium_interi.png; fase 77 nieuwe volledige rasteruitsnede",
       "rights": "original-ai",
       "rightsEvidence": "Herkomst: Veldio AI-illustratie. Handmatige controle van merken, sponsoruitingen, stadionuiterlijk en commerciële rechten blijft vereist.; Gecorrigeerde kandidaat SHA256 4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703; geen nieuwe rechtenvrijgave.; Interne beoordeling: gedocumenteerde oorspronkelijke Veldio ChatGPT-generatie in catalogus, geen herkenbare externe merken of personen in werkelijk raster; uitsluitend als AI-illustratie. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
-      "approval": "approved",
+      "approval": "pending",
       "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
@@ -5001,10 +5109,10 @@
         "originalSha256": "e16caf69cdc26f8778b02a541135aeb5f8ee9a192408ced3a85bf11b55b9be94",
         "stagingFile": "artwork-staging115/veldio75-fctwente-preview.webp",
         "sourceGitBlob": "96e327843e7bf4b708be4ae8c4528fac2eece9cc",
-        "status": "pixels-corrected-approved",
+        "status": "pixels-corrected-pending-review",
         "rightsVerified": true,
         "contextVerified": true,
-        "publicationApproved": true,
+        "publicationApproved": false,
         "visualPrecheck": {
           "score": 8.8,
           "minimum": 8.5,
@@ -5060,7 +5168,16 @@
           "https://www.twentefans.nl/aanpassing-in-grolsch-veste-indrukwekkende-lichtshows-mogelijk/",
           "https://www.whsports.nl/en/projects/new-business-seats-for-fc-twente"
         ],
-        "publicationApproved": true
+        "publicationApproved": false
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -5267,6 +5384,15 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "1c18518c6a92c9e49d69d6bb3b8cb96c1bb2d61552215263a232e058f708a090",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -5337,7 +5463,7 @@
       "origin": "Origineel Veldio AI-beeld uit gesprek: a_crisp_ultra_realistic_wide_angle_stadium_scene.png; volledige 1672x941 bron, fase 78",
       "rights": "original-ai",
       "rightsEvidence": "AI-herkomst uit Veldio-conversatie gedocumenteerd; definitieve visuele stadion-, merken- en commerciële rechtencontrole blijft verplicht.; Gecorrigeerde kandidaat SHA256 b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea; geen nieuwe rechtenvrijgave.; Interne rechtenbeoordeling: catalogus documenteert originele Veldio ChatGPT-generatie; daadwerkelijk raster bevat geen duidelijke externe merken of herkenbare personen. OpenAI EU-voorwaarden kennen outputrechten toe voor zover toepasselijk recht toestaat; geen onafhankelijke juridische garantie. https://openai.com/policies/eu-terms-of-use/",
-      "approval": "approved",
+      "approval": "pending",
       "reviewer": "ChatGPT individual visual and context review 115C",
       "lastUsed": null,
       "sha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
@@ -5366,10 +5492,10 @@
         "originalSha256": "9f68d0d22bc48d1e76b4a8e32cf38d8fee8738cfba965aad3491945cdba9b871",
         "stagingFile": "artwork-staging115/veldio75-sccambuur-preview.webp",
         "sourceGitBlob": "c4412288d6ea86e64a376d94c0a4e62566ec1bb7",
-        "status": "pixels-corrected-approved",
+        "status": "pixels-corrected-pending-review",
         "rightsVerified": true,
         "contextVerified": true,
-        "publicationApproved": true,
+        "publicationApproved": false,
         "visualPrecheck": {
           "score": 8.5,
           "minimum": 8.5,
@@ -5427,7 +5553,16 @@
           "https://www.tsv.nl/project/cambuur-stadion/",
           "https://www.vi.nl/nieuws/1658810/cambuur-voetbalt-in-nieuw-onaf-stadion-de-hele-stad-is-hieraan-toe"
         ],
-        "publicationApproved": true
+        "publicationApproved": false
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -5636,6 +5771,15 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -5934,6 +6078,15 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "8c9a1ff62a260f50305591172fb277d50492575fcebf2eaf2f9b7ffe91b3ba84",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     },
     {
@@ -6054,6 +6207,15 @@
           "rightsVerified": false,
           "publicationApproved": false
         }
+      },
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "0c0276636351c43db98b346f0faae39e715b5c89489bc0eac2a61935a76a9b3d",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
       }
     }
   ]
