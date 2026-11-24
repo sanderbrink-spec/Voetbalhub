@@ -60,7 +60,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "8c9a1ff62a260f50305591172fb277d50492575fcebf2eaf2f9b7ffe91b3ba84",
+        "originalSha256": "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885",
+        "artifactId": 14904226955,
+        "workflowRunId": 45360484707,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle blauw-witte tribunes in avondschemer; alleen Veldio op borden. Uitvakidentiteit, feitelijke context en commerciële rechten nog toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio110d-sm-19722098-hull-brighton-day-report",
@@ -87,7 +106,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "0c0276636351c43db98b346f0faae39e715b5c89489bc0eac2a61935a76a9b3d",
+        "originalSha256": "1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef",
+        "artifactId": 14904226955,
+        "workflowRunId": 45360484707,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle amberzwarte en blauwe tribunes in daglicht; alleen Veldio op borden. Wedstrijd/competitie, stadioncontext en commerciële rechten nog toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-fcutrecht-report",
@@ -114,7 +152,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+        "originalSha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
+        "artifactId": 14904226955,
+        "workflowRunId": 45360484707,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle rood-witte tribunes bij kunstlicht; Veldio en eigen slogan zichtbaar, geen andere leesbare tekst. Artistieke stadioncontext en commerciële rechten nog toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-spartarotterdam-report",
@@ -2394,5 +2451,10 @@
         "record new SHA256 and independent review; keep AI disclosure outside raster"
       ]
     }
-  ]
+  ],
+  "candidateReviewSummary115": {
+    "textScreenPassed": 3,
+    "publicationApproved": 0,
+    "scope": "Actual candidate bytes reviewed; source catalogue remains unchanged and blocked until full review."
+  }
 }
