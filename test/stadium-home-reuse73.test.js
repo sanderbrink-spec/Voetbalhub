@@ -8,7 +8,7 @@ const intake=require('../stadium-intake73.json');
 const source=require('../image-library49.json').assets.find(a=>a.id==='veldio72-utrecht-nec-report');
 const brandingFixture=require('../test-support/branding-fixture115');
 // In-memory test fixture only; never alters the real catalogue or rights status.
-const reviewedSource={...source,approval:'approved',brandingAudit115:brandingFixture(source.sha256)};
+const reviewedSource={...source,id:'synthetic-exact-utrecht-nec',manualReview115:undefined,approval:'approved',brandingAudit115:brandingFixture(source.sha256)};
 
 const base=(club,kind='report')=>({
  ...reviewedSource,
@@ -85,5 +85,5 @@ test('Fase 73: fixture-specific originals always outrank reusable stadium image'
  const generic=base('FC Utrecht');
  const exact={...reviewedSource};
  const ctx={category:'report',fixtureId:source.fixtureId,clubs:source.clubs,competition:'Eredivisie',daypart:'neutral'};
- assert.equal(library.choose(ctx,[generic,exact]).id,source.id);
+ assert.equal(library.choose(ctx,[generic,exact]).id,exact.id);
 });
