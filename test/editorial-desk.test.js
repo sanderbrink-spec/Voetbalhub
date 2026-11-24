@@ -55,9 +55,15 @@ test.before(async()=>{
   },keys:async pattern=>[...store.keys()].filter(k=>k.startsWith(pattern.slice(0,-1)))};
   const library=require('../image-library49');
   const catalog=library.catalog();
-  const example=require('../image-library49.json').assets.find(asset=>asset.id==='groningen43');
+  const rawAssets=require('../image-library49.json').assets;
+  const example=rawAssets.find(asset=>asset.id==='groningen43');
+  const archiveRaw=rawAssets.find(a=>a.id==='veldio69-groningen-1');
+  const emmenRaw=rawAssets.find(a=>a.id==='veldio71-emmen-den-bosch-preview');
+  const isolated=a=>({...a,id:'synthetic-'+a.id,manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(a.sha256),visualReview:a.visualReview||{score:9,style:'photorealistic',assetSha256:a.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-24'}});
+  assert.equal(require('../premium-match-images72').accepted(archiveRaw),false);
+  assert.equal(require('../premium-match-images72').accepted(emmenRaw),false);
  const syntheticBranding=require('../test-support/branding-fixture115')(example.sha256);
-  test.mock.method(library,'catalog',()=>[...catalog,
+  test.mock.method(library,'catalog',()=>[...catalog,isolated(archiveRaw),isolated(emmenRaw),
     {...example,manualReview115:undefined,brandingAudit115:syntheticBranding,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax'],
       imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fcgroningen',
       visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}},
