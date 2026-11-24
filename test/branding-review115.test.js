@@ -92,3 +92,22 @@ test('later individual review overrides legacy acceptance and cannot be reused f
   assert.equal(accepted(asset),false,asset.id);
  }
 });
+
+
+test('115D: known undersized corrected match rasters cannot be approved with metadata alone',async()=>{
+ const q=require('../branding-correction-queue115.json').items;
+ const rows=require('../image-library49.json').assets;
+ const sharp=require('sharp'),fs=require('node:fs');
+ const holds=q.filter(x=>x.technicalReview115?.status==='requires-native-resolution-repair');
+ assert.ok(holds.length>0);
+ for(const item of holds){
+  const row=rows.find(x=>x.id===item.id),h=item.technicalReview115;
+  assert.equal(row.sha256,h.assetSha256);
+  const actual=await sharp(fs.readFileSync(row.file)).metadata();
+  assert.equal(actual.width,h.width);assert.equal(actual.height,h.height);
+  assert.ok(actual.width<1280||actual.height<720);
+  assert.equal(row.approval,'pending');
+  assert.equal(accepted({...row,approval:'approved',reviewer:'Synthetic QA',brandingAudit115:{...audit,assetSha256:row.sha256}}),false);
+  assert.equal((await require('../scripts/premium-raster-preflight72').inspect(row.file)).accepted,false);
+ }
+});
