@@ -48,6 +48,8 @@ function brandingAllowed(asset) {
 function accepted(asset) {
  if(!asset || asset.approval!=='approved' || !asset.reviewer ||
     !asset.rightsEvidence) return false;
+ // Known visual defects apply to every catalog category, not just match art.
+ if(asset.brandingAudit115?.status==='needs-correction' && asset.brandingAudit115.assetSha256===asset.sha256) return false;
  if(!isMatch(asset)) return true;
  if(!brandingAllowed(asset)) return false;
  // A machine-readable fixture approval does not establish photographic quality.
