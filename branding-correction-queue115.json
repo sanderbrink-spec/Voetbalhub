@@ -613,7 +613,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "cf05ab0ad40be74703d20ec4d6f3ad10e19ff015e7314b614c6f9854dd7ec259",
+        "originalSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 41,
+          "top": 0,
+          "width": 1472,
+          "height": 828
+        },
+        "notes": "AI-disclaimer verwijderd, maar onduidelijke groene letterachtige opschriften op witte tribunerand; opnieuw corrigeren.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio69-ado-1",
@@ -1828,7 +1847,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+        "originalSha256": "67ebc44c0f5468f8f496276a5689b4450426efc638f9f4e8b30f28818c08e052",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege groen-witte dagtribunes; alleen Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-fcgroningen-report",
@@ -1909,7 +1947,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+        "originalSha256": "e3210e69ed15efbbdc6574b8f30b9fa016a7939e9a3a50885b2510942900f9c3",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-feyenoord-preview",
@@ -1936,7 +1993,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+        "originalSha256": "1ae94dcbd2af8aae52f73a0bc8f9393951530f3a6b65fd95b5f8afa5bbaae213",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-fortunasittard-preview",
@@ -1963,7 +2039,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "13ce69e32cd2d654be10e6a697e58d93e8207d06140affcb0cae1871fce7a3c9",
+        "originalSha256": "cf471176f94b3e723777cd186d1d0d1af5f87d248f6ccc5b288667a0efc7eba1",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege groen-gele dagtribunes; uitsluitend Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-goaheadeagles-preview",
@@ -1990,7 +2085,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+        "originalSha256": "f821d644c469ec912f35f3c2ba57140b4818cc00f3596b23f6dd65c379125560",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-gele dagtribunes; uitsluitend Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-goaheadeagles-report",
@@ -2017,7 +2131,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+        "originalSha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle rood-gele avondtribunes; uitsluitend Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio74-necnijmegen-preview",
@@ -2125,7 +2258,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+        "originalSha256": "064e6dba2d3b0d37e750ad19151ea112f2414532e0f082466457c69b8fbf0f5e",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege blauw-witte dagtribunes; uitsluitend Veldio.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-adodenhaag-report",
@@ -2152,7 +2304,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "bcad8cd8eaf0bca4d4eb91a9efee6187de93d076941f2268ec92e4575cf83022",
+        "originalSha256": "18d7beadd3137bc85174433fd9f359380099835a6d2406927718f5db58b152e1",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Groen-geel avondpubliek; geen andere leesbare tekst dan Veldio; bezettingsgraad nader beoordelen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-fctwente-preview",
@@ -2179,7 +2350,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+        "originalSha256": "e16caf69cdc26f8778b02a541135aeb5f8ee9a192408ced3a85bf11b55b9be94",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; Veldio V-vormige branding.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-feyenoord-report",
@@ -2287,7 +2477,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "1c18518c6a92c9e49d69d6bb3b8cb96c1bb2d61552215263a232e058f708a090",
+        "originalSha256": "595588cea03a67ae7b05c96a3ae477aa3866e11b73c07686e42f3d92694ca808",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio en eigen slogan; locatiearchitectuur nader toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-psv-report",
@@ -2341,7 +2550,26 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+        "originalSha256": "9f68d0d22bc48d1e76b4a8e32cf38d8fee8738cfba965aad3491945cdba9b871",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege geel-blauwe dagtribunes; Veldio V-vormige branding.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     },
     {
       "id": "veldio75-sccambuur-report",
@@ -2449,12 +2677,33 @@
         "verify provenance and commercial rights",
         "verify context, colours, occupancy and daypart where applicable",
         "record new SHA256 and independent review; keep AI disclosure outside raster"
-      ]
+      ],
+      "candidateReview115": {
+        "candidateSha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f",
+        "originalSha256": "e6a43616c1063aed3f0478a9e925576420dbc7c7caef9560c8890a1a589cc884",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio; kasteelachtige achtergrond.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
     }
   ],
   "candidateReviewSummary115": {
-    "textScreenPassed": 3,
+    "textScreenPassed": 15,
+    "needsFurtherPixelCorrection": 1,
+    "candidatesReviewed": 16,
     "publicationApproved": 0,
-    "scope": "Actual candidate bytes reviewed; source catalogue remains unchanged and blocked until full review."
+    "scope": "Actual candidate bytes reviewed, catalogue unchanged; all candidate SHA256 hashes verified locally. No rights or context certification."
   }
 }
