@@ -3017,11 +3017,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of actual locally reproduced WebP, sharp 0.34.1; original and candidate SHA256 verified",
-        "notes": "Lege groen-gele dagtribunes, Veldio-vlag en reclameborden; geen overige leesbare tekst. Onderste grafische woordmerk volledig buiten uitsnede. Stadioncontext en rechten nog toetsen. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
@@ -3030,7 +3034,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.5,
+          "minimum": 8.5,
+          "assetSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, groen-geel, dag; officiële bron bevestigt donkergroene stoelen.",
+          "contextSources": [
+            "https://adodenhaag.nl/nl/3103-bouwproces-kyocera-stadion"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3320,11 +3340,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege groen-witte dagtribunes; alleen Veldio en eigen slogan. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "67ebc44c0f5468f8f496276a5689b4450426efc638f9f4e8b30f28818c08e052",
@@ -3333,7 +3357,21 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.7,
+          "minimum": 8.5,
+          "assetSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, groen-wit, dag; exacte stadionarchitectuur nog vergelijken.",
+          "contextSources": [],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3371,11 +3409,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "2636e4286566e17e74a9cd3801d6aea5b0f36f4e24a5f22d3613a0ddfacd8d4f",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection at native size; SHA256 verified locally",
-        "notes": "Volle groen-witte avondtribunes; uitsluitend Veldio en eigen slogan, geen leesbare andere opschriften. Context en rechten nog open. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
@@ -3384,7 +3426,21 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8,
+          "minimum": 8.5,
+          "assetSha256": "2636e4286566e17e74a9cd3801d6aea5b0f36f4e24a5f22d3613a0ddfacd8d4f",
+          "status": "requires-correction",
+          "reviewedAt": "2026-11-24",
+          "notes": "Onvoldoende volle tribunes.",
+          "contextSources": [],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3465,11 +3521,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio en eigen slogan. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "e3210e69ed15efbbdc6574b8f30b9fa016a7939e9a3a50885b2510942900f9c3",
@@ -3478,7 +3538,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.7,
+          "minimum": 8.5,
+          "assetSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, rood-wit, dag; exacte stadionarchitectuur nog vergelijken.",
+          "contextSources": [
+            "https://www.zja.nl/nl/Stadion-Galgenwaard-Utrecht"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3516,11 +3592,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
-        "notes": "Volle rood-witte tribunes bij kunstlicht; Veldio en eigen slogan zichtbaar, geen andere leesbare tekst. Artistieke stadioncontext en commerciële rechten nog toetsen. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
@@ -3529,7 +3609,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.7,
+          "minimum": 8.5,
+          "assetSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Volle rood-witte tribunes en nacht; exacte stadionarchitectuur nog vergelijken.",
+          "contextSources": [
+            "https://www.zja.nl/nl/Stadion-Galgenwaard-Utrecht"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3568,11 +3664,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "1ae94dcbd2af8aae52f73a0bc8f9393951530f3a6b65fd95b5f8afa5bbaae213",
@@ -3581,7 +3681,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.6,
+          "minimum": 8.5,
+          "assetSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, rood-wit, dag; ovale dakvorm komt overeen met officiële stadionhistorie.",
+          "contextSources": [
+            "https://www.dekuip.com/en/stadion-feijenoord/history"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3619,11 +3735,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "13ce69e32cd2d654be10e6a697e58d93e8207d06140affcb0cae1871fce7a3c9",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege groen-gele dagtribunes; uitsluitend Veldio en eigen slogan. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "cf471176f94b3e723777cd186d1d0d1af5f87d248f6ccc5b288667a0efc7eba1",
@@ -3632,7 +3752,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.5,
+          "minimum": 8.5,
+          "assetSha256": "13ce69e32cd2d654be10e6a697e58d93e8207d06140affcb0cae1871fce7a3c9",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, groen-geel, dag; clubkleuren bevestigd door club.",
+          "contextSources": [
+            "https://fortunasittard.nl/nieuws/laatste-week-om-fortuna-membership-te-verlengen"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3670,11 +3806,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege rood-gele dagtribunes; uitsluitend Veldio en eigen slogan. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "f821d644c469ec912f35f3c2ba57140b4818cc00f3596b23f6dd65c379125560",
@@ -3683,7 +3823,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.8,
+          "minimum": 8.5,
+          "assetSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, rood-geel, dag; vier tribunes volgens club, volledige identiteit nog vergelijken.",
+          "contextSources": [
+            "https://www.ga-eagles.nl/stadion-plattegrond/"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3721,11 +3877,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Volle rood-gele avondtribunes; uitsluitend Veldio en eigen slogan. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
@@ -3734,7 +3894,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.8,
+          "minimum": 8.5,
+          "assetSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Vol, rood-geel, nacht; volledige identiteit nog vergelijken.",
+          "contextSources": [
+            "https://www.ga-eagles.nl/stadion-plattegrond/"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3785,7 +3961,21 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.2,
+          "minimum": 8.5,
+          "assetSha256": "6ad39fcf8bf58eef25629b28bbb090c3c1056c989c1f95fbee978e3700f02814",
+          "status": "requires-correction",
+          "reviewedAt": "2026-11-24",
+          "notes": "Vervormde X-achtige logo's; branding niet definitief akkoord.",
+          "contextSources": [],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3907,11 +4097,15 @@
       "homeClubReusable": true,
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege blauw-witte dagtribunes; uitsluitend Veldio. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "064e6dba2d3b0d37e750ad19151ea112f2414532e0f082466457c69b8fbf0f5e",
@@ -3920,7 +4114,21 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.6,
+          "minimum": 8.5,
+          "assetSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, blauw-wit, dag; exacte stadionarchitectuur nog vergelijken.",
+          "contextSources": [],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -3961,11 +4169,15 @@
       "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "bcad8cd8eaf0bca4d4eb91a9efee6187de93d076941f2268ec92e4575cf83022",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Groen-geel avondpubliek; geen andere leesbare tekst dan Veldio; bezettingsgraad nader beoordelen. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "18d7beadd3137bc85174433fd9f359380099835a6d2406927718f5db58b152e1",
@@ -3974,7 +4186,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 7.8,
+          "minimum": 8.5,
+          "assetSha256": "bcad8cd8eaf0bca4d4eb91a9efee6187de93d076941f2268ec92e4575cf83022",
+          "status": "requires-correction",
+          "reviewedAt": "2026-11-24",
+          "notes": "Opvallende lege stoelvakken.",
+          "contextSources": [
+            "https://adodenhaag.nl/nl/3103-bouwproces-kyocera-stadion"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -4016,11 +4244,15 @@
       "homeVenueAliases": [],
       "sourceNativeCropHeight": 941,
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege rood-witte dagtribunes; Veldio V-vormige branding. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "e16caf69cdc26f8778b02a541135aeb5f8ee9a192408ced3a85bf11b55b9be94",
@@ -4029,7 +4261,24 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.8,
+          "minimum": 8.5,
+          "assetSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, rood-wit, dag; rood stadion bevestigd door club.",
+          "contextSources": [
+            "https://fctwente.nl/nieuws/we-zijn-er-nog-niet-zondag-willen-we-het-afmaken",
+            "https://fctwente.nl/service-en-support/naar-de-grolsch-veste/plattegrond-stadion"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -4204,11 +4453,15 @@
       "qualityReviewNote": "Bron is een bestaand AI-beeld; onafhankelijke eindbeoordeling ontbreekt.",
       "homeVenueAliases": [],
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "1c18518c6a92c9e49d69d6bb3b8cb96c1bb2d61552215263a232e058f708a090",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio en eigen slogan; locatiearchitectuur nader toetsen. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "595588cea03a67ae7b05c96a3ae477aa3866e11b73c07686e42f3d92694ca808",
@@ -4217,7 +4470,21 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8,
+          "minimum": 8.5,
+          "assetSha256": "1c18518c6a92c9e49d69d6bb3b8cb96c1bb2d61552215263a232e058f708a090",
+          "status": "requires-correction",
+          "reviewedAt": "2026-11-24",
+          "notes": "Stadionidentiteit twijfelachtig.",
+          "contextSources": [],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -4303,11 +4570,15 @@
       "homeVenueAliases": [],
       "sourceNativeCropHeight": 941,
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege geel-blauwe dagtribunes; Veldio V-vormige branding. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "9f68d0d22bc48d1e76b4a8e32cf38d8fee8738cfba965aad3491945cdba9b871",
@@ -4316,7 +4587,24 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.5,
+          "minimum": 8.5,
+          "assetSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+          "status": "provisional-pass",
+          "reviewedAt": "2026-11-24",
+          "notes": "Leeg, geel-blauw, dag; actuele Kooi Stadion-identiteit nog vergelijken.",
+          "contextSources": [
+            "https://cambuur.nl/stadion058/algemeen/",
+            "https://cambuur.nl/nieuws/kooi-stadion-krijgt-steeds-meer-kleur-eerste-stoeltje-geplaatst-veld-prachtig-groen/"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -4491,11 +4779,15 @@
       "homeVenueAliases": [],
       "sourceNativeCropHeight": 941,
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
-        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio; kasteelachtige achtergrond. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "e6a43616c1063aed3f0478a9e925576420dbc7c7caef9560c8890a1a589cc884",
@@ -4504,7 +4796,23 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.3,
+          "minimum": 8.5,
+          "assetSha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f",
+          "status": "requires-correction",
+          "reviewedAt": "2026-11-24",
+          "notes": "Officiële clubbron bevestigt kasteel aan lange zijde; afbeelding toont doel ervoor. Vervangen door juiste oriëntatie.",
+          "contextSources": [
+            "https://www.sparta-rotterdam.nl/events/home/"
+          ],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -4771,11 +5079,15 @@
       "intakeStatus": "pending-independent-review",
       "artworkNote": "Gecontroleerde bronbestanden en exacte SHA256; clubkleuren, stadioncontext, merktekens en commerciële rechten vereisen afzonderlijke eindcontrole. Geen fictieve score of goedkeuring.",
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "8c9a1ff62a260f50305591172fb277d50492575fcebf2eaf2f9b7ffe91b3ba84",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
-        "notes": "Volle blauw-witte tribunes in avondschemer; alleen Veldio op borden. Uitvakidentiteit, feitelijke context en commerciële rechten nog toetsen. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885",
@@ -4784,7 +5096,21 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 8.3,
+          "minimum": 8.5,
+          "assetSha256": "8c9a1ff62a260f50305591172fb277d50492575fcebf2eaf2f9b7ffe91b3ba84",
+          "status": "requires-correction",
+          "reviewedAt": "2026-11-24",
+          "notes": "Uitclub geel-blauw niet voldoende zichtbaar; precieze locatie en wedstrijdcontext open.",
+          "contextSources": [],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     },
     {
@@ -4873,11 +5199,15 @@
       "intakeStatus": "pending-independent-review",
       "artworkNote": "Originele amberzwarte thuis- en blauwe uitvaksfeer in fictief volledig gevuld dagstadion. Exacte bron en WEBP bytes herleidbaar, geen officiële clublogo's beoogd. Rechten, eindkwaliteit en stadioncontext nog onafhankelijk te beoordelen; geen publicatie.",
       "brandingAudit115": {
-        "status": "text-screen-pass",
+        "status": "passed",
         "assetSha256": "0c0276636351c43db98b346f0faae39e715b5c89489bc0eac2a61935a76a9b3d",
         "reviewedAt": "2026-11-24",
-        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
-        "notes": "Volle amberzwarte en blauwe tribunes in daglicht; alleen Veldio op borden. Wedstrijd/competitie, stadioncontext en commerciële rechten nog toetsen. Gecorrigeerd raster opgenomen op herstelbranch; rechten, context en definitieve visuele vrijgave blijven open."
+        "reviewer": "ChatGPT individual visual inspection 115C",
+        "notes": "Visuele brandingcontrole op de werkelijk geopende gecorrigeerde WebP. Geen andere duidelijke tekst of derdepartijlogo's; AI-vermelding in bijschrift. Geen definitieve context-, kwaliteits- of rechtenvrijgave.",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
       },
       "correction115": {
         "originalSha256": "1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef",
@@ -4886,7 +5216,21 @@
         "status": "pixels-corrected-pending-review",
         "rightsVerified": false,
         "contextVerified": false,
-        "publicationApproved": false
+        "publicationApproved": false,
+        "visualPrecheck": {
+          "score": 7.5,
+          "minimum": 8.5,
+          "assetSha256": "0c0276636351c43db98b346f0faae39e715b5c89489bc0eac2a61935a76a9b3d",
+          "status": "requires-correction",
+          "reviewedAt": "2026-11-24",
+          "notes": "Stadionidentiteit onvoldoende; wedstrijdcontext open.",
+          "contextSources": [],
+          "rightsPolicySource": "https://openai.com/policies/eu-terms-of-use/",
+          "rightsPolicyNote": "Output ownership vis-a-vis OpenAI subject to applicable law, does not certify third-party rights or exact provenance.",
+          "contextVerified": false,
+          "rightsVerified": false,
+          "publicationApproved": false
+        }
       }
     }
   ]
