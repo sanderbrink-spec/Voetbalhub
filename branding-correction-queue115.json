@@ -1698,6 +1698,25 @@
         "record new SHA256 and independent review; keep AI disclosure outside raster"
       ],
       "candidateReview115": {
+        "candidateSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+        "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
+        "sourceArtifactId": 14907942209,
+        "sourceWorkflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of actual locally reproduced WebP, sharp 0.34.1; original and candidate SHA256 verified",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 0,
+          "top": 0,
+          "width": 1024,
+          "height": 576
+        },
+        "notes": "Lege groen-gele dagtribunes, Veldio-vlag en reclameborden; geen overige leesbare tekst. Onderste grafische woordmerk volledig buiten uitsnede. Stadioncontext en rechten nog toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "previousCandidateReview115": {
         "candidateSha256": "7d72c1ec4d0a813134a514faa3db733137bb2f0e5ab49a517365658fd49c568d",
         "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
         "artifactId": 14907942209,
@@ -2909,10 +2928,10 @@
     }
   ],
   "candidateReviewSummary115": {
-    "textScreenPassed": 17,
-    "needsFurtherPixelCorrection": 10,
+    "textScreenPassed": 18,
+    "needsFurtherPixelCorrection": 9,
     "candidatesReviewed": 27,
     "publicationApproved": 0,
-    "scope": "17 text-screen-only passes, 10 candidates with remaining defects. Actual candidate hashes checked, no rights/context certification or catalogue release."
+    "scope": "Actual inspected candidate bytes; no rights/context certification or catalogue release. ADO preview second crop reproduces via existing staging job."
   }
 }
