@@ -1,0 +1,88 @@
+{
+  "source": "Veldio_beeldkeuring_92.pdf",
+  "sourceCommit": "062123ebdad1f0c0b82d928146b2c6a711990589",
+  "totalInReview": 92,
+  "scope": "Owner visual decisions only, bound to exact shown candidate or existing source hash. No changes to technical, rights, context or publication approvals. Rejected files require replacement before owner approval.",
+  "reviews": [
+    {
+      "number": 1,
+      "id": "veldio104d-fcgroningen-night-preview",
+      "path": "artwork-staging115d/veldio104d-fcgroningen-night-preview.webp",
+      "assetSha256": "b30d0ce96bf77e1473dc6782fb6a31797fefd472374a89ccf571f210f977b987",
+      "subject": "FC Groningen – sc Heerenveen, gecontroleerde avondvoorbeschouwing met AI-stadionillustratie",
+      "ownerVote": "JA",
+      "reviewedAt": "2026-11-24",
+      "publicationApproved": false
+    },
+    {
+      "number": 2,
+      "id": "veldio75-feyenoord-report",
+      "path": "artwork-staging115d/veldio75-feyenoord-report.webp",
+      "assetSha256": "4015ce3b13f41b297bb76634135ff1ff36e6600bd974789528a9d5994abc6378",
+      "subject": "Feyenoord, wedstrijdverslag met avondpubliek",
+      "ownerVote": "JA",
+      "reviewedAt": "2026-11-24",
+      "publicationApproved": false
+    },
+    {
+      "number": 3,
+      "id": "veldio74-fctwente-report",
+      "path": "artwork-staging115d/veldio74-fctwente-report.webp",
+      "assetSha256": "e004ff9463fd2c47583f155f2c09c9ecf118eb8472fe02a072e46a8e3726f95e",
+      "subject": "FC Twente, wedstrijdverslag in avondsetting",
+      "ownerVote": "JA",
+      "reviewedAt": "2026-11-24",
+      "publicationApproved": false
+    },
+    {
+      "number": 4,
+      "id": "heerenveen43",
+      "path": "public/news43/heerenveen43.webp",
+      "assetSha256": "f005717efb788dc10730a0ff39e026eebc4702ba8f6330d34e0c5c1e727c3f51",
+      "subject": "sc Heerenveen / NEC",
+      "ownerVote": "JA",
+      "reviewedAt": "2026-11-24",
+      "publicationApproved": false
+    },
+    {
+      "number": 5,
+      "id": "feyenoord43",
+      "path": "public/news43/feyenoord43.webp",
+      "assetSha256": "8e3ddf291ee355d6dec7bf2b43f22ee7f0c86354e20a2fd30756a63bb9e61ed3",
+      "subject": "Feyenoord / Fortuna Sittard",
+      "ownerVote": "JA",
+      "reviewedAt": "2026-11-24",
+      "publicationApproved": false
+    },
+    {
+      "number": 6,
+      "id": "ajax43",
+      "path": "public/news43/ajax43.webp",
+      "assetSha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
+      "subject": "Ajax / AZ",
+      "ownerVote": "NEE",
+      "reviewedAt": "2026-11-24",
+      "publicationApproved": false
+    },
+    {
+      "number": 7,
+      "id": "psv43",
+      "path": "public/news43/psv43.webp",
+      "assetSha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
+      "subject": "PSV / Willem II",
+      "ownerVote": "NEE",
+      "reviewedAt": "2026-11-24",
+      "publicationApproved": false
+    },
+    {
+      "number": 8,
+      "id": "midtjylland43",
+      "path": "public/news43/midtjylland43.webp",
+      "assetSha256": "922f7b6956799d7b782ee65131342e8d5748695bfb4196ddae6886f20bbc3447",
+      "subject": "Ajax / FC Midtjylland",
+      "ownerVote": "NEE",
+      "reviewedAt": "2026-11-24",
+      "publicationApproved": false
+    }
+  ]
+}
