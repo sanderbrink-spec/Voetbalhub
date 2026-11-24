@@ -3,6 +3,9 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const audit=require('../scripts/artwork-queue-audit109');
 const assets=require('../image-library49.json').assets;
+const originalExact=assets.find(a=>a.id==='veldio72-utrecht-nec-report');
+const syntheticExact={...originalExact,id:'synthetic-109-exact-report',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(originalExact.sha256)};
+const isolatedAssets=[...assets,syntheticExact];
 const now=Date.parse('2026-11-22T20:00:00Z');
 const job=(id,extras={})=>({
  id:'never-leak',status:'retry',reason:'awaiting_approved_artwork',
@@ -27,12 +30,14 @@ test('109A unknown fixture does not infer home/away or use a plausible-looking c
 });
 test('109A verified exact fixture and club order identify existing rights-approved report',()=>{
  const f=fact('sm-19714594','FC Utrecht','NEC Nijmegen');
- const r=audit.auditQueue([job(f.id)],assets,[f],now);
+ const blocked=audit.auditQueue([job(f.id)],assets,[f],now);
+ assert.deepEqual(blocked.rows[0].approvedAssetIds,[]);
+ const r=audit.auditQueue([job(f.id)],isolatedAssets,[f],now);
  assert.equal(r.rows[0].classification,'approved_match_available');
- assert.ok(r.rows[0].approvedAssetIds.includes('veldio72-utrecht-nec-report'));
+ assert.ok(r.rows[0].approvedAssetIds.includes(syntheticExact.id));
  const reversed=fact(f.id,'NEC Nijmegen','FC Utrecht');
- const denied=audit.auditQueue([job(f.id)],assets,[reversed],now);
- assert.ok(!denied.rows[0].approvedAssetIds.includes('veldio72-utrecht-nec-report'));
+ const denied=audit.auditQueue([job(f.id)],isolatedAssets,[reversed],now);
+ assert.ok(!denied.rows[0].approvedAssetIds.includes(syntheticExact.id));
  assert.equal(r.safety.unlocksPublications,false);
 });
 test('109A missing source, mismatch fixture id and missing date do not count as proof',()=>{
@@ -89,9 +94,9 @@ test('109A protected provider response is sanitized to independently checked Ere
  });
  assert.ok(!JSON.stringify(converted).includes('securityToken'));
  assert.ok(!JSON.stringify(converted).includes('must-never-appear'));
- const matching=audit.auditQueue([job('sm-19714594')],assets,converted,now);
+ const matching=audit.auditQueue([job('sm-19714594')],isolatedAssets,converted,now);
  assert.equal(matching.rows[0].classification,'approved_match_available');
- assert.ok(matching.rows[0].approvedAssetIds.includes('veldio72-utrecht-nec-report'));
+ assert.ok(matching.rows[0].approvedAssetIds.includes(syntheticExact.id));
 });
 test('109A unverified provider status, wrong competition and unsafe payload never authenticate fixture context',()=>{
  const base={source:'Sportmonks Football API',competition:'eredivisie',status:'available',
