@@ -2809,9 +2809,9 @@
       "variant": "stadium74-fcutrecht-report",
       "origin": "ChatGPT gegenereerde originele stadionillustratie, bronbestand veldio-fc-utrecht-verslag-avond.webp",
       "rights": "original-ai",
-      "rightsEvidence": "Voorlopige herkomst: AI-illustratie uit Veldio-gesprek, geen hergebruik van foto van derden vastgesteld. Expliciete stadion-, merk-, sponsor- en kwaliteitsreview vereist.",
-      "approval": "pending",
-      "reviewer": "",
+      "rightsEvidence": "Originele ChatGPT-illustratie voor Veldio, bronbestand veldio-fc-utrecht-verslag-avond.webp; herkomst bevestigd door eerdere creatieregistratie 11 november 2026 en catalogus. Visuele controle van exact Git-blob 77623b1149944bf82195d7046b5793c80ede1522: geen duidelijk herkenbare externe sponsor, officieel clublogo, speler of uitslag. OpenAI-outputrechten volgens https://openai.com/policies/eu-terms-of-use/ voor zover wettelijk toegestaan; geen garantie op rechten van derden. Redactionele illustratie, niet documentaire foto.",
+      "approval": "approved",
+      "reviewer": "ChatGPT visuele QA op verzoek van Veldio-eigenaar (geen juridische garantie of menselijke audit)",
       "lastUsed": null,
       "sha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
       "caption": "Veldio AI-illustratie bij FC Utrecht. Geen echte wedstrijdfoto of fotografisch exacte weergave van het stadion.",
@@ -2820,7 +2820,26 @@
       "stadiumOccupancy": "full",
       "stadiumIdentity": "home:fcutrecht",
       "homeClubReusable": true,
-      "homeVenueAliases": []
+      "homeVenueAliases": [],
+      "approvedAt": "2026-11-24",
+      "visualReview": {
+        "score": 8.5,
+        "style": "photorealistic",
+        "assetSha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        },
+        "reviewer": "ChatGPT visuele QA op verzoek van Veldio-eigenaar (geen juridische garantie of menselijke audit)",
+        "reviewedAt": "2026-11-24",
+        "clubScope": "home-only",
+        "scopeHome": "fcutrecht",
+        "reviewedStadiumIdentity": "home:fcutrecht",
+        "notes": "Werkelijke 1280x720 WebP bekeken. Volle tribunes, rood-witte sfeer, avond, zichtbare AI-disclaimer, eigen Veldio-branding. Boogvormige dakspanten herkenbaar vergeleken met https://www.fcutrecht.nl/business/hospitality-tickets en https://www.zja.nl/nl/Stadion-Galgenwaard-Utrecht; architectuur artistiek, niet exact. Geen uitclub geclaimd; uitsluitend thuisverslagen met geverifieerde avondsetting. Geen onafhankelijke juridische certificering."
+      }
     },
     {
       "id": "veldio74-feyenoord-preview",
@@ -3593,7 +3612,7 @@
       "stadiumIdentity": "home:spartarotterdam",
       "homeClubReusable": true,
       "sourceNativeCropWidth": 1672,
-      "qualityReviewNote": "Nieuw 1672x941 bronraster. Stadionvorm, clubidentiteit, Veldio-branding en commerciële rechten nog onafhankelijk controleren; geen score toegekend.",
+      "qualityReviewNote": "24 november 2026: ChatGPT inspecteerde werkelijke 1280x720 Git-blob 4db93f66bae3de1ce5cfb70a30a0e11b4bfe0857. Vol stadion, herkenbare kasteeltorens, rood-witte sfeer; AI-disclaimer dubbel/overlappend rechtsonder, onduidelijke kleine tribuneopschriften en onvoldoende bevestigde afzonderlijke bronherkomst. Pending behouden, herstel en herbeoordeling nodig. Stadionreferentie https://www.sparta-rotterdam.nl/events/home/.",
       "homeVenueAliases": [],
       "sourceNativeCropHeight": 941
     },
