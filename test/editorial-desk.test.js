@@ -55,12 +55,13 @@ test.before(async()=>{
   },keys:async pattern=>[...store.keys()].filter(k=>k.startsWith(pattern.slice(0,-1)))};
   const library=require('../image-library49');
   const catalog=library.catalog();
-  const example=catalog.find(asset=>asset.id==='groningen43');
+  const example=require('../image-library49.json').assets.find(asset=>asset.id==='groningen43');
+ const syntheticBranding=require('../test-support/branding-fixture115')(example.sha256);
   test.mock.method(library,'catalog',()=>[...catalog,
-    {...example,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax'],
+    {...example,manualReview115:undefined,brandingAudit115:syntheticBranding,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax'],
       imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fcgroningen',
       visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}},
-    {...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
+    {...example,manualReview115:undefined,brandingAudit115:syntheticBranding,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
       imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fctwente',
       visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}}
   ]);
