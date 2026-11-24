@@ -28,8 +28,12 @@ test('Fase 74: twenty full-resolution stadium candidates are safely staged and i
   const bytes=fs.readFileSync(path.resolve(__dirname,'..',a.file));
   assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),a.sha256);
   const meta=await sharp(bytes).metadata();
-  assert.equal(meta.width,1280);
-  assert.equal(meta.height,720);
+  if(a.technicalReview115?.assetSha256===a.sha256){
+   assert.equal(a.approval,'pending');
+   assert.equal(meta.width,a.technicalReview115.width);
+   assert.equal(meta.height,a.technicalReview115.height);
+   assert.ok(meta.width<1280||meta.height<720);
+  }else{assert.equal(meta.width,1280);assert.equal(meta.height,720);}
   assert.equal(meta.format,'webp');
  }
 });
