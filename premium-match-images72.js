@@ -4,7 +4,9 @@
 // Every NEW match asset needs an explicit dated visual approval and score.
 const historical = require('./premium-match-raster-baseline72.json');
 const brandingBaseline115 = require('./branding-review-baseline115.json');
-const knownDefects115 = new Map(require('./branding-correction-queue115.json').items.map(item => [item.id, item.originalSha256]));
+const correctionItems115 = require('./branding-correction-queue115.json').items;
+const knownDefects115 = new Map(correctionItems115.map(item => [item.id, item.originalSha256]));
+const technicalHolds115 = new Map(correctionItems115.filter(item=>item.technicalReview115?.status==='requires-native-resolution-repair').map(item=>[item.id,item.technicalReview115.assetSha256]));
 const MATCH = new Set(['preview','report','match-analysis','recap']);
 const MIN_SCORE = 8.5;
 const isMatch = asset => Boolean(asset && (asset.fixtureId || asset.imageKind ||
@@ -66,6 +68,8 @@ function accepted(asset) {
  if(manual && (manual.status!=='passed' || manual.assetSha256!==asset.sha256 || manual.brandingVerified!==true || manual.contextVerified!==true)) return false;
  // Known visual defects apply to every catalog category, not just match art.
  if(knownDefectBlocked(asset)) return false;
+ // A known undersized raster remains blocked regardless of a later metadata-only approval.
+ if(technicalHolds115.get(asset.id)===asset.sha256 && technicalHolds115.has(asset.id))return false;
  const audit=asset.brandingAudit115;
  if(audit && (audit.assetSha256!==asset.sha256 || ['needs-correction','already-rejected'].includes(audit.status))) return false;
  if(!isMatch(asset)) return true;
