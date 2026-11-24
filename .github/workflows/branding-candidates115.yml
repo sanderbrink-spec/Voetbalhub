@@ -1,0 +1,60 @@
+name: 115B candidate raster crops
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  crop:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'review/115a-veldio-only-branding'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Produce actual cropped WebP candidates, no approval or publication
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const crypto = require('node:crypto');
+          const sharp = require('sharp');
+          const sha = b => crypto.createHash('sha256').update(b).digest('hex');
+          const catalog = require('./image-library49.json').assets;
+          const queue = require('./branding-correction-queue115.json').items;
+          const targets = [
+            'veldio74-fcutrecht-report',
+            'veldio110b-sm-19715868-eindhoven-rkc-report',
+            'veldio110d-sm-19722098-hull-brighton-day-report'
+          ];
+          (async () => {
+            fs.mkdirSync('artwork-candidates115', {recursive: true});
+            const results = [];
+            for (const id of targets) {
+              const asset = catalog.find(a => a.id === id);
+              const item = queue.find(a => a.id === id);
+              if (!asset || !item || asset.approval !== 'pending' || item.status !== 'pixels-not-corrected' || !/AI-(tekst|disclaimer)/i.test(item.defect)) throw Error('Unexpected audit state: ' + id);
+              const original = fs.readFileSync(asset.file);
+              if (sha(original) !== item.originalSha256 || sha(original) !== asset.sha256) throw Error('Source hash changed: ' + id);
+              const info = await sharp(original).metadata();
+              if (info.width !== 1280 || info.height !== 720) throw Error('Unexpected dimensions: ' + id);
+              const crop = {left:32, top:0, width:1136, height:639};
+              const candidate = await sharp(original).extract(crop).webp({quality:92}).toBuffer();
+              const name = id + '.webp';
+              fs.writeFileSync('artwork-candidates115/' + name, candidate);
+              results.push({id, originalSha256:sha(original), candidateSha256:sha(candidate), file:name, crop, caption:asset.caption, status:'candidate-pending-visual-and-rights-review', approval:false});
+            }
+            fs.writeFileSync('artwork-candidates115/report.json', JSON.stringify(results,null,2));
+            console.log(JSON.stringify(results,null,2));
+          })().catch(e => { console.error(e); process.exitCode = 1; });
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldio-115b-cropped-review-candidates
+          path: artwork-candidates115/
+          if-no-files-found: error
