@@ -31,12 +31,13 @@ function overview(){
     originalSourceWidth:a.sourceNativeCropWidth||null,
     qualityStatus:previouslyFailedExactImage(a)?'requires-replacement':'requires-independent-review',rightsStatus:'requires-independent-review',
     minQualityScore:8.5,knownIssue:findings[a.id]||null,
+    technicalReview115:a.technicalReview115?.assetSha256===a.sha256?a.technicalReview115:null,
     reviewPriority:findings[a.id]?'repair-first':'first-review',
-    canRequestApproval:!findings[a.id]&&!previouslyFailedExactImage(a),
-    ...(previouslyFailedExactImage(a)?{reviewBlockReason:'Bestaande volledige-resolutiescore onder 8,5. Nieuw beeld vereist.'}:{}),
+    canRequestApproval:!findings[a.id]&&!previouslyFailedExactImage(a)&&a.technicalReview115?.assetSha256!==a.sha256,
+    ...(previouslyFailedExactImage(a)?{reviewBlockReason:'Bestaande volledige-resolutiescore onder 8,5. Nieuw beeld vereist.'}:a.technicalReview115?.assetSha256===a.sha256?{reviewBlockReason:'Native resolutie onder 1280×720. Nieuw beeld vereist.'}:{}),
     ...(screenings.get(a.id)?.sha256===a.sha256 && screenings.get(a.id).fullResolutionAssessment
      ?{fullResolutionAssessment:screenings.get(a.id).fullResolutionAssessment}:{}),
-    preliminaryScreening:screenings.get(a.id)?{
+    preliminaryScreening:screenings.get(a.id)?.sha256===a.sha256?{
      note:screenings.get(a.id).preliminaryVisualNote,
      fullResolutionReviewDone:screenings.get(a.id).hasExactRasterPersonalReview,
      independentScore:screenings.get(a.id).qualityScore,
