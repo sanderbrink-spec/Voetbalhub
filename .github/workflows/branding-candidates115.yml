@@ -30,7 +30,20 @@ jobs:
           const targets = [
             'veldio74-fcutrecht-report',
             'veldio110b-sm-19715868-eindhoven-rkc-report',
-            'veldio110d-sm-19722098-hull-brighton-day-report'
+            'veldio110d-sm-19722098-hull-brighton-day-report',
+            'veldio104d-fcgroningen-night-preview',
+            'veldio74-fcgroningen-preview',
+            'veldio74-fcutrecht-preview',
+            'veldio74-feyenoord-preview',
+            'veldio74-fortunasittard-preview',
+            'veldio74-goaheadeagles-preview',
+            'veldio74-goaheadeagles-report',
+            'veldio74-telstar-preview',
+            'veldio75-adodenhaag-report',
+            'veldio75-fctwente-preview',
+            'veldio75-psv-preview',
+            'veldio75-sccambuur-preview',
+            'veldio75-spartarotterdam-preview'
           ];
           (async () => {
             fs.mkdirSync('artwork-candidates115', {recursive: true});
@@ -44,16 +57,20 @@ jobs:
                 results.push({id, status:'already-corrected', sha256:asset.sha256});
                 continue;
               }
-              if (!asset || !item || asset.approval !== 'pending' || item.status !== 'pixels-not-corrected' || !/AI-(tekst|disclaimer)/i.test(item.defect)) throw Error('Unexpected audit state: ' + id);
+              if (!asset || !item || !['pending','approved'].includes(asset.approval) || item.status !== 'pixels-not-corrected' || !/AI-(tekst|disclaimer)/i.test(item.defect)) throw Error('Unexpected audit state: ' + id);
               const original = fs.readFileSync(asset.file);
               if (sha(original) !== item.originalSha256 || sha(original) !== asset.sha256) throw Error('Source hash changed: ' + id);
               const info = await sharp(original).metadata();
-              if (info.width !== 1280 || info.height !== 720) throw Error('Unexpected dimensions: ' + id);
-              const crop = {left:32, top:0, width:1136, height:639};
+              if (!info.width || !info.height || info.width < 720 || Math.abs(info.width/info.height-16/9)>0.025) {
+                results.push({id,status:'manual-correction-required',reason:'source dimensions or aspect ratio incompatible with safe crop',approval:false});
+                continue;
+              }
+              const width = Math.floor(info.width * 1136 / 1280 / 16) * 16;
+              const crop = {left: Math.floor(info.width * 32 / 1280), top:0, width, height:width*9/16};
               const candidate = await sharp(original).extract(crop).webp({quality:92}).toBuffer();
               const name = id + '.webp';
               fs.writeFileSync('artwork-candidates115/' + name, candidate);
-              results.push({id, originalSha256:sha(original), candidateSha256:sha(candidate), file:name, crop, caption:asset.caption, status:'candidate-pending-visual-and-rights-review', approval:false});
+              results.push({id, originalSha256:sha(original), candidateSha256:sha(candidate), file:name, crop, caption:asset.caption, status:'candidate-pending-visual-and-rights-review', previousTextReviewMatches: item.candidateReview115?.candidateSha256 === sha(candidate), approval:false});
             }
             fs.writeFileSync('artwork-candidates115/report.json', JSON.stringify(results,null,2));
             console.log(JSON.stringify(results,null,2));
