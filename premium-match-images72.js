@@ -35,7 +35,7 @@ function reviewedPremium(asset) {
 // it is NOT a statement that those images comply with the new rule.
 function brandingAllowed(asset) {
  const audit=asset?.brandingAudit115;
- if(audit?.assetSha256===asset?.sha256 && audit?.status==='needs-correction') return false;
+ if(audit && (audit.assetSha256!==asset?.sha256 || ['needs-correction','already-rejected'].includes(audit.status))) return false;
  if(brandingBaseline115[asset?.id]===asset?.sha256 && typeof asset?.sha256==='string') return true;
  return Boolean(audit?.status==='passed' && audit.assetSha256===asset?.sha256 &&
    audit.veldioOnly===true && audit.noOtherText===true && audit.noThirdPartyLogos===true &&
@@ -49,7 +49,8 @@ function accepted(asset) {
  if(!asset || asset.approval!=='approved' || !asset.reviewer ||
     !asset.rightsEvidence) return false;
  // Known visual defects apply to every catalog category, not just match art.
- if(asset.brandingAudit115?.status==='needs-correction' && asset.brandingAudit115.assetSha256===asset.sha256) return false;
+ const audit=asset.brandingAudit115;
+ if(audit && (audit.assetSha256!==asset.sha256 || ['needs-correction','already-rejected'].includes(audit.status))) return false;
  if(!isMatch(asset)) return true;
  if(!brandingAllowed(asset)) return false;
  // A machine-readable fixture approval does not establish photographic quality.
