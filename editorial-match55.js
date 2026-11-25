@@ -36,7 +36,7 @@ function candidate(fixture, now) {
  const kickoff = Date.parse(fixture.date);
  const {home, away} = fixture.goals || {};
  const championsLeague = fixture.competition === 'championsleague' && /^fd-cl-\d+$/.test(fixture.id);
- const sportmonks = ['eredivisie','kkd','premierleague','knvbbeker','eredivisieplayoffs'].includes(fixture.competition) && /^sm-\d+$/.test(fixture.id) && fixture.resultSource === 'Sportmonks Football API';
+ const sportmonks = ['eredivisie','kkd','premierleague','knvbbeker','eredivisieplayoffs','championsleague','europaleague','conferenceleague'].includes(fixture.competition) && /^sm-\d+$/.test(fixture.id) && fixture.resultSource === 'Sportmonks Football API';
  // The known production review on this exact match has been blocked until
  // its normal 48-hour eligibility elapsed. Grant only this proven 2026-11-08
  // fixture a bounded 72-hour repair window, never for general stale news.
@@ -56,7 +56,7 @@ function candidate(fixture, now) {
  const hasHalf = [half?.home, half?.away].every(validScore) && half.home <= home && half.away <= away;
  const round = /^(?:Speelronde \d+|Competitiefase|Achtste finale|Kwartfinale|Halve finale|Finale)$/.test(fixture.round) ? fixture.round : '';
  if (!round) return null;
- const category = championsLeague ? 'Champions League' : ({eredivisie:'Eredivisie',kkd:'Keuken Kampioen Divisie',premierleague:'Premier League',knvbbeker:'KNVB Beker',eredivisieplayoffs:'Eredivisie Play-offs'}[fixture.competition]||'Voetbal');
+ const category = championsLeague ? 'Champions League' : ({eredivisie:'Eredivisie',kkd:'Keuken Kampioen Divisie',premierleague:'Premier League',knvbbeker:'KNVB Beker',eredivisieplayoffs:'Eredivisie Play-offs',championsleague:'Champions League',europaleague:'Europa League',conferenceleague:'Conference League'}[fixture.competition]||'Voetbal');
  // With only a score, report exceptional margins or a meeting of leading clubs.
  const leading = /^(Ajax|Feyenoord|PSV|AZ|FC Twente|Arsenal|Manchester City|Manchester United|Liverpool|Chelsea|Tottenham Hotspur|Newcastle United)$/i;
  if (!hasHalf && !(sportmonks && fixture.goalTimeline?.length === home + away && home + away >= 2) && !championsLeague && Math.abs(home - away) < 3 &&
@@ -186,7 +186,8 @@ async function registrationFixtures(payload, {recent, domestic, european}) {
    ['Keuken Kampioen Divisie','kkd'],
    ['Premier League','premierleague'],
    ['KNVB Beker','knvbbeker'],
-   ['Eredivisie Play-offs','eredivisieplayoffs']
+   ['Eredivisie Play-offs','eredivisieplayoffs'],
+   ['Champions League','championsleague'],['Europa League','europaleague'],['Conference League','conferenceleague']
   ]);
   const competition=routes.get(payload.category);
   if(!competition||payload.sources?.[0]?.url!==SM)return [];
