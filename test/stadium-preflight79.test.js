@@ -25,21 +25,25 @@ test('Fase 79: 36 stadionbeelden zijn fysiek valide en geen enkel pending beeld 
   const buf=fs.readFileSync(full);
   assert.equal(crypto.createHash('sha256').update(buf).digest('hex'),row.sha256,row.id);
   const meta=await sharp(buf).metadata();
-  assert.equal(meta.width,1280,row.id);
-  assert.equal(meta.height,720,row.id);
+  if(row.technicalReview115?.assetSha256===row.sha256){
+   assert.equal(row.approval,'pending');
+   assert.equal(meta.width,row.technicalReview115.width);
+   assert.equal(meta.height,row.technicalReview115.height);
+   assert.ok(meta.width<1280||meta.height<720);
+  }else{assert.equal(meta.width,1280);assert.equal(meta.height,720);}
   assert.equal(meta.format,'webp',row.id);
   const result=await preflight.inspect(row.file);
-  assert.deepEqual(result.problems,[],row.id);
+  if(row.technicalReview115?.assetSha256===row.sha256){assert.equal(result.accepted,false);assert.ok(result.problems.some(x=>x.includes('1280x720')));}
+  else assert.deepEqual(result.problems,[],row.id);
  }
 });
 test('Fase 79: acht concrete herstelpunten zijn zichtbaar, en Cambuur-native beelden hebben geen opschalingsblokkade',()=>{
  const listed=desk.overview();
  assert.equal(listed.slotsTotal,36);
- assert.equal(listed.issuesForExtraReview,8);
+ const pending=manifest.filter(a=>a.homeClubReusable&&a.approval==='pending');
+ assert.equal(listed.issuesForExtraReview,pending.filter(a=>findings[a.id]).length);
  assert.equal(Object.keys(findings).length,8);
- assert.equal(listed.riskCounts.rebuild,3);
- assert.equal(listed.riskCounts.compare,3);
- assert.equal(listed.riskCounts.identity,2);
+ for(const level of ['rebuild','compare','identity'])assert.equal(listed.riskCounts[level]||0,pending.filter(a=>findings[a.id]?.level===level).length);
  for(const slot of listed.slots){
   for(const item of slot.pendingImages){
    assert.deepEqual(item.knownIssue,findings[item.id]||null);

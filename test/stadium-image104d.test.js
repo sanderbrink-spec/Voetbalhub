@@ -27,22 +27,27 @@ test('104D: volledig bron- en bestandsgebonden nachtbeeld blijft in catalogus ge
  assert.equal(artwork.rights,'original-ai');
  const bytes=fs.readFileSync(require('node:path').resolve(__dirname,'..',artwork.file));
  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),artwork.sha256);
- assert.equal(premium.accepted(artwork),true);
+ assert.equal(premium.accepted(artwork),false,'original raster contains forbidden text');
  assert.doesNotThrow(()=>library.validate(catalog.assets));
 });
-test('104D: juiste club en preview, geen verslag of andere thuisclub',()=>{
+test('104D: juiste club en preview, geen verslag of andere thuisclub',t=>{
+ require('../test-support/catalogue-before116')(t);
+ assert.equal(images.resolve(preview).article,null);
+ const synthetic={...artwork,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(artwork.sha256)};
+ const current=library.catalog();t.mock.method(library,'catalog',()=>[...current,synthetic]);
  const match=images.resolve(preview);
- assert.equal(match.article?.imageAssetId,artwork.id,JSON.stringify({assignment:match.assignment,candidate:artwork.id}));
+ assert.equal(match.article?.imageAssetId,synthetic.id,JSON.stringify({assignment:match.assignment,candidate:artwork.id}));
  assert.equal(match.article?.imageReview?.stadiumOccupancy,'empty');
  const away=images.resolve({...preview,fixture:{...preview.fixture,home:{name:'SC Heerenveen'},away:{name:'FC Groningen'}}});
- assert.notEqual(away.article?.imageAssetId,artwork.id);
+ assert.notEqual(away.article?.imageAssetId,synthetic.id);
  const anotherFixture=images.resolve({...preview,fixture:{...preview.fixture,id:'sm-19714592'}});
- assert.notEqual(anotherFixture.article?.imageAssetId,artwork.id);
+ assert.notEqual(anotherFixture.article?.imageAssetId,synthetic.id);
  const report=images.resolve({...preview,articleKind:'match_report'});
- assert.notEqual(report.article?.imageAssetId,artwork.id);
+ assert.notEqual(report.article?.imageAssetId,synthetic.id);
 });
 
-test('104D: alleen verzegeld oud previewconcept wordt eenmaal hervat wanneer rechtenbeeld beschikbaar is',()=>{
+test('104D: alleen verzegeld oud previewconcept wordt eenmaal hervat wanneer rechtenbeeld beschikbaar is',t=>{
+ require('../test-support/catalogue-before116')(t);
  const {reopenApprovedClubPreviewArtwork104D}=require('../scripts/automatic-publication');
  const fixture=preview.fixture;
  const candidate={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
@@ -52,6 +57,9 @@ test('104D: alleen verzegeld oud previewconcept wordt eenmaal hervat wanneer rec
  const job={clubPreviewId:'sm-19714591',status:'retry',failureStage:'artwork',
   failureCategory:'missing_approved_artwork',reason:'awaiting_approved_artwork',
   nextAttemptAt:now+6*3600000,checkpoint:'sealed-reviewed-manuscript'};
+ assert.equal(reopenApprovedClubPreviewArtwork104D({...job},group,now),false);
+ const current=library.catalog();const synthetic={...artwork,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(artwork.sha256)};
+ t.mock.method(library,'catalog',()=>[...current,synthetic]);
  assert.equal(reopenApprovedClubPreviewArtwork104D(job,group,now),true);
  assert.equal(job.status,'pending');
  assert.equal(job.nextAttemptAt,now);

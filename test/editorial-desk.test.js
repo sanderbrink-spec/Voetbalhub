@@ -55,12 +55,18 @@ test.before(async()=>{
   },keys:async pattern=>[...store.keys()].filter(k=>k.startsWith(pattern.slice(0,-1)))};
   const library=require('../image-library49');
   const catalog=library.catalog();
-  const example=catalog.find(asset=>asset.id==='groningen43');
+  const rawAssets=require('../image-library49.json').assets;
+  const example=rawAssets.find(asset=>asset.id==='groningen43');
+  const archiveRaw=rawAssets.find(a=>a.id==='veldio69-groningen-1');
+  const emmenRaw=rawAssets.find(a=>a.id==='veldio71-emmen-den-bosch-preview');
+  assert.equal(require('../premium-match-images72').accepted(archiveRaw),false);
+  assert.equal(require('../premium-match-images72').accepted(emmenRaw),false);
+ const syntheticBranding=require('../test-support/branding-fixture115')(example.sha256);
   test.mock.method(library,'catalog',()=>[...catalog,
-    {...example,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax'],
+    {...example,manualReview115:undefined,brandingAudit115:syntheticBranding,id:'test-groningen-ajax',categories:['report'],clubs:['FC Groningen','Ajax'],
       imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fcgroningen',
       visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}},
-    {...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
+    {...example,manualReview115:undefined,brandingAudit115:syntheticBranding,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
       imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fctwente',
       visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}}
   ]);
@@ -201,32 +207,26 @@ test('existing archived articles retain reviewed covers in the archive feed with
  const before=store.size;
  const feed=await (await fetch(base+'/articles?view=archive')).json();
  const linked=feed.articles.find(a=>a.id===article.id);
- assert.match(linked.imageUrl,/article-art69\/groningen-1\.webp$/);
- assert.equal(linked.imageRights,'cleared');
+ assert.equal(linked,undefined,'blocked archive image must not leak into the public feed');
  assert.equal(store.size,before);
  assert.equal(JSON.parse(store.get('article:'+article.id)).imageUrl,undefined);
  store.delete('article:'+article.id);
 });
-test('approved publication carries the reviewed image and public image URL responds without a redirect',async()=>{
+test('publication with blocked Emmen artwork does not write a story; approved neutral raster serves without redirect',async()=>{
  const p=structuredClone(require('../redactie/trial/article.json').payload);
  p.editorialChecks=Object.fromEntries(M.checks.map(k=>[k,true]));
  const saved=await saveOwn({payload:p,approve:true});assert.equal(saved.status,200);
  const record=(await saved.json()).record;
+ const before=[...store.keys()].filter(k=>k.startsWith('article:')).length;
  const result=await publish({...p,approved:true,editorialDraftId:record.id,expectedRevision:record.revision});
- assert.equal(result.status,200,await result.clone().text());
- const article=(await result.json()).article;
- assert.match(article.imageUrl,/article-art71\/emmen-den-bosch-preview\.webp$/);
- assert.equal(article.imageReview.stadiumOccupancy,'empty');
- const feed=await (await fetch(base+'/articles?id='+article.id)).json();
- assert.equal(feed.imagePolicyVersion,69);
- assert.equal(feed.articles[0].imageRotation.method,'approved-article-v69');
- assert.equal(feed.articles[0].imageVariants[0].url,article.imageUrl);
- assert.deepEqual(feed.articles[0].imageVariants[0].review,article.imageReview);
- assert.equal((await fetch(base+new URL(article.imageUrl).pathname)).status,200);
- assert.equal(JSON.parse(store.get('article:'+article.id)).imageUrl,article.imageUrl);
- const image=await fetch(base+'/article-covers/emmen-den-bosch-2026-11-01.webp',{redirect:'manual'});
- assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/webp');
- assert.equal((await image.arrayBuffer()).byteLength,Number(image.headers.get('content-length')));
+ assert.equal(result.status,422,await result.clone().text());
+ assert.match((await result.json()).error,/geen passend goedgekeurd artikelbeeld/i);
+ assert.equal([...store.keys()].filter(k=>k.startsWith('article:')).length,before);
+ const approved=await fetch(base+'/editorial/veldio-arena.webp',{redirect:'manual'});
+ assert.equal(approved.status,200);
+ assert.equal(approved.headers.get('content-type'),'image/webp');
+ assert.equal((await approved.arrayBuffer()).byteLength,Number(approved.headers.get('content-length')));
+ assert.equal((await fetch(base+'/article-art71/emmen-den-bosch-preview.webp')).status,404);
  assert.equal((await fetch(base+'/article-covers/not-approved.webp')).status,404);
 });
 

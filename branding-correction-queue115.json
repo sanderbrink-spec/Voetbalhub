@@ -1,0 +1,3269 @@
+{
+  "schemaVersion": 1,
+  "source": "PR #426, audit of 2026-11-24",
+  "counts": {
+    "needsCorrection": 88,
+    "textScreenOnly": 33,
+    "rejected": 1
+  },
+  "warning": "18 corrected match rasters staged; native resolution below existing 1280×720 threshold blocks their release. Visual review receipts preserved; no production deploy.",
+  "items": [
+    {
+      "id": "veldio110b-sm-19714592-ajax-ado-day-report",
+      "file": "public/match-covers110/sm-19714592-ajax-ado-day.webp",
+      "originalSha256": "c5d0655f730675579c17846fea822177f7ea0e9ba3be85544ed277031da1e4dd",
+      "previousApproval": "pending",
+      "clubs": [
+        "Ajax",
+        "ADO Den Haag"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714592",
+      "stadiumIdentity": "home:ajax",
+      "occupancy": "full",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer in zwarte badge rechtsonder en onduidelijke tribuneopschriften; geen vrijgave.",
+      "priority": 1,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "2955414b38ddc8a7a4435d1d83d1450ff39f0d239c2e632e574beb0144008aee",
+        "originalSha256": "c5d0655f730675579c17846fea822177f7ea0e9ba3be85544ed277031da1e4dd",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Tribuneopschriften blijven zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio110b-sm-19715868-eindhoven-rkc-report",
+      "file": "public/match-covers110/sm-19715868-fceindhoven-rkc-twilight.webp",
+      "originalSha256": "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885",
+      "previousApproval": "pending",
+      "clubs": [
+        "FC Eindhoven",
+        "RKC Waalwijk"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19715868",
+      "stadiumIdentity": "home:fceindhoven",
+      "occupancy": "full",
+      "sceneDaypart": "twilight",
+      "defect": "AI-disclaimer in zwarte badge rechtsonder; geen vrijgave.",
+      "priority": 1,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "8c9a1ff62a260f50305591172fb277d50492575fcebf2eaf2f9b7ffe91b3ba84",
+        "originalSha256": "b8272d9f128fccb014a18e886d517e76f17f2745bab10ae344c3c6cdb4eb4885",
+        "artifactId": 14904226955,
+        "workflowRunId": 45360484707,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle blauw-witte tribunes in avondschemer; alleen Veldio op borden. Uitvakidentiteit, feitelijke context en commerciële rechten nog toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "8c9a1ff62a260f50305591172fb277d50492575fcebf2eaf2f9b7ffe91b3ba84",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "8c9a1ff62a260f50305591172fb277d50492575fcebf2eaf2f9b7ffe91b3ba84",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio110d-sm-19722098-hull-brighton-day-report",
+      "file": "public/match-covers110/sm-19722098-hull-brighton-day.webp",
+      "originalSha256": "1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef",
+      "previousApproval": "pending",
+      "clubs": [
+        "Hull City",
+        "Brighton & Hove Albion"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19722098",
+      "stadiumIdentity": "home:hullcity",
+      "occupancy": "full",
+      "sceneDaypart": "day",
+      "defect": "AI-tekst in zwarte badge rechtsonder. Geen vrijgave.",
+      "priority": 1,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "0c0276636351c43db98b346f0faae39e715b5c89489bc0eac2a61935a76a9b3d",
+        "originalSha256": "1492633153e72ef4b9e7ff7145010deb75a1920ddf53b9e855d63bc7b12ef3ef",
+        "artifactId": 14904226955,
+        "workflowRunId": 45360484707,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle amberzwarte en blauwe tribunes in daglicht; alleen Veldio op borden. Wedstrijd/competitie, stadioncontext en commerciële rechten nog toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "0c0276636351c43db98b346f0faae39e715b5c89489bc0eac2a61935a76a9b3d",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "0c0276636351c43db98b346f0faae39e715b5c89489bc0eac2a61935a76a9b3d",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio74-fcutrecht-report",
+      "file": "public/stadium74/fcutrecht-report.webp",
+      "originalSha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
+      "previousApproval": "pending",
+      "clubs": [
+        "FC Utrecht",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fcutrecht",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-tekst rechtsonder; overige Veldio-branding, volle avondtribunes. Geen vrijgave.",
+      "priority": 1,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+        "originalSha256": "f1f3abbde5bff5ddb34b352e0837fc8ab98085474a88569012def25335fff739",
+        "artifactId": 14904226955,
+        "workflowRunId": 45360484707,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of actual candidate WebP",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle rood-witte tribunes bij kunstlicht; Veldio en eigen slogan zichtbaar, geen andere leesbare tekst. Artistieke stadioncontext en commerciële rechten nog toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-spartarotterdam-report",
+      "file": "public/stadium75/spartarotterdam-report.webp",
+      "originalSha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
+      "previousApproval": "pending",
+      "clubs": [
+        "Sparta Rotterdam",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:spartarotterdam",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "Dubbele AI-tekst rechtsonder en onduidelijke tribuneopschriften. Geen vrijgave.",
+      "priority": 1,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "913db78758a2f10c08b075263edc8f676d6e4db312cf03bd3165dd2fbfadd57e",
+        "originalSha256": "58e538b78fb0e7c223da2c25aa26620011e90f9c1613baef7895ceedc12bd0c2",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Tribuneopschriften en onvolledige bezetting.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "groningen43",
+      "file": "public/news43/groningen43.webp",
+      "originalSha256": "bacf9ec40555f9b15435667da78761b13f37b02f4ffd5a6e272fff8fd273ff98",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Groningen",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "owner-reviewed-legacy"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "match64-sm-19714595",
+      "file": "public/match-covers64/sm-19714595.webp",
+      "originalSha256": "3fcfdf04a7894e90bea45de06e516720c4f1eea4ca57a863e8db7f450f72e20d",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714595",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "match64-sm-19714596",
+      "file": "public/match-covers64/sm-19714596.webp",
+      "originalSha256": "4ddd5187fd656c585594b872ff42aefb8e0e987b1bb80d82b5f6a8797b99ead6",
+      "previousApproval": "approved",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714596",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "match64-sm-19714597",
+      "file": "public/match-covers64/sm-19714597.webp",
+      "originalSha256": "76d88206f12b6a4378c94c9cb4c3b212ef2523b9cddef26fd1a9aa10c1914600",
+      "previousApproval": "approved",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714597",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-ajax-psv-01",
+      "file": "public/match-rotations65/veldio-ajax-psv-01.webp",
+      "originalSha256": "b398ad7252fc383cd342dbef024ba17c5fe986f38872aef4ca540661dd7dc637",
+      "previousApproval": "approved",
+      "clubs": [
+        "Ajax",
+        "PSV"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "night",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-az-fc-groningen-01",
+      "file": "public/match-rotations65/veldio-az-fc-groningen-01.webp",
+      "originalSha256": "086435d412f4396290649fa87198b2713e9b01fc8fc5c63cc749a4e69d1b5ba4",
+      "previousApproval": "approved",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-fc-groningen-ajax-01",
+      "file": "public/match-rotations65/veldio-fc-groningen-ajax-01.webp",
+      "originalSha256": "d193a26a8778d60e895828805abbdbfb9c5b3c29f8e9af84d1edfca37df4904f",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Groningen",
+        "Ajax"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "night",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-fc-twente-feyenoord-01",
+      "file": "public/match-rotations65/veldio-fc-twente-feyenoord-01.webp",
+      "originalSha256": "6e7332e6bdd673866c42cb56b8249c54d00228610dda393b47bc833c86ae3954",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Feyenoord"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "night",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-fc-utrecht-sc-heerenveen-01",
+      "file": "public/match-rotations65/veldio-fc-utrecht-sc-heerenveen-01.webp",
+      "originalSha256": "f3aff9f2ddeb01bee1fdacba2bfffe59d16be796c0cbf40334fbfed4451050ec",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Utrecht",
+        "sc Heerenveen"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "night",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-feyenoord-az-01",
+      "file": "public/match-rotations65/veldio-feyenoord-az-01.webp",
+      "originalSha256": "2c550a6e3c72d2b8fede3f2459d898d4ae564dc63459ae32282c929a16587a6b",
+      "previousApproval": "approved",
+      "clubs": [
+        "Feyenoord",
+        "AZ"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-go-ahead-eagles-nec-01",
+      "file": "public/match-rotations65/veldio-go-ahead-eagles-nec-01.webp",
+      "originalSha256": "c6e6a6e127c2d52f9af64e4627ff27e082be32170247f7b85c28a4c67eff3591",
+      "previousApproval": "approved",
+      "clubs": [
+        "Go Ahead Eagles",
+        "NEC"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-nec-fc-utrecht-01",
+      "file": "public/match-rotations65/veldio-nec-fc-utrecht-01.webp",
+      "originalSha256": "19ebf1fad1080f68b01ea4ecebaded9019738962886dfefbe49d00704912c2b3",
+      "previousApproval": "approved",
+      "clubs": [
+        "NEC",
+        "FC Utrecht"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "night",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-psv-fc-twente-01",
+      "file": "public/match-rotations65/veldio-psv-fc-twente-01.webp",
+      "originalSha256": "29f23bdf1bd940a1592764962473285ba947fe6a5a52658dd194270c1aaa6208",
+      "previousApproval": "approved",
+      "clubs": [
+        "PSV",
+        "FC Twente"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "night",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio-sc-heerenveen-pec-zwolle-01",
+      "file": "public/match-rotations65/veldio-sc-heerenveen-pec-zwolle-01.webp",
+      "originalSha256": "1387aee9cfa3334cf798d33b6437da17875eb82bb89f318de160bbd2ac0c0380",
+      "previousApproval": "approved",
+      "clubs": [
+        "sc Heerenveen",
+        "PEC Zwolle"
+      ],
+      "category": [
+        "preview",
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Wedstrijdnamen als tekst, daarnaast waar aanwezig stadionopschriften en shirtmerken; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio104d-fcgroningen-night-preview",
+      "file": "public/stadium74/fcgroningen-night-preview104d.webp",
+      "originalSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Groningen",
+        "sc Heerenveen"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": "sm-19714591",
+      "stadiumIdentity": "home:fcgroningen",
+      "occupancy": "empty",
+      "sceneDaypart": "night",
+      "defect": "AI-disclaimer rechtsonder.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "cf05ab0ad40be74703d20ec4d6f3ad10e19ff015e7314b614c6f9854dd7ec259",
+        "originalSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 41,
+          "top": 0,
+          "width": 1472,
+          "height": 828
+        },
+        "notes": "AI-disclaimer verwijderd, maar onduidelijke groene letterachtige opschriften op witte tribunerand; opnieuw corrigeren.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio69-ado-1",
+      "file": "public/article-art69/ado-1.webp",
+      "originalSha256": "462581379a4dae209b7aa752a0234ec6f585403e4ad1f50733c1f3a0a6652682",
+      "previousApproval": "approved",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714597",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-ado-2",
+      "file": "public/article-art69/ado-2.webp",
+      "originalSha256": "01e4c5bd9f05c459abe3eff34d8825374fb702001d68aec26e00926601632635",
+      "previousApproval": "approved",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714597",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-ado-3",
+      "file": "public/article-art69/ado-3.webp",
+      "originalSha256": "7cb813fca91f3b39e83c40a479b31a704396478aec0026c3a08489020cf82913",
+      "previousApproval": "approved",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714597",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-ado-4",
+      "file": "public/article-art69/ado-4.webp",
+      "originalSha256": "16e0c56a4a28389c6088629146490277ab89c103ac7abacc07b4e2671bf71e91",
+      "previousApproval": "approved",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714597",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-ado-5",
+      "file": "public/article-art69/ado-5.webp",
+      "originalSha256": "4b5582af6e00fd32f31c3c427e8f6a6f9f51243236ffd4e9b660d937c3a8d806",
+      "previousApproval": "approved",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714597",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-ado-6",
+      "file": "public/article-art69/ado-6.webp",
+      "originalSha256": "ebe25f62460c4a7798fb12df18527554c61b6c2903cc29f01ed4b84f283d2269",
+      "previousApproval": "approved",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714597",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-az-3",
+      "file": "public/article-art69/az-3.webp",
+      "originalSha256": "6839393609767467afefcc658b89fa9c160e83b48a44985b99124db2506265a3",
+      "previousApproval": "approved",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714593",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-az-4",
+      "file": "public/article-art69/az-4.webp",
+      "originalSha256": "55f1e5d8d1c2cba2c226ed8554a688f928c99a6bcb5e4560b55d24c6c5bb0250",
+      "previousApproval": "approved",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714593",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-az-5",
+      "file": "public/article-art69/az-5.webp",
+      "originalSha256": "218b161b985a92169d2d52be28fa82462ff5c2b29817b24c7e552feceed5662e",
+      "previousApproval": "approved",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714593",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-az-6",
+      "file": "public/article-art69/az-6.webp",
+      "originalSha256": "d74b18c17a1eb1338a8c8c013655a6a606811cdf7bbab64a508eb45da7677485",
+      "previousApproval": "approved",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714593",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-az-7",
+      "file": "public/article-art69/az-7.webp",
+      "originalSha256": "e7e6de8a57c6393f122b2870916bc13a437aa693ea3e91a3232c28712b4a3fc8",
+      "previousApproval": "approved",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714593",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-az-8",
+      "file": "public/article-art69/az-8.webp",
+      "originalSha256": "3f61983a59f1986bb6137d4c0d2c8683627a474e25150f3bce39a18580ebcdc3",
+      "previousApproval": "approved",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714593",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "twilight",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-groningen-1",
+      "file": "public/article-art69/groningen-1.webp",
+      "originalSha256": "b868d96ff9ba677fa6de1a86a8f96c809bc4f786336ff81ba8a8ff50b602b69e",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Groningen",
+        "FC Emmen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-heerenveen-1",
+      "file": "public/article-art69/heerenveen-1.webp",
+      "originalSha256": "33532b03e9aba483c21f1393c73d9b51b90ca433a88cc10d5dd317519f214d1e",
+      "previousApproval": "approved",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714596",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-heerenveen-2",
+      "file": "public/article-art69/heerenveen-2.webp",
+      "originalSha256": "f96113ba21a541bc8907eaa69ace0ac9cb18305f005fb2587e65a8a8414db428",
+      "previousApproval": "approved",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714596",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-heerenveen-3",
+      "file": "public/article-art69/heerenveen-3.webp",
+      "originalSha256": "ef37df34a4aa0bae5b35a05c92aa7d6e29303c280002ba3353dd7b622be0c55f",
+      "previousApproval": "approved",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714596",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-heerenveen-4",
+      "file": "public/article-art69/heerenveen-4.webp",
+      "originalSha256": "68ef0bd92ae7ad5b743d65e7bba1aeab3a517d2be4cf369106a9bfeeec891c6b",
+      "previousApproval": "approved",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714596",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-heerenveen-5",
+      "file": "public/article-art69/heerenveen-5.webp",
+      "originalSha256": "1c57deab8fd14d72312f25d4b55581299e6d98b5a5df8cc9e83b2c756b53c6f9",
+      "previousApproval": "approved",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714596",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-heerenveen-6",
+      "file": "public/article-art69/heerenveen-6.webp",
+      "originalSha256": "5bc8cdacb3991a51578f2c6163d0215048b8b52ead639e31bdaa0143dcca446a",
+      "previousApproval": "approved",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714596",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-midtjylland-1",
+      "file": "public/article-art69/midtjylland-1.webp",
+      "originalSha256": "6e1b91257956a24fd7efc02d838c0234b2a1a3b942919a673bb204d11512dafa",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Midtjylland",
+        "Ajax"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fcmidtjylland",
+      "occupancy": "empty",
+      "sceneDaypart": "night",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-nec-1",
+      "file": "public/article-art69/nec-1.webp",
+      "originalSha256": "9cc1b006b7145921195b241eea099f4c267cd94039bd8e30514e6e4670c36b92",
+      "previousApproval": "approved",
+      "clubs": [
+        "NEC",
+        "FC Groningen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-twente-1",
+      "file": "public/article-art69/twente-1.webp",
+      "originalSha256": "da984ec416df32cb8c9b7b2c631c598b6b58000f4e6901fffc0a98d65e40e9f5",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714595",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-twente-2",
+      "file": "public/article-art69/twente-2.webp",
+      "originalSha256": "9dfb1d3e2fa1ac5dabc11ee3161488aeacb2c02abfc2ff4d052b3a2b3060d2cb",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714595",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "neutral",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-twente-3",
+      "file": "public/article-art69/twente-3.webp",
+      "originalSha256": "e9c633ee1b04e5d62a56f3c63817778ccdd932a9d1edfb6cc10fb8305f6d365c",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714595",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-twente-4",
+      "file": "public/article-art69/twente-4.webp",
+      "originalSha256": "c7f4972b6e674df1ea3676defa4bd81a1059498329cb19ca284c3c67e58e2bf1",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714595",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-twente-5",
+      "file": "public/article-art69/twente-5.webp",
+      "originalSha256": "6a137162dc985009f7bfac2b19bcf998435b1fd45092c79760a4c0472badb5de",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714595",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio69-twente-6",
+      "file": "public/article-art69/twente-6.webp",
+      "originalSha256": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714595",
+      "stadiumIdentity": null,
+      "occupancy": null,
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio71-ado-sparta-report",
+      "file": "public/article-art71/ado-sparta-report.webp",
+      "originalSha256": "47b90fc169afeb389bd2b3b7dbcc1ff5ac76e622ab4bc385bced2bb91c58e3f0",
+      "previousApproval": "approved",
+      "clubs": [
+        "ADO Den Haag",
+        "Sparta Rotterdam"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714597",
+      "stadiumIdentity": "home:adodenhaag",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio71-az-groningen-report",
+      "file": "public/article-art71/az-groningen-report.webp",
+      "originalSha256": "95e630e0ead899c933b9298de086c4f66b5a5b5c2f3d5fbf7eff5b5d70b6d3d5",
+      "previousApproval": "approved",
+      "clubs": [
+        "AZ",
+        "FC Groningen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714593",
+      "stadiumIdentity": "home:az",
+      "occupancy": "full",
+      "sceneDaypart": "twilight",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio71-heerenveen-feyenoord-report",
+      "file": "public/article-art71/heerenveen-feyenoord-report.webp",
+      "originalSha256": "ed5c353fd065b8cc719c8d24d8c8455a3a648cf9ca2841a0818f8916e13d5a3f",
+      "previousApproval": "approved",
+      "clubs": [
+        "SC Heerenveen",
+        "Feyenoord"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714596",
+      "stadiumIdentity": "home:scheerenveen",
+      "occupancy": "full",
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio71-twente-ajax-report",
+      "file": "public/article-art71/twente-ajax-report.webp",
+      "originalSha256": "5301898c31b055a7efd1fdecc0fc8f4b887e4e9d85e387e1f165348ac3f120e0",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Twente",
+        "Ajax"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714595",
+      "stadiumIdentity": "home:fctwente",
+      "occupancy": "full",
+      "sceneDaypart": "day",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio72-utrecht-nec-report",
+      "file": "public/article-art72/utrecht-nec-report.webp",
+      "originalSha256": "b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e",
+      "previousApproval": "approved",
+      "clubs": [
+        "FC Utrecht",
+        "NEC Nijmegen"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": "sm-19714594",
+      "stadiumIdentity": "home:fcutrecht",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "Clubnamen op sjaals; niet conform.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio97c-duitsland-nederland-preview",
+      "file": "public/article-art71/duitsland-nederland-preview.webp",
+      "originalSha256": "cf4f08dcae8e48bd0c8b700a3403f79e4d463f607e35c658d25a60faddde6b0e",
+      "previousApproval": "approved",
+      "clubs": [
+        "Duitsland",
+        "Nederland"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": "uefa-2047909",
+      "stadiumIdentity": "home:duitsland",
+      "occupancy": "empty",
+      "sceneDaypart": "night",
+      "defect": "Landnamen op sjaals.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio97c-nederland-griekenland-preview",
+      "file": "public/article-art71/nederland-griekenland-preview.webp",
+      "originalSha256": "d560f2d335a79e4ed004e9ed5f1ca253a791957d8bc273e7eda43b4d0af3222b",
+      "previousApproval": "approved",
+      "clubs": [
+        "Nederland",
+        "Griekenland"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": "uefa-2047886",
+      "stadiumIdentity": "home:nederland",
+      "occupancy": "empty",
+      "sceneDaypart": "night",
+      "defect": "Landnamen op sjaals.",
+      "priority": 2,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio73-telstar-report-evening",
+      "file": "public/club-stadiums73/telstar-report-evening.webp",
+      "originalSha256": "f0e561f1de52c4e18cb07696a9cec238ef98ddbbffaf288b8832b36a12fd8104",
+      "previousApproval": "pending",
+      "clubs": [
+        "Telstar",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:telstar",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "Clubnaam, wedstrijdverslag en AI-disclaimer in beeld; lage collagekwaliteit en vervormde Veldio-borden.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio73-willem-ii-preview-day",
+      "file": "public/club-stadiums73/willem-ii-preview-day.webp",
+      "originalSha256": "bdcea15054bfa71eab70e32e06b79688273b5a0051b160e7e0a8500b88886d9b",
+      "previousApproval": "pending",
+      "clubs": [
+        "Willem II",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:willemii",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "Clubnaam, voorbeschouwing en AI-disclaimer in beeld; stadionidentiteit herbeoordelen.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio73-willem-ii-report-evening",
+      "file": "public/club-stadiums73/willem-ii-report-evening.webp",
+      "originalSha256": "83ab3e9e1a74fc01a32a8b0aa254a0e8b6cc708a94c73fa4006e54c0b5c4ac6e",
+      "previousApproval": "pending",
+      "clubs": [
+        "Willem II",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:willemii",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "Clubnaam, wedstrijdverslag en AI-disclaimer in beeld; sterk vergelijkbaar met Telstar-illustratie; stadionidentiteit herbeoordelen.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-adodenhaag-preview",
+      "file": "public/stadium74/adodenhaag-preview.webp",
+      "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
+      "previousApproval": "pending",
+      "clubs": [
+        "ADO Den Haag",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:adodenhaag",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer onderaan. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+        "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
+        "sourceArtifactId": 14907942209,
+        "sourceWorkflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of actual locally reproduced WebP, sharp 0.34.1; original and candidate SHA256 verified",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 0,
+          "top": 0,
+          "width": 1024,
+          "height": 576
+        },
+        "notes": "Lege groen-gele dagtribunes, Veldio-vlag en reclameborden; geen overige leesbare tekst. Onderste grafische woordmerk volledig buiten uitsnede. Stadioncontext en rechten nog toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "previousCandidateReview115": {
+        "candidateSha256": "7d72c1ec4d0a813134a514faa3db733137bb2f0e5ab49a517365658fd49c568d",
+        "originalSha256": "8b1149526b6b786b88d86108f0cf1aed9f1eea60b3b8e50f8633fa4e4de0e5d4",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Veldio-woordmerk onderaan afgesneden; kleinere uitsnede nodig.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+        "width": 1024,
+        "height": 576,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      },
+      "priorFinalReview115": {
+        "assetSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": false,
+        "contextSources": [
+          "https://adodenhaag.nl/nl/club/werktalent-stadion/geschiedenis",
+          "https://sportdaten.spiegel.de/spielort/ve617/werktalent-stadion/profil/"
+        ],
+        "withdrawalReason": "Below existing minimum raster resolution"
+      }
+    },
+    {
+      "id": "veldio74-ajax-preview",
+      "file": "public/stadium74/ajax-preview.webp",
+      "originalSha256": "4baaab87ec555bcebc5209f56682a32ef7553ee21531de0c06f4c566d4e2d2eb",
+      "previousApproval": "pending",
+      "clubs": [
+        "Ajax",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:ajax",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AJAX, Eredivisie, voorbeschouwing en andere tekst; clubembleem. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-ajax-report",
+      "file": "public/stadium74/ajax-report.webp",
+      "originalSha256": "0507173b3936e2cf29ee08594bb5ea25764eac88440fae2af4fa9ca7fa5aba75",
+      "previousApproval": "pending",
+      "clubs": [
+        "Ajax",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:ajax",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AFC Ajax, Eredivisie, wedstrijdverslag, sjaalopschriften en clubembleem zichtbaar. Nieuwe illustratie vereist.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-az-preview",
+      "file": "public/stadium74/az-preview.webp",
+      "originalSha256": "1f473af42de2d2ce937321c2b14825adc9cacfea7afd205f9d4f88bfdf100180",
+      "previousApproval": "pending",
+      "clubs": [
+        "AZ",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:az",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AFAS Stadion en AI-disclaimer; publiek en schemering ondanks lege dagpreview. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-az-report",
+      "file": "public/stadium74/az-report.webp",
+      "originalSha256": "621fa5ef5cfbeb4297c0037fbfd93f7dc2442ec054b68eb574b3375e20ad10da",
+      "previousApproval": "pending",
+      "clubs": [
+        "AZ",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:az",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AZ in stoelen, AFAS Stadion en AI-disclaimer. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-excelsiorrotterdam-preview",
+      "file": "public/stadium74/excelsiorrotterdam-preview.webp",
+      "originalSha256": "c1c3783b77e7661a58a4a461212e59abd1b17ffd7bc285c5e32c39c9a0314990",
+      "previousApproval": "pending",
+      "clubs": [
+        "Excelsior Rotterdam",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:excelsiorrotterdam",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "Van Donge & De Roo Stadion en Excelsior Rotterdam. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-excelsiorrotterdam-report",
+      "file": "public/stadium74/excelsiorrotterdam-report.webp",
+      "originalSha256": "602c041ca65ac2cca23222e9facf751683b05f4e7015232240b78de92996369b",
+      "previousApproval": "pending",
+      "clubs": [
+        "Excelsior Rotterdam",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:excelsiorrotterdam",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "Excelsior Rotterdam, Woudestein, supportersbanners en emblemen. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-fcgroningen-preview",
+      "file": "public/stadium74/fcgroningen-preview.webp",
+      "originalSha256": "67ebc44c0f5468f8f496276a5689b4450426efc638f9f4e8b30f28818c08e052",
+      "previousApproval": "pending",
+      "clubs": [
+        "FC Groningen",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fcgroningen",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+        "originalSha256": "67ebc44c0f5468f8f496276a5689b4450426efc638f9f4e8b30f28818c08e052",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege groen-witte dagtribunes; alleen Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      },
+      "priorFinalReview115": {
+        "assetSha256": "43dcf413c8fabb0589df312a4737938ea9d2b8703fccb441a680e6eff51ebab9",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": false,
+        "contextSources": [
+          "https://www.rollecate.nl/en/projects/euroborg-groningen",
+          "https://www.dagjeweg.nl/nieuwsredactie/26491/Stap-in-de-voetsporen-van-je-voetbalhelden%21"
+        ],
+        "withdrawalReason": "Below existing minimum raster resolution"
+      }
+    },
+    {
+      "id": "veldio74-fcgroningen-report",
+      "file": "public/stadium74/fcgroningen-report.webp",
+      "originalSha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
+      "previousApproval": "pending",
+      "clubs": [
+        "FC Groningen",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fcgroningen",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-tekst in zwarte badge rechtsonder en afwijkende sjaaldetails. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "2636e4286566e17e74a9cd3801d6aea5b0f36f4e24a5f22d3613a0ddfacd8d4f",
+        "originalSha256": "bf131c0d15d0cb5a3aff4523fc4884ba481a76ee79fe725b467ae12854e6883c",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection at native size; SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle groen-witte avondtribunes; uitsluitend Veldio en eigen slogan, geen leesbare andere opschriften. Context en rechten nog open.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "2636e4286566e17e74a9cd3801d6aea5b0f36f4e24a5f22d3613a0ddfacd8d4f",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "2636e4286566e17e74a9cd3801d6aea5b0f36f4e24a5f22d3613a0ddfacd8d4f",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio74-fctwente-report",
+      "file": "public/stadium74/fctwente-report.webp",
+      "originalSha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
+      "previousApproval": "pending",
+      "clubs": [
+        "FC Twente",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fctwente",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-tekst rechtsonder en kleine onduidelijke tribuneopschriften. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "6205e0d635bacbf4b9f386e3928ac497da2aa1f5439c3c8d687fd53764e6d473",
+        "originalSha256": "9de6d12011fae6870a926e667adf24a4bee2197a2c27d83f08cbcb4c66cdfc29",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Tribuneopschriften blijven zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio74-fcutrecht-preview",
+      "file": "public/stadium74/fcutrecht-preview.webp",
+      "originalSha256": "e3210e69ed15efbbdc6574b8f30b9fa016a7939e9a3a50885b2510942900f9c3",
+      "previousApproval": "pending",
+      "clubs": [
+        "FC Utrecht",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fcutrecht",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+        "originalSha256": "e3210e69ed15efbbdc6574b8f30b9fa016a7939e9a3a50885b2510942900f9c3",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio74-feyenoord-preview",
+      "file": "public/stadium74/feyenoord-preview.webp",
+      "originalSha256": "1ae94dcbd2af8aae52f73a0bc8f9393951530f3a6b65fd95b5f8afa5bbaae213",
+      "previousApproval": "pending",
+      "clubs": [
+        "Feyenoord",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:feyenoord",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+        "originalSha256": "1ae94dcbd2af8aae52f73a0bc8f9393951530f3a6b65fd95b5f8afa5bbaae213",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      },
+      "priorFinalReview115": {
+        "assetSha256": "7f0ca5a8c4c8afa765d2a2b76759d9dcff74606935af7b64ce6bf7a55687bd08",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": false,
+        "contextSources": [
+          "https://www.dekuip.com/en/stadion-feijenoord/history",
+          "https://www.zja.nl/en/Feijenoord-stadium-Rotterdam",
+          "https://www.dekuip.com/en/tour-museum/tours/stadium-tour"
+        ],
+        "withdrawalReason": "Below existing minimum raster resolution"
+      }
+    },
+    {
+      "id": "veldio74-fortunasittard-preview",
+      "file": "public/stadium74/fortunasittard-preview.webp",
+      "originalSha256": "cf471176f94b3e723777cd186d1d0d1af5f87d248f6ccc5b288667a0efc7eba1",
+      "previousApproval": "pending",
+      "clubs": [
+        "Fortuna Sittard",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fortunasittard",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "13ce69e32cd2d654be10e6a697e58d93e8207d06140affcb0cae1871fce7a3c9",
+        "originalSha256": "cf471176f94b3e723777cd186d1d0d1af5f87d248f6ccc5b288667a0efc7eba1",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege groen-gele dagtribunes; uitsluitend Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "13ce69e32cd2d654be10e6a697e58d93e8207d06140affcb0cae1871fce7a3c9",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "13ce69e32cd2d654be10e6a697e58d93e8207d06140affcb0cae1871fce7a3c9",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio74-goaheadeagles-preview",
+      "file": "public/stadium74/goaheadeagles-preview.webp",
+      "originalSha256": "f821d644c469ec912f35f3c2ba57140b4818cc00f3596b23f6dd65c379125560",
+      "previousApproval": "pending",
+      "clubs": [
+        "Go Ahead Eagles",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:goaheadeagles",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+        "originalSha256": "f821d644c469ec912f35f3c2ba57140b4818cc00f3596b23f6dd65c379125560",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-gele dagtribunes; uitsluitend Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      },
+      "priorFinalReview115": {
+        "assetSha256": "baef56623a0db4e747552017c5e0f79ee205a4ff381ea1cc43ef2a7ebc30e887",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": false,
+        "contextSources": [
+          "https://eredivisie.com/news/the-stands-of-go-ahead-eagles/",
+          "https://www.coliseum-online.com/go-ahead-eagles-home-stadium-rejig-go-ahead/"
+        ],
+        "withdrawalReason": "Below existing minimum raster resolution"
+      }
+    },
+    {
+      "id": "veldio74-goaheadeagles-report",
+      "file": "public/stadium74/goaheadeagles-report.webp",
+      "originalSha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
+      "previousApproval": "pending",
+      "clubs": [
+        "Go Ahead Eagles",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:goaheadeagles",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-tekst rechtsonder; Veldio-branding en rood-gele volle tribunes. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+        "originalSha256": "7de00711e73878275447d2de7239011ea8b497cfd630e3916e8b32764198a446",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Volle rood-gele avondtribunes; uitsluitend Veldio en eigen slogan.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      },
+      "priorFinalReview115": {
+        "assetSha256": "bff3e4fcf39447019512060c0ba735bc0ff4b9a534743b56e559753cb3e77d0e",
+        "qualityScore": 8.6,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": false,
+        "contextSources": [
+          "https://eredivisie.com/news/the-stands-of-go-ahead-eagles/",
+          "https://www.coliseum-online.com/go-ahead-eagles-home-stadium-rejig-go-ahead/"
+        ],
+        "withdrawalReason": "Below existing minimum raster resolution"
+      }
+    },
+    {
+      "id": "veldio74-necnijmegen-preview",
+      "file": "public/stadium74/necnijmegen-preview.webp",
+      "originalSha256": "56b2be8b618a1060df8168d4aab5c5aa9413c4521532523d711d54db7f8891fb",
+      "previousApproval": "pending",
+      "clubs": [
+        "N.E.C. Nijmegen",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:necnijmegen",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer midden onder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "6ad39fcf8bf58eef25629b28bbb090c3c1056c989c1f95fbee978e3700f02814",
+        "originalSha256": "56b2be8b618a1060df8168d4aab5c5aa9413c4521532523d711d54db7f8891fb",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection at native size; SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-groen-zwarte dagtribunes; uitsluitend Veldio en eigen slogan. Context en rechten nog open.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "6ad39fcf8bf58eef25629b28bbb090c3c1056c989c1f95fbee978e3700f02814",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "6ad39fcf8bf58eef25629b28bbb090c3c1056c989c1f95fbee978e3700f02814",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio74-peczwolle-preview",
+      "file": "public/stadium74/peczwolle-preview.webp",
+      "originalSha256": "ff5351c698778cb0b34d423f98ac3a0f666ae92c5abdf25954cbb7501822516f",
+      "previousApproval": "pending",
+      "clubs": [
+        "PEC Zwolle",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:peczwolle",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer; Friese pompeblêden passen niet bij PEC Zwolle. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-peczwolle-report",
+      "file": "public/stadium74/peczwolle-report.webp",
+      "originalSha256": "0c4ea1c8c5f91dbe086c8e751b281348940c32993909267428f62f396dac20d4",
+      "previousApproval": "pending",
+      "clubs": [
+        "PEC Zwolle",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:peczwolle",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-disclaimer; Friese vlaggen/pompeblêden bij PEC Zwolle. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio74-telstar-preview",
+      "file": "public/stadium74/telstar-preview.webp",
+      "originalSha256": "064e6dba2d3b0d37e750ad19151ea112f2414532e0f082466457c69b8fbf0f5e",
+      "previousApproval": "pending",
+      "clubs": [
+        "Telstar",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:telstar",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+        "originalSha256": "064e6dba2d3b0d37e750ad19151ea112f2414532e0f082466457c69b8fbf0f5e",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege blauw-witte dagtribunes; uitsluitend Veldio.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-adodenhaag-report",
+      "file": "public/stadium75/adodenhaag-report.webp",
+      "originalSha256": "18d7beadd3137bc85174433fd9f359380099835a6d2406927718f5db58b152e1",
+      "previousApproval": "pending",
+      "clubs": [
+        "ADO Den Haag",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:adodenhaag",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "bcad8cd8eaf0bca4d4eb91a9efee6187de93d076941f2268ec92e4575cf83022",
+        "originalSha256": "18d7beadd3137bc85174433fd9f359380099835a6d2406927718f5db58b152e1",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Groen-geel avondpubliek; geen andere leesbare tekst dan Veldio; bezettingsgraad nader beoordelen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "bcad8cd8eaf0bca4d4eb91a9efee6187de93d076941f2268ec92e4575cf83022",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "bcad8cd8eaf0bca4d4eb91a9efee6187de93d076941f2268ec92e4575cf83022",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-fctwente-preview",
+      "file": "public/stadium75/fctwente-preview.webp",
+      "originalSha256": "e16caf69cdc26f8778b02a541135aeb5f8ee9a192408ced3a85bf11b55b9be94",
+      "previousApproval": "pending",
+      "clubs": [
+        "FC Twente",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fctwente",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "Dubbele AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+        "originalSha256": "e16caf69cdc26f8778b02a541135aeb5f8ee9a192408ced3a85bf11b55b9be94",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; Veldio V-vormige branding.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      },
+      "priorFinalReview115": {
+        "assetSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+        "qualityScore": 8.8,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": false,
+        "contextSources": [
+          "https://www.twentefans.nl/aanpassing-in-grolsch-veste-indrukwekkende-lichtshows-mogelijk/",
+          "https://www.whsports.nl/en/projects/new-business-seats-for-fc-twente"
+        ],
+        "withdrawalReason": "Below existing minimum raster resolution"
+      }
+    },
+    {
+      "id": "veldio75-feyenoord-report",
+      "file": "public/stadium75/feyenoord-report.webp",
+      "originalSha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
+      "previousApproval": "pending",
+      "clubs": [
+        "Feyenoord",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:feyenoord",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-disclaimer en tribuneopschriften. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "5b27adf778a75202d8ddd6b5818b8b67278d2ce3866ea57efee8bd8e9d7ffd05",
+        "originalSha256": "fe35f627bf7c0cb0cafcf776525ec91502c93635f2869fa0397ff9f4e0c8a0fb",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Afwijkende tribuneopschriften blijven zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-fortunasittard-report",
+      "file": "public/stadium75/fortunasittard-report.webp",
+      "originalSha256": "8a0c7e8378153d1f7a5fd961b2754a2625aedd5f253c2914f56a7ee697f3494a",
+      "previousApproval": "pending",
+      "clubs": [
+        "Fortuna Sittard",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:fortunasittard",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "Dubbele AI-disclaimer; zwart-geel in plaats van groen-geel. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio75-necnijmegen-report",
+      "file": "public/stadium75/necnijmegen-report.webp",
+      "originalSha256": "952ecc36540a420234b939fa80fe6950e7c65c57990701bf0aec864104f77fdb",
+      "previousApproval": "pending",
+      "clubs": [
+        "N.E.C. Nijmegen",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:necnijmegen",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-disclaimer en rood-zwarte vlaggen zonder duidelijke NEC-groene identiteit. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ]
+    },
+    {
+      "id": "veldio75-psv-preview",
+      "file": "public/stadium75/psv-preview.webp",
+      "originalSha256": "595588cea03a67ae7b05c96a3ae477aa3866e11b73c07686e42f3d92694ca808",
+      "previousApproval": "pending",
+      "clubs": [
+        "PSV",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:psv",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "1c18518c6a92c9e49d69d6bb3b8cb96c1bb2d61552215263a232e058f708a090",
+        "originalSha256": "595588cea03a67ae7b05c96a3ae477aa3866e11b73c07686e42f3d92694ca808",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio en eigen slogan; locatiearchitectuur nader toetsen.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "1c18518c6a92c9e49d69d6bb3b8cb96c1bb2d61552215263a232e058f708a090",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "1c18518c6a92c9e49d69d6bb3b8cb96c1bb2d61552215263a232e058f708a090",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-psv-report",
+      "file": "public/stadium75/psv-report.webp",
+      "originalSha256": "c203fa573d6d6548fafbd60780225c83e649420af2d29c3738610d1b2bda2deb",
+      "previousApproval": "pending",
+      "clubs": [
+        "PSV",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:psv",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-disclaimer en onduidelijke sponsorachtige tribuneopschriften. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "df6a497f6d18c69c87db72f748c36dd861d1d9d657648d92e64686d9b5c387bc",
+        "originalSha256": "c203fa573d6d6548fafbd60780225c83e649420af2d29c3738610d1b2bda2deb",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Niet-Veldio tribuneopschriften blijven zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-sccambuur-preview",
+      "file": "public/stadium75/sccambuur-preview.webp",
+      "originalSha256": "9f68d0d22bc48d1e76b4a8e32cf38d8fee8738cfba965aad3491945cdba9b871",
+      "previousApproval": "pending",
+      "clubs": [
+        "SC Cambuur",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:sccambuur",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+        "originalSha256": "9f68d0d22bc48d1e76b4a8e32cf38d8fee8738cfba965aad3491945cdba9b871",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege geel-blauwe dagtribunes; Veldio V-vormige branding.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      },
+      "priorFinalReview115": {
+        "assetSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+        "qualityScore": 8.5,
+        "reviewer": "ChatGPT individual visual and context review 115C",
+        "reviewedAt": "2026-11-24",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": false,
+        "contextSources": [
+          "https://cambuur.nl/stadion058/algemeen/",
+          "https://www.tsv.nl/project/cambuur-stadion/",
+          "https://www.vi.nl/nieuws/1658810/cambuur-voetbalt-in-nieuw-onaf-stadion-de-hele-stad-is-hieraan-toe"
+        ],
+        "withdrawalReason": "Below existing minimum raster resolution"
+      }
+    },
+    {
+      "id": "veldio75-sccambuur-report",
+      "file": "public/stadium75/sccambuur-report.webp",
+      "originalSha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
+      "previousApproval": "pending",
+      "clubs": [
+        "SC Cambuur",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:sccambuur",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "SC Cambuur op dak en AI-disclaimer; schemering i.p.v. nacht herbeoordelen. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "0c4c98de82e970a9f5893131266417f48310275054a2902a7b0df58f96ebdda6",
+        "originalSha256": "b41d0fefc74172f391e265cc83ab911af25c13b0389614c689871155a2399af2",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "SC CAMBUUR op dak blijft zichtbaar.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-scheerenveen-preview",
+      "file": "public/stadium75/scheerenveen-preview.webp",
+      "originalSha256": "ff98fa290dcd7a1e70e187686184b3e5fead3c17682a5583708d736a681abc42",
+      "previousApproval": "pending",
+      "clubs": [
+        "sc Heerenveen",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:scheerenveen",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "AI-disclaimer en onleesbare dakopschriften; zacht raster. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "45fd09b3b5d82f7c9f0789ab5b43332cb6c675dcae03038512cd6ba29587580c",
+        "originalSha256": "ff98fa290dcd7a1e70e187686184b3e5fead3c17682a5583708d736a681abc42",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Onleesbare dakopschriften blijven zichtbaar; onvoldoende scherp.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-scheerenveen-report",
+      "file": "public/stadium75/scheerenveen-report.webp",
+      "originalSha256": "17e6a12ac2f5dbaa75adf791a49d93d2af4c7d03810c52b5352e680e94896152",
+      "previousApproval": "pending",
+      "clubs": [
+        "sc Heerenveen",
+        "*"
+      ],
+      "category": [
+        "report"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:scheerenveen",
+      "occupancy": "full",
+      "sceneDaypart": "night",
+      "defect": "AI-disclaimer en onleesbare dakopschriften; zacht raster. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-not-corrected",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "021fc37de48f922edef5e2ca74a44e935bd85ca6a1b94708d96730e1f49eacc4",
+        "originalSha256": "17e6a12ac2f5dbaa75adf791a49d93d2af4c7d03810c52b5352e680e94896152",
+        "artifactId": 14907942209,
+        "workflowRunId": 45369235274,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of contact sheet; SHA256 verified locally",
+        "status": "needs-correction",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Onleesbare dakopschriften blijven zichtbaar; onvoldoende scherp.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio75-spartarotterdam-preview",
+      "file": "public/stadium75/spartarotterdam-preview.webp",
+      "originalSha256": "e6a43616c1063aed3f0478a9e925576420dbc7c7caef9560c8890a1a589cc884",
+      "previousApproval": "pending",
+      "clubs": [
+        "Sparta Rotterdam",
+        "*"
+      ],
+      "category": [
+        "preview"
+      ],
+      "fixtureId": null,
+      "stadiumIdentity": "home:spartarotterdam",
+      "occupancy": "empty",
+      "sceneDaypart": "day",
+      "defect": "Dubbele AI-disclaimer rechtsonder. Geen vrijgave.",
+      "priority": 3,
+      "status": "pixels-corrected-pending-review",
+      "required": [
+        "correct or replace original raster",
+        "inspect actual pixels at native resolution",
+        "verify provenance and commercial rights",
+        "verify context, colours, occupancy and daypart where applicable",
+        "record new SHA256 and independent review; keep AI disclosure outside raster"
+      ],
+      "candidateReview115": {
+        "candidateSha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f",
+        "originalSha256": "e6a43616c1063aed3f0478a9e925576420dbc7c7caef9560c8890a1a589cc884",
+        "artifactId": 14908425925,
+        "workflowRunId": 45368556343,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT visual inspection of individual candidate WebP at native size; candidate SHA256 verified locally",
+        "status": "text-screen-pass-only",
+        "crop": {
+          "left": 32,
+          "top": 0,
+          "width": 1136,
+          "height": 639
+        },
+        "notes": "Lege rood-witte dagtribunes; uitsluitend Veldio; kasteelachtige achtergrond.",
+        "rightsVerified": false,
+        "contextVerified": false,
+        "publicationApproved": false
+      },
+      "correctedSha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f",
+      "technicalReview115": {
+        "status": "requires-native-resolution-repair",
+        "assetSha256": "93164d7f8919f9dce37a567fb9c0b6796fb15dcb544ea91a11f8fa6336f6a63f",
+        "width": 1136,
+        "height": 639,
+        "minimumWidth": 1280,
+        "minimumHeight": 720,
+        "publicationApproved": false
+      }
+    },
+    {
+      "id": "veldio69-rumour-1",
+      "file": "public/article-art69/rumour-1.webp",
+      "originalSha256": "04d545be13e06698985794ac8e080322b7506152b4750a6380f688e0aa6f6252",
+      "previousApproval": "approved",
+      "clubs": [],
+      "category": [
+        "rumour"
+      ],
+      "defect": "Krantenpagina bevat tekstachtige drukregels; vervangen of verwijderen voor strikte tekstregel.",
+      "status": "pixels-corrected-approved",
+      "correctedSha256": "5be0631dfab34a769d6e220ad1ca6e78ffcdaab28a5038d574022ae433851ed3",
+      "finalReview115": {
+        "assetSha256": "5be0631dfab34a769d6e220ad1ca6e78ffcdaab28a5038d574022ae433851ed3",
+        "qualityScore": 8.7,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT individual raster review 115D",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true
+      },
+      "correctionSource": "artwork-staging115d/veldio69-rumour-1.webp"
+    },
+    {
+      "id": "veldio69-history-1",
+      "file": "public/article-art69/history-1.webp",
+      "originalSha256": "ced2caf52018b09b64e8ca5634b85d01af99a41e199b3995cc47e172e3d9babc",
+      "previousApproval": "approved",
+      "clubs": [],
+      "category": [
+        "history"
+      ],
+      "defect": "Ingelijste historische teamfoto heeft onduidelijke herkomst; vervangen door eigen neutrale illustratie zonder groepsfoto.",
+      "status": "pixels-corrected-approved",
+      "correctedSha256": "18a417d7d7e93d14d15d8dc699519271efbd5d86916fed395d413ed7299c0345",
+      "finalReview115": {
+        "assetSha256": "18a417d7d7e93d14d15d8dc699519271efbd5d86916fed395d413ed7299c0345",
+        "qualityScore": 8.8,
+        "reviewedAt": "2026-11-24",
+        "reviewer": "ChatGPT individual raster review 115D",
+        "rightsVerified": true,
+        "contextVerified": true,
+        "publicationApproved": true
+      },
+      "correctionSource": "artwork-staging115d/veldio69-history-1.webp"
+    }
+  ],
+  "candidateReviewSummary115": {
+    "textScreenPassed": 18,
+    "needsFurtherPixelCorrection": 9,
+    "candidatesReviewed": 27,
+    "publicationApproved": 0,
+    "scope": "Actual inspected candidate bytes; no rights/context certification or catalogue release. ADO preview second crop reproduces via existing staging job.",
+    "installedPendingFinalReview": 18
+  },
+  "additionalReviews115d": {
+    "newlyIdentifiedDefects": 2,
+    "correctedAndApproved": 2,
+    "scope": "Historical initial counts preserved; two subsequently detected editorial defects corrected."
+  }
+}

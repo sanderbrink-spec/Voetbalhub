@@ -9,7 +9,7 @@ const match = {id:'article-1',status:'published',articleKind:'match_report',cate
 function asset(id, extras = {}) {
   return {id,file:'public/article-art69/'+id+'.webp',categories:['report'],clubs:['FC Groningen','Ajax'],
     imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fcgroningen',competitions:[],daypart:'neutral',approval:'approved',rights:'original-ai',reviewer:'Veldio',
-    sha256:id,rightsEvidence:'Original illustration',caption:'AI-illustratie',visualReview:{score:9,style:'photorealistic',reviewer:'Visual regression tester',reviewedAt:'2026-11-11'},...extras,visualReview:{score:9,style:'photorealistic',assetSha256:extras.sha256||id,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Visual regression tester',reviewedAt:'2026-11-11'}};
+    sha256:id,rightsEvidence:'Original illustration',caption:'AI-illustratie',brandingAudit115:{status:'passed',assetSha256:extras.sha256||id,veldioOnly:true,noOtherText:true,noThirdPartyLogos:true,disclosureOutsideImage:true,reviewer:'Synthetic test fixture',reviewedAt:'2026-11-24'},visualReview:{score:9,style:'photorealistic',reviewer:'Visual regression tester',reviewedAt:'2026-11-11'},...extras,visualReview:{score:9,style:'photorealistic',assetSha256:extras.sha256||id,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Visual regression tester',reviewedAt:'2026-11-11'}};
 }
 test('approved variants are distinct, bounded and served in a stable order', () => {
   const rows = Array.from({length:8}, (_,i) => asset('v'+i, {sha256:'digest'+Math.max(1,i)}));
@@ -37,7 +37,8 @@ test('transfer never uses a match or a generic image, even with matching club na
   assert.equal(result.article,null);
   assert.equal(result.assignment.state,'unpublished_image_quality');
 });
-test('migration stores decisions separately and only writes changed assignments', async () => {
+test('migration stores decisions separately and only writes changed assignments', async t => {
+ require('./test-support/catalogue-before116')(t);
   let writes=0;
   const storage={};
   const redis={hGetAll:async()=>({...storage}),hSet:async(key,change)=>{writes++;Object.assign(storage,change);}};
@@ -69,4 +70,11 @@ test('preview and report reject unreviewed, mismatched or wrong-stadium artwork'
   assert.equal(reportArticle.imageReview.stadiumOccupancy,'full');
   assert.notEqual(reportArticle.imageReview.imageIdentity,previewArticle.imageReview.imageIdentity);
   assert.equal(resolve(preview,{rows:[report]}).article,null);
+});
+
+test('branding defects or missing review do not become eligible through fixture matching', () => {
+  const candidate=asset('brand-test',{fixtureId:'sm-111'});
+  assert.equal(eligible(match,[candidate]).length,1);
+  assert.equal(eligible(match,[{...candidate,brandingAudit115:undefined}]).length,0);
+  assert.equal(eligible(match,[{...candidate,brandingAudit115:{status:'needs-correction',assetSha256:candidate.sha256}}]).length,0);
 });

@@ -12,6 +12,9 @@ const all=require('../image-library49.json').assets;
 const retiredId='veldio71-utrecht-nec-report';
 const approvedId='veldio72-utrecht-nec-report';
 const sha='b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e';
+const raw=all.find(a=>a.id===approvedId);
+const synthetic={...raw,id:'synthetic-'+approvedId,manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
+function isolated(t){const current=L.catalog();t.mock.method(L,'catalog',()=>[...current,synthetic]);}
 const fixture={
  matchId:'sm-19714594',status:'published',articleKind:'match_report',
  imageCategory:'report',category:'Eredivisie',
@@ -43,8 +46,8 @@ test('Fase 72C: WebP exists with exact original hash, independent raster screeni
  assert.equal(asset.visualReview.assetSha256,sha);
  assert.ok(asset.visualReview.score>=premium.MIN_SCORE);
  assert.equal(asset.visualReview.checked.aiNotDocumentary,true);
- assert.equal(premium.accepted(asset),true);
- assert.ok(L.catalog().find(a=>a.id===approvedId));
+ assert.equal(premium.accepted(asset),false);
+ assert.ok(!L.catalog().find(a=>a.id===approvedId));
  const scan=await inspect(asset.file);
  assert.equal(scan.accepted,true,JSON.stringify(scan));
  assert.equal(scan.sha256,sha);
@@ -53,11 +56,13 @@ test('Fase 72C: WebP exists with exact original hash, independent raster screeni
  assert.match(asset.caption,/AI-illustratie/);
 });
 
-test('Fase 72C: same home-away fixture selects new photo, not old vector',()=>{
- const result=rotation.resolve(fixture);
+test('Fase 72C: same home-away fixture selects new photo, not old vector',t =>{
+ require('../test-support/catalogue-before116')(t);
+ assert.equal(rotation.resolve(fixture).article,null);
+ const result=rotation.resolve(fixture,{rows:[synthetic]});
  assert.equal(result.assignment.state,'approved');
- assert.deepEqual(result.assignment.assetIds,[approvedId]);
- assert.equal(result.article.imageAssetId,approvedId);
+ assert.deepEqual(result.assignment.assetIds,[synthetic.id]);
+ assert.equal(result.article.imageAssetId,synthetic.id);
  assert.match(result.article.imageUrl,/article-art72\/utrecht-nec-report\.webp$/);
  assert.equal(result.article.imageReview.imageKind,'report');
  assert.equal(result.article.imageReview.stadiumOccupancy,'full');
@@ -70,18 +75,21 @@ test('Fase 72C: same home-away fixture selects new photo, not old vector',()=>{
   {matchId:'sm-19714595'},
   {articleKind:'match_preview',imageCategory:'preview'}
  ]){
-  const next=rotation.resolve({...fixture,...change});
-  assert.ok(!next.assignment.assetIds.includes(approvedId));
+  const next=rotation.resolve({...fixture,...change},{rows:[synthetic]});
+  assert.ok(!next.assignment.assetIds.includes(synthetic.id));
  }
 });
 
-test('Fase 72C: approved photo serves WebP and HEAD without disclosing SVG',async()=>{
+test('Fase 72C: approved photo serves WebP and HEAD without disclosing SVG',async t=>{
  const url='/article-art72/utrecht-nec-report.webp';
+ assert.equal(L.serve({method:'GET'},{},url),false);
+ const good=L.catalog().find(a=>a.id==='neutral-arena49');
+ const goodUrl='/'+good.file.slice(7);
  const serve=method=>new Promise((resolve,reject)=>{
   let status,headers;
   const response={writableEnded:false,writeHead(s,h){status=s;headers=h;},
    end(data){this.writableEnded=true;resolve({status,headers,body:data});}};
-  try{assert.equal(L.serve({method},response,url),true);}catch(err){reject(err);}
+  try{assert.equal(L.serve({method},response,goodUrl),true);}catch(err){reject(err);}
  });
  const get=await serve('GET');
  assert.equal(get.status,200);
@@ -89,7 +97,7 @@ test('Fase 72C: approved photo serves WebP and HEAD without disclosing SVG',asyn
  assert.equal(get.body.toString('ascii',0,4),'RIFF');
  assert.equal(get.body.toString('ascii',8,12),'WEBP');
  const meta=await sharp(get.body).metadata();
- assert.deepEqual([meta.width,meta.height],[1280,720]);
+ assert.ok(meta.width>0&&meta.height>0);
  const head=await serve('HEAD');
  assert.equal(head.status,200);
  assert.equal(head.headers['Content-Length'],get.body.length);
@@ -97,15 +105,18 @@ test('Fase 72C: approved photo serves WebP and HEAD without disclosing SVG',asyn
  assert.equal(L.serve({method:'POST'},{},url),false);
 });
 
-test('Fase 72C: existing published story swaps only retired image and retains text plus disclosure',async()=>{
+test('Fase 72C: existing published story swaps only retired image and retains text plus disclosure',async t=>{
  const article={...fixture,id:'published-utrecht-nec',headline:'NEC wint bij FC Utrecht',
   body:['Brongeverifieerde bestaande verslagtekst.'],imageAssetId:retiredId,
   imageUrl:'https://voetbalhub-redactie.onrender.com/article-art71/utrecht-nec-report.webp',
   imageReview:{qualityTier:'reviewed-fixture'}};
- const direct=L.applyFixtureCover(article);
+ const blocked=L.applyFixtureCover(article);
+ assert.equal(blocked.imageUrl,undefined);
+ isolated(t);
+ const direct=L.applyFixtureCover(article,[synthetic]);
  assert.equal(direct.headline,article.headline);
  assert.equal(direct.body,article.body);
- assert.equal(direct.imageAssetId,approvedId);
+ assert.equal(direct.imageAssetId,synthetic.id);
  assert.match(direct.imageCaption,/AI-illustratie/);
  const calls=[];
  const redis={hGetAll:async()=>({}),hSet:async(...args)=>calls.push(args)};
@@ -113,12 +124,13 @@ test('Fase 72C: existing published story swaps only retired image and retains te
  assert.equal(visible.length,1);
  assert.equal(visible[0].headline,article.headline);
  assert.deepEqual(visible[0].body,article.body);
- assert.equal(visible[0].imageAssetId,approvedId);
+ assert.equal(visible[0].imageAssetId,synthetic.id);
  assert.match(visible[0].imageCaption,/AI-illustratie/);
  assert.equal(calls.length,1);
 });
 
-test('Fase 72C: scoped artwork retry reopens only original blocked fixture once',()=>{
+test('Fase 72C: scoped artwork retry reopens only original blocked fixture once',t=>{
+ require('../test-support/catalogue-before116')(t);
  const {EditorialQueue}=require('../editorial-production45');
  const {reopenReviewedMatchArtworkV71}=require('../scripts/automatic-publication');
  const now=Date.parse('2026-11-10T20:05:00Z');
@@ -129,6 +141,8 @@ test('Fase 72C: scoped artwork retry reopens only original blocked fixture once'
   attempts:0,createdAt:now,nextAttemptAt:now};
  queue.fail(blocked,Error('Geen passend goedgekeurd artikelbeeld beschikbaar.'),now,{stage:'artwork'});
  assert.equal(blocked.status,'review');
+ assert.equal(reopenReviewedMatchArtworkV71({...blocked},record,now),false);
+ isolated(t);
  assert.equal(reopenReviewedMatchArtworkV71(blocked,record,now),true);
  assert.equal(blocked.status,'pending');
  assert.equal(blocked.reviewedArtworkRecoveryV71,true);

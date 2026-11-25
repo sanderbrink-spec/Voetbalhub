@@ -1,0 +1,225 @@
+name: 115B candidate raster crops
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  crop:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'review/115a-veldio-only-branding'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Produce actual cropped WebP candidates, no approval or publication
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const crypto = require('node:crypto');
+          const sharp = require('sharp');
+          const sha = b => crypto.createHash('sha256').update(b).digest('hex');
+          const catalog = require('./image-library49.json').assets;
+          const queue = require('./branding-correction-queue115.json').items;
+          const targets = [
+            'veldio74-fcutrecht-report',
+            'veldio110b-sm-19715868-eindhoven-rkc-report',
+            'veldio110d-sm-19722098-hull-brighton-day-report',
+            'veldio104d-fcgroningen-night-preview',
+            'veldio74-fcgroningen-preview',
+            'veldio74-fcutrecht-preview',
+            'veldio74-feyenoord-preview',
+            'veldio74-fortunasittard-preview',
+            'veldio74-goaheadeagles-preview',
+            'veldio74-goaheadeagles-report',
+            'veldio74-telstar-preview',
+            'veldio75-adodenhaag-report',
+            'veldio75-fctwente-preview',
+            'veldio75-psv-preview',
+            'veldio75-sccambuur-preview',
+            'veldio75-spartarotterdam-preview'
+          ];
+          (async () => {
+            fs.mkdirSync('artwork-candidates115', {recursive: true});
+            const results = [];
+            for (const id of targets) {
+              const asset = catalog.find(a => a.id === id);
+              const item = queue.find(a => a.id === id);
+              if (asset && item && item.correctedSha256 === asset.sha256 && item.originalSha256 !== asset.sha256) {
+                const current = fs.readFileSync(asset.file);
+                if (sha(current) !== item.correctedSha256) throw Error('Correction hash mismatch: ' + id);
+                results.push({id, status:'already-corrected', sha256:asset.sha256});
+                continue;
+              }
+              if (!asset || !item || !['pending','approved'].includes(asset.approval) || item.status !== 'pixels-not-corrected' || !/AI-(tekst|disclaimer)/i.test(item.defect)) throw Error('Unexpected audit state: ' + id);
+              const original = fs.readFileSync(asset.file);
+              if (sha(original) !== item.originalSha256 || sha(original) !== asset.sha256) throw Error('Source hash changed: ' + id);
+              const info = await sharp(original).metadata();
+              if (!info.width || !info.height || info.width < 720 || Math.abs(info.width/info.height-16/9)>0.025) {
+                results.push({id,status:'manual-correction-required',reason:'source dimensions or aspect ratio incompatible with safe crop',approval:false});
+                continue;
+              }
+              const width = Math.floor(info.width * 1136 / 1280 / 16) * 16;
+              const crop = {left: Math.floor(info.width * 32 / 1280), top:0, width, height:width*9/16};
+              const candidate = await sharp(original).extract(crop).webp({quality:92}).toBuffer();
+              const name = id + '.webp';
+              fs.writeFileSync('artwork-candidates115/' + name, candidate);
+              results.push({id, originalSha256:sha(original), candidateSha256:sha(candidate), file:name, crop, caption:asset.caption, status:'candidate-pending-visual-and-rights-review', previousTextReviewMatches: item.candidateReview115?.candidateSha256 === sha(candidate), approval:false});
+            }
+            fs.writeFileSync('artwork-candidates115/report.json', JSON.stringify(results,null,2));
+            console.log(JSON.stringify(results,null,2));
+          })().catch(e => { console.error(e); process.exitCode = 1; });
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldio-115b-cropped-review-candidates
+          path: artwork-candidates115/
+          if-no-files-found: error
+
+      - name: Export all remaining source images and make targeted candidate crops
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const crypto = require('node:crypto');
+          const sharp = require('sharp');
+          const sha = b => crypto.createHash('sha256').update(b).digest('hex');
+          const catalog = require('./image-library49.json').assets;
+          const queue = require('./branding-correction-queue115.json').items;
+          // Coordinates refer to the displayed 1280x720 reference view.
+          // Each output is a candidate only, never approval. Some still contain
+          // unrelated stand signage and will require a new illustration.
+          const crops = {
+            'veldio110b-sm-19714592-ajax-ado-day-report': [32,0,1136],
+            'veldio75-spartarotterdam-report': [32,0,1136],
+            'veldio74-adodenhaag-preview': [32,0,1136],
+            'veldio74-necnijmegen-preview': [32,0,1136],
+            'veldio74-fcgroningen-report': [32,0,1136],
+            'veldio74-fctwente-report': [32,0,1136],
+            'veldio75-feyenoord-report': [32,0,1136],
+            'veldio75-psv-report': [32,0,1136],
+            'veldio75-scheerenveen-preview': [32,0,1136],
+            'veldio75-scheerenveen-report': [32,0,1136],
+            'veldio75-sccambuur-report': [32,0,1136]
+          };
+          (async () => {
+            const dir = 'artwork-remaining115';
+            fs.mkdirSync(dir+'/sources',{recursive:true});
+            fs.mkdirSync(dir+'/candidates',{recursive:true});
+            const report = [];
+            for(const item of queue){
+              if(item.candidateReview115?.status==='text-screen-pass-only' || item.correctedSha256) continue;
+              const asset = catalog.find(a=>a.id===item.id);
+              if(!asset || asset.approval==='rejected' || item.status!=='pixels-not-corrected' || !/^[a-zA-Z0-9_-]+$/.test(item.id) || asset.file!==item.file) throw Error('Invalid source state '+item.id);
+              const bytes = fs.readFileSync(asset.file);
+              if(sha(bytes)!==item.originalSha256 || sha(bytes)!==asset.sha256) throw Error('Source hash mismatch '+item.id);
+              const meta=await sharp(bytes).metadata();
+              const source='sources/'+item.id+'.'+meta.format;
+              fs.writeFileSync(dir+'/'+source,bytes);
+              const row={id:item.id,source,originalSha256:sha(bytes),width:meta.width,height:meta.height,clubs:item.clubs,category:item.category,occupancy:item.occupancy,sceneDaypart:item.sceneDaypart,defect:item.defect,approval:false,status:'replacement-or-manual-correction-required'};
+              if(crops[item.id] && meta.width>=720 && Math.abs(meta.width/meta.height-16/9)<=0.025){
+                const [x,y,w]=crops[item.id];
+                const width=Math.floor(meta.width*w/1280/16)*16;
+                const crop={left:Math.floor(meta.width*x/1280),top:Math.floor(meta.height*y/720),width,height:width*9/16};
+                if(crop.left+crop.width<=meta.width && crop.top+crop.height<=meta.height){
+                  const candidate=await sharp(bytes).extract(crop).webp({quality:92}).toBuffer();
+                  const file='candidates/'+item.id+'.webp';
+                  fs.writeFileSync(dir+'/'+file,candidate);
+                  Object.assign(row,{candidate:file,candidateSha256:sha(candidate),crop,status:'candidate-pending-individual-review'});
+                }
+              }
+              report.push(row);
+            }
+            fs.writeFileSync(dir+'/report.json',JSON.stringify(report,null,2));
+            console.log(JSON.stringify({remainingSources:report.length,candidates:report.filter(x=>x.candidate).length,approvalCount:0}));
+          })().catch(e=>{console.error(e);process.exitCode=1;});
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldio-115c-remaining-source-and-candidate-batch
+          path: artwork-remaining115/
+          if-no-files-found: error
+
+      - name: Export standalone offline owner image review
+        env:
+          REVIEW_COMMIT: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/export-owner-image-review115d.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: veldio-beeldkeuring-offline
+          path: veldio-review-export/veldio-beeldkeuring.html
+          if-no-files-found: error
+
+  stage-reviewed:
+    needs: crop
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'review/115a-veldio-only-branding'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: review/115a-veldio-only-branding
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Stage exact text-screened WebP bytes without changing production catalogue
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$(git rev-parse HEAD)" != "$EXPECTED_HEAD" ]; then
+            echo 'Branch changed since this run; do not stage against a different revision.'
+            exit 0
+          fi
+          node <<'NODE'
+          const fs = require('node:fs');
+          const crypto = require('node:crypto');
+          const sharp = require('sharp');
+          const sha = b => crypto.createHash('sha256').update(b).digest('hex');
+          const catalog = require('./image-library49.json').assets;
+          const queue = require('./branding-correction-queue115.json').items;
+          const dir='artwork-staging115';
+          (async()=>{
+            fs.mkdirSync(dir,{recursive:true});
+            const rows=[];
+            for(const item of queue){
+              const review=item.candidateReview115;
+              if(review?.status!=='text-screen-pass-only') continue;
+              if(!/^[a-zA-Z0-9_-]+$/.test(item.id)||review.publicationApproved!==false||review.rightsVerified!==false||review.contextVerified!==false) throw Error('Unexpected review state '+item.id);
+              const asset=catalog.find(a=>a.id===item.id);
+              if(item.correctedSha256){
+                if(!asset || asset.file!==item.file || !['pending','approved'].includes(asset.approval) || (asset.approval==='approved' && (item.status!=='pixels-corrected-approved' || !require('./premium-match-images72').accepted(asset))) || asset.sha256!==item.correctedSha256 || review.candidateSha256!==item.correctedSha256 || review.originalSha256!==item.originalSha256) throw Error('Installed candidate binding mismatch '+item.id);
+                const file=dir+'/'+item.id+'.webp';
+                const bytes=fs.readFileSync(asset.file);
+                if(sha(bytes)!==item.correctedSha256 || sha(fs.readFileSync(file))!==item.correctedSha256) throw Error('Installed candidate bytes mismatch '+item.id);
+                rows.push({id:item.id,file,originalFile:asset.file,originalSha256:item.originalSha256,sha256:sha(bytes),caption:asset.caption,reviewStatus:'text-screen-pass-only',publicationApproved:false,rightsVerified:false,contextVerified:false});
+                continue;
+              }
+              if(!asset || asset.file!==item.file || asset.sha256!==item.originalSha256 || review.originalSha256!==item.originalSha256) throw Error('Original review binding mismatch '+item.id);
+              const src=fs.readFileSync(asset.file);
+              if(sha(src)!==item.originalSha256) throw Error('Source bytes changed '+item.id);
+              const candidate=await sharp(src).extract(review.crop).webp({quality:92}).toBuffer();
+              if(sha(candidate)!==review.candidateSha256) throw Error('Reproduced candidate does not match reviewed bytes '+item.id);
+              const file=dir+'/'+item.id+'.webp';
+              fs.writeFileSync(file,candidate);
+              rows.push({id:item.id,file,originalFile:asset.file,originalSha256:item.originalSha256,sha256:sha(candidate),caption:asset.caption,reviewStatus:'text-screen-pass-only',publicationApproved:false,rightsVerified:false,contextVerified:false});
+            }
+            fs.writeFileSync(dir+'/manifest.json',JSON.stringify({scope:'Non-public staging only; not used by production catalogue',count:rows.length,assets:rows},null,2)+'\n');
+            console.log('Staged exact reviewed bytes: '+rows.length);
+          })().catch(e=>{console.error(e);process.exitCode=1;});
+          NODE
+          node scripts/prepare-targeted-crops115d.js
+          git add artwork-staging115/ artwork-staging115d/
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'Veldio artwork staging'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "115C: stage exact reviewed WebP candidates, no publication approval"
+          git push origin HEAD:review/115a-veldio-only-branding

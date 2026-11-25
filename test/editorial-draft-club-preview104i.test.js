@@ -55,7 +55,8 @@ test('104I: bestaande officiële UEFA-preview velden blijven onveranderd',()=>{
   date:'2027-03-25',venueName:'Amsterdam'});
 });
 
-test('104I: exact eerder goedgekeurd maar fout opgeschoond dossier wordt één keer opnieuw getoetst',()=>{
+test('104I: exact eerder goedgekeurd maar fout opgeschoond dossier wordt één keer opnieuw getoetst',t=>{
+ require('../test-support/catalogue-before116')(t);
  const c={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
   fixture:f,kickoff:Date.parse(f.date),facts:facts.map(text=>({text}))};
  const group=Object.assign([{title:c.topic}],{clubPreview:c});
@@ -63,6 +64,12 @@ test('104I: exact eerder goedgekeurd maar fout opgeschoond dossier wordt één k
  const hash='d1a09eac82e61c71403c8175e5a4c666eb4b0d9039e967d407f4bc7e904fd733';
  const job={clubPreviewId:f.id,status:'review',failureStage:'storage',failureCategory:'storage_failure',
   reason:'storage_error',errorHash:hash,copyAndRoleRetry104H:true,checkpoint:'oude-keuring',attempts:2};
+ assert.equal(reopenPreviewStorageFixture104I({...job},group,now),false);
+ const lib=require('../image-library49');
+ const raw=require('../image-library49.json').assets.find(x=>x.id==='veldio104d-fcgroningen-night-preview');
+ const synthetic={...raw,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
+ const actual=lib.catalog();
+ t.mock.method(lib,'catalog',()=>[...actual,synthetic]);
  assert.equal(reopenPreviewStorageFixture104I(job,group,now),true);
  assert.equal(job.status,'pending');assert.equal(job.attempts,0);assert.equal(job.checkpoint,undefined);
  const after={...job,status:'review',failureStage:'storage',failureCategory:'storage_failure',reason:'storage_error',errorHash:hash};

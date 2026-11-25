@@ -1,0 +1,97 @@
+{
+  "scope": "Actual WebP candidates exported from existing original ChatGPT library PNGs. The ZIP was produced in ChatGPT but the binary upload bridge to GitHub was unavailable. This receipt is not a repository import or approval.",
+  "archive": "veldio_115d_native_candidates.zip",
+  "baseCommit": "3097ac43189eabf7c73a8784500a6a230169c633",
+  "assets": [
+    {
+      "id": "veldio74-adodenhaag-preview",
+      "targetFile": "public/stadium74/adodenhaag-preview.webp",
+      "previousSha256": "5226f687ddfb89ac57df5018fab85acee4b36ba82b6554c645a81cb7ced9a5b6",
+      "sha256": "3bc940e3330f16741c840a0950aabf34f5cd03770175b8740f1f01ed6a02492b",
+      "width": 1664,
+      "height": 936,
+      "upscaled": false,
+      "repositoryImported": false,
+      "publicationApproved": false,
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "3bc940e3330f16741c840a0950aabf34f5cd03770175b8740f1f01ed6a02492b"
+      }
+    },
+    {
+      "id": "veldio75-fctwente-preview",
+      "targetFile": "public/stadium75/fctwente-preview.webp",
+      "previousSha256": "4123c721ecf1d2d01da4991e60c33e91dd9443b97bdcb77c277c53a25343b703",
+      "sha256": "56d79c31b3ade4c27603181970e3ed272164d1ebcc8c1ca6d980991f6de9cb77",
+      "width": 1664,
+      "height": 936,
+      "upscaled": false,
+      "repositoryImported": false,
+      "publicationApproved": false,
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "56d79c31b3ade4c27603181970e3ed272164d1ebcc8c1ca6d980991f6de9cb77"
+      }
+    },
+    {
+      "id": "veldio75-sccambuur-preview",
+      "targetFile": "public/stadium75/sccambuur-preview.webp",
+      "previousSha256": "b718ad1d9157f4302ca7121441ed2877936ec07d2d5715ca840ffc865cef11ea",
+      "sha256": "fa8b89e750924f88177f2b93f6a58af37ec5d5e592f84608adf47470fe6bfd95",
+      "width": 1536,
+      "height": 864,
+      "upscaled": false,
+      "repositoryImported": false,
+      "publicationApproved": false,
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "fa8b89e750924f88177f2b93f6a58af37ec5d5e592f84608adf47470fe6bfd95"
+      }
+    },
+    {
+      "id": "veldio74-az-preview",
+      "targetFile": "public/stadium74/az-preview.webp",
+      "previousSha256": "1f473af42de2d2ce937321c2b14825adc9cacfea7afd205f9d4f88bfdf100180",
+      "sha256": "24188b352154fbaefb1765af352d710c299d0e5b10ccb565529503518ab6294c",
+      "width": 1664,
+      "height": 936,
+      "upscaled": false,
+      "repositoryImported": false,
+      "publicationApproved": false,
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "24188b352154fbaefb1765af352d710c299d0e5b10ccb565529503518ab6294c"
+      }
+    },
+    {
+      "id": "veldio69-twente-6",
+      "targetFile": "public/article-art69/twente-6.webp",
+      "previousSha256": "0ed4156c99a9c363a2ac09912c941f4dd2f17fad7e84d8fd5e59f7e9dc6e98f5",
+      "sha256": "07012f3c952cea6a480c73c333d89a413bf1b5dfe66358bc52679a411358fab2",
+      "width": 1664,
+      "height": 936,
+      "upscaled": false,
+      "repositoryImported": false,
+      "publicationApproved": false,
+      "status": "awaiting-binary-import-and-independent-review",
+      "ownerApproval": {
+        "status": "approved-by-owner",
+        "date": "2026-11-24",
+        "scope": "Owner approved the five replacement candidates in chat; separate from repository import, technical verification and independent context/rights review.",
+        "assetSha256": "07012f3c952cea6a480c73c333d89a413bf1b5dfe66358bc52679a411358fab2"
+      }
+    }
+  ]
+}

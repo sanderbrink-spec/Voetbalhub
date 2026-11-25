@@ -1,6 +1,7 @@
 'use strict';
 
 const library = require('./image-library49');
+const selection116 = require('./stadium-selection116');
 const premium = require('./premium-match-images72');
 const stadium74 = require('./stadium-venue74');
 const reviewed = require('./article-image-migration69.json');
@@ -31,7 +32,8 @@ function context(article) {
   const kickoff = legacy?.kickoff && (!legacy.matchId || legacy.matchId === fixtureId) ? legacy.kickoff : source;
   const venueId = source.venueId || source.venue?.id || legacy?.venueId;
   return {category, clubs:MATCH_CATEGORIES.includes(category) ? clubs : [], fixtureId, competition:article.category || '',
-    daypart:library.daypart(kickoff), venueName:source.venue?.name||source.venueName||'', ...(venueId ? {venueId} : {}),
+    homeClubId:source.home?.id||source.homeTeamId,awayClubId:source.away?.id||source.awayTeamId,
+    fixtureStatus:source.status, lighting:selection116.lighting(kickoff), daypart:library.daypart(kickoff), venueName:source.venue?.name||source.venueName||'', ...(venueId ? {venueId} : {}),
     ...matchImageContext({...article, fixture:{...source, venueId}}, category, clubs, kickoff)};
 }
 
@@ -42,7 +44,8 @@ function eligible(article, rows = library.catalog(), ctx = context(article)) {
   // Explicitly archived legacy articles keep their existing editorial artwork.
   const legacyArchive = article.status === 'published' && Object.hasOwn(archived, article.id);
   if (legacy?.exclude || (matches && ctx.clubs.length !== 2)) return [];
-  return rows.filter(asset => premium.accepted(asset) && asset.sha256 &&
+  if (!selection116.compatibleStatus(ctx.category,ctx.fixtureStatus)) return [];
+  const options = rows.filter(asset => premium.accepted(asset) && asset.sha256 &&
     (['original-ai','original-vector'].includes(asset.rights) ||
       (asset.rights === 'licensed' && asset.credit && asset.source && /^https:\/\//.test(asset.licenseUrl))) &&
     (asset.categories.includes(ctx.category) || legacy?.approvedAsset === asset.id) &&
@@ -50,7 +53,7 @@ function eligible(article, rows = library.catalog(), ctx = context(article)) {
     (!ctx.imageKind || legacyArchive ||
       stadium74.allowedForMatch(asset,{...ctx,category:ctx.imageKind})) &&
     (!asset.competitions.length || asset.competitions.includes(ctx.competition)) &&
-    library.daypartMatches(asset, ctx.daypart) &&
+    library.daypartMatches(asset, ctx.daypart, ctx.lighting) &&
     (!asset.venueId || asset.venueId === ctx.venueId) &&
     (matches ? asset.clubs.length === 2 &&
       (asset.homeClubReusable ? (asset.clubs[1] === '*' && normalize(asset.clubs[0]) === normalize(ctx.clubs[0])) :
@@ -60,11 +63,14 @@ function eligible(article, rows = library.catalog(), ctx = context(article)) {
     .sort((a,b) => Number(Boolean(b.fixtureId)) - Number(Boolean(a.fixtureId)) ||
       (Date.parse(b.approvedAt) || 0) - (Date.parse(a.approvedAt) || 0) || a.id.localeCompare(b.id))
     .filter(asset => { if (ids.has(asset.sha256)) return false; ids.add(asset.sha256); return true; }).slice(0,6);
+  if (options.length) return options;
+  const neutral = selection116.neutralFor(ctx, rows);
+  return neutral ? [neutral] : [];
 }
 
 function assetFields(asset, context) {
   const fields = library.fields(asset, context);
-  if (context?.imageKind && context.imageKind !== asset.imageKind) {
+  if (context?.imageKind && context.imageKind !== asset.imageKind && !selection116.approvedNeutral(asset)) {
     for (const key of ['imageKind','stadiumOccupancy','stadiumIdentity','imageIdentity']) delete fields.imageReview[key];
   }
   if (asset.rights !== 'licensed') return {...fields, imageCredit:'Veldio'};
@@ -74,7 +80,7 @@ function assetFields(asset, context) {
 function resolve(article, {rows} = {}) {
   const ctx = context(article);
   const options = eligible(article, rows, ctx);
-  const reason = options.length ? (ctx.clubs.length ? 'ordered-fixture' : 'exact-topic') :
+  const reason = options.length ? (ctx.clubs.length ? (selection116.approvedNeutral(options[0]) ? 'approved-neutral-football' : 'ordered-fixture') : 'exact-topic') :
     reviewFor(article)?.exclude || 'Geen goedgekeurd passend artikelbeeld';
   const assignment = {version:69, state:options.length ? 'approved' : 'unpublished_image_quality',
     context:ctx, assetIds:options.map(asset => asset.id), reason};

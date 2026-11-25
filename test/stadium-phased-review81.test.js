@@ -10,14 +10,16 @@ test('Fase 81: gefaseerde beeldreview heeft precies 28 reguliere en 8 herstelgev
  const data=overview();
  assert.equal(data.clubsTotal,18);
  assert.equal(data.slotsTotal,36);
- assert.equal(data.issuesForExtraReview,8);
+ const findings=require('../stadium-review-findings79.json').findings;
+ assert.equal(Object.keys(findings).length,8);
+ assert.equal(data.issuesForExtraReview,assets.filter(a=>a.homeClubReusable&&a.approval==='pending'&&findings[a.id]).length);
  const p=data.slots.flatMap(s=>s.pendingImages);
  const approved=data.slots.flatMap(s=>s.approvedImages||[]);
  assert.equal(p.length+approved.length,36);
  assert.equal(p.filter(a=>a.reviewPriority==='first-review').length,data.reviewPlan.firstReview);
  assert.equal(p.filter(a=>a.reviewPriority==='repair-first').length,data.reviewPlan.repairFirst);
  assert.equal(approved.length,data.reviewPlan.approved);
- assert.equal(p.filter(a=>a.canRequestApproval).length,data.reviewPlan.firstReview-data.reviewPlan.failedFullResolution);
+ assert.equal(p.filter(a=>a.canRequestApproval).length,p.filter(a=>a.reviewPriority==='first-review'&&a.qualityStatus!=='requires-replacement'&&!a.technicalReview115).length);
  assert.ok(p.filter(a=>a.reviewPriority==='repair-first').every(a=>a.knownIssue));
  assert.ok(p.filter(a=>a.reviewPriority==='first-review').every(a=>!a.knownIssue));
  assert.deepEqual(new Set(data.slots.map(s=>s.club)).size,18);

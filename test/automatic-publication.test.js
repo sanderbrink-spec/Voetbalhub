@@ -194,8 +194,9 @@ test('checked cup evidence reaches the writer but publication waits for matching
 for(const hasHalf of [true,false])test('registered match uses compact format with halftime='+hasHalf+' during source outage and recovers legacy queue once',async t=>{
  const library=require('../image-library49');
  const rows=library.catalog();
- const example=rows.find(asset=>asset.id==='groningen43');
- t.mock.method(library,'catalog',()=>[...rows,{...example,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
+ const example=require('../image-library49.json').assets.find(asset=>asset.id==='groningen43');
+ const syntheticBranding=require('../test-support/branding-fixture115')(example.sha256);
+ t.mock.method(library,'catalog',()=>[...rows,{...example,manualReview115:undefined,brandingAudit115:syntheticBranding,id:'test-twente-psv',categories:['report'],clubs:['FC Twente','PSV'],
   imageKind:'report',stadiumOccupancy:'full',stadiumIdentity:'home:fctwente',
   visualReview:{score:9.2,style:'photorealistic',assetSha256:example.sha256,checked:{photorealism:true,clubNames:true,stadiumContext:true,rights:true,aiNotDocumentary:true},reviewer:'Synthetic test reviewer',reviewedAt:'2026-11-11'}}]);
  const {fingerprint}=require('../editorial-drafts');
@@ -1419,7 +1420,17 @@ test('official federation announcements use the same source authority at storage
  assert.equal(retryFederationStorageFailure(job,doc,now),false);
 });
 
-test('verified match detail resolves the existing Berlin illustration from the abbreviated calendar venue',async()=>{
+function isolatedInternationalImage115(t,id){
+ const lib=require('../image-library49');
+ const raw=require('../image-library49.json').assets.find(x=>x.id===id);
+ assert.equal(require('../premium-match-images72').accepted(raw),false);
+ const synthetic={...raw,id:'synthetic-'+id,manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
+ const actual=lib.catalog();t.mock.method(lib,'catalog',()=>[...actual,synthetic]);
+ return synthetic;
+}
+
+test('verified match detail resolves the existing Berlin illustration from the abbreviated calendar venue',async t=>{
+ require('../test-support/catalogue-before116')(t);
  const {enrichPreview}=require('../scripts/editorial-international');
  const {uploadCover}=require('../scripts/automatic-publication');
  const url='https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660';
@@ -1435,13 +1446,16 @@ test('verified match detail resolves the existing Berlin illustration from the a
  assert.equal(fixture.venueName,'Olympiastadion');
  enrichPreview(group,detail,plain);
  assert.equal(fixture.venueName,'Olympiastadion, Berlin, Duitsland');
- const cover=await uploadCover({fixture,articleKind:'preview',category:'Nations League',
-  draft:{headline:'Oranje speelt om groepswinst in Berlijn'}});
+ const payload={fixture,articleKind:'preview',category:'Nations League',draft:{headline:'Oranje speelt om groepswinst in Berlijn'}};
+ await assert.rejects(uploadCover(payload),/Geen passend goedgekeurd/);
+ isolatedInternationalImage115(t,'veldio97c-duitsland-nederland-preview');
+ const cover=await uploadCover(payload);
  assert.match(cover.imageUrl,/duitsland-nederland-preview\.webp$/);
  assert.equal(cover.imageReview.stadiumOccupancy,'empty');
 });
 
-test('verified international preview keeps its fixture artwork across draft storage and feed rendering',async()=>{
+test('verified international preview keeps its fixture artwork across draft storage and feed rendering',async t=>{
+ require('../test-support/catalogue-before116')(t);
  const {cleanPayload,fingerprint}=require('../editorial-drafts');
  const {resolve}=require('../image-rotation65');
  const {uploadCover}=require('../scripts/automatic-publication');
@@ -1449,6 +1463,8 @@ test('verified international preview keeps its fixture artwork across draft stor
   date:'2026-11-13T19:45:00.000Z',venueName:'Johan Cruijff ArenA'};
  const payload={fixture,articleKind:'preview',category:'Nations League',
   draft:{headline:'Nederland ontvangt Griekenland in Amsterdam'}};
+ await assert.rejects(uploadCover(payload),/Geen passend goedgekeurd/);
+ isolatedInternationalImage115(t,'veldio97c-nederland-griekenland-preview');
  const cover=await uploadCover(payload);
  assert.match(cover.imageUrl,/nederland-griekenland-preview\.webp$/);
  assert.equal(cover.imageReview.stadiumOccupancy,'empty');
@@ -1461,13 +1477,15 @@ test('verified international preview keeps its fixture artwork across draft stor
  assert.equal(resolve({...payload,articleKind:'match_report'}).article,null);
 });
 
-test('short verified Germany venue names retain the approved international preview image',()=>{
+test('short verified Germany venue names retain the approved international preview image',t=>{
+ require('../test-support/catalogue-before116')(t);
  const {resolve}=require('../image-rotation65');
  const fixture={id:'uefa-2047909',homeTeam:'Duitsland',awayTeam:'Nederland',date:'2026-11-16T19:45:00.000Z'};
+ const synthetic=isolatedInternationalImage115(t,'veldio97c-duitsland-nederland-preview');
  for(const venueName of ['Olympiastadion','Olympiastadion, Berlin','Olympiastadion, Berlin, Duitsland']){
   const {assignment,article}=resolve({articleKind:'preview',category:'Nations League',fixture:{...fixture,venueName}});
   assert.equal(assignment.state,'approved',venueName);
-  assert.equal(article.imageAssetId,'veldio97c-duitsland-nederland-preview',venueName);
+  assert.equal(article.imageAssetId,synthetic.id,venueName);
   assert.equal(article.imageReview.stadiumOccupancy,'empty');
   assert.equal(article.imageReview.visualQualityScore>=8.5,true);
  }

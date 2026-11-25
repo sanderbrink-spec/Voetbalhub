@@ -17,6 +17,7 @@ function stadiumFor(fixture, homeTeam) {
     .replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
   const venue = fixture.venueId || fixture.venue?.id || fixture.venue?.name || fixture.venueName;
   if (venue) return 'venue:' + normalize(venue);
+  if (fixture.neutralVenue === true || fixture.neutralGround === true || fixture.neutral === true || fixture.venue?.neutral === true) return 'neutral:unknown';
   const home = normalize(homeTeam);
   return home ? 'home:' + (home === 'azalkmaar' ? 'az' : home) : '';
 }

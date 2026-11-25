@@ -1,0 +1,30 @@
+'use strict';
+const fs=require('node:fs'), crypto=require('node:crypto');
+const catalog=require('../image-library49.json').assets;
+const ledger=require('../artwork-review-ledger115d.json');
+const handoff=require('../native-candidate-handoff115d.json');
+const staging=require('../artwork-staging115d/manifest.json').assets;
+const queue=require('../branding-correction-queue115.json').items;
+const commit=process.env.REVIEW_COMMIT||require('node:child_process').execSync('git rev-parse HEAD').toString().trim();
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const approved=new Set(handoff.assets.filter(a=>a.ownerApproval?.status==='approved-by-owner').map(a=>a.id));
+const pending=ledger.items.filter(a=>!['manual-pass','already-rejected'].includes(a.status)&&!approved.has(a.id));
+const preferred=['veldio104d-fcgroningen-night-preview','veldio75-feyenoord-report','veldio74-fctwente-report'];
+pending.sort((a,b)=>(preferred.indexOf(a.id)<0?99:preferred.indexOf(a.id))-(preferred.indexOf(b.id)<0?99:preferred.indexOf(b.id)));
+const rows=pending.map(l=>{
+ const asset=catalog.find(a=>a.id===l.id), q=queue.find(a=>a.id===l.id);
+ if(!asset)throw Error('Unknown '+l.id);
+ const candidate=staging.find(a=>a.id===l.id&&a.originalSha256===asset.sha256);
+ const path=candidate?.file||asset.file, expected=candidate?.sha256||asset.sha256;
+ const bytes=fs.readFileSync(path);
+ if(sha(bytes)!==expected)throw Error('Hash mismatch: '+l.id);
+ if(!/\.(webp|png|jpg|jpeg)$/i.test(path))throw Error('Unexpected raster: '+path);
+ const ext=path.split('.').pop().toLowerCase();
+ return {id:l.id,title:asset.subject,path,sha256:expected,status:candidate?'Nieuwe kandidaat, nog niet vrijgegeven':q?.technicalReview115?'Te lage resolutie, vervanging nodig':'Huidig beeld, nog niet vrijgegeven',defect:q?.defect||l.notes||'',image:'data:image/'+(ext==='jpg'?'jpeg':ext)+';base64,'+bytes.toString('base64')};
+});
+const data=JSON.stringify({commit,rows}).replace(/</g,'\\u003c');
+const html='<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Veldio beeldkeuring</title><style>body{background:#101311;color:#eef3ef;font:16px system-ui,sans-serif;margin:0}main{max-width:820px;margin:auto;padding:16px}h1{font-size:22px;margin:0 0 8px}h2{font-size:18px;margin:12px 0}img{width:100%;max-height:65vh;object-fit:contain;background:#090a09;border-radius:10px;display:block}button,select{font:inherit;padding:12px;border-radius:9px;border:1px solid #77817a;background:#202722;color:white}button:disabled{opacity:.4}button{cursor:pointer}.row{display:flex;gap:8px;margin:12px 0}.row>*{flex:1}#yes{background:#14743b}#no{background:#a6252d}#status{color:#cad2cb;font-size:14px}#progress{width:100%;accent-color:#36b864}#notice{font-size:14px;color:#b7c2ba}select{max-width:100%;width:100%}textarea{width:100%;box-sizing:border-box;background:#202722;color:white;min-height:80px}#result{display:none}</style><main><h1>Veldio beeldkeuring</h1><div id="counts"></div><progress id="progress"></progress><h2 id="title"></h2><div id="status"></div><p id="defect"></p><img id="picture" alt="Te keuren afbeelding"><div class="row"><button id="yes" disabled>JA</button><button id="no" disabled>NEE</button></div><div id="notice">JA is alleen jouw visuele oordeel. Technische controle blijft verplicht.</div><div class="row"><button id="prev">Vorige</button><button id="next">Volgende</button></div><select id="jump"></select><p><button id="save">Download beoordelingen (JSON)</button></p><button id="show">Toon beoordelingen om te kopiëren</button><textarea id="result" readonly></textarea><p id="local"></p></main><script>const DATA='+data+';'+
+'const $=id=>document.getElementById(id);const rows=DATA.rows;let index=0,decisions={};const key="veldio-review-"+DATA.commit;try{decisions=JSON.parse(localStorage.getItem(key)||"{}")}catch{};function store(){try{localStorage.setItem(key,JSON.stringify(decisions));$("local").textContent="Keuzes lokaal bewaard."}catch{$("local").textContent="Download tussentijds je beoordelingen."}}function render(){const r=rows[index];const n=Object.keys(decisions).length;const y=Object.values(decisions).filter(x=>x.vote==="JA").length;$("counts").textContent="Beeld "+(index+1)+" / "+rows.length+" | Ja: "+y+" | Nee: "+(n-y)+" | Open: "+(rows.length-n);$("progress").max=rows.length;$("progress").value=n;$("title").textContent=r.title;$("status").textContent=r.status+" | "+r.id+(decisions[r.id]?" | Jouw keuze: "+decisions[r.id].vote:"");$("defect").textContent=r.defect;$("yes").disabled=$("no").disabled=true;$("picture").onload=()=>{$("yes").disabled=$("no").disabled=false;};$("picture").onerror=()=>{$("status").textContent="Afbeelding niet beschikbaar; geen beoordeling mogelijk.";};$("picture").src=r.image;$("prev").disabled=index===0;$("next").disabled=index===rows.length-1;$("jump").value=String(index);};function vote(v){if(!$("picture").complete||!$("picture").naturalWidth)return;const r=rows[index];decisions[r.id]={vote:v,path:r.path,sha256:r.sha256};store();if(index<rows.length-1)index++;render()};rows.forEach((r,i)=>{$("jump").add(new Option((i+1)+". "+r.title+" ["+r.id+"]",i))});$("jump").onchange=e=>{index=Number(e.target.value);render()};$("yes").onclick=()=>vote("JA");$("no").onclick=()=>vote("NEE");$("prev").onclick=()=>{index--;render()};$("next").onclick=()=>{index++;render()};const output=()=>JSON.stringify({commit:DATA.commit,decisions},null,2);$("save").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([output()],{type:"application/json"}));a.download="veldio-beeldbeoordelingen.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};$("show").onclick=()=>{$("result").style.display="block";$("result").value=output();$("result").focus();$("result").select()};render();</script></html>';
+fs.mkdirSync('veldio-review-export',{recursive:true});
+fs.writeFileSync('veldio-review-export/veldio-beeldkeuring.html',html);
+console.log('Exported '+rows.length+' exact rasters; no publication changes.');

@@ -16,7 +16,7 @@ test('Fase 78: native Cambuur-beelden zijn valide, maar niet ongecontroleerd gep
  for(const [id,sha] of Object.entries(expected)){
   const a=rows.find(x=>x.id===id);
   assert.ok(a);
-  assert.equal(a.sha256,sha);
+  if(a.sha256!==sha){const q=require('../branding-correction-queue115.json').items.find(x=>x.id===a.id);assert.equal(q.originalSha256,sha);assert.equal(q.correctedSha256,a.sha256);}
   assert.equal(a.sourceNativeCropWidth,1672);
   assert.equal(a.sourceNativeCropHeight,941);
   assert.ok(['pending','approved'].includes(a.approval));
@@ -24,9 +24,14 @@ test('Fase 78: native Cambuur-beelden zijn valide, maar niet ongecontroleerd gep
   const v=read(id);
   assert.equal(v.status,a.approval==='pending'?200:404);
   const bytes=a.approval==='pending'?v.bytes:fs.readFileSync(require('node:path').join(__dirname,'..',a.file));
-  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),sha);
+  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),a.sha256);
   const m=await sharp(bytes).metadata();
-  assert.equal(m.width,1280);assert.equal(m.height,720);assert.equal(m.format,'webp');
+  if(a.technicalReview115?.assetSha256===a.sha256){
+   assert.equal(a.approval,'pending');
+   assert.equal(m.width,a.technicalReview115.width);
+   assert.equal(m.height,a.technicalReview115.height);
+   assert.ok(m.width<1280||m.height<720);
+  }else{assert.equal(m.width,1280);assert.equal(m.height,720);}assert.equal(m.format,'webp');
  }
  const live=desk.overview().counts;
  assert.equal((live['stored-awaiting-review']||0)+(live['approved-for-use']||0),36);
@@ -39,7 +44,7 @@ test('Fase 78: preview route is isolated from catalogue and validates every requ
  assert.equal(read('../../etc/passwd').status,404);
  assert.equal(read('veldio72-utrecht-nec-report').status,404);
  assert.equal(read('missing').status,404);
- assert.equal(read('veldio75-sccambuur-preview',{root:'/tmp/non-existent-stadium-preview'}).status,503);
+ assert.equal(read('veldio75-sccambuur-report',{root:'/tmp/non-existent-stadium-preview'}).status,503);
  const slot=desk.overview().slots.find(s=>s.club==='SC Cambuur'&&s.kind==='preview');
  if(row.approval==='pending'){
   assert.equal(slot.pendingImages[0].reviewUrl,'/editorial/stadium-review74/veldio75-sccambuur-preview/image');

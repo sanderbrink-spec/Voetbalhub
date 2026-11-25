@@ -30,7 +30,8 @@ test('104E: geen feitenparafrase wanneer expliciete bewijskaart ontbreekt',()=>{
  const draft={headline:'Test',body:['FC Groningen won de laatste drie ontmoetingen met de Friezen en kan daarmee een langste winstreeks tegen deze tegenstander evenaren.']};
  assert.deepEqual(repairVerifiedClubPreviewForm(draft,[]),draft);
 });
-test('104E: uitsluitend exact 104D-afgekeurd manuscript wordt eenmalig voor normale controle heropend',()=>{
+test('104E: uitsluitend exact 104D-afgekeurd manuscript wordt eenmalig voor normale controle heropend',t=>{
+ require('../test-support/catalogue-before116')(t);
  const candidate={kind:'preview',topic:'FC Groningen – SC Heerenveen',category:'Eredivisie',
  fixture,kickoff:Date.parse(fixture.date),facts:facts.map(text=>({text,evidence:[{source:0}]}))};
  const group=Object.assign([{url:'https://www.fcgroningen.nl/nieuws/voorbeeld',title:candidate.topic}],{clubPreview:candidate});
@@ -38,6 +39,12 @@ test('104E: uitsluitend exact 104D-afgekeurd manuscript wordt eenmalig voor norm
  const job={clubPreviewId:fixture.id,status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',
  errorHash:'57ac3e8b2ec9ff951794999b63a8033448661d3316541a82a464c8c337d1d848',
  checkpoint:'unsafe-prior-copy',attempts:3};
+ assert.equal(reopenVerifiedClubPreviewStyle104E({...job},group,now),false);
+ const lib=require('../image-library49');
+ const raw=require('../image-library49.json').assets.find(x=>x.id==='veldio104d-fcgroningen-night-preview');
+ const synthetic={...raw,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
+ const actual=lib.catalog();
+ t.mock.method(lib,'catalog',()=>[...actual,synthetic]);
  assert.equal(reopenVerifiedClubPreviewStyle104E(job,group,now),true);
  assert.equal(job.status,'pending');
  assert.equal(job.attempts,0);

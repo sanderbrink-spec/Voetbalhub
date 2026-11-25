@@ -35,7 +35,8 @@ test('104H: herformuleer aantoonbare Meerveld- en Van Bergen-feiten zonder origi
  assert.deepEqual(repairVerifiedClubPreviewForm(fixed,facts),fixed);
  assert.deepEqual(repairVerifiedClubPreviewForm(draft,[]),draft);
 });
-test('104H: heropen exact afgewezen bericht, nooit ander dossier of na de aftrap',()=>{
+test('104H: heropen exact afgewezen bericht, nooit ander dossier of na de aftrap',t=>{
+ require('../test-support/catalogue-before116')(t);
  const fixture={id:'sm-19714591',competition:'eredivisie',status:'NS',date:'2026-11-21T20:00:00Z',
   home:{name:'FC Groningen'},away:{name:'sc Heerenveen'}};
  const candidate={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
@@ -46,6 +47,12 @@ test('104H: heropen exact afgewezen bericht, nooit ander dossier of na de aftrap
  const job={clubPreviewId:fixture.id,status:'review',failureStage:'quality',
   failureCategory:'journalistic_rejection',reason:'editorial_review_required',
   errorHash:hash,clubDemonymRetry104G:true,attempts:1,checkpoint:'old'};
+ assert.equal(reopenClubPreviewCopyAndRole104H({...job},group,now),false);
+ const lib=require('../image-library49');
+ const raw=require('../image-library49.json').assets.find(x=>x.id==='veldio104d-fcgroningen-night-preview');
+ const synthetic={...raw,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
+ const actual=lib.catalog();
+ t.mock.method(lib,'catalog',()=>[...actual,synthetic]);
  assert.equal(reopenClubPreviewCopyAndRole104H(job,group,now),true);
  assert.equal(job.status,'pending');assert.equal(job.attempts,0);assert.equal(job.checkpoint,undefined);
  const previous={...job,status:'review',failureStage:'quality',failureCategory:'journalistic_rejection',

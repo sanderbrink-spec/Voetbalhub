@@ -33,7 +33,15 @@ test('Fase 76: ten new stadium rasters have exact SHA256 and stay review-only',(
   assert.equal(crypto.createHash('sha256').update(binary).digest('hex'),row.sha256,key);
   assert.ok(binary.length>60000&&binary.length<2000000,key);
   assert.ok(['pending','approved'].includes(row.approval),key);
-  if(row.approval==='pending'){assert.equal(row.reviewer,'',key);assert.equal(row.visualReview,undefined,key);}
+  if(row.approval==='pending'){
+   if(row.technicalReview115?.assetSha256===row.sha256&&row.visualReview){
+    assert.equal(row.technicalReview115.status,'requires-native-resolution-repair',key);
+    assert.equal(row.visualReview.assetSha256,row.sha256,key);
+    assert.equal(row.correction115.publicationApproved,false,key);
+    assert.equal(row.manualReview115.publicationApproved,false,key);
+    assert.equal(premium.accepted({...row,approval:'approved'}),false,key);
+   }else{assert.equal(row.reviewer,'',key);assert.equal(row.visualReview,undefined,key);}
+  }
   else{assert.ok(row.reviewer,key);assert.ok(row.visualReview?.score>=8.5,key);}
   assert.equal(premium.accepted(row),row.approval==='approved',key);
   assert.equal(library.catalog().some(a=>a.id===row.id),row.approval==='approved',key);

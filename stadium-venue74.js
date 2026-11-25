@@ -45,6 +45,10 @@ function allowedForMatch(asset,ctx){
  const home=ctx.clubs?.[0],away=ctx.clubs?.[1];
  if(!home||!away||asset.imageKind!==kind||asset.stadiumOccupancy!==occupancy)return false;
  const identity=ctx.stadiumIdentity||'home:'+norm(home);
+ if(asset.stadiumIdentity?.startsWith('venue:')){
+  return identity===asset.stadiumIdentity && Boolean(ctx.fixtureId) && asset.fixtureId===ctx.fixtureId &&
+   !asset.homeClubReusable && norm(asset.clubs[0])===norm(home) && norm(asset.clubs[1])===norm(away);
+ }
  const known=safeHomeVenue(home,identity,ctx.venueName);
  const reviewedAlias=asset.homeClubReusable===true && Array.isArray(asset.homeVenueAliases) &&
   identity.startsWith('venue:') && asset.homeVenueAliases.some(name=>

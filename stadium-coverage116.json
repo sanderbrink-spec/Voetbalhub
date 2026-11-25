@@ -1,0 +1,950 @@
+{
+  "asOf": "2026-11-25",
+  "sources": [
+    "https://www.knvb.nl/node/71918",
+    "https://www.meff.nl/ed/",
+    "https://www.uefa.com/nationalassociations/uefarankings/club/?year=2027",
+    "https://mail.kassiesa.net/uefa/data/method5/trank2027.html",
+    "https://www.voetbalnieuws.nl/nieuws/2133671/deze-nederlandse-spelers-zijn-actief-in-de-champions-league-2026-2027-vn.html",
+    "https://www.voetbalnieuws.nl/nieuws/2135925/deze-vijftien-nederlanders-zijn-actief-in-de-europa-league-2026-2027-vn.html"
+  ],
+  "clubs": [
+    {
+      "club": "ADO Den Haag",
+      "id": "adodenhaag",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Ajax",
+      "id": "ajax",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": "stadium116-ajax-preview-day",
+        "preview-night": "stadium116-ajax-preview-night",
+        "report-day": "stadium116-ajax-report-day",
+        "report-night": "stadium116-ajax-report-night"
+      },
+      "meanReviewedScore": 9.27
+    },
+    {
+      "club": "AZ",
+      "id": "az",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Excelsior Rotterdam",
+      "id": "excelsiorrotterdam",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": "stadium116-excelsior-preview-day",
+        "preview-night": null,
+        "report-day": null,
+        "report-night": "stadium116-excelsior-report-night"
+      },
+      "meanReviewedScore": 9.13
+    },
+    {
+      "club": "FC Groningen",
+      "id": "fcgroningen",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Twente",
+      "id": "fctwente",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Utrecht",
+      "id": "fcutrecht",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": "stadium116-utrecht-preview-day",
+        "preview-night": null,
+        "report-day": null,
+        "report-night": "stadium116-utrecht-report-night"
+      },
+      "meanReviewedScore": 9.23
+    },
+    {
+      "club": "Feyenoord",
+      "id": "feyenoord",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": "stadium116-feyenoord-preview-night",
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": 9.29
+    },
+    {
+      "club": "Fortuna Sittard",
+      "id": "fortunasittard",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Go Ahead Eagles",
+      "id": "goaheadeagles",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "N.E.C. Nijmegen",
+      "id": "necnijmegen",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "PEC Zwolle",
+      "id": "peczwolle",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "PSV",
+      "id": "psv",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "SC Cambuur",
+      "id": "sccambuur",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "sc Heerenveen",
+      "id": "scheerenveen",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Sparta Rotterdam",
+      "id": "spartarotterdam",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": "stadium116-sparta-report-night"
+      },
+      "meanReviewedScore": 9.13
+    },
+    {
+      "club": "Telstar",
+      "id": "telstar",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": "stadium116-telstar-preview-day",
+        "preview-night": null,
+        "report-day": null,
+        "report-night": "stadium116-telstar-report-night"
+      },
+      "meanReviewedScore": 9.15
+    },
+    {
+      "club": "Willem II",
+      "id": "willemii",
+      "group": "Eredivisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Almere City FC",
+      "id": "almerecityfc",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "De Graafschap",
+      "id": "degraafschap",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Den Bosch",
+      "id": "fcdenbosch",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Dordrecht",
+      "id": "fcdordrecht",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Eindhoven",
+      "id": "fceindhoven",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Emmen",
+      "id": "fcemmen",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Volendam",
+      "id": "fcvolendam",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Helmond Sport",
+      "id": "helmondsport",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Heracles Almelo",
+      "id": "heraclesalmelo",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Jong Ajax",
+      "id": "jongajax",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Jong AZ",
+      "id": "jongaz",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Jong PSV",
+      "id": "jongpsv",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Jong FC Utrecht",
+      "id": "jongfcutrecht",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "MVV Maastricht",
+      "id": "mvvmaastricht",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "NAC Breda",
+      "id": "nacbreda",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "RKC Waalwijk",
+      "id": "rkcwaalwijk",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Roda JC Kerkrade",
+      "id": "rodajckerkrade",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "TOP Oss",
+      "id": "toposs",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Vitesse",
+      "id": "vitesse",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "VVV-Venlo",
+      "id": "vvvvenlo",
+      "group": "Keuken Kampioen Divisie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Liverpool",
+      "id": "liverpool",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Barcelona",
+      "id": "fcbarcelona",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Real Madrid",
+      "id": "realmadrid",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Bayern München",
+      "id": "bayernmunchen",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Manchester City",
+      "id": "manchestercity",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Manchester United",
+      "id": "manchesterunited",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Arsenal",
+      "id": "arsenal",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Chelsea",
+      "id": "chelsea",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Tottenham Hotspur",
+      "id": "tottenhamhotspur",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Paris Saint-Germain",
+      "id": "parissaintgermain",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Internazionale",
+      "id": "internazionale",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "AC Milaan",
+      "id": "acmilaan",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Juventus",
+      "id": "juventus",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Atlético Madrid",
+      "id": "atleticomadrid",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Borussia Dortmund",
+      "id": "borussiadortmund",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Bayer Leverkusen",
+      "id": "bayerleverkusen",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "RB Leipzig",
+      "id": "rbleipzig",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Napoli",
+      "id": "napoli",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "AS Roma",
+      "id": "asroma",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Atalanta",
+      "id": "atalanta",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Benfica",
+      "id": "benfica",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Porto",
+      "id": "fcporto",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Sporting Portugal",
+      "id": "sportingportugal",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Olympiakos Pireus",
+      "id": "olympiakospireus",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Club Brugge",
+      "id": "clubbrugge",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Aston Villa",
+      "id": "astonvilla",
+      "group": "Europa, opgegeven clubs en top 16",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Brighton & Hove Albion",
+      "id": "brightonhovealbion",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Sunderland",
+      "id": "sunderland",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Olympique Marseille",
+      "id": "olympiquemarseille",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Olympique Lyon",
+      "id": "olympiquelyon",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Anderlecht",
+      "id": "anderlecht",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Fenerbahçe",
+      "id": "fenerbahce",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Beşiktaş",
+      "id": "besiktas",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "VfB Stuttgart",
+      "id": "vfbstuttgart",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Viking FK",
+      "id": "vikingfk",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "Hull City",
+      "id": "hullcity",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    },
+    {
+      "club": "FC Midtjylland",
+      "id": "fcmidtjylland",
+      "group": "Europa, redactionele selectie",
+      "variants": {
+        "preview-day": null,
+        "preview-night": null,
+        "report-day": null,
+        "report-night": null
+      },
+      "meanReviewedScore": null
+    }
+  ],
+  "replacements": {
+    "veldio74-ajax-preview": {
+      "previousSha256": "4baaab87ec555bcebc5209f56682a32ef7553ee21531de0c06f4c566d4e2d2eb",
+      "replacement": "stadium116-ajax-preview-day",
+      "sha256": "7d9938f13e9d18bad642c86957b03ca3cca53d4eea5fdbabd645f9ee613f5dda"
+    },
+    "veldio74-fcutrecht-preview": {
+      "previousSha256": "258eda502ad44ad9427e50aac8d734459288699a4650661070c56a48c38208ca",
+      "replacement": "stadium116-utrecht-preview-day",
+      "sha256": "b50f776466f1a4a67ae43c34ece4e8623029ab0114c6e7036cb94a411d20772e"
+    },
+    "veldio74-fcutrecht-report": {
+      "previousSha256": "584a97eaea8fa4ebbac161e8948e5932184f3ecb10eba84531e79c83ca635bb6",
+      "replacement": "stadium116-utrecht-report-night",
+      "sha256": "45385553f42f8ddea1a19a865a34b60294f6fd9f481419cfce1dbfa44f1a10b4"
+    },
+    "veldio74-telstar-preview": {
+      "previousSha256": "4fbe811506c871db56e2a8b178c80415966f60fbdc75128cd689f6c57c843cd5",
+      "replacement": "stadium116-telstar-preview-day",
+      "sha256": "bec81da39c4e9f1e4569849626ae4d56e395dc32c0502a24e78de839800c6fec"
+    },
+    "veldio74-ajax-report": {
+      "previousSha256": "0507173b3936e2cf29ee08594bb5ea25764eac88440fae2af4fa9ca7fa5aba75",
+      "replacement": "stadium116-ajax-report-night",
+      "sha256": "df910e56269beece4ad7f983b68dcd1626b388fc8125594918ab1b74d4aab629"
+    },
+    "veldio74-excelsiorrotterdam-preview": {
+      "previousSha256": "c1c3783b77e7661a58a4a461212e59abd1b17ffd7bc285c5e32c39c9a0314990",
+      "replacement": "stadium116-excelsior-preview-day",
+      "sha256": "c365322f99d6468b05c6323d82cbcf5899e25b562ebd1de79a08fb3f3b3e80bf"
+    },
+    "veldio74-excelsiorrotterdam-report": {
+      "previousSha256": "602c041ca65ac2cca23222e9facf751683b05f4e7015232240b78de92996369b",
+      "replacement": "stadium116-excelsior-report-night",
+      "sha256": "d2adbb7ed03747226fb181576b56c87a6ecaef5096488aff9a9a0adddce9d350"
+    }
+  }
+}

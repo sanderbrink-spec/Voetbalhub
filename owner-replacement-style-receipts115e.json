@@ -1,0 +1,66 @@
+{
+  "scope": "Owner approved all four displayed generation outputs. This confirms visual direction, not individual replacement acceptance or technical release. Original 34 replacement queue remains open until compliant individual files are imported.",
+  "assets": [
+    {
+      "file": "a_crisp_high_resolution_ultra_realistic_stadium.png",
+      "fileId": "file_00000000a0d88210b46a9e43c267881b",
+      "sha256": "6e03623ef661a404d7034439ffd44a31b2252e1bfd347810c19716f4505813d5",
+      "subject": "Ajax dag, variant 1",
+      "target": "veldio74-ajax-preview",
+      "note": "Extra fascia markings and exact context still require checking.",
+      "width": 1672,
+      "height": 941,
+      "ownerVisualApproval": "JA",
+      "reviewedAt": "2026-11-24",
+      "repositoryImported": false,
+      "publicationApproved": false
+    },
+    {
+      "file": "a_crisp_high_detail_photo_realistic_sports_stadi.png",
+      "fileId": "file_000000008fd081f48f4242482de74c39",
+      "sha256": "21df265d55e22c4697e8d3e74c4e081de1fa663412752646589cb03fcccc95a3",
+      "subject": "Ajax dag, variant 2",
+      "target": "veldio74-ajax-preview",
+      "note": "Visible pseudo-lettering on fascia; requires correction before publication.",
+      "width": 1672,
+      "height": 941,
+      "ownerVisualApproval": "JA",
+      "reviewedAt": "2026-11-24",
+      "repositoryImported": false,
+      "publicationApproved": false
+    },
+    {
+      "file": "a_crisp_high_detail_4_panel_collage_2_2_grid.png",
+      "fileId": "file_00000000589881f4aea99e413fbb5977",
+      "sha256": "4f041cddf49ee51d30c1e02a781074f14e3c417a49b7b97c1851550c9abfe3d4",
+      "subject": "Ajax and Excelsior day/night style sheet",
+      "targets": [
+        "veldio74-ajax-preview",
+        "veldio74-ajax-report",
+        "veldio74-excelsiorrotterdam-preview",
+        "veldio74-excelsiorrotterdam-report"
+      ],
+      "note": "Style reference only. Individual panels below minimum native resolution; generate standalone images, no upscaling.",
+      "width": 1672,
+      "height": 941,
+      "ownerVisualApproval": "JA",
+      "reviewedAt": "2026-11-24",
+      "repositoryImported": false,
+      "publicationApproved": false
+    },
+    {
+      "file": "a_crisp_high_resolution_ultra_realistic_sports_s.png",
+      "fileId": "file_00000000205481f49d824bc163a043e9",
+      "sha256": "0355953af462109726bbd1810dc43389dce76951c74eefb8bfd809b15e20367e",
+      "subject": "Ajax dag, variant 3",
+      "target": "veldio74-ajax-preview",
+      "note": "Preferred standalone daytime candidate; verify architecture, branding and exact 16:9 crop.",
+      "width": 1672,
+      "height": 941,
+      "ownerVisualApproval": "JA",
+      "reviewedAt": "2026-11-24",
+      "repositoryImported": false,
+      "publicationApproved": false
+    }
+  ]
+}

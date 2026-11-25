@@ -51,8 +51,11 @@ test('Fase 74: verified same home stadium can be re-used for different opponents
  assert.equal(venue.allowedForMatch(sample,{...ctx,stadiumIdentity:'venue:999'}),false);
 });
 test('Fase 74: reusable premium requires review explicitly scoped to exact home club',()=>{
- const a=assets.find(row=>row.id==='veldio72-utrecht-nec-report');
- assert.ok(a&&premium.accepted(a));
+ const original=assets.find(row=>row.id==='veldio72-utrecht-nec-report');
+ assert.ok(original);
+ assert.equal(premium.accepted(original),false);
+ const a={...original,id:'synthetic-stadium-desk74',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(original.sha256)};
+ assert.equal(premium.accepted(a),true);
  const swapped={...a,fixtureId:undefined,homeClubReusable:true,clubs:['Telstar','*'],
   stadiumIdentity:'home:telstar'};
  assert.equal(premium.accepted(swapped),false);
@@ -64,6 +67,8 @@ test('Fase 74: existing approved fixture-specific report remains in the catalogu
  assert.ok(a);
  const ctx={category:'report',clubs:['FC Utrecht','NEC Nijmegen'],competition:'Eredivisie',
   fixtureId:'sm-19714594',daypart:'neutral',stadiumIdentity:'home:fcutrecht'};
- assert.equal(library.choose(ctx,[a])?.id,a.id);
+ assert.equal(library.choose(ctx,[a]),null);
+ const fixture={...a,id:'synthetic-exact-desk74',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(a.sha256)};
+ assert.equal(library.choose(ctx,[fixture])?.id,fixture.id);
  assert.equal(library.choose({...ctx,stadiumIdentity:'venue:unrelated'},[a]),null);
 });

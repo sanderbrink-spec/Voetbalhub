@@ -25,10 +25,14 @@ test('Fase 82: standaard beoordelingsformulier verleent geen enkele toestemming'
 });
 test('Fase 82: volledig synthetisch dossier werkt alleen in memory; echte publicatiestatus blijft pending',()=>{
  const s=syntheticDossier();
- const a=reviewTool.verify(s);
+ assert.throws(()=>reviewTool.verify(s),/Publicatiepoort weigert/);
+ const raw=rows.find(x=>x.id===TARGET);
+ const clean=require('../stadium-catalog116.json').assets.find(a=>a.id==='stadium116-ajax-preview-day');
+ const fixture={...raw,file:clean.file,sha256:clean.sha256,id:'test-approval82-isolated',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(clean.sha256)};
+ const a=reviewTool.verify({...s,assetId:fixture.id,assetSha256:clean.sha256},{assets:rows.map(x=>x.id===TARGET?fixture:x)});
  assert.equal(a.approval,'approved');
  assert.equal(a.visualReview.score,8.7);
- assert.equal(a.visualReview.assetSha256,s.assetSha256);
+ assert.equal(a.visualReview.assetSha256,clean.sha256);
  assert.equal(a.visualReview.clubScope,'home-only');
  assert.equal(gate.accepted(a),true);
  assert.equal(rows.find(x=>x.id===TARGET).approval,'pending');
@@ -51,7 +55,10 @@ test('Fase 82: ontbrekende score, rechten, persoonlijke controle, bronhash of st
 });
 test('Fase 82: alle acht bekende risicobeelden blijven buiten individuele vrijgave',()=>{
  assert.equal(Object.keys(findings).length,8);
- for(const id of Object.keys(findings))assert.throws(()=>reviewTool.verify(syntheticDossier(id)),/Bekend herstelprobleem/);
+ for(const id of Object.keys(findings)){
+  const asset=rows.find(x=>x.id===id);
+  assert.throws(()=>reviewTool.verify(syntheticDossier(id)),asset.approval==='pending'?/Bekend herstelprobleem/:/niet in afwachting/);
+ }
 });
 test('106D-2 a rejected full-resolution quality score cannot be overwritten for the same hash',()=>{
  const desk=require('../stadium-desk74').overview();
@@ -60,6 +67,13 @@ test('106D-2 a rejected full-resolution quality score cannot be overwritten for 
   assert.equal(asset.approval,'pending');
   const slot=desk.slots.find(s=>s.pendingAssetIds.includes(id));
   const item=slot.pendingImages.find(a=>a.id===id);
+  const old=require('../stadium-screening84.json').candidates.find(x=>x.id===id);
+  if(old.sha256!==asset.sha256){
+   assert.equal(old.fullResolutionAssessment.score,score);
+   assert.equal(gate.accepted(asset),false);
+   assert.equal(item.fullResolutionAssessment,undefined);
+   continue;
+  }
   assert.equal(item.fullResolutionAssessment.score,score);
   assert.equal(item.qualityStatus,'requires-replacement');
   assert.equal(item.canRequestApproval,false);

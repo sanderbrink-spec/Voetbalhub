@@ -32,7 +32,8 @@ test('104J: bij onvoldoende specifiek bewijs vindt geen automatische bronparafra
  ]};
  assert.deepEqual(repairVerifiedClubPreviewForm(draft,['Heerenveen begint zaterdag.']),draft);
 });
-test('104J: uitsluitend exact afgewezen preview wordt één keer geheel opnieuw gecontroleerd',()=>{
+test('104J: uitsluitend exact afgewezen preview wordt één keer geheel opnieuw gecontroleerd',t=>{
+ require('../test-support/catalogue-before116')(t);
  const c={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
   fixture:f,kickoff:Date.parse(f.date),facts:facts.map(text=>({text}))};
  const group=Object.assign([{title:c.topic}],{clubPreview:c});
@@ -41,6 +42,12 @@ test('104J: uitsluitend exact afgewezen preview wordt één keer geheel opnieuw 
  const job={clubPreviewId:f.id,status:'review',failureStage:'quality',
   failureCategory:'journalistic_rejection',reason:'editorial_review_required',errorHash:hash,
   storageFixtureRetry104I:true,attempts:3,checkpoint:'reject-copy'};
+ assert.equal(reopenVerifiedSourceSentences104J({...job},group,now),false);
+ const lib=require('../image-library49');
+ const raw=require('../image-library49.json').assets.find(x=>x.id==='veldio104d-fcgroningen-night-preview');
+ const synthetic={...raw,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
+ const actual=lib.catalog();
+ t.mock.method(lib,'catalog',()=>[...actual,synthetic]);
  assert.equal(reopenVerifiedSourceSentences104J(job,group,now),true);
  assert.equal(job.status,'pending');assert.equal(job.attempts,0);
  assert.equal(job.checkpoint,undefined);
