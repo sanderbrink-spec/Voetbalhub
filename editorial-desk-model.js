@@ -195,6 +195,13 @@
       first.includes(match.homeScore+'-'+match.awayScore)&&first.includes(match.playedAt);
   }
   function publicationIssues(payload) {
+    // The required exact Football-Data attribution is a legal footer, not
+    // an editorial paragraph or factual assertion. Exclude only this exact
+    // final standalone line on the corresponding registered match route.
+    const credit='Football data provided by the Football-Data.org API';
+    const raw=payload.draft||{};
+    if(/^fd-cl-\d+$/.test(payload.matchId||'')&&payload.sources?.[0]?.url==='https://www.football-data.org/'&&Array.isArray(raw.body)&&raw.body.at(-1)===credit)
+      payload={...payload,draft:{...raw,body:raw.body.slice(0,-1)}};
     const issues = [], d = payload.draft || {};
     const registeredMatch = /^(?:of-nl-\d{4}-[a-z0-9-]+|fd-cl-\d+|sm-\d+)$/.test(payload.matchId || '') && ['score_update','match_report'].includes(payload.articleKind);
     const brief = briefEligible(payload);

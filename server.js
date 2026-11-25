@@ -329,7 +329,10 @@ async function automaticEvidenceIssue(payload) {
     }
   }
   if (payload.matchId) {
-    const chronology = require('./editorial-match-guidance133').paragraphChronologyIssues(payload, payload.draft);
+    const credit=require('./football-results52').CREDIT;
+    const prose=/^fd-cl-\d+$/.test(payload.matchId||'')&&payload.sources?.[0]?.url===require('./editorial-match55').FD&&payload.draft?.body?.at(-1)===credit
+      ?{...payload.draft,body:payload.draft.body.slice(0,-1)}:payload.draft;
+    const chronology = require('./editorial-match-guidance133').paragraphChronologyIssues(payload, prose);
     if (chronology.length) return chronology.join(' ');
     if (typeof payload.matchId !== 'string') return 'Ongeldig wedstrijd-ID.';
     const registration = require('./editorial-match55');

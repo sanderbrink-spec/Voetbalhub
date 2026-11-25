@@ -63,7 +63,7 @@ const {verifiedOfficialDisciplinaryDecision}=require('../editorial-official-deci
 const {reopenVerifiedOfficialBrief,reopenVerifiedOfficialPublisher}=require('../editorial-brief-recovery71');
 const matchEvidence122=require('../editorial-match-evidence122');
 const {CREDIT}=require('../football-results52');
-const {articleUrl,officialSourceAuthority,discoverGdelt,discoverCorroboration}=require('./editorial-discovery53');
+const {articleUrl,officialSourceAuthority,discoverGdelt,discoverCorroboration,confirmedClubSquad}=require('./editorial-discovery53');
 const international=require('./editorial-international');
 const {oranjeDrawGroup}=require('./editorial-oranje-draw');
 const {drawWritingBrief}=require('./editorial-draw-copy339');
@@ -237,7 +237,7 @@ function discoverLinks(html,index){
  // A competition homepage carries several independent current international
  // stories. Expand only this official UEFA index, retaining strict host/path
  // allowlisting, source date, fact and image checks for every discovered link.
- const limit=index.url==='https://www.uefa.com/uefanationsleague/'?12:6;
+ const limit=/^https:\/\/www\.uefa\.com\/uefa(?:nationsleague|championsleague|europaleague|conferenceleague)\/(?:news\/)?$/.test(index.url)?12:6;
  return [...new Set(urls.map(url=>articleUrl(url,[index])).filter(Boolean))].slice(0,limit);
 }
 // Identify reported goals by named internationals. The event keys only group
@@ -504,6 +504,7 @@ function primaryAuthority(doc){
  const url=articleUrl(doc.url,config.newsIndexes);
  if(!url)return '';
  if(confirmedFederationCoachReaction(doc))return 'association_decision';
+ if(officialSourceAuthority(url)==='club_decision'&&confirmedClubSquad(doc))return 'club_decision';
  const title=normalize(doc.title);
  if(/\b(gerucht|geruchten|rumour|rumours|rumor|rumors|mogelijk|liveblog|samenvatting|highlights)\b/.test(title))return '';
  // This is a verified organising-body status, not a UEFA writer's opinion.
@@ -2356,6 +2357,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  }
  await verifyRevision();
  async function storeReviewedArticle(payload,assessment,routeName,setStage){
+   // Append only the provider's fixed legal attribution after the prose
+   // passed independent review. The server and fingerprint verify the
+   // exact resulting payload. No editorial claims are changed.
+   if(/^fd-cl-\d+$/.test(payload.matchId||'')&&payload.sources?.[0]?.url===matches.FD&&!payload.draft.body.includes(CREDIT)){
+    payload={...payload,draft:{...payload.draft,body:[...payload.draft.body,CREDIT]}};
+   }
    const draft=payload.draft;
    setStage('storage');
    await verifyRevision();
@@ -2521,7 +2528,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
    return Number.isFinite(at)&&at<=now&&now-at<=24*3600000&&
     nationallyRelevant(doc)&&!primaryAuthority(doc)&&!partnerDocuments(doc,discovered).length;
   }).sort((a,b)=>editorialPriority(b)-editorialPriority(a)||Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,3);
-  const results=await Promise.allSettled(research.map(doc=>discoverCorroboration(doc,config.newsIndexes,fetcher,sourceText)));
+  // If the global search provider is unavailable, avoid repeating the same
+  // rate-limited or stalled request three times in the same cycle.
+  const results=report.sources.gdelt.status==='ok'?await Promise.allSettled(research.map(doc=>discoverCorroboration(doc,config.newsIndexes,fetcher,sourceText))):[];
   const extra=new Set();
   results.forEach((result,index)=>{
    if(result.status==='fulfilled'){
@@ -2532,7 +2541,7 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   for(const url of extra)links.add(url);
   const recovered=await Promise.all([...extra].slice(0,12).map(load));
   for(const doc of recovered)if(doc&&!discovered.some(item=>item.url===doc.url))discovered.push(doc);
-  report.sources.targetedCorroboration={attempted:research.length,additionalLinks:extra.size,readable:recovered.filter(Boolean).length};
+  report.sources.targetedCorroboration={attempted:results.length,skippedUnavailableProvider:research.length-results.length,additionalLinks:extra.size,readable:recovered.filter(Boolean).length};
  }
  report.counts.found=focusSourceUrl||fixtureFocus?linksToRead.length:links.size;
  report.counts.readable=discovered.length;
@@ -3045,6 +3054,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_dual_scorer_narrative_retry_v71'});
    if(editorialRecovery136.reopenUtrechtNecVerifiedGoalClauseV71(job,group.matchRecord,now))
     report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_source_proven_final_clause_retry_v71'});
+   if(editorialRecovery136.reopenEuropeanCompetitionName123(job,group.matchRecord,now))
+    report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_european_competition_name_retry_123'});
    if(editorialRecovery136.reopenVerifiedMatch(job,group.matchRecord,now)){
     report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_match_writer_recovery_v136'});
    }

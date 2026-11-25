@@ -101,6 +101,18 @@
     {
       "url": "https://english.ajax.nl/articles",
       "articlePath": "^/articles/[^/]+/?$"
+    },
+    {
+      "url": "https://www.uefa.com/uefachampionsleague/news/",
+      "articlePath": "^/uefachampionsleague/news/02[a-z0-9-]+/?$"
+    },
+    {
+      "url": "https://www.uefa.com/uefaeuropaleague/news/",
+      "articlePath": "^/uefaeuropaleague/news/02[a-z0-9-]+/?$"
+    },
+    {
+      "url": "https://www.uefa.com/uefaconferenceleague/news/",
+      "articlePath": "^/uefaconferenceleague/news/02[a-z0-9-]+/?$"
     }
   ],
   "sourceGroups": [],
