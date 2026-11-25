@@ -111,7 +111,7 @@ class EditorialQueue {
  }
  prune(now=Date.now()) {for(const job of this.records)if(!['pending','retry'].includes(job.status)||now-(job.updatedAt||job.createdAt)>86400000)delete job.checkpoint;this.records=this.records.filter(j=>now-(j.updatedAt||j.createdAt)<7*86400000).slice(-500);}
 }
-async function openQueue({token,branch,fetcher=fetch,isolated=false}) {
+async function openQueue({token,branch,fetcher=fetch,isolated=false,delay=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {
  const endpoint='https://api.github.com/repos/sanderbrink-spec/Voetbalhub/contents/editorial-queue45.json';
  const headers={Authorization:'Bearer '+token,Accept:'application/vnd.github+json','Content-Type':'application/json'};
  const response=await fetcher(endpoint+'?ref='+branch,{headers,signal:AbortSignal.timeout(25000)});
@@ -121,9 +121,41 @@ async function openQueue({token,branch,fetcher=fetch,isolated=false}) {
  const queue=new EditorialQueue(isolated?[]:records);
  async function save(){
   if(!isolated)queue.prune();
-  const result=await fetcher(endpoint,{method:'PUT',headers,signal:AbortSignal.timeout(25000),body:JSON.stringify({branch,message:'Checkpoint editorial queue [skip ci]',...(sha?{sha}:{}),content:Buffer.from(JSON.stringify({version:45,records:isolated?records:queue.records,capacity})).toString('base64')})});
-  if(!result.ok)throw Error('Redactiewachtrij niet opgeslagen: HTTP '+result.status);
-  const data=await result.json();sha=data.content.sha;
+  // Freeze the exact intended write. A timeout/5xx can occur after GitHub
+  // committed it. Reconcile the remote blob before retrying; never overwrite
+  // a different checkpoint from another process or retry with an unknown SHA.
+  const content=Buffer.from(JSON.stringify({version:45,records:isolated?records:queue.records,capacity})).toString('base64');
+  const expected=sha;
+  const request=JSON.stringify({branch,message:'Checkpoint editorial queue [skip ci]',...(expected?{sha:expected}:{}),content});
+  for(let attempt=0;attempt<3;attempt++){
+   let result;
+   try{result=await fetcher(endpoint,{method:'PUT',headers,signal:AbortSignal.timeout(25000),body:request});}catch{}
+   if(result?.ok){
+    try{
+     const data=await result.json();
+     if(typeof data.content?.sha==='string'&&data.content.sha){sha=data.content.sha;return;}
+    }catch{}
+   }else if(result&&!(result.status>=500&&result.status<=599)){
+    throw Error('Redactiewachtrij niet opgeslagen: HTTP '+result.status);
+   }
+   // Only a verified unchanged lease permits another write. A failed or
+   // malformed reconciliation stops safely, even during a provider outage.
+   let remote;
+   try{remote=await fetcher(endpoint+'?ref='+branch,{headers,signal:AbortSignal.timeout(25000)});}catch{
+    throw Error('Redactiewachtrij opslagstatus onbekend; veilig gestopt.');
+   }
+   if(remote.ok){
+    const data=await remote.json();
+    if(typeof data.sha!=='string'||!data.sha||typeof data.content!=='string')
+     throw Error('Redactiewachtrij opslagstatus onbekend; veilig gestopt.');
+    if(Buffer.from(data.content,'base64').equals(Buffer.from(content,'base64'))){sha=data.sha;return;}
+    if(data.sha!==expected)throw Error('Redactiewachtrij is gelijktijdig gewijzigd; veilig gestopt.');
+   }else if(!(remote.status===404&&!expected)){
+    throw Error('Redactiewachtrij opslagstatus onbekend: HTTP '+remote.status);
+   }
+   if(attempt===2)throw Error('Redactiewachtrij niet opgeslagen na drie gecontroleerde pogingen.');
+   await delay(1000*2**attempt);
+  }
  }
  return {queue,save,capacity};
 }
