@@ -88,4 +88,22 @@ async function discoverCorroboration(doc,indexes,fetcher,readBody){
  return [...new Set(data.articles.slice(0,12).map(a=>articleUrl(a?.url,indexes)).filter(u=>u&&new URL(u).hostname.replace(/^www\./,'')!==origin))].slice(0,4);
 }
 
-module.exports = { articleUrl, officialSourceAuthority, discoverGdelt, researchTerms, discoverCorroboration };
+
+// An official men's first-team club controls its own travelling squad and
+// availability announcements. Not a predicted XI, transfer, or independent
+// medical finding. Require the club identity AND explicit confirmation in
+// the body, not a headline alone. Literal fact and review checks still apply.
+function confirmedClubSquad(doc){
+ let u;try{u=new URL(doc?.url);}catch{return false;}
+ if(u.protocol!=='https:'||u.username||u.password||u.port)return false;
+ const clubs={'fctwente.nl':'FC Twente','psv.nl':'PSV','ajax.nl':'Ajax','english.ajax.nl':'Ajax','az.nl':'AZ','feyenoord.com':'Feyenoord','fcgroningen.nl':'FC Groningen','liverpoolfc.com':'Liverpool'};
+ const club=clubs[u.hostname.replace(/^www\./,'')];
+ const title=String(doc.title||''),text=String(doc.text||'');
+ if(!club||!/(?:\bselectie\b|\b(?:travelling|traveling|confirmed) squad\b)/i.test(title)||
+  /\b(?:gerucht|verwacht|mogelijke|vermoedelijke|predicted|expected|rumou?r|women|vrouwen|academy|onder \d+|jong ajax|jong psv|u[12]\d)\b/i.test(title))return false;
+ const c=club.replace(/[.*+?^$(){}|[\]\\]/g,'\\module.exports = { articleUrl, officialSourceAuthority, discoverGdelt, researchTerms, discoverCorroboration };');
+ const confirmation=new RegExp('(?:^|\\b)'+c+'(?: FC)?\\s+(?:is met de volgende selectie afgereisd|reist met de volgende selectie af|heeft de volgende selectie bekendgemaakt|heeft zijn selectie bekendgemaakt|have named (?:their|a|the) (?:travelling |traveling )?squad|has named (?:its|a|the) (?:travelling |traveling )?squad)\\s*[:.]','i');
+ return confirmation.test(text);
+}
+
+module.exports = { articleUrl, officialSourceAuthority, discoverGdelt, researchTerms, discoverCorroboration, confirmedClubSquad };
