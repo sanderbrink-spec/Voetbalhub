@@ -1977,3 +1977,27 @@ test('106B only one matching artwork retry may be reopened for a fresh verified 
  const old={...group,matchRecord:{...record,match:{...record.match,playedAt:'2026-11-19T15:00:00Z'}}};
  assert.equal(reopenFreshVerifiedMatchDraft106B({...pending},old,now),false);
 });
+
+
+test('117: newly approved image wakes only fresh artwork retries, without spending a new attempt',()=>{
+ const {reopenAvailableArtwork117}=require('../scripts/automatic-publication');
+ const now=Date.parse('2026-11-25T10:00:00Z');
+ const job={status:'retry',attempts:1,matchId:'sm-123',nextAttemptAt:now+6*3600000,
+  failureStage:'artwork',failureCategory:'missing_approved_artwork',reason:'awaiting_approved_artwork',
+  checkpoint:{encrypted:'retained'}};
+ const group=Object.assign([{title:'Ajax – PSV'}],{matchRecord:{matchId:'sm-123',articleKind:'match_report',
+  category:'Eredivisie',match:{playedAt:new Date(now-3600000).toISOString()}}});
+ const approved=()=>({checked:true,approved:true,assetSha256:'a'.repeat(64)});
+ const missing=()=>({checked:true,approved:false});
+ assert.equal(reopenAvailableArtwork117({...job},group,now,missing),false);
+ assert.equal(reopenAvailableArtwork117({...job,status:'review'},group,now,approved),false);
+ assert.equal(reopenAvailableArtwork117({...job,attempts:4},group,now,approved),false);
+ assert.equal(reopenAvailableArtwork117({...job,matchId:'sm-other'},group,now,approved),false);
+ assert.equal(reopenAvailableArtwork117({...job,artworkWakeSha117:'a'.repeat(64)},group,now,approved),false);
+ const stale=Object.assign([...group],{matchRecord:{...group.matchRecord,match:{playedAt:new Date(now-73*3600000).toISOString()}}});
+ assert.equal(reopenAvailableArtwork117({...job},stale,now,approved),false);
+ assert.equal(reopenAvailableArtwork117(job,group,now,approved),true);
+ assert.equal(job.status,'pending');assert.equal(job.nextAttemptAt,now);assert.equal(job.attempts,1);
+ assert.deepEqual(job.checkpoint,{encrypted:'retained'});
+ assert.equal(job.failureCategory,undefined);
+});
