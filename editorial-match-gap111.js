@@ -4,7 +4,7 @@
 // same sentence. No new event, scorer, score or minute is ever manufactured.
 // This is a copyedit only: the normal factual and 85/90 reviews still run.
 
-const GAP=/\b(?:één|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien|\d{1,2})\s+minut(?:en|e)\s+(?:later|daarna|verder)\b/giu;
+const GAP=/\b(?:[\p{L}]+|\d+)\s+minut(?:en|e)\s+(?:later|daarna|verder)\b/giu;
 const RECEIPT=/\b(?:eigen\s+doelpunt\s+van|benutte\s+strafschop\s+van|doelpunt\s+van)\s+([^,.;]+?)\s*,\s*waarna de stand (\d{1,2})-(\d{1,2})\b/i;
 function verifiedGoals(record) {
  if(record?.articleKind!=='match_report'||!Array.isArray(record.verifiedFacts))return [];
@@ -40,16 +40,21 @@ function repairUnsupportedGoalGap111(draft,record) {
   if(typeof paragraph!=='string'||!GAP.test(paragraph)){GAP.lastIndex=0;return paragraph;}
   GAP.lastIndex=0;
   const sentences=paragraph.split(/(?<=[.!?])\s+/u);
-  const revised=sentences.map(sentence=>{
+  const revised=sentences.map((sentence,index)=>{
    const next=sentence.replace(GAP,(phrase,offset)=>{
     const before=sentence.slice(0,offset),after=sentence.slice(offset+phrase.length);
-    const previous=events.filter(e=>eventNamedAndScored(before,e));
+    const localPrevious=events.filter(e=>eventNamedAndScored(before,e));
+    // A new sentence commonly starts with an unsupported interval. Only
+    // look back to the immediately preceding sentence, and only when the
+    // current prefix has no identifiable earlier event.
+    const previous=localPrevious.length?localPrevious:events.filter(e=>index>0&&eventNamedAndScored(sentences[index-1],e));
     const following=events.filter(e=>eventNamedAndScored(after,e));
     if(previous.length!==1||following.length!==1)return phrase;
     const prior=previous[0],later=following[0];
     if(prior.minute*100+prior.extra>=later.minute*100+later.extra)return phrase;
     changed=true;
-    return prior.minute<=45&&later.minute>=46?'na rust':'later';
+    const transition=prior.minute<=45&&later.minute>=46?'na rust':'later';
+    return offset===0?transition[0].toUpperCase()+transition.slice(1):transition;
    });
    return next;
   });
