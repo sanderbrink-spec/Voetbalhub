@@ -332,6 +332,23 @@ function nationallyRelevant(doc,scoring=internationalScoring(doc)){
   /\b(?:plannen|planvorming|ontwikkel\w*|uitbreid\w*|vergunning\w*|bouw\w*|verbouw\w*)\b/.test(body);
  if(firstPartyStadiumPlan)return true;
  if(scoring)return true;
+ // European evening coverage: English official match news must not be
+ // rejected just because it lacks Dutch keywords. This is discovery only;
+ // freshness, corroboration, verified facts and independent review remain mandatory.
+ if(allowedUrl(doc.url)){
+  const domain=host(doc.url), pathname=new URL(doc.url).pathname;
+  const lead=title+' '+body.slice(0,500);
+  const european=/\b(?:champions league|europa league|conference league)\b/;
+  const nonSenior=/\b(?:youth|academy|women|womens|vrouwen|u[12]\d|under [12]\d|future cup|primavera)\b/;
+  if(!nonSenior.test(title)){
+   if(domain==='uefa.com'&&/^\/uefa(?:championsleague|europaleague|conferenceleague)\/news\/02[a-z0-9-]+\/?$/.test(pathname)&&
+    european.test(title)&&/\b(?:round up|matchday results|match results|highlights and round up)\b/.test(title)&&
+    /\b(?:win|wins|won|draw|draws|beat|beaten|victory|defeat|points)\b/.test(lead))return true;
+   if(['liverpoolfc.com','inter.it','english.ajax.nl','ajax.nl','psv.nl','fctwente.nl','feyenoord.com','az.nl'].includes(domain)&&
+    european.test(lead)&&/\b(?:confirmed line up|confirmed lineup|starting xi|team news|travelling squad|traveling squad|match preview|preview|voorbeschouwing|opstelling|selectie)\b/.test(title)&&
+    !/\b(?:predicted|rumour|rumor|expected|verwachte|vermoedelijke)\b/.test(title))return true;
+  }
+ }
  if(allowedUrl(doc.url)&&host(doc.url)==='uefa.com'&&/^\/uefanationsleague\/news\//.test(new URL(doc.url).pathname)&&
     /\b(nations league|league a|group a[1-4]|matchday|quarter finals|quarter final|groepswinst)\b/.test(title+' '+body.slice(0,500))&&
     /\b(preview|storylines|players to watch|what each team needs|qualification|qualify|qualified|who is through|quarter finals|quarter final|top spot|promotion|relegation|record|groepswinst|state of play|matchday|knockout stage|group a[1-4])\b/.test(title+' '+body.slice(0,500)))return true;
