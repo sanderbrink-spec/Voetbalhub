@@ -63,7 +63,7 @@ const {verifiedOfficialDisciplinaryDecision}=require('../editorial-official-deci
 const {reopenVerifiedOfficialBrief,reopenVerifiedOfficialPublisher}=require('../editorial-brief-recovery71');
 const matchEvidence122=require('../editorial-match-evidence122');
 const {CREDIT}=require('../football-results52');
-const {articleUrl,officialSourceAuthority,discoverGdelt}=require('./editorial-discovery53');
+const {articleUrl,officialSourceAuthority,discoverGdelt,discoverCorroboration}=require('./editorial-discovery53');
 const international=require('./editorial-international');
 const {oranjeDrawGroup}=require('./editorial-oranje-draw');
 const {drawWritingBrief}=require('./editorial-draw-copy339');
@@ -2512,7 +2512,29 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const batch=await Promise.all(linksToRead.slice(index,index+6).map(load));
   for(const doc of batch)if(doc&&!discovered.some(item=>item.url===doc.url))discovered.push(doc);
  }
- report.counts.found=linksToRead.length;
+ // Do not simply discard a newsworthy lead when the homepage scan did not
+ // find independent proof. Spend a bounded search on the freshest unpaired
+ // leads, then run the original evidence and quality gates on the results.
+ if(!focusSourceUrl&&!fixtureFocus){
+  const research=discovered.filter(doc=>{
+   const at=Date.parse(doc.publishedAt||'');
+   return Number.isFinite(at)&&at<=now&&now-at<=24*3600000&&
+    nationallyRelevant(doc)&&!primaryAuthority(doc)&&!partnerDocuments(doc,discovered).length;
+  }).sort((a,b)=>editorialPriority(b)-editorialPriority(a)||Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,3);
+  const results=await Promise.allSettled(research.map(doc=>discoverCorroboration(doc,config.newsIndexes,fetcher,sourceText)));
+  const extra=new Set();
+  results.forEach((result,index)=>{
+   if(result.status==='fulfilled'){
+    for(const url of result.value)if(!links.has(url))extra.add(url);
+    report.signals.push({route:'news',topic:research[index].title,outcome:'targeted_corroboration_search',links:result.value.length});
+   }else report.sourceErrors.push({source:'Gericht brononderzoek',error:result.reason.message});
+  });
+  for(const url of extra)links.add(url);
+  const recovered=await Promise.all([...extra].slice(0,12).map(load));
+  for(const doc of recovered)if(doc&&!discovered.some(item=>item.url===doc.url))discovered.push(doc);
+  report.sources.targetedCorroboration={attempted:research.length,additionalLinks:extra.size,readable:recovered.filter(Boolean).length};
+ }
+ report.counts.found=focusSourceUrl||fixtureFocus?linksToRead.length:links.size;
  report.counts.readable=discovered.length;
  // Measure official Nations League story coverage separately. A discovered
  // story is not a verified article or a publication approval.
