@@ -39,7 +39,9 @@ on:
       - 'public/article-art71/**'
       - '.github/workflows/automatic-publication.yml'
   schedule:
-    - cron: '23 * * * *'
+    # Stagger away from the top of the hour. Runtime evidence and quota gates
+    # remain mandatory; Actions cron is best-effort, not a delivery guarantee.
+    - cron: '8,23,38,53 * * * *'
   workflow_dispatch:
     inputs:
       validation_only:
@@ -47,8 +49,8 @@ on:
         default: false
         type: boolean
       sportmonks_only:
-        description: Test only verified SportsMonks match reports (default for manual ten-article run)
-        default: true
+        description: Optional restricted Sportmonks match-report probe (normal runs cover all news)
+        default: false
         type: boolean
       source_url:
         description: Optional discovered official article URL to process alone
@@ -82,8 +84,16 @@ jobs:
           python-version: '3.12'
       - run: python3 -m pip install Pillow
       - run: npm install --ignore-scripts --no-audit --no-fund
-      - name: Validate publication gates
+      - name: Validate publication gates for a new revision or manual proof
+        if: github.event_name != 'schedule'
         run: npm test
+      - name: Scheduled publication safety checks
+        if: github.event_name == 'schedule'
+        run: |
+          node --check server.js
+          node --check editorial-quality.js
+          node --check scripts/automatic-publication.js
+          node --test test/editorial-registration118.test.js test/editorial-evidence121.test.js test/editorial-provider-router.test.js
       - name: Verify the matching Render revision
         run: |
           for attempt in $(seq 1 60); do
