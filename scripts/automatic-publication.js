@@ -2357,6 +2357,12 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  }
  await verifyRevision();
  async function storeReviewedArticle(payload,assessment,routeName,setStage){
+   // Append only the provider's fixed legal attribution after the prose
+   // passed independent review. The server and fingerprint verify the
+   // exact resulting payload. No editorial claims are changed.
+   if(/^fd-cl-\d+$/.test(payload.matchId||'')&&payload.sources?.[0]?.url===matches.FD&&!payload.draft.body.includes(CREDIT)){
+    payload={...payload,draft:{...payload.draft,body:[...payload.draft.body,CREDIT]}};
+   }
    const draft=payload.draft;
    setStage('storage');
    await verifyRevision();
@@ -3048,6 +3054,8 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_dual_scorer_narrative_retry_v71'});
    if(editorialRecovery136.reopenUtrechtNecVerifiedGoalClauseV71(job,group.matchRecord,now))
     report.signals.push({route:'match',matchId:job.matchId,outcome:'utrecht_nec_source_proven_final_clause_retry_v71'});
+   if(editorialRecovery136.reopenEuropeanCompetitionName123(job,group.matchRecord,now))
+    report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_european_competition_name_retry_123'});
    if(editorialRecovery136.reopenVerifiedMatch(job,group.matchRecord,now)){
     report.signals.push({route:'match',matchId:job.matchId,outcome:'verified_match_writer_recovery_v136'});
    }
