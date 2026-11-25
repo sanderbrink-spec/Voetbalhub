@@ -3190,12 +3190,10 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  report.target=limit;report.imageProviderConfigured=Boolean(process.env.OPENAI_API_KEY);
  // Resume valid, already-written drafts before spending more provider capacity
  // on entirely new topics. Freshness and exact evidence hashes remain mandatory.
- const runnable=[...jobs.values()].sort((a,b)=>
-  Number(Boolean(b.group.internationalPreview))-Number(Boolean(a.group.internationalPreview))||
-  (a.group.internationalPreview?.kickoff||0)-(b.group.internationalPreview?.kickoff||0)||
-  europeanDeskPriority(b.group,now)-europeanDeskPriority(a.group,now)||
-  reusableCheckpointPriority(b.job,b.group,secret,now)-
-  reusableCheckpointPriority(a.job,a.group,secret,now));
+ const desk=require('../editorial-autonomous120').plan([...jobs.values()],now,
+  (job,group)=>reusableCheckpointPriority(job,group,secret,now));
+ report.autonomousDesk={version:120,decisions:desk.decisions};
+ const runnable=desk.runnable;
  let processingSlots=0;
  let matchDraftFirstRemaining=2;
  if(validationOnly)matchDraftFirstRemaining=0;
@@ -3547,6 +3545,7 @@ async function run(options={}){
  finally{
   report.runMode={singlePublication:options.singlePublication===true,discoveryOnly:options.discoveryOnly===true,validationOnly:options.validationOnly===true};
    report.funnel=summarizeEditorialFunnel98V(report);
+   report.autonomousDesk={...report.autonomousDesk,version:120,nextActions:require('../editorial-autonomous120').nextActions(report)};
    report.outcome=['completed','discovery_complete','validation_complete','scout_research_complete'].includes(report.status)?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected','editorial_waiting_for_artwork'].includes(report.status)?'editorial_blocked':'error';
   report.finishedAt=new Date().toISOString();
   fs.mkdirSync('.automatic-output',{recursive:true});fs.writeFileSync('.automatic-output/report.json',JSON.stringify(report,null,2));
