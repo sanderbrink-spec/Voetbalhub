@@ -1,0 +1,1310 @@
+{
+  "schemaVersion": 1,
+  "notes": "Candidate domains, not verified active sources. No direct requests, no proof, no publishing rights. Domain and language classification require review. Sources may have shared ownership; no independence inferred. Public aggregator discovery only.",
+  "scouts": [
+    {
+      "id": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "query": "voetbal"
+    },
+    {
+      "id": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "query": "voetbal"
+    },
+    {
+      "id": "nederlanders-buitenland",
+      "language": "nl",
+      "region": "Internationaal",
+      "query": "voetbal Nederlandse spelers transfer"
+    },
+    {
+      "id": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "query": "football Premier League transfer"
+    },
+    {
+      "id": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "query": "Fußball Bundesliga Transfer"
+    },
+    {
+      "id": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "query": "fútbol Liga fichajes"
+    },
+    {
+      "id": "italie",
+      "language": "it",
+      "region": "Italië",
+      "query": "calcio Serie A mercato"
+    },
+    {
+      "id": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "query": "football Ligue 1 transferts"
+    },
+    {
+      "id": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "query": "football UEFA FIFA Champions League"
+    },
+    {
+      "id": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "query": "football transfer manager injury"
+    }
+  ],
+  "sources": [
+    {
+      "domain": "vi.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "voetbalprimeur.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "voetbalzone.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "nos.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "espn.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "ad.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "telegraaf.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "nu.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "voetbalnieuws.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fcupdate.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "rtvnoord.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "rijnmond.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "omroepbrabant.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "rtvoost.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "omroepgelderland.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "nhnieuws.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "omroepwest.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "1limburg.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "omropfryslan.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "eredivisie.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "ajax.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "psv.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "feyenoord.com",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "az.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fctwente.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fcgroningen.nl",
+      "scout": "eredivisie",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "keukenkampioendivisie.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "knvb.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "eurojackpotknvbbeker.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fcemmen.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fcdenbosch.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "willem-ii.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "nac.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "cambuur.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "mvv.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fc-eindhoven.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "telstar.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "helmondsport.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "roda-jc.nl",
+      "scout": "kkd-beker",
+      "language": "nl",
+      "region": "Nederland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "onsoranje.nl",
+      "scout": "nederlanders-buitenland",
+      "language": "nl",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "voetbalinternational.nl",
+      "scout": "nederlanders-buitenland",
+      "language": "nl",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "transfermarkt.nl",
+      "scout": "nederlanders-buitenland",
+      "language": "nl",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "bbc.co.uk",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "bbc.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "skysports.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "theguardian.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "independent.co.uk",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "telegraph.co.uk",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "theathletic.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "premierleague.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "thefa.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "efl.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "liverpoolfc.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "arsenal.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "manutd.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "mancity.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "chelseafc.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "tottenhamhotspur.com",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "nufc.co.uk",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "avfc.co.uk",
+      "scout": "engeland",
+      "language": "en",
+      "region": "Engeland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "kicker.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "sportschau.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "sport1.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "sportbild.bild.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "bundesliga.com",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "dfb.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "transfermarkt.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fcbayern.com",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "bvb.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "bayer04.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "dierotenbullen.com",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "eintracht.de",
+      "scout": "duitsland",
+      "language": "de",
+      "region": "Duitsland",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "marca.com",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "as.com",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "mundodeportivo.com",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "sport.es",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "relevo.com",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "laliga.com",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "rfef.es",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "realmadrid.com",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fcbarcelona.es",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "atletico.com",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "realbetisbalompie.es",
+      "scout": "spanje",
+      "language": "es",
+      "region": "Spanje",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "gazzetta.it",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "corrieredellosport.it",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "tuttosport.com",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "football-italia.net",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "gianlucadimarzio.com",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "legaseriea.it",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "figc.it",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "inter.it",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "juventus.com",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "acmilan.com",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "sscnapoli.it",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "asroma.com",
+      "scout": "italie",
+      "language": "it",
+      "region": "Italië",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "lequipe.fr",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "rmcsport.bfmtv.com",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "footmercato.net",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "francefootball.fr",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "ligue1.com",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fff.fr",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "psg.fr",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "om.fr",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "fr",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "sporza.be",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "nl",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "hln.be",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "nl",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "lesoir.be",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "multi",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "dhnet.be",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "multi",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "proleague.be",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "multi",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "rbfa.be",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "multi",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "clubbrugge.be",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "multi",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "rsca.be",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "multi",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "abola.pt",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "pt",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "record.pt",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "pt",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "ojogo.pt",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "pt",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "ligaportugal.pt",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "pt",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fpf.pt",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "pt",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "slbenfica.pt",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "pt",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fcporto.pt",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "pt",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "sporting.pt",
+      "scout": "frankrijk-belgie-portugal",
+      "language": "pt",
+      "region": "Frankrijk/België/Portugal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "uefa.com",
+      "scout": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fifa.com",
+      "scout": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "the-afc.com",
+      "scout": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "cafonline.com",
+      "scout": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "concacaf.com",
+      "scout": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "conmebol.com",
+      "scout": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "oceaniafootball.com",
+      "scout": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "ussoccer.com",
+      "scout": "uefa-fifa",
+      "language": "en",
+      "region": "Internationaal",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "reuters.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "apnews.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "espn.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "goal.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "beinsports.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "fourfourtwo.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "worldsoccer.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "mlssoccer.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "onefootball.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "opta.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    },
+    {
+      "domain": "footballtransfers.com",
+      "scout": "wereld-transfers",
+      "language": "en",
+      "region": "Wereld",
+      "access": "candidate",
+      "authority": "none",
+      "usage": "discovery_metadata_only"
+    }
+  ]
+}
