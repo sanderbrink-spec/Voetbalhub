@@ -332,8 +332,16 @@ async function automaticEvidenceIssue(payload) {
     const chronology = require('./editorial-match-guidance133').paragraphChronologyIssues(payload, payload.draft);
     if (chronology.length) return chronology.join(' ');
     if (typeof payload.matchId !== 'string') return 'Ongeldig wedstrijd-ID.';
-    const snapshot = await (payload.matchId.startsWith('fd-cl-') ? europeanEditorial() : football47.get('eredivisie'));
-    if (!require('./editorial-match55').matchesRegistration(payload, snapshot.fixtures || [], Date.now()))
+    const registration = require('./editorial-match55');
+    const fixtures = await registration.registrationFixtures(payload, {
+      european: europeanEditorial,
+      domestic: competition => football47.get(competition),
+      recent: competition => require('./sportmonks-football').loadRecent({
+        competition, token:process.env.SPORTMONKS_API_TOKEN?.trim(),
+        sourceBody:require('./football-data47').sourceBody
+      })
+    });
+    if (!registration.matchesRegistration(payload, fixtures, Date.now()))
       return 'De primaire wedstrijdregistratie bevestigt de aangeleverde feiten niet.';
     if (payload.sources[0].url === require('./editorial-match55').FD &&
         !payload.draft?.body?.some(p => typeof p === 'string' && p.includes(require('./football-results52').CREDIT)))

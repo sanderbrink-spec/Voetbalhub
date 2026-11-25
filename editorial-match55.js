@@ -173,4 +173,33 @@ function europeanRegistry({fetcher = fetch, token, clock = Date.now} = {}) {
   } finally { inFlight = null; }
  };
 }
-module.exports = {candidate, verifiedComebackFact, matchesRegistration, europeanRegistry, MAX_AGE_MS, OPEN, FD, SM};
+// Rebuild the primary registry using the same bounded recent provider route
+// as discovery. Category is only a hint: matchesRegistration independently
+// compares the reconstructed category, fixture, sources and every fact.
+async function registrationFixtures(payload, {recent, domestic, european}) {
+ const id=payload?.matchId;
+ if(typeof id!=='string')return [];
+ if(/^fd-cl-\d+$/.test(id))return (await european()).fixtures||[];
+ if(/^sm-\d+$/.test(id)){
+  const routes=new Map([
+   ['Eredivisie','eredivisie'],
+   ['Keuken Kampioen Divisie','kkd'],
+   ['Premier League','premierleague'],
+   ['KNVB Beker','knvbbeker'],
+   ['Eredivisie Play-offs','eredivisieplayoffs']
+  ]);
+  const competition=routes.get(payload.category);
+  if(!competition||payload.sources?.[0]?.url!==SM)return [];
+  if(competition==='eredivisieplayoffs')return (await domestic(competition)).fixtures||[];
+  try {
+   const fixtures=await recent(competition);
+   return Array.isArray(fixtures)?fixtures.filter(f=>f.competition===competition&&f.resultSource==='Sportmonks Football API'):[];
+  } catch {
+   // A provider failure must never count as verification.
+   return [];
+  }
+ }
+ if(/^of-nl-\d{4}-[a-z0-9-]+$/.test(id))return (await domestic('eredivisie')).fixtures||[];
+ return [];
+}
+module.exports = {candidate, verifiedComebackFact, matchesRegistration, registrationFixtures, europeanRegistry, MAX_AGE_MS, OPEN, FD, SM};
