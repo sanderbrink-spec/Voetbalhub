@@ -63,7 +63,7 @@ const {verifiedOfficialDisciplinaryDecision}=require('../editorial-official-deci
 const {reopenVerifiedOfficialBrief,reopenVerifiedOfficialPublisher}=require('../editorial-brief-recovery71');
 const matchEvidence122=require('../editorial-match-evidence122');
 const {CREDIT}=require('../football-results52');
-const {articleUrl,officialSourceAuthority,discoverGdelt,discoverCorroboration,confirmedClubSquad}=require('./editorial-discovery53');
+const {articleUrl,officialSourceAuthority,discoverGdelt,discoverCorroboration,confirmedClubSquad,scanOfficialIndexes}=require('./editorial-discovery53');
 const international=require('./editorial-international');
 const {oranjeDrawGroup}=require('./editorial-oranje-draw');
 const {drawWritingBrief}=require('./editorial-draw-copy339');
@@ -2491,15 +2491,18 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
  }
  const links=new Set();
  const indexStatus=report.sources.officialIndexes=[];
- for(const index of config.newsIndexes){
-  try{
-   const page=await officialPage(index.url,fetcher);
-   const found=discoverLinks(page.html,index).map(url=>articleUrl(url,[index])).filter(Boolean);
-   found.forEach(url=>links.add(url));
-   indexStatus.push({url:index.url,status:'ok',links:found.length});
-  }catch(error){
+ const indexResults=await scanOfficialIndexes(config.newsIndexes,async index=>{
+  const page=await officialPage(index.url,fetcher);
+  return discoverLinks(page.html,index).map(url=>articleUrl(url,[index])).filter(Boolean);
+ });
+ for(const [i,result] of indexResults.entries()){
+  const index=config.newsIndexes[i];
+  if(result.status==='fulfilled'){
+   result.value.forEach(url=>links.add(url));
+   indexStatus.push({url:index.url,status:'ok',links:result.value.length});
+  }else{
    indexStatus.push({url:index.url,status:'unavailable',links:0});
-   report.sourceErrors.push({url:index.url,error:error.message});
+   report.sourceErrors.push({url:index.url,error:result.reason.message});
   }
  }
  try{
