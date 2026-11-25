@@ -1508,7 +1508,7 @@ function preflightArtwork(group,candidate,topic,resolver=require('../image-rotat
   ?{articleKind:match.articleKind,imageCategory:'report',matchId:match.matchId,match:match.match,category:match.category}
   :{articleKind:'preview',category:candidate.category,fixture,draft:{headline:topic,standfirst:''}};
  const result=resolver(probe);
- return {checked:true,approved:Boolean(result.article),reason:result.assignment?.reason||'Geen passend goedgekeurd artikelbeeld beschikbaar.',assetSha256:result.article?.imageReview?.assetSha256};
+ return {checked:true,approved:Boolean(result.article),reason:result.assignment?.reason||'Geen passend goedgekeurd artikelbeeld beschikbaar.',...(result.article?.imageReview?.assetSha256?{assetSha256:result.article.imageReview.assetSha256}:{})};
 }
 // Proven multi-source Eredivisie previews may be written and independently
 // reviewed while premium rights-cleared venue art is awaiting approval.
@@ -1771,7 +1771,7 @@ function reopenVerifiedSourceSentences104J(job,group,now){
 function reopenAvailableArtwork117(job,group,now,probe=preflightArtwork){
  if(!job||!Number.isFinite(now)||job.status!=='retry'||job.failureStage!=='artwork'||
    job.failureCategory!=='missing_approved_artwork'||job.reason!=='awaiting_approved_artwork'||
-   !Number.isInteger(job.attempts)||job.attempts>=4||job.nextAttemptAt<=now)return false;
+   !Number.isInteger(job.attempts)||job.attempts>=4||!Number.isFinite(job.nextAttemptAt)||job.nextAttemptAt<=now)return false;
  const rec=group?.matchRecord;
  const preview=group?.clubPreview||group?.internationalPreview;
  if(rec){
