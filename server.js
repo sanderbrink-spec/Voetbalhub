@@ -689,7 +689,7 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
   if (req.method === 'GET' && url.pathname === '/editorial-sportmonks-recent') {
     if (!authorizeRequest(req,res)) return;
     const competition=url.searchParams.get('competition')||'eredivisie';
-    if(!['eredivisie','premierleague','knvbbeker','kkd'].includes(competition))
+    if(!Object.hasOwn(require('./sportmonks-football').EDITORIAL_LEAGUES,competition))
       return send(res,400,{error:'Onbekende redactiecompetitie.'});
     try{
       const fixtures=await require('./sportmonks-football').loadRecent({
