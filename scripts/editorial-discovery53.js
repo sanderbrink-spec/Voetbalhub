@@ -106,4 +106,28 @@ function confirmedClubSquad(doc){
  return confirmation.test(text);
 }
 
-module.exports = { articleUrl, officialSourceAuthority, discoverGdelt, researchTerms, discoverCorroboration, confirmedClubSquad };
+// Preserve index order and isolate failed sources. Four independent origins may
+// be scanned concurrently; never issue simultaneous index requests to one host.
+async function scanOfficialIndexes(indexes, readIndex) {
+ const groups=new Map(), results=new Array(indexes.length);
+ for(const [i,index] of indexes.entries()){
+  const host=new URL(index.url).hostname.replace(/^www\./,'');
+  if(!groups.has(host))groups.set(host,[]);
+  groups.get(host).push({i,index});
+ }
+ const work=[...groups.values()];
+ let next=0;
+ async function worker(){
+  while(next<work.length){
+   const group=work[next++];
+   for(const {i,index} of group){
+    try{results[i]={status:'fulfilled',value:await readIndex(index)};}
+    catch(reason){results[i]={status:'rejected',reason};}
+   }
+  }
+ }
+ await Promise.all(Array.from({length:Math.min(4,work.length)},worker));
+ return results;
+}
+
+module.exports = { articleUrl, officialSourceAuthority, discoverGdelt, researchTerms, discoverCorroboration, confirmedClubSquad, scanOfficialIndexes };
