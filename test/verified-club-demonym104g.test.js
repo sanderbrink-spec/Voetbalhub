@@ -15,6 +15,7 @@ test('104G: echte Groningse clubbijnaam mag, een ongedekte bijnaam blijft verbod
 });
 
 test('104G: heropent uitsluitend exact bewezen en eerder afgewezen derby één keer vóór aftrap',t=>{
+ require('../test-support/catalogue-before116')(t);
  const f={id:'sm-19714591',competition:'eredivisie',status:'NS',date:'2026-11-21T20:00:00Z',
   home:{name:'FC Groningen'},away:{name:'sc Heerenveen'}};
  const candidate={kind:'preview',topic:'FC Groningen – SC Heerenveen',category:'Eredivisie',

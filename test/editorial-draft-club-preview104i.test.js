@@ -56,6 +56,7 @@ test('104I: bestaande officiële UEFA-preview velden blijven onveranderd',()=>{
 });
 
 test('104I: exact eerder goedgekeurd maar fout opgeschoond dossier wordt één keer opnieuw getoetst',t=>{
+ require('../test-support/catalogue-before116')(t);
  const c={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
   fixture:f,kickoff:Date.parse(f.date),facts:facts.map(text=>({text}))};
  const group=Object.assign([{title:c.topic}],{clubPreview:c});

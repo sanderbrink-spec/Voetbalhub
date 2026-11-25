@@ -27,11 +27,12 @@ test('Fase 82: volledig synthetisch dossier werkt alleen in memory; echte public
  const s=syntheticDossier();
  assert.throws(()=>reviewTool.verify(s),/Publicatiepoort weigert/);
  const raw=rows.find(x=>x.id===TARGET);
- const fixture={...raw,id:'test-approval82-isolated',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(raw.sha256)};
- const a=reviewTool.verify({...s,assetId:fixture.id},{assets:rows.map(x=>x.id===TARGET?fixture:x)});
+ const clean=require('../stadium-catalog116.json').assets.find(a=>a.id==='stadium116-ajax-preview-day');
+ const fixture={...raw,file:clean.file,sha256:clean.sha256,id:'test-approval82-isolated',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(clean.sha256)};
+ const a=reviewTool.verify({...s,assetId:fixture.id,assetSha256:clean.sha256},{assets:rows.map(x=>x.id===TARGET?fixture:x)});
  assert.equal(a.approval,'approved');
  assert.equal(a.visualReview.score,8.7);
- assert.equal(a.visualReview.assetSha256,s.assetSha256);
+ assert.equal(a.visualReview.assetSha256,clean.sha256);
  assert.equal(a.visualReview.clubScope,'home-only');
  assert.equal(gate.accepted(a),true);
  assert.equal(rows.find(x=>x.id===TARGET).approval,'pending');

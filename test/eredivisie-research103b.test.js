@@ -24,7 +24,8 @@ const league=article('https://eredivisie.nl/nieuws/vooruitblik-speelronde-13/','
 ]);
 const run=(options={})=>research({fixtures:[f],docs:[club],now,plain,loadRound:async()=>league,
  validate:validateEvidence,artwork:preflightArtwork,matchGroups:[],leads:[],...options});
-test('twee gedateerde primaire bronnen leveren een fixturegebonden plan met letterlijke nieuwe feiten',async()=>{
+test('twee gedateerde primaire bronnen leveren een fixturegebonden plan met letterlijke nieuwe feiten',async t =>{
+ require('../test-support/catalogue-before116')(t);
  const {topics,groups,deep}=await run({fixtures:[f,f]});
  assert.equal(deep,1);assert.equal(topics.length,1);
  const [row]=topics;
@@ -64,7 +65,8 @@ test('media en herhaalde transfergeruchten blijven signalen en leveren geen geve
  assert.equal(result.topics.length,1);assert.equal(result.topics[0].status,'attributed_unconfirmed');
  assert.deepEqual(result.groups,[]);assert.equal(result.deep,0);
 });
-test('negen beeldblokkades bereiken de rechtencontrole zonder modelverzoek of publicatie',async()=>{
+test('negen beeldblokkades bereiken de rechtencontrole zonder modelverzoek of publicatie',async t =>{
+ require('../test-support/catalogue-before116')(t);
  const {run}=require('../scripts/automatic-publication');
  const matches=Array.from({length:9},(_,i)=>({
   id:'of-nl-2026-test-'+i,competition:'eredivisie',round:'Speelronde 13',status:'FT',
@@ -84,7 +86,8 @@ test('negen beeldblokkades bereiken de rechtencontrole zonder modelverzoek of pu
  assert.equal(report.counts.aiRequests,0);assert.equal(report.counts.selected,0);
 });
 
-test('104A: alleen geverifieerde clubvoorbeschouwingen mogen vóór beeldvrijgave naar de schrijver',()=>{
+test('104A: alleen geverifieerde clubvoorbeschouwingen mogen vóór beeldvrijgave naar de schrijver',t =>{
+ require('../test-support/catalogue-before116')(t);
  const verified={kind:'preview',category:'Eredivisie',fixture:f,facts:[
   {text:'A',evidence:[{source:0,quote:'A'}]},
   {text:'B',evidence:[{source:0,quote:'B'}]},

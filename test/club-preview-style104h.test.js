@@ -36,6 +36,7 @@ test('104H: herformuleer aantoonbare Meerveld- en Van Bergen-feiten zonder origi
  assert.deepEqual(repairVerifiedClubPreviewForm(draft,[]),draft);
 });
 test('104H: heropen exact afgewezen bericht, nooit ander dossier of na de aftrap',t=>{
+ require('../test-support/catalogue-before116')(t);
  const fixture={id:'sm-19714591',competition:'eredivisie',status:'NS',date:'2026-11-21T20:00:00Z',
   home:{name:'FC Groningen'},away:{name:'sc Heerenveen'}};
  const candidate={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',

@@ -37,7 +37,8 @@ test('transfer never uses a match or a generic image, even with matching club na
   assert.equal(result.article,null);
   assert.equal(result.assignment.state,'unpublished_image_quality');
 });
-test('migration stores decisions separately and only writes changed assignments', async () => {
+test('migration stores decisions separately and only writes changed assignments', async t => {
+ require('./test-support/catalogue-before116')(t);
   let writes=0;
   const storage={};
   const redis={hGetAll:async()=>({...storage}),hSet:async(key,change)=>{writes++;Object.assign(storage,change);}};

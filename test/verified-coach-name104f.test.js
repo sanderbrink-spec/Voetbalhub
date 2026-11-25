@@ -23,6 +23,7 @@ test('104F: alleen volledig bewezen Casper Goedkoop wordt uit onvolledige rolnaa
  assert.deepEqual(repairVerifiedCoachName(draft,['Casper Goedkoop is genoemd.']),draft);
 });
 test('104F: bekende generatorafwijzing uitsluitend eenmaal opnieuw met volledig verse controle',t=>{
+ require('../test-support/catalogue-before116')(t);
  const candidate={fixture,kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',
  kickoff:Date.parse(fixture.date)};
  const group=Object.assign([{title:candidate.topic}],{clubPreview:candidate});

@@ -31,6 +31,7 @@ test('104D: volledig bron- en bestandsgebonden nachtbeeld blijft in catalogus ge
  assert.doesNotThrow(()=>library.validate(catalog.assets));
 });
 test('104D: juiste club en preview, geen verslag of andere thuisclub',t=>{
+ require('../test-support/catalogue-before116')(t);
  assert.equal(images.resolve(preview).article,null);
  const synthetic={...artwork,id:'synthetic-104-preview',manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(artwork.sha256)};
  const current=library.catalog();t.mock.method(library,'catalog',()=>[...current,synthetic]);
@@ -46,6 +47,7 @@ test('104D: juiste club en preview, geen verslag of andere thuisclub',t=>{
 });
 
 test('104D: alleen verzegeld oud previewconcept wordt eenmaal hervat wanneer rechtenbeeld beschikbaar is',t=>{
+ require('../test-support/catalogue-before116')(t);
  const {reopenApprovedClubPreviewArtwork104D}=require('../scripts/automatic-publication');
  const fixture=preview.fixture;
  const candidate={kind:'preview',category:'Eredivisie',topic:'FC Groningen – SC Heerenveen',

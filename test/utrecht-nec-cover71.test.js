@@ -56,7 +56,8 @@ test('Fase 72C: WebP exists with exact original hash, independent raster screeni
  assert.match(asset.caption,/AI-illustratie/);
 });
 
-test('Fase 72C: same home-away fixture selects new photo, not old vector',()=>{
+test('Fase 72C: same home-away fixture selects new photo, not old vector',t =>{
+ require('../test-support/catalogue-before116')(t);
  assert.equal(rotation.resolve(fixture).article,null);
  const result=rotation.resolve(fixture,{rows:[synthetic]});
  assert.equal(result.assignment.state,'approved');
@@ -129,6 +130,7 @@ test('Fase 72C: existing published story swaps only retired image and retains te
 });
 
 test('Fase 72C: scoped artwork retry reopens only original blocked fixture once',t=>{
+ require('../test-support/catalogue-before116')(t);
  const {EditorialQueue}=require('../editorial-production45');
  const {reopenReviewedMatchArtworkV71}=require('../scripts/automatic-publication');
  const now=Date.parse('2026-11-10T20:05:00Z');

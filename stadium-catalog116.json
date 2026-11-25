@@ -1,0 +1,1146 @@
+{
+  "assets": [
+    {
+      "id": "stadium116-feyenoord-preview-night",
+      "file": "public/stadium116/stadium116-feyenoord-preview-night.webp",
+      "sha256": "9b96297ee9de327a5a9755aec6f829ca6050065143c2713bb22c3be9a95cf5e8",
+      "categories": [
+        "preview"
+      ],
+      "clubs": [
+        "Feyenoord",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "daypart": "night",
+      "sceneDaypart": "night",
+      "stadiumIdentity": "home:feyenoord",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "De Kuip",
+        "Stadion Feijenoord"
+      ],
+      "subject": "De Kuip",
+      "variant": "preview-night",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 8c3462da3f0de9946633cb46ea1edce9011a6ac6e6118c628b0f155a772dbca9",
+      "caption": "AI-illustratie van De Kuip voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "8c3462da3f0de9946633cb46ea1edce9011a6ac6e6118c628b0f155a772dbca9",
+        "generation": "ChatGPT ImageGen",
+        "reused": false,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://www.dekuip.nl/"
+      },
+      "visualReview": {
+        "assetSha256": "9b96297ee9de327a5a9755aec6f829ca6050065143c2713bb22c3be9a95cf5e8",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.29,
+        "components": {
+          "stadium": 9.1,
+          "photorealism": 9.1,
+          "branding": 9,
+          "occupancy": 10,
+          "lighting": 10,
+          "technical": 9.4
+        },
+        "observations": "Open ovale kuip, doorlopende blauwe ringen, vrijstaande lichtmasten en een leeg veld onder avondlicht.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "feyenoord",
+        "reviewedStadiumIdentity": "home:feyenoord",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "9b96297ee9de327a5a9755aec6f829ca6050065143c2713bb22c3be9a95cf5e8",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-ajax-preview-day",
+      "file": "public/stadium116/stadium116-ajax-preview-day.webp",
+      "sha256": "7d9938f13e9d18bad642c86957b03ca3cca53d4eea5fdbabd645f9ee613f5dda",
+      "categories": [
+        "preview"
+      ],
+      "clubs": [
+        "Ajax",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "daypart": "day",
+      "sceneDaypart": "day",
+      "stadiumIdentity": "home:ajax",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Johan Cruijff ArenA",
+        "Amsterdam ArenA"
+      ],
+      "subject": "Johan Cruijff ArenA",
+      "variant": "preview-day",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 81475fd1ff434a3b598910480b37fa4159062a0b27abb14262100d0e8b9518e5",
+      "caption": "AI-illustratie van Johan Cruijff ArenA voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "81475fd1ff434a3b598910480b37fa4159062a0b27abb14262100d0e8b9518e5",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://www.johancruijffarena.nl/stadion/"
+      },
+      "visualReview": {
+        "assetSha256": "7d9938f13e9d18bad642c86957b03ca3cca53d4eea5fdbabd645f9ee613f5dda",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.25,
+        "components": {
+          "stadium": 9,
+          "photorealism": 9.1,
+          "branding": 9,
+          "occupancy": 10,
+          "lighting": 10,
+          "technical": 9.2
+        },
+        "observations": "Open schuifdak, witte vakwerkliggers en twee rode ringen in diffuus daglicht.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "ajax",
+        "reviewedStadiumIdentity": "home:ajax",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "7d9938f13e9d18bad642c86957b03ca3cca53d4eea5fdbabd645f9ee613f5dda",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-ajax-preview-night",
+      "file": "public/stadium116/stadium116-ajax-preview-night.webp",
+      "sha256": "fa26773b901cf9eee2808f723f4181477794a518864d7d27d607c680a7aaa0fe",
+      "categories": [
+        "preview"
+      ],
+      "clubs": [
+        "Ajax",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "daypart": "night",
+      "sceneDaypart": "night",
+      "stadiumIdentity": "home:ajax",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Johan Cruijff ArenA",
+        "Amsterdam ArenA"
+      ],
+      "subject": "Johan Cruijff ArenA",
+      "variant": "preview-night",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 82c3c68308bfd8c6389bbb3f05e97f3e0b58c58fcc8c76ef89df2690a5efcb99",
+      "caption": "AI-illustratie van Johan Cruijff ArenA voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "82c3c68308bfd8c6389bbb3f05e97f3e0b58c58fcc8c76ef89df2690a5efcb99",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://www.johancruijffarena.nl/stadion/"
+      },
+      "visualReview": {
+        "assetSha256": "fa26773b901cf9eee2808f723f4181477794a518864d7d27d607c680a7aaa0fe",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.2,
+        "components": {
+          "stadium": 9,
+          "photorealism": 9,
+          "branding": 9,
+          "occupancy": 10,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Zicht langs de middenlijn op twee lege ringen en de witte dakliggers. Onbedrukte sjaals op de voorgrond.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "ajax",
+        "reviewedStadiumIdentity": "home:ajax",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "fa26773b901cf9eee2808f723f4181477794a518864d7d27d607c680a7aaa0fe",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-sparta-report-night",
+      "file": "public/stadium116/stadium116-sparta-report-night.webp",
+      "sha256": "6488de83e3395deeeabc84ac2baea67157e793bde4996dc247850d08cd38edd5",
+      "categories": [
+        "report"
+      ],
+      "clubs": [
+        "Sparta Rotterdam",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "daypart": "night",
+      "sceneDaypart": "night",
+      "stadiumIdentity": "home:spartarotterdam",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Het Kasteel",
+        "Sparta Stadion Het Kasteel"
+      ],
+      "subject": "Het Kasteel",
+      "variant": "report-night",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 b9d331f5857dd23a109255b8e4aa67657c502fd4d78be9edea3f48c9a39cf4e9",
+      "caption": "AI-illustratie van Het Kasteel voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "b9d331f5857dd23a109255b8e4aa67657c502fd4d78be9edea3f48c9a39cf4e9",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://www.sparta-rotterdam.nl/events/home/"
+      },
+      "visualReview": {
+        "assetSha256": "6488de83e3395deeeabc84ac2baea67157e793bde4996dc247850d08cd38edd5",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.13,
+        "components": {
+          "stadium": 9.1,
+          "photorealism": 9,
+          "branding": 9,
+          "occupancy": 9,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Kasteeltorens langs de lange zijde, lage overkappingen en volle rood-witte vakken onder lichtmasten.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "spartarotterdam",
+        "reviewedStadiumIdentity": "home:spartarotterdam",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "6488de83e3395deeeabc84ac2baea67157e793bde4996dc247850d08cd38edd5",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-utrecht-preview-day",
+      "file": "public/stadium116/stadium116-utrecht-preview-day.webp",
+      "sha256": "b50f776466f1a4a67ae43c34ece4e8623029ab0114c6e7036cb94a411d20772e",
+      "categories": [
+        "preview"
+      ],
+      "clubs": [
+        "FC Utrecht",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "daypart": "day",
+      "sceneDaypart": "day",
+      "stadiumIdentity": "home:fcutrecht",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Stadion Galgenwaard",
+        "Galgenwaard"
+      ],
+      "subject": "Stadion Galgenwaard",
+      "variant": "preview-day",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 f7bd79ab9e42004e4424dd03f18e047c03c05f82b34e6f29684fb19a8214ea2a",
+      "caption": "AI-illustratie van Stadion Galgenwaard voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "f7bd79ab9e42004e4424dd03f18e047c03c05f82b34e6f29684fb19a8214ea2a",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://www.fcutrecht.nl/stadion/historie"
+      },
+      "visualReview": {
+        "assetSha256": "b50f776466f1a4a67ae43c34ece4e8623029ab0114c6e7036cb94a411d20772e",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.3,
+        "components": {
+          "stadium": 9,
+          "photorealism": 9,
+          "branding": 9.5,
+          "occupancy": 10,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Losse steile tribunes, witte dakbogen en open kantoorhoek in zonlicht.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "fcutrecht",
+        "reviewedStadiumIdentity": "home:fcutrecht",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "b50f776466f1a4a67ae43c34ece4e8623029ab0114c6e7036cb94a411d20772e",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-utrecht-report-night",
+      "file": "public/stadium116/stadium116-utrecht-report-night.webp",
+      "sha256": "45385553f42f8ddea1a19a865a34b60294f6fd9f481419cfce1dbfa44f1a10b4",
+      "categories": [
+        "report"
+      ],
+      "clubs": [
+        "FC Utrecht",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "daypart": "night",
+      "sceneDaypart": "night",
+      "stadiumIdentity": "home:fcutrecht",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Stadion Galgenwaard",
+        "Galgenwaard"
+      ],
+      "subject": "Stadion Galgenwaard",
+      "variant": "report-night",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 89893726b5094b794ca157f3cc91e646b1e56f2555971b0793e29fe41fbd83f8",
+      "caption": "AI-illustratie van Stadion Galgenwaard voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "89893726b5094b794ca157f3cc91e646b1e56f2555971b0793e29fe41fbd83f8",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://www.fcutrecht.nl/stadion/historie"
+      },
+      "visualReview": {
+        "assetSha256": "45385553f42f8ddea1a19a865a34b60294f6fd9f481419cfce1dbfa44f1a10b4",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.16,
+        "components": {
+          "stadium": 9,
+          "photorealism": 8.8,
+          "branding": 9.4,
+          "occupancy": 9.3,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Witte dakbogen en glazen kantoorhoek boven volle rode tribunes. Vlag en boarding met Veldio.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "fcutrecht",
+        "reviewedStadiumIdentity": "home:fcutrecht",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "45385553f42f8ddea1a19a865a34b60294f6fd9f481419cfce1dbfa44f1a10b4",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-telstar-preview-day",
+      "file": "public/stadium116/stadium116-telstar-preview-day.webp",
+      "sha256": "bec81da39c4e9f1e4569849626ae4d56e395dc32c0502a24e78de839800c6fec",
+      "categories": [
+        "preview"
+      ],
+      "clubs": [
+        "Telstar",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "daypart": "day",
+      "sceneDaypart": "day",
+      "stadiumIdentity": "home:telstar",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Sportpark Schoonenberg",
+        "711 Stadion",
+        "BUKO Stadion",
+        "Schoonenberg Stadion"
+      ],
+      "subject": "Sportpark Schoonenberg",
+      "variant": "preview-day",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 c76ffe533e1ddd60dacd02fdf86a6f8f6a9aaffc15ff72bf34bd573e0d050186",
+      "caption": "AI-illustratie van Sportpark Schoonenberg voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "c76ffe533e1ddd60dacd02fdf86a6f8f6a9aaffc15ff72bf34bd573e0d050186",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://sctelstar.nl/"
+      },
+      "visualReview": {
+        "assetSha256": "bec81da39c4e9f1e4569849626ae4d56e395dc32c0502a24e78de839800c6fec",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.2,
+        "components": {
+          "stadium": 8.6,
+          "photorealism": 9,
+          "branding": 9.5,
+          "occupancy": 10,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Kleinschalige losse tribunes, lage overkapping, bomen en losse mast achter de open hoek.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "telstar",
+        "reviewedStadiumIdentity": "home:telstar",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "bec81da39c4e9f1e4569849626ae4d56e395dc32c0502a24e78de839800c6fec",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-ajax-report-night",
+      "file": "public/stadium116/stadium116-ajax-report-night.webp",
+      "sha256": "df910e56269beece4ad7f983b68dcd1626b388fc8125594918ab1b74d4aab629",
+      "categories": [
+        "report"
+      ],
+      "clubs": [
+        "Ajax",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "daypart": "night",
+      "sceneDaypart": "night",
+      "stadiumIdentity": "home:ajax",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Johan Cruijff ArenA",
+        "Amsterdam ArenA"
+      ],
+      "subject": "Johan Cruijff ArenA",
+      "variant": "report-night",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 7ae3b93a54adbb9dce8cbf8a3c9fa28daa344efc35734e3af6e3d1b6010324d7",
+      "caption": "AI-illustratie van Johan Cruijff ArenA voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "7ae3b93a54adbb9dce8cbf8a3c9fa28daa344efc35734e3af6e3d1b6010324d7",
+        "generation": "ChatGPT ImageGen",
+        "reused": false,
+        "nativeDimensions": [
+          1672,
+          940
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://www.johancruijffarena.nl/stadion/"
+      },
+      "visualReview": {
+        "assetSha256": "df910e56269beece4ad7f983b68dcd1626b388fc8125594918ab1b74d4aab629",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.33,
+        "components": {
+          "stadium": 9,
+          "photorealism": 9.1,
+          "branding": 9.5,
+          "occupancy": 10,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Gevulde rode ringen onder verlichte dakliggers, neutrale supporters en een leeg speelveld.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "ajax",
+        "reviewedStadiumIdentity": "home:ajax",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "df910e56269beece4ad7f983b68dcd1626b388fc8125594918ab1b74d4aab629",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-ajax-report-day",
+      "file": "public/stadium116/stadium116-ajax-report-day.webp",
+      "sha256": "da0968a352086cf7657da277712f65b7567712c721e8cdf7dc6dbf74d7d057d5",
+      "categories": [
+        "report"
+      ],
+      "clubs": [
+        "Ajax",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "daypart": "day",
+      "sceneDaypart": "day",
+      "stadiumIdentity": "home:ajax",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Johan Cruijff ArenA",
+        "Amsterdam ArenA"
+      ],
+      "subject": "Johan Cruijff ArenA",
+      "variant": "report-day",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 e156a730480d5318a522d490c87e005d873e62eabf49a1620390adfc10689aa3",
+      "caption": "AI-illustratie van Johan Cruijff ArenA voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "e156a730480d5318a522d490c87e005d873e62eabf49a1620390adfc10689aa3",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://www.johancruijffarena.nl/stadion/"
+      },
+      "visualReview": {
+        "assetSha256": "da0968a352086cf7657da277712f65b7567712c721e8cdf7dc6dbf74d7d057d5",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.28,
+        "components": {
+          "stadium": 9.1,
+          "photorealism": 9,
+          "branding": 9.4,
+          "occupancy": 9.6,
+          "lighting": 10,
+          "technical": 9.1
+        },
+        "observations": "Open dak met witte liggers, schaduw van de dakrand en volle tribunes met onbedrukte vlaggen.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "ajax",
+        "reviewedStadiumIdentity": "home:ajax",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "da0968a352086cf7657da277712f65b7567712c721e8cdf7dc6dbf74d7d057d5",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-excelsior-preview-day",
+      "file": "public/stadium116/stadium116-excelsior-preview-day.webp",
+      "sha256": "c365322f99d6468b05c6323d82cbcf5899e25b562ebd1de79a08fb3f3b3e80bf",
+      "categories": [
+        "preview"
+      ],
+      "clubs": [
+        "Excelsior Rotterdam",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "preview",
+      "stadiumOccupancy": "empty",
+      "daypart": "day",
+      "sceneDaypart": "day",
+      "stadiumIdentity": "home:excelsiorrotterdam",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Stadion Woudestein",
+        "Woudestein"
+      ],
+      "subject": "Stadion Woudestein",
+      "variant": "preview-day",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 6b71ab69ff8b75d70a517b45a0e34e9ce5c19d4b59ec665c3af48e6fa4f744b5",
+      "caption": "AI-illustratie van Stadion Woudestein voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "6b71ab69ff8b75d70a517b45a0e34e9ce5c19d4b59ec665c3af48e6fa4f744b5",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://excelsiorrotterdam.nl/club/algemene-informatie/"
+      },
+      "visualReview": {
+        "assetSha256": "c365322f99d6468b05c6323d82cbcf5899e25b562ebd1de79a08fb3f3b3e80bf",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.19,
+        "components": {
+          "stadium": 8.7,
+          "photorealism": 9.1,
+          "branding": 9.2,
+          "occupancy": 10,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Lage zwart-rode stoelvakken, compact veld, bomen en zicht op de Rotterdamse achtergrond.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "excelsiorrotterdam",
+        "reviewedStadiumIdentity": "home:excelsiorrotterdam",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "c365322f99d6468b05c6323d82cbcf5899e25b562ebd1de79a08fb3f3b3e80bf",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-excelsior-report-night",
+      "file": "public/stadium116/stadium116-excelsior-report-night.webp",
+      "sha256": "d2adbb7ed03747226fb181576b56c87a6ecaef5096488aff9a9a0adddce9d350",
+      "categories": [
+        "report"
+      ],
+      "clubs": [
+        "Excelsior Rotterdam",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "daypart": "night",
+      "sceneDaypart": "night",
+      "stadiumIdentity": "home:excelsiorrotterdam",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Stadion Woudestein",
+        "Woudestein"
+      ],
+      "subject": "Stadion Woudestein",
+      "variant": "report-night",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 d0b25cc9a0f9658f4cb110bc3a97b1c8838e2989f6279ae493cdbc7a003d38ec",
+      "caption": "AI-illustratie van Stadion Woudestein voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "d0b25cc9a0f9658f4cb110bc3a97b1c8838e2989f6279ae493cdbc7a003d38ec",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://excelsiorrotterdam.nl/club/algemene-informatie/"
+      },
+      "visualReview": {
+        "assetSha256": "d2adbb7ed03747226fb181576b56c87a6ecaef5096488aff9a9a0adddce9d350",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.08,
+        "components": {
+          "stadium": 8.6,
+          "photorealism": 9,
+          "branding": 9.2,
+          "occupancy": 9.4,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Compacte lage eindtribune dicht op het veld, zwart-rode vlaggen, hoge losse mast bij nacht.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "excelsiorrotterdam",
+        "reviewedStadiumIdentity": "home:excelsiorrotterdam",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "d2adbb7ed03747226fb181576b56c87a6ecaef5096488aff9a9a0adddce9d350",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-telstar-report-night",
+      "file": "public/stadium116/stadium116-telstar-report-night.webp",
+      "sha256": "d1c04215ab77189cedcd55d2a07c78f2158ff9c7ab5a424a7abad1a017e0b3f3",
+      "categories": [
+        "report"
+      ],
+      "clubs": [
+        "Telstar",
+        "*"
+      ],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "imageKind": "report",
+      "stadiumOccupancy": "full",
+      "daypart": "night",
+      "sceneDaypart": "night",
+      "stadiumIdentity": "home:telstar",
+      "homeClubReusable": true,
+      "homeVenueAliases": [
+        "Sportpark Schoonenberg",
+        "711 Stadion",
+        "BUKO Stadion",
+        "Schoonenberg Stadion"
+      ],
+      "subject": "Sportpark Schoonenberg",
+      "variant": "report-night",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original commissioned Veldio AI illustration; image generation output SHA-256 497a48f2b7ca8f123664fe4469a72f9909cd6551ef4250f2b7385ddda877e000",
+      "caption": "AI-illustratie van Sportpark Schoonenberg voor Veldio.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "497a48f2b7ca8f123664fe4469a72f9909cd6551ef4250f2b7385ddda877e000",
+        "generation": "ChatGPT ImageGen",
+        "reused": true,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ],
+        "architectureReference": "https://sctelstar.nl/"
+      },
+      "visualReview": {
+        "assetSha256": "d1c04215ab77189cedcd55d2a07c78f2158ff9c7ab5a424a7abad1a017e0b3f3",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "score": 9.1,
+        "components": {
+          "stadium": 8.8,
+          "photorealism": 9,
+          "branding": 9,
+          "occupancy": 9.5,
+          "lighting": 10,
+          "technical": 9
+        },
+        "observations": "Lage volle zijtribune tussen bomen, losse staande mast en open stadionhoek onder avondverlichting.",
+        "style": "photorealistic",
+        "clubScope": "home-only",
+        "scopeHome": "telstar",
+        "reviewedStadiumIdentity": "home:telstar",
+        "checked": {
+          "photorealism": true,
+          "clubNames": true,
+          "stadiumContext": true,
+          "rights": true,
+          "aiNotDocumentary": true
+        }
+      },
+      "brandingAudit115": {
+        "assetSha256": "d1c04215ab77189cedcd55d2a07c78f2158ff9c7ab5a424a7abad1a017e0b3f3",
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25",
+        "status": "passed",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true
+      }
+    },
+    {
+      "id": "stadium116-neutral-football",
+      "file": "public/stadium116/neutral-football.webp",
+      "sha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
+      "categories": [
+        "match-fallback"
+      ],
+      "clubs": [],
+      "competitions": [],
+      "keywords": [],
+      "questionIds": [],
+      "daypart": "neutral",
+      "subject": "Voetbal op gras bij de zijlijn",
+      "variant": "neutrale voetbalillustratie",
+      "origin": "Veldio / ChatGPT ImageGen",
+      "rights": "original-ai",
+      "rightsEvidence": "Original Veldio generation SHA-256 2c8da7625d8381dec3461316b89b8950c5f88e532f477dce58d9f9d56efcf68c",
+      "caption": "AI-illustratie van een voetbal aan de zijlijn.",
+      "lastUsed": null,
+      "approval": "approved",
+      "reviewer": "Veldio visuele beeldcontrole",
+      "provenance": {
+        "sourceSha256": "2c8da7625d8381dec3461316b89b8950c5f88e532f477dce58d9f9d56efcf68c",
+        "generation": "ChatGPT ImageGen",
+        "reused": false,
+        "nativeDimensions": [
+          1672,
+          941
+        ],
+        "encodedDimensions": [
+          1664,
+          936
+        ],
+        "crop": [
+          4,
+          2,
+          1664,
+          936
+        ]
+      },
+      "neutralMatchReview": {
+        "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
+        "score": 9.1,
+        "noVenueOrTeam": true,
+        "reviewedAt": "2026-11-25",
+        "observations": "Veelkleurige bal bij trainingshesjes en een witte zijlijn, natuurlijke textuur. Geen club, stadion, spelers, tekst of wedstrijdhandeling."
+      },
+      "brandingAudit115": {
+        "status": "passed",
+        "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
+        "veldioOnly": true,
+        "noOtherText": true,
+        "noThirdPartyLogos": true,
+        "disclosureOutsideImage": true,
+        "reviewer": "Veldio visuele beeldcontrole",
+        "reviewedAt": "2026-11-25"
+      }
+    }
+  ]
+}

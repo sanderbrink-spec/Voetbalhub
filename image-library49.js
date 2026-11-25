@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {occupancyFor}=require('./match-image-context');
+const selection116=require('./stadium-selection116');
 const premium=require('./premium-match-images72');
 const stadium74=require('./stadium-venue74');
 const ROOT=__dirname,ORIGIN='https://voetbalhub-redactie.onrender.com';
@@ -35,21 +36,43 @@ function validate(rows,{root=ROOT}={}){
  }return rows;
 }
 let checked=null;
-function catalog(){if(!checked)checked=validate(require('./image-library49.json').assets).filter(premium.accepted);return checked;}
+function catalog(){
+ if(!checked){
+  const existing=require('./image-library49.json').assets;
+  const additions=require('./stadium-catalog116.json').assets;
+  const all=validate([...existing,...additions]);
+  const hashes=new Set(existing.map(asset=>asset.sha256));
+  for(const asset of additions){
+   if(hashes.has(asset.sha256))throw Error('Dubbele stadionafbeelding: '+asset.id);
+   hashes.add(asset.sha256);
+  }
+  checked=all.filter(premium.accepted);
+ }
+ return checked;
+}
 function context(payload){const I=require('./editorial-image44'),p=I.classify(payload),d=payload.draft||payload,text=[d.headline,d.standfirst].join(' ').toLowerCase();let category=payload.imageCategory||payload.articleKind;
+ if(category==='match_preview')category='preview';
  if(['match_report','score_update'].includes(category))category='report';
  if(!categories.includes(category))category=p.category==='match'?'preview':p.category==='transfer'?(/gerucht|mogelijk|interesse/.test(text)?'rumour':'transfer'):'club';
  for(const [re,c] of [[/contractverleng|verlengt/, 'contract'],[/blessur|revalid|geblesseerd/,'injury'],[/trainer|tactiek|formatie/,'tactics'],[/schorsing|geschorst/,'suspension'],[/interview|persconferentie/,'interview'],[/jeugd|talent/,'youth'],[/kampioen|titel/,'championship'],[/statistiek|analyse/,'analysis'],[/supporter|stadion/,'supporters']])if(!['preview','report'].includes(category)&&re.test(text)){category=c;break;}
- const f=payload.fixture||payload.match||{};return {category,fixtureId:payload.matchId,clubs:p.clubs.map(c=>c.name),competition:f.competition||payload.competition||payload.category||'',daypart:daypart(f),
-  stadiumIdentity:require('./match-image-context').stadiumFor(f,p.clubs[0]?.name),
+ const f=payload.fixture||payload.match||{};
+ const home=f.homeTeam||f.home?.name,away=f.awayTeam||f.away?.name;
+ const clubs=home&&away?[home,away]:p.clubs.map(c=>c.name);
+ return {category,fixtureId:payload.matchId||f.id,fixtureStatus:f.status,lighting:selection116.lighting(f),clubs,competition:f.competition||payload.competition||payload.category||'',daypart:daypart(f),
+  stadiumIdentity:require('./match-image-context').stadiumFor(f,clubs[0]),
   venueName:f.venue?.name||f.venueName||'',articleId:payload.id||d.id||p.identity};
 }
 // Solar elevation uses verified venue coordinates and an absolute kickoff; otherwise neutral.
-function daypart(f){const stamp=f.date||f.playedAt,lat=f.venue?.latitude,lon=f.venue?.longitude;if(!/(Z|[+-]\d\d:\d\d)$/.test(stamp||'')||!Number.isFinite(Date.parse(stamp))||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return 'neutral';const t=new Date(stamp),n=Math.floor((Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate())-Date.UTC(t.getUTCFullYear(),0,0))/86400000),g=2*Math.PI/365*(n-1+(t.getUTCHours()-12)/24),eq=229.18*(.000075+.001868*Math.cos(g)-.032077*Math.sin(g)-.014615*Math.cos(2*g)-.040849*Math.sin(2*g)),dec=.006918-.399912*Math.cos(g)+.070257*Math.sin(g)-.006758*Math.cos(2*g)+.000907*Math.sin(2*g)-.002697*Math.cos(3*g)+.00148*Math.sin(3*g),ha=((t.getUTCHours()*60+t.getUTCMinutes()+eq+4*lon)/4-180)*Math.PI/180,phi=lat*Math.PI/180,elevation=Math.asin(Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(ha))*180/Math.PI;return elevation>6?'day':elevation>=-6?'twilight':'night';}
+function daypart(f){
+ const elevation=selection116.solarElevation(f);
+ if(elevation===null)return 'neutral';
+ return elevation>6?'day':elevation>=-6?'twilight':'night';
+}
 // A reusable home-stadium illustration is tied to the visible lighting in
 // the actual raster, even if legacy metadata says "neutral". Never interpret
 // "neutral" as permission to use a night scene for an unverified day match.
-function daypartMatches(asset,actual){
+function daypartMatches(asset,actual,lighting){
+ if(asset?.provenance && asset.homeClubReusable && lighting)actual=lighting;
  if(asset?.homeClubReusable===true&&['preview','report'].includes(asset.imageKind)){
   if(!['day','twilight','night'].includes(asset.sceneDaypart)||
      !['day','twilight','night'].includes(actual))return false;
@@ -58,17 +81,20 @@ function daypartMatches(asset,actual){
  }
  return asset?.daypart==='neutral'||asset?.daypart===actual;
 }
-function choose(ctx,rows=catalog(),usage={}){let candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes(ctx.category)&&(!a.fixtureId||a.fixtureId===ctx.fixtureId)&&(!a.competitions.length||a.competitions.includes(ctx.competition))&&(!a.clubs.length||a.clubs.length===(ctx.clubs||[]).length&&(a.homeClubReusable ? a.clubs[1]==='*' && norm(a.clubs[0])===norm(ctx.clubs[0]) : a.clubs.every((c,i)=>norm(c)===norm(ctx.clubs[i]))))&&daypartMatches(a,ctx.daypart));
+function choose(ctx,rows=catalog(),usage={}){if(!selection116.compatibleStatus(ctx.category,ctx.fixtureStatus))return null;
+ let candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes(ctx.category)&&(!a.fixtureId||a.fixtureId===ctx.fixtureId)&&(!a.competitions.length||a.competitions.includes(ctx.competition))&&(!a.clubs.length||a.clubs.length===(ctx.clubs||[]).length&&(a.homeClubReusable ? a.clubs[1]==='*' && norm(a.clubs[0])===norm(ctx.clubs[0]) : a.clubs.every((c,i)=>norm(c)===norm(ctx.clubs[i]))))&&daypartMatches(a,ctx.daypart,ctx.lighting));
  if(['preview','report','match-analysis','recap'].includes(ctx.category)){
   candidates=candidates.filter(a=>stadium74.allowedForMatch(a,{...ctx,category:ctx.category==='preview'?'preview':'report'}));
  }
+ if(!candidates.length){const neutral=selection116.neutralFor(ctx,rows);if(neutral)return neutral;}
  if(ctx.category==='quiz')candidates=candidates.filter(a=>a.questionIds.includes(ctx.questionId)&&a.answerSafe===true);if(!candidates.length&&!['quiz','preview','report','match-analysis','recap'].includes(ctx.category))candidates=rows.filter(a=>premium.accepted(a)&&a.categories.includes('neutral')&&!a.clubs.length&&a.daypart==='neutral');return candidates.sort((a,b)=>Number(Boolean(b.fixtureId))-Number(Boolean(a.fixtureId))||Number(Boolean(b.clubs.length))-Number(Boolean(a.clubs.length))||Number(b.daypart===ctx.daypart)-Number(a.daypart===ctx.daypart)||(Date.parse(usage[a.id]||a.lastUsed)||0)-(Date.parse(usage[b.id]||b.lastUsed)||0)||sha(ctx.articleId+':'+a.id).localeCompare(sha(ctx.articleId+':'+b.id)))[0]||null;}
 function fields(a, context){
  return {
   imageUrl:ORIGIN+'/'+a.file.slice(7).replace(/\.svg$/,'.webp'), imageAssetId:a.id, imageRights:'cleared',
-  imageSource:'Veldio · illustratie', imageCredit:a.caption,
+  imageSource:'Veldio · illustratie', imageCredit:a.caption,imageCaption:a.caption,
   ...(a.rights==='original-ai'?{imageLicenseUrl:a.rightsEvidence.startsWith('https://')?a.rightsEvidence:undefined}:{}),
   imageReview:{method:'approved-library49',mode:'approved-library',pipelineVersion:49,
+   ...(selection116.approvedNeutral(a)&&context?.imageIdentity?{neutralFootballIllustration:true,imageIdentity:context.imageIdentity}:{}),
    assetSha256:a.sha256,kitVerified:true,playerIdentityVerified:true,aiDisclosureVerified:true,clubs:a.clubs,
    ...(a.imageKind?{imageKind:a.imageKind,stadiumOccupancy:a.stadiumOccupancy,stadiumIdentity:a.stadiumIdentity,
      ...(a.homeClubReusable?{homeClubReusable:true}:{}),
@@ -102,10 +128,15 @@ function serve(req,res,pathname){
  if(!['GET','HEAD'].includes(req.method))return false;
  const asset=catalog().find(a=>'/'+a.file.slice(7).replace(/\.svg$/,'.webp')===pathname);
  if(!asset)return false;
+ const etag='"'+asset.sha256+'"';
+ if(!asset.file.endsWith('.svg')&&req.headers?.['if-none-match']===etag){
+  res.writeHead(304,{'ETag':etag,'Cache-Control':'public,max-age=86400'});
+  res.end();return true;
+ }
  const answer=bytes=>{
   if(res.writableEnded)return;
   res.writeHead(200,{'Content-Type':asset.file.endsWith('.svg')||asset.file.endsWith('.webp')?'image/webp':asset.file.endsWith('.png')?'image/png':'image/jpeg',
-   'Content-Length':bytes.length,'Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'});
+   ...(asset.file.endsWith('.svg')?{}:{ETag:etag}),'Content-Length':bytes.length,'Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'});
   res.end(req.method==='HEAD'?undefined:bytes);
  };
  if(asset.file.endsWith('.svg')){

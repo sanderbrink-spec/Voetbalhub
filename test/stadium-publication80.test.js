@@ -8,6 +8,7 @@ const staged=require('../image-library49.json').assets.filter(a=>a.homeClubReusa
 
 // All receipts in this test are synthetic fixtures. No real image is approved or released.
 function syntheticApproved(a){
+ a={...a,sha256:require('node:crypto').createHash('sha256').update('fixture '+a.id).digest('hex')};
  const home=norm(a.clubs[0]);
  return {...a,id:'synthetic-'+a.id,manualReview115:undefined,brandingAudit115:require('../test-support/branding-fixture115')(a.sha256),approval:'approved',reviewer:'Synthetic QA only',visualReview:{
   score:8.5,style:'photorealistic',assetSha256:a.sha256,

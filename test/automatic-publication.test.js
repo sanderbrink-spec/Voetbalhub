@@ -1430,6 +1430,7 @@ function isolatedInternationalImage115(t,id){
 }
 
 test('verified match detail resolves the existing Berlin illustration from the abbreviated calendar venue',async t=>{
+ require('../test-support/catalogue-before116')(t);
  const {enrichPreview}=require('../scripts/editorial-international');
  const {uploadCover}=require('../scripts/automatic-publication');
  const url='https://www.onsoranje.nl/teams/185184/programma/wedstrijd/334660';
@@ -1454,6 +1455,7 @@ test('verified match detail resolves the existing Berlin illustration from the a
 });
 
 test('verified international preview keeps its fixture artwork across draft storage and feed rendering',async t=>{
+ require('../test-support/catalogue-before116')(t);
  const {cleanPayload,fingerprint}=require('../editorial-drafts');
  const {resolve}=require('../image-rotation65');
  const {uploadCover}=require('../scripts/automatic-publication');
@@ -1476,6 +1478,7 @@ test('verified international preview keeps its fixture artwork across draft stor
 });
 
 test('short verified Germany venue names retain the approved international preview image',t=>{
+ require('../test-support/catalogue-before116')(t);
  const {resolve}=require('../image-rotation65');
  const fixture={id:'uefa-2047909',homeTeam:'Duitsland',awayTeam:'Nederland',date:'2026-11-16T19:45:00.000Z'};
  const synthetic=isolatedInternationalImage115(t,'veldio97c-duitsland-nederland-preview');

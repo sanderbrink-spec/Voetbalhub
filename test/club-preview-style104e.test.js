@@ -31,6 +31,7 @@ test('104E: geen feitenparafrase wanneer expliciete bewijskaart ontbreekt',()=>{
  assert.deepEqual(repairVerifiedClubPreviewForm(draft,[]),draft);
 });
 test('104E: uitsluitend exact 104D-afgekeurd manuscript wordt eenmalig voor normale controle heropend',t=>{
+ require('../test-support/catalogue-before116')(t);
  const candidate={kind:'preview',topic:'FC Groningen – SC Heerenveen',category:'Eredivisie',
  fixture,kickoff:Date.parse(fixture.date),facts:facts.map(text=>({text,evidence:[{source:0}]}))};
  const group=Object.assign([{url:'https://www.fcgroningen.nl/nieuws/voorbeeld',title:candidate.topic}],{clubPreview:candidate});

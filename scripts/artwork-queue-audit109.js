@@ -205,7 +205,8 @@ function main(argv=process.argv.slice(2)){
  const read=p=>JSON.parse(fs.readFileSync(path.resolve(p),'utf8'));
  if(opts.fixtures&&opts.sportmonks)throw Error('Eén bewijsbron per auditaanroep');
  const evidence=opts.fixtures?read(opts.fixtures):opts.sportmonks?sportmonksEvidenceBatch(read(opts.sportmonks)):[];
- const r=auditQueue(read(opts.queue),require('../image-library49.json').assets,evidence);
+ const assets=[...require('../image-library49.json').assets,...require('../stadium-catalog116.json').assets];
+ const r=auditQueue(read(opts.queue),assets,evidence);
  if(opts.out)fs.writeFileSync(path.resolve(opts.out),JSON.stringify(r,null,2)+'\n');
  process.stdout.write(JSON.stringify({artworkRetries:r.artworkRetries,classified:r.classified,
   output:opts.out||'stdout_only'})+'\n');

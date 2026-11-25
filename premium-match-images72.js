@@ -7,6 +7,7 @@ const brandingBaseline115 = require('./branding-review-baseline115.json');
 const correctionItems115 = require('./branding-correction-queue115.json').items;
 const knownDefects115 = new Map(correctionItems115.map(item => [item.id, item.originalSha256]));
 const technicalHolds115 = new Map(correctionItems115.filter(item=>item.technicalReview115?.status==='requires-native-resolution-repair').map(item=>[item.id,item.technicalReview115.assetSha256]));
+const ownerRejectedHashes = new Set(require('./owner-replacement-queue115e.json').items.map(row => row.rejectedSha256));
 const MATCH = new Set(['preview','report','match-analysis','recap']);
 const MIN_SCORE = 8.5;
 const isMatch = asset => Boolean(asset && (asset.fixtureId || asset.imageKind ||
@@ -60,7 +61,7 @@ function brandingAllowed(asset) {
  return fullBrandingReview(asset);
 }
 function accepted(asset) {
- if(!asset || asset.approval!=='approved' || !asset.reviewer ||
+ if(!asset || ownerRejectedHashes.has(asset.sha256) || asset.approval!=='approved' || !asset.reviewer ||
     !asset.rightsEvidence) return false;
  // A later individual review takes precedence over any legacy approval.
  // A manual review is valid only for the exact reviewed bytes.
