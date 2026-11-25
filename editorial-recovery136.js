@@ -233,4 +233,21 @@ function publicationBlocker(report){
   return 'editorial_rejected';
  return null;
 }
-module.exports={summarizeQueue105A,classifyFinalStatus105A,REVISION,reopenVerifiedMatch,reopenVerifiedMatchNames106C,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,reopenUtrechtNecDualScorerV71,reopenUtrechtNecVerifiedGoalClauseV71,publicationBlocker};
+
+// Retry exactly the proven false positive recorded for two European results.
+// No old approvals, text, unknown errors or stale fixtures are carried over.
+function reopenEuropeanCompetitionName123(job,record,now=Date.now()){
+ const at=Date.parse(record?.publishedAt||'');
+ if(!job||!record||!/^fd-cl-\d+$/.test(record.matchId||'')||job.matchId!==record.matchId||
+  record.category!=='Champions League'||!Array.isArray(record.verifiedFacts)||
+  !record.verifiedFacts.some(f=>typeof f==='string'&&/\bChampions League\b/.test(f))||
+  !Number.isFinite(at)||at>now||now-at>48*3600000||
+  job.status!=='review'||job.failureStage!=='quality'||job.failureCategory!=='journalistic_rejection'||
+  job.errorHash!=='b61cdb9bed18626ae3b76de631a3fafe8ff1ba01a1c47cea64394f4a5172d172'||
+  job.europeanCompetitionNameRecovery123)return false;
+ job.europeanCompetitionNameRecovery123=true;job.status='pending';job.attempts=0;job.nextAttemptAt=now;
+ delete job.checkpoint;
+ return true;
+}
+
+module.exports={reopenEuropeanCompetitionName123,summarizeQueue105A,classifyFinalStatus105A,REVISION,reopenVerifiedMatch,reopenVerifiedMatchNames106C,reopenUtrechtNecAfterChronologyV71,reopenUtrechtNecScoreOrientationV71,reopenUtrechtNecHalfTimeV71,reopenUtrechtNecPassiveLanguageV71,reopenUtrechtNecScorerClubV71,reopenUtrechtNecDualScorerV71,reopenUtrechtNecVerifiedGoalClauseV71,publicationBlocker};
