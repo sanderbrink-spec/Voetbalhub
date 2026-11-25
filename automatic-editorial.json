@@ -35,6 +35,18 @@
   ],
   "newsIndexes": [
     {
+      "url": "https://www.uefa.com/uefachampionsleague/",
+      "articlePath": "^/uefachampionsleague/news/02[a-z0-9-]+/?$"
+    },
+    {
+      "url": "https://www.uefa.com/uefaeuropaleague/",
+      "articlePath": "^/uefaeuropaleague/news/02[a-z0-9-]+/?$"
+    },
+    {
+      "url": "https://www.uefa.com/uefaconferenceleague/",
+      "articlePath": "^/uefaconferenceleague/news/02[a-z0-9-]+/?$"
+    },
+    {
       "url": "https://www.uefa.com/uefanationsleague/",
       "articlePath": "^/uefanationsleague/news/02[a-z0-9-]+/?$"
     },
