@@ -140,12 +140,30 @@ function researchPriority(group={}){
  if(group.contradictory)return 1;
  return 0;
 }
+// Calendar-sensitive lead signals are research hints, never verified facts.
+function europeanResearchPriority(group={}){
+ const title=[group.subject,...(group.sources||[]).map(s=>s.title)].filter(Boolean).join(' ');
+ if(!/\b(?:champions league|europa league|conference league)\b/i.test(title))return 0;
+ return /\b(?:ajax|psv|feyenoord|az|fc twente|fc utrecht|go ahead eagles)\b/i.test(title)?2:1;
+}
+// A fresh signal missed because the model budget was occupied is not lost.
+// Reconsider only currently visible, recent groups that have never received
+// research for this exact source set. No additional allowance or publication.
+function researchCandidates(groups,newLeads,notes,now){
+ const fresh=new Set(newLeads.map(x=>x.url));
+ const researched=new Set(notes.map(x=>x.groupKey));
+ return prioritizeResearchGroups(groups.filter(g=>g.agents.length&&!researched.has(g.id)&&(
+  g.sources.some(s=>fresh.has(s.url))||
+  g.sources.some(s=>{const t=Date.parse(s.publishedAt||'');return Number.isFinite(t)&&t<=now&&now-t<=12*3600000;})
+ )));
+}
 function prioritizeResearchGroups(groups=[]){
  if(!Array.isArray(groups))return [];
  const latest=group=>Math.max(0,...(Array.isArray(group.sources)?group.sources:[])
   .map(s=>Date.parse(s?.publishedAt||'')).filter(Number.isFinite));
  return [...groups].sort((a,b)=>
   researchPriority(b)-researchPriority(a)||
+  europeanResearchPriority(b)-europeanResearchPriority(a)||
   new Set(b.outlets||[]).size-new Set(a.outlets||[]).size||
   latest(b)-latest(a)||
   String(a.id||'').localeCompare(String(b.id||'')));
@@ -284,12 +302,12 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
  const matched=AGENTS.map(agent=>({id:agent.id,name:agent.name,beat:agent.beat,
   scanned:classified.leads.filter(l=>l.agentIds.includes(agent.id)).length,
   new: newLeads.filter(l=>l.agentIds.includes(agent.id)).length}));
- const candidates=prioritizeResearchGroups(classified.groups.filter(g=>g.agents.length&&g.sources.some(s=>newLeads.some(x=>x.url===s.url))));
+ const candidates=researchCandidates(classified.groups,newLeads,next.researchNotes,now);
  const knownNotes=new Set(next.researchNotes.map(n=>n.agentId+':'+n.groupKey));
  let calls=0,singleOutletResearchCalls=0,singleOutletWithoutPassage=0;
  if(runAI&&apiKey&&dailyBudget(next,now)>0){
   for(const group of candidates){
-   if(calls>=Math.min(MAX_AI_PER_SCAN,dailyBudget(next,now)))break;
+   if(calls>=MAX_AI_PER_SCAN||dailyBudget(next,now)<=0)break;
    // A single media outlet may now open an INTERNAL investigative question,
    // but only when a dated substantive RSS excerpt is actually available.
    // Title-only solo leads are skipped. Neither is independent evidence.
@@ -336,7 +354,7 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
    .map(n=>({agentId:n.agentId,formatScore:n.trainingAudit.formatScore,
     issues:n.trainingAudit.issues,metric:n.trainingAudit.metric})),
   researchPriorityOrder:candidates.slice(0,12).map(g=>({groupId:g.id,
-   priority:researchPriority(g),multipleOutlets:g.outlets.length>=2,
+   priority:researchPriority(g),europeanPriority:europeanResearchPriority(g),multipleOutlets:g.outlets.length>=2,
    independenceVerified:false,rumour:g.rumour,contradictory:g.contradictory})),
   publicationAttempts:0,published:0,
   warning:'RSS-signalen zijn niet onafhankelijk geverifieerd. Geruchten mogen uitsluitend na aparte bron- en rechtencontrole als gerucht worden gepubliceerd.'
@@ -374,4 +392,4 @@ if(require.main===module)main().then(report=>{
  console.log(JSON.stringify({status:report.status,signals:report.signals,newSignals:report.newSignals,agents:report.agents,rumourGroups:report.rumourGroups,aiCalls:report.aiCalls,publicationAttempts:0,published:0,feedErrors:report.feedErrors}));
  if(report.feedsOk===0)process.exitCode=1;
 }).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,researchPriority,prioritizeResearchGroups,dailyBudget,chooseResearchAgent,analyzeWithAI,scan,readState,writeState,main};
+module.exports={researchCandidates,europeanResearchPriority,FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,researchPriority,prioritizeResearchGroups,dailyBudget,chooseResearchAgent,analyzeWithAI,scan,readState,writeState,main};
