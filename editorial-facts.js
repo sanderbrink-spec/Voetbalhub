@@ -84,6 +84,7 @@
   // must never forgive an unsupported person/place called "In de Premier".
   const verifiedCompetitionOpening=({name,suffix})=>
    (name==='In de Premier'&&/^ League\b/.test(suffix)&&/\bpremier league\b/.test(known))||
+   (['In de Champions','In de Europa','In de Conference'].includes(name)&&/^ League\b/.test(suffix)&&known.includes(normalize(name.slice(6)+' League')))||
    (name==='In de Keuken'&&/^ Kampioen Divisie\b/.test(suffix)&&/\bkeuken kampioen divisie\b/.test(known));
   const verifiedStadiumArticle=name=>/^(?:De Johan|Het Olympiastadion)$/i.test(name)&&
    (name.toLowerCase().includes('johan')?/\bjohan cruijff arena\b/.test(known):/\bolympiastadion\b/.test(known));
