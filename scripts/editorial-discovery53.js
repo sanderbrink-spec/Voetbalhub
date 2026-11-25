@@ -101,7 +101,7 @@ function confirmedClubSquad(doc){
  const title=String(doc.title||''),text=String(doc.text||'');
  if(!club||!/(?:\bselectie\b|\b(?:travelling|traveling|confirmed) squad\b)/i.test(title)||
   /\b(?:gerucht|verwacht|mogelijke|vermoedelijke|predicted|expected|rumou?r|women|vrouwen|academy|onder \d+|jong ajax|jong psv|u[12]\d)\b/i.test(title))return false;
- const c=club.replace(/[.*+?^$(){}|[\]\\]/g,'\\module.exports = { articleUrl, officialSourceAuthority, discoverGdelt, researchTerms, discoverCorroboration };');
+ const c=club; // club names come only from the fixed dictionary above.
  const confirmation=new RegExp('(?:^|\\b)'+c+'(?: FC)?\\s+(?:is met de volgende selectie afgereisd|reist met de volgende selectie af|heeft de volgende selectie bekendgemaakt|heeft zijn selectie bekendgemaakt|have named (?:their|a|the) (?:travelling |traveling )?squad|has named (?:its|a|the) (?:travelling |traveling )?squad)\\s*[:.]','i');
  return confirmation.test(text);
 }
