@@ -710,6 +710,14 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
     }
   }
   // Internal subscription inventory. No raw provider records or tokens leave this route.
+  if (req.method === 'GET' && url.pathname === '/editorial-sportmonks-entitlements') {
+    if (!authorizeRequest(req,res)) return;
+    const report=await require('./sportmonks-entitlements126b').cachedInspect({
+      token:process.env.SPORTMONKS_API_TOKEN?.trim(),
+      sourceBody:require('./football-data47').sourceBody
+    });
+    return send(res,200,report);
+  }
   if (req.method === 'GET' && url.pathname === '/editorial-sportmonks-coverage') {
     if (!authorizeRequest(req,res)) return;
     const report=await require('./sportmonks-coverage126').cachedAudit({
