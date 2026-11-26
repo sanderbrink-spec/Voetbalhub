@@ -709,6 +709,15 @@ $('draft').onclick=async()=>{ $('draft').disabled=true;try{const r=await fetch('
         coverage:'verified_recent_finals_only',fixtures:[],standings:[]});
     }
   }
+  // Internal subscription inventory. No raw provider records or tokens leave this route.
+  if (req.method === 'GET' && url.pathname === '/editorial-sportmonks-coverage') {
+    if (!authorizeRequest(req,res)) return;
+    const report=await require('./sportmonks-coverage126').cachedAudit({
+      token:process.env.SPORTMONKS_API_TOKEN?.trim(),
+      sourceBody:require('./football-data47').sourceBody
+    });
+    return send(res,200,report);
+  }
   if (req.method === 'GET' && url.pathname === '/editorial-sportmonks-statistics') {
     if (!authorizeRequest(req,res)) return;
     const {fixtures}=await football47.get('eredivisie');
