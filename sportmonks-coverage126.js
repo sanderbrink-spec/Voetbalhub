@@ -9,8 +9,10 @@ async function audit({token,fetcher=fetch,sourceBody=async r=>r.text(),now=Date.
  if(!token||!Number.isFinite(now))return {status:'not_configured',requests:0};
  const limit=Math.min(30,Math.max(2,Number.isInteger(maxCalls)?maxCalls:20));
  let requests=0,stop=null;
+ const deadline=Date.now()+40000;
  const errors=[], quotas={};
  async function request(path,params={}){
+  if(Date.now()>=deadline)stop=stop||'time_budget';
   if(stop||requests>=limit){stop=stop||'request_budget';return null;}
   const url=new URL('https://api.sportmonks.com/v3/'+path);
   for(const [key,value] of Object.entries(params))url.searchParams.set(key,String(value));
@@ -71,4 +73,12 @@ async function audit({token,fetcher=fetch,sourceBody=async r=>r.text(),now=Date.
  const leagues=[...catalogue.values()];
  return {status:!stop&&!errors.length&&leagues.every(l=>l.windowComplete)?'complete':'partial',from,to,requests,stop,quotas,errors,subscribed:leagues.length,configured:leagues.filter(l=>l.configured).length,fixtures:seen.size,leagues};
 }
-module.exports={audit};
+let cached=null,pending=null;
+async function cachedAudit(options){
+ if(!options?.token)return {status:'not_configured',requests:0};
+ if(cached&&Date.now()<cached.expires)return cached.report;
+ if(pending)return pending;
+ pending=audit(options).then(report=>{cached={report,expires:Date.now()+15*60000};return report;}).finally(()=>{pending=null;});
+ return pending;
+}
+module.exports={audit,cachedAudit};
