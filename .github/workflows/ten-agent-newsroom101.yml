@@ -6,11 +6,14 @@ on:
     paths:
       - 'scripts/ten-agent-newsroom101.js'
       - 'scripts/newsroom-training112.js'
+      - 'scripts/newsroom-specialists128.js'
+      - 'scripts/newsroom-intelligence129.js'
+      - 'test/newsroom-development-capacity132.test.js'
       - 'test/newsroom-training112.test.js'
       - 'test/ten-agent-single-source112b.test.js'
       - '.github/workflows/ten-agent-newsroom101.yml'
   schedule:
-    # Light RSS discovery only; daily AI-call cap remains unchanged.
+    # Development: no internal count cap; provider and runtime safeguards remain.
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
 
@@ -33,12 +36,15 @@ jobs:
       - name: Validate ten-agent monitoring and safety policy
         run: |
           node --test test/ten-agent-newsroom101.test.js test/newsroom-training112.test.js test/ten-agent-single-source112b.test.js
+          node --test test/newsroom-development-capacity132.test.js
           node --check scripts/ten-agent-newsroom101.js
           node --check scripts/newsroom-training112.js
       - name: Scan three RSS feeds with ten specialist beats and deduplicate leads
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          VELDIO_SCOUT_DAILY_LIMIT: ${{ vars.VELDIO_SCOUT_DAILY_LIMIT }}
+          VELDIO_SCOUT_SCAN_LIMIT: ${{ vars.VELDIO_SCOUT_SCAN_LIMIT }}
         run: node scripts/ten-agent-newsroom101.js
       - name: Preserve scouting and rumor research report
         if: always()
