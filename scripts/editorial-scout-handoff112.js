@@ -5,11 +5,11 @@ const MAX_AGE_MS=72*60*60*1000;
 const MAX_HANDOFFS=6;
 const MAX_QUESTIONS=2;
 const bad=/\b(?:negeer|overschrijf|systeeminstructie|system prompt|jailbreak|forceer|publiceer|verwijder|geef vrij|bypass|omzeil|automatisch goedkeuren)\b/i;
-const leading=/^(?:(?:bij|in|op|van|door|onder|met)\s+)?(?:wie|wat|waar|wanneer|welk(?:e)?|hoe|waarom|kan|kunnen|heeft|hebben|is|zijn|was|waren|wordt|werden|staat|staan)\b/i;
+const leading=/^(?:(?:bij|in|op|van|door|onder|met)\s+)?(?:wie|wat|waar|wanneer|welk(?:e)?|hoe|waarom|kan|kunnen|heeft|hebben|is|zijn|was|waren|wordt|werden|staat|staan|bevestigt|bevestigen|ontkent|ontkennen|vermeldt|vermelden|onderbouwt|onderbouwen|blijkt|blijken|komt|komen|verschilt|verschillen)\b/i;
 function safeQuestion(raw){
  if(typeof raw!=='string')return null;
  const q=raw.replace(/\s+/g,' ').trim();
- if(q.length<18||q.length>180||!q.endsWith('?')||q.includes('<')||
+ if(q.length<18||q.length>180||!q.endsWith('?')||/[<>]/.test(q)||
     /https?:\/\/|@|[{}]/i.test(q)||bad.test(q)||!leading.test(q))return null;
  return q;
 }
