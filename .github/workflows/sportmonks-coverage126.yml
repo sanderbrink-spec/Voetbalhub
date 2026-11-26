@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - sportmonks-football.js
       - sportmonks-coverage126.js
       - .github/workflows/sportmonks-coverage126.yml
       - sportmonks-entitlements126b.js
@@ -34,14 +35,14 @@ jobs:
           test -n "$HUB_API_SECRET"
           curl -fsS --max-time 65 -H "Authorization: Bearer $HUB_API_SECRET" \
             https://voetbalhub-redactie.onrender.com/editorial-sportmonks-coverage > sportmonks-coverage.json
-          jq '{status,subscribed,configured,fixtures,requests,stop}' sportmonks-coverage.json
+          jq '{status,subscribed,configured,fixtures,requests,stop,leagues}' sportmonks-coverage.json
       - name: Check subscribed features and endpoint reachability
         env:
           HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
         run: |
           curl -fsS --max-time 65 -H "Authorization: Bearer $HUB_API_SECRET" \
             https://voetbalhub-redactie.onrender.com/editorial-sportmonks-entitlements > sportmonks-entitlements.json
-          jq '{status,inventoryComplete,requests,capabilities}' sportmonks-entitlements.json
+          jq '{status,inventoryComplete,requests,featureStatus,resourceStatus,usageStatus,featureNames,resourceNames,capabilities}' sportmonks-entitlements.json
       - name: Retain sanitized coverage report
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,5 +53,15 @@ jobs:
             sportmonks-entitlements.json
           retention-days: 7
           if-no-files-found: warn
-      - name: Require an actual complete inventory
-        run: jq -e '.status == "complete" and .subscribed > 0' sportmonks-coverage.json >/dev/null
+      - name: Verify five paid competitions, complete windows and configuration
+        run: |
+          jq -e '
+            .status == "complete" and
+            .subscribed == 5 and .configured == 5 and
+            ([.leagues[].id] | sort) == [8,72,74,78,1353] and
+            all(.leagues[]; .configured == true and .windowComplete == true)
+          ' sportmonks-coverage.json >/dev/null
+      - name: Require complete entitlement inventory
+        run: |
+          jq -e '.status == "complete" and .inventoryComplete == true and
+            ([.capabilities[].status] | all(. != "not_tested"))' sportmonks-entitlements.json >/dev/null
