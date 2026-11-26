@@ -16,7 +16,7 @@ const subjects={
  'int-italy':'Serie A','int-france':'Ligue 1','int-belgium':'Club Brugge','int-portugal':'Benfica',
  'int-europe':'Celtic','int-uefa':'Champions League','int-oranje':'Nederlands elftal',
  'int-national':'Nations League','int-world':'Libertadores',
- 'tr-rumour':'Transfergeruchten','tr-bid':'Bieding','tr-confirmed':'Officiële transfer',
+ 'tr-rumour':'Transfergerucht: interesse','tr-bid':'Bieding','tr-confirmed':'Officiële transfer',
  'tr-contract':'Contractverlenging','tr-market':'Transfermarkt',
  'data-match':'Wedstrijdanalyse','data-table':'Ranglijst','data-player':'Spelersstatistieken',
  'data-squad':'Selectie','data-calendar':'Wedstrijdschema',
@@ -47,7 +47,7 @@ for(const role of researchers){
     assert.ok(prompt.includes(role.task));
     assert.ok(prompt.includes(I.METHODS[role.desk]));
     return Response.json({choices:[{message:{content:JSON.stringify({
-     angle:'Onderzoek de melding',questions:['Welke onafhankelijke bron kan de melding weerleggen?','Wanneer volgt de volgende officiële bekendmaking?'],
+     angle:'Onderzoek de melding',questions:['Wanneer kan een onafhankelijke bron de melding weerleggen?'],
      caution:'Geen onafhankelijke bevestiging.'
     })}}]});
    }});
@@ -56,7 +56,7 @@ for(const role of researchers){
   assert.equal(note.deskAssignment.owner,role.id);
   assert.equal(note.verified,false);
   assert.equal(note.publicationAllowed,false);
-  assert.equal(note.intelligenceAudit.safeQuestions,2);
+  assert.equal(note.intelligenceAudit.safeQuestions,1);
   const memory=I.remember({},role.id,note.intelligenceAudit,now,S.ROLES);
   assert.deepEqual(Object.keys(memory),[role.id]);
   assert.equal(memory[role.id].attempts,1);
