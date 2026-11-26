@@ -1,0 +1,46 @@
+name: SportsMonks subscription coverage
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - sportmonks-coverage126.js
+      - .github/workflows/sportmonks-coverage126.yml
+permissions:
+  contents: read
+concurrency:
+  group: sportmonks-coverage126
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Verify matching live Render revision
+        run: |
+          for attempt in $(seq 1 45); do
+            if curl -fsS --max-time 8 https://voetbalhub-redactie.onrender.com/ready |
+              jq -e --arg sha "$GITHUB_SHA" '.ready and .revision == $sha' >/dev/null; then
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
+      - name: Run authenticated subscription coverage audit
+        env:
+          HUB_API_SECRET: ${{ secrets.HUB_API_SECRET }}
+        run: |
+          test -n "$HUB_API_SECRET"
+          curl -fsS --max-time 65 -H "Authorization: Bearer $HUB_API_SECRET" \
+            https://voetbalhub-redactie.onrender.com/editorial-sportmonks-coverage > sportmonks-coverage.json
+          jq '{status,subscribed,configured,fixtures,requests,stop}' sportmonks-coverage.json
+      - name: Retain sanitized coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sportmonks-coverage126
+          path: sportmonks-coverage.json
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Require an actual complete inventory
+        run: jq -e '.status == "complete" and .subscribed > 0' sportmonks-coverage.json >/dev/null
