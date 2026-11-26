@@ -181,9 +181,22 @@ function prioritizeResearchGroups(groups=[]){
   latest(b)-latest(a)||
   String(a.id||'').localeCompare(String(b.id||'')));
 }
-function dailyBudget(state,now=Date.now()){
+// Development runs have no artificial request count cap. Launch caps are
+// opt-in, with invalid values failing closed rather than increasing spend.
+function configuredCap(raw,fallback){
+ if(raw===undefined||raw===null||raw==='')return Infinity;
+ const value=String(raw).trim();
+ if(value==='0')return Infinity;
+ if(!/^\d+$/.test(value)||!Number.isSafeInteger(Number(value))||Number(value)<1)return fallback;
+ return Number(value);
+}
+function productionBudget(env={}){
+ return {daily:configuredCap(env.VELDIO_SCOUT_DAILY_LIMIT,MAX_AI_DAILY),
+  perScan:configuredCap(env.VELDIO_SCOUT_SCAN_LIMIT,MAX_AI_PER_SCAN)};
+}
+function dailyBudget(state,now=Date.now(),limit=MAX_AI_DAILY){
  const day=new Date(now).toISOString().slice(0,10);
- return state.day===day?Math.max(0,MAX_AI_DAILY-(state.aiCallsToday||0)):MAX_AI_DAILY;
+ return state.day===day?Math.max(0,limit-(state.aiCallsToday||0)):limit;
 }
 // Choose the specialist by actual beat, not always the rumor monitor.
 // All ten profiles are available; no extra model call is made.
@@ -274,7 +287,7 @@ function detectionLatency(leads,now){
   within15Minutes:delays.filter(n=>n<=15).length,
   note:'Gebaseerd op gepubliceerde RSS-datums; geen garantie op realtime publicatie.'};
 }
-async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}={}){
+async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true,budget={daily:MAX_AI_DAILY,perScan:MAX_AI_PER_SCAN},deadline=Infinity,clock=Date.now}={}){
  const gathered=await Promise.allSettled(FEEDS.map(async source=>{
   const response=await fetcher(source.url,{headers:{Accept:'application/rss+xml, text/xml'},
    redirect:'error',signal:AbortSignal.timeout(15000)});
@@ -320,11 +333,21 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
  const matched=AGENTS.map(agent=>({id:agent.id,name:agent.name,beat:agent.beat,
   scanned:classified.leads.filter(l=>l.agentIds.includes(agent.id)).length,
   new: newLeads.filter(l=>l.agentIds.includes(agent.id)).length}));
- const candidates=researchCandidates(classified.groups,newLeads,next.researchNotes,now);
+ // Keep a small request history separately from full notes so removing the
+ // count cap does not cause repeated billing after the 60-note UI window.
+ const history=new Map();
+ for(const entry of [...(Array.isArray(state.researchHistory)?state.researchHistory:[]),...next.researchNotes]){
+  const t=Date.parse(entry?.at||'');
+  if(!/^[a-f0-9]{24}$/.test(entry?.groupKey||'')||!Number.isFinite(t)||t>now||now-t>retentionMs||
+    typeof entry.status!=='string'||entry.status.length>60)continue;
+  const key=entry.groupKey+':'+entry.at+':'+entry.status;
+  history.set(key,{groupKey:entry.groupKey,at:entry.at,status:entry.status});
+ }
+ const candidates=researchCandidates(classified.groups,newLeads,[...history.values()],now);
  const specialistActivity=specialists.activityFromNotes(next.researchNotes,next.specialistMemory);
  let calls=0,singleOutletResearchCalls=0,singleOutletWithoutPassage=0,recoveryAttempts=0;
- let providerPaused=false;
- if(runAI&&apiKey&&dailyBudget(next,now)>0){
+ let providerPaused=false,executionDeadlineReached=false;
+ if(runAI&&apiKey&&dailyBudget(next,now,budget.daily)>0){
   const remaining=candidates.slice();
   while(remaining.length){
    // Preserve the strongest news priority for the first slot. The second
@@ -333,7 +356,9 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
     specialists.activityCount(specialistActivity,specialists.assign(a,specialistActivity).owner)-
     specialists.activityCount(specialistActivity,specialists.assign(b,specialistActivity).owner));
    const group=remaining.shift();
-   if(calls>=MAX_AI_PER_SCAN||dailyBudget(next,now)<=0)break;
+   if(calls>=budget.perScan||dailyBudget(next,now,budget.daily)<=0)break;
+   // Reserve enough time for a 45-second provider request and checkpoint.
+   if(clock()+45000>=deadline){executionDeadlineReached=true;break;}
    // A single media outlet may now open an INTERNAL investigative question,
    // but only when a dated substantive RSS excerpt is actually available.
    // Title-only solo leads are skipped. Neither is independent evidence.
@@ -343,7 +368,7 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
    if(solo&&!passages.some(p=>typeof p.passage==='string'&&p.passage.trim().length>=120&&
       group.sources.some(source=>source.url===p.url))) {singleOutletWithoutPassage++;continue;}
    const agent=chooseResearchAgent(group);
-   const decision=researchDecision130(group,next.researchNotes,now);
+   const decision=researchDecision130(group,[...history.values()],now);
    if(!agent||!decision.due)continue;
    if(decision.reason==='bounded_recovery')recoveryAttempts++;
    // Both cases share the existing capped call, never a second research call.
@@ -359,10 +384,15 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
    }
    next.researchNotes.push({groupKey:group.id,agentId:agent.id,at:new Date(now).toISOString(),
     subjects:group.sources.map(s=>s.url),...note,publicationAllowed:false});
+   const entry={groupKey:group.id,at:new Date(now).toISOString(),status:note.status};
+   history.set(entry.groupKey+':'+entry.at+':'+entry.status,entry);
    // Avoid spending a second call on a provider that is rate-limited or down.
-   if(/^provider_(?:unavailable|http_(?:429|5\d\d))$/.test(note.status||'')){providerPaused=true;break;}
+   if(/^provider_(?:unavailable|http_\d{3})$/.test(note.status||'')){providerPaused=true;break;}
   }
  }
+ next.researchHistory=[...history.values()].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).slice(0,2000);
+ const currentNotes=next.researchNotes.filter(n=>n.at===new Date(now).toISOString());
+ next.researchNotes=next.researchNotes.slice(-60);
  const report={
   status:errors.length===FEEDS.length?'all_sources_unavailable':'monitoring',
   version:101,at:new Date(now).toISOString(),agents:matched,
@@ -381,17 +411,20 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   multiOutletSignals:classified.groups.filter(g=>g.outlets.length>=2).length,
   rumourGroups:classified.groups.filter(g=>g.rumour).length,
   contradictions:classified.groups.filter(g=>g.contradictory).length,
-  aiCalls:calls,aiCallsToday:next.aiCallsToday,aiDailyLimit:MAX_AI_DAILY,
+  aiCalls:calls,aiCallsToday:next.aiCallsToday,aiDailyLimit:Number.isFinite(budget.daily)?budget.daily:null,
+  aiScanLimit:Number.isFinite(budget.perScan)?budget.perScan:null,
+  capacityMode:Number.isFinite(budget.daily)||Number.isFinite(budget.perScan)?'configured_caps':'development_no_count_caps',
+  executionDeadlineReached,researchHistorySize:next.researchHistory.length,
   singleOutletResearchCalls,singleOutletWithoutPassage,
   autonomousRecovery:{attempts:recoveryAttempts,providerPaused,maxAttemptsPerDossier:3,
    additionalDailyAllowance:0},
   singleOutletAllowedOnlyAsUnverifiedResearch:true,
   candidates:candidates.slice(0,12),
   training:training.coverage(AGENTS),
-  specialistDesk:specialists.coverage(classified.groups,next.researchNotes.filter(n=>n.at===new Date(now).toISOString())),
+  specialistDesk:specialists.coverage(classified.groups,currentNotes),
   intelligence:intelligence.summarize(next.specialistMemory,specialists.ROLES),
   specialistActivity:specialists.activityReport(specialistActivity,classified.groups),
-  trainingAudits:next.researchNotes.filter(n=>n.at===new Date(now).toISOString()&&n.trainingAudit)
+  trainingAudits:currentNotes.filter(n=>n.trainingAudit)
    .map(n=>({agentId:n.agentId,formatScore:n.trainingAudit.formatScore,
     issues:n.trainingAudit.issues,metric:n.trainingAudit.metric})),
   researchPriorityOrder:candidates.slice(0,12).map(g=>({groupId:g.id,
@@ -422,7 +455,8 @@ async function writeState({token,state,sha:blobSha,fetcher=fetch}){
 async function main({fetcher=fetch,env=process.env,now=Date.now()}={}){
  if(!env.GITHUB_TOKEN)throw Error('GitHub token vereist voor veilige, persistente monitoring.');
  const old=await readState({token:env.GITHUB_TOKEN,fetcher});
- const result=await scan({fetcher,now,state:old.state,apiKey:env.GROQ_API_KEY||'',runAI:true});
+ const result=await scan({fetcher,now,state:old.state,apiKey:env.GROQ_API_KEY||'',runAI:true,
+  budget:productionBudget(env),deadline:Date.now()+4*60000});
  fs.mkdirSync('.automatic-output',{recursive:true});
  fs.writeFileSync(OUT,JSON.stringify(result.report,null,2));
  // Do not overwrite earlier successful saved leads when all feeds fail.
@@ -433,4 +467,4 @@ if(require.main===module)main().then(report=>{
  console.log(JSON.stringify({status:report.status,signals:report.signals,newSignals:report.newSignals,agents:report.agents,rumourGroups:report.rumourGroups,aiCalls:report.aiCalls,publicationAttempts:0,published:0,feedErrors:report.feedErrors}));
  if(report.feedsOk===0)process.exitCode=1;
 }).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={researchDecision130,researchCandidates,europeanResearchPriority,FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,researchPriority,prioritizeResearchGroups,dailyBudget,chooseResearchAgent,analyzeWithAI,scan,readState,writeState,main};
+module.exports={productionBudget,researchDecision130,researchCandidates,europeanResearchPriority,FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,researchPriority,prioritizeResearchGroups,dailyBudget,chooseResearchAgent,analyzeWithAI,scan,readState,writeState,main};
