@@ -2539,6 +2539,14 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   const batch=await Promise.all(linksToRead.slice(index,index+6).map(load));
   for(const doc of batch)if(doc&&!discovered.some(item=>item.url===doc.url))discovered.push(doc);
  }
+ // Load existing scout state once and reuse for dossier research and discovery.
+ let leads=[],researchNotes=[];
+ if(!focusSourceUrl&&!fixtureFocus&&process.env.EDITORIAL_SPORTMONKS_ONLY!=='true'&&report.sources.eredivisie?.status==='ok'){
+  try{const scoutState=(await require('./ten-agent-newsroom101').readState({token:githubToken,fetcher})).state;
+   leads=Array.isArray(scoutState.leads)?scoutState.leads:[];
+   researchNotes=Array.isArray(scoutState.researchNotes)?scoutState.researchNotes:[];}
+  catch(error){report.sourceErrors.push({source:'Tien nieuwsagents',error:error.message});}
+ }
  // Do not simply discard a newsworthy lead when the homepage scan did not
  // find independent proof. Spend a bounded search on the freshest unpaired
  // leads, then run the original evidence and quality gates on the results.
@@ -2550,6 +2558,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   }).sort((a,b)=>editorialPriority(b)-editorialPriority(a)||Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,3);
   // If the global search provider is unavailable, avoid repeating the same
   // rate-limited or stalled request three times in the same cycle.
+  const scoutSearch=require('./editorial-scout-search127').selectScoutSearch({leads,notes:researchNotes,now,existing:research});
+  // Replace at most one of three search slots; preserve all evidence checks.
+  if(scoutSearch){if(research.length===3)research.pop();research.push(scoutSearch);}
   const results=report.sources.gdelt.status==='ok'?await Promise.allSettled(research.map(doc=>discoverCorroboration(doc,config.newsIndexes,fetcher,sourceText))):[];
   const extra=new Set();
   results.forEach((result,index)=>{
@@ -2561,7 +2572,9 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
   for(const url of extra)links.add(url);
   const recovered=await Promise.all([...extra].slice(0,12).map(load));
   for(const doc of recovered)if(doc&&!discovered.some(item=>item.url===doc.url))discovered.push(doc);
-  report.sources.targetedCorroboration={attempted:results.length,skippedUnavailableProvider:research.length-results.length,additionalLinks:extra.size,readable:recovered.filter(Boolean).length};
+  report.sources.targetedCorroboration={attempted:results.length,skippedUnavailableProvider:research.length-results.length,additionalLinks:extra.size,readable:recovered.filter(Boolean).length,
+   scoutSearch:scoutSearch?{groupKey:scoutSearch.groupKey,agentId:scoutSearch.agentId,questionCount:scoutSearch.questionCount,
+    attempted:report.sources.gdelt.status==='ok',publicationAllowed:false}:null};
  }
  report.counts.found=focusSourceUrl||fixtureFocus?linksToRead.length:links.size;
  report.counts.readable=discovered.length;
@@ -2790,11 +2803,6 @@ async function execute({secret,groqKey,githubToken,fetcher=fetch,now=Date.now(),
     if(['available','cached'].includes(calendar.status))eredivisieFixtures=calendar.fixtures||[];
    }catch(error){report.sourceErrors.push({source:'Eredivisieprogramma',error:error.message});}
   }
-  let leads=[],researchNotes=[];
-  try{const scoutState=(await require('./ten-agent-newsroom101').readState({token:githubToken,fetcher})).state;
-   leads=Array.isArray(scoutState.leads)?scoutState.leads:[];
-   researchNotes=Array.isArray(scoutState.researchNotes)?scoutState.researchNotes:[];}
-  catch(error){report.sourceErrors.push({source:'Tien nieuwsagents',error:error.message});}
   const research=await require('./eredivisie-research103b').research({
    fixtures:eredivisieFixtures,docs:discovered,matchGroups,leads,researchNotes,now,
    loadRound:url=>officialPage(url,fetcher),plain,validate:validateEvidence,artwork:preflightArtwork,published
