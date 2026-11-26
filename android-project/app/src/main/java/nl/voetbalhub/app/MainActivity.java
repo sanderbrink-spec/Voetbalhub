@@ -1582,6 +1582,11 @@ private void showScores() {
         PremiumDesign40.menuRow(list,"Nieuws","Leeslijst","Bewaarde artikelen teruglezen",()->showPersonalHub("saved",""));
         PremiumDesign40.menuRow(list,"Mijn Clubs","Favorieten beheren","Volg jouw favoriete clubs",this::showFavorites);
         PremiumDesign40.menuRow(list,"Competities","Competities en standen","Wedstrijden en beschikbare statistieken",this::showCompetitions);
+        // Clearly labelled, separate test content. Never part of the verified news feed.
+        moreSection(list,"Redactietest");
+        PremiumDesign40.menuRow(list,"Nieuws","36 DEMO-artikelen",
+                "Fictieve testinhoud · geen echt voetbalnieuws",
+                () -> openArticle("https://voetbalhub-redactie.onrender.com/demo-artikelen", "DEMO · 36 testartikelen"));
         moreSection(list,"Veldio");
         PremiumDesign40.menuRow(list,"Info","Over Veldio","Alles voetbal. Eén plek.",this::showAbout);
         PremiumDesign40.menuRow(list,"Contact","Contact","Neem contact op met de redactie",this::showContact);
