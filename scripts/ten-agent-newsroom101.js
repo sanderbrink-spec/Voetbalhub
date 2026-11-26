@@ -148,13 +148,24 @@ function europeanResearchPriority(group={}){
  if(!/\b(?:champions league|europa league|conference league)\b/i.test(title))return 0;
  return /\b(?:ajax|psv|feyenoord|az|fc twente|fc utrecht|go ahead eagles)\b/i.test(title)?2:1;
 }
-// A fresh signal missed because the model budget was occupied is not lost.
-// Reconsider only currently visible, recent groups that have never received
-// research for this exact source set. No additional allowance or publication.
+// 130: do not mistake a temporary provider failure for completed research.
+// A bounded retry is permitted only for the same still-current dossier.
+// Unknown legacy statuses remain closed; successful notes are never retried.
+const RETRYABLE130=/^(?:provider_unavailable|provider_http_(?:408|429|5\d\d)|invalid_ai_json)$/;
+function researchDecision130(group,notes,now){
+ const matching=notes.filter(n=>n?.groupKey===group.id);
+ if(!matching.length)return {due:true,reason:'new_dossier'};
+ if(matching.some(n=>!RETRYABLE130.test(n.status||'')))return {due:false,reason:'already_handled'};
+ if(matching.length>=3)return {due:false,reason:'retry_limit'};
+ const dates=matching.map(n=>Date.parse(n.at||''));
+ if(dates.some(t=>!Number.isFinite(t)||t>now))return {due:false,reason:'invalid_retry_history'};
+ const latest=Math.max(...dates);
+ const delay=(matching.length===1?30:60)*60000;
+ return now-latest>=delay?{due:true,reason:'bounded_recovery'}:{due:false,reason:'retry_cooldown'};
+}
 function researchCandidates(groups,newLeads,notes,now){
  const fresh=new Set(newLeads.map(x=>x.url));
- const researched=new Set(notes.map(x=>x.groupKey));
- return prioritizeResearchGroups(groups.filter(g=>g.agents.length&&!researched.has(g.id)&&(
+ return prioritizeResearchGroups(groups.filter(g=>g.agents.length&&researchDecision130(g,notes,now).due&&(
   g.sources.some(s=>fresh.has(s.url))||
   g.sources.some(s=>{const t=Date.parse(s.publishedAt||'');return Number.isFinite(t)&&t<=now&&now-t<=12*3600000;})
  )));
@@ -310,8 +321,8 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   scanned:classified.leads.filter(l=>l.agentIds.includes(agent.id)).length,
   new: newLeads.filter(l=>l.agentIds.includes(agent.id)).length}));
  const candidates=researchCandidates(classified.groups,newLeads,next.researchNotes,now);
- const knownNotes=new Set(next.researchNotes.map(n=>n.agentId+':'+n.groupKey));
- let calls=0,singleOutletResearchCalls=0,singleOutletWithoutPassage=0;
+ let calls=0,singleOutletResearchCalls=0,singleOutletWithoutPassage=0,recoveryAttempts=0;
+ let providerPaused=false;
  if(runAI&&apiKey&&dailyBudget(next,now)>0){
   for(const group of candidates){
    if(calls>=MAX_AI_PER_SCAN||dailyBudget(next,now)<=0)break;
@@ -324,7 +335,9 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
    if(solo&&!passages.some(p=>typeof p.passage==='string'&&p.passage.trim().length>=120&&
       group.sources.some(source=>source.url===p.url))) {singleOutletWithoutPassage++;continue;}
    const agent=chooseResearchAgent(group);
-   if(!agent||knownNotes.has(agent.id+':'+group.id))continue;
+   const decision=researchDecision130(group,next.researchNotes,now);
+   if(!agent||!decision.due)continue;
+   if(decision.reason==='bounded_recovery')recoveryAttempts++;
    // Both cases share the existing capped call, never a second research call.
    calls++;next.aiCallsToday++;
    if(solo)singleOutletResearchCalls++;
@@ -335,6 +348,8 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
    if(note.status==='analysis_only_unverified')next.specialistMemory=intelligence.remember(next.specialistMemory,owner,note.intelligenceAudit,now,specialists.ROLES);
    next.researchNotes.push({groupKey:group.id,agentId:agent.id,at:new Date(now).toISOString(),
     subjects:group.sources.map(s=>s.url),...note,publicationAllowed:false});
+   // Avoid spending a second call on a provider that is rate-limited or down.
+   if(/^provider_(?:unavailable|http_(?:429|5\d\d))$/.test(note.status||'')){providerPaused=true;break;}
   }
  }
  const report={
@@ -357,6 +372,8 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   contradictions:classified.groups.filter(g=>g.contradictory).length,
   aiCalls:calls,aiCallsToday:next.aiCallsToday,aiDailyLimit:MAX_AI_DAILY,
   singleOutletResearchCalls,singleOutletWithoutPassage,
+  autonomousRecovery:{attempts:recoveryAttempts,providerPaused,maxAttemptsPerDossier:3,
+   additionalDailyAllowance:0},
   singleOutletAllowedOnlyAsUnverifiedResearch:true,
   candidates:candidates.slice(0,12),
   training:training.coverage(AGENTS),
@@ -404,4 +421,4 @@ if(require.main===module)main().then(report=>{
  console.log(JSON.stringify({status:report.status,signals:report.signals,newSignals:report.newSignals,agents:report.agents,rumourGroups:report.rumourGroups,aiCalls:report.aiCalls,publicationAttempts:0,published:0,feedErrors:report.feedErrors}));
  if(report.feedsOk===0)process.exitCode=1;
 }).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={researchCandidates,europeanResearchPriority,FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,researchPriority,prioritizeResearchGroups,dailyBudget,chooseResearchAgent,analyzeWithAI,scan,readState,writeState,main};
+module.exports={researchDecision130,researchCandidates,europeanResearchPriority,FEEDS,AGENTS,MAX_AI_DAILY,detectionLatency,assignAgents,articleUrl,parseFeed,sharedStory,classifyLeads,isRumour,isContradiction,researchPriority,prioritizeResearchGroups,dailyBudget,chooseResearchAgent,analyzeWithAI,scan,readState,writeState,main};
