@@ -2,6 +2,7 @@
 // Bounded, persistent, specialist-specific protocol memory. Stores only
 // enumerated diagnostic counts, never source prose, model instructions or facts.
 const VERSION=129;
+const {safeQuestion}=require('./editorial-scout-handoff112');
 const DAYS=30,DAY=86400000,MAX_COUNT=1000;
 const ISSUES=Object.freeze(['risky_angle','missing_questions','missing_caution','missing_angle',
  'no_counterevidence_question','no_followup_question','duplicate_questions','unsafe_question','unsupported_source_reference']);
@@ -13,7 +14,7 @@ const LESSONS=Object.freeze({
  no_counterevidence_question:'Zoek actief naar een ontkenning, afwijkende tijdlijn of alternatieve verklaring.',
  no_followup_question:'Formuleer bij voorkeur een eerstvolgend controlepunt met een relevante gebeurtenis of datum.',
  duplicate_questions:'Stel inhoudelijk verschillende vragen in plaats van herformuleringen.',
- unsafe_question:'Geen instructies om controles, rechten of publicatiepoorten te omzeilen.',
+ unsafe_question:'Gebruik een Nederlandse controlevraag van 18 tot 180 tekens, eindigend op een vraagteken. Geen links of opdrachten om controles te omzeilen.',
  unsupported_source_reference:'Verwijs alleen naar werkelijk aangeleverde bronnen; verzin geen links of bronhouders.'
 });
 const METHODS=Object.freeze({
@@ -41,13 +42,12 @@ function normalizeQuestion(q){return q.toLowerCase().normalize('NFD').replace(/\
 function assess(note={},group={},audit={}){
  const questions=Array.isArray(note?.questions)?note.questions.filter(q=>typeof q==='string').slice(0,3):[];
  const issues=new Set((Array.isArray(audit?.issues)?audit.issues:[]).filter(k=>ISSUES.includes(k)));
- const safe=questions.filter(q=>q.length>=18&&q.length<=180&&q.trim().endsWith('?')&&
- !/[<>@{}]/.test(q)&&!/\b(?:negeer|overschrijf|omzeil|bypass|publiceer|forceer)\b/i.test(q)&&! /https?:\/\//i.test(q));
+ const safe=questions.map(safeQuestion).filter(Boolean);
  if(safe.length!==questions.length)issues.add('unsafe_question');
  if(new Set(safe.map(normalizeQuestion)).size<safe.length)issues.add('duplicate_questions');
  if(!safe.some(q=>/\b(?:ontken\w*|tegenbewijs|tegenstrijd\w*|weerleg\w*|onafhankelijk\w*|alternatie\w*|andere bron|verschil\w*)\b/i.test(q)))issues.add('no_counterevidence_question');
  if(!safe.some(q=>/\b(?:volgende|eerstvolgende|wanneer|datum|vervolg\w*|bekendmaking|controlepunt)\b/i.test(q)))issues.add('no_followup_question');
- const links=[...safe,String(note?.angle||''),String(note?.caution||'')].join(' ').match(/https?:\/\/[^\s]+/gi)||[];
+ const links=[...questions,String(note?.angle||''),String(note?.caution||'')].join(' ').match(/https?:\/\/[^\s]+/gi)||[];
  const known=new Set((Array.isArray(group.sources)?group.sources:[]).map(s=>s.url));
  if(links.some(u=>!known.has(u)))issues.add('unsupported_source_reference');
  return {version:VERSION,metric:'observable_research_protocol_not_intelligence',issues:[...issues],
@@ -69,7 +69,7 @@ function brief(assignment,roles,memory={}){
   .sort((a,b)=>Number(b==='risky_angle')-Number(a==='risky_angle')||count(entry.counts[b])-count(entry.counts[a])||ISSUES.indexOf(a)-ISSUES.indexOf(b)).slice(0,2);
  return ['SPECIALISTISCHE INTELLIGENTIE 129: '+METHODS[owner.desk],
   'Onderzoek eerst een mogelijke verklaring, vervolgens tegenbewijs en een controlepunt. Bij slechts één vraag: combineer de ontbrekende broncontrole met het belangrijkste vervolg.',
-  'Geef geen nieuwe feiten, voorspellingen of publicatiebesluit. Geef uitsluitend concrete, verschillende onderzoeksvragen binnen het bestaande schema.',
+  'Geef geen nieuwe feiten, voorspellingen of publicatiebesluit. Geef uitsluitend concrete, verschillende onderzoeksvragen binnen het bestaande schema. Elke vraag telt 18 tot 180 tekens, eindigt op een vraagteken en bevat geen URL. Gebruik bijvoorbeeld Welke, Wanneer, Is of Bevestigt. Kies bij één bron één korte controleerbare vraag, geen opsomming van deelvragen.',
   ...priorities.map(k=>'GEHEUGENLES: '+LESSONS[k])].join('\n');
 }
 function summarize(memory,roles){
