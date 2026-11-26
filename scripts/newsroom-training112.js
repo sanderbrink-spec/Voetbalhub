@@ -90,6 +90,63 @@ const PROFILES=Object.freeze({
   'Een historische reeks bewijst geen voorspelling of huidige vorm zonder actuele uitslagen.')
 });
 const IDS=Object.freeze(Object.keys(PROFILES));
+// 127: translate observed signal types into bounded, actionable research.
+// Only controlled strings go into the system prompt; external headlines are
+// used as classification hints, never as proof or system instructions.
+function researchPlan127(group={}){
+ const titles=[group.subject,...(Array.isArray(group.sources)?group.sources.slice(0,5).map(x=>x?.title):[])]
+  .filter(x=>typeof x==='string').map(x=>x.slice(0,200)).join(' ');
+ const patterns=[
+  ['transfer',/\b(?:transfer|contract|bod|bieding|akkoord|overstap|interesse|transfermarkt)\b/i,
+   'Welke transferhandeling is werkelijk gemeld en door welke oorspronkelijke melder?',
+   'Welke eerdere contract- of clubinformatie is op de gebeurtenisdatum geldig?',
+   'Welke eerstvolgende officiële bevestiging of ontkenning zou de status veranderen?'],
+  ['match',/\b(?:wedstrijd|duel|uitslag|doelpunt|speelronde|aftrap|kampioen|degradatie|promotie|kwalificatie)\b/i,
+   'Welke wedstrijd-ID, competitie, deelnemers en speelstatus zijn controleerbaar?',
+   'Welke geverifieerde uitslagen of standen maken dit duel uitzonderlijk?',
+   'Welke volgende geplande wedstrijd of officiële competitieregel is relevant?'],
+  ['personnel',/\b(?:trainer|coach|blessure|selectie|schorsing|afwezig|ontslag|benoeming)\w*\b/i,
+   'Welke organisatie bevestigt de persoon, functie of selectie en de ingangsdatum?',
+   'Welke eerdere functie, selectie of afwezigheid kan met gedateerde bronnen worden verbonden?',
+   'Welke komende selectie of officiële bekendmaking kan een vervolgfeit opleveren?'],
+  ['historical',/\b(?:record|historie|historisch|reeks|terugkeer|terugkeert|hereniging|jubileum)\w*\b/i,
+   'Welke periode, definitie en volledige vergelijkingsset zijn beschikbaar?',
+   'Welke eerdere gebeurtenis heeft dezelfde geverifieerde entiteit en relevante context?',
+   'Welke ontbrekende wedstrijd of broncorrectie kan het vermeende record weerleggen?']
+ ];
+ const matched=patterns.filter(x=>x[1].test(titles));
+ // A second angle is only an alternative investigation, not a new assertion.
+ const primary=matched[0]||['general',null,
+  'Welke concrete handeling, betrokken entiteit en datum zijn oorspronkelijk gemeld?',
+  'Welke gedateerde eerdere ontwikkeling maakt deze gebeurtenis aantoonbaar relevant?',
+  'Welke volgende officiële bekendmaking kan de open vraag beantwoorden?'];
+ const alternative=matched.find(x=>x[0]!==primary[0]);
+ const contradiction=group.contradictory===true;
+ const sourceAction=contradiction?'compare_exact_claims_and_seek_counterevidence':
+  (new Set(Array.isArray(group.outlets)?group.outlets:[]).size<2?'find_original_and_independent_source':'trace_original_reporters');
+ const evidenceQuestion=contradiction?
+  'Welke uitspraken spreken elkaar daadwerkelijk tegen over dezelfde persoon, handeling en datum?':
+  'Welke primaire bron en onafhankelijke bron kunnen de oorspronkelijke melding controleren?';
+ return {
+  kind:primary[0],sourceAction,
+  questions:[primary[2],evidenceQuestion,alternative?alternative[3]:primary[3]],
+  followUpQuestion:primary[4],
+  alternativeKind:alternative?.[0]||null,
+  hypothesisOnly:true,publicationAllowed:false,extraAiCalls:0
+ };
+}
+function planBrief127(group){
+ const plan=researchPlan127(group);
+ return [
+  'ONDERZOEKSPLAN 127: beantwoord niets zonder bewijs; kies maximaal drie concrete vragen.',
+  'LOGICA: onderscheid gebeurtenis, entiteit, datum en exacte handeling. Eerst bewijs, dan conclusie.',
+  'BRONACTIE: '+plan.questions[1],
+  'VERBAND: '+plan.questions[2],
+  'EIGEN INVALSHOEK: '+plan.questions[0]+' Kies een onderscheidende onderzoeksvraag in plaats van een andere formulering van de kop.',
+  'VOORUITDENKEN: '+plan.followUpQuestion+' Beschrijf een controlepunt, geen voorspelling als feit.',
+  'AUTONOMIE: kies de eerstvolgende ontbrekende controle die echt uitvoerbaar is; zet de concrete vraag in questions. Als de bron niet beschikbaar is, noteer de beperking en stel geen nieuw feit vast.'
+ ].join('\n');
+}
 function specialistBrief(agent,group={}){
  const id=String(agent?.id||'');
  const p=PROFILES[id];
@@ -102,6 +159,7 @@ function specialistBrief(agent,group={}){
  return [
   'VELDIO-TRAINING '+VERSION+'. Rol: '+p.name+'. Doel: '+p.focus,
   ...CORE,
+  planBrief127(group),
   'SPECIFIEKE OPDRACHTEN:',...p.checks,
   'VERPLICHTE ONDERZOEKSVRAGEN (stel deze, maar beantwoord ze niet zonder bewijs):',...p.questions,
   'VALKUIL: '+p.trap,mode,contrary,
@@ -109,15 +167,20 @@ function specialistBrief(agent,group={}){
  ].filter(Boolean).join('\n');
 }
 function nextLesson(notes=[]){
- // Training feedback changes only next prompt coaching, never model weights,
- // report approval, or daily request limits.
+ // Retain the existing bounded per-role note history. Prioritize observed
+ // safety failures, then address other recurring issues in the SAME call.
  const recent=Array.isArray(notes)?notes.filter(x=>x&&typeof x==='object').slice(-3):[];
- if(recent.some(x=>x.trainingAudit?.issues?.includes('missing_questions')))
-  return 'FEEDBACKLES: formuleer minstens één concrete, verifieerbare vervolgvraag met een vraagteken.';
- if(recent.some(x=>x.trainingAudit?.issues?.includes('missing_caution')))
-  return 'FEEDBACKLES: benoem concreet wat nog onzeker is en waarom de bron onvoldoende is.';
- if(recent.some(x=>x.trainingAudit?.issues?.includes('risky_angle')))
-  return 'FEEDBACKLES: herschrijf een stellige bewering als toegeschreven melding; verzin geen bevestiging.';
+ const lessons={
+  risky_angle:'herschrijf een stellige bewering als toegeschreven melding; verzin geen bevestiging.',
+  missing_questions:'formuleer minstens één concrete, verifieerbare vervolgvraag met een vraagteken.',
+  missing_caution:'benoem concreet wat nog onzeker is en waarom de bron onvoldoende is.',
+  missing_angle:'formuleer een eigen concrete onderzoeksinvalshoek in plaats van de bronkop.'
+ };
+ const keys=Object.keys(lessons);
+ const counts=Object.fromEntries(keys.map(k=>[k,recent.filter(x=>x.trainingAudit?.issues?.includes(k)).length]));
+ const order=keys.filter(k=>counts[k]>0).sort((a,b)=>
+  Number(b==='risky_angle')-Number(a==='risky_angle')||counts[b]-counts[a]||keys.indexOf(a)-keys.indexOf(b));
+ if(order.length)return 'FEEDBACKLES: '+order.slice(0,3).map(k=>lessons[k]+' (waargenomen in '+counts[k]+' eerdere notitie(s))').join(' ');
  return 'FEEDBACKLES: kies de belangrijkste open controlevraag en ga op zoek naar oorspronkelijk bewijs en tegenbewijs.';
 }
 function assessNote(note={},group={}){
@@ -158,4 +221,4 @@ function coverage(agents=[]){
   extraAiCalls:0
  });
 }
-module.exports={VERSION,CORE,PROFILES,IDS,specialistBrief,nextLesson,assessNote,coverage};
+module.exports={VERSION,CORE,PROFILES,IDS,specialistBrief,nextLesson,assessNote,coverage,researchPlan127};
