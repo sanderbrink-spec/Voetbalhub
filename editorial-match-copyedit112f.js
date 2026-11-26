@@ -54,6 +54,22 @@ function registeredCards(facts){
  }
  return [...new Set(names)];
 }
+// A repeated scorer is not ambiguous when the first goal has an exact
+// minute and the next registered goal uniquely increments the same score.
+// Replace only the unsupported interval with the second recorded minute.
+function repairDoubleScorerInterval120(text,goals,facts){
+ return text.replace(/\b([\p{L}.'’\-]+(?:\s+[\p{L}.'’\-]+){0,5}) opende de score voor ([\p{L}.'’\-]+(?:\s+[\p{L}.'’\-]+){0,5}) in de (\d{1,3})(?:e|de|ste) minuut en verdubbelde de voorsprong (?:één|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien|\d{1,2}) minuten later(?=[.,;]|$)/giu,
+ (phrase,player,team,minute)=>{
+  if(!facts.some(f=>typeof f==='string'&&f.includes('minuut '+minute+' een doelpunt van '+player+',')&&f.includes('als doelpuntenmaker aan '+team+'.')))return phrase;
+  const first=goals.filter(g=>g.player===player&&g.minute===Number(minute)&&g.extra===0&&g.home+g.away===1);
+  if(first.length!==1)return phrase;
+  const a=first[0];
+  const next=goals.filter(g=>g.player===player&&g.extra===0&&g.minute>a.minute&&
+    ((a.home===1&&g.home===2&&g.away===0)||(a.away===1&&g.away===2&&g.home===0)));
+  if(next.length!==1)return phrase;
+  return player+' opende de score voor '+team+' in de '+minute+'e minuut en maakte in minuut '+next[0].minute+' ook het tweede doelpunt';
+ });
+}
 function repairProofBoundMatchLanguage112F(draft,record){
  if(!draft||!Array.isArray(draft.body)||record?.articleKind!=='match_report'||
   !Array.isArray(record.verifiedFacts)||!record.match)return draft;
@@ -65,7 +81,8 @@ function repairProofBoundMatchLanguage112F(draft,record){
   if(typeof paragraph!=='string')return paragraph;
   const sentences=paragraph.split(/(?<=[.!?])\s+/u);
   const fixed=sentences.map((sentence,index)=>{
-   let text=sentence;
+   let text=repairDoubleScorerInterval120(sentence,goals,facts);
+   if(text!==sentence)changed=true;
    if(index>0&&goals.length>=2&&relativeAtStart.test(text)){
     const first=soleRegisteredGoal(sentences[index-1],goals);
     const second=soleRegisteredGoal(text,goals);
