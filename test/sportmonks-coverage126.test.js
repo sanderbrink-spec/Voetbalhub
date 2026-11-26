@@ -32,3 +32,19 @@ test('honors remaining quota and stops before another request',async()=>{
  const result=await audit({token:'x',now,fetcher:async()=>{count++;return response([{id:72,name:'Eredivisie'}],{rate_limit:{requested_entity:'leagues',remaining:20}});}});
  assert.equal(count,1);assert.equal(result.stop,'quota_reserve');
 });
+
+test('126C all five paid competitions are configured, including an empty play-offs window',async()=>{
+ const ids=[8,72,74,78,1353];
+ let calls=0;
+ const result=await audit({token:'x',now,fetcher:async raw=>{
+  calls++;
+  const u=new URL(raw);
+  if(u.pathname.endsWith('/my/leagues'))return response(ids.map(id=>({id,name:'League '+id,sport_id:1})));
+  assert.equal(u.searchParams.get('filters'),'fixtureLeagues:'+ids.join(','));
+  return response([],{pagination:{has_more:false}});
+ }});
+ assert.equal(result.status,'complete');
+ assert.equal(result.subscribed,5);assert.equal(result.configured,5);
+ assert.ok(result.leagues.every(l=>l.configured&&l.windowComplete&&l.fixtures===0));
+ assert.equal(calls,2);
+});

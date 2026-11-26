@@ -102,27 +102,40 @@ test('Premier League and KNVB Beker use their distinct selected Sportmonks IDs',
   if(key==='knvbbeker')assert.deepEqual(snap.standings,[]);
  }
 });
-test('Playoffs require one unambiguous Sportmonks league catalogue match',async()=>{
- const good={id:123456,name:'Eredivisie Play-offs',sub_type:'play-offs'};
- let catalogueCalls=0, fixtureCalls=0;
+test('126C Dutch play-offs use verified subscription ID 1353 without extra catalogue calls',async()=>{
+ const leagueId=1353;
+ assert.equal(SM.LEAGUES.eredivisieplayoffs,leagueId);
+ assert.equal(SM.EDITORIAL_LEAGUES.eredivisieplayoffs,leagueId);
+ let fixtureCalls=0;
  const sourceBody=async response=>response.text();
  const fetcher=async url=>{
   const u=new URL(url);
-  if(u.pathname.includes('/leagues/search/')){
-   catalogueCalls++;
-   return {ok:true,text:async()=>JSON.stringify({data:[good]})};
-  }
-  assert.equal(u.searchParams.get('filters'),'fixtureLeagues:'+good.id);
+  assert.ok(u.pathname.includes('/fixtures/between/'));
+  assert.equal(u.searchParams.get('filters'),'fixtureLeagues:'+leagueId);
   fixtureCalls++;
-  return {ok:true,text:async()=>JSON.stringify({data:[{...match(720+fixtureCalls*2),league_id:good.id},{...match(721+fixtureCalls*2),league_id:good.id}],pagination:{has_more:false}})};
+  return new Response(JSON.stringify({data:[{...match(720+fixtureCalls*2),league_id:leagueId},{...match(721+fixtureCalls*2),league_id:leagueId}],pagination:{has_more:false}}));
  };
  const fixtures=await SM.load({fetcher,token:'mock-secret',now,sourceBody,competition:'eredivisieplayoffs'});
- assert.equal(catalogueCalls,1);
+ assert.equal(fixtureCalls,4);
  assert.equal(fixtures.length,8);
- assert.equal(fixtures[0].competition,'eredivisieplayoffs');
- await assert.rejects(()=>SM.load({fetcher:async url=>({ok:true,text:async()=>JSON.stringify({data:[good,{...good,id:123457}]})}),token:'mock',now,sourceBody,competition:'eredivisieplayoffs'}),/niet eenduidig/);
+ assert.ok(fixtures.every(f=>f.competition==='eredivisieplayoffs'));
+ await assert.rejects(SM.load({fetcher:async()=>new Response(JSON.stringify({data:[{...match(1),league_id:72}],pagination:{has_more:false}})),token:'mock',now,sourceBody,competition:'eredivisieplayoffs'}),/Ongeldig Sportmonks competitierecord/);
 });
-
+test('126C play-offs recent window accepts an empty subscribed window and rejects foreign fixtures',async()=>{
+ const now=Date.parse('2026-11-26T18:00:00Z');
+ const sourceBody=async r=>r.text();
+ let calls=0;
+ const args={token:'mock',now,sourceBody,competition:'eredivisieplayoffs'};
+ const empty=await SM.loadRecent({...args,fetcher:async url=>{
+  calls++;assert.equal(new URL(url).searchParams.get('filters'),'fixtureLeagues:1353');
+  return new Response(JSON.stringify({data:[],pagination:{has_more:false}}));
+ }});
+ assert.deepEqual(empty,[]);assert.equal(calls,1);
+ const row={...match(98771),league_id:1353,starting_at_timestamp:Math.floor((now-3600000)/1000)};
+ const found=await SM.loadRecent({...args,fetcher:async()=>new Response(JSON.stringify({data:[row],pagination:{has_more:false}}))});
+ assert.equal(found.length,1);assert.equal(found[0].competition,'eredivisieplayoffs');
+ await assert.rejects(SM.loadRecent({...args,fetcher:async()=>new Response(JSON.stringify({data:[{...row,league_id:72}],pagination:{has_more:false}}))}),/verkeerde competitie/);
+});
 
 test('98S recent-only Sportmonks feed accepts a verified small match window without claiming a complete season',async()=>{
  const now=Date.parse('2026-11-16T20:00:00Z');

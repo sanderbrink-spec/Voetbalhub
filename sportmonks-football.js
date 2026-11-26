@@ -2,7 +2,8 @@
 // Sportmonks is the first-choice football provider only for leagues explicitly configured here.
 // Never log the token, API URL with token, or raw provider errors.
 // The Eredivisie is league 72; 271 is Denmark's Superliga. Verify against provider catalog.
-const LEAGUES={eredivisie:72,kkd:74,premierleague:8,knvbbeker:78};
+// Dutch play-offs ID 1353 verified against the subscribed catalogue on 2026-11-26.
+const LEAGUES={eredivisie:72,kkd:74,premierleague:8,knvbbeker:78,eredivisieplayoffs:1353};
 // European IDs verified against the Sportmonks competition catalogue; editorial only.
 const EDITORIAL_LEAGUES={...LEAGUES,championsleague:2,europaleague:5,conferenceleague:2286};
 const CREDIT='Sportmonks Football API';
@@ -190,28 +191,9 @@ function verifiedMatchEvents(row,homeId,awayId,final){
  return result.sort((a,b)=>a.sortOrder-b.sortOrder||a.minute-b.minute||a.extra-b.extra).slice(0,100);
 }
 
-async function resolvePlayoffsLeague({fetcher,token,sourceBody}){
- // Never guess a separate competition ID: discover the selected Dutch play-offs
- // by their exact league label, and reject ambiguity before using any fixture.
- const url=new URL('https://api.sportmonks.com/v3/football/leagues/search/Eredivisie');
- url.searchParams.set('api_token',token);
- let response;
- try{response=await fetcher(url.href,{redirect:'error',signal:AbortSignal.timeout(8000)});}
- catch{throw Error('Sportmonks play-offs catalogus onbereikbaar');}
- if(!response.ok){await response.body?.cancel();throw Error('Sportmonks play-offs catalogus HTTP '+response.status);}
- let data;
- try{data=JSON.parse(await sourceBody(response));}catch{throw Error('Ongeldig Sportmonks play-offs antwoord');}
- const found=(Array.isArray(data.data)?data.data:[]).filter(l=>
-  Number.isSafeInteger(l?.id)&&l.id>0&&
-  /^eredivisie\s+play[ -]?offs$/i.test(String(l.name||'').trim())&&
-  /^play[ -]?offs$/i.test(String(l.sub_type||'')));
- if(found.length!==1)throw Error('Eredivisie-play-offs ID niet eenduidig geverifieerd');
- return found[0].id;
-}
 async function load({fetcher,token,now,sourceBody,competition='eredivisie'}){
- if(!token||!(Object.hasOwn(LEAGUES,competition)||competition==='eredivisieplayoffs'))throw Error('Sportmonks niet geconfigureerd');
- const leagueId=competition==='eredivisieplayoffs'
-  ?await resolvePlayoffsLeague({fetcher,token,sourceBody}):LEAGUES[competition];
+ if(!token||!Object.hasOwn(LEAGUES,competition))throw Error('Sportmonks niet geconfigureerd');
+ const leagueId=LEAGUES[competition];
  const year=new Date(now).getUTCMonth()<6?new Date(now).getUTCFullYear()-1:new Date(now).getUTCFullYear();
  const first=Date.UTC(year,6,1),last=Date.UTC(year+1,6,1);
  const all=new Map();
