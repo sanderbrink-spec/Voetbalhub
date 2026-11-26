@@ -49,7 +49,17 @@ async function audit({token,fetcher=fetch,sourceBody=async r=>r.text(),now=Date.
   const group=ids.slice(offset,offset+10);
   let complete=false;
   for(let page=1;page<=10&&!stop;page++){
-   const result=await request('football/fixtures/between/'+from+'/'+to,{filters:'fixtureLeagues:'+group.join(','),include,per_page:50,page});
+   const path='football/fixtures/between/'+from+'/'+to;
+   const params={filters:'fixtureLeagues:'+group.join(','),include,per_page:50,page};
+   let result=await request(path,params);
+   if(!stop&&['http_400','http_403','http_422'].includes(result?.error)){
+    errors.push({leagueIds:group,reason:'extended_includes_'+result.error});
+    result=await request(path,{...params,include:'participants;scores;events;statistics;venue'});
+    if(!stop&&['http_400','http_403','http_422'].includes(result?.error)){
+     errors.push({leagueIds:group,reason:'standard_includes_'+result.error});
+     result=await request(path,{...params,include:'participants;scores'});
+    }
+   }
    if(!result||result.error){errors.push({leagueIds:group,reason:result?.error||stop});break;}
    if(result.data.length>50||result.data.some(row=>!Number.isSafeInteger(row?.id)||!group.includes(row.league_id)||seen.has(row.id))||new Set(result.data.map(row=>row.id)).size!==result.data.length){
     errors.push({leagueIds:group,reason:'invalid_fixture_page'});break;
