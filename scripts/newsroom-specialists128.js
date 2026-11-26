@@ -57,16 +57,22 @@ const ROLES=Object.freeze([
  R('chief','chief','Hoofdredacteur',null,'Eén eigenaar per dossier; prioriteit, beschikbare capaciteit en bestaande publicatiepoorten bewaken.')
 ]);
 const counts=()=>Object.fromEntries([...new Set(ROLES.map(r=>r.desk))].map(d=>[d,ROLES.filter(r=>r.desk===d).length]));
-function assign(group={}){
+function assign(group={},activity=null){
  const text=[group.subject,...(Array.isArray(group.sources)?group.sources.slice(0,5).map(s=>s?.title):[])]
   .filter(s=>typeof s==='string').map(s=>s.slice(0,200)).join(' ');
  const hits=ROLES.filter(r=>r.pattern?.test(text));
  const pick=id=>ROLES.find(r=>r.id===id);
  const transfer=hits.filter(r=>r.desk==='transfers');
- const preferred=group.contradictory===true?pick('inv-sources'):
+ let preferred=group.contradictory===true?pick('inv-sources'):
   (group.rumour===true&&transfer.length?transfer.find(r=>r.id==='tr-rumour')||transfer[0]:
    hits.find(r=>r.desk==='investigation')||transfer[0]||hits.find(r=>r.desk==='history')||
    hits.find(r=>r.desk==='clubs')||hits.find(r=>r.desk==='international')||hits.find(r=>r.desk==='data')||pick('inv-followup'));
+ // Rotate only among roles that actually match the current dossier.
+ // Contradictions and rumour oversight retain their original safety priority.
+ if(activity&&group.contradictory!==true&&group.rumour!==true&&hits.length){
+  const ordered=[preferred,...hits.filter(r=>r.id!==preferred.id)];
+  preferred=ordered.reduce((best,r)=>activityCount(activity,r.id)<activityCount(activity,best.id)?r:best);
+ }
  // Exactly one owner. Other specialists supply distinct checks inside the
  // same existing request. Never represent them as independent reviewers.
  const support=hits.filter(r=>r.id!==preferred.id);
@@ -82,6 +88,30 @@ function assign(group={}){
  return {owner:preferred.id,support:selected.map(r=>r.id),
   reviewRoute:['check-evidence','check-quality'],chief:'chief',
   independentReviewPerformed:false,publicationAllowed:false};
+}
+function activityCount(activity,id){
+ const n=activity?.[id];
+ return Number.isInteger(n)&&n>=0?n:0;
+}
+function activityFromNotes(notes=[],memory={}){
+ const counts={};
+ for(const r of ROLES.filter(r=>r.pattern)){
+  const saved=memory?.[r.id]?.attempts;
+  const observed=notes.filter(n=>n.status==='analysis_only_unverified'&&n.deskAssignment?.owner===r.id).length;
+  counts[r.id]=Math.max(Number.isInteger(saved)&&saved>=0?saved:0,observed);
+ }
+ return counts;
+}
+function activityReport(activity,groups=[]){
+ const researchers=ROLES.filter(r=>r.pattern);
+ const eligible=new Set(groups.flatMap(g=>{
+  const a=assign(g,activity);
+  return [a.owner,...a.support];
+ }));
+ return {researchRoles:researchers.length,observedResearchers:researchers.filter(r=>activityCount(activity,r.id)>0).length,
+  remainingResearchers:researchers.filter(r=>activityCount(activity,r.id)===0).map(r=>({id:r.id,name:r.name,matchedCurrentDossier:eligible.has(r.id)})),
+  oversightRoles:['check-evidence','check-quality','chief'],
+  oversightMeasuredSeparately:true,metric:'observed_model_notes_not_verified_quality'};
 }
 function brief(assignment){
  const ids=[assignment.owner,...assignment.support];
@@ -99,4 +129,4 @@ function coverage(groups=[],notes=[]){
   completedModelNotes:completed.length,modelOwners:[...new Set(completed.map(n=>n.deskAssignment.owner))],
   independentReviewPerformedByRouter:false,additionalModelCalls:0};
 }
-module.exports={ROLES,counts,assign,brief,coverage};
+module.exports={ROLES,counts,assign,brief,coverage,activityCount,activityFromNotes,activityReport};

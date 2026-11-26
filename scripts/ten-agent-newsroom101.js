@@ -198,9 +198,9 @@ function chooseResearchAgent(group={}){
   return matched.find(a=>a.id==='geruchten');
  return matched.find(a=>a.id!=='geruchten')||matched[0];
 }
-async function analyzeWithAI({group,agent,apiKey,fetcher=fetch,passages=[],priorNotes=[],specialistMemory={}}){
+async function analyzeWithAI({group,agent,apiKey,fetcher=fetch,passages=[],priorNotes=[],specialistMemory={},specialistActivity=null}){
  if(!apiKey)return {status:'no_free_model_key'};
- const deskAssignment=specialists.assign(group);
+ const deskAssignment=specialists.assign(group,specialistActivity);
  const prompt=[
   'Je bent AI-nieuwsagent '+agent.name+' voor Veldio. Specialisme: '+agent.beat+'.',
   training.specialistBrief(agent,group),
@@ -321,10 +321,18 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   scanned:classified.leads.filter(l=>l.agentIds.includes(agent.id)).length,
   new: newLeads.filter(l=>l.agentIds.includes(agent.id)).length}));
  const candidates=researchCandidates(classified.groups,newLeads,next.researchNotes,now);
+ const specialistActivity=specialists.activityFromNotes(next.researchNotes,next.specialistMemory);
  let calls=0,singleOutletResearchCalls=0,singleOutletWithoutPassage=0,recoveryAttempts=0;
  let providerPaused=false;
  if(runAI&&apiKey&&dailyBudget(next,now)>0){
-  for(const group of candidates){
+  const remaining=candidates.slice();
+  while(remaining.length){
+   // Preserve the strongest news priority for the first slot. The second
+   // slot favors an eligible unserved specialist; never duplicate a dossier.
+   if(calls>0)remaining.sort((a,b)=>
+    specialists.activityCount(specialistActivity,specialists.assign(a,specialistActivity).owner)-
+    specialists.activityCount(specialistActivity,specialists.assign(b,specialistActivity).owner));
+   const group=remaining.shift();
    if(calls>=MAX_AI_PER_SCAN||dailyBudget(next,now)<=0)break;
    // A single media outlet may now open an INTERNAL investigative question,
    // but only when a dated substantive RSS excerpt is actually available.
@@ -341,11 +349,14 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
    // Both cases share the existing capped call, never a second research call.
    calls++;next.aiCallsToday++;
    if(solo)singleOutletResearchCalls++;
-   const owner=specialists.assign(group).owner;
+   const owner=specialists.assign(group,specialistActivity).owner;
    const priorNotes=next.researchNotes.filter(n=>n.agentId===agent.id&&
     (!n.deskAssignment||n.deskAssignment.owner===owner)).slice(-3);
-   const note=await analyzeWithAI({group,agent,apiKey,fetcher,passages,priorNotes,specialistMemory:next.specialistMemory});
-   if(note.status==='analysis_only_unverified')next.specialistMemory=intelligence.remember(next.specialistMemory,owner,note.intelligenceAudit,now,specialists.ROLES);
+   const note=await analyzeWithAI({group,agent,apiKey,fetcher,passages,priorNotes,specialistMemory:next.specialistMemory,specialistActivity});
+   if(note.status==='analysis_only_unverified'){
+    next.specialistMemory=intelligence.remember(next.specialistMemory,owner,note.intelligenceAudit,now,specialists.ROLES);
+    specialistActivity[owner]=specialists.activityCount(specialistActivity,owner)+1;
+   }
    next.researchNotes.push({groupKey:group.id,agentId:agent.id,at:new Date(now).toISOString(),
     subjects:group.sources.map(s=>s.url),...note,publicationAllowed:false});
    // Avoid spending a second call on a provider that is rate-limited or down.
@@ -379,6 +390,7 @@ async function scan({fetcher=fetch,now=Date.now(),state={},apiKey='',runAI=true}
   training:training.coverage(AGENTS),
   specialistDesk:specialists.coverage(classified.groups,next.researchNotes.filter(n=>n.at===new Date(now).toISOString())),
   intelligence:intelligence.summarize(next.specialistMemory,specialists.ROLES),
+  specialistActivity:specialists.activityReport(specialistActivity,classified.groups),
   trainingAudits:next.researchNotes.filter(n=>n.at===new Date(now).toISOString()&&n.trainingAudit)
    .map(n=>({agentId:n.agentId,formatScore:n.trainingAudit.formatScore,
     issues:n.trainingAudit.issues,metric:n.trainingAudit.metric})),

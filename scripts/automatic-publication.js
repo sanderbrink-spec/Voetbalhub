@@ -3605,6 +3605,15 @@ async function run(options={}){
  }catch(error){report.status='failed';report.error=error.message;throw error;}
  finally{
   report.runMode={singlePublication:options.singlePublication===true,discoveryOnly:options.discoveryOnly===true,validationOnly:options.validationOnly===true};
+  // These are observed operations of the existing central functions, not
+  // additional independent models or proof of approval.
+  report.specialistOversight={
+   'check-evidence':{verificationAttempts:report.counts.evidenceChecks,active:report.counts.evidenceChecks>0},
+   'check-quality':{completedScoredReviews:report.assessments.filter(a=>a.scores&&Number.isFinite(a.score)).length,
+    active:report.assessments.some(a=>a.scores&&Number.isFinite(a.score))},
+   'chief':{selectedDossiers:report.counts.selected,active:report.counts.selected>0},
+   metric:'observed_existing_editorial_operations_not_extra_agents'
+  };
    report.funnel=summarizeEditorialFunnel98V(report);
    report.autonomousDesk={...report.autonomousDesk,version:120,nextActions:require('../editorial-autonomous120').nextActions(report)};
    report.outcome=['completed','discovery_complete','validation_complete','scout_research_complete'].includes(report.status)?'success':report.status==='completed_with_deferred_work'?'partial_success':['no_new_verified_articles','daily_limit'].includes(report.status)?'no_suitable_news':['editorial_stalled','editorial_rejected','editorial_waiting_for_artwork'].includes(report.status)?'editorial_blocked':'error';
