@@ -1,155 +1,8 @@
 {
   "rightsPolicyVersion": 26,
-  "rightsExpiresAt": 1795394644122,
-  "count": 19,
+  "rightsExpiresAt": 1795917377717,
+  "count": 11,
   "articles": [
-    {
-      "feedLifecycle": {
-        "kind": "preview",
-        "expiresAt": "2026-11-21T20:00:00.000Z"
-      },
-      "id": "d46198fc-09b4-4cc6-b905-d61ac998a32b",
-      "articleKind": "preview",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "SC Heerenveen reist met vier zeges naar Groningen",
-      "standfirst": "FC Groningen ontvangt SC Heerenveen, dat vier duels op rij won. De Groningers kunnen hun langste reeks tegen de Friezen evenaren.",
-      "body": [
-        "Casper Goedkoop neemt bij FC Groningen de honneurs waar als hoofdtrainer, terwijl de selectie slechts enkele langdurig geblesseerden en geschorsten mist. Assistent-trainer leidt de laatste trainingen voor het thuisduel met Heerenveen.",
-        "Groningen won de laatste drie ontmoetingen met Heerenveen en kan daarmee een even lange reeks neerzetten. Heerenveen komt echter met vertrouwen, na vier opeenvolgende overwinningen in de Eredivisie.",
-        "Ringo Meerveld was in zijn laatste vier competitiewedstrijden betrokken bij vijf doelpunten, eenzelfde aantal als in zijn voorgaande 24 duels. Voor FC Groningen was Thom van Bergen in ieder van zijn vier recentste thuisduels trefzeker."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-11-20T23:56:33.641Z",
-      "fixture": {
-        "id": "sm-19714591",
-        "competition": "eredivisie",
-        "status": "NS",
-        "date": "2026-11-21T20:00:00.000Z",
-        "home": {
-          "name": "FC Groningen"
-        },
-        "away": {
-          "name": "SC Heerenveen"
-        },
-        "round": "Speelronde 13"
-      },
-      "verifiedFacts": [
-        "Zo leidt de assistent-trainer de afsluitende trainingen in aanloop naar het thuisduel met sc Heerenveen.",
-        "FC Groningen ontvangt sc Heerenveen, dat met vier opeenvolgende overwinningen naar Groningen afreist.",
-        "Groningen won de laatste drie ontmoetingen met de Friezen en kan zijn langste winstreeks tegen Heerenveen evenaren.",
-        "Thom van Bergen scoorde in zijn laatste vier thuiswedstrijden voor FC Groningen.",
-        "Bij Heerenveen was Ringo Meerveld in zijn laatste vier competitieduels in slechts 154 minuten betrokken bij vijf doelpunten, evenveel als in zijn 24 wedstrijden daarvoor.",
-        "Casper Goedkoop zal voor het eerst in zijn periode als trainer bij FC Groningen hoofdtrainer Dick Lukkien vervangen.",
-        "Selectie Voor de Derby van het Noorden mist FC Groningen alleen de langdurig geblesseerden Malcolm Jeng, Rijk Janse en Travis Hernes en de geschorsten Etienne Vaessen en Hans Hateboer.",
-        "FC Groningen – sc Heerenveen staat zaterdagavond tijdens speelronde 13 van de VriendenLoterij Eredivisie vanaf 21.00 uur onder leiding van scheidsrechter Alex Bos."
-      ],
-      "sources": [
-        {
-          "url": "https://www.fcgroningen.nl/nieuws/goedkoop-neemt-honneurs-waar-bij-derby-van-het-noorden/"
-        },
-        {
-          "url": "https://eredivisie.nl/nieuws/vooruitblik-speelronde-13/"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/stadium74/fcgroningen-night-preview104d.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageRights": "cleared",
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "FC Groningen",
-          "sc Heerenveen"
-        ],
-        "imageKind": "preview",
-        "stadiumOccupancy": "empty",
-        "stadiumIdentity": "home:fcgroningen",
-        "imageIdentity": "2d05da8ffc2c2cf5525707aca1e74f2da5f70c08a6210efeb3ef936b5a844f83",
-        "generated": true,
-        "qualityTier": "reviewed-fixture",
-        "visualQualityScore": 8.6,
-        "visualQualityStatus": "premium-reviewed",
-        "fixtureId": "sm-19714591",
-        "noOfficialLogos": true,
-        "noRecognizablePeople": true,
-        "noDocumentaryClaim": true
-      },
-      "autoPublish": false,
-      "imageAssetId": "veldio104d-fcgroningen-night-preview",
-      "imageCaption": "AI-illustratie in groen-witte FC Groningen-sfeer onder kunstlicht, geen echte wedstrijdfoto of exacte weergave van Euroborg.",
-      "imageVariants": [
-        {
-          "id": "veldio104d-fcgroningen-night-preview",
-          "url": "https://voetbalhub-redactie.onrender.com/stadium74/fcgroningen-night-preview104d.webp",
-          "caption": "AI-illustratie in groen-witte FC Groningen-sfeer onder kunstlicht, geen echte wedstrijdfoto of exacte weergave van Euroborg.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "4f8c36a704af2147357f8581846549e949a2fe95ac5e4314cee44c1f59c19374",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "FC Groningen",
-              "sc Heerenveen"
-            ],
-            "imageKind": "preview",
-            "stadiumOccupancy": "empty",
-            "stadiumIdentity": "home:fcgroningen",
-            "imageIdentity": "2d05da8ffc2c2cf5525707aca1e74f2da5f70c08a6210efeb3ef936b5a844f83",
-            "generated": true,
-            "qualityTier": "reviewed-fixture",
-            "visualQualityScore": 8.6,
-            "visualQualityStatus": "premium-reviewed",
-            "fixtureId": "sm-19714591",
-            "noOfficialLogos": true,
-            "noRecognizablePeople": true,
-            "noDocumentaryClaim": true
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "veldio104d-fcgroningen-night-preview",
-        "context": {
-          "category": "preview",
-          "clubs": [
-            "FC Groningen",
-            "SC Heerenveen"
-          ],
-          "fixtureId": "sm-19714591",
-          "competition": "Eredivisie",
-          "daypart": "neutral",
-          "venueName": "",
-          "imageKind": "preview",
-          "stadiumOccupancy": "empty",
-          "stadiumIdentity": "home:fcgroningen",
-          "imageIdentity": "2d05da8ffc2c2cf5525707aca1e74f2da5f70c08a6210efeb3ef936b5a844f83"
-        },
-        "reason": "ordered-fixture"
-      },
-      "feedState": "current"
-    },
     {
       "id": "b96da9ec-9930-4c1d-85aa-f0b9f6b2694a",
       "articleKind": "announcement",
@@ -240,6 +93,7 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "Nations League",
+          "lighting": "neutral",
           "daypart": "neutral",
           "venueName": ""
         },
@@ -359,6 +213,7 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "Eredivisie",
+          "lighting": "neutral",
           "daypart": "neutral",
           "venueName": ""
         },
@@ -470,6 +325,7 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "Internationaal voetbal",
+          "lighting": "neutral",
           "daypart": "neutral",
           "venueName": ""
         },
@@ -538,7 +394,7 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art72/utrecht-nec-report.webp",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
       "imageSource": "Veldio · illustratie",
       "imageCredit": "Veldio",
       "imageRights": "cleared",
@@ -546,38 +402,27 @@
         "method": "approved-library49",
         "mode": "approved-library",
         "pipelineVersion": 49,
-        "assetSha256": "b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e",
+        "neutralFootballIllustration": true,
+        "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a",
+        "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
         "kitVerified": true,
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true,
-        "clubs": [
-          "FC Utrecht",
-          "NEC Nijmegen"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:fcutrecht",
-        "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a",
+        "clubs": [],
         "generated": true,
-        "qualityTier": "reviewed-fixture",
-        "visualQualityScore": 8.7,
-        "visualQualityStatus": "premium-reviewed",
-        "fixtureId": "sm-19714594",
-        "noOfficialLogos": true,
-        "noRecognizablePeople": true,
-        "noDocumentaryClaim": true
+        "qualityTier": "contextual-illustration"
       },
       "autoPublish": false,
       "updatedAt": "2026-11-13T09:29:16.502Z",
       "correctionNote": "Wedstrijdverslag herzien na vergelijking met de wedstrijdgegevens en openbare wedstrijdbronnen.",
       "editorialCopyeditVersion": "96",
-      "imageAssetId": "veldio72-utrecht-nec-report",
-      "imageCaption": "Veldio · originele AI-illustratie bij FC Utrecht – NEC Nijmegen. Geen foto van deze wedstrijd of exacte documentaire afbeelding van Stadion Galgenwaard.",
+      "imageAssetId": "stadium116-neutral-football",
+      "imageCaption": "AI-illustratie van een voetbal aan de zijlijn.",
       "imageVariants": [
         {
-          "id": "veldio72-utrecht-nec-report",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art72/utrecht-nec-report.webp",
-          "caption": "Veldio · originele AI-illustratie bij FC Utrecht – NEC Nijmegen. Geen foto van deze wedstrijd of exacte documentaire afbeelding van Stadion Galgenwaard.",
+          "id": "stadium116-neutral-football",
+          "url": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
+          "caption": "AI-illustratie van een voetbal aan de zijlijn.",
           "credit": "Veldio",
           "source": "Veldio · illustratie",
           "rights": "cleared",
@@ -585,26 +430,15 @@
             "method": "approved-library49",
             "mode": "approved-library",
             "pipelineVersion": 49,
-            "assetSha256": "b841c104cebd6a7eda16270e4f20b2f669d51eebdebb8b72676db67f3236554e",
+            "neutralFootballIllustration": true,
+            "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a",
+            "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
             "kitVerified": true,
             "playerIdentityVerified": true,
             "aiDisclosureVerified": true,
-            "clubs": [
-              "FC Utrecht",
-              "NEC Nijmegen"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:fcutrecht",
-            "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a",
+            "clubs": [],
             "generated": true,
-            "qualityTier": "reviewed-fixture",
-            "visualQualityScore": 8.7,
-            "visualQualityStatus": "premium-reviewed",
-            "fixtureId": "sm-19714594",
-            "noOfficialLogos": true,
-            "noRecognizablePeople": true,
-            "noDocumentaryClaim": true
+            "qualityTier": "contextual-illustration"
           }
         }
       ],
@@ -612,7 +446,7 @@
         "method": "approved-article-v69",
         "count": 1,
         "maximum": 6,
-        "selectedId": "veldio72-utrecht-nec-report",
+        "selectedId": "stadium116-neutral-football",
         "context": {
           "category": "report",
           "clubs": [
@@ -621,6 +455,7 @@
           ],
           "fixtureId": "sm-19714594",
           "competition": "Eredivisie",
+          "lighting": "neutral",
           "daypart": "neutral",
           "venueName": "",
           "imageKind": "report",
@@ -628,7 +463,7 @@
           "stadiumIdentity": "home:fcutrecht",
           "imageIdentity": "fb713d46bf9c5a4784c5d15decc421512cdc210065510f3999371071d5f6329a"
         },
-        "reason": "ordered-fixture"
+        "reason": "approved-neutral-football"
       },
       "feedState": "current"
     },
@@ -699,7 +534,7 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/az-groningen-report.webp",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
       "imageSource": "Veldio · illustratie",
       "imageCredit": "Veldio",
       "imageRights": "cleared",
@@ -707,37 +542,27 @@
         "method": "approved-library49",
         "mode": "approved-library",
         "pipelineVersion": 49,
-        "assetSha256": "95e630e0ead899c933b9298de086c4f66b5a5b5c2f3d5fbf7eff5b5d70b6d3d5",
+        "neutralFootballIllustration": true,
+        "imageIdentity": "a3ed57e44606ef1a3ca4259c140761997828361a78567a0806edaabdd6d8eb69",
+        "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
         "kitVerified": true,
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true,
-        "clubs": [
-          "AZ",
-          "FC Groningen"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:az",
-        "imageIdentity": "a3ed57e44606ef1a3ca4259c140761997828361a78567a0806edaabdd6d8eb69",
+        "clubs": [],
         "generated": true,
-        "qualityTier": "reviewed-fixture",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore",
-        "fixtureId": "sm-19714593",
-        "noOfficialLogos": true,
-        "noRecognizablePeople": true,
-        "noDocumentaryClaim": true
+        "qualityTier": "contextual-illustration"
       },
       "autoPublish": false,
       "updatedAt": "2026-11-13T08:49:00.953Z",
       "correctionNote": "Redactionele tekstcorrectie: technische bronverwijzingen uit het wedstrijdverslag verwijderd; oorspronkelijke versie gearchiveerd.",
       "editorialCopyeditVersion": "96",
-      "imageAssetId": "veldio71-az-groningen-report",
-      "imageCaption": "Veldio · AI-illustratie bij AZ – FC Groningen. Geen foto van de wedstrijd of gebeurtenis.",
+      "imageAssetId": "stadium116-neutral-football",
+      "imageCaption": "AI-illustratie van een voetbal aan de zijlijn.",
       "imageVariants": [
         {
-          "id": "veldio71-az-groningen-report",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art71/az-groningen-report.webp",
-          "caption": "Veldio · AI-illustratie bij AZ – FC Groningen. Geen foto van de wedstrijd of gebeurtenis.",
+          "id": "stadium116-neutral-football",
+          "url": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
+          "caption": "AI-illustratie van een voetbal aan de zijlijn.",
           "credit": "Veldio",
           "source": "Veldio · illustratie",
           "rights": "cleared",
@@ -745,25 +570,15 @@
             "method": "approved-library49",
             "mode": "approved-library",
             "pipelineVersion": 49,
-            "assetSha256": "95e630e0ead899c933b9298de086c4f66b5a5b5c2f3d5fbf7eff5b5d70b6d3d5",
+            "neutralFootballIllustration": true,
+            "imageIdentity": "a3ed57e44606ef1a3ca4259c140761997828361a78567a0806edaabdd6d8eb69",
+            "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
             "kitVerified": true,
             "playerIdentityVerified": true,
             "aiDisclosureVerified": true,
-            "clubs": [
-              "AZ",
-              "FC Groningen"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:az",
-            "imageIdentity": "a3ed57e44606ef1a3ca4259c140761997828361a78567a0806edaabdd6d8eb69",
+            "clubs": [],
             "generated": true,
-            "qualityTier": "reviewed-fixture",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore",
-            "fixtureId": "sm-19714593",
-            "noOfficialLogos": true,
-            "noRecognizablePeople": true,
-            "noDocumentaryClaim": true
+            "qualityTier": "contextual-illustration"
           }
         }
       ],
@@ -771,7 +586,7 @@
         "method": "approved-article-v69",
         "count": 1,
         "maximum": 6,
-        "selectedId": "veldio71-az-groningen-report",
+        "selectedId": "stadium116-neutral-football",
         "context": {
           "category": "report",
           "clubs": [
@@ -780,6 +595,7 @@
           ],
           "fixtureId": "sm-19714593",
           "competition": "Eredivisie",
+          "lighting": "day",
           "daypart": "twilight",
           "venueName": "",
           "imageKind": "report",
@@ -787,7 +603,7 @@
           "stadiumIdentity": "home:az",
           "imageIdentity": "a3ed57e44606ef1a3ca4259c140761997828361a78567a0806edaabdd6d8eb69"
         },
-        "reason": "ordered-fixture"
+        "reason": "approved-neutral-football"
       },
       "feedState": "current"
     },
@@ -854,7 +670,7 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/twente-ajax-report.webp",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
       "imageSource": "Veldio · illustratie",
       "imageCredit": "Veldio",
       "imageRights": "cleared",
@@ -862,36 +678,26 @@
         "method": "approved-library49",
         "mode": "approved-library",
         "pipelineVersion": 49,
-        "assetSha256": "5301898c31b055a7efd1fdecc0fc8f4b887e4e9d85e387e1f165348ac3f120e0",
+        "neutralFootballIllustration": true,
+        "imageIdentity": "75eb9bad0c3257746688c6447f0ef1b38a3858168334cac080a22870cbc0552b",
+        "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
         "kitVerified": true,
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true,
-        "clubs": [
-          "FC Twente",
-          "Ajax"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:fctwente",
-        "imageIdentity": "75eb9bad0c3257746688c6447f0ef1b38a3858168334cac080a22870cbc0552b",
+        "clubs": [],
         "generated": true,
-        "qualityTier": "reviewed-fixture",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore",
-        "fixtureId": "sm-19714595",
-        "noOfficialLogos": true,
-        "noRecognizablePeople": true,
-        "noDocumentaryClaim": true
+        "qualityTier": "contextual-illustration"
       },
       "autoPublish": false,
       "updatedAt": "2026-11-10T17:32:34.606Z",
       "correctionNote": "Wedstrijdverslag herzien na vergelijking met Sportmonks en openbare wedstrijdbronnen.",
-      "imageAssetId": "veldio71-twente-ajax-report",
-      "imageCaption": "Veldio · AI-illustratie bij FC Twente – Ajax. Geen foto van de wedstrijd of gebeurtenis.",
+      "imageAssetId": "stadium116-neutral-football",
+      "imageCaption": "AI-illustratie van een voetbal aan de zijlijn.",
       "imageVariants": [
         {
-          "id": "veldio71-twente-ajax-report",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art71/twente-ajax-report.webp",
-          "caption": "Veldio · AI-illustratie bij FC Twente – Ajax. Geen foto van de wedstrijd of gebeurtenis.",
+          "id": "stadium116-neutral-football",
+          "url": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
+          "caption": "AI-illustratie van een voetbal aan de zijlijn.",
           "credit": "Veldio",
           "source": "Veldio · illustratie",
           "rights": "cleared",
@@ -899,25 +705,15 @@
             "method": "approved-library49",
             "mode": "approved-library",
             "pipelineVersion": 49,
-            "assetSha256": "5301898c31b055a7efd1fdecc0fc8f4b887e4e9d85e387e1f165348ac3f120e0",
+            "neutralFootballIllustration": true,
+            "imageIdentity": "75eb9bad0c3257746688c6447f0ef1b38a3858168334cac080a22870cbc0552b",
+            "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
             "kitVerified": true,
             "playerIdentityVerified": true,
             "aiDisclosureVerified": true,
-            "clubs": [
-              "FC Twente",
-              "Ajax"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:fctwente",
-            "imageIdentity": "75eb9bad0c3257746688c6447f0ef1b38a3858168334cac080a22870cbc0552b",
+            "clubs": [],
             "generated": true,
-            "qualityTier": "reviewed-fixture",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore",
-            "fixtureId": "sm-19714595",
-            "noOfficialLogos": true,
-            "noRecognizablePeople": true,
-            "noDocumentaryClaim": true
+            "qualityTier": "contextual-illustration"
           }
         }
       ],
@@ -925,7 +721,7 @@
         "method": "approved-article-v69",
         "count": 1,
         "maximum": 6,
-        "selectedId": "veldio71-twente-ajax-report",
+        "selectedId": "stadium116-neutral-football",
         "context": {
           "category": "report",
           "clubs": [
@@ -934,6 +730,7 @@
           ],
           "fixtureId": "sm-19714595",
           "competition": "Eredivisie",
+          "lighting": "day",
           "daypart": "day",
           "venueName": "",
           "imageKind": "report",
@@ -941,7 +738,7 @@
           "stadiumIdentity": "home:fctwente",
           "imageIdentity": "75eb9bad0c3257746688c6447f0ef1b38a3858168334cac080a22870cbc0552b"
         },
-        "reason": "ordered-fixture"
+        "reason": "approved-neutral-football"
       },
       "feedState": "current"
     },
@@ -998,7 +795,7 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/ado-sparta-report.webp",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
       "imageSource": "Veldio · illustratie",
       "imageCredit": "Veldio",
       "imageRights": "cleared",
@@ -1006,36 +803,26 @@
         "method": "approved-library49",
         "mode": "approved-library",
         "pipelineVersion": 49,
-        "assetSha256": "47b90fc169afeb389bd2b3b7dbcc1ff5ac76e622ab4bc385bced2bb91c58e3f0",
+        "neutralFootballIllustration": true,
+        "imageIdentity": "1ca3c51ba670bbfb5eaeb317081d63b37d050f5ae4f010e90f538b18c319c10c",
+        "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
         "kitVerified": true,
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true,
-        "clubs": [
-          "ADO Den Haag",
-          "Sparta Rotterdam"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:adodenhaag",
-        "imageIdentity": "1ca3c51ba670bbfb5eaeb317081d63b37d050f5ae4f010e90f538b18c319c10c",
+        "clubs": [],
         "generated": true,
-        "qualityTier": "reviewed-fixture",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore",
-        "fixtureId": "sm-19714597",
-        "noOfficialLogos": true,
-        "noRecognizablePeople": true,
-        "noDocumentaryClaim": true
+        "qualityTier": "contextual-illustration"
       },
       "autoPublish": false,
       "updatedAt": "2026-11-09T18:59:44.972Z",
       "correctionNote": "Wedstrijdverslag herzien na vergelijking met Sportmonks en openbare wedstrijdbronnen.",
-      "imageAssetId": "veldio71-ado-sparta-report",
-      "imageCaption": "Veldio · AI-illustratie bij ADO Den Haag – Sparta Rotterdam. Geen foto van de wedstrijd of gebeurtenis.",
+      "imageAssetId": "stadium116-neutral-football",
+      "imageCaption": "AI-illustratie van een voetbal aan de zijlijn.",
       "imageVariants": [
         {
-          "id": "veldio71-ado-sparta-report",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art71/ado-sparta-report.webp",
-          "caption": "Veldio · AI-illustratie bij ADO Den Haag – Sparta Rotterdam. Geen foto van de wedstrijd of gebeurtenis.",
+          "id": "stadium116-neutral-football",
+          "url": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
+          "caption": "AI-illustratie van een voetbal aan de zijlijn.",
           "credit": "Veldio",
           "source": "Veldio · illustratie",
           "rights": "cleared",
@@ -1043,25 +830,15 @@
             "method": "approved-library49",
             "mode": "approved-library",
             "pipelineVersion": 49,
-            "assetSha256": "47b90fc169afeb389bd2b3b7dbcc1ff5ac76e622ab4bc385bced2bb91c58e3f0",
+            "neutralFootballIllustration": true,
+            "imageIdentity": "1ca3c51ba670bbfb5eaeb317081d63b37d050f5ae4f010e90f538b18c319c10c",
+            "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
             "kitVerified": true,
             "playerIdentityVerified": true,
             "aiDisclosureVerified": true,
-            "clubs": [
-              "ADO Den Haag",
-              "Sparta Rotterdam"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:adodenhaag",
-            "imageIdentity": "1ca3c51ba670bbfb5eaeb317081d63b37d050f5ae4f010e90f538b18c319c10c",
+            "clubs": [],
             "generated": true,
-            "qualityTier": "reviewed-fixture",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore",
-            "fixtureId": "sm-19714597",
-            "noOfficialLogos": true,
-            "noRecognizablePeople": true,
-            "noDocumentaryClaim": true
+            "qualityTier": "contextual-illustration"
           }
         }
       ],
@@ -1069,7 +846,7 @@
         "method": "approved-article-v69",
         "count": 1,
         "maximum": 6,
-        "selectedId": "veldio71-ado-sparta-report",
+        "selectedId": "stadium116-neutral-football",
         "context": {
           "category": "report",
           "clubs": [
@@ -1078,6 +855,7 @@
           ],
           "fixtureId": "sm-19714597",
           "competition": "Eredivisie",
+          "lighting": "night",
           "daypart": "night",
           "venueName": "",
           "imageKind": "report",
@@ -1085,7 +863,7 @@
           "stadiumIdentity": "home:adodenhaag",
           "imageIdentity": "1ca3c51ba670bbfb5eaeb317081d63b37d050f5ae4f010e90f538b18c319c10c"
         },
-        "reason": "ordered-fixture"
+        "reason": "approved-neutral-football"
       },
       "feedState": "current"
     },
@@ -1149,7 +927,7 @@
         "duplicateChecked": true,
         "languageChecked": true
       },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/heerenveen-feyenoord-report.webp",
+      "imageUrl": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
       "imageSource": "Veldio · illustratie",
       "imageCredit": "Veldio",
       "imageRights": "cleared",
@@ -1157,36 +935,26 @@
         "method": "approved-library49",
         "mode": "approved-library",
         "pipelineVersion": 49,
-        "assetSha256": "ed5c353fd065b8cc719c8d24d8c8455a3a648cf9ca2841a0818f8916e13d5a3f",
+        "neutralFootballIllustration": true,
+        "imageIdentity": "b39809a92ac282072e44c0487c693c68a91f0787c9728de06f186b69479cdd31",
+        "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
         "kitVerified": true,
         "playerIdentityVerified": true,
         "aiDisclosureVerified": true,
-        "clubs": [
-          "SC Heerenveen",
-          "Feyenoord"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:scheerenveen",
-        "imageIdentity": "b39809a92ac282072e44c0487c693c68a91f0787c9728de06f186b69479cdd31",
+        "clubs": [],
         "generated": true,
-        "qualityTier": "reviewed-fixture",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore",
-        "fixtureId": "sm-19714596",
-        "noOfficialLogos": true,
-        "noRecognizablePeople": true,
-        "noDocumentaryClaim": true
+        "qualityTier": "contextual-illustration"
       },
       "autoPublish": false,
       "updatedAt": "2026-11-09T18:59:44.960Z",
       "correctionNote": "Wedstrijdverslag herzien na vergelijking met Sportmonks en openbare wedstrijdbronnen.",
-      "imageAssetId": "veldio71-heerenveen-feyenoord-report",
-      "imageCaption": "Veldio · AI-illustratie bij SC Heerenveen – Feyenoord. Geen foto van de wedstrijd of gebeurtenis.",
+      "imageAssetId": "stadium116-neutral-football",
+      "imageCaption": "AI-illustratie van een voetbal aan de zijlijn.",
       "imageVariants": [
         {
-          "id": "veldio71-heerenveen-feyenoord-report",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art71/heerenveen-feyenoord-report.webp",
-          "caption": "Veldio · AI-illustratie bij SC Heerenveen – Feyenoord. Geen foto van de wedstrijd of gebeurtenis.",
+          "id": "stadium116-neutral-football",
+          "url": "https://voetbalhub-redactie.onrender.com/stadium116/neutral-football.webp",
+          "caption": "AI-illustratie van een voetbal aan de zijlijn.",
           "credit": "Veldio",
           "source": "Veldio · illustratie",
           "rights": "cleared",
@@ -1194,25 +962,15 @@
             "method": "approved-library49",
             "mode": "approved-library",
             "pipelineVersion": 49,
-            "assetSha256": "ed5c353fd065b8cc719c8d24d8c8455a3a648cf9ca2841a0818f8916e13d5a3f",
+            "neutralFootballIllustration": true,
+            "imageIdentity": "b39809a92ac282072e44c0487c693c68a91f0787c9728de06f186b69479cdd31",
+            "assetSha256": "c29ab5b17618704dbdc24f52e9eba2024a4370e8509c23f5f18169d2316466eb",
             "kitVerified": true,
             "playerIdentityVerified": true,
             "aiDisclosureVerified": true,
-            "clubs": [
-              "SC Heerenveen",
-              "Feyenoord"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:scheerenveen",
-            "imageIdentity": "b39809a92ac282072e44c0487c693c68a91f0787c9728de06f186b69479cdd31",
+            "clubs": [],
             "generated": true,
-            "qualityTier": "reviewed-fixture",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore",
-            "fixtureId": "sm-19714596",
-            "noOfficialLogos": true,
-            "noRecognizablePeople": true,
-            "noDocumentaryClaim": true
+            "qualityTier": "contextual-illustration"
           }
         }
       ],
@@ -1220,7 +978,7 @@
         "method": "approved-article-v69",
         "count": 1,
         "maximum": 6,
-        "selectedId": "veldio71-heerenveen-feyenoord-report",
+        "selectedId": "stadium116-neutral-football",
         "context": {
           "category": "report",
           "clubs": [
@@ -1229,6 +987,7 @@
           ],
           "fixtureId": "sm-19714596",
           "competition": "Eredivisie",
+          "lighting": "day",
           "daypart": "day",
           "venueName": "",
           "imageKind": "report",
@@ -1236,7 +995,7 @@
           "stadiumIdentity": "home:scheerenveen",
           "imageIdentity": "b39809a92ac282072e44c0487c693c68a91f0787c9728de06f186b69479cdd31"
         },
-        "reason": "ordered-fixture"
+        "reason": "approved-neutral-football"
       },
       "feedState": "current"
     },
@@ -1363,6 +1122,7 @@
       "imageAssetId": "veldio69-column-1",
       "imageSource": "Veldio · illustratie",
       "imageCredit": "Veldio",
+      "imageCaption": "Veldio · AI-illustratie bij De Derde Helft. Geen foto van de wedstrijd of gebeurtenis.",
       "imageReview": {
         "method": "approved-library49",
         "mode": "approved-library",
@@ -1375,7 +1135,6 @@
         "generated": true,
         "qualityTier": "contextual-illustration"
       },
-      "imageCaption": "Veldio · AI-illustratie bij De Derde Helft. Geen foto van de wedstrijd of gebeurtenis.",
       "imageVariants": [
         {
           "id": "veldio69-column-1",
@@ -1428,6 +1187,7 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "De Derde Helft",
+          "lighting": "neutral",
           "daypart": "neutral",
           "venueName": ""
         },
@@ -1547,526 +1307,11 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "FC Groningen",
+          "lighting": "neutral",
           "daypart": "neutral",
           "venueName": ""
         },
         "reason": "exact-topic"
-      },
-      "feedState": "current"
-    },
-    {
-      "id": "7609658d-10fa-40fa-99cd-f5fd78350f6a",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Heerenveen beslist duel met NEC dankzij kopbal van Vente",
-      "standfirst": "Een treffer van Dylan Vente heeft sc Heerenveen zaterdag een 1-0 overwinning op NEC opgeleverd. Beide ploegen raakten daarnaast het houtwerk.",
-      "body": [
-        "Het duel tussen sc Heerenveen en NEC werd beslist door één geslaagde aanval na de pauze. Sam Kersten bereikte Levi Smans, die de bal voorzette op Dylan Vente. De spits kopte in de 66e minuut raak en zorgde daarmee voor de enige treffer van de avond.",
-        "Voor rust had NEC al een grote kans gekregen om zelf de leiding te nemen. Kevin Kers trof de paal in het Abe Lenstra Stadion. Ook Heerenveen zocht naar een opening, onder meer via Maxence Rivera en Jacob Trenskow, maar bij de onderbreking was er nog niet gescoord.",
-        "Na de tegentreffer probeerde NEC de wedstrijd met aanvallende wissels te keren. Kaj Sierhuis kwam in de slotfase nog dicht bij de gelijkmaker, maar zijn schot eindigde op de lat. De thuisploeg hield zo de kleine voorsprong vast en sloot de competitiewedstrijd af met drie punten."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-11-01T13:48:56.840Z",
-      "match": {
-        "homeTeam": "sc Heerenveen",
-        "awayTeam": "NEC",
-        "homeScore": 1,
-        "awayScore": 0,
-        "playedAt": "2026-10-31"
-      },
-      "verifiedFacts": [
-        "sc Heerenveen won op zaterdag 31 oktober 2026 thuis met 1-0 van NEC, ook geschreven als N.E.C., in de Eredivisie. De locatie was het Abe Lenstra Stadion.",
-        "Dylan Vente kopte in de 66e minuut het enige doelpunt binnen na een voorzet van Levi Smans; Sam Kersten gaf daarvoor de pass op Smans.",
-        "De ruststand was 0-0; er werd voor rust niet gescoord.",
-        "Kevin Kers schoot voor rust tegen de paal.",
-        "Maxence Rivera en Jacob Trenskow werden volgens het officiële Heerenveen-verslag dreigend.",
-        "NEC bracht na de tegentreffer aanvallende wissels.",
-        "Kaj Sierhuis schoot in de slotfase tegen de lat.",
-        "Heerenveen kreeg drie punten voor de overwinning."
-      ],
-      "sources": [
-        {
-          "url": "https://www.flashscore.nl/voetbal/netherlands/eredivisie/uitslagen/"
-        },
-        {
-          "url": "https://www.sc-heerenveen.nl/nieuws/sc-heerenveen-verslaat-nec-nipt-en-houdt-voor-vijfde-keer-de-nul"
-        },
-        {
-          "url": "https://www.nec-nijmegen.nl/nieuws/nieuws/n.e.c.-onderuit-bij-sc-heerenveen.htm"
-        },
-        {
-          "url": "https://www.sofascore.com/nl/football/match/sc-heerenveen-nec-nijmegen/mjbsojb"
-        },
-        {
-          "url": "https://www.knvb.nl/competities/eredivisie/uitslagen"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/heerenveen43.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageRights": "cleared",
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "f005717efb788dc10730a0ff39e026eebc4702ba8f6330d34e0c5c1e727c3f51",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "sc Heerenveen",
-          "NEC"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:scheerenveen",
-        "imageIdentity": "a4abbc8b89b74e09c5e32045643dadc03f32e850fe388649b4903b84dfd7bebb",
-        "generated": true,
-        "qualityTier": "contextual-illustration",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore"
-      },
-      "autoPublish": false,
-      "imageAssetId": "heerenveen43",
-      "imageCaption": "AI-illustratie: sc Heerenveen en NEC, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "imageVariants": [
-        {
-          "id": "heerenveen43",
-          "url": "https://voetbalhub-redactie.onrender.com/news43/heerenveen43.webp",
-          "caption": "AI-illustratie: sc Heerenveen en NEC, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "f005717efb788dc10730a0ff39e026eebc4702ba8f6330d34e0c5c1e727c3f51",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "sc Heerenveen",
-              "NEC"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:scheerenveen",
-            "imageIdentity": "a4abbc8b89b74e09c5e32045643dadc03f32e850fe388649b4903b84dfd7bebb",
-            "generated": true,
-            "qualityTier": "contextual-illustration",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore"
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "heerenveen43",
-        "context": {
-          "category": "report",
-          "clubs": [
-            "sc Heerenveen",
-            "NEC"
-          ],
-          "fixtureId": "",
-          "competition": "Eredivisie",
-          "daypart": "neutral",
-          "venueName": "",
-          "imageKind": "report",
-          "stadiumOccupancy": "full",
-          "stadiumIdentity": "home:scheerenveen",
-          "imageIdentity": "a4abbc8b89b74e09c5e32045643dadc03f32e850fe388649b4903b84dfd7bebb"
-        },
-        "reason": "ordered-fixture"
-      },
-      "feedState": "current"
-    },
-    {
-      "id": "7c1be307-7bdf-4e90-b2b0-392d047d941a",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Feyenoord verliest voorsprong tegen Fortuna door treffer van eigen huurling",
-      "standfirst": "Feyenoord heeft zaterdag thuis met 1-1 gelijkgespeeld tegen Fortuna Sittard. Een late gelijkmaker van Shiloh ’t Zand voorkwam een Rotterdamse overwinning.",
-      "body": [
-        "Feyenoord hield aan het thuisduel met Fortuna Sittard één punt over. Luciano Valente zorgde na ongeveer een uur voor de openingstreffer in De Kuip, maar die voorsprong bleek niet voldoende. De bezoekers kwamen in de slotfase terug tot 1-1.",
-        "De gelijkmaker kwam van een bekende: Shiloh ’t Zand, die door Feyenoord aan Fortuna is verhuurd. Hij maakte kort voor het einde het verschil voor de bezoekers. Feyenoord had eerder kansen laten liggen om de voorsprong te vergroten en moest daardoor genoegen nemen met een puntendeling.",
-        "Veel tijd om bij het resultaat stil te staan is er niet. Volgens het programma van de club wacht dinsdag alweer een thuiswedstrijd tegen Inter in de Champions League. Dat duel begint om 21.00 uur. Voor Feyenoord verschuift de aandacht daarmee van de competitie naar de Europese opdracht."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-11-01T13:46:55.336Z",
-      "match": {
-        "homeTeam": "Feyenoord",
-        "awayTeam": "Fortuna Sittard",
-        "homeScore": 1,
-        "awayScore": 1,
-        "playedAt": "2026-10-31"
-      },
-      "verifiedFacts": [
-        "Feyenoord speelde op zaterdag 31 oktober 2026 in De Kuip met 1-1 gelijk tegen Fortuna Sittard in de Eredivisie.",
-        "Luciano Valente maakte na ongeveer een uur het eerste doelpunt voor Feyenoord; de ruststand was 0-0.",
-        "Shiloh ’t Zand maakte in de slotfase de 1-1 voor Fortuna Sittard.",
-        "Shiloh ’t Zand is door Feyenoord aan Fortuna Sittard verhuurd.",
-        "Feyenoord miste kansen om de voorsprong te vergroten.",
-        "Volgens Feyenoord is de volgende wedstrijd dinsdag 3 november 2026 thuis tegen Inter in de Champions League, om 21.00 uur.",
-        "Feyenoord en Fortuna Sittard kregen elk één punt voor het gelijkspel."
-      ],
-      "sources": [
-        {
-          "url": "https://www.flashscore.com/match/football/feyenoord-8zjySeoN/sittard-YH8HX5iP/"
-        },
-        {
-          "url": "https://www.feyenoord.com/nl/news/feyenoord-stoot-zich-aan-dezelfde-steen-in-de-kuip-311026"
-        },
-        {
-          "url": "https://feyenoord.supporters.nl/wedstrijden/eredivisie"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/feyenoord43.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageRights": "cleared",
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "8e3ddf291ee355d6dec7bf2b43f22ee7f0c86354e20a2fd30756a63bb9e61ed3",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "Feyenoord",
-          "Fortuna Sittard"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:feyenoord",
-        "imageIdentity": "8e26372b2f787df7ab7679984fbf9453e90058b926c0b4a179cf486e0608dcc7",
-        "generated": true,
-        "qualityTier": "contextual-illustration",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore"
-      },
-      "autoPublish": false,
-      "imageAssetId": "feyenoord43",
-      "imageCaption": "AI-illustratie: Feyenoord en Fortuna Sittard, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "imageVariants": [
-        {
-          "id": "feyenoord43",
-          "url": "https://voetbalhub-redactie.onrender.com/news43/feyenoord43.webp",
-          "caption": "AI-illustratie: Feyenoord en Fortuna Sittard, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "8e3ddf291ee355d6dec7bf2b43f22ee7f0c86354e20a2fd30756a63bb9e61ed3",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "Feyenoord",
-              "Fortuna Sittard"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:feyenoord",
-            "imageIdentity": "8e26372b2f787df7ab7679984fbf9453e90058b926c0b4a179cf486e0608dcc7",
-            "generated": true,
-            "qualityTier": "contextual-illustration",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore"
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "feyenoord43",
-        "context": {
-          "category": "report",
-          "clubs": [
-            "Feyenoord",
-            "Fortuna Sittard"
-          ],
-          "fixtureId": "",
-          "competition": "Eredivisie",
-          "daypart": "neutral",
-          "venueName": "",
-          "imageKind": "report",
-          "stadiumOccupancy": "full",
-          "stadiumIdentity": "home:feyenoord",
-          "imageIdentity": "8e26372b2f787df7ab7679984fbf9453e90058b926c0b4a179cf486e0608dcc7"
-        },
-        "reason": "ordered-fixture"
-      },
-      "feedState": "current"
-    },
-    {
-      "id": "a89b6005-6433-482d-a33b-7710b3f72170",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Ajax houdt vroege voorsprong tegen AZ tot het einde vast",
-      "standfirst": "Een doelpunt van Tolu Arokodare in de negende minuut heeft Ajax zaterdag de overwinning op AZ bezorgd. Het duel eindigde in 1-0.",
-      "body": [
-        "Ajax had zaterdagavond aan één treffer genoeg om AZ te verslaan. Tolu Arokodare maakte al in de negende minuut het verschil in de Johan Cruijff ArenA. Abdellah Ouazane verzorgde de assist bij het doelpunt dat uiteindelijk de enige treffer van de wedstrijd zou blijven.",
-        "De kleine marge hield het duel tot in de slotfase open. AZ zocht naar de gelijkmaker, maar een schot van Dave Kwakman in de negentigste minuut ging over. Aan de andere kant kreeg Oscar Gloukh in de blessuretijd de kans om Ajax meer lucht te geven. Zijn poging ging naast.",
-        "Ajax bracht de voorsprong zonder verdere doelpunten over de streep. Voor Ouazane kreeg zijn bijdrage nog een bijzonder tintje: volgens de club was hij bij zijn assist 17 jaar en 289 dagen oud. De jonge aangever speelde daarmee een directe rol in de driepunter."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-11-01T13:45:36.360Z",
-      "match": {
-        "homeTeam": "Ajax",
-        "awayTeam": "AZ",
-        "homeScore": 1,
-        "awayScore": 0,
-        "playedAt": "2026-10-31"
-      },
-      "verifiedFacts": [
-        "Ajax won op zaterdag 31 oktober 2026 thuis met 1-0 van AZ in de Eredivisie. Het duel werd gespeeld in de Johan Cruijff ArenA.",
-        "Tolu Arokodare maakte in de negende minuut het enige doelpunt, na een assist van Abdellah Ouazane.",
-        "In de slotfase ging een schot van Dave Kwakman in de negentigste minuut over.",
-        "Oscar Gloukh schoot in de blessuretijd naast; de eindstand bleef 1-0.",
-        "Abdellah Ouazane was volgens het officiële Ajax-liveblog bij zijn assist 17 jaar en 289 dagen oud.",
-        "Ajax behield in de tweede helft zijn voorsprong; de ruststand en eindstand waren 1-0."
-      ],
-      "sources": [
-        {
-          "url": "https://www.flashscore.nl/wedstrijd/voetbal/ajax-8UOvIwnb/az-2RxOow1i/samenvatting/opstellingen/"
-        },
-        {
-          "url": "https://www.ajax.nl/liveblogs/liveblog-ajax-az-31-10-26/"
-        },
-        {
-          "url": "https://www.ajax.nl/artikelen/highlights-ajax-az-belangrijke-driepunter/"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/ajax43.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageRights": "cleared",
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "Ajax",
-          "AZ"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:ajax",
-        "imageIdentity": "9c4c28d20da434864ec0f77b881480bcbcbac3917662239b7a08742de9a7d454",
-        "generated": true,
-        "qualityTier": "contextual-illustration",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore"
-      },
-      "autoPublish": false,
-      "imageAssetId": "ajax43",
-      "imageCaption": "AI-illustratie: Ajax en AZ, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "imageVariants": [
-        {
-          "id": "ajax43",
-          "url": "https://voetbalhub-redactie.onrender.com/news43/ajax43.webp",
-          "caption": "AI-illustratie: Ajax en AZ, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "457b1bea8191707dee19da3cadbf2ed95c2df8a437923afd004d229ad4db6e44",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "Ajax",
-              "AZ"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:ajax",
-            "imageIdentity": "9c4c28d20da434864ec0f77b881480bcbcbac3917662239b7a08742de9a7d454",
-            "generated": true,
-            "qualityTier": "contextual-illustration",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore"
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "ajax43",
-        "context": {
-          "category": "report",
-          "clubs": [
-            "Ajax",
-            "AZ"
-          ],
-          "fixtureId": "",
-          "competition": "Eredivisie",
-          "daypart": "neutral",
-          "venueName": "",
-          "imageKind": "report",
-          "stadiumOccupancy": "full",
-          "stadiumIdentity": "home:ajax",
-          "imageIdentity": "9c4c28d20da434864ec0f77b881480bcbcbac3917662239b7a08742de9a7d454"
-        },
-        "reason": "ordered-fixture"
-      },
-      "feedState": "current"
-    },
-    {
-      "id": "a3fae7b9-f58f-4ee8-afee-025f48e3dea3",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "PSV boekt ruime overwinning met 7-0 op Willem II",
-      "standfirst": "PSV heeft Willem II zaterdag met 7-0 verslagen. Na een ruststand van 2-0 liep de thuisploeg in het Philips Stadion verder uit.",
-      "body": [
-        "Zeven doelpunten en zeven verschillende namen op het scoreformulier: PSV verdeelde de productie zaterdagavond over de ploeg. Mauro Júnior opende na twintig minuten de score tegen Willem II. Guus Til verdubbelde kort voor de pauze de marge, waardoor de Eindhovenaren met een 2-0 voorsprong de kleedkamer opzochten.",
-        "Het verschil groeide snel na de hervatting. Sven Mijnans maakte in de vijftigste minuut de derde treffer, waarna Ruben van Bommel drie minuten later ook scoorde. Daarmee stond het binnen het eerste kwartier van de tweede helft al 4-0 en kreeg de ruime overwinning vorm.",
-        "In het laatste deel van de wedstrijd voegden Ricardo Pepi, Kodai Sano en Shuryjano Cornecion ieder een doelpunt toe. Pepi scoorde in minuut 73, Sano in minuut 77 en Cornecion in minuut 81. Willem II kwam zelf niet tot scoren. De uiteindelijke 7-0 leverde PSV drie punten op."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-11-01T13:42:21.136Z",
-      "match": {
-        "homeTeam": "PSV",
-        "awayTeam": "Willem II",
-        "homeScore": 7,
-        "awayScore": 0,
-        "playedAt": "2026-10-31"
-      },
-      "verifiedFacts": [
-        "PSV won op zaterdag 31 oktober 2026 thuis met 7-0 van Willem II in de Eredivisie.",
-        "PSV leidde bij rust met 2-0 na doelpunten van Mauro Júnior in de twintigste minuut en Guus Til in de 44e minuut.",
-        "Sven Mijnans maakte in de vijftigste minuut de 3-0 en Ruben van Bommel drie minuten later de 4-0.",
-        "Ricardo Pepi maakte in de 73e minuut de 5-0, Kodai Sano in de 77e minuut de 6-0 en Shuryjano Cornecion in de 81e minuut de 7-0.",
-        "De zeven PSV-doelpunten werden gemaakt door zeven verschillende spelers.",
-        "Willem II maakte geen doelpunt in de wedstrijd.",
-        "PSV speelde in het Philips Stadion.",
-        "De ruststand was 2-0; PSV stond in de tweede helft na 53 minuten met 4-0 voor."
-      ],
-      "sources": [
-        {
-          "url": "https://www.flashscore.nl/wedstrijd/voetbal/psv-M9UEHJWi/willem-ii-6u3qag0G/"
-        },
-        {
-          "url": "https://www.psv.nl/en/match-center/match/psv-willem-ii-31-10-2026?toplevel=timeline"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/news43/psv43.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageRights": "cleared",
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "PSV",
-          "Willem II"
-        ],
-        "imageKind": "report",
-        "stadiumOccupancy": "full",
-        "stadiumIdentity": "home:psv",
-        "imageIdentity": "330ac8f2bbf71239584c4f2a94303d437a5ec9074dbfaa3bc3f6f4ad54502382",
-        "generated": true,
-        "qualityTier": "contextual-illustration",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore"
-      },
-      "autoPublish": false,
-      "imageAssetId": "psv43",
-      "imageCaption": "AI-illustratie: PSV en Willem II, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "imageVariants": [
-        {
-          "id": "psv43",
-          "url": "https://voetbalhub-redactie.onrender.com/news43/psv43.webp",
-          "caption": "AI-illustratie: PSV en Willem II, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "27577d6d4052237111dc356a0fb9da97bdb218ff7592d5abdcac33bfe44f6ebd",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "PSV",
-              "Willem II"
-            ],
-            "imageKind": "report",
-            "stadiumOccupancy": "full",
-            "stadiumIdentity": "home:psv",
-            "imageIdentity": "330ac8f2bbf71239584c4f2a94303d437a5ec9074dbfaa3bc3f6f4ad54502382",
-            "generated": true,
-            "qualityTier": "contextual-illustration",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore"
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "psv43",
-        "context": {
-          "category": "report",
-          "clubs": [
-            "PSV",
-            "Willem II"
-          ],
-          "fixtureId": "",
-          "competition": "Eredivisie",
-          "daypart": "neutral",
-          "venueName": "",
-          "imageKind": "report",
-          "stadiumOccupancy": "full",
-          "stadiumIdentity": "home:psv",
-          "imageIdentity": "330ac8f2bbf71239584c4f2a94303d437a5ec9074dbfaa3bc3f6f4ad54502382"
-        },
-        "reason": "ordered-fixture"
       },
       "feedState": "current"
     },
@@ -2363,6 +1608,7 @@
       "imageAssetId": "veldio69-column-1",
       "imageSource": "Veldio · illustratie",
       "imageCredit": "Veldio",
+      "imageCaption": "Veldio · AI-illustratie bij De Derde Helft. Geen foto van de wedstrijd of gebeurtenis.",
       "imageReview": {
         "method": "approved-library49",
         "mode": "approved-library",
@@ -2375,7 +1621,6 @@
         "generated": true,
         "qualityTier": "contextual-illustration"
       },
-      "imageCaption": "Veldio · AI-illustratie bij De Derde Helft. Geen foto van de wedstrijd of gebeurtenis.",
       "imageVariants": [
         {
           "id": "veldio69-column-1",
@@ -2428,362 +1673,16 @@
           "clubs": [],
           "fixtureId": "",
           "competition": "De Derde Helft",
+          "lighting": "neutral",
           "daypart": "neutral",
           "venueName": ""
         },
         "reason": "exact-topic"
       },
       "feedState": "current"
-    },
-    {
-      "id": "7c536565-5ef1-43fb-9a34-7bf775d9af48",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Ajax speelt donderdag Europees uitduel bij FC Midtjylland",
-      "standfirst": "De ontmoeting in de Conference League begint op 5 november om 18.45 uur. De thuisclub heeft ook bezoekersinformatie gepubliceerd.",
-      "body": [
-        "Ajax reist voor de Conference League naar FC Midtjylland. De wedstrijd staat bij beide clubs op het programma voor donderdag 5 november 2026, met een aftrap om 18.45 uur.",
-        "De thuisclub noemt MCH Arena als locatie en laat de fanzone om 16.45 uur opengaan. FC Midtjylland meldt dat alle bezoekers met een wedstrijdticket daar welkom zijn.",
-        "Voor supporters van de uitploeg geeft FC Midtjylland een afzonderlijke parkeerinstructie. Zij worden verwezen naar het gebied achter Jyske Bank Boxen, bereikbaar via poort 20 of 21 aan Messevejen."
-      ],
-      "why_it_matters": "",
-      "category": "Conference League",
-      "publishedAt": "2026-10-30T11:32:41.283Z",
-      "verifiedFacts": [
-        "Ajax speelt op donderdag 5 november 2026 om 18.45 uur uit tegen FC Midtjylland in de UEFA Conference League.",
-        "FC Midtjylland bevestigt de wedstrijd tegen AFC Ajax op donderdag 5 november om 18.45 uur in de Conference League in MCH Arena.",
-        "FC Midtjylland meldt dat de fanzone om 16.45 uur opengaat en toegankelijk is voor iedereen met een wedstrijdticket.",
-        "FC Midtjylland verwijst uitfans naar parkeren achter Jyske Bank Boxen via poort 20 of 21 aan Messevejen."
-      ],
-      "sources": [
-        {
-          "url": "https://www.ajax.nl/wedstrijden/"
-        },
-        {
-          "url": "https://www.fcm.dk/kampe/fc-midtjylland-afc-ajax-05-11-2026/"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art69/midtjylland-1.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageRights": "cleared",
-      "autoPublish": false,
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "6e1b91257956a24fd7efc02d838c0234b2a1a3b942919a673bb204d11512dafa",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "FC Midtjylland",
-          "Ajax"
-        ],
-        "imageKind": "preview",
-        "stadiumOccupancy": "empty",
-        "stadiumIdentity": "home:fcmidtjylland",
-        "imageIdentity": "320ecec03054d4c148b97811786bbb5a9b91f292b9eaf07b6e7711b5e3a96a90",
-        "generated": true,
-        "qualityTier": "contextual-illustration",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore"
-      },
-      "imageAssetId": "veldio69-midtjylland-1",
-      "imageCaption": "Veldio · AI-illustratie bij FC Midtjylland – Ajax. Geen foto van de wedstrijd of gebeurtenis.",
-      "imageVariants": [
-        {
-          "id": "veldio69-midtjylland-1",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art69/midtjylland-1.webp",
-          "caption": "Veldio · AI-illustratie bij FC Midtjylland – Ajax. Geen foto van de wedstrijd of gebeurtenis.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "6e1b91257956a24fd7efc02d838c0234b2a1a3b942919a673bb204d11512dafa",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "FC Midtjylland",
-              "Ajax"
-            ],
-            "imageKind": "preview",
-            "stadiumOccupancy": "empty",
-            "stadiumIdentity": "home:fcmidtjylland",
-            "imageIdentity": "320ecec03054d4c148b97811786bbb5a9b91f292b9eaf07b6e7711b5e3a96a90",
-            "generated": true,
-            "qualityTier": "contextual-illustration",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore"
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "veldio69-midtjylland-1",
-        "context": {
-          "category": "preview",
-          "clubs": [
-            "FC Midtjylland",
-            "Ajax"
-          ],
-          "fixtureId": "",
-          "competition": "Conference League",
-          "daypart": "night",
-          "venueName": "",
-          "imageKind": "preview",
-          "stadiumOccupancy": "empty",
-          "stadiumIdentity": "home:fcmidtjylland",
-          "imageIdentity": "320ecec03054d4c148b97811786bbb5a9b91f292b9eaf07b6e7711b5e3a96a90"
-        },
-        "reason": "ordered-fixture"
-      },
-      "feedState": "current"
-    },
-    {
-      "id": "79ef5b4d-cb4f-4575-98a6-d13e0ca6544f",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Willem II ontvangt PEC Zwolle volgende week vrijdag",
-      "standfirst": "Het competitieduel begint op 6 november om 20.00 uur. PEC Zwolle heeft de regeling voor bezoekende supporters op de eigen website toegelicht.",
-      "body": [
-        "Willem II speelt vrijdag 6 november 2026 een thuiswedstrijd tegen PEC Zwolle. In het vastgestelde competitieprogramma staat een aanvangstijd van 20.00 uur; ook de bezoekers bevestigen dat tijdstip.",
-        "PEC Zwolle schrijft dat voor de uitreis een verplichte buscombi geldt. Supporters moeten daarnaast de clubapp gebruiken, zich identificeren en registreren om hun toegangsbewijs daarin te kunnen ontvangen.",
-        "PEC Zwolle vermeldt dat het ticket in de loop van de wedstrijdweek zichtbaar wordt in de app. Er wordt volgens die bezoekersinformatie geen afzonderlijk toegangsbewijs per e-mail verstuurd."
-      ],
-      "why_it_matters": "",
-      "category": "Eredivisie",
-      "publishedAt": "2026-10-30T11:28:15.629Z",
-      "verifiedFacts": [
-        "Willem II ontvangt PEC Zwolle op vrijdag 6 november 2026 om 20.00 uur volgens het vastgestelde programma van de VriendenLoterij Eredivisie.",
-        "PEC Zwolle bevestigt een uitwedstrijd tegen Willem II op vrijdag 6 november om 20.00 uur.",
-        "PEC Zwolle meldt dat voor deze wedstrijd een verplichte buscombi geldt en het gebruik van de PEC Zwolle App verplicht is.",
-        "PEC Zwolle meldt dat het ticket na identificatie en registratie in de loop van de week automatisch zichtbaar wordt in de app en niet per e-mail wordt verstuurd."
-      ],
-      "sources": [
-        {
-          "url": "https://www.willem-ii.nl/artikel/speelschema-tot-en-met-januari-bekend"
-        },
-        {
-          "url": "https://peczwolle.nl/nieuws/kaartverkoopinformatie-willem-ii-pec-zwolle"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/willem-ii-pec-zwolle-preview.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageRights": "cleared",
-      "autoPublish": false,
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "fd494587a3956e929124ab1ebc6acf827d6a11b7372cc80bde875bb6868c8394",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "Willem II",
-          "PEC Zwolle"
-        ],
-        "imageKind": "preview",
-        "stadiumOccupancy": "empty",
-        "stadiumIdentity": "home:willemii",
-        "imageIdentity": "eb7ef243a118ad2ba924024789e974fe93661596087aa2e2c3f81ed860c9eadd",
-        "generated": true,
-        "qualityTier": "contextual-illustration",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore"
-      },
-      "imageAssetId": "veldio71-willem-ii-pec-zwolle-preview",
-      "imageCaption": "AI-illustratie: Willem II en PEC Zwolle, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "imageVariants": [
-        {
-          "id": "veldio71-willem-ii-pec-zwolle-preview",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art71/willem-ii-pec-zwolle-preview.webp",
-          "caption": "AI-illustratie: Willem II en PEC Zwolle, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "fd494587a3956e929124ab1ebc6acf827d6a11b7372cc80bde875bb6868c8394",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "Willem II",
-              "PEC Zwolle"
-            ],
-            "imageKind": "preview",
-            "stadiumOccupancy": "empty",
-            "stadiumIdentity": "home:willemii",
-            "imageIdentity": "eb7ef243a118ad2ba924024789e974fe93661596087aa2e2c3f81ed860c9eadd",
-            "generated": true,
-            "qualityTier": "contextual-illustration",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore"
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "veldio71-willem-ii-pec-zwolle-preview",
-        "context": {
-          "category": "preview",
-          "clubs": [
-            "Willem II",
-            "PEC Zwolle"
-          ],
-          "fixtureId": "",
-          "competition": "Eredivisie",
-          "daypart": "neutral",
-          "venueName": "",
-          "imageKind": "preview",
-          "stadiumOccupancy": "empty",
-          "stadiumIdentity": "home:willemii",
-          "imageIdentity": "eb7ef243a118ad2ba924024789e974fe93661596087aa2e2c3f81ed860c9eadd"
-        },
-        "reason": "ordered-fixture"
-      },
-      "feedState": "current"
-    },
-    {
-      "id": "fca0bd67-45a0-4891-8415-b8f62e64eb34",
-      "status": "published",
-      "author": "Veldio Redactie",
-      "headline": "Emmen ontvangt Den Bosch zondagmiddag in plaats van vrijdagavond",
-      "standfirst": "FC Emmen speelt zondag 1 november om 14.30 uur thuis tegen FC Den Bosch. Het competitieduel is verplaatst vanwege het bekerprogramma.",
-      "body": [
-        "Dit weekend spelen Emmen en Den Bosch hun competitiewedstrijd in de middag. Beide clubs vermelden het onderlinge duel op zondag in hun officiële wedstrijdinformatie. De ontmoeting maakt deel uit van de Keuken Kampioen Divisie.",
-        "Oorspronkelijk zouden de ploegen elkaar vrijdag 30 oktober om 20.00 uur treffen. De voetbalbond heeft die planning aangepast vanwege de eerste ronde van de KNVB Beker. De thuisclub maakte de wijziging eerder bekend; ook de bond bevestigt de nieuwe aftrap.",
-        "Supporters moeten bij hun reisplanning dus rekening houden met zondagmiddag. Het eerder aangekondigde tijdstip op vrijdagavond geldt niet meer voor deze ontmoeting. Wie nog een oude afspraak in de agenda heeft staan, kan die vervangen door de nieuwe speeldatum."
-      ],
-      "why_it_matters": "",
-      "category": "Keuken Kampioen Divisie",
-      "publishedAt": "2026-10-30T10:36:57.405Z",
-      "verifiedFacts": [
-        "FC Emmen speelt thuis tegen FC Den Bosch in de Keuken Kampioen Divisie op zondag 1 november 2026 om 14.30 uur; FC Den Bosch vermeldt Eerste Divisie en 01-11-2026 14:30:00.",
-        "Het duel stond oorspronkelijk gepland voor vrijdag 30 oktober 2026 om 20.00 uur en is verplaatst vanwege het programma van de eerste ronde van de KNVB Beker.",
-        "De KNVB en FC Emmen bevestigen de wijziging; de actuele kalender van FC Den Bosch vermeldt eveneens de nieuwe datum en tijd."
-      ],
-      "sources": [
-        {
-          "url": "https://fcemmen.nl/wijziging-speelschema-fc-emmen-fc-den-bosch-verplaatst/"
-        },
-        {
-          "url": "https://www.eurojackpotknvbbeker.nl/node/1605"
-        },
-        {
-          "url": "https://www.fcdenbosch.nl/eerste-elftal/wedstrijden/"
-        }
-      ],
-      "editorialChecks": {
-        "originalSourceReviewed": true,
-        "claimsIndependentlyChecked": true,
-        "duplicateChecked": true,
-        "languageChecked": true
-      },
-      "imageRights": "cleared",
-      "autoPublish": false,
-      "imageUrl": "https://voetbalhub-redactie.onrender.com/article-art71/emmen-den-bosch-preview.webp",
-      "imageSource": "Veldio · illustratie",
-      "imageCredit": "Veldio",
-      "imageReview": {
-        "method": "approved-library49",
-        "mode": "approved-library",
-        "pipelineVersion": 49,
-        "assetSha256": "82f327ad15966ce15640935e442c4cf04c7d71fbf61c6671f491e9f61bb74a0c",
-        "kitVerified": true,
-        "playerIdentityVerified": true,
-        "aiDisclosureVerified": true,
-        "clubs": [
-          "FC Emmen",
-          "FC Den Bosch"
-        ],
-        "imageKind": "preview",
-        "stadiumOccupancy": "empty",
-        "stadiumIdentity": "home:fcemmen",
-        "imageIdentity": "4dcd87d1364b10cb126a1f3ee3754392a2ae8b978cf9f3e7a589f89b0ff656af",
-        "generated": true,
-        "qualityTier": "contextual-illustration",
-        "visualQualityStatus": "legacy-raster-awaiting-rescore"
-      },
-      "imageAssetId": "veldio71-emmen-den-bosch-preview",
-      "imageCaption": "AI-illustratie: FC Emmen en FC Den Bosch, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-      "imageVariants": [
-        {
-          "id": "veldio71-emmen-den-bosch-preview",
-          "url": "https://voetbalhub-redactie.onrender.com/article-art71/emmen-den-bosch-preview.webp",
-          "caption": "AI-illustratie: FC Emmen en FC Den Bosch, weergegeven met clubkleuren. Geen opname van de beschreven wedstrijd, personen of het echte stadion.",
-          "credit": "Veldio",
-          "source": "Veldio · illustratie",
-          "rights": "cleared",
-          "review": {
-            "method": "approved-library49",
-            "mode": "approved-library",
-            "pipelineVersion": 49,
-            "assetSha256": "82f327ad15966ce15640935e442c4cf04c7d71fbf61c6671f491e9f61bb74a0c",
-            "kitVerified": true,
-            "playerIdentityVerified": true,
-            "aiDisclosureVerified": true,
-            "clubs": [
-              "FC Emmen",
-              "FC Den Bosch"
-            ],
-            "imageKind": "preview",
-            "stadiumOccupancy": "empty",
-            "stadiumIdentity": "home:fcemmen",
-            "imageIdentity": "4dcd87d1364b10cb126a1f3ee3754392a2ae8b978cf9f3e7a589f89b0ff656af",
-            "generated": true,
-            "qualityTier": "contextual-illustration",
-            "visualQualityStatus": "legacy-raster-awaiting-rescore"
-          }
-        }
-      ],
-      "imageRotation": {
-        "method": "approved-article-v69",
-        "count": 1,
-        "maximum": 6,
-        "selectedId": "veldio71-emmen-den-bosch-preview",
-        "context": {
-          "category": "preview",
-          "clubs": [
-            "FC Emmen",
-            "FC Den Bosch"
-          ],
-          "fixtureId": "",
-          "competition": "Keuken Kampioen Divisie",
-          "daypart": "neutral",
-          "venueName": "",
-          "imageKind": "preview",
-          "stadiumOccupancy": "empty",
-          "stadiumIdentity": "home:fcemmen",
-          "imageIdentity": "4dcd87d1364b10cb126a1f3ee3754392a2ae8b978cf9f3e7a589f89b0ff656af"
-        },
-        "reason": "ordered-fixture"
-      },
-      "feedState": "current"
     }
   ],
   "imagePolicyVersion": 69,
-  "mirroredAt": "2026-11-21T12:44:03.943Z",
+  "mirroredAt": "2026-11-27T13:56:17.548Z",
   "source": "https://voetbalhub-redactie.onrender.com/articles"
 }
