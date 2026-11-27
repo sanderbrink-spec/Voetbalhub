@@ -113,6 +113,14 @@
     {
       "url": "https://www.uefa.com/uefaconferenceleague/news/",
       "articlePath": "^/uefaconferenceleague/news/02[a-z0-9-]+/?$"
+    },
+    {
+      "url": "https://www.willem-ii.nl/nieuws",
+      "articlePath": "^/artikel/[a-z0-9-]+/?$"
+    },
+    {
+      "url": "https://fortunasittard.nl/nieuws",
+      "articlePath": "^/nieuws/[a-z0-9-]+/?$"
     }
   ],
   "sourceGroups": [],
